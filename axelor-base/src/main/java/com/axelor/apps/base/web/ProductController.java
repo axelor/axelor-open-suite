@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,25 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.report.IReport;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductService;
+import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.user.UserService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.auth.db.User;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JpaSecurity;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -61,7 +61,7 @@ public class ProductController {
     if (product.getProductVariantConfig() != null) {
       Beans.get(ProductService.class).generateProductVariants(product);
 
-      response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_1));
+      response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_1));
       response.setReload(true);
     }
   }
@@ -101,97 +101,79 @@ public class ProductController {
 
     Beans.get(ProductService.class).updateProductPrice(product);
 
-    response.setFlash(I18n.get(BaseExceptionMessage.PRODUCT_2));
+    response.setInfo(I18n.get(BaseExceptionMessage.PRODUCT_2));
     response.setReload(true);
   }
 
-  @SuppressWarnings("unchecked")
   public void printProductCatalog(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    User user = Beans.get(UserService.class).getUser();
 
-    int currentYear = Beans.get(AppBaseService.class).getTodayDateTime().getYear();
-    String productIds = "";
-
-    List<Integer> lstSelectedProduct = (List<Integer>) request.getContext().get("_ids");
-
-    if (lstSelectedProduct != null) {
-      productIds = Joiner.on(",").join(lstSelectedProduct);
-    } else {
-      List<Long> displayedProductIdList = getDisplayedProductIdList(request);
-      if (ObjectUtils.notEmpty(displayedProductIdList)) {
-        productIds = Joiner.on(",").join(displayedProductIdList);
-      }
+    BirtTemplate productCatalogPGQLBirtTemplate =
+        Beans.get(AppBaseService.class).getAppBase().getProductCatalogPGQLBirtTemplate();
+    if (ObjectUtils.isEmpty(productCatalogPGQLBirtTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
     }
 
     String name = I18n.get("Product Catalog");
-
     String fileLink =
-        ReportFactory.createReport(IReport.PRODUCT_CATALOG, name + "-${date}")
-            .addParam("UserId", user.getId())
-            .addParam("CurrYear", Integer.toString(currentYear))
-            .addParam("ProductIds", productIds)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam(
-                "Timezone",
-                user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
-            .generate()
-            .getFileLink();
+        Beans.get(BirtTemplateService.class)
+            .generateBirtTemplateLink(
+                productCatalogPGQLBirtTemplate,
+                null,
+                Map.of("ProductIds", getSelectedOrAllRecordIds(request)),
+                name + "-${date}",
+                false,
+                productCatalogPGQLBirtTemplate.getFormat());
 
     logger.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
-  public void printProductSheet(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  @SuppressWarnings("unchecked")
+  private <T extends Model> String getSelectedOrAllRecordIds(ActionRequest request) {
+    String recordIds = "";
+
+    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+
+    if (idList == null) {
+      idList = new ArrayList<>();
+      JpaSecurity security = Beans.get(JpaSecurity.class);
+      Criteria criteria = Criteria.parse(request);
+      Class<T> contextClass = (Class<T>) request.getContext().getContextClass();
+      List<?> objects =
+          criteria
+              .createQuery(contextClass, security.getFilter(JpaSecurity.CAN_READ, contextClass))
+              .select("id")
+              .fetch(-1, -1);
+      for (Object object : objects) {
+        if (object instanceof Map) {
+          Long id = (Long) ((Map<String, Object>) object).get("id");
+          idList.add(Integer.parseInt(id.toString()));
+        }
+      }
+    }
+    if (ObjectUtils.notEmpty(idList)) {
+      recordIds = Joiner.on(",").join(idList);
+    }
+    return recordIds;
+  }
+
+  public void updateCostPrice(ActionRequest request, ActionResponse response) {
     try {
+
       Product product = request.getContext().asType(Product.class);
-      User user = Beans.get(UserService.class).getUser();
-
-      String name = I18n.get("Product") + " " + product.getCode();
-
-      if (user.getActiveCompany() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
+      // Set anomaly when a product exists in list Price
+      if (product.getId() != null) {
+        Beans.get(ProductUpdateService.class).updateCostPriceFromView(product);
+        response.setValue("costPrice", product.getCostPrice());
+        response.setValue("productCompanyList", product.getProductCompanyList());
       }
 
-      String fileLink =
-          ReportFactory.createReport(IReport.PRODUCT_SHEET, name + "-${date}")
-              .addParam("ProductId", product.getId())
-              .addParam("CompanyId", user.getActiveCompany().getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "Timezone",
-                  user.getActiveCompany() != null ? user.getActiveCompany().getTimezone() : null)
-              .generate()
-              .getFileLink();
-
-      logger.debug("Printing " + name);
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<Long> getDisplayedProductIdList(ActionRequest request) {
-    JpaSecurity security = Beans.get(JpaSecurity.class);
-    List<Long> displayedProductIdList = new ArrayList<>();
-    Criteria criteria = Criteria.parse(request);
-    List<?> products =
-        criteria
-            .createQuery(Product.class, security.getFilter(JpaSecurity.CAN_READ, Product.class))
-            .select("id")
-            .fetch(-1, -1);
-    for (Object product : products) {
-      if (product instanceof Map) {
-        Long id = (Long) ((Map<String, Object>) product).get("id");
-        displayedProductIdList.add(id);
-      }
-    }
-    return displayedProductIdList;
   }
 }

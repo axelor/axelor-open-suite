@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ConfiguratorBOM" lang="java">
+  <entity name="ConfiguratorBOM">
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
 
     <string name="name" title="Label"/>
@@ -51,6 +51,7 @@
     <!--we don't want a real database relation between configurator and bill of materials, so we just
       save the id -->
     <long name="billOfMaterialId"/>
+
   </entity>
 
 </domain-models>

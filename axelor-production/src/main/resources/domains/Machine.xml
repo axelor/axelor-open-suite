@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="Machine" lang="java">
+  <entity name="Machine">
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Image"
       index="false"/>
     <string name="name" title="Name" required="true"/>
@@ -16,9 +16,6 @@
       title="Stock location"/>
     <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType"
       title="Machine Type"/>
-    <long name="startingDuration" title="Starting duration (hh:mm:ss)"/>
-    <long name="setupDuration" title="Duration between two cycles (hh:mm:ss)"/>
-    <long name="endingDuration" title="Ending duration (hh:mm:ss)"/>
     <many-to-one name="weeklyPlanning" ref="com.axelor.apps.base.db.WeeklyPlanning"
       title="Machine's planning"/>
     <long name="operatingDuration" title="Operating duration" default="0"/>
@@ -31,6 +28,8 @@
     <date name="buyingDate" title="Buying date"/>
     <date name="manufDate" title="Manuf. date"/>
     <date name="disposalDate" title="Disposal date"/>
+    <many-to-one name="publicHolidayEventsPlanning"
+      ref="com.axelor.apps.base.db.EventsPlanning" title="Public Holiday Planning" massUpdate="true"/>
     <integer name="numberOfStations" title="Number of stations"/>
     <one-to-many name="machineToolLineList"
       ref="com.axelor.apps.production.db.MachineTool" title="Tools" mappedBy="machine"/>

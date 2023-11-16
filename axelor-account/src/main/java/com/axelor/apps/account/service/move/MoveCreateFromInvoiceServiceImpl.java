@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
@@ -26,22 +27,28 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +68,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCreateFromInvoiceServiceImpl(
@@ -75,7 +83,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
       AccountConfigService accountConfigService,
-      JournalRepository journalRepository) {
+      JournalRepository journalRepository,
+      PaymentConditionService paymentConditionService) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
@@ -88,6 +97,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
     this.journalRepository = journalRepository;
+    this.paymentConditionService = paymentConditionService;
   }
 
   /**
@@ -107,29 +117,41 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       origin = invoice.getSupplierInvoiceNb();
     }
 
-    if (invoice != null && invoice.getInvoiceLineList() != null) {
-
+    if (invoice.getInvoiceLineList() != null) {
       Journal journal = invoice.getJournal();
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
       Account account = invoice.getPartnerAccount();
 
       String description = null;
+
       if (journal != null) {
         description = journal.getDescriptionModel();
+
+        if (journal.getDescriptionIdentificationOk() && origin != null) {
+          if (ObjectUtils.isEmpty(description)) {
+            description = origin;
+          } else {
+            description = String.format("%s %s", description, origin);
+          }
+        }
       }
 
-      if (journal.getDescriptionIdentificationOk() && origin != null) {
-        if (ObjectUtils.isEmpty(description)) {
-          description = origin;
-        } else {
-          description += " " + origin;
-        }
+      if (accountConfigService.getAccountConfig(company).getIsDescriptionRequired()
+          && StringUtils.isEmpty(description)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.MOVE_INVOICE_DESCRIPTION_REQUIRED),
+            company.getName());
       }
 
       log.debug(
           "Creation of a move specific to the invoice {} (Company : {}, Journal : {})",
-          new Object[] {invoice.getInvoiceId(), company.getName(), journal.getCode()});
+          new Object[] {
+            invoice.getInvoiceId(),
+            company.getName(),
+            Optional.ofNullable(journal).map(Journal::getCode).orElse("")
+          });
 
       int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
       boolean isPurchase = InvoiceToolService.isPurchase(invoice);
@@ -156,7 +178,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         move.setInvoice(invoice);
 
         move.setTradingName(invoice.getTradingName());
+        paymentConditionService.checkPaymentCondition(invoice.getPaymentCondition());
         move.setPaymentCondition(invoice.getPaymentCondition());
+        move.setSubrogationPartner(invoice.getSubrogationPartner());
+
+        move.setDueDate(invoice.getDueDate());
 
         boolean isDebitCustomer = moveToolService.isDebitCustomer(invoice, false);
 
@@ -168,7 +194,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
                     company,
                     partner,
                     account,
-                    journal.getIsInvoiceMoveConsolidated(),
+                    journal != null ? journal.getIsInvoiceMoveConsolidated() : false,
                     isPurchase,
                     isDebitCustomer));
 
@@ -252,7 +278,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       }
 
       // Management of the switch to 580
-      reconcileService.balanceCredit(invoiceCustomerMoveLine);
+      reconcileService.canBeZeroBalance(null, invoiceCustomerMoveLine);
+      // reconcileService.balanceCredit(invoiceCustomerMoveLine);
 
       invoice.setCompanyInTaxTotalRemaining(moveToolService.getInTaxTotalRemaining(invoice));
     }
@@ -393,7 +420,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            null,
+            invoiceCustomerMoveLine.getDescription(),
             invoice.getCompanyBankDetails());
 
     if (oDmove != null) {

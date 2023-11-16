@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.exceptions;
 
@@ -35,6 +36,9 @@ public final class BaseExceptionMessage {
   /** Currency service and controller */
   public static final String CURRENCY_1 = /*$$(*/
       "No currency conversion found from '%s' to '%s' for date %s" /*)*/;
+
+  public static final String SEQUENCE_PREFIX = /*$$(*/
+      "Sequence prefix cannot start with the draft prefix '%s'." /*)*/;
 
   public static final String CURRENCY_2 = /*$$(*/
       "The currency exchange rate from '%s' to '%s' for date %s must be different from zero." /*)*/;
@@ -133,19 +137,11 @@ public final class BaseExceptionMessage {
   public static final String INDICATOR_GENERATOR_2 = /*$$(*/
       "Error : incorrect request for the indicatior generator %s" /*)*/;
   public static final String INDICATOR_GENERATOR_3 = /*$$(*/ "Request performed" /*)*/;
-
-  /** Alarm engine batch service */
-  public static final String ALARM_ENGINE_BATCH_1 = /*$$(*/ "Alarm Engine %s" /*)*/;
-
-  public static final String ALARM_ENGINE_BATCH_2 = /*$$(*/ "Alarms report :" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_3 = /*$$(*/ "* %s object(s) into alarm" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_4 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
-  public static final String ALARM_ENGINE_BATCH_5 = /*$$(*/ "Alarm batch" /*)*/;
-
   /** Base batch service */
   public static final String BASE_BATCH_1 = /*$$(*/ "Unknown action %s for the %s treatment" /*)*/;
 
   public static final String BASE_BATCH_2 = /*$$(*/ "Batch %s unknown" /*)*/;
+  public static final String BASE_BATCH_3 = /*$$(*/ "* %s anomaly(ies)" /*)*/;
 
   /** Product service */
   public static final String PRODUCT_NO_SEQUENCE = /*$$(*/
@@ -182,12 +178,8 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  /** Querie Service and controller */
-  public static final String QUERIE_1 = /*$$(*/
-      "Error : There is no query set for the querie %s" /*)*/;
-
-  public static final String QUERIE_2 = /*$$(*/ "Error : Incorrect query for the querie %s" /*)*/;
-  public static final String QUERIE_3 = /*$$(*/ "Valid query." /*)*/;
+  public static final String BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND = /*$$(*/
+      "%s was not found in the standard application." /*)*/;
 
   /** Tax service */
   public static final String TAX_1 = /*$$(*/ "Please enter a tax version for the tax %s" /*)*/;
@@ -203,6 +195,18 @@ public final class BaseExceptionMessage {
   /** Sequence service */
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
+
+  public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
+      "Total sequence length must be less than 15 characters." /*)*/;
+
+  public static final String SEQUENCE_TYPE_UNHANDLED = /*$$(*/
+      "The sequence type '%s' is not handled." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_IS_NULL = /*$$(*/
+      "The sequence letter type can't be null." /*)*/;
+
+  public static final String SEQUENCE_LETTERS_TYPE_UNHANDLED = /*$$(*/
+      "The sequence letter type '%s' is not handled." /*)*/;
 
   /** Address controller */
   public static final String ADDRESS_1 = /*$$(*/ "OK" /*)*/;
@@ -251,8 +255,6 @@ public final class BaseExceptionMessage {
   /** Messsage controller */
   public static final String MESSAGE_1 = /*$$(*/
       "Error in print. Please check report configuration and print setting." /*)*/;
-
-  public static final String MESSAGE_2 = /*$$(*/ "Please select the Message(s) to print." /*)*/;
 
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
@@ -382,8 +384,6 @@ public final class BaseExceptionMessage {
       "Invalid data format. Please check log for more details." /*)*/;
 
   /* ABC Analysis */
-  public static final String ABC_CLASSES_INVALID_STATE_FOR_REPORTING = /*$$(*/
-      "The analysis must be completed before the report can be printed." /*)*/;
   public static final String ABC_CLASSES_INVALID_QTY_OR_WORTH = /*$$(*/
       "The classes total quantity and total worth must equal 100%." /*)*/;
   public static final String ABC_CLASSES_NEGATIVE_OR_NULL_QTY_OR_WORTH = /*$$(*/
@@ -475,8 +475,6 @@ public final class BaseExceptionMessage {
       "Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames." /*)*/;
   public static final String GEONAMES_ZIP_URL_NOT_SPECIFIED = /*$$(*/
       "Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames." /*)*/;
-  public static final String GEONAMES_URL_NOT_SPECIFIED = /*$$(*/
-      "Please fill in GeoNames URL in Base application configuration." /*)*/;
   public static final String INVALID_GEONAMES_IMPORT_FILE = /*$$(*/
       "The geonames file type is invalid." /*)*/;
   public static final String INVALID_DATA_FILE_EXTENSION = /*$$(*/
@@ -496,7 +494,7 @@ public final class BaseExceptionMessage {
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_TEMP_CLOSED = /*$$(*/
-      "The previous period is not closed or temporarily closed." /*)*/;
+      "The previous period is not closed or temporarily closed while it should be." /*)*/;
 
   public static final String PREVIOUS_PERIOD_NOT_CLOSED = /*$$(*/
       "The previous period is not closed." /*)*/;
@@ -511,5 +509,115 @@ public final class BaseExceptionMessage {
 
   public static final String COMPANY_MISSING = /*$$(*/ "Please set a company." /*)*/;
 
+  public static final String PRICING_INVALID_DATES = /*$$(*/
+      "The start date cannot be later than the end date." /*)*/;
+
   public static final String NO_ACTIVE_COMPANY = /*$$(*/ "Please set an active company." /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_TYPE_NULL = /*$$(*/
+      "You must select a connection type in order to create a session" /*)*/;
+
+  public static final String FILE_SOURCE_CONNECTOR_CONNECTION_MISSING_FIELDS = /*$$(*/
+      "File source connector is missing mandatory field(s) in order to create a session." /*)*/;
+
+  public static final String FILE_TRANSFERT_SESSION_NOT_STARTED = /*$$(*/
+      "The file transfert session is not started" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_NOT_CONFIGURED = /*$$(*/
+      "The file transfert session is not configured" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_DOWNLOAD_FAILED = /*$$(*/
+      "Download failed: %s" /*)*/;
+  public static final String FILE_TRANSFERT_SESSION_UPLOAD_FAILED = /*$$(*/
+      "Upload failed: %s" /*)*/;
+
+  public static final String ADVANCED_IMPORT_NOT_VALIDATED = /*$$(*/
+      "Advanced import is not validated" /*)*/;
+
+  public static final String FIELD_NOT_FOUND = /*$$(*/ "This field %s doesn't exist." /*)*/;
+
+  public static final String ERROR_MISSING_RESEARCH_PARAMETER_CONFIGURATION = /*$$(*/
+      "Missing parameter configuration for model %s." /*)*/;
+
+  public static final String ERROR_MISSING_CANNOT_FIND_OBJECT = /*$$(*/
+      "Can not find object." /*)*/;
+
+  public static final String COMPANY_INVALID_LOCALE = /*$$(*/
+      "Warning: locale %s is invalid, please enter a valid locale." /*)*/;
+
+  public static final String COMPANY_LOCALE_MISSING = /*$$(*/
+      "Please fill locale for the company %s" /*)*/;
+
+  public static final String SWAGGER_DISABLED = /*$$(*/ "Swagger is not enabled." /*)*/;
+
+  public static final String SWAGGER_NO_RESOURCE_PACKAGES = /*$$(*/
+      "Swagger is enabled but not resource packages is specified." /*)*/;
+
+  public static final String FAKER_METHOD_DOES_NOT_EXIST = /*$$(*/
+      "The method '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_CLASS_DOES_NOT_EXIST = /*$$(*/
+      "The class '%s' doesn't exist in the Faker API." /*)*/;
+
+  public static final String FAKER_METHOD_ERROR = /*$$(*/
+      "An error occured while executing '%s'." /*)*/;
+
+  public static final String JSON_FIELD_CAN_NOT_BE_ANONYMIZED = /*$$(*/
+      "Json field can not be anonymized" /*)*/;
+
+  public static final String FAKER_FIELDS_EMPTY = /*$$(*/ "The fields are empty" /*)*/;
+
+  public static final String FAKER_METHOD_PARAMS_ERROR = /*$$(*/
+      "There is a type error on parameters of the method '%s'." /*)*/;
+
+  public static final String FAKER_CLASS_NAME_ERROR = /*$$(*/
+      "Error in class name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_NAME_ERROR = /*$$(*/
+      "Error in method name. Please check." /*)*/;
+
+  public static final String FAKER_METHOD_MISSING_PARAMS = /*$$(*/
+      "Please check yours params, both fields must be filled." /*)*/;
+
+  public static final String FAKER_METHOD_CONFIGURATION_ERROR = /*$$(*/
+      "An error occurred, please check your configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_CONFIGURATION_ERROR = /*$$(*/
+      "Please check your parameters configuration." /*)*/;
+
+  public static final String FAKER_METHOD_PARAMETERS_VALUE_ERROR = /*$$(*/
+      "Please check your parameters value format." /*)*/;
+
+  public static final String FAKER_METHOD_EXAMPLE_OUTPUT = /*$$(*/
+      "The faker API field is valide. An example output is : %s." /*)*/;
+
+  public static final String UNKNOWN_DURATION = /*$$(*/
+      "The duration '%s' is unknown. Valid durations are in months or years." /*)*/;
+
+  public static final String PRODUCT_MISSING_UNITS_TO_CONVERT = /*$$(*/
+      "The product %s is missing stock unit or purchase unit to make the conversion of last purchase price." /*)*/;
+
+  public static final String BIRT_TEMPLATE_CONFIG_NOT_FOUND = /*$$(*/
+      "The configuration to print this model has not been found" /*)*/;
+
+  public static final String SIGNING_PDF_ERROR = /*$$(*/ "Error while signing pdf : %s" /*)*/;
+
+  public static final String CONVERT_IMAGE_TO_PDF_ERROR = /*$$(*/
+      "Error while converting image to pdf : %s" /*)*/;
+
+  public static final String NO_RECORD_SELECTED_TO_PRINT = /*$$(*/
+      "Please select records to print" /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_PASSWORD = /*$$(*/
+      "Error while opening the certificate, please check the password." /*)*/;
+
+  public static final String PFX_CERTIFICATE_WRONG_FILE = /*$$(*/
+      "Error with the certificate, please check if the file is a PFX certificate." /*)*/;
+
+  public static final String PFX_CERTIFICATE_ACCESS_ERROR = /*$$(*/
+      "Error while accessing certificate information." /*)*/;
+
+  public static final String RESEARCH_RESULT_NO_VIEW_CONFIGURED = /*$$(*/
+      "No view configured for model %s." /*)*/;
+
+  public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
+      "The file could not be generated." /*)*/;
 }

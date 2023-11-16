@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -25,7 +26,7 @@ import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -36,6 +37,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatoryLineService {
 
@@ -151,7 +154,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
 
     // If fiscal depreciation is greater than economic depreciation then we fill
     // derogatoryAmount, else incomeDepreciation.
-    if (fiscalDepreciationAmount.compareTo(depreciationAmount) > 0) {
+    if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
       derogatoryAmount = fiscalDepreciationAmount.subtract(depreciationAmount);
     } else {
       incomeDepreciationAmount = depreciationAmount.subtract(fiscalDepreciationAmount);
@@ -172,7 +175,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         FixedAssetLineRepository.STATUS_PLANNED);
   }
 
-  private FixedAssetLine extractLineWithType(List<FixedAssetLine> fixedAssetLineList, int type) {
+  protected FixedAssetLine extractLineWithType(List<FixedAssetLine> fixedAssetLineList, int type) {
     if (fixedAssetLineList != null) {
       return fixedAssetLineList.stream()
           .filter(fixedAssetLine -> fixedAssetLine.getTypeSelect() == type)
@@ -242,7 +245,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   @Override
   public void generateDerogatoryCessionMove(
       FixedAssetDerogatoryLine firstPlannedDerogatoryLine,
-      FixedAssetDerogatoryLine lastRealizedDerogatoryLine)
+      FixedAssetDerogatoryLine lastRealizedDerogatoryLine,
+      LocalDate disposalDate)
       throws AxelorException {
     Objects.requireNonNull(firstPlannedDerogatoryLine);
     Account creditAccount;
@@ -269,7 +273,13 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     }
     firstPlannedDerogatoryLine.setDerogatoryDepreciationMove(
         fixedAssetDerogatoryLineMoveService.generateMove(
-            firstPlannedDerogatoryLine, creditAccount, debitAccount, amount, false));
+            firstPlannedDerogatoryLine,
+            creditAccount,
+            debitAccount,
+            amount,
+            false,
+            true,
+            disposalDate));
     firstPlannedDerogatoryLine.setStatusSelect(FixedAssetLineRepository.STATUS_REALIZED);
   }
 
@@ -322,6 +332,25 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     fixedAssetDerogatoryLineList.clear();
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @throws NullPointerException if fixedAssetDerogatoryLineList or linesToRemove is null
+   */
+  @Override
+  public void clear(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList,
+      List<FixedAssetDerogatoryLine> linesToRemove) {
+    Objects.requireNonNull(fixedAssetDerogatoryLineList);
+    Objects.requireNonNull(linesToRemove);
+    linesToRemove.forEach(
+        line -> {
+          fixedAssetDerogatoryLineList.remove(line);
+          remove(line);
+        });
+    linesToRemove.clear();
+  }
+
   @Override
   @Transactional
   public void remove(FixedAssetDerogatoryLine line) {
@@ -330,15 +359,17 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   }
 
   @Override
-  public void filterListByStatus(
-      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, int status) {
-    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove = new ArrayList<>();
-    if (fixedAssetDerogatoryLineList != null) {
-      fixedAssetDerogatoryLineList.stream()
-          .filter(line -> line.getStatusSelect() == status)
-          .forEach(line -> derogatoryLinesToRemove.add(line));
-      fixedAssetDerogatoryLineList.removeIf(line -> line.getStatusSelect() == status);
+  public void filterListByDate(
+      List<FixedAssetDerogatoryLine> fixedAssetDerogatoryLineList, LocalDate date) {
+    if (CollectionUtils.isEmpty(fixedAssetDerogatoryLineList) || date == null) {
+      return;
     }
-    clear(derogatoryLinesToRemove);
+    List<FixedAssetDerogatoryLine> derogatoryLinesToRemove =
+        fixedAssetDerogatoryLineList.stream()
+            .filter(
+                line ->
+                    line.getDepreciationDate() == null || line.getDepreciationDate().isAfter(date))
+            .collect(Collectors.toList());
+    clear(fixedAssetDerogatoryLineList, derogatoryLinesToRemove);
   }
 }

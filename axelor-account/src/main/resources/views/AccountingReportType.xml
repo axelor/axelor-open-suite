@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid title="Report types" name="accounting-report-type-grid"
     model="com.axelor.apps.account.db.AccountingReportType">
@@ -29,27 +29,39 @@
         grid-view="accounting-report-grid"/>
       <panel colSpan="6" stacked="true">
         <field name="typeSelect" validIf="typeSelect > 0" showIf="reportExportTypeSelect == 1"
-          selection-in="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,2000,2001,3000]"
+          selection-in="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,2000,2001,3000]"
           onChange="action-accounting-report-type-method-default-name"/>
         <field name="typeSelect" validIf="typeSelect > 0" showIf="reportExportTypeSelect == 2"
           selection-in="[1000,1001,1010,1011]"/>
       </panel>
       <field name="reportTitle" requiredIf="typeSelect == 3000" colSpan="12"
         showIf="reportExportTypeSelect == 1 &amp;&amp; [23,24,3000].includes(typeSelect)"/>
-      <field name="comparison"
-        showIf="typeSelect == 3000 &amp;&amp; reportExportTypeSelect == 1"
-        requiredIf="typeSelect == 3000"
-        onChange="action-accounting-report-type-attrs-comparison-onchange"/>
-      <field name="noOfPeriods"
-        showIf="typeSelect == 3000 &amp;&amp; comparison != 1 &amp;&amp; reportExportTypeSelect == 1"/>
-      <panel-related name="accountingReportTypeAccountingReportConfigLineListPanel"
-        field="accountingReportConfigLineList" colSpan="12" height="15" x-row-height="29"
-        form-view="accounting-report-config-line-form"
-        grid-view="accounting-report-config-line-grid"
-        showIf="typeSelect == 3000 &amp;&amp; reportExportTypeSelect == 1"/>
+      <panel name="customReportTypePanel" colSpan="12"
+        showIf="typeSelect == 3000 &amp;&amp; reportExportTypeSelect == 1">
+        <panel name="comparisonPanel" stacked="true">
+          <field name="comparison" requiredIf="typeSelect == 3000"
+            showIf="!useLegacyCustomReports"
+            onChange="action-accounting-report-type-attrs-comparison-onchange"/>
+          <field name="comparison" requiredIf="typeSelect == 3000"
+            showIf="useLegacyCustomReports" selection-in="[1,2,3]"
+            onChange="action-accounting-report-type-attrs-comparison-onchange"/>
+        </panel>
+        <field name="noOfPeriods" showIf="[2,3].includes(comparison)"/>
+        <panel-related
+          name="accountingReportTypeAccountingReportConfigLineColumnListPanel"
+          field="accountingReportConfigLineColumnList" height="15" x-row-height="29"
+          form-view="accounting-report-config-line-column-rule-form" colSpan="12"
+          grid-view="accounting-report-config-line-grid" showIf="!useLegacyCustomReports"/>
+        <panel-related name="accountingReportTypeAccountingReportConfigLineListPanel"
+          field="accountingReportConfigLineList" height="15" x-row-height="29"
+          form-view="accounting-report-config-line-line-rule-form" colSpan="12"
+          grid-view="accounting-report-config-line-grid"/>
+      </panel>
     </panel>
-    <panel sidebar="true">
-      <field name="template" widget="binary-link"/>
+    <panel sidebar="true" itemSpan="12" showIf="reportExportTypeSelect">
+      <field name="template" widget="binary-link" hideIf="reportExportTypeSelect == 2"/>
+      <field name="useLegacyCustomReports" showIf="typeSelect == 3000"
+        help="To use legacy custom reports, you have to put the old rptdesign file as a template"/>
     </panel>
   </form>
 
@@ -68,6 +80,8 @@
   <action-record name="action-accounting-report-type-record-default-on-new"
     model="com.axelor.apps.account.db.AccountingReportType">
     <field name="company" expr="eval: __user__.activeCompany"/>
+    <field name="reportExportTypeSelect" expr="eval: _reportExportTypeSelect"
+      if="_reportExportTypeSelect"/>
   </action-record>
 
   <action-method name="action-accounting-report-type-method-default-name">

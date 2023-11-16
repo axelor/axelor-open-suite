@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -25,14 +26,14 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -93,7 +94,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN public.account_move AS move ON (ml.move = move.id) "
                     + "WHERE ml.partner = :partner AND move.company = :company "
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
-                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ml.amount_remaining > 0 ")
+                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter("partner", partner)
             .setParameter("company", company)
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
@@ -138,7 +139,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "AND ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
-                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ml.amount_remaining > 0 ")
+                    + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter(
                 "todayDate",
                 Date.from(
@@ -172,8 +173,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
    * *****************************************
    */
   /**
-   * solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai
-   * d’acheminement(X) » <« date du jour » si la date de facture = date d'échéance de facture, sinon
+   * solde des factures exigibles non bloquées en relance et dont « la date de facture » + « délai
+   * d’acheminement(X)» + « date du jour » si la date de facture = date d'échéance de facture, sinon
    * pas de prise en compte du délai d'acheminement **
    */
   /**
@@ -198,7 +199,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
       mailTransitTime = accountConfig.getMailTransitTime();
     }
 
-    // TODO: Replace native query to standard JPQL query
+    // TODO: Replace native query to standard JPQL query
     Query query =
         JPA.em()
             .createNativeQuery(
@@ -214,8 +215,8 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "SELECT moveline.id AS moveline_id "
                     + "FROM public.account_move_line AS moveline "
                     + "WHERE moveline.credit > 0 "
-                    + "GROUP BY moveline.id, moveline.amount_remaining "
-                    + ") AS m2 ON (m2.moveline_id = ml.id) "
+                    + "GROUP BY moveline.id, ABS(moveline.amount_remaining "
+                    + ")) AS m2 ON (m2.moveline_id = ml.id) "
                     + "LEFT OUTER JOIN ( "
                     + "SELECT term.amount_remaining as term_amountRemaining, term.move_line as term_ml "
                     + "FROM public.account_invoice_term AS term "
@@ -236,7 +237,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "WHERE ml.partner = :partner AND move.company = :company "
                     + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
                     + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
-                    + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ml.amount_remaining > 0 "
+                    + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ABS(ml.amount_remaining) > 0 "
                     + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN ('false', null)) ")
             .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(

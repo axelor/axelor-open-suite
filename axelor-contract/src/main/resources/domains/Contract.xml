@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="contract" package="com.axelor.apps.contract.db"/>
 
@@ -20,6 +20,7 @@
     <string name="contractId" title="Contract N°" readonly="true"/>
 
     <boolean name="isInvoicingManagement" title="Manage invoices"/>
+    <boolean name="isGroupedInvoicing" title="Grouped Invoicing" default="false"/>
     <boolean name="isConsumptionManagement" title="Consumption management"/>
     <boolean name="isAdditionaBenefitManagement" title="Additional benefit management"/>
     <boolean name="toClosed" title="To closed"/>
@@ -39,6 +40,8 @@
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
       required="true"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="invoicedPartner" title="Invoiced partner"
+      ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="terminatedByUser" ref="com.axelor.auth.db.User"
       title="Terminated By"/>
     <many-to-one name="currentInvoicePeriod"
@@ -46,9 +49,10 @@
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-one name="currentContractVersion"
-      ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"/>
+      ref="com.axelor.apps.contract.db.ContractVersion" required="true" title="Current version"
+      unique="true"/>
     <one-to-one name="nextVersion" ref="com.axelor.apps.contract.db.ContractVersion"
-      title="Next version"/>
+      title="Next version" unique="true"/>
 
     <one-to-many name="additionalBenefitContractLineList"
       ref="com.axelor.apps.contract.db.ContractLine" title="Next Invoice Additional Benefit"/>
@@ -60,6 +64,23 @@
       ref="com.axelor.apps.contract.db.ConsumptionLine" title="Consumption for next invoice"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
+
+    <!-- Revaluation -->
+
+    <boolean name="isToRevaluate" title="To revaluate"/>
+    <many-to-one name="revaluationPeriod" ref="com.axelor.apps.base.db.Duration"
+      title="Revaluation period" help="This period is used to compute the next revaluation date."/>
+    <many-to-one name="index1" ref="com.axelor.apps.contract.db.IndexRevaluation"
+      title="Index 1"/>
+    <date name="index1Date" title="Index 1 date"/>
+    <many-to-one name="index2" ref="com.axelor.apps.contract.db.IndexRevaluation"
+      title="Index 2"/>
+    <date name="index2Date" title="Index 2 date"/>
+    <many-to-one name="revaluationFormula"
+      ref="com.axelor.apps.contract.db.RevaluationFormula" title="Formula"/>
+    <date name="lastRevaluationDate" title="Last revaluation date"/>
+    <date name="nextRevaluationDate" title="Next revaluation date"/>
+    <date name="endOfApplicationDate" title="End of application"/>
 
     <extra-code><![CDATA[
             static final String CUSTOMER_CONTRACT_SEQUENCE = "customerContract";

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -18,8 +18,6 @@
       ref="com.axelor.apps.base.db.ProductCategory" title="Product categories"/>
     <integer name="graphTypeSelect" title="Graph type"
       selection="assistant.report.invoice.graph.type.select" default="1"/>
-    <string name="formatSelect" title="Format" selection="iadministration.export.type.select"
-      default="pdf"/>
     <datetime name="publicationDateTime" title="Last print date" tz="true" readonly="true"/>
     <integer name="turnoverTypeSelect"
       selection="assistant.report.invoice.turnover.type.select" default="3" title="Turnover type"/>

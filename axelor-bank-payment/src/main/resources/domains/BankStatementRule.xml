@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -26,6 +26,10 @@
     <boolean name="letterToInvoice" title="Lettering to invoice"/>
     <many-to-one ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
       name="moveLineBankStatementQuery" title="Move line's fetch query"/>
+
+    <many-to-one name="specificTax" ref="com.axelor.apps.account.db.Tax"
+      title="Specific tax"
+      help="By filling in this field, the selected tax will be applied to the move lines for which the tax is mandatory instead of the one filled in the configuration of the account"/>
 
     <extra-code><![CDATA[
 

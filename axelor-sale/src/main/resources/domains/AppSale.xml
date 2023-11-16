@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppSale" lang="java">
+  <entity name="AppSale" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="manageSaleOrderVersion" title="Manage sale order versions"
       default="false"/>
     <boolean name="printingOnSOFinalization"
       title="Generate the pdf printing during sale order finalization" default="false"/>
+    <boolean name="isPastVersionRecovery" title="Activate past versions recovery"/>
     <boolean name="manageSalesUnits" title="Manage sales unit on products"/>
     <boolean name="enableConfigurator" title="Enable business configurator"/>
     <boolean name="allowPendingOrderModification"/>
@@ -21,19 +22,26 @@
     <boolean name="closeOpportunityUponSaleOrderConfirmation"
       title="Close opportunity when one of the linked sale orders is confirmed"/>
     <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
-    <integer name="salemanSelect" title="User to fill saleman"
-      selection="sale.order.fill.saleman.select" default="1"/>
+    <integer name="salespersonSelect" title="User to fill salesperson"
+      selection="sale.order.fill.salesperson.select" default="1"/>
     <boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
     <boolean name="enablePackManagement" title="Pack Management"/>
     <boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
     <boolean name="enableSalesProductByTradName" title="Filter products by trading name"
       default="false"/>
+    <boolean name="activateMultiLevelSaleOrderLines"
+      title="Activate multi-level sale order lines" default="false"/>
     <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
     <boolean name="managePartnerComplementaryProduct"
       title="Manage partner complementary product"/>
     <boolean name="isEnableCalculationEntireQuotationUsingPricing"
       title="Enable calculation of the entire quotation using pricing"/>
     <boolean name="enablePricingScale" title="Enable pricing scale"/>
+    <boolean name="considerZeroCost"
+      title="Consider zero cost and zero price lines in the margin"
+      help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
+    <boolean name="isPricingComputingOrder" title="Pricing computing order"
+      help="When selected, this is the pricing scale computation order."/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
@@ -44,9 +52,18 @@
       <field name="manageMultipleSaleQuantity" on="UPDATE"/>
       <field name="printingConfigPerSaleOrder" on="UPDATE"/>
       <field name="closeOpportunityUponSaleOrderConfirmation" on="UPDATE"/>
-      <field name="salemanSelect" on="UPDATE"/>
+      <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
+      <field name="salespersonSelect" on="UPDATE"/>
       <field name="enableCustomerCatalogMgt" on="UPDATE"/>
+      <field name="enablePackManagement" on="UPDATE"/>
       <field name="isDisplaySaleOrderLineNumber" on="UPDATE"/>
+      <field name="enableSalesProductByTradName" on="UPDATE"/>
+      <field name="saleUnit" on="UPDATE"/>
+      <field name="managePartnerComplementaryProduct" on="UPDATE"/>
+      <field name="isEnableCalculationEntireQuotationUsingPricing" on="UPDATE"/>
+      <field name="enablePricingScale" on="UPDATE"/>
+      <field name="considerZeroCost" on="UPDATE"/>
+      <field name="isPricingComputingOrder" on="UPDATE"/>
     </track>
   </entity>
 

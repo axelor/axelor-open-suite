@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="studio_appMobileSettings.csv" separator=";"
+    type="com.axelor.studio.db.AppMobileSettings" search="self.app.code = :code">
+    <bind to="app" column="code" search="self.code = :code"/>
+  </input>
+
+  <input file="mobilesettings_mobileConfig.csv" separator=";"
+    search="self.importId = :importId" type="com.axelor.apps.mobilesettings.db.MobileConfig"/>
+
+  <input file="mobilesettings_mobileMenu.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.mobilesettings.db.MobileMenu"/>
+
+</csv-inputs>

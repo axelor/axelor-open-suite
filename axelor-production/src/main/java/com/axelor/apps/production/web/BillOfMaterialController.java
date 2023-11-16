@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
@@ -24,10 +28,6 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -91,8 +91,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial =
         billOfMaterialRepository.find(request.getContext().asType(BillOfMaterial.class).getId());
 
-    List<BillOfMaterial> BillOfMaterialSet = Lists.newArrayList();
-    BillOfMaterialSet =
+    List<BillOfMaterial> billOfMaterialList = Lists.newArrayList();
+    billOfMaterialList =
         billOfMaterialRepository
             .all()
             .filter("self.originalBillOfMaterial = :origin")
@@ -100,10 +100,10 @@ public class BillOfMaterialController {
             .fetch();
     String message;
 
-    if (!BillOfMaterialSet.isEmpty()) {
+    if (!billOfMaterialList.isEmpty()) {
 
       String existingVersions = "";
-      for (BillOfMaterial billOfMaterialVersion : BillOfMaterialSet) {
+      for (BillOfMaterial billOfMaterialVersion : billOfMaterialList) {
         existingVersions += "<li>" + billOfMaterialVersion.getFullName() + "</li>";
       }
       message =
@@ -151,37 +151,23 @@ public class BillOfMaterialController {
     }
   }
 
-  public void print(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    BillOfMaterialService billOfMaterialService = Beans.get(BillOfMaterialService.class);
-    String language = ReportSettings.getPrintingLocale(null);
-
-    String name = billOfMaterialService.getFileName(billOfMaterial);
-
-    String fileLink =
-        billOfMaterialService.getReportLink(
-            billOfMaterial, name, language, ReportSettings.FORMAT_PDF);
-
-    LOG.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
   public void openBomTree(ActionRequest request, ActionResponse response) {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
 
-    BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      TempBomTree tempBomTree =
+          Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
 
-    TempBomTree tempBomTree =
-        Beans.get(BillOfMaterialService.class).generateTree(billOfMaterial, false);
-
-    response.setView(
-        ActionView.define(I18n.get("Bill of materials"))
-            .model(TempBomTree.class.getName())
-            .add("tree", "bill-of-material-tree")
-            .context("_tempBomTreeId", tempBomTree.getId())
-            .map());
+      response.setView(
+          ActionView.define(I18n.get("Bill of materials"))
+              .model(TempBomTree.class.getName())
+              .add("tree", "bill-of-material-tree")
+              .context("_tempBomTreeId", tempBomTree.getId())
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void setBillOfMaterialAsDefault(ActionRequest request, ActionResponse response) {
@@ -218,6 +204,53 @@ public class BillOfMaterialController {
 
         response.setReload(true);
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDraftStaus(ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setDraftStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setValidateStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setValidateStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setApplicableStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setApplicableStatus(billOfMaterial);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setObsoleteStatus(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      Beans.get(BillOfMaterialService.class).setObsoleteStatus(billOfMaterial);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

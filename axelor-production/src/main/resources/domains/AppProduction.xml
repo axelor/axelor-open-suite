@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProduction" lang="java">
+  <entity name="AppProduction" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="prodOrderMgtOnSO" title="Production order management from sale order"
       default="false"/>
@@ -47,7 +47,9 @@
 
     <string name="mOFilterOnStockDetailStatusSelect"
       title="Status considered to filter a manuf order"
-      selection="production.manuf.order.status.select" default="4,5"/>
+      selection="production.manuf.order.status.select" default="3,4,5"/>
+    <integer name="operationContinuitySelect" title="Operation Continuity"
+      selection="production.manuf.operation.continuity.select"/>
     <boolean name="manageOutsourcing" title="Manage outsourcing"/>
     <boolean name="manageMpsCharge" title="Manage Master Production Scheduling Charge"/>
     <boolean name="enableToolManagement" title="Enable Tool Management"/>
@@ -55,7 +57,17 @@
     <boolean name="isManufOrderPlannedAfterMerge" title="Automatically plan after fusion"/>
 
     <boolean name="manageWorkCenterGroup" title="Manage work center group"/>
+    <boolean name="isInputInHundredthHours" title="Hundredth of an hour input"
+      help="When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00)."/>
 
+    <boolean name="isCostPerProcessLine" title="Cost per process line"/>
+
+    <extra-code><![CDATA[
+		// OPERATION_CONTINUITY_SELECT
+        public static final int OPERATION_CONTINUITY_SELECT_NO_CONTINUITY =0;
+        public static final int OPERATION_CONTINUITY_SELECT_OPTIONAL_CONTINUITY = 1;
+        public static final int OPERATION_CONTINUITY_SELECT_CONTINUITY_BY_DEFAULT = 2;
+    ]]></extra-code>
     <track>
       <field name="prodOrderMgtOnSO" on="UPDATE"/>
       <field name="productionOrderGenerationAuto" on="UPDATE"/>
@@ -72,6 +84,7 @@
       <field name="subtractProdResidualOnCostSheet" on="UPDATE"/>
       <field name="manageBillOfMaterialVersion" on="UPDATE"/>
       <field name="manageProdProcessVersion" on="UPDATE"/>
+      <field name="manageCostSheetGroup" on="UPDATE"/>
 
       <field name="enableConfigurator" on="UPDATE"/>
       <field name="manageWorkshop" on="UPDATE"/>
@@ -80,8 +93,13 @@
 
       <field name="barcodeTypeConfig" on="UPDATE"/>
       <field name="printPlannedDateOnManufOrder" on="UPDATE"/>
+      <field name="mOFilterOnStockDetailStatusSelect" on="UPDATE"/>
       <field name="manageOutsourcing" on="UPDATE"/>
       <field name="manageMpsCharge" on="UPDATE"/>
+      <field name="enableToolManagement" on="UPDATE"/>
+      <field name="isManufOrderPlannedAfterMerge" on="UPDATE"/>
+      <field name="manageWorkCenterGroup" on="UPDATE"/>
+      <field name="isInputInHundredthHours" on="UPDATE"/>
 
     </track>
   </entity>

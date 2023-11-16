@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,28 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.pricing;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingLine;
 import com.axelor.apps.base.db.PricingRule;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
-import com.axelor.apps.tool.MetaTool;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.utils.MetaTool;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -131,10 +132,6 @@ public class PricingComputer extends AbstractObservablePricing {
     if (context == null || pricing == null || model == null || product == null) {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
-    if (pricing.getPreviousPricing() != null) {
-      throw new IllegalStateException(
-          "This method can only be called with root pricing (pricing with not previous pricing)");
-    }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
     notifyStarted();
     if (!applyPricing(this.pricing).isPresent()) {
@@ -145,7 +142,13 @@ public class PricingComputer extends AbstractObservablePricing {
     LOG.debug("Treating pricing childs of {}", this.pricing);
     for (int counter = 0; counter < MAX_ITERATION; counter++) {
 
-      Optional<Pricing> optChildPricing = getNextPricing(currentPricing);
+      Optional<Pricing> optChildPricing;
+
+      if (pricing.getLinkedPricing() == null) {
+        optChildPricing = getPreviousPricing(currentPricing);
+      } else {
+        optChildPricing = Optional.ofNullable(currentPricing.getLinkedPricing());
+      }
       if (optChildPricing.isPresent() && applyPricing(optChildPricing.get()).isPresent()) {
         currentPricing = optChildPricing.get();
       } else {
@@ -156,7 +159,7 @@ public class PricingComputer extends AbstractObservablePricing {
     notifyFinished();
   }
 
-  protected Optional<Pricing> getNextPricing(Pricing pricing) throws AxelorException {
+  protected Optional<Pricing> getPreviousPricing(Pricing pricing) throws AxelorException {
     List<Pricing> childPricings =
         pricingService.getPricings(
             this.pricing.getCompany(),

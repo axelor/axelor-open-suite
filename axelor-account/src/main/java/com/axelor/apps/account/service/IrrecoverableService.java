@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -50,21 +51,21 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -823,7 +824,7 @@ public class IrrecoverableService {
     BigDecimal prorataRate = null;
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining())
+          (invoice.getRejectMoveLine().getAmountRemaining().abs())
               .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     } else {
       prorataRate =
@@ -873,7 +874,9 @@ public class IrrecoverableService {
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId(),
             invoice.getCompanyBankDetails());
-    move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
+    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
+    }
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
@@ -892,7 +895,7 @@ public class IrrecoverableService {
     }
 
     if (isInvoiceReject) {
-      creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
+      creditAmount = invoice.getRejectMoveLine().getAmountRemaining().abs();
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
     }
@@ -927,17 +930,17 @@ public class IrrecoverableService {
             invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          if (invoiceMoveLine.getVatSystemSelect() == null
+              || invoiceMoveLine.getVatSystemSelect() == 0) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX);
+          }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   payerPartner,
-                  taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(),
-                      company,
-                      move.getJournal(),
-                      invoiceMoveLine.getAccount().getVatSystemSelect(),
-                      false,
-                      move.getFunctionalOriginSelect()),
+                  invoiceMoveLine.getAccount(),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
@@ -993,7 +996,7 @@ public class IrrecoverableService {
 
     Company company = moveLine.getMove().getCompany();
     Partner payerPartner = moveLine.getPartner();
-    BigDecimal amount = moveLine.getAmountRemaining();
+    BigDecimal amount = moveLine.getAmountRemaining().abs();
 
     AccountConfig accountConfig = company.getAccountConfig();
 
@@ -1020,8 +1023,9 @@ public class IrrecoverableService {
             originStr,
             moveLine.getDescription(),
             moveLine.getMove().getCompanyBankDetails());
-    move.setOriginDate(moveLine.getMove().getDate());
-
+    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(moveLine.getMove().getDate());
+    }
     int seq = 1;
 
     // Credit MoveLine Customer account (411, 416, ...)
@@ -1065,6 +1069,14 @@ public class IrrecoverableService {
             originStr,
             moveLine.getDescription());
     move.getMoveLineList().add(creditMoveLine1);
+
+    if (moveLine.getAccount().getVatSystemSelect() == null
+        || moveLine.getAccount().getVatSystemSelect() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
+          moveLine.getAccount().getCode());
+    }
 
     // Debit MoveLine 445 (Tax account)
     Account taxAccount =
@@ -1328,7 +1340,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }
@@ -1367,7 +1383,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }

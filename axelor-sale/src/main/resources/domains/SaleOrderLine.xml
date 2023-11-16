@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleOrderLine" lang="java">
+  <entity name="SaleOrderLine">
 
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
@@ -25,6 +25,7 @@
     </string>
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale order"/>
+    <boolean name="hasTree" title="Has tree"/>
     <integer name="sequence" title="Seq."/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
@@ -52,9 +53,15 @@
     <integer name="discountTypeSelect" title="Discount type"
       selection="base.price.list.line.amount.type.select" default="0"/>
 
-    <date name="estimatedDelivDate" title="Estimated shipping date"/>
-    <date name="desiredDelivDate" title="Desired delivery date"/>
+    <date name="estimatedShippingDate" title="Estimated shipping date"/>
+    <date name="desiredDeliveryDate" title="Desired delivery date"/>
+    <date name="estimatedDeliveryDate" title="Estimated delivery date"/>
     <decimal name="deliveredQty" title="Delivered quantity" precision="20" scale="10"/>
+
+    <!-- Versioning -->
+    <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
+    <datetime name="versionDateT" title="Version date" readonly="true"/>
+    <many-to-one name="oldVersionSaleOrder" ref="com.axelor.apps.sale.db.SaleOrder"/>
 
     <!-- Complementary Products -->
     <boolean name="isComplementaryProductsUnhandledYet" hidden="true"/>
@@ -94,6 +101,9 @@
     <decimal name="discountDerogation" title="Discount derogation (%)" min="0" max="100"/>
 
     <string name="lineProductionComment" title="Line production commentary" large="true"/>
+
+    <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
+      ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
 
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 

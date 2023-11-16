@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -988,7 +988,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	OperationOrderLine.planned_start_datet, OperationOrderLine.planned_end_datet, OperationOrderLine.real_start_datet,
     OperationOrderLine.real_end_datet, 
     (CASE WHEN TranslatedSelect.message_value = '' THEN TranslatedSelect.message_key ELSE TranslatedSelect.message_value END) as status_select,
-    Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM base_app_production) as print_planned_date_on_manuf_order
+    Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM studio_app_production) as print_planned_date_on_manuf_order
 FROM
 	production_operation_order as OperationOrderLine 
 INNER JOIN 
@@ -1882,7 +1882,7 @@ WHERE manufOrder.id = ?;]]></xml-property>
                         <property name="fontSize">9pt</property>
                         <cell id="4731">
                             <property name="verticalAlign">middle</property>
-                            <text id="4827">
+                            <image id="4924">
                                 <property name="dataSet">ManufOrderDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1906,15 +1906,11 @@ WHERE manufOrder.id = ?;]]></xml-property>
                                         <property name="allowExport">true</property>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4636">
                             <property name="textAlign">center</property>

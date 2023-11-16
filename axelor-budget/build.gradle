@@ -1,0 +1,30 @@
+plugins {
+  id 'com.axelor.app'
+}
+
+apply from: "../libs.gradle"
+apply from: "../version.gradle"
+
+apply {
+  version = openSuiteVersion
+}
+
+axelor {
+  title "Axelor Budget"
+  description "Axelor Budget Module"
+}
+
+dependencies {
+  api project(":modules:axelor-business-project")
+
+  implementation libs.jdom
+  implementation libs.xalan
+  implementation libs.xmlbeans
+
+  implementation libs.bcprov_jdk15on
+  implementation libs.bcpkix_jdk15on
+
+  implementation libs.ical4j
+  implementation libs.iban4j
+  testImplementation libs.mockito
+}

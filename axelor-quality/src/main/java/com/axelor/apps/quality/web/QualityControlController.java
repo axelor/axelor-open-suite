@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.quality.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.ControlPoint;
 import com.axelor.apps.quality.db.QualityControl;
 import com.axelor.apps.quality.db.QualityProcess;
@@ -24,11 +27,7 @@ import com.axelor.apps.quality.db.repo.ControlPointRepository;
 import com.axelor.apps.quality.db.repo.QualityControlRepository;
 import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.QualityControlService;
-import com.axelor.apps.quality.service.print.QualityControlPrintServiceImpl;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -126,21 +125,6 @@ public class QualityControlController {
         .preFillOperationsFromOptionals(qualityControl, optionalControlPointList);
 
     response.setCanClose(true);
-  }
-
-  public void printQualityControl(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    QualityControl qualityControl = request.getContext().asType(QualityControl.class);
-    qualityControl = Beans.get(QualityControlRepository.class).find(qualityControl.getId());
-
-    String fileLink;
-    String title = Beans.get(QualityControlPrintServiceImpl.class).getFileName(qualityControl);
-    fileLink =
-        Beans.get(QualityControlPrintServiceImpl.class)
-            .printQualityControl(qualityControl, ReportSettings.FORMAT_PDF);
-
-    response.setView(ActionView.define(title).add("html", fileLink).map());
   }
 
   @SuppressWarnings("unchecked")

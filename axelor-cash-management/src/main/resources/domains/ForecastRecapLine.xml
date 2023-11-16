@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="ForecastRecapLine" lang="java">
+  <entity name="ForecastRecapLine">
 
     <integer name="typeSelect" selection="iaccount.payment.mode.in.out.select" title="Type"
       required="true"/>
@@ -20,6 +20,8 @@
       selection="forecast.recap.line.related.to.select"/>
     <long name="relatedToSelectId"/>
     <string name="relatedToSelectName" title="Reference"/>
+    <string name="relatedToSelectPaymentMode" title="Payment mode"/>
+    <string name="relatedToSelectBankDetails" title="Bank details"/>
 
   </entity>
 

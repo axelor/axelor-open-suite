@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.exception;
 
@@ -30,9 +31,6 @@ public final class SupplychainExceptionMessage {
   /** Purchase order Service */
   public static final String PURCHASE_ORDER_1 = /*$$(*/
       "%s please configure a virtual supplier stock location for the company %s" /*)*/;
-
-  public static final String PURCHASE_ORDER_2 = /*$$(*/
-      "Error : you have exceeded the budget %s for this period" /*)*/;
 
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
@@ -110,6 +108,10 @@ public final class SupplychainExceptionMessage {
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
   public static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
       "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR = /*$$(*/
+      "Can't cancel a stock move that is partially or totally invoiced." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
+      "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
 
   /** Stock move line service */
   public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
@@ -312,7 +314,7 @@ public final class SupplychainExceptionMessage {
       "Stock move %s has already been invoiced." /*)*/;
 
   public static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
-      "The quantity to invoice is greater than the quantity in the stock move" /*)*/;
+      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Please check the invoice line with this product %s." /*)*/;
 
   public static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
       "There is at least one draft or planned stock move for this sale order." /*)*/;
@@ -358,4 +360,18 @@ public final class SupplychainExceptionMessage {
 
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
+
+  public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
+      "The invoiced partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
+      "The delivered partner must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
+      "The incoterm must be the same for all sale orders" /*)*/;
+
+  public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
+      "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
+  public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
+      "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
+  public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
+      "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 }

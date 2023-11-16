@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -31,6 +31,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -56,7 +57,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -70,9 +71,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -619,7 +617,7 @@ Account.code as account_code , Account.name as account_name , Move.reference as 
 		    ELSE  
 				MetaTranslation.message_value
 			END) as select_title,
-MoveLine.amount_remaining,
+ABS(MoveLine.amount_remaining) as amount_remaining,
 MoveLine.currency_amount,
 Move.currency_code,
 MoveLine.currency_rate,
@@ -655,7 +653,7 @@ AS Meta ON (Meta.select_value = Move.status_select)
 left outer join meta_translation as MetaTranslation
 ON MetaTranslation.message_key = Meta.select_title AND MetaTranslation.language = ?
 where 
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
@@ -668,7 +666,7 @@ Move.company = AccountingReport.company AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
 AND Move.ignore_in_accounting_ok = false
-AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (ReportType.type_select = 1 OR (ReportType.type_select != 1 AND Account.use_for_partner_balance is true))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
@@ -676,7 +674,7 @@ AND (AccountingReport.display_closing_accounting_moves is true
 AND (AccountingReport.display_opening_accounting_moves is true 
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
-AND (MoveLine.amount_remaining > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
+AND (ABS(MoveLine.amount_remaining) > 0 OR not AccountingReport.display_only_not_completely_lettered_move_lines)
 group by MoveLine.id, ReconcileGroup.code, Journal.code, Account.code, Account.name, Move.reference, MetaTranslation.message_value, Meta.select_title, Move.currency_code
 order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
         </oda-data-set>
@@ -941,8 +939,8 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">ref</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1070,9 +1068,9 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
@@ -1096,7 +1094,7 @@ AccountingReport.display_move_line_sequence_on_printing as display_move_line_seq
 AccountingReport.display_name_account_column_on_printing as display_name_account,
 AccountingReport.display_only_not_completely_lettered_move_lines,
 AccountingReport.display_cumulative_balance,
-AccountingReport.display_simulated_move as display_simulated_move
+AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join account_accounting_report_type as ReportType on (AccountingReport.report_type = ReportType.id)
@@ -1365,23 +1363,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <row id="3120">
                         <property name="height">36px</property>
                         <cell id="4157">
-                            <text id="4245">
-                                <property name="fontSize">8pt</property>
+                            <image id="5330">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3121">
                             <property name="verticalAlign">top</property>
@@ -1411,7 +1404,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="width">1.011111111111111in</property>
                     </column>
                     <row id="3101">
-                        <cell id="3102"/>
+                        <cell id="3102">
+                            <data id="5191">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">center</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">accountingReport.ref</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
+                        </cell>
                         <cell id="3103">
                             <grid id="3104">
                                 <property name="textAlign">right</property>
@@ -1600,13 +1608,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">DateTo</text-property>
                     <expression name="expression" type="javascript">dataSetRow["date_to"]</expression>
                     <property name="dataType">date</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
@@ -2273,7 +2274,7 @@ else {
                             <structure>
                                 <property name="name">currencyCredit</property>
                                 <expression name="expression" type="javascript">if (dataSetRow["credit"] >= 0.01 || dataSetRow["credit"] &lt;= -0.01) {
-dataSetRow["currency_amount"]
+Math.abs(dataSetRow["currency_amount"])
 }
 else {
 0
@@ -2341,6 +2342,42 @@ else {
                                 <text-property name="displayName">origin</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["origin"]</expression>
                                 <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_debit</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["debit"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_credit</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["credit"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">total_balance</property>
+                                <property name="dataType">float</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["balance"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
                             </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
@@ -3471,6 +3508,8 @@ else {
                         </detail>
                         <footer>
                             <row id="4082">
+                                <property name="borderTopStyle">solid</property>
+                                <property name="borderTopWidth">thin</property>
                                 <cell id="4146"/>
                                 <cell id="4083"/>
                                 <cell id="5123"/>
@@ -3483,9 +3522,48 @@ else {
                                 <cell id="5223"/>
                                 <cell id="5230"/>
                                 <cell id="4086"/>
-                                <cell id="4088"/>
-                                <cell id="4089"/>
-                                <cell id="4152"/>
+                                <cell id="4088">
+                                    <data id="5327">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">total_debit</property>
+                                    </data>
+                                </cell>
+                                <cell id="4089">
+                                    <data id="5328">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <property name="resultSetColumn">total_credit</property>
+                                    </data>
+                                </cell>
+                                <cell id="4152">
+                                    <data id="5329">
+                                        <property name="fontSize">6pt</property>
+                                        <property name="fontWeight">bold</property>
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["total_debit"] == row["total_credit"]</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="resultSetColumn">total_balance</property>
+                                    </data>
+                                </cell>
                                 <cell id="5187"/>
                                 <cell id="5145">
                                     <property name="backgroundColor">silver</property>

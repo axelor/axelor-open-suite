@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -27,7 +27,6 @@
       ref="com.axelor.apps.base.db.PrintTemplate"/>
     <string name="metaModelDefaultPath" title="Model default Path" large="true"/>
 
-    <boolean name="isFooterUnderLine" title="UnderLine"/>
     <decimal name="footerFontSize" title="Font Size"/>
     <string name="footerTextAlignment" title="Text Alignment"
       selection="base.print.settings.footer.text.alignment.select"/>

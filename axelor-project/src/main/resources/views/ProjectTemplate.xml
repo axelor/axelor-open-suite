@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate"
     title="Project template">
@@ -76,7 +76,6 @@
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
-        <field name="excludePlanning" if-module="axelor-business-project"/>
       </panel>
     </panel-tabs>
 
@@ -96,7 +95,7 @@
   </form>
 
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Create project from this template"
+  <form model="com.axelor.utils.db.Wizard" title="Create project from this template"
     name="project-template-wizard-form" onNew="action-attrs-project-template-set-wizard-hidden"
     onLoad="action-attrs-project-template-set-wizard-hidden">
     <panel name="mainPanel" colSpan="12">
@@ -132,7 +131,7 @@
   <action-attrs name="action-attrs-project-template-set-wizard-hidden">
     <attribute name="hidden" expr="eval:!_businessProject" for="clientPartner"/>
     <attribute name="hidden"
-      expr="eval:__config__.app.getApp('business-project')?.generateProjectSequence" for="code"/>
+      expr="eval:__config__.app.getApp('project')?.generateProjectSequence" for="code"/>
     <attribute name="hidden" expr="eval:!_businessProject" for="createBusinessProjectBtn"/>
     <attribute name="hidden" expr="eval:_businessProject" for="createProjectBtn"/>
   </action-attrs>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.administration;
 
@@ -22,15 +23,15 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.tool.MetaSelectTool;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.MetaSelectTool;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.inject.persist.Transactional;
@@ -38,6 +39,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -128,7 +130,7 @@ public abstract class AbstractBatch {
     }
   }
 
-  protected abstract void process();
+  protected abstract void process() throws SQLException;
 
   protected boolean isRunnable(Model model) {
     this.model = model;
@@ -262,11 +264,11 @@ public abstract class AbstractBatch {
     }
   }
 
-  private Long getDuring() {
+  protected Long getDuring() {
     return ChronoUnit.SECONDS.between(batch.getStartDate(), batch.getEndDate());
   }
 
-  private void associateModel() throws IllegalAccessException {
+  protected void associateModel() throws IllegalAccessException {
     LOG.debug("ASSOCIATE batch:{} TO model:{}", batch, model);
 
     for (Field field : batch.getClass().getDeclaredFields()) {
@@ -287,7 +289,7 @@ public abstract class AbstractBatch {
     }
   }
 
-  private boolean isAssociable(Field field) {
+  protected boolean isAssociable(Field field) {
     return field.getType().equals(EntityHelper.getEntityClass(model));
   }
 

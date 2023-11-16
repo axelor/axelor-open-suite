@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -46,7 +46,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -60,9 +60,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1565,7 +1562,7 @@ from stock_logistical_form_line as LogisticalFormLine
 left join stock_stock_move_line as StockMoveLine on LogisticalFormLine.stock_move_line = StockMoveLine.id
 left join stock_stock_move as StockMove on StockMoveLine.stock_move = StockMove.id
 left join base_product as Product on StockMoveLine.product = Product.id
-left join sale_sale_order as SaleOrder on StockMove.origin_id = SaleOrder.id
+left join sale_sale_order as SaleOrder on StockMove.sale_order = SaleOrder.id
 left join meta_translation as translat on translat.language = ?
 and translat.message_key = case LogisticalFormLine.type_select
 when 1 then 'LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>'
@@ -2096,36 +2093,18 @@ order by LogisticalFormLine.sequence]]></xml-property>
                     <row id="16">
                         <property name="height">1.4791666666666667in</property>
                         <cell id="17">
-                            <grid id="23">
-                                <property name="height">1.3958333333333333in</property>
-                                <column id="24"/>
-                                <row id="25">
-                                    <property name="height">0.8020833333333334in</property>
-                                    <cell id="26">
-                                        <text id="4532">
-                                            <property name="fontSize">8pt</property>
-                                            <list-property name="visibility">
-                                                <structure>
-                                                    <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">row["company_logo_file_path"] == null</expression>
-                                                </structure>
-                                            </list-property>
-                                            <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["company_logo_file_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                                        </text>
-                                    </cell>
-                                </row>
-                                <row id="27">
-                                    <property name="height">0.59375in</property>
-                                    <cell id="28"/>
-                                </row>
-                            </grid>
+                            <image id="4536">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row["company_logo_file_path"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["company_logo_file_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="18">
                             <text id="20">

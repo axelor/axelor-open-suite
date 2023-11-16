@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,22 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.web;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -60,18 +63,18 @@ public class EmployeeController {
     String name =
         I18n.get("Annual expenses report") + " :  " + user.getFullName() + " (" + yearName + ")";
 
+    Employee employee = Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId));
+    BirtTemplate annualReportBirtTemplate =
+        Beans.get(EmployeeService.class).getAnnualReportBirtTemplate(employee);
     String fileLink =
-        ReportFactory.createReport(IReport.EMPLOYEE_ANNUAL_REPORT, name)
-            .addParam("EmployeeId", Long.valueOf(employeeId))
-            .addParam(
-                "Timezone",
-                getTimezone(
-                    Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)).getUser()))
-            .addParam("YearId", Long.valueOf(yearId))
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(Beans.get(EmployeeRepository.class).find(Long.valueOf(employeeId)))
-            .generate()
-            .getFileLink();
+        Beans.get(BirtTemplateService.class)
+            .generateBirtTemplateLink(
+                annualReportBirtTemplate,
+                EntityHelper.getEntity(employee),
+                Map.of("YearId", Long.valueOf(yearId)),
+                name,
+                annualReportBirtTemplate.getAttach(),
+                annualReportBirtTemplate.getFormat());
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
 
@@ -109,48 +112,16 @@ public class EmployeeController {
   public void printEmployeePhonebook(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    User user = AuthUtils.getUser();
-
+    BirtTemplate employeePhoneBookBirtTemplate =
+        Beans.get(EmployeeService.class).getEmpPhoneBookBirtTemplate();
     String name = I18n.get("Employee PhoneBook");
 
     String fileLink =
-        ReportFactory.createReport(IReport.EMPLOYEE_PHONEBOOK, name + "-${date}")
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam("UserId", user.getId())
-            .addParam("Timezone", getTimezone(user))
-            .generate()
-            .getFileLink();
+        Beans.get(PrintFromBirtTemplateService.class).print(employeePhoneBookBirtTemplate, null);
 
     LOG.debug("Printing " + name);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
-  public void printEmployeeReport(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Employee employee = request.getContext().asType(Employee.class);
-
-    String name = I18n.get("Employee");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.EMPLOYEE, name + "-${date}")
-            .addParam("EmployeeId", employee.getId())
-            .addParam("Timezone", getTimezone(employee.getUser()))
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .generate()
-            .getFileLink();
-
-    LOG.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
-  private String getTimezone(User user) {
-    if (user == null || user.getActiveCompany() == null) {
-      return null;
-    }
-    return user.getActiveCompany().getTimezone();
   }
 
   public void generateNewDPAE(ActionRequest request, ActionResponse response) {
@@ -173,5 +144,11 @@ public class EmployeeController {
     }
 
     response.setReload(true);
+  }
+
+  public void updateEmployeeFilesWithMedicalVisit(ActionRequest request, ActionResponse response) {
+    Employee employee = request.getContext().asType(Employee.class);
+    response.setValue(
+        "employeeFileList", Beans.get(MedicalVisitService.class).addToEmployeeFiles(employee));
   }
 }

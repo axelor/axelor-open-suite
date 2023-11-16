@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity sequential="true" name="TraceBack">
+
+    <string title="Anomaly" name="exception" required="true" large="true"/>
+    <integer title="Type" name="typeSelect" selection="trace.back.type.select"/>
+    <integer title="Category" name="categorySelect" selection="trace.back.category.select"/>
+    <string name="origin" selection="trace.back.origin.select" title="Origin"/>
+    <datetime title="Date" tz="true" name="date" required="true" column="date_val"/>
+    <many-to-one ref="com.axelor.auth.db.User" title="User" name="internalUser"/>
+    <string title="Error" name="error" large="true"/>
+    <string title="Cause" name="cause" large="true"/>
+    <string title="Message" name="message" large="true"/>
+    <string title="Trace" name="trace" large="true"/>
+    <long name="batchId" title="Batch"/>
+    <string name="ref" title="Reference"/>
+    <long name="refId" title="Reference ID" nullable="true"/>
+
+    <string search="id,date" name="name" namecolumn="true">
+
+      return this.id + " : " + this.date;
+
+    </string>
+
+    <finder-method name="findByBatchId" using="batchId" all="true"/>
+
+    <extra-code><![CDATA[
+
+	// CATEGORY SELECT
+	public static final int CATEGORY_MISSING_FIELD = 1;
+	public static final int CATEGORY_NO_UNIQUE_KEY = 2;
+	public static final int CATEGORY_NO_VALUE = 3;
+	public static final int CATEGORY_CONFIGURATION_ERROR = 4;
+	public static final int CATEGORY_INCONSISTENCY = 5;
+
+	]]></extra-code>
+
+  </entity>
+</domain-models>

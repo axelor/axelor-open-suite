@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingBatch" lang="java">
+  <entity name="AccountingBatch">
 
     <!-- HEADER -->
     <string name="code" title="Code" namecolumn="true" unique="true"/>
@@ -69,6 +69,8 @@
     <many-to-many name="openingAccountSet" ref="com.axelor.apps.account.db.Account"
       title="Opening accounts"/>
     <boolean name="generateResultMove" title="Generate result move"/>
+    <boolean name="includeSpecialAccounts" title="Include special accounts"/>
+
     <string name="resultMoveDescription" title="Result move description"/>
     <boolean name="simulateGeneratedMoves" title="Generate simulated moves"
       help="Please make sure that the journal configured for annual closure and openning, does support simulated moves."/>
@@ -106,13 +108,29 @@
     <boolean name="automaticReconcile" title="Automatic reconcile"/>
     <many-to-one name="miscOpeJournal" title="Misc. Operation Journal"
       ref="com.axelor.apps.account.db.Journal"/>
-    <many-to-one name="researchJournal" title="Research Journal"
-      ref="com.axelor.apps.account.db.Journal"/>
+    <many-to-many name="journalSet" ref="com.axelor.apps.account.db.Journal"
+      title="Research journals"/>
     <integer name="cutOffMoveStatusSelect" title="Cut off moves status"
       selection="iaccount.move.status.select" default="1"/>
     <boolean name="previewRecordsToProcess" title="Preview records to process"/>
 
     <string name="prefixOrigin" title="Prefix for accounting voucher"/>
+
+    <!-- AUTO MOVE LETTERING CONFIGURATION -->
+    <many-to-one name="fromAccount" title="From account"
+      ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="toAccount" title="To account"
+      ref="com.axelor.apps.account.db.Account"/>
+    <many-to-many name="partnerSet" title="Partners"
+      ref="com.axelor.apps.base.db.Partner"/>
+    <string name="orderBySelect" title="Order by"
+      selection="iaccount.account.batch.auto.move.lettering.order.by.select" default="0"/>
+    <integer name="reconcileMethodSelect" title="Reconcile method"
+      selection="iaccount.account.batch.auto.move.lettering.reconcile.method.select"/>
+    <boolean name="isPartialReconcile" title="Allow partial reconcile"/>
+    <boolean name="isProposal" title="Reconcile proposal"/>
+
+
 
     <extra-code><![CDATA[
 
@@ -129,6 +147,7 @@
 		public static final int ACTION_BILL_OF_EXCHANGE = 24;
 		public static final int ACTION_MOVES_CONSISTENCY_CONTROL = 25;
 		public static final int ACTION_ACCOUNTING_CUT_OFF = 26;
+		public static final int ACTION_AUTO_MOVE_LETTERING = 27;
 
 		// REIMBURSEMENT TYPE
 		public static final int REIMBURSEMENT_TYPE_EXPORT = 1;
@@ -157,6 +176,19 @@
 		// ACCOUNTING CUT OFF
 		public static final int ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES = 3;
 		public static final int ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES = 4;
+
+		// AUTO MOVE LETTERING
+		public static final String AUTO_MOVE_LETTERING_ORDER_BY_ACCOUNTING_DATE = "0";
+		public static final String AUTO_MOVE_LETTERING_ORDER_BY_ORIGIN = "1";
+		public static final String AUTO_MOVE_LETTERING_ORDER_BY_DUE_DATE = "2";
+		public static final String AUTO_MOVE_LETTERING_ORDER_BY_PAYMENT_MODE = "3";
+		public static final String AUTO_MOVE_LETTERING_ORDER_BY_LINE_LABEL = "4";
+
+		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_AMOUNT = 0;
+		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_ORIGIN = 1;
+		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE = 2;
+		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_ACCOUNT = 3;
+		public static final int AUTO_MOVE_LETTERING_RECONCILE_BY_EXTERNAL_IDENTIFIER = 4;
 
 	]]></extra-code>
 

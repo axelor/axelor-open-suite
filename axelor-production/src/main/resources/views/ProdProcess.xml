@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
@@ -18,12 +18,12 @@
 
   <form name="prod-process-form" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess" onNew="action-prod-process-group-on-new"
-    onLoad="action-prod-process-record-count-number-of-phases,action-prod-process-attrs-hide-outsourcing,action-prod-process-attrs-scale-and-precision"
+    onLoad="action-prod-process-group-on-load"
     onSave="action-prod-process-method-validate-prod-process" width="large">
 
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-production-process-print"/>
+        onClick="save,action-method-print-birt"/>
       <button name="newVersionBtn" title="Generate new version"
         if="__config__.app.getApp('production')?.manageProdProcessVersion"
         onClick="action-production-process-check-other-version,action-production-process-generate-new-version"/>
@@ -84,8 +84,9 @@
           if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"/>
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
         <spacer colSpan="2"/>
-        <field name="subcontractors" domain="self.isSubcontractor = true" colSpan="3"
-          onChange="action-production-record-subcontractors-on-change"
+        <field name="operationContinuity"/>
+        <field name="subcontractor" domain="self.isSubcontractor = true" colSpan="3"
+          onChange="action-production-record-subcontractor-on-change"
           if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"
           requiredIf="outsourcing" form-view="partner-form"/>
         <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
@@ -116,11 +117,11 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
-  <action-record name="action-production-record-subcontractors-on-change"
+  <action-record name="action-production-record-subcontractor-on-change"
     model="com.axelor.apps.production.db.ProdProcess">
-    <field name="outsourcingStockLocation" if="subcontractors != null"
-      expr="eval: subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
-	                                                                                  subcontractors?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
+    <field name="outsourcingStockLocation" if="subcontractor != null"
+      expr="eval: subcontractor?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true} != null ?
+	                                                                                  subcontractor?.partnerStockSettingsList?.find{it.defaultStockLocation?.isOutsourcingLocation == true}?.defaultStockLocation :
 	                                                                                  company?.stockConfig?.virtualOutsourcingStockLocation"/>
   </action-record>
 
@@ -129,11 +130,25 @@
     <action name="action-prod-process-record-set-default-company"/>
     <action name="action-prod-process-record-set-realize-order-select"/>
     <action name="action-prod-process-attrs-scale-and-precision"/>
+    <action name="action-prod-process-attrs-hide-operation-continuity"/>
+    <action name="action-prod-process-record-true-operation-continuity"/>
+  </action-group>
+
+  <action-group name="action-prod-process-group-on-load">
+    <action name="action-prod-process-record-count-number-of-phases"/>
+    <action name="action-prod-process-attrs-hide-outsourcing"/>
+    <action name="action-prod-process-attrs-scale-and-precision"/>
+    <action name="action-prod-process-attrs-hide-operation-continuity"/>
   </action-group>
 
   <action-attrs name="action-prod-process-attrs-hide-outsourcing">
     <attribute name="hidden" for="prodProcessLineList.outsourcing"
       expr="eval:!__this__.outsourcing"/>
+  </action-attrs>
+
+  <action-attrs name="action-prod-process-attrs-hide-operation-continuity">
+    <attribute name="hidden" for="operationContinuity"
+      expr="eval: __config__.app.getApp('production')?.getOperationContinuitySelect() == __repo__(AppProduction).OPERATION_CONTINUITY_SELECT_NO_CONTINUITY"/>
   </action-attrs>
 
   <action-validate name="action-prod-process-validate-is-cons-pro">
@@ -155,6 +170,12 @@
     <field name="isConsProOnOperation" expr="false"/>
   </action-record>
 
+  <action-record name="action-prod-process-record-true-operation-continuity"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="operationContinuity" expr="true"
+      if=" __config__.app.getApp('production')?.getOperationContinuitySelect() == __repo__(AppProduction).OPERATION_CONTINUITY_SELECT_CONTINUITY_BY_DEFAULT"/>
+  </action-record>
+
   <action-method name="action-prod-process-method-validate-prod-process">
     <call class="com.axelor.apps.production.web.ProdProcessController"
       method="validateProdProcess"/>
@@ -163,10 +184,6 @@
   <action-method name="action-prod-process-method-change-prodprocesslist-outsourcing">
     <call class="com.axelor.apps.production.web.ProdProcessController"
       method="changeProdProcessListOutsourcing"/>
-  </action-method>
-
-  <action-method name="action-production-process-print">
-    <call class="com.axelor.apps.production.web.ProdProcessController" method="print"/>
   </action-method>
 
   <action-method name="action-production-process-check-other-version">

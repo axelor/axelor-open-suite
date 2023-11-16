@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,20 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.saleorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.ComplementaryProduct;
-import com.axelor.apps.sale.db.ComplementaryProductSelected;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -35,14 +38,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
-import com.axelor.db.JpaSequence;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -67,6 +66,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   protected SaleOrderRepository saleOrderRepo;
   protected SaleOrderComputeService saleOrderComputeService;
   protected SaleOrderMarginService saleOrderMarginService;
+  protected SaleConfigService saleConfigService;
 
   @Inject
   public SaleOrderServiceImpl(
@@ -75,13 +75,15 @@ public class SaleOrderServiceImpl implements SaleOrderService {
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderRepository saleOrderRepo,
       SaleOrderComputeService saleOrderComputeService,
-      SaleOrderMarginService saleOrderMarginService) {
+      SaleOrderMarginService saleOrderMarginService,
+      SaleConfigService saleConfigService) {
     this.saleOrderLineService = saleOrderLineService;
     this.appBaseService = appBaseService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderRepo = saleOrderRepo;
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
+    this.saleConfigService = saleConfigService;
   }
 
   @Override
@@ -230,79 +232,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Override
-  public List<SaleOrderLine> handleComplementaryProducts(SaleOrder saleOrder)
-      throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    if (saleOrderLineList == null) {
-      saleOrderLineList = new ArrayList<>();
-    }
-
-    SaleOrderLine originSoLine = null;
-    for (SaleOrderLine soLine : saleOrderLineList) {
-      if (soLine.getIsComplementaryProductsUnhandledYet()) {
-        originSoLine = soLine;
-        if (originSoLine.getManualId() == null || originSoLine.getManualId().equals("")) {
-          this.setNewManualId(originSoLine);
-        }
-        break;
-      }
-    }
-
-    if (originSoLine != null
-        && originSoLine.getProduct() != null
-        && originSoLine.getSelectedComplementaryProductList() != null) {
-      for (ComplementaryProductSelected compProductSelected :
-          originSoLine.getSelectedComplementaryProductList()) {
-        // Search if there is already a line for this product to modify or remove
-        SaleOrderLine newSoLine = null;
-        for (SaleOrderLine soLine : saleOrderLineList) {
-          if (originSoLine.getManualId().equals(soLine.getParentId())
-              && soLine.getProduct() != null
-              && soLine.getProduct().equals(compProductSelected.getProduct())) {
-            // Edit line if it already exists instead of recreating, otherwise remove if already
-            // exists and is no longer selected
-            if (compProductSelected.getIsSelected()) {
-              newSoLine = soLine;
-            } else {
-              saleOrderLineList.remove(soLine);
-            }
-            break;
-          }
-        }
-
-        if (newSoLine == null) {
-          if (compProductSelected.getIsSelected()) {
-            newSoLine = new SaleOrderLine();
-            newSoLine.setProduct(compProductSelected.getProduct());
-            newSoLine.setSaleOrder(saleOrder);
-            newSoLine.setQty(compProductSelected.getQty());
-
-            saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-            saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
-
-            newSoLine.setParentId(originSoLine.getManualId());
-
-            int targetIndex = saleOrderLineList.indexOf(originSoLine) + 1;
-            saleOrderLineList.add(targetIndex, newSoLine);
-          }
-        } else {
-          newSoLine.setQty(compProductSelected.getQty());
-
-          saleOrderLineService.computeProductInformation(newSoLine, newSoLine.getSaleOrder());
-          saleOrderLineService.computeValues(newSoLine.getSaleOrder(), newSoLine);
-        }
-      }
-      originSoLine.setIsComplementaryProductsUnhandledYet(false);
-    }
-
-    for (int i = 0; i < saleOrderLineList.size(); i++) {
-      saleOrderLineList.get(i).setSequence(i);
-    }
-
-    return saleOrderLineList;
-  }
-
-  @Override
   public void checkUnauthorizedDiscounts(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {
@@ -321,40 +250,6 @@ public class SaleOrderServiceImpl implements SaleOrderService {
         }
       }
     }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void setNewManualId(SaleOrderLine saleOrderLine) {
-    saleOrderLine.setManualId(JpaSequence.nextValue("sale.order.line.idSeq"));
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder updateProductQtyWithPackHeaderQty(SaleOrder saleOrder) throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
-    boolean isStartOfPack = false;
-    BigDecimal newQty = BigDecimal.ZERO;
-    BigDecimal oldQty = BigDecimal.ZERO;
-    this.sortSaleOrderLineList(saleOrder);
-
-    for (SaleOrderLine SOLine : saleOrderLineList) {
-
-      if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK && !isStartOfPack) {
-        newQty = SOLine.getQty();
-        oldQty = saleOrderLineRepo.find(SOLine.getId()).getQty();
-        if (newQty.compareTo(oldQty) != 0) {
-          isStartOfPack = true;
-          SOLine = EntityHelper.getEntity(SOLine);
-          saleOrderLineRepo.save(SOLine);
-        }
-      } else if (isStartOfPack) {
-        if (SOLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
-          break;
-        }
-        saleOrderLineService.updateProductQty(SOLine, saleOrder, oldQty, newQty);
-      }
-    }
-    return saleOrder;
   }
 
   @Transactional(rollbackOn = Exception.class)
@@ -459,5 +354,26 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
     newComplementarySOLines.forEach(saleOrder::addSaleOrderLineListItem);
     saleOrderComputeService.computeSaleOrder(saleOrder);
+  }
+
+  @Override
+  public boolean isIncotermRequired(SaleOrder saleOrder) {
+    return false;
+  }
+
+  @Override
+  public void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException {
+    if (saleOrder.getPrintingSettings() == null) {
+      if (saleOrder.getCompany().getPrintingSettings() != null) {
+        saleOrder.setPrintingSettings(saleOrder.getCompany().getPrintingSettings());
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            String.format(
+                I18n.get(SaleExceptionMessage.SALE_ORDER_MISSING_PRINTING_SETTINGS),
+                saleOrder.getSaleOrderSeq()),
+            saleOrder);
+      }
+    }
   }
 }

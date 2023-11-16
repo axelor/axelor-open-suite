@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <list-property name="userProperties">
+        <structure>
+            <property name="name">ReportValues.ValuesDS.x</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+        <structure>
+            <property name="name">ReportValues.ValuesDS.y</property>
+            <property name="type">integer</property>
+            <property name="isVisible">false</property>
+        </structure>
+    </list-property>
+    <property name="ReportValues.ValuesDS.x">135</property>
+    <property name="ReportValues.ValuesDS.y">80</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -22,16 +36,21 @@
             <property name="id">8</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
         </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">5994</property>
+        </structure>
     </list-property>
     <property name="units">in</property>
-    <method name="initialize"><![CDATA[var rules = {};
-var rulesn1 = {};
-var rulesn2 = {};
-var deltan1 = {};
-var deltan2 = {};
-var deltaPercentagen1 = {};
-var deltaPercentagen2 = {};
-var temp = {};]]></method>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -159,196 +178,6 @@ var temp = {};]]></method>
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="RulesDS" id="9">
-            <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="parameters">
-                <structure>
-                    <property name="name">ReportId</property>
-                    <property name="paramName">AccountingReportId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
-                    <property name="isOptional">false</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-            </list-property>
-            <structure name="cachedMetaData"/>               
-            <method name="onFetch"><![CDATA[var value;
-var valuen1;
-var valuen2;
-if (row["rule_type"] == 2) {
-	var value = row["account_diff"];
-	var valuen1 = row["account_diffn1"];
-	var valuen2 = row["account_diffn2"];
-
-	if (row["result"] == 2){
-		value *= -1;
-		valuen1 *= -1;
-		valuen2 *= -1;
-	}
-
-	if (value == null){
-		value = 0;
-	}
-
-	if (valuen1 == null){
-		valuen1 = 0;
-	}
-
-	if (valuen2 == null){
-		valuen2 = 0;
-	}
-
-
-	rules[row["rule_code"]] = value;
-	rulesn1[row["rule_code"]] = valuen1;
-	rulesn2[row["rule_code"]] = valuen2;
-	
-	
-} else if (row["rule_type"] == 3)  {
-	rules[row["rule_code"]] = eval(row["rule"]);
-	rulesn1[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn1')); 
-	rulesn2[row["rule_code"]] = eval(row["rule"].replace(/rules/g, 'rulesn2'));
-	
-}
-
-deltan1[row["rule_code"]] = rules[row["rule_code"]] - rulesn1[row["rule_code"]];
-deltan2[row["rule_code"]] = rules[row["rule_code"]] - rulesn2[row["rule_code"]];
-
-if (rules[row["rule_code"]] == 0) {
-	
-	if (rulesn1[row["rule_code"]] == 0) {
-		deltaPercentagen1[row["rule_code"]] = 0;
-	}
-	else {
-		deltaPercentagen1[row["rule_code"]] = 100;
-	}
-		
-	if (rulesn2[row["rule_code"]] == 0) {
-		deltaPercentagen2[row["rule_code"]] = 0;
-	}
-	else {
-		deltaPercentagen2[row["rule_code"]] = 100;
-	}
-}
-else {
-	deltaPercentagen1[row["rule_code"]] = (rules[row["rule_code"]] - rulesn1[row["rule_code"]])/rules[row["rule_code"]] * 100;
-	deltaPercentagen2[row["rule_code"]] = (rules[row["rule_code"]] - rulesn2[row["rule_code"]])/rules[row["rule_code"]] * 100;
-}
-if(dataSetRow["showProvisionTitle"])
-{
-	vars["showProvisionTitle"] = dataSetRow["showProvisionTitle"];
-}
-]]></method>
-            <property name="dataSource">Data Source</property>
-            <list-property name="resultSet"/>
-            <xml-property name="queryText"><![CDATA[WITH MoveLineQuery as (SELECT DISTINCT
-	ConfigLine.sequence,
-	ConfigLine.type_select 				  as type,
-	ConfigLine.label 					  as rule_label,
-	ConfigLine.code 					  as rule_code,
-	ConfigLine.rule_type_select 		  as rule_type,
-	ConfigLine.result_select 			  as result,
-	ConfigLine.hidden 					  as hidden,
-	ConfigLine.rule	 					  as rule,
-	MoveLine.date_val,
-	Report.date_from,
-	Report.date_to,
-	MoveLine.debit as debit,
-	MoveLine.credit as credit,
-	MoveLine.id,
-	CASE WHEN (COUNT(CASE WHEN Move.status_select IN (2,3,5) THEN 1 ELSE 0 END)) > 0 THEN TRUE ELSE FALSE END as "show_provision_title"
-FROM account_accounting_report as Report
-
-JOIN account_accounting_report_type as ReportType
-ON Report.report_type = ReportType.id
-
-LEFT JOIN account_accounting_report_config_line as ConfigLine
-ON ReportType.id = ConfigLine.report_type
-
-LEFT JOIN account_accounting_report_config_line_account_type_set as AccountTypeSet
-ON AccountTypeSet.account_accounting_report_config_line = ConfigLine.id
-
-LEFT JOIN account_accounting_report_config_line_analytic_account_set as AnalyticAccountSet
-ON AnalyticAccountSet.account_accounting_report_config_line =  ConfigLine.id
-
-LEFT JOIN account_account_type as AccountType
-ON AccountType.id = AccountTypeSet.account_type_set
-
-LEFT JOIN account_accounting_report_config_line_account_set as AccountSet
-ON AccountSet.account_accounting_report_config_line = ConfigLine.id
-
-LEFT JOIN account_account as Account
-ON Account.id = AccountSet.account_set 
-OR Account.account_type = AccountType.id
-OR Account.code SIMILAR TO ConfigLine.account_code
-
-LEFT JOIN account_move_line as MoveLine
-ON MoveLine.account = Account.id 
-
-LEFT JOIN account_move as Move
-ON MoveLine.move = Move.id
-
-LEFT JOIN account_analytic_account as AnalyticAccount
-ON AnalyticAccount.id = AnalyticAccountSet.analytic_account_set
-OR AnalyticAccount.code LIKE ConfigLine.analytic_account_code
-
-LEFT JOIN account_analytic_move_line as AnalyticMoveLine 
-ON (AnalyticMoveLine.move_line = MoveLine.id)
-
-LEFT JOIN base_period as Period
-ON Move.period = Period.id
-
-LEFT JOIN base_year as Year
-ON Period.year = Year.id
-
-LEFT JOIN account_accounting_report_partner_set as PartnerSet
-ON PartnerSet.account_accounting_report = Report.id
-
-WHERE Report.id = ?
-	AND (Report.date_from    IS NULL OR MoveLine.date_val IS NULL OR MoveLine.date_val >= Report.date_from - interval '2 year')
-	AND (Report.date_to      IS NULL OR MoveLine.date_val IS NULL OR MoveLine.date_val <= Report.date_to)
-	AND (Report.journal      IS NULL OR Move.journal IS NULL OR Move.journal = Report.journal)
-	AND (Report.payment_mode IS NULL OR Move.payment_mode IS NULL OR Move.payment_mode = Report.payment_mode)
-	AND (PartnerSet.account_accounting_report IS NULL OR MoveLine.partner IS NULL OR MoveLine.partner = PartnerSet.partner_set)
-	AND (MoveLine.id 	     IS NULL OR (
-		Report.currency	  = Move.company_currency
-		AND Report.company = Move.company
-		AND Move.ignore_in_accounting_ok IN ('false', null) 
-		AND (Move.status_select IN (2, 3) OR (Move.status_select = 5 AND Report.display_simulated_move))
-	))
-	AND (AnalyticAccountSet.analytic_account_set is NULL
-	 OR AnalyticAccountSet.analytic_account_set = AnalyticMoveLine.analytic_account)
-
-GROUP BY ConfigLine.sequence, ConfigLine.type_select, ConfigLine.label, ConfigLine.code, ConfigLine.rule_type_select, ConfigLine.result_select, ConfigLine.hidden,ConfigLine.rule,MoveLine.date_val,Report.date_from,Report.date_to,MoveLine.debit,MoveLine.credit,MoveLine.id
-
-ORDER BY ConfigLine.sequence)
-
-Select MoveLineQuery.sequence,
-	MoveLineQuery.type,
-	MoveLineQuery.rule_label,
-	MoveLineQuery.rule_code,
-	MoveLineQuery.rule_type,
-	MoveLineQuery.result,
-	MoveLineQuery.hidden,
-	MoveLineQuery.rule,
-	MoveLineQuery.show_provision_title as "showProvisionTitle",
-	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from AND MoveLineQuery.date_to) as account_diff,
-
-	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from - interval '1 year' AND MoveLineQuery.date_to - interval '1 year') as account_diffn1,
-
-	SUM(MoveLineQuery.debit - MoveLineQuery.credit) FILTER (WHERE MoveLineQuery.date_val BETWEEN MoveLineQuery.date_from - interval '2 year' AND MoveLineQuery.date_to - interval '2 year') as account_diffn2
-FROM MoveLineQuery
-GROUP BY MoveLineQuery.sequence, MoveLineQuery.type, MoveLineQuery.rule_label, MoveLineQuery.rule_code, MoveLineQuery.rule_type,MoveLineQuery.result,MoveLineQuery.hidden,MoveLineQuery.rule,MoveLineQuery.show_provision_title
-
-Order by MoveLineQuery.sequence
-	
-	
-	
-	]]></xml-property>
-        </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
             <list-property name="columnHints">
                 <structure>
@@ -378,13 +207,6 @@ Order by MoveLineQuery.sequence
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">date_to</text-property>
                     <text-property name="heading">date_to</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="alias">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_title</property>
@@ -455,6 +277,24 @@ Order by MoveLineQuery.sequence
                     <text-property name="displayName">display_delta_year_percentage</text-property>
                     <text-property name="heading">display_delta_year_percentage</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">reportyear</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">reportyear</text-property>
+                    <text-property name="heading">reportyear</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">reportn1year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">reportn1year</text-property>
+                    <text-property name="heading">reportn1year</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">reportn2year</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">reportn2year</text-property>
+                    <text-property name="heading">reportn2year</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -492,63 +332,73 @@ Order by MoveLineQuery.sequence
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">report_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">comparison</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">no_of_periods</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">journal</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">period</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">display_delta_year</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">display_delta_year_percentage</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">reportyear</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">reportn1year</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">reportn2year</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -584,87 +434,101 @@ Order by MoveLineQuery.sequence
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">report_title</property>
                     <property name="nativeName">report_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">comparison</property>
                     <property name="nativeName">comparison</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">no_of_periods</property>
                     <property name="nativeName">no_of_periods</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">period</property>
                     <property name="nativeName">period</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">display_delta_year</property>
                     <property name="nativeName">display_delta_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">display_delta_year_percentage</property>
                     <property name="nativeName">display_delta_year_percentage</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">reportyear</property>
+                    <property name="nativeName">reportyear</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">reportn1year</property>
+                    <property name="nativeName">reportn1year</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">reportn2year</property>
+                    <property name="nativeName">reportn2year</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -672,7 +536,6 @@ Order by MoveLineQuery.sequence
 	Report.publication_date_time as report_date,
 	Report.date_from as date_from,
 	Report.date_to as date_to,
-	Report.display_simulated_move as display_simulated_move,
 	ReportType.report_title as report_title,
 	ReportType.comparison as comparison,
 	ReportType.no_of_periods as no_of_periods,
@@ -683,7 +546,30 @@ Order by MoveLineQuery.sequence
 	Period.name as period,
 	MetaFile.file_path as logo_path,
 	Report.display_delta_year,
-	Report.display_delta_year_percentage
+	Report.display_delta_year_percentage,
+	CONCAT(
+		TO_CHAR(Report.date_from, 'dd/mm/yyyy'),
+		' - ',
+		TO_CHAR(Report.date_to, 'dd/mm/yyyy')
+	) AS reportYear,
+	CASE WHEN ReportType.comparison = 2 THEN CONCAT(
+		TO_CHAR(DATE_TRUNC('YEAR', Report.date_from), 'dd/mm/yyyy'),
+		' - ',
+		TO_CHAR(DATE_TRUNC('YEAR', Report.date_TO + INTERVAL '1 YEAR') - INTERVAL '1 DAY', 'dd/mm/yyyy')
+	) WHEN ReportType.comparison = 4 THEN CONCAT(
+		TO_CHAR(Report.other_date_from, 'dd/mm/yyyy'),
+		' - ',
+		TO_CHAR(Report.other_date_to, 'dd/mm/yyyy')
+	) ELSE CONCAT(
+		TO_CHAR(Report.date_from - INTERVAL '1 year', 'dd/mm/yyyy'),
+		' - ',
+		TO_CHAR(Report.date_to - INTERVAL '1 year', 'dd/mm/yyyy')
+	) END AS reportN1Year,
+	CONCAT(
+		TO_CHAR(Report.date_from - INTERVAL '2 year', 'dd/mm/yyyy'),
+		' - ',
+		TO_CHAR(Report.date_to - INTERVAL '2 year', 'dd/mm/yyyy')
+	) AS reportN2Year
 	
 FROM account_accounting_report as Report
 
@@ -817,7 +703,753 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
   </DataSetParameters>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ValuesDS" id="5593">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">result</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">result</text-property>
+                    <text-property name="heading">result</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">column</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">column</text-property>
+                    <text-property name="heading">column</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">line</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">line</text-property>
+                    <text-property name="heading">line</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">group</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">group</text-property>
+                    <text-property name="heading">group</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">period</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">period</text-property>
+                    <text-property name="heading">period</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">periodNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">periodNb</text-property>
+                    <text-property name="heading">periodNb</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">groupNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">groupNb</text-property>
+                    <text-property name="heading">groupNb</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">columnName</text-property>
+                    <text-property name="heading">columnName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnNb</text-property>
+                    <text-property name="heading">columnNb</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnRuleType</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnRuleType</text-property>
+                    <text-property name="heading">columnRuleType</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnHidden</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnHidden</text-property>
+                    <text-property name="heading">columnHidden</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnNotCompute</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnNotCompute</text-property>
+                    <text-property name="heading">columnNotCompute</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">otherYear</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">otherYear</text-property>
+                    <text-property name="heading">otherYear</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">lineName</text-property>
+                    <text-property name="heading">lineName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineNb</text-property>
+                    <text-property name="heading">lineNb</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineHidden</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineHidden</text-property>
+                    <text-property name="heading">lineHidden</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineNotCompute</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineNotCompute</text-property>
+                    <text-property name="heading">lineNotCompute</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineRuleType</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineRuleType</text-property>
+                    <text-property name="heading">lineRuleType</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">analyticAccount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">analyticAccount</text-property>
+                    <text-property name="heading">analyticAccount</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">style</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">style</text-property>
+                    <text-property name="heading">style</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">groupStyle</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">groupStyle</text-property>
+                    <text-property name="heading">groupStyle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">columnStyle</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">columnStyle</text-property>
+                    <text-property name="heading">columnStyle</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">lineStyle</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">lineStyle</text-property>
+                    <text-property name="heading">lineStyle</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">result</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">column</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">line</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">4</property>
+                        <property name="name">group</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">5</property>
+                        <property name="name">period</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">6</property>
+                        <property name="name">periodNb</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
+                        <property name="name">groupNb</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
+                        <property name="name">columnName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">columnNb</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">columnRuleType</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">columnHidden</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">columnNotCompute</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">13</property>
+                        <property name="name">otherYear</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">14</property>
+                        <property name="name">lineName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
+                        <property name="name">lineNb</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">16</property>
+                        <property name="name">lineHidden</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">lineNotCompute</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">18</property>
+                        <property name="name">lineRuleType</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">analyticAccount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">style</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">groupStyle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">columnStyle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">23</property>
+                        <property name="name">lineStyle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">result</property>
+                    <property name="nativeName">result</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">column</property>
+                    <property name="nativeName">column</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">line</property>
+                    <property name="nativeName">line</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">4</property>
+                    <property name="name">group</property>
+                    <property name="nativeName">group</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">5</property>
+                    <property name="name">period</property>
+                    <property name="nativeName">period</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">6</property>
+                    <property name="name">periodNb</property>
+                    <property name="nativeName">periodNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
+                    <property name="name">groupNb</property>
+                    <property name="nativeName">groupNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">8</property>
+                    <property name="name">columnName</property>
+                    <property name="nativeName">columnName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">columnNb</property>
+                    <property name="nativeName">columnNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">columnRuleType</property>
+                    <property name="nativeName">columnRuleType</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">columnHidden</property>
+                    <property name="nativeName">columnHidden</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">columnNotCompute</property>
+                    <property name="nativeName">columnNotCompute</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">13</property>
+                    <property name="name">otherYear</property>
+                    <property name="nativeName">otherYear</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">14</property>
+                    <property name="name">lineName</property>
+                    <property name="nativeName">lineName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
+                    <property name="name">lineNb</property>
+                    <property name="nativeName">lineNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">16</property>
+                    <property name="name">lineHidden</property>
+                    <property name="nativeName">lineHidden</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">lineNotCompute</property>
+                    <property name="nativeName">lineNotCompute</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
+                <structure>
+                    <property name="position">18</property>
+                    <property name="name">lineRuleType</property>
+                    <property name="nativeName">lineRuleType</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">analyticAccount</property>
+                    <property name="nativeName">analyticAccount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">style</property>
+                    <property name="nativeName">style</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">groupStyle</property>
+                    <property name="nativeName">groupStyle</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">columnStyle</property>
+                    <property name="nativeName">columnStyle</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">23</property>
+                    <property name="name">lineStyle</property>
+                    <property name="nativeName">lineStyle</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	ReportValue.result,
+	ReportValue.accounting_report_config_line_column AS "column",
+	ReportValue.accounting_report_config_line AS "line",
+	ReportValue.parent_title AS "group",
+	ReportValue.period,
+	ReportValue.period_number AS "periodNb",
+	ReportValue.group_number AS "groupNb",
+	ConfigColumn.label AS "columnName",
+	ReportValue.column_number AS "columnNb",
+	ConfigColumn.rule_type_select AS "columnRuleType",
+	(ConfigColumn.hidden OR ConfigGroupColumn.hidden) AS "columnHidden",
+	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
+	ConfigColumn.compute_previous_year AS "otherYear",
+	ReportValue.line_title AS "lineName",
+	ReportValue.line_number AS "lineNb",
+	ConfigLine.hidden AS "lineHidden",
+	ConfigLine.not_computed_if_intersect AS "lineNotCompute",
+	ConfigLine.rule_type_select AS "lineRuleType",
+	CASE
+		WHEN ReportValue.analytic_account IS NULL THEN 0
+		ELSE ReportValue.analytic_account
+	END AS "analyticAccount",
+	ReportValue.style_select AS "style",
+	ReportValue.group_style_select AS "groupStyle",
+	ReportValue.column_style_select AS "columnStyle",
+	ReportValue.line_style_select AS "lineStyle"
+
+FROM account_accounting_report AS AccountingReport
+
+JOIN account_accounting_report_value AS ReportValue
+ON ReportValue.accounting_report = AccountingReport.id
+
+LEFT JOIN account_accounting_report_config_line AS ConfigLine
+ON ReportValue.accounting_report_config_line = ConfigLine.id
+
+LEFT JOIN account_accounting_report_config_line AS ConfigColumn
+ON ReportValue.accounting_report_config_line_column = ConfigColumn.id
+
+LEFT JOIN account_accounting_report_type AS ReportType
+ON AccountingReport.report_type = ReportType.id
+
+LEFT JOIN account_accounting_report_config_line AS ConfigGroupColumn
+ON ReportValue.group_number = ConfigGroupColumn.sequence
+	AND ConfigGroupColumn.report_type_column = ReportType.id
+
+WHERE AccountingReport.id = ?
+
+ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AnalyticDS" id="5994">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">accountName</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">accountName</text-property>
+                    <text-property name="heading">accountName</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">analyticOrder</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">analyticOrder</text-property>
+                    <text-property name="heading">analyticOrder</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">accountName</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">3</property>
+                        <property name="name">analyticOrder</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">id</property>
+                    <property name="nativeName">id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">accountName</property>
+                    <property name="nativeName">accountName</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">3</property>
+                    <property name="name">analyticOrder</property>
+                    <property name="nativeName">analyticOrder</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[SELECT
+	DISTINCT(CASE
+		WHEN ReportValue.analytic_account IS NULL THEN 0
+		ELSE AnalyticAccount.id
+	END ) AS "id",
+	SUBSTRING(REGEXP_REPLACE(AnalyticAccount.name, '[?:*[\]\\\/]|^''|''$', '', 'g'), 0, 31) AS "accountName",
+	ReportValue.analytic_order AS "analyticOrder"
+
+FROM account_accounting_report_value AS ReportValue
+
+LEFT JOIN account_analytic_account AS AnalyticAccount
+ON ReportValue.analytic_account = AnalyticAccount.id
+
+WHERE ReportValue.accounting_report = ?;]]></xml-property>
+        </oda-data-set>
     </data-sets>
+    <cubes>
+        <tabular-cube name="ReportValues" id="5594">
+            <list-property name="filter">
+                <structure>
+                    <property name="operator">is-false</property>
+                    <expression name="expr" type="javascript">dataSetRow["columnHidden"] || dataSetRow["lineHidden"]</expression>
+                    <property name="updateAggregation">true</property>
+                </structure>
+                <structure>
+                    <property name="operator">is-not-null</property>
+                    <expression name="expr" type="javascript">dataSetRow["result"]</expression>
+                    <property name="updateAggregation">true</property>
+                </structure>
+            </list-property>
+            <property name="dimensions">
+                <tabular-dimension name="Line" id="5641">
+                    <property name="defaultHierarchy">NewTabularHierarchy</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy" id="5642">
+                            <property name="levels">
+                                <tabular-level name="line" id="5643">
+                                    <property name="dataType">string</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">lineNb</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">lineStyle</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">lineName</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["lineName"]</expression>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Column" id="5816">
+                    <property name="defaultHierarchy">NewTabularHierarchy1</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy1" id="5817">
+                            <property name="levels">
+                                <tabular-level name="column" id="5818">
+                                    <property name="dataType">integer</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">columnName</property>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">columnNb</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">columnStyle</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">column</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["column"]</expression>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Group" id="5976">
+                    <property name="defaultHierarchy">NewTabularHierarchy2</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy2" id="5977">
+                            <property name="levels">
+                                <tabular-level name="group" id="5978">
+                                    <property name="dataType">integer</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">group</property>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">groupStyle</property>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">groupNb</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="Period" id="5985">
+                    <property name="defaultHierarchy">NewTabularHierarchy3</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy3" id="5986">
+                            <property name="levels">
+                                <tabular-level name="period" id="5987">
+                                    <property name="dataType">string</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">period</property>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">periodNb</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["period"]</expression>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+                <tabular-dimension name="AnalyticAccount" id="6028">
+                    <property name="defaultHierarchy">NewTabularHierarchy4</property>
+                    <property name="hierarchies">
+                        <tabular-hierarchy name="NewTabularHierarchy4" id="6029">
+                            <property name="levels">
+                                <tabular-level name="analyticAccount" id="6030">
+                                    <property name="dataType">decimal</property>
+                                    <property name="columnName">analyticAccount</property>
+                                </tabular-level>
+                            </property>
+                        </tabular-hierarchy>
+                    </property>
+                </tabular-dimension>
+            </property>
+            <property name="measureGroups">
+                <tabular-measure-group name="Summary Field" id="5794">
+                    <property name="measures">
+                        <tabular-measure name="result" id="5815">
+                            <expression name="measureExpression" type="javascript">dataSetRow["result"]</expression>
+                            <property name="dataType">decimal</property>
+                        </tabular-measure>
+                        <tabular-measure name="lineNotCompute" id="5969">
+                            <expression name="measureExpression" type="javascript">dataSetRow["lineNotCompute"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="columnNotCompute" id="5970">
+                            <expression name="measureExpression" type="javascript">dataSetRow["columnNotCompute"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="columnRuleType" id="5971">
+                            <expression name="measureExpression" type="javascript">dataSetRow["columnRuleType"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="lineRuleType" id="5972">
+                            <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="otherYear" id="5975">
+                            <expression name="measureExpression" type="javascript">dataSetRow["otherYear"]</expression>
+                            <property name="dataType">integer</property>
+                        </tabular-measure>
+                        <tabular-measure name="style" id="6055">
+                            <property name="function">sum</property>
+                            <property name="isCalculated">false</property>
+                            <expression name="measureExpression" type="javascript">dataSetRow["style"]</expression>
+                            <property name="dataType">float</property>
+                            <property name="isVisible">true</property>
+                        </tabular-measure>
+                    </property>
+                </tabular-measure-group>
+            </property>
+            <property name="dataSet">ValuesDS</property>
+        </tabular-cube>
+    </cubes>
     <styles>
         <style name="report" id="4">
             <property name="fontFamily">sans-serif</property>
@@ -861,9 +1493,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="textAlign">center</property>
                     <property name="verticalAlign">middle</property>
                     <property name="canShrink">true</property>
-                    <column id="5523">
-                        <property name="width">10%</property>
-                    </column>
                     <column id="5488"/>
                     <column id="12">
                         <property name="width">1.448in</property>
@@ -872,34 +1501,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="width">1.448in</property>
                     </column>
                     <row id="14">
-                        <cell id="5522">
-                            <text id="5524">
-                                <property name="fontSize">8pt</property>
-                                <property name="dataSet">ReportDS</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='" + params["AttachmentPath"].value + row["logo_path"] + "' alt='' height='25' width='50'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
-                        </cell>
+                        <property name="verticalAlign">middle</property>
                         <cell id="5487">
                             <text id="5499">
                                 <property name="dataSet">ReportDS</property>
@@ -969,33 +1571,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
         </simple-master-page>
     </page-setup>
     <body>
-        <table id="5587">
-            <property name="dataSet">RulesDS</property>
-            <list-property name="visibility">
-                <structure>
-                    <property name="format">all</property>
-                    <expression name="valueExpr" type="javascript">true</expression>
-                </structure>
-            </list-property>
-            <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">showProvisionTitle</property>
-                    <text-property name="displayName">showProvisionTitle</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-            </list-property>
-            <column id="5590"/>
-            <column id="5591"/>
-            <column id="5592"/>
-            <detail>
-                <row id="5537">
-                    <cell id="5588"/>
-                    <cell id="5539"/>
-                    <cell id="5589"/>
-                </row>
-            </detail>
-        </table>
         <grid id="5390">
             <property name="dataSet">ReportDS</property>
             <list-property name="boundDataColumns">
@@ -1066,19 +1641,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move_1</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
                     <property name="name">comparison</property>
                     <text-property name="displayName">comparison</text-property>
                     <expression name="expression" type="javascript">dataSetRow["comparison"]</expression>
@@ -1102,6 +1664,39 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">display_delta_year_percentage</text-property>
                     <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
                     <property name="dataType">boolean</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">display_delta_year_1</property>
+                    <text-property name="displayName">display_delta_year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">display_delta_year_percentage_1</property>
+                    <text-property name="displayName">display_delta_year_percentage</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">reportyear</property>
+                    <text-property name="displayName">reportyear</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reportyear"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">reportn1year</property>
+                    <text-property name="displayName">reportn1year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reportn1year"]</expression>
+                    <property name="dataType">string</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">reportn2year</property>
+                    <text-property name="displayName">reportn2year</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reportn2year"]</expression>
+                    <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
@@ -1145,32 +1740,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 <cell id="5510">
                     <property name="fontSize">24pt</property>
                     <property name="textAlign">center</property>
-                    <text id="4220">
-                        <property name="fontSize">8pt</property>
-                        <property name="dataSet">ReportDS</property>
+                    <image id="6056">
+                        <property name="width">100px</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='" + params["AttachmentPath"].value + row["logo_path"] + "' alt='' height='50' width='100'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="5511">
                     <property name="colSpan">5</property>
@@ -1798,523 +2378,695 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             <row id="5426">
                 <property name="height">1cm</property>
                 <cell id="5453">
+                    <property name="colSpan">6</property>
+                    <property name="rowSpan">1</property>
                     <property name="fontSize">18pt</property>
                     <property name="textAlign">left</property>
+                    <label id="5993">
+                        <text-property name="text">  </text-property>
+                    </label>
                 </cell>
-                <cell id="5459">
-                    <property name="fontSize">18pt</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="5427">
-                    <property name="fontSize">18pt</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="5496">
-                    <property name="fontSize">18pt</property>
-                    <property name="textAlign">left</property>
-                </cell>
-                <cell id="5428"/>
-                <cell id="5429"/>
             </row>
             <row id="5402">
                 <cell id="5454">
                     <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
-                    <table id="69">
-                        <property name="borderBottomStyle">solid</property>
-                        <property name="borderBottomWidth">thin</property>
-                        <property name="borderLeftStyle">solid</property>
-                        <property name="borderLeftWidth">thin</property>
-                        <property name="borderRightStyle">solid</property>
-                        <property name="borderRightWidth">thin</property>
-                        <property name="borderTopStyle">solid</property>
-                        <property name="borderTopWidth">thin</property>
-                        <property name="marginTop">auto</property>
-                        <property name="width">7.875in</property>
-                        <property name="dataSet">RulesDS</property>
+                    <table id="5995">
+                        <property name="dataSet">AnalyticDS</property>
                         <list-property name="boundDataColumns">
                             <structure>
-                                <property name="name">type</property>
-                                <text-property name="displayName">type</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["type"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">rule_label</property>
-                                <text-property name="displayName">rule_label</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rule_label"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">rule_code</property>
-                                <text-property name="displayName">rule_code</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rule_code"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">rule_type</property>
-                                <text-property name="displayName">rule_type</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rule_type"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">result</property>
-                                <text-property name="displayName">result</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["result"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">hidden</property>
-                                <text-property name="displayName">hidden</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["hidden"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">rule</property>
-                                <text-property name="displayName">rule</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["rule"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">account_diff</property>
-                                <text-property name="displayName">account_diff</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["account_diff"]</expression>
+                                <property name="name">id</property>
+                                <text-property name="displayName">id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["id"]</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">accountName</property>
+                                <text-property name="displayName">accountName</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["accountName"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">analyticOrder</property>
+                                <text-property name="displayName">analyticOrder</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["analyticOrder"]</expression>
+                                <property name="dataType">integer</property>
                             </structure>
                         </list-property>
-                        <structure name="toc"/>
-                        <property name="pageBreakInterval">0</property>
-                        <column id="79">
-                            <property name="suppressDuplicates">false</property>
-                            <property name="width">3.458in</property>
-                        </column>
-                        <column id="80">
-                            <property name="width">0.6in</property>
-                        </column>
-                        <column id="5540">
-                            <property name="repeat">1</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">0.6in</property>
-                        </column>
-                        <column id="5563">
-                            <property name="repeat">1</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || !row._outer["display_delta_year"]</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">0.6in</property>
-                        </column>
-                        <column id="5577">
-                            <property name="repeat">1</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || !row._outer["display_delta_year_percentage"]</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">0.6in</property>
-                        </column>
-                        <column id="5545">
-                            <property name="repeat">1</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">0.6in</property>
-                        </column>
-                        <column id="5568">
-                            <property name="repeat">1</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1 || !row._outer["display_delta_year"]</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">0.6in</property>
-                        </column>
-                        <column id="5582">
-                            <property name="repeat">1</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">row._outer["comparison"] == 1 || row._outer["no_of_periods"] == 1 || !row._outer["display_delta_year_percentage"]</expression>
-                                </structure>
-                            </list-property>
-                            <property name="width">0.6in</property>
-                        </column>
+                        <method name="onCreate"><![CDATA[this.name = row["accountName"]]]></method>
+                        <method name="onPageBreak"><![CDATA[this.name = row["accountName"]]]></method>
+                        <property name="pageBreakInterval">1</property>
+                        <list-property name="sort">
+                            <structure>
+                                <expression name="key" type="javascript">row["analyticOrder"]</expression>
+                                <property name="direction">asc</property>
+                                <property name="strength">-1</property>
+                            </structure>
+                        </list-property>
+                        <column id="6008"/>
                         <header>
-                            <row id="70">
-                                <property name="fontWeight">bold</property>
-                                <cell id="71">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                </cell>
-                                <cell id="72">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <text id="5554">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF  format="dd/MM/yyyy">row._outer["date_from"]</VALUE-OF> - <VALUE-OF  format="dd/MM/yyyy">row._outer["date_to"]</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5541">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5555">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF> - <VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_to"], -1)</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5560">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5571">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>   - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5574">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5585">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>   - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -1)</VALUE-OF> (%)]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5546">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5559">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF> - <VALUE-OF format="dd/MM/yyyy">BirtDateTime.addYear(row._outer["date_to"], -2)</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5565">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5572">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA  <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>  - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5579">
-                                    <property name="borderBottomStyle">solid</property>
-                                    <property name="borderBottomWidth">thin</property>
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5586">
-                                        <property name="fontSize">9pt</property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[DELTA <VALUE-OF format="yyyy">row._outer["date_from"]</VALUE-OF>  - <VALUE-OF format="yyyy">BirtDateTime.addYear(row._outer["date_from"], -2)</VALUE-OF> (%)]]></text-property>
-                                    </text>
-                                </cell>
+                            <row id="5996">
+                                <cell id="6005"/>
                             </row>
                         </header>
                         <detail>
-                            <row id="73">
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["hidden"]</expression>
-                                    </structure>
-                                </list-property>
-                                <cell id="74">
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                    <text id="5372">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="borderBottomStyle">none</property>
-                                        <property name="borderLeftStyle">none</property>
-                                        <property name="borderRightStyle">none</property>
-                                        <property name="borderTopStyle">none</property>
-                                        <structure name="toc"/>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-	if (row["type"] == 1) "<b>" + row["rule_label"] + "</b>"
-</VALUE-OF></B>
-<VALUE-OF>
-	if (row["type"] == 2) "&amp;emsp;" + row["rule_label"]
-</VALUE-OF>
-<VALUE-OF format="HTML">
-	if (row["type"] == 3) " "
-</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="75">
-                                    <text id="5373">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
+                            <row id="5999">
+                                <property name="pageBreakBefore">auto</property>
+                                <cell id="6006">
+                                    <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="5838">
+                                        <property name="cube">ReportValues</property>
+                                        <property name="measures">
+                                            <extended-item extensionName="MeasureView" id="5851">
+                                                <property name="measure">result</property>
+                                                <property name="detail">
+                                                    <extended-item extensionName="AggregationCell" id="5852">
+                                                        <property name="aggregationOnRow">Line/line</property>
+                                                        <property name="aggregationOnColumn">Column/column</property>
+                                                        <property name="content">
+                                                            <data id="5853">
+                                                                <structure name="numberFormat">
+                                                                    <property name="category">Custom</property>
+                                                                    <property name="pattern">#,##0.00</property>
+                                                                </structure>
+                                                                <property name="textAlign">right</property>
+                                                                <list-property name="highlightRules">
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="fontWeight">bold</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">1</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="fontStyle">italic</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">2</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="backgroundColor">#ED8B17</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">3</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="color">#FF0000</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">4</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="fontSize">small</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">5</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="fontSize">medium</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">6</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                    <structure>
+                                                                        <property name="operator">eq</property>
+                                                                        <property name="fontSize">larger</property>
+                                                                        <expression name="testExpr" type="javascript">data["style"]</expression>
+                                                                        <simple-property-list name="value1">
+                                                                            <value type="javascript">7</value>
+                                                                        </simple-property-list>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <list-property name="visibility">
+                                                                    <structure>
+                                                                        <property name="format">all</property>
+                                                                        <expression name="valueExpr" type="javascript">(data["columnNotCompute"] &amp;&amp; data["lineNotCompute"]) || data["columnRuleType"] == 1 || data["lineRuleType"] == 1</expression>
+                                                                    </structure>
+                                                                </list-property>
+                                                                <property name="resultSetColumn">result_Line/line_Column/column</property>
+                                                            </data>
+                                                        </property>
+                                                    </extended-item>
+                                                </property>
+                                                <property name="header">
+                                                    <extended-item extensionName="CrosstabCell" id="5854">
+                                                        <property name="height">0in</property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                        <property name="rows">
+                                            <extended-item extensionName="CrosstabView" id="5840">
+                                                <property name="views">
+                                                    <extended-item extensionName="DimensionView" id="6046">
+                                                        <property name="dimension">AnalyticAccount</property>
+                                                        <property name="levels">
+                                                            <extended-item extensionName="LevelView" name="NewLevel View4" id="6047">
+                                                                <property name="level">AnalyticAccount/analyticAccount</property>
+                                                                <property name="member">
+                                                                    <extended-item extensionName="CrosstabCell" id="6048">
+                                                                        <property name="width">0in</property>
+                                                                    </extended-item>
+                                                                </property>
+                                                            </extended-item>
+                                                        </property>
+                                                    </extended-item>
+                                                    <extended-item extensionName="DimensionView" id="5841">
+                                                        <property name="dimension">Line</property>
+                                                        <property name="levels">
+                                                            <extended-item extensionName="LevelView" name="NewLevel View" id="5842">
+                                                                <property name="level">Line/line</property>
+                                                                <property name="sort">
+                                                                    <sort-element>
+                                                                        <expression name="key" type="javascript">dimension["Line"]["line"]["lineNb"]</expression>
+                                                                        <property name="direction">asc</property>
+                                                                        <property name="strength">-1</property>
+                                                                    </sort-element>
+                                                                </property>
+                                                                <property name="member">
+                                                                    <extended-item extensionName="CrosstabCell" id="5843">
+                                                                        <property name="content">
+                                                                            <data name="line" id="5844">
+                                                                                <list-property name="highlightRules">
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontWeight">bold</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">1</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontStyle">italic</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">2</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="backgroundColor">#ED8B17</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">3</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="color">#FF0000</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">4</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">small</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">5</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">medium</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">6</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">larger</property>
+                                                                                        <expression name="testExpr" type="javascript">data["lineStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">7</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                </list-property>
+                                                                                <property name="resultSetColumn">line</property>
+                                                                            </data>
+                                                                        </property>
+                                                                    </extended-item>
+                                                                </property>
+                                                            </extended-item>
+                                                        </property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                        <property name="columns">
+                                            <extended-item extensionName="CrosstabView" id="5846">
+                                                <property name="views">
+                                                    <extended-item extensionName="DimensionView" id="5988">
+                                                        <property name="dimension">Period</property>
+                                                        <property name="levels">
+                                                            <extended-item extensionName="LevelView" name="NewLevel View3" id="5989">
+                                                                <property name="level">Period/period</property>
+                                                                <property name="sort">
+                                                                    <sort-element>
+                                                                        <expression name="key" type="javascript">dimension["Period"]["period"]["periodNb"]</expression>
+                                                                        <property name="direction">asc</property>
+                                                                        <property name="strength">-1</property>
+                                                                        <property name="member">
+                                                                            <member-value>
+                                                                                <property name="value"></property>
+                                                                                <property name="level">AnalyticAccount/analyticAccount</property>
+                                                                                <property name="memberValues">
+                                                                                    <member-value>
+                                                                                        <property name="value"></property>
+                                                                                        <property name="level">Line/line</property>
+                                                                                        <property name="memberValues">
+                                                                                            <member-value>
+                                                                                                <property name="value"></property>
+                                                                                                <property name="level">Group/group</property>
+                                                                                                <property name="memberValues">
+                                                                                                    <member-value>
+                                                                                                        <property name="value"></property>
+                                                                                                        <property name="level">Column/column</property>
+                                                                                                    </member-value>
+                                                                                                </property>
+                                                                                            </member-value>
+                                                                                        </property>
+                                                                                    </member-value>
+                                                                                </property>
+                                                                            </member-value>
+                                                                        </property>
+                                                                    </sort-element>
+                                                                </property>
+                                                                <property name="member">
+                                                                    <extended-item extensionName="CrosstabCell" id="5990">
+                                                                        <property name="content">
+                                                                            <data name="period" id="5992">
+                                                                                <property name="color">white</property>
+                                                                                <property name="textAlign">center</property>
+                                                                                <property name="resultSetColumn">period</property>
+                                                                            </data>
+                                                                        </property>
+                                                                        <property name="backgroundColor">#0A6FB5</property>
+                                                                    </extended-item>
+                                                                </property>
+                                                            </extended-item>
+                                                        </property>
+                                                    </extended-item>
+                                                    <extended-item extensionName="DimensionView" id="5979">
+                                                        <property name="dimension">Group</property>
+                                                        <property name="levels">
+                                                            <extended-item extensionName="LevelView" name="NewLevel View2" id="5980">
+                                                                <property name="level">Group/group</property>
+                                                                <property name="sort">
+                                                                    <sort-element>
+                                                                        <expression name="key" type="javascript">dimension["Group"]["group"]["groupNb"]</expression>
+                                                                        <property name="direction">asc</property>
+                                                                        <property name="strength">-1</property>
+                                                                        <property name="member">
+                                                                            <member-value>
+                                                                                <property name="value"></property>
+                                                                                <property name="level">AnalyticAccount/analyticAccount</property>
+                                                                                <property name="memberValues">
+                                                                                    <member-value>
+                                                                                        <property name="value"></property>
+                                                                                        <property name="level">Line/line</property>
+                                                                                        <property name="memberValues">
+                                                                                            <member-value>
+                                                                                                <property name="value"></property>
+                                                                                                <property name="level">Column/column</property>
+                                                                                            </member-value>
+                                                                                        </property>
+                                                                                    </member-value>
+                                                                                </property>
+                                                                            </member-value>
+                                                                        </property>
+                                                                    </sort-element>
+                                                                </property>
+                                                                <property name="member">
+                                                                    <extended-item extensionName="CrosstabCell" id="5981">
+                                                                        <property name="content">
+                                                                            <data name="group" id="5983">
+                                                                                <property name="color">white</property>
+                                                                                <property name="textAlign">center</property>
+                                                                                <list-property name="highlightRules">
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontWeight">bold</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">1</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontStyle">italic</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">2</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="backgroundColor">#ED8B17</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">3</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="color">#FF0000</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">4</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">small</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">5</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">medium</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">6</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">larger</property>
+                                                                                        <expression name="testExpr" type="javascript">data["groupStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">7</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                </list-property>
+                                                                                <property name="resultSetColumn">group</property>
+                                                                            </data>
+                                                                        </property>
+                                                                        <property name="backgroundColor">#0A6FB5</property>
+                                                                    </extended-item>
+                                                                </property>
+                                                            </extended-item>
+                                                        </property>
+                                                    </extended-item>
+                                                    <extended-item extensionName="DimensionView" id="5847">
+                                                        <property name="dimension">Column</property>
+                                                        <property name="levels">
+                                                            <extended-item extensionName="LevelView" name="NewLevel View1" id="5848">
+                                                                <property name="level">Column/column</property>
+                                                                <property name="sort">
+                                                                    <sort-element>
+                                                                        <expression name="key" type="javascript">dimension["Column"]["column"]["columnNb"]</expression>
+                                                                        <property name="direction">asc</property>
+                                                                        <property name="strength">-1</property>
+                                                                    </sort-element>
+                                                                </property>
+                                                                <property name="member">
+                                                                    <extended-item extensionName="CrosstabCell" id="5849">
+                                                                        <property name="content">
+                                                                            <data name="column" id="5850">
+                                                                                <property name="color">white</property>
+                                                                                <property name="textAlign">center</property>
+                                                                                <list-property name="highlightRules">
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontWeight">bold</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">1</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontStyle">italic</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">2</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="backgroundColor">#ED8B17</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">3</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="color">#FF0000</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">4</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">small</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">5</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">medium</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">6</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                    <structure>
+                                                                                        <property name="operator">eq</property>
+                                                                                        <property name="fontSize">larger</property>
+                                                                                        <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                        <simple-property-list name="value1">
+                                                                                            <value type="javascript">7</value>
+                                                                                        </simple-property-list>
+                                                                                    </structure>
+                                                                                </list-property>
+                                                                                <property name="resultSetColumn">column</property>
+                                                                            </data>
+                                                                        </property>
+                                                                        <property name="backgroundColor">#0A6FB5</property>
+                                                                        <list-property name="highlightRules">
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">1</value>
+                                                                                </simple-property-list>
+                                                                                <property name="fontWeight">bold</property>
+                                                                            </structure>
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">2</value>
+                                                                                </simple-property-list>
+                                                                                <property name="fontStyle">italic</property>
+                                                                            </structure>
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">3</value>
+                                                                                </simple-property-list>
+                                                                                <property name="backgroundColor">#FFFF00</property>
+                                                                            </structure>
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">4</value>
+                                                                                </simple-property-list>
+                                                                                <property name="color">#FF0000</property>
+                                                                            </structure>
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">5</value>
+                                                                                </simple-property-list>
+                                                                                <property name="fontSize">small</property>
+                                                                            </structure>
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">6</value>
+                                                                                </simple-property-list>
+                                                                                <property name="fontSize">medium</property>
+                                                                            </structure>
+                                                                            <structure>
+                                                                                <property name="operator">eq</property>
+                                                                                <expression name="testExpr" type="javascript">data["columnStyle"]</expression>
+                                                                                <simple-property-list name="value1">
+                                                                                    <value type="javascript">7</value>
+                                                                                </simple-property-list>
+                                                                                <property name="fontSize">larger</property>
+                                                                            </structure>
+                                                                        </list-property>
+                                                                    </extended-item>
+                                                                </property>
+                                                            </extended-item>
+                                                        </property>
+                                                    </extended-item>
+                                                </property>
+                                            </extended-item>
+                                        </property>
+                                        <property name="header">
+                                            <extended-item extensionName="CrosstabCell" id="6052"/>
+                                            <extended-item extensionName="CrosstabCell" id="5991">
+                                                <property name="backgroundColor">#0A6FB5</property>
+                                            </extended-item>
+                                            <extended-item extensionName="CrosstabCell" id="6051"/>
+                                            <extended-item extensionName="CrosstabCell" id="5982">
+                                                <property name="backgroundColor">#0A6FB5</property>
+                                            </extended-item>
+                                            <extended-item extensionName="CrosstabCell" id="6050"/>
+                                            <extended-item extensionName="CrosstabCell" id="5856">
+                                                <property name="content">
+                                                    <data id="6001">
+                                                        <property name="color">white</property>
+                                                        <property name="textAlign">center</property>
+                                                        <property name="resultSetColumn">Column Binding</property>
+                                                    </data>
+                                                </property>
+                                                <property name="backgroundColor">#0A6FB5</property>
+                                            </extended-item>
+                                            <extended-item extensionName="CrosstabCell" id="6049">
+                                                <property name="content">
+                                                    <label id="6054">
+                                                        <text-property name="text">analyticAccount</text-property>
+                                                    </label>
+                                                </property>
+                                            </extended-item>
+                                            <extended-item extensionName="CrosstabCell" id="5839"/>
+                                        </property>
+                                        <property name="filter">
+                                            <filter-condition-element>
+                                                <expression name="expr" type="javascript">data["analyticAccount"]</expression>
                                                 <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
                                                 <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
+                                                    <value type="javascript">row._outer["id"]</value>
                                                 </simple-property-list>
+                                            </filter-condition-element>
+                                        </property>
+                                        <property name="pageBreakAfter">auto</property>
+                                        <list-property name="boundDataColumns">
+                                            <structure>
+                                                <property name="name">line</property>
+                                                <expression name="expression" type="javascript">dimension["Line"]["line"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">column</property>
+                                                <expression name="expression" type="javascript">dimension["Column"]["column"]["columnName"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">result_Line/line_Column/column</property>
+                                                <expression name="expression">measure["result"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <simple-property-list name="aggregateOn">
+                                                    <value>Line/line</value>
+                                                    <value>Column/column</value>
+                                                </simple-property-list>
+                                                <property name="aggregateFunction">SUM</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">columnNotCompute</property>
+                                                <expression name="expression" type="javascript">measure["columnNotCompute"]</expression>
+                                                <property name="dataType">boolean</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">lineNotCompute</property>
+                                                <expression name="expression" type="javascript">measure["lineNotCompute"]</expression>
+                                                <property name="dataType">boolean</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">columnRuleType</property>
+                                                <expression name="expression" type="javascript">measure["columnRuleType"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">lineRuleType</property>
+                                                <expression name="expression" type="javascript">measure["lineRuleType"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">otherYear</property>
+                                                <expression name="expression" type="javascript">measure["otherYear"]</expression>
+                                                <property name="dataType">boolean</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">group</property>
+                                                <expression name="expression" type="javascript">dimension["Group"]["group"]["group"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">period</property>
+                                                <expression name="expression" type="javascript">dimension["Period"]["period"]["period"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">analyticAccount</property>
+                                                <expression name="expression" type="javascript">dimension["AnalyticAccount"]["analyticAccount"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">Column Binding</property>
+                                                <expression name="expression" type="javascript">row._outer["accountName"]</expression>
+                                                <property name="dataType">string</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">style</property>
+                                                <text-property name="displayName">style</text-property>
+                                                <expression name="expression" type="javascript">measure["style"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">lineStyle</property>
+                                                <text-property name="displayName">lineStyle</text-property>
+                                                <expression name="expression" type="javascript">dimension["Line"]["line"]["lineStyle"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">columnStyle</property>
+                                                <text-property name="displayName">columnStyle</text-property>
+                                                <expression name="expression" type="javascript">dimension["Column"]["column"]["columnStyle"]</expression>
+                                                <property name="dataType">integer</property>
+                                            </structure>
+                                            <structure>
+                                                <property name="name">groupStyle</property>
+                                                <text-property name="displayName">groupStyle</text-property>
+                                                <expression name="expression" type="javascript">dimension["Group"]["group"]["groupStyle"]</expression>
+                                                <property name="dataType">integer</property>
                                             </structure>
                                         </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
-    else if (isNaN(rules[row["rule_code"]])) {
-    	0
-    }
-    else {
-		rules[row["rule_code"]]
-	}
-}
-</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5542">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5543">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
-                                                <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
-                                                <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
-    else if (isNaN(rulesn1[row["rule_code"]])) {
-    	0
-    }
-    else {
-		rulesn1[row["rule_code"]]
-	}
-}	
-</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5561">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5564">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
-                                                <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
-                                                <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
-    else if (isNaN(deltan1[row["rule_code"]])) {
-    	0
-    }
-    else {
-		deltan1[row["rule_code"]]
-	}
-}	
-</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5575">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5573">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
-                                                <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
-                                                <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00'%'{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
- if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
- else if (isNaN(deltaPercentagen1[row["rule_code"]])) {
- 	0
- } else {
- 	deltaPercentagen1[row["rule_code"]]
- }
-}
-</VALUE-OF>
-	]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5547">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5548">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
-                                                <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
-                                                <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
-    else if (isNaN(rulesn2[row["rule_code"]])) {
-    	0
-    }
-    else {
-		rulesn2[row["rule_code"]]
-	}
-}	
-</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5566">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5569">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
-                                                <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
-                                                <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
-    if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
-    else if (isNaN(deltan2[row["rule_code"]])) {
-    	0
-    }
-    else {
-		deltan2[row["rule_code"]]
-	}
-}	
-</VALUE-OF>]]></text-property>
-                                    </text>
-                                </cell>
-                                <cell id="5580">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                    <text id="5584">
-                                        <property name="fontSize">10pt</property>
-                                        <property name="textAlign">right</property>
-                                        <list-property name="highlightRules">
-                                            <structure>
-                                                <property name="operator">eq</property>
-                                                <property name="fontWeight">bold</property>
-                                                <expression name="testExpr" type="javascript">row["type"]</expression>
-                                                <simple-property-list name="value1">
-                                                    <value type="javascript">1</value>
-                                                </simple-property-list>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00'%'{RoundingMode=HALF_UP}">
-if (row["type"] != 3) {
- if (row["type"] == 1 &amp;&amp; row["rule_type"] == 1) {  
-    }
- else if (isNaN(deltaPercentagen2[row["rule_code"]])) {
- 	0
- } else {
- 	deltaPercentagen2[row["rule_code"]]
- }
-}
-</VALUE-OF>
-	]]></text-property>
-                                    </text>
+                                    </extended-item>
                                 </cell>
                             </row>
                         </detail>
                         <footer>
-                            <row id="76">
-                                <cell id="77">
-                                    <property name="borderRightStyle">solid</property>
-                                    <property name="borderRightWidth">thin</property>
-                                </cell>
-                                <cell id="78"/>
-                                <cell id="5544">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                </cell>
-                                <cell id="5562">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                </cell>
-                                <cell id="5576">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                </cell>
-                                <cell id="5549">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                </cell>
-                                <cell id="5567">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                </cell>
-                                <cell id="5581">
-                                    <property name="borderLeftStyle">solid</property>
-                                    <property name="borderLeftWidth">thin</property>
-                                </cell>
+                            <row id="6002">
+                                <cell id="6007"/>
                             </row>
                         </footer>
                     </table>

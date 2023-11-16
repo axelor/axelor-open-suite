@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-timesheet-config-form" title="App Timesheet"
-    model="com.axelor.apps.base.db.AppTimesheet" canDelete="false" canNew="false" width="large"
+    model="com.axelor.studio.db.AppTimesheet" canDelete="false" canNew="false" width="large"
     onSave="action-app-timesheet-method-switch-timesheet-editors">
     <panel name="mainPanel">
       <field name="invoicingTypeLogTimesSelect"/>
@@ -24,6 +24,7 @@
       <field name="isAlertManufOrderFinish" widget="boolean-switch"/>
       <field name="displayTaskColumnInPrinting" widget="boolean-switch"/>
       <field name="displayActivityColumnInPrinting" widget="boolean-switch"/>
+      <field name="dailyLimit"/>
     </panel>
 
     <panel-mail name="mailPanel">

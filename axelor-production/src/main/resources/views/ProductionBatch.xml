@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="production-batch-grid" title="Production batches"
     model="com.axelor.apps.production.db.ProductionBatch">
@@ -46,8 +46,8 @@
       <button name="computeValuationBatchBtn" title="Compute work in progress valuation"
         onClick="save,action-production-batch-method-run-batch" showIf="actionSelect == 1"/>
       <button name="printBtn" title="Work in progress valuation"
-        showIf="actionSelect == 1 &amp;&amp; !batchList"
-        onClick="save,action-production-batch-method-show-valuation"/>
+        showIf="actionSelect == 1 &amp;&amp; batchList &amp;&amp; batchList.length &gt; 0"
+        onClick="save,action-method-print-birt"/>
     </panel>
   </form>
 
@@ -67,11 +67,6 @@
 
   <action-method name="action-production-batch-method-run-batch">
     <call class="com.axelor.apps.production.web.ProductionBatchController" method="runBatch"/>
-  </action-method>
-
-  <action-method name="action-production-batch-method-show-valuation">
-    <call class="com.axelor.apps.production.web.ProductionBatchController"
-      method="showValuation"/>
   </action-method>
 
   <action-attrs name="action-production-batch-attrs-domain-stock-location">

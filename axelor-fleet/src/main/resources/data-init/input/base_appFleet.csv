@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Fleet";"fleet";26;"Fleet management";"app-fleet.png";"axelor-fleet";"base";27

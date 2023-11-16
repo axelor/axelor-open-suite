@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="SaleConfig" lang="java" cacheable="true">
+  <entity name="SaleConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>
 
@@ -20,8 +20,8 @@
     <boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
     <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
-    <boolean name="displayEstimDelivDateOnPrinting"
-      title="Display estimated delivery dates on printing"/>
+    <boolean name="displayEstimShipDateOnPrinting"
+      title="Display estimated shipping dates on printing"/>
     <boolean name="displayCustomerCodeOnPrinting" title="Display customer code on printing"/>
     <boolean name="displayProductPictureOnPrinting"
       title="Display product picture on printing"/>
@@ -30,6 +30,8 @@
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on sale order line"/>
     <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
+    <many-to-one name="saleOrderBirtTemplate" title="Sale order template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -40,12 +42,13 @@
       <field name="displayDelCondOnPrinting" on="UPDATE"/>
       <field name="displayProductCodeOnPrinting" on="UPDATE"/>
       <field name="displayTaxDetailOnPrinting" on="UPDATE"/>
-      <field name="displayEstimDelivDateOnPrinting" on="UPDATE"/>
+      <field name="displayEstimShipDateOnPrinting" on="UPDATE"/>
       <field name="displayCustomerCodeOnPrinting" on="UPDATE"/>
       <field name="displayProductPictureOnPrinting" on="UPDATE"/>
       <field name="saleOrderClientBox" on="UPDATE"/>
       <field name="saleOrderLegalNote" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
+      <field name="saleOrderBirtTemplate" on="UPDATE"/>
     </track>
   </entity>
 

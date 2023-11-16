@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
@@ -10,7 +10,7 @@
     <one-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       mappedBy="employee"/>
     <one-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
-      required="true" title="Contact"/>
+      required="true" title="Contact" unique="true"/>
     <decimal name="hourlyRate" title="Hourly rate" scale="2" precision="20"/>
     <string name="timeLoggingPreferenceSelect" title="Time logging preference"
       selection="hr.time.logging.preference.select" massUpdate="true"/>
@@ -87,6 +87,9 @@
 	       ]]>
 
     </string>
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
     <!-- New employee wizard -->
     <integer name="stepByStepSelect" title="Step by step"
@@ -101,6 +104,29 @@
 
     <string name="maidenName" title="Maiden name"/>
     <string name="maritalName" title="Marital name"/>
+    <integer name="dependentChildren" title="Dependent children"/>
+
+    <one-to-many name="medicalVisitList" ref="com.axelor.apps.hr.db.MedicalVisit"
+      mappedBy="employee"/>
+
+    <date name="lastMedicalVisitDate" title="Last medical visit date" formula="true">
+      <![CDATA[
+      SELECT hr_medical_visit.medical_visit_start_dateT FROM hr_medical_visit WHERE hr_medical_visit.employee = id AND hr_medical_visit.status_select = 3 ORDER BY hr_medical_visit.medical_visit_start_dateT DESC LIMIT 1
+      ]]>
+    </date>
+
+    <date name="nextMedicalVisitDate" title="Next medical visit date" formula="true">
+      <![CDATA[
+      SELECT hr_medical_visit.medical_visit_start_dateT FROM hr_medical_visit WHERE hr_medical_visit.employee = id AND hr_medical_visit.status_select = 2 AND hr_medical_visit.medical_visit_start_dateT > NOW() ORDER BY hr_medical_visit.medical_visit_start_dateT ASC LIMIT 1
+      ]]>
+    </date>
+
+    <integer name="lunchVoucherDistribution" default="100" title="% in paper format"
+      help="Percentage of lunch voucher in paper format, the rest will be in electronic card."
+      min="0" max="100"/>
+
+    <one-to-many name="expenseLimitList" ref="com.axelor.apps.hr.db.ExpenseLimit"
+      title="Expense limit list" mappedBy="employee"/>
 
     <extra-code>
    		<![CDATA[
@@ -110,6 +136,10 @@
 
    			public static final String SEX_F = "F";
    			public static final String SEX_M = "M";
+
+            public static final int LUNCH_VOUCHER_MGT_FORMAT_PAPER = 1;
+            public static final int LUNCH_VOUCHER_MGT_FORMAT_CARD = 2;
+            public static final int LUNCH_VOUCHER_MGT_FORMAT_BOTH = 3;
    		]]>
     </extra-code>
 

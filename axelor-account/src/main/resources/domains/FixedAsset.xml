@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAsset" lang="java" cacheable="true">
+  <entity name="FixedAsset" cacheable="true">
 
     <string name="reference" title="Reference" readonly="true"/>
     <string name="name" title="Name" required="true"/>
@@ -74,7 +74,6 @@
 
     <date name="firstServiceDate" title="First Service Date"/>
     <date name="failoverDate" title="Failover Date"/>
-    <decimal name="pastDepreciation" title="Past Depreciation"/>
     <decimal name="accountingValue" title="Accounting value"/>
     <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
 
@@ -123,9 +122,9 @@
       name="associatedFixedAssetsSet" title="Associated Fixed Assets Set"/>
     <string name="comments" large="true" multiline="true" title="Comments"/>
     <integer name="disposalTypeSelect" title="Disposal Type"
-      selection="account.fixed.asset.disposal.type.select" default="1"/>
+      selection="account.fixed.asset.disposal.type.select"/>
     <integer name="disposalQtySelect" title="Disposal Quantity select"
-      selection="account.fixed.asset.disposal.quantity.select" default="1"/>
+      selection="account.fixed.asset.disposal.quantity.select"/>
     <decimal name="qty" title="Disposal Quantity"/>
     <one-to-many name="fixedAssetDerogatoryLineList"
       ref="com.axelor.apps.account.db.FixedAssetDerogatoryLine" title="Fiscal Fixed Asset Line List"

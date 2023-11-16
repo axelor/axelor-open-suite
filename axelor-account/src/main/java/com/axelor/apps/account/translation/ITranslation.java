@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.translation;
 
@@ -21,7 +22,6 @@ public interface ITranslation {
 
   public static final String ACCOUNTING_APP_NAME = /*$$(*/ "value:Accounting"; /*)*/
   public static final String INVOICING_APP_NAME = /*$$(*/ "value:Invoicing"; /*)*/
-  public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
   public static final String ACCOUNT_DEBIT_BALANCE = /*$$(*/ "Debit balance" /*)*/;
   public static final String ACCOUNT_CREDIT_BALANCE = /*$$(*/ "Credit balance" /*)*/;
   public static final String INVOICE_LINE_END_OF_PACK = /*$$(*/ "InvoiceLine.endOfPack" /*)*/;
@@ -33,4 +33,6 @@ public interface ITranslation {
   public static final String PAYMENT_SESSION_COMPUTE_NAME_ON_THE = /*$$(*/ "on the" /*)*/;
   public static final String PAYMENT_SESSION_COMPUTE_NAME_BY = /*$$(*/ "by" /*)*/;
   public static final String FIXED_ASSET_SPLIT_AMOUNT = /*$$(*/ "fixedAsset.amount" /*)*/;
+
+  public static final String FISCAL_YEAR_CODE = /*$$(*/ "fiscalYear.code" /*)*/;
 }

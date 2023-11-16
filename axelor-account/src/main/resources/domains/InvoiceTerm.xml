@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceTerm" lang="java">
+  <entity name="InvoiceTerm">
 
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice" title="Invoice"/>
     <integer name="sequence" title="Sequence"/>
@@ -33,6 +33,8 @@
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="subrogationPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Subrogation"/>
     <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
@@ -51,7 +53,7 @@
     <boolean name="isCustomized" title="Is customized" default="false"/>
     <many-to-one ref="com.axelor.apps.base.db.BankDetails" name="bankDetails"/>
 
-    <date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+    <datetime name="decisionPfpTakenDateTime" readonly="true" title="PFP decision date"/>
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="PFP Status"
@@ -100,6 +102,9 @@
 	      id]]>
     </integer>
 
+    <boolean name="pfpfPartialValidationOk"/>
+    <decimal name="pfpPartialValidationAmount"/>
+
     <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
@@ -127,12 +132,14 @@
       <field name="financialDiscount"/>
       <field name="invoice"/>
       <field name="moveLine"/>
-      <field name="decisionPfpTakenDate"/>
+      <field name="decisionPfpTakenDateTime"/>
       <field name="paymentSession"/>
       <field name="pfpValidateStatusSelect"/>
       <field name="pfpValidatorUser"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.account.db.repo.InvoiceTermListener"/>
 
   </entity>
 

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.report;
 
@@ -32,7 +33,6 @@ public class ITranslation {
       "Expense.personalExpenseAmount"; /*)*/
   public static final String EXPENSE_COMPANY_CB_SELECT = /*$$(*/ "Expense.companyCbSelect"; /*)*/
   public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
-  public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/
   public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/
   public static final String EXPENSE_CURRENCY = /*$$(*/ "Expense.currency"; /*)*/
   public static final String EXPENSE_GENERAL_EXPENSES = /*$$(*/ "General Expenses"; /*)*/
@@ -74,6 +74,7 @@ public class ITranslation {
   public static final String LUNCH_VOUCHER_TO = /*$$(*/ "LunchVoucher.to"; /*)*/
   public static final String LUNCH_VOUCHER_NAMES = /*$$(*/ "LunchVoucher.names"; /*)*/
   public static final String LUNCH_VOUCHER_QTY = /*$$(*/ "LunchVoucher.qty"; /*)*/
+  public static final String LUNCH_VOUCHER_PAPER_NUMBER = /*$$(*/ "LunchVoucher.paperNumber"; /*)*/
   public static final String LUNCH_VOUCHER_AMOUNT = /*$$(*/ "LunchVoucher.amount"; /*)*/
   public static final String LUNCH_VOUCHER_COMMENT = /*$$(*/ "LunchVoucher.comment"; /*)*/
   public static final String LUNCH_VOUCHER_EMPLOYER_SHARE = /*$$(*/

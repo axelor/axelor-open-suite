@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -25,10 +26,11 @@ import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.AccountManagementService;
-import com.axelor.exception.AxelorException;
+import java.util.List;
 
 public interface AccountManagementAccountService extends AccountManagementService {
 
@@ -92,4 +94,8 @@ public interface AccountManagementAccountService extends AccountManagementServic
       boolean isFixedAssets,
       boolean isFinancialDiscount)
       throws AxelorException;
+
+  boolean areAllAccountsOfType(List<Account> accountList, String type);
+
+  List<Account> getAccountsBetween(Account accountFrom, Account accountTo);
 }

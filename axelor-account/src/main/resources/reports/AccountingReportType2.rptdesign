@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -44,7 +45,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -58,9 +59,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -317,6 +315,7 @@ from public.account_accounting_report as AccountingReport
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
 left outer join public.account_move as Move on (MoveLine.move = Move.id  AND Move.ignore_in_accounting_ok = false) 
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
+left outer join public.account_account_type as AccountType on (Account.account_type = AccountType.id )
 
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 
@@ -332,7 +331,7 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
@@ -342,13 +341,17 @@ or AccountSet.account_set = ParentAccount2.id or AccountSet.account_set = Parent
 or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = ParentAccount5.id 
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 
+AND ((AccountingReport.exclude_view_account is true AND AccountType.technical_type_select != 'view') OR AccountingReport.exclude_view_account is false)
+AND ((AccountingReport.exclude_commitment_special_account is true AND AccountType.technical_type_select != 'commitment' AND AccountType.technical_type_select != 'special')
+OR AccountingReport.exclude_commitment_special_account is false)
+
 AND
 
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
-AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -460,6 +463,11 @@ order by MoveLine.account_code]]></xml-property>
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">ref</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -548,8 +556,8 @@ order by MoveLine.account_code]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">ref</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -560,90 +568,105 @@ order by MoveLine.account_code]]></xml-property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">period_name</property>
                     <property name="nativeName">period_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">journal_name</property>
                     <property name="nativeName">journal_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">global</property>
                     <property name="nativeName">global</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">global_by_date</property>
                     <property name="nativeName">global_by_date</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name,
@@ -652,7 +675,7 @@ Company.width as logo_width,
 AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
 Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
-PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.display_simulated_move as display_simulated_move
+PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
@@ -885,14 +908,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
@@ -914,23 +937,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <row id="3120">
                         <property name="height">36px</property>
                         <cell id="4157">
-                            <text id="4220">
-                                <property name="fontSize">8pt</property>
+                            <image id="4237">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3121">
                             <property name="verticalAlign">top</property>
@@ -956,15 +974,34 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </page-header>
             <page-footer>
                 <grid id="3098">
-                    <property name="width">11.033333333333333in</property>
+                    <property name="width">11.041666666666666in</property>
                     <column id="3099">
-                        <property name="width">10.022222222222222in</property>
+                        <property name="width">5.739583333333333in</property>
+                    </column>
+                    <column id="4235">
+                        <property name="width">4.197916666666667in</property>
                     </column>
                     <column id="3100">
-                        <property name="width">1.011111111111111in</property>
+                        <property name="width">1.1041666666666667in</property>
                     </column>
                     <row id="3101">
                         <cell id="3102">
+                            <data id="4229">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">accountingReport.ref</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
+                        </cell>
+                        <cell id="4234">
                             <label id="3115">
                                 <property name="fontSize">9pt</property>
                                 <property name="textAlign">right</property>
@@ -1099,13 +1136,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="492">

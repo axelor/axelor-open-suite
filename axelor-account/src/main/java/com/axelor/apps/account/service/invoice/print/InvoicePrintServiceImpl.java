@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,30 +14,35 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.print;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.ModelTool;
-import com.axelor.apps.tool.ThrowConsumer;
-import com.axelor.apps.tool.file.PdfTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.ModelTool;
+import com.axelor.utils.ThrowConsumer;
+import com.axelor.utils.file.PdfTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -47,7 +53,9 @@ import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import org.apache.commons.collections4.map.HashedMap;
 
 /** Implementation of the service printing invoices. */
 @Singleton
@@ -56,15 +64,21 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   protected InvoiceRepository invoiceRepo;
   protected AccountConfigRepository accountConfigRepo;
   protected AppBaseService appBaseService;
+  protected AccountConfigService accountConfigService;
+  protected BirtTemplateService birtTemplateService;
 
   @Inject
   public InvoicePrintServiceImpl(
       InvoiceRepository invoiceRepo,
       AccountConfigRepository accountConfigRepo,
-      AppBaseService appBaseService) {
+      AccountConfigService accountConfigService,
+      AppBaseService appBaseService,
+      BirtTemplateService birtTemplateService) {
     this.invoiceRepo = invoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
     this.appBaseService = appBaseService;
+    this.accountConfigService = accountConfigService;
+    this.birtTemplateService = birtTemplateService;
   }
 
   @Override
@@ -110,7 +124,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           && reportType != null
           && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS) {
 
-        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFileName());
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFilePath());
         return path.toFile();
       } else {
 
@@ -169,16 +183,27 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           invalidPrintSettingsInvoiceIds.toString());
     }
 
-    ModelTool.apply(
-        Invoice.class,
-        ids,
-        new ThrowConsumer<Invoice>() {
-          @Override
-          public void accept(Invoice invoice) throws Exception {
-            printedInvoices.add(
-                printCopiesToFile(invoice, false, null, ReportSettings.FORMAT_PDF, null));
-          }
-        });
+    int errorCount =
+        ModelTool.apply(
+            Invoice.class,
+            ids,
+            new ThrowConsumer<Invoice, Exception>() {
+              @Override
+              public void accept(Invoice invoice) throws Exception {
+                try {
+                  printedInvoices.add(
+                      printCopiesToFile(invoice, false, null, ReportSettings.FORMAT_PDF, null));
+                } catch (Exception e) {
+                  TraceBackService.trace(e);
+                  throw e;
+                }
+              }
+            });
+    if (errorCount > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+    }
 
     String fileName =
         I18n.get("Invoices")
@@ -217,15 +242,20 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               invoice.getInvoiceId()),
           invoice);
     }
+    BirtTemplate invoiceBirtTemplate =
+        accountConfigService.getAccountConfig(invoice.getCompany()).getInvoiceBirtTemplate();
+    if (invoiceBirtTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
 
     String title = I18n.get(InvoiceToolService.isRefund(invoice) ? "Refund" : "Invoice");
     if (invoice.getInvoiceId() != null) {
       title += " " + invoice.getInvoiceId();
     }
 
-    ReportSettings reportSetting =
-        ReportFactory.createReport(IReport.INVOICE, title + " - ${date}");
-
+    AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
       String userLanguageCode =
           Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
@@ -238,30 +268,25 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? invoice.getPartner().getLanguage().getCode()
               : userLanguageCode;
       locale =
-          accountConfigRepo
-                  .findByCompany(invoice.getCompany())
-                  .getIsPrintInvoicesInCompanyLanguage()
+          accountConfig.getIsPrintInvoicesInCompanyLanguage()
               ? companyLanguageCode
               : partnerLanguageCode;
     }
     String watermark = null;
-    if (accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark() != null) {
-      watermark =
-          MetaFiles.getPath(
-                  accountConfigRepo.findByCompany(invoice.getCompany()).getInvoiceWatermark())
-              .toString();
+    MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
+    if (invoiceWatermark != null) {
+      watermark = MetaFiles.getPath(invoiceWatermark).toString();
     }
-
-    return reportSetting
-        .addParam("InvoiceId", invoice.getId())
-        .addParam("Locale", locale)
-        .addParam(
-            "Timezone", invoice.getCompany() != null ? invoice.getCompany().getTimezone() : null)
-        .addParam("ReportType", reportType == null ? 0 : reportType)
-        .addParam("HeaderHeight", invoice.getPrintingSettings().getPdfHeaderHeight())
-        .addParam("Watermark", watermark)
-        .addParam("FooterHeight", invoice.getPrintingSettings().getPdfFooterHeight())
-        .addParam("AddressPositionSelect", invoice.getPrintingSettings().getAddressPositionSelect())
-        .addFormat(format);
+    Map<String, Object> paramMap = new HashedMap<>();
+    paramMap.put("ReportType", reportType == null ? 0 : reportType);
+    paramMap.put("locale", locale);
+    paramMap.put("Watermark", watermark);
+    return birtTemplateService.generate(
+        invoiceBirtTemplate,
+        EntityHelper.getEntity(invoice),
+        paramMap,
+        title + " - ${date}",
+        false,
+        format);
   }
 }

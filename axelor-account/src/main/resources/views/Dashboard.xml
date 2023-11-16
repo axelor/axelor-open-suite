@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- Account Invoice Dashboard -->
 
@@ -136,7 +136,7 @@
     <context name="_company" expr="eval:__user__.activeCompany"/>
   </action-view>
 
-  <action-view name="  action-accounting-dashboard-report-invoice-terms-top-3-suppliers"
+  <action-view name="action-accounting-dashboard-report-invoice-terms-top-3-suppliers"
     title="Top 3 supplier">
     <view type="custom" name="invoice-terms-report-top-3-suppliers"/>
     <context name="_company" expr="eval:__user__.activeCompany"/>
@@ -350,6 +350,12 @@
     <view type="chart" name="chart.invoice.purchase.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
+  </action-view>
+
+  <action-view
+    name="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"
+    title="Turnover invoiced for an Analytic Axis by Month">
+    <view type="chart" name="chart.sales.turnover.per.analytic.account.per.month"/>
   </action-view>
 
 </object-views>

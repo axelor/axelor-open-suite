@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
     name="move-line-query-line-grid" editable="true">
     <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
-    <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
+    <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
       title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
     <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>

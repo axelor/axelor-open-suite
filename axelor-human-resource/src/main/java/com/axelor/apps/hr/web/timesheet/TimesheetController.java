@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,48 +14,46 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.web.timesheet;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -357,7 +356,7 @@ public class TimesheetController {
 
       Message message = Beans.get(TimesheetService.class).cancelAndSendCancellationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -404,7 +403,7 @@ public class TimesheetController {
           Beans.get(TimesheetService.class).confirmAndSendConfirmationEmail(timesheet);
 
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -444,7 +443,7 @@ public class TimesheetController {
    * @param response
    * @throws AxelorException
    */
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -457,7 +456,7 @@ public class TimesheetController {
 
       Message message = timesheetService.validateAndSendValidationEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -486,7 +485,7 @@ public class TimesheetController {
   }
 
   // action called when refusing a timesheet. Changing status + Sending mail to Applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -494,7 +493,7 @@ public class TimesheetController {
 
       Message message = Beans.get(TimesheetService.class).refuseAndSendRefusalEmail(timesheet);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -523,29 +522,6 @@ public class TimesheetController {
         .countRecordsTag(Timesheet.class, TimesheetRepository.STATUS_CONFIRMED);
   }
 
-  public void printTimesheet(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Timesheet timesheet = request.getContext().asType(Timesheet.class);
-
-    String name = I18n.get("Timesheet") + " " + timesheet.getFullName().replace("/", "-");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.TIMESHEET, name)
-            .addParam("TimesheetId", timesheet.getId())
-            .addParam(
-                "Timezone",
-                timesheet.getCompany() != null ? timesheet.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(timesheet)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing {}", name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
   public void setShowActivity(ActionRequest request, ActionResponse response) {
 
     Timesheet timesheet = request.getContext().asType(Timesheet.class);
@@ -557,11 +533,16 @@ public class TimesheetController {
       if (user != null) {
         Company company = user.getActiveCompany();
         if (company != null && company.getHrConfig() != null) {
-          showActivity = !company.getHrConfig().getUseUniqueProductForTimesheet();
+          showActivity =
+              !company.getHrConfig().getUseUniqueProductForTimesheet()
+                  && Beans.get(AppHumanResourceService.class).getAppTimesheet().getEnableActivity();
         }
       }
     }
 
+    Integer dailyLimit = Beans.get(AppHumanResourceService.class).getAppTimesheet().getDailyLimit();
+
+    response.setValue("$dailyLimit", dailyLimit);
     response.setValue("$showActivity", showActivity);
   }
 
@@ -573,7 +554,9 @@ public class TimesheetController {
         "hr/timesheet/?timesheetId="
             + context.get("id")
             + "&showActivity="
-            + context.get("showActivity");
+            + context.get("showActivity")
+            + "&dailyLimit="
+            + context.get("dailyLimit");
 
     response.setView(
         ActionView.define(I18n.get("Timesheet lines"))

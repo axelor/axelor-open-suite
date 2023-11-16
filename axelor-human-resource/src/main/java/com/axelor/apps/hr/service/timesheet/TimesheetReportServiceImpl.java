@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -38,18 +42,16 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.leave.LeaveService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.Template;
-import com.axelor.apps.message.service.MessageService;
-import com.axelor.apps.message.service.TemplateMessageService;
-import com.axelor.apps.tool.QueryBuilder;
-import com.axelor.apps.tool.date.DateTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
+import com.axelor.utils.QueryBuilder;
+import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -85,7 +87,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   protected WeeklyPlanningService weeklyPlanningService;
   protected EmployeeService employeeService;
   protected TimesheetLineService timesheetLineService;
-  protected LeaveService leaveService;
+  protected LeaveRequestService leaveRequestService;
+  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
 
   @Inject
   public TimesheetReportServiceImpl(
@@ -100,7 +103,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
       WeeklyPlanningService weeklyPlanningService,
       EmployeeService employeeService,
       TimesheetLineService timesheetLineService,
-      LeaveService leaveService) {
+      LeaveRequestService leaveRequestService,
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService) {
     this.timesheetReminderRepo = timesheetReminderRepo;
     this.timesheetReportRepository = timesheetReportRepository;
     this.extraHoursLineRepository = extraHoursLineRepository;
@@ -113,7 +117,8 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     this.weeklyPlanningService = weeklyPlanningService;
     this.employeeService = employeeService;
     this.timesheetLineService = timesheetLineService;
-    this.leaveService = leaveService;
+    this.leaveRequestService = leaveRequestService;
+    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
   }
 
   @Override
@@ -146,7 +151,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return employeeSet;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Message> sendReminders(TimesheetReport timesheetReport) throws AxelorException {
 
     Template reminderTemplate =
@@ -172,7 +177,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return timesheetReminders;
   }
 
-  private void addTimesheetReminder(
+  protected void addTimesheetReminder(
       TimesheetReport timesheetReport,
       List<Employee> employees,
       List<TimesheetReminder> timesheetReminders)
@@ -257,7 +262,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return messages;
   }
 
-  private TimesheetReminderLine createTimesheetReminderLine(
+  protected TimesheetReminderLine createTimesheetReminderLine(
       LocalDate fromDate,
       LocalDate toDate,
       BigDecimal worksHour,
@@ -353,7 +358,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return map;
   }
 
-  private BigDecimal getTotalWorksHours(
+  protected BigDecimal getTotalWorksHours(
       Employee employee, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal worksHour =
@@ -380,7 +385,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return worksHour.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getTotalWeekWorksHours(
+  protected BigDecimal getTotalWeekWorksHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
       throws AxelorException {
     BigDecimal worksHour =
@@ -406,7 +411,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return worksHour.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getTotalWorkedHours(
+  protected BigDecimal getTotalWorkedHours(
       Employee employee, LocalDate date, boolean isPublicHoliday, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal totalHours = BigDecimal.ZERO;
@@ -437,7 +442,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getTotalWeekWorkedHours(
+  protected BigDecimal getTotalWeekWorkedHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal publicHolidays)
       throws AxelorException {
     BigDecimal totalHours = BigDecimal.ZERO;
@@ -466,12 +471,12 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalHours.setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal getLeaveHours(Employee employee, LocalDate date, BigDecimal dailyWorkingHours)
-      throws AxelorException {
-    List<LeaveRequest> leavesList = leaveService.getLeaves(employee, date);
+  protected BigDecimal getLeaveHours(
+      Employee employee, LocalDate date, BigDecimal dailyWorkingHours) throws AxelorException {
+    List<LeaveRequest> leavesList = leaveRequestService.getLeaves(employee, date);
     BigDecimal totalLeaveHours = BigDecimal.ZERO;
     for (LeaveRequest leave : leavesList) {
-      BigDecimal leaveHours = leaveService.computeDuration(leave, date, date);
+      BigDecimal leaveHours = leaveRequestComputeDurationService.computeDuration(leave, date, date);
       if (leave.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
         leaveHours = leaveHours.multiply(dailyWorkingHours);
       }
@@ -480,7 +485,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return totalLeaveHours;
   }
 
-  private BigDecimal getWeekLeaveHours(
+  protected BigDecimal getWeekLeaveHours(
       Employee employee, LocalDate fromDate, LocalDate toDate, BigDecimal dailyWorkingHours)
       throws AxelorException {
     BigDecimal leaveHours = BigDecimal.ZERO;

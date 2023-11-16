@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -24,7 +25,7 @@ import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.SubrogationReleaseService;
 import com.axelor.apps.base.db.Company;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -57,22 +58,6 @@ public class SubrogationReleaseController {
       subrogationRelease =
           Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
       Beans.get(SubrogationReleaseService.class).transmitRelease(subrogationRelease);
-      response.setReload(true);
-    } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(e);
-    }
-  }
-
-  public void printToPDF(ActionRequest request, ActionResponse response) {
-    try {
-      SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
-      String name =
-          String.format(
-              "%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
-      String fileLink =
-          Beans.get(SubrogationReleaseService.class).printToPDF(subrogationRelease, name);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
       response.setReload(true);
     } catch (Exception e) {
       response.setError(e.getMessage());

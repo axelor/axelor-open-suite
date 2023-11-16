@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountConfig" lang="java" cacheable="true">
+  <entity name="AccountConfig" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>
@@ -57,8 +57,11 @@
       title="Employee account"/>
     <many-to-one name="irrecoverableAccount" ref="com.axelor.apps.account.db.Account"
       title="Irrecoverable account"/>
-    <many-to-one name="cashPositionVariationAccount"
-      ref="com.axelor.apps.account.db.Account" title="Cashier Regulation account"/>
+    <many-to-one name="cashPositionVariationDebitAccount"
+      ref="com.axelor.apps.account.db.Account" title="Cashier Debit Regulation account"/>
+    <many-to-one name="cashPositionVariationCreditAccount"
+      ref="com.axelor.apps.account.db.Account" title="Cashier Credit Regulation account"/>
+
     <many-to-one name="advancePaymentAccount" ref="com.axelor.apps.account.db.Account"
       title="Customer advance payment account"/>
     <many-to-one name="factorDebitAccount" ref="com.axelor.apps.account.db.Account"/>
@@ -84,7 +87,7 @@
     <many-to-one name="supplierAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
     <many-to-one name="employeeAccountSequence" ref="com.axelor.apps.base.db.Sequence"/>
 
-    <decimal name="thresholdDistanceFromRegulation" title="Allowed payment range"/>
+    <decimal name="thresholdDistanceFromRegulation" title="Amount autorized"/>
 
     <boolean name="autoReconcileOnInvoice" title="Authorize auto reconcile on invoice"/>
     <boolean name="autoReconcileOnPayment" title="Authorize auto reconcile on payment"/>
@@ -129,7 +132,7 @@
     <decimal name="upperThresholdReimbursement" title="Upper reimbursement limit"/>
     <many-to-one name="reimbursementAccount" ref="com.axelor.apps.account.db.Account"
       title="Reimbursement account"/>
-    <many-to-one name="reimbursementTemplate" ref="com.axelor.apps.message.db.Template"
+    <many-to-one name="reimbursementTemplate" ref="com.axelor.message.db.Template"
       title="Reimbursement email template"/>
 
     <string name="reimbursementImportFolderPathCFONB"
@@ -152,7 +155,7 @@
       title="Max Nbr. for payment schedule rejection"/>
     <integer name="invoiceRejectNumLimit" title="Max Nbr. of invoices rejection"/>
     <many-to-one name="rejectPaymentScheduleTemplate"
-      ref="com.axelor.apps.message.db.Template"
+      ref="com.axelor.message.db.Template"
       title="Email template for invoice and payment schedule rejections"/>
 
     <!-- Onglet Apurements -->
@@ -170,8 +173,6 @@
 
 
     <!-- Invoice page -->
-    <boolean name="allowCancelVentilatedInvoice"
-      title="Allow cancelation of ventilated invoice"/>
     <boolean name="generateMoveForInvoicePayment"
       title="Generate move for payment on invoice" default="true"/>
     <boolean name="generateMoveForAdvancePayment" title="Generate move for advance payment"
@@ -209,7 +210,8 @@
       ref="com.axelor.apps.base.db.Product"/>
 
     <!-- Invoice printing -->
-    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"/>
+    <boolean name="displayDelAddrOnPrinting" title="Display delivery address on printing"
+      default="true"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
     <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
     <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"/>
@@ -217,6 +219,15 @@
       title="Display head office address on invoice printing"/>
     <boolean name="displayStockMoveOnInvoicePrinting"
       title="Display Deliveries information on invoice printing" default="false"/>
+    <boolean name="displayPartnerSirenOnInvoicePrinting"
+      title="Display the SIREN number of the partner on printing" default="true"/>
+    <boolean name="displayNoFinancialDiscountAppliedOnPrinting" default="false"
+      title="Display mention 'no financial discount applied' on printing"
+      help="If this option is enabled, the mention 'No discount will be granted for early payment' will be displayed on printing when it's a sale invoice addressed to a legal entity with no granted financial discount"/>
+    <boolean name="displayItemsCategoriesOnPrinting"
+      title="Display a statement depending on the items category on the print."
+      help="This configuration will allow you to set up the statement to be displayed according to the product category present in the invoice."
+      default="true"/>
     <string name="invoiceClientBox" large="true" multiline="true"
       title="Client box in invoice"/>
     <string name="saleInvoiceLegalNote" large="true" multiline="true"
@@ -224,15 +235,19 @@
     <string name="termsAndConditions" large="true" title="Terms and Conditions"/>
     <many-to-one ref="com.axelor.meta.db.MetaFile" name="invoiceWatermark"
       title="Watermark"/>
+    <one-to-many name="statementsForItemsCategoriesList"
+      ref="com.axelor.apps.account.db.InvoiceProductStatement" mappedBy="accountConfig"/>
 
     <!-- Invoice mail -->
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
       default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <boolean name="isManagePassedForPayment" title="Passed for payment"/>
     <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <boolean name="isManageDaybookInPFP" title="Show daybook moves in PFP menu"
+      help="If this field is activated, daybook moves will been selected too in accounting PFP menu"/>
 
     <!-- Account Report -->
     <integer name="lineMinBeforeLongReportGenerationMessageNumber"
@@ -310,13 +325,23 @@
     <boolean name="hasAccountCodeFixedNbrChar" title="Has account code nbr. char"
       help="If this checkbox is ticked, a fixed code length will be compulsory for non-regulatory accounts code. Else the code length definition and structure will be free with minimum controls."/>
 
-    <boolean name="accountAtPayment" title="Account at payment"
+    <boolean name="accountAtPayment" title="Record daybook moves in payment session"
       help="If this checkbox is ticked, daybook moves will be accounted in payment session"
       default="false"/>
 
     <boolean name="retrieveDaybookMovesInPaymentSession"
       title="Include terms attached to 'Daybook' accounting move"/>
 
+    <!-- Tax accounts -->
+    <decimal name="allowedTaxGap" title="Allowed tax gap" default="0.00" initParam="true"
+      help="Field allowing a tax gap during the accounting of a move. Its value specifies the tolerance applied during the tax values control and the move balance control."/>
+
+    <many-to-one name="invoiceBirtTemplate" title="Invoice template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="purchaseInvoicesDetailsBirtTemplate"
+      title="Purchase invoices details template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="chequeDepositSlipBirtTemplate"
+      title="Cheque deposit slip template" ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <finder-method name="findByCompany" using="company"/>
 
@@ -336,6 +361,7 @@
 		public static final int DISTRIBUTION_TYPE_FREE = 1;
 		public static final int DISTRIBUTION_TYPE_PARTNER = 2;
 		public static final int DISTRIBUTION_TYPE_PRODUCT = 3;
+        public static final int DISTRIBUTION_TYPE_TRADING_NAME = 4;
 
 	]]></extra-code>
 
@@ -366,7 +392,8 @@
       <field name="doubtfulCustomerAccount" on="UPDATE"/>
       <field name="employeeAccount" on="UPDATE"/>
       <field name="irrecoverableAccount" on="UPDATE"/>
-      <field name="cashPositionVariationAccount" on="UPDATE"/>
+      <field name="cashPositionVariationDebitAccount" on="UPDATE"/>
+      <field name="cashPositionVariationCreditAccount" on="UPDATE"/>
       <field name="advancePaymentAccount" on="UPDATE"/>
       <field name="factorDebitAccount" on="UPDATE"/>
       <field name="factorCreditAccount" on="UPDATE"/>
@@ -432,7 +459,6 @@
       <field name="irrecoverableStandardRateTax" on="UPDATE"/>
 
 
-      <field name="allowCancelVentilatedInvoice" on="UPDATE"/>
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
@@ -509,6 +535,10 @@
       <field name="accountAtPayment" on="UPDATE"/>
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
+
+      <field name="invoiceBirtTemplate" on="UPDATE"/>
+      <field name="purchaseInvoicesDetailsBirtTemplate" on="UPDATE"/>
+      <field name="chequeDepositSlipBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

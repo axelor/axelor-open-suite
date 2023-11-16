@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="Mrp" lang="java">
+  <entity name="Mrp">
 
     <string name="name" title="Name"/>
     <string name="fullName" title="Full name" namecolumn="true">
@@ -39,6 +39,7 @@
       readonly="true" large="true"/>
     <boolean name="computeWithSubStockLocation" title="Compute sub stock locations"/>
     <boolean name="takeInAccountSubCategories" title="Take in account sub categories"/>
+    <boolean name="validateScenario" title="Validate scenario" default="false"/>
     <finder-method name="findByMrpSeq" using="mrpSeq"/>
 
     <extra-imports>

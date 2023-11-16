@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.payment;
 
@@ -27,12 +28,12 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -130,8 +131,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         log.debug(
             "Overpayment usage : credit move line (remaining to pay): {})",
-            creditMoveLine.getAmountRemaining());
-        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining());
+            creditMoveLine.getAmountRemaining().abs());
+        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining().abs());
       }
       for (MoveLine debitMoveLine : debitMoveLines) {
 
@@ -144,21 +145,18 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       for (MoveLine creditMoveLine : creditMoveLines) {
-
-        if (creditMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-
-          for (MoveLine debitMoveLine : debitMoveLines) {
-            if (debitMoveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-              try {
-                createReconcile(
-                    debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-              } catch (Exception e) {
-                if (dontThrow) {
-                  TraceBackService.trace(e);
-                  log.debug(e.getMessage());
-                } else {
-                  throw e;
-                }
+        for (MoveLine debitMoveLine : debitMoveLines) {
+          if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
+              && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+            try {
+              createReconcile(
+                  debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+            } catch (Exception e) {
+              if (dontThrow) {
+                TraceBackService.trace(e);
+                log.debug(e.getMessage());
+              } else {
+                throw e;
               }
             }
           }
@@ -177,8 +175,8 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditTotalRemaining
    * @throws AxelorException
    */
-  @Transactional
-  private void createReconcile(
+  @Transactional(rollbackOn = {Exception.class})
+  public void createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal debitTotalRemaining,
@@ -188,10 +186,11 @@ public class PaymentServiceImpl implements PaymentService {
     Reconcile reconcile;
     if (debitMoveLine.getMaxAmountToReconcile() != null
         && debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
-      amount = debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining());
+      amount =
+          debitMoveLine.getMaxAmountToReconcile().min(creditMoveLine.getAmountRemaining().abs());
       debitMoveLine.setMaxAmountToReconcile(null);
     } else {
-      amount = creditMoveLine.getAmountRemaining().min(debitMoveLine.getAmountRemaining());
+      amount = creditMoveLine.getAmountRemaining().abs().min(debitMoveLine.getAmountRemaining());
     }
     log.debug("amount : {}", amount);
     log.debug("debitTotalRemaining : {}", debitTotalRemaining);
@@ -328,7 +327,8 @@ public class PaymentServiceImpl implements PaymentService {
       move.getMoveLineList().add(moveLine);
       moveLineNo2++;
       // Gestion du passage en 580
-      reconcileService.balanceCredit(moveLine);
+      reconcileService.canBeZeroBalance(null, moveLine);
+      // reconcileService.balanceCredit(moveLine);
     }
     log.debug("End createExcessPaymentWithAmount");
     return moveLineNo2;
@@ -396,7 +396,7 @@ public class PaymentServiceImpl implements PaymentService {
                 break;
               }
 
-              BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining());
+              BigDecimal amountToPay = amountDebit.min(creditMoveLine.getAmountRemaining().abs());
 
               // Gestion du passage en 580
               if (i == 0) {
@@ -473,5 +473,36 @@ public class PaymentServiceImpl implements PaymentService {
       }
     }
     return amountRemaining;
+  }
+
+  @Override
+  public boolean reconcileMoveLinesWithCompatibleAccounts(List<MoveLine> moveLineList)
+      throws AxelorException {
+    if (moveLineList.size() == 2
+        && !moveLineList.get(0).getAccount().equals(moveLineList.get(1).getAccount())
+        && moveLineList
+            .get(0)
+            .getAccount()
+            .getCompatibleAccountSet()
+            .contains(moveLineList.get(1).getAccount())) {
+      MoveLine creditMoveLine = null;
+      MoveLine debitMoveLine = null;
+
+      if (moveLineList.get(0).getCredit().signum() > 0
+          && moveLineList.get(1).getDebit().signum() > 0) {
+        creditMoveLine = moveLineList.get(0);
+        debitMoveLine = moveLineList.get(1);
+      } else if (moveLineList.get(1).getCredit().signum() > 0
+          && moveLineList.get(0).getDebit().signum() > 0) {
+        creditMoveLine = moveLineList.get(1);
+        debitMoveLine = moveLineList.get(0);
+      }
+
+      if (creditMoveLine != null && debitMoveLine != null) {
+        reconcileService.reconcile(debitMoveLine, creditMoveLine, true, true);
+        return true;
+      }
+    }
+    return false;
   }
 }

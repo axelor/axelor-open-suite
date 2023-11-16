@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Extra hours";"exthrs";16;"Extra hours";"app-extra-hours.png";"axelor-human-resource";"employee,project";21

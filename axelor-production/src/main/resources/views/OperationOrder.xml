@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <calendar name="operation-order-planned-calendar"
     model="com.axelor.apps.production.db.OperationOrder" eventStart="plannedStartDateT"
     eventStop="plannedEndDateT" title="Planned operations" colorBy="machine" mode="week"
-    onChange="action-operation-order-method-set-planned-dates">
+    onChange="action-operation-order-group-set-planned-dates">
     <field name="name"/>
   </calendar>
 
@@ -17,13 +17,19 @@
     <field name="name"/>
   </calendar>
 
+  <calendar name="planning-machine-calender"
+    model="com.axelor.apps.production.db.OperationOrder" title="Machine Planning"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" colorBy="statusSelect">
+    <field name="operationName"/>
+  </calendar>
+
 
   <grid name="operation-order-group-grid" title="Operations"
     model="com.axelor.apps.production.db.OperationOrder" groupBy="manufOrder"
     orderBy="-manufOrder,priority" canNew="false">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-operation-order-method-print"/>
+        onClick="action-method-print-birt-list"/>
     </toolbar>
     <field name="manufOrder" width="120" grid-view="manuf-order-grid"
       form-view="manuf-order-form"/>
@@ -36,20 +42,24 @@
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
     <field name="statusSelect"/>
+    <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
+    <field name="manufOrder.prodProcess" hidden="true"/>
+    <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
+    <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
     <button name="planBtn" icon="fa-calendar" onClick="action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-    <button name="startBtn" icon="fa-play" onClick="action-operation-order-group-start"
-      readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-    <button name="pauseBtn" icon="fa-pause"
-      onClick="action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+    <button name="startBtn" icon="fa-play"
+      onClick="action-operation-order-group-start-or-resume"
+      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
+    <button name="pauseBtn" icon="fa-pause" onClick="action-operation-order-group-pause,save"
+      readonlyIf="statusSelect != 4"/>
     <button name="finishBtn" icon="fa-power-off"
       onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="fa-times-circle"
-      onClick="action-operation-order-method-cancel,save"
+      onClick="action-operation-order-group-cancel,save"
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
-    <button name="printBtn" title="Print" icon="fa-print"
-      onClick="action-operation-order-method-print"/>
+    <button name="printBtn" title="Print" icon="fa-print" onClick="action-method-print-birt"/>
   </grid>
 
 
@@ -63,21 +73,26 @@
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
     <field name="statusSelect"/>
+    <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
+    <field name="manufOrder.prodProcess" hidden="true"/>
+    <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
+    <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
     <button name="planBtn" icon="fa-calendar"
       onClick="save,action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-    <button name="startBtn" icon="fa-play" onClick="save,action-operation-order-group-start"
-      readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
+    <button name="startBtn" icon="fa-play"
+      onClick="save,action-operation-order-group-start-or-resume"
+      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
     <button name="pauseBtn" icon="fa-pause"
-      onClick="save,action-operation-order-method-pause,save" readonlyIf="statusSelect != 4"/>
+      onClick="save,action-operation-order-group-pause,save" readonlyIf="statusSelect != 4"/>
     <button name="finishBtn" icon="fa-power-off"
       onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
     <button name="cancelBtn" icon="fa-times-circle"
-      onClick="save,action-operation-order-method-cancel,save"
+      onClick="save,action-operation-order-group-cancel,save"
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
     <button name="printBtn" title="Print" icon="fa-print"
-      onClick="save,action-operation-order-method-print"/>
+      onClick="save,action-method-print-birt"/>
   </grid>
 
 
@@ -90,7 +105,7 @@
     canNew="false">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-operation-order-method-print"/>
+        onClick="action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
@@ -116,11 +131,16 @@
     <panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
       <panel name="plannedDates" title="Planned dates" colSpan="6">
         <field name="plannedStartDateT"
-          onChange="save,action-operation-order-method-compute-duration,save"/>
+          onChange="action-operation-order-record-set-planned-end-date-time"/>
         <field name="plannedEndDateT"
-          onChange="save,action-operation-order-method-compute-duration,save"/>
+          onChange="action-operation-order-record-set-planned-start-date-time-and-duration"/>
         <field name="plannedDuration" colSpan="12" widget="duration" x-seconds="true"
-          x-big="true"/>
+          x-big="true" onChange="action-operation-order-record-set-planned-end-date-time"/>
+        <field name="plannedHumanDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 2"/>
+        <field name="plannedMachineDuration" colSpan="12" widget="duration" x-seconds="true"
+          x-big="true" hideIf="workCenter.workCenterTypeSelect == 1"/>
+        <field name="workCenter.workCenterTypeSelect" hidden="true"/>
       </panel>
       <panel name="realDatesPanel" title="Real dates" colSpan="6">
         <field name="realStartDateT"
@@ -133,15 +153,13 @@
     </panel>
     <panel name="resourcesPanel" title="Resources" colSpan="12" readonlyIf="statusSelect == 6">
       <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"
-        colSpan="4" onChange="action-operation-order-attrs-workcenter-machine"/>
+        colSpan="4" onChange="action-operation-order-attrs-workcenter-machine"
+        onSelect="action-operation-order-attrs-set-work-center-domain"/>
       <field name="machine" hidden="true" readonly="true" grid-view="machine-grid"
         form-view="machine-form" colSpan="4"/>
       <field name="machineTool" domain="self.machine = machine" form-view="machine-tool-form"
         grid-view="machine-tool-grid" readonlyIf="statusSelect &gt; 3" colSpan="4"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
-      <panel-related name="prodHumanResourceListPanel" field="prodHumanResourceList"
-        readonlyIf="statusSelect == 6" colSpan="12" grid-view="prod-human-resource-grid"
-        form-view="prod-human-resource-form"/>
       <field name="prodProcessLine.description" colSpan="12"/>
       <field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
     </panel>
@@ -167,24 +185,28 @@
     </panel>
     <panel name="actionsPanel" title="Actions" sidebar="true" colSpan="12" showIf="id"
       readonlyIf="statusSelect == 6">
+      <field name="manufOrder.prodProcess" hidden="true"/>
+      <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
+      <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
       <button name="planBtn" title="Plan" icon="fa-calendar" colSpan="12"
         hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
         onClick="save,action-operation-order-method-plan" hidden="true"/>
-      <button name="startBtn" title="Start" icon="fa-play" showIf="statusSelect == 3"
+      <button name="startBtn" title="Start" icon="fa-play"
+        showIf="(statusSelect == 3 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
         colSpan="12" onClick="save,action-operation-order-group-start,save" hidden="true"/>
       <button name="cancelBtn" title="Cancel" icon="fa-times-circle"
         showIf="statusSelect != 2 &amp;&amp; statusSelect != 6" colSpan="12"
-        onClick="save,action-operation-order-method-cancel,save" hidden="true"/>
+        onClick="save,action-operation-order-group-cancel,save" hidden="true"/>
       <button name="finishBtn" title="Finish" icon="fa-power-off" showIf="statusSelect == 4"
         colSpan="12" onClick="save,action-operation-order-group-finish" hidden="true"/>
       <button name="finishPart" icon="fa-power-off" title="Partial Finish" colSpan="12"
         showIf="statusSelect == 4" onClick="save, action-operation-order-method-part-finish"
         hidden="true"/>
       <button name="pauseBtn" title="Pause" icon="fa-pause" showIf="statusSelect == 4"
-        colSpan="12" onClick="save,action-operation-order-method-pause,save" hidden="true"/>
+        colSpan="12" onClick="save,action-operation-order-group-pause,save" hidden="true"/>
       <button name="resumeBtn" title="Resume" icon="fa-step-forward"
-        showIf="statusSelect == 5" colSpan="12"
-        onClick="save,action-operation-order-method-resume,save" hidden="true"/>
+        showIf="(statusSelect == 5 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 5 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 5 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
+        colSpan="12" onClick="save,action-operation-order-method-resume,save" hidden="true"/>
     </panel>
 
     <panel-related name="operationOrderDurationListPanel"
@@ -230,6 +252,10 @@
     <call class="com.axelor.apps.production.web.OperationOrderController" method="pause"/>
   </action-method>
 
+  <action-group name="action-operation-order-group-pause">
+    <action name="action-operation-order-method-pause"/>
+  </action-group>
+
   <action-method name="action-operation-order-method-resume">
     <call class="com.axelor.apps.production.web.OperationOrderController" method="resume"/>
   </action-method>
@@ -247,12 +273,12 @@
     <call class="com.axelor.apps.production.web.OperationOrderController" method="cancel"/>
   </action-method>
 
+  <action-group name="action-operation-order-group-cancel">
+    <action name="action-operation-order-method-cancel"/>
+  </action-group>
+
   <action-method name="action-operation-order-method-start">
     <call class="com.axelor.apps.production.web.OperationOrderController" method="start"/>
-  </action-method>
-
-  <action-method name="action-operation-order-method-print">
-    <call class="com.axelor.apps.production.web.OperationOrderController" method="print"/>
   </action-method>
 
   <action-method name="action-operation-order-method-compute-duration">
@@ -260,10 +286,21 @@
       method="computeDuration"/>
   </action-method>
 
+  <action-method
+    name="action-operation-order-method-alert-if-planned-end-date-overflow">
+    <call class="com.axelor.apps.production.web.OperationOrderController"
+      method="alertPlannedEndDateOverflow"/>
+  </action-method>
+
   <action-method name="action-operation-order-method-set-planned-dates">
     <call class="com.axelor.apps.production.web.OperationOrderController"
       method="setPlannedDates"/>
   </action-method>
+
+  <action-group name="action-operation-order-group-set-planned-dates">
+    <action name="action-operation-order-method-alert-if-planned-end-date-overflow"/>
+    <action name="action-operation-order-method-set-planned-dates"/>
+  </action-group>
 
   <action-method name="action-operation-order-method-set-real-dates">
     <call class="com.axelor.apps.production.web.OperationOrderController" method="setRealDates"/>
@@ -297,6 +334,35 @@
     <attribute name="hidden" for="machine"
       expr="eval: workCenter?.workCenterTypeSelect == 1"/>
   </action-attrs>
+
+  <action-attrs name="action-operation-order-attrs-set-work-center-domain">
+    <attribute name="domain" for="workCenter"
+      expr="eval: 'self.id IN (' + prodProcessLine?.workCenterGroup?.workCenterSet?.collect{ it.id }.join(',') + ')'"
+      if="prodProcessLine?.workCenterGroup?.workCenterSet &amp;&amp; !prodProcessLine?.workCenterGroup?.workCenterSet.isEmpty()"/>
+  </action-attrs>
+
+  <action-record
+    name="action-operation-order-record-set-planned-start-date-time-and-duration"
+    model="com.axelor.apps.production.db.OperationOrder">
+    <field name="plannedStartDateT"
+      expr="eval: plannedEndDateT?.minusSeconds(plannedDuration)"
+      if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isBefore(plannedStartDateT)"/>
+    <field name="plannedDuration"
+      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration(com.axelor.apps.tool.date.DurationTool.computeDuration(plannedStartDateT, plannedEndDateT))"
+      if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isAfter(plannedStartDateT)"/>
+  </action-record>
+
+  <action-record name="action-operation-order-record-set-planned-end-date-time"
+    model="com.axelor.apps.production.db.OperationOrder">
+    <field name="plannedEndDateT" expr="eval: plannedStartDateT?.plusSeconds(plannedDuration)"/>
+  </action-record>
+
+  <action-view name="action-manufacturing-view-on-click-planning-machine-calender-view"
+    title="Machine Planning" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="planning-machine-calender"/>
+    <domain>self.statusSelect IN (3,4,5,6) AND self.machine.id = :_machineId</domain>
+    <context name="_machineId" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Operation order filters">

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,17 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.talent.web;
 
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.apps.talent.service.JobApplicationService;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -36,15 +37,11 @@ import java.util.Map;
 public class JobApplicationController {
 
   public void hire(ActionRequest request, ActionResponse response) {
-
     JobApplication jobApplication = request.getContext().asType(JobApplication.class);
-
     jobApplication = Beans.get(JobApplicationRepository.class).find(jobApplication.getId());
-
-    Employee employee = Beans.get(JobApplicationService.class).hire(jobApplication);
-
+    Employee employee =
+        Beans.get(JobApplicationService.class).createEmployeeFromJobApplication(jobApplication);
     response.setReload(true);
-
     response.setView(
         ActionView.define(I18n.get("Employee"))
             .model(Employee.class.getName())
@@ -70,12 +67,12 @@ public class JobApplicationController {
 
       application = Beans.get(JobApplicationRepository.class).find(application.getId());
 
-      if (application.getResumeId() != null) {
+      if (application.getDmsFile() != null) {
         response.setView(
             ActionView.define(I18n.get("JobApplication.resume"))
                 .model(DMSFile.class.getName())
                 .add("form", "dms-file-form")
-                .context("_showRecord", application.getResumeId().toString())
+                .context("_showRecord", application.getDmsFile().getId().toString())
                 .map());
       } else {
         response.setAlert(I18n.get("No resume found"));
@@ -97,5 +94,11 @@ public class JobApplicationController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setInlineUrl(ActionRequest request, ActionResponse response) {
+    JobApplication jobApplication = request.getContext().asType(JobApplication.class);
+    response.setValue(
+        "$inlineUrl", Beans.get(JobApplicationService.class).getInlineUrl(jobApplication));
   }
 }

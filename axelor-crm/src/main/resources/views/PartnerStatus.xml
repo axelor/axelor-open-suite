@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
+    name="partner-status-grid" orderBy="sequence" canMove="true">
+    <field name="name"/>
+    <field name="isOpen"/>
+    <field name="sequence" hidden="true"/>
+  </grid>
+
+  <form model="com.axelor.apps.crm.db.PartnerStatus" title="Partner status"
+    name="partner-status-form" onLoad="action-partner-status-attrs-set-isopen-readonly">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="isOpen"/>
+      <field name="sequence" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-partner-status-attrs-set-isopen-readonly">
+    <attribute name="readonly" for="isOpen"
+      expr="eval: __this__?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id || __this__?.id == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
+  </action-attrs>
+
+</object-views>

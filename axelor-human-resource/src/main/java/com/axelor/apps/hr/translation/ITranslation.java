@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,14 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.translation;
 
 public interface ITranslation {
 
   public static final String EMPLOYEES_MANAGEMENT_APP_NAME = /*$$(*/
-      "value:Employees Managment"; /*)*/
+      "value:Employees Management"; /*)*/
   public static final String EXTRA_HOURS_APP_NAME = /*$$(*/ "value:Extra hours"; /*)*/
   public static final String EXPENSE_MANAGEMENT_APP_NAME = /*$$(*/ "value:Expense Management"; /*)*/
   public static final String TIMESHEET_MANAGEMENT_APP_NAME = /*$$(*/
@@ -63,6 +64,22 @@ public interface ITranslation {
   public static final String EMPLOYEE_POSITION = /*$$(*/ "Employee.position"; /*)*/
   public static final String EMPLOYEE_CONTRACT_TYPE = /*$$(*/ "Employee.contractType"; /*)*/
 
+  public static final String EMPLOYEE_CODE = /*$$(*/ "Employee code"; /*)*/
+  public static final String EMPLOYEE_CODE_NATURE = /*$$(*/ "Code nature"; /*)*/
+  public static final String EMPLOYEE_NAME_AND_SURNAME = /*$$(*/ "Name and surname"; /*)*/
+  public static final String EMPLOYEE_LUNCH_VOUCHER_NUMBER = /*$$(*/ "Lunch Voucher's number"; /*)*/
+  public static final String LEAVE_REQUEST_START_DATE = /*$$(*/ "Start date"; /*)*/
+  public static final String LEAVE_REQUEST_END_DATE = /*$$(*/ "End date"; /*)*/
+  public static final String LEAVE_REQUEST_START_ON = /*$$(*/ "Start On"; /*)*/
+  public static final String LEAVE_REQUEST_END_ON = /*$$(*/ "End On"; /*)*/
+
   public static final String EDITOR_TEAM_TASK = /*$$(*/ "TeamTask"; /*)*/
   public static final String EDITOR_ADD_A_LINE = /*$$(*/ "ADD A LINE"; /*)*/
+
+  String MEDICAL_VISIT = /*$$(*/ "Medical visit"; /*)*/
+
+  String SET_TOTAL_TAX_ZERO = /*$$(*/
+      "The total tax has been set to zero since the expense type blocks taxes."; /*)*/
+
+  String DISTANCE_BETWEEN_CITIES = /*$$(*/ "The distance between %s and %s." /*)*/;
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.ebics.web;
 
@@ -29,18 +30,18 @@ import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsRequestLogRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
-import com.axelor.apps.bankpayment.ebics.certificate.CertificateManager;
 import com.axelor.apps.bankpayment.ebics.service.EbicsCertificateService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.data.xml.XMLImporter;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.libs.ebics.exception.ReturnCode;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
@@ -56,7 +57,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.security.GeneralSecurityException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -70,7 +70,8 @@ import org.apache.xmlbeans.impl.common.IOUtil;
 public class EbicsController {
 
   @Transactional
-  public void generateCertificate(ActionRequest request, ActionResponse response) {
+  public void generateCertificate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     EbicsUser ebicsUser =
         Beans.get(EbicsUserRepository.class)
@@ -82,14 +83,8 @@ public class EbicsController {
       return;
     }
 
-    CertificateManager cm = new CertificateManager(ebicsUser);
-    try {
-      cm.create();
-      ebicsUser.setStatusSelect(EbicsUserRepository.STATUS_WAITING_SENDING_SIGNATURE_CERTIFICATE);
-      Beans.get(EbicsUserRepository.class).save(ebicsUser);
-    } catch (GeneralSecurityException | IOException e) {
-      e.printStackTrace();
-    }
+    Beans.get(EbicsCertificateService.class).generateCertificate(ebicsUser);
+
     response.setReload(true);
   }
 
@@ -109,10 +104,14 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendINIRequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -125,10 +124,14 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendHIARequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -141,12 +144,21 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      X509Certificate[] certificates =
+
+      Map<String, Object> hpbResponse =
           Beans.get(EbicsService.class).sendHPBRequest(ebicsUser, null);
+      X509Certificate[] certificates = (X509Certificate[]) hpbResponse.get("certificate");
       confirmCertificates(ebicsUser, certificates, response);
+
+      ReturnCode returnCode = (ReturnCode) hpbResponse.get("returnCode");
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
+
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -180,7 +192,7 @@ public class EbicsController {
                   Beans.get(EbicsCertificateService.class).convertToPEMString(certificates[1]))
               .map());
     } catch (Exception e) {
-      response.setFlash("Error in certificate confirmation ");
+      response.setInfo("Error in certificate confirmation ");
     }
   }
 
@@ -191,10 +203,14 @@ public class EbicsController {
             .find(request.getContext().asType(EbicsUser.class).getId());
 
     try {
-      Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
+      ReturnCode returnCode = Beans.get(EbicsService.class).sendSPRRequest(ebicsUser, null);
+
+      if (!returnCode.isOk()) {
+        response.setInfo(I18n.get(returnCode.getText()));
+      }
     } catch (Exception e) {
       e.printStackTrace();
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -231,11 +247,11 @@ public class EbicsController {
                 bankOrderFileFormat,
                 testSignatureFile);
       } else {
-        response.setFlash(I18n.get(BankPaymentExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+        response.setInfo(I18n.get(BankPaymentExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
 
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -261,11 +277,11 @@ public class EbicsController {
                 bankStatementFileFormat.getStatementFileFormatSelect());
         downloadFile(response, ebicsUser);
       } else {
-        response.setFlash(I18n.get(BankPaymentExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
+        response.setInfo(I18n.get(BankPaymentExceptionMessage.EBICS_TEST_MODE_NOT_ENABLED));
       }
 
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -281,7 +297,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendHTDRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -297,7 +313,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendPTKRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -313,7 +329,7 @@ public class EbicsController {
       Beans.get(EbicsService.class).sendHPDRequest(ebicsUser, null, null, null);
       downloadFile(response, ebicsUser);
     } catch (Exception e) {
-      response.setFlash(stripClass(e.getLocalizedMessage()));
+      response.setInfo(stripClass(e.getLocalizedMessage()));
     }
 
     response.setReload(true);
@@ -368,6 +384,7 @@ public class EbicsController {
     byte[] certs = ebicsCertificate.getCertificate();
 
     if (certs != null && certs.length > 0) {
+
       X509Certificate certificate =
           EbicsCertificateService.getCertificate(certs, ebicsCertificate.getTypeSelect());
       ebicsCertificate =

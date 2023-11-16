@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -13,7 +13,7 @@
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
-  <form onNew="action-accounting-batch-record-on-new" name="accounting-batch-form"
+  <form onNew="action-accounting-batch-group-on-new" name="accounting-batch-form"
     title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch"
     onLoad="action-accounting-batch-group-on-load">
     <panel name="mainPanel">
@@ -24,7 +24,8 @@
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid" onChange="action-accounting-batch-group-company-on-change"/>
       <field name="bankDetails"
-        hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21,26].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
+        hideIf="actionSelect &amp;&amp; ([14,15,16,17,18,21,25,26,27].indexOf(actionSelect) &gt; -1 || (actionSelect == 11 &amp;&amp; reimbursementTypeSelect == 2) || (actionSelect == 12 &amp;&amp; directDebitDataTypeSelect == 2))"
+        requiredIf="actionSelect &amp;&amp; actionSelect == 19 &amp;&amp; creditTransferTypeSelect == 2 &amp;&amp; paymentMode.typeSelect == 9 &amp;&amp; paymentMode.inOutSelect == 2"
         widget="SuggestBox" onSelect="action-accounting-batch-attrs-bank-details-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="company.tradingNameSet" colSpan="12" hidden="true"/>
@@ -34,10 +35,12 @@
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         showIf="actionSelect == 14"/>
       <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
-        form-view="trading-name-form" domain=":company member of self.companySet" canNew="false"
-        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" hidden="true"
-        canEdit="false"/>
+        widget="TagSelect" form-view="trading-name-form" domain=":company member of self.companySet"
+        canNew="false" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+        hidden="true" canEdit="false"/>
       <field name="archived" title="Archived"/>
+      <field name="paymentMode.typeSelect"/>
+      <field name="paymentMode.inOutSelect"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="reimbursementPagePanel" title="Reimbursement configuration"
@@ -91,6 +94,8 @@
         <field name="includeOtherBankAccounts"
           showIf="$contains([1, 2, 3], creditTransferTypeSelect)"
           if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
+        <field name="paymentMode.typeSelect"/>
+        <field name="paymentMode.inOutSelect"/>
       </panel>
 
       <panel name="debtRecoveryPagePanel" title="Debt recovery configuration"
@@ -143,6 +148,7 @@
           domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
+        <field name="includeSpecialAccounts" showIf="openYear &amp;&amp; generateResultMove"/>
         <field name="resultMoveDescription" showIf="generateResultMove"/>
         <field name="generateGeneralLedger" showIf="openYear"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
@@ -152,6 +158,7 @@
       <panel name="moveConsistencyControl" title="Move Consistency Control"
         hideIf="actionSelect != 25">
         <panel-related field="yearSet" widget="TagSelect" canSelect="true"
+          domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
           canNew="false" canEdit="false" grid-view="year-account-grid" form-view="year-account-form"
           colSpan="12"/>
       </panel>
@@ -186,9 +193,10 @@
             onChange="action-record-accounting-batch-journal-onchange,action-attrs-accounting-batch-cutoff-move-status-domain"
             requiredIf="actionSelect == 26"
             domain="self.company = :company AND self.statusSelect = 1"/>
-          <field name="researchJournal" colSpan="6"
-            onSelect="action-attrs-accounting-batch-set-journal-domain"
-            hideIf="accountingCutOffTypeSelect &lt;= 2"/>
+          <field name="journalSet" colSpan="6" form-view="journal-form"
+            grid-view="journal-grid" hideIf="accountingCutOffTypeSelect &lt;= 2"
+            onSelect="action-attrs-accounting-batch-set-journal-domain" canNew="false"
+            canEdit="false" widget="TagSelect"/>
           <field name="cutOffMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
           <spacer colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
@@ -198,6 +206,27 @@
             showIf="accountingCutOffTypeSelect &lt;= 2"/>
         </panel>
         <field name="prefixOrigin"/>
+      </panel>
+      <panel name="autoMoveLetteringConfigPanel" title="Auto move lettering configuration"
+        hideIf="actionSelect != 27" colSpan="12">
+        <field name="startDate" requiredIf="actionSelect == 27"/>
+        <field name="endDate" requiredIf="actionSelect == 27"/>
+        <field name="fromAccount" requiredIf="actionSelect == 27 &amp;&amp; toAccount == null"
+          domain="self.statusSelect = 1 AND self.reconcileOk IS true AND self.company = :company"/>
+        <field name="toAccount" requiredIf="actionSelect == 27 &amp;&amp; fromAccount == null"
+          domain="self.statusSelect = 1 AND self.reconcileOk IS true AND self.company = :company"/>
+        <field name="partnerSet" form-view="partner-form" grid-view="partner-grid"
+          widget="TagSelect"
+          onSelect="action-accounting-batch-method-auto-lettering-set-partner-domain" canNew="false"
+          canEdit="false" colSpan="12"/>
+        <field name="orderBySelect" widget="MultiSelect"/>
+        <field name="reconcileMethodSelect" widget="RadioSelect"
+          onChange="action-accounting-batch-record-auto-lettering-set-partial-false"/>
+        <field name="isPartialReconcile"
+          readonlyIf="reconcileMethodSelect != 1 &amp;&amp; reconcileMethodSelect != 4"
+          widget="boolean-switch"/>
+        <field name="isProposal" widget="boolean-switch"/>
+        <field name="$isShowMoveLinesInProposalBtnDisplayed" type="boolean" hidden="true"/>
       </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
@@ -248,8 +277,17 @@
         onClick="save,action-accounting-batch-method-moves-consistency-control"/>
       <button name="accountingCutOffBatchBtn" title="Run accounting cut-off"
         showIf="actionSelect == 26" onClick="action-accounting-batch-group-accounting-cut-off"/>
-      <field name="previewRecordsToProcess" colSpan="6" widget="boolean-switch"
+      <field name="previewRecordsToProcess" colSpan="12" widget="boolean-switch"
         showIf="actionSelect == 26"/>
+      <button name="autoMoveLetteringBatchBtn" title="Run auto move lettering"
+        showIf="actionSelect == 27" onClick="action-accounting-batch-group-auto-move-lettering"/>
+      <button name="showMoveLinesInProposalBtn"
+        title="Show move lines linked to reconcile group proposals"
+        showIf="$isShowMoveLinesInProposalBtnDisplayed"
+        onClick="action-accounting-batch-method-show-move-lines-in-proposal"/>
+      <label name="proposalNotEnabledLabel" showIf="actionSelect == 27 &amp;&amp; !isProposal"
+        title="Warning, the option of lettering proposal is not activated, the realized reconcile groups will be definitively validated without the possibility of checking them beforehand."
+        css="label-danger"/>
 
     </panel>
   </form>
@@ -270,6 +308,11 @@
     <action name="action-accounting-batch-method-action-fixed-asset-lines-realize"/>
   </action-group>
 
+  <action-group name="action-accounting-batch-group-on-new">
+    <action name="action-accounting-batch-record-on-new"/>
+    <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
+  </action-group>
+
   <action-group name="action-accounting-batch-group-on-load">
     <action name="action-attrs-accounting-batch-hide-trading-name-set"/>
     <action name="action-accounting-batch-attrs-show-label"/>
@@ -278,6 +321,9 @@
 
   <action-group name="action-accounting-batch-group-accounting-cut-off">
     <action name="save"/>
+    <action name="action-accounting-batch-validate-cut-off-move-status"/>
+    <action name="action-accounting-batch-method-compute-move-line-cut-off-fields"
+      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
     <action name="action-accounting-batch-view-preview-move-lines-to-process"
       if="previewRecordsToProcess"/>
     <action name="action-accounting-batch-validate-twice-in-a-month"
@@ -301,6 +347,12 @@
     <action name="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
     <action name="action-accounting-batch-attrs-set-company-currency"
       if="[11,12,19].contains(actionSelect)"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-auto-move-lettering">
+    <action name="action-accounting-batch-validate-reconcile-dates"/>
+    <action name="save"/>
+    <action name="action-accounting-batch-method-auto-move-lettering"/>
   </action-group>
 
   <!-- ACTION RECORD -->
@@ -342,7 +394,7 @@
       expr="eval: __config__.date.with(java.time.temporal.TemporalAdjusters.lastDayOfMonth()).plusDays(1)"
       if="__user__.activeCompany != null"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_ACCOUNTED"/>
-    <field name="researchJournal" expr="eval: null"/>
+    <field name="journalSet" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-record-accounting-batch-movedate-onchange"
@@ -353,10 +405,17 @@
 
   <action-record name="action-record-accounting-batch-journal-onchange"
     model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="cutOffMoveStatusSelect" expr="eval: null"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_SIMULATED"
       if="miscOpeJournal?.authorizeSimulatedMove"/>
     <field name="cutOffMoveStatusSelect" expr="eval: __repo__(Move).STATUS_DAYBOOK"
       if="!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; miscOpeJournal?.allowAccountingDaybook"/>
+  </action-record>
+
+  <action-record
+    name="action-accounting-batch-record-auto-lettering-set-partial-false"
+    model="com.axelor.apps.account.db.AccountingBatch">
+    <field name="isPartialReconcile" expr="eval: false"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -427,9 +486,31 @@
       method="controlMoveConsistency"/>
   </action-method>
 
+  <action-method
+    name="action-accounting-batch-method-compute-move-line-cut-off-fields">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="computeMoveLineCutOffFields"/>
+  </action-method>
+
   <action-method name="action-accounting-batch-method-accounting-cut-off">
     <call class="com.axelor.apps.account.web.AccountingBatchController"
       method="actionAccountingCutOff"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-auto-move-lettering">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="actionAutoMoveLettering"/>
+  </action-method>
+
+  <action-method
+    name="action-accounting-batch-method-auto-lettering-set-partner-domain">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="setLetteringPartnersDomain"/>
+  </action-method>
+
+  <action-method name="action-accounting-batch-method-show-move-lines-in-proposal">
+    <call class="com.axelor.apps.account.web.AccountingBatchController"
+      method="showMoveLinesInProposal"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->
@@ -442,6 +523,16 @@
   <action-validate name="action-accounting-batch-validate-realized-fixed-date">
     <error message="Please enter valid start date and end date"
       if="eval: !updateAllRealizedFixedAssetLines &amp;&amp; startDate &gt; endDate"/>
+  </action-validate>
+
+  <action-validate name="action-accounting-batch-validate-cut-off-move-status">
+    <error
+      message="The selected cut off move status is incompatible with this misc. operation journal"
+      if="(!miscOpeJournal?.authorizeSimulatedMove &amp;&amp; cutOffMoveStatusSelect == 5) || (!miscOpeJournal?.allowAccountingDaybook &amp;&amp; cutOffMoveStatusSelect == 2)"/>
+  </action-validate>
+
+  <action-validate name="action-accounting-batch-validate-reconcile-dates">
+    <error if="startDate &gt; endDate" message="End date cannot be inferior to start date"/>
   </action-validate>
 
 
@@ -473,7 +564,7 @@
 
   <action-attrs name="action-attrs-accounting-batch-hide-trading-name-set">
     <attribute name="hidden" for="tradingNameSet"
-      expr="eval: !(actionSelect == 14 &amp;&amp; isDebtRecoveryByTradingName)"/>
+      expr="eval: actionSelect != 27 &amp;&amp; !(actionSelect == 14 &amp;&amp; isDebtRecoveryByTradingName)"/>
   </action-attrs>
 
   <action-attrs name="action-accounting-batch-attrs-show-label">
@@ -495,13 +586,13 @@
 
   <action-attrs name="action-attrs-accounting-batch-set-journal-domain">
     <attribute name="domain" expr="eval: &quot;self.company = :company&quot;"
-      for="researchJournal"/>
+      for="journalSet"/>
     <attribute name="domain"
       expr="eval: &quot;self.journalType.technicalTypeSelect = 1 AND self.company = :company AND self.statusSelect = 1&quot;"
-      for="researchJournal" if="accountingCutOffTypeSelect == 3"/>
+      for="journalSet" if="accountingCutOffTypeSelect == 3"/>
     <attribute name="domain"
       expr="eval: &quot;self.journalType.technicalTypeSelect = 2 AND self.company = :company AND self.statusSelect = 1&quot;"
-      for="researchJournal" if="accountingCutOffTypeSelect == 4"/>
+      for="journalSet" if="accountingCutOffTypeSelect == 4"/>
   </action-attrs>
 
   <action-view name="action-accounting-batch-view-preview-move-lines-to-process"
@@ -513,18 +604,19 @@
       AND self.cutOffStartDate IS NOT NULL
       AND
       self.cutOffEndDate IS NOT NULL
-      AND ((:_researchJournal > 0 AND self.move.journal.id =
-      :_researchJournal)
-      OR (:_researchJournal = 0 AND
-      self.move.journal.journalType.technicalTypeSelect = :_journalType))
+      AND ((0 NOT IN (:_journalSet) AND self.move.journal.id IN
+      (:_journalSet))
+      OR (0 IN (:_journalSet) AND
+      self.move.journal.journalType.technicalTypeSelect =
+      :_journalType))
       AND DATE(:_moveDate) >=
       self.move.date
       AND self.move.statusSelect IN (2, 3, 5)
       AND self.cutOffEndDate > DATE(:_moveDate)
       AND self.move.company.id = :_company
     </domain>
-    <context name="_researchJournal"
-      expr="eval: researchJournal != null ? researchJournal.id : 0"/>
+    <context name="_journalSet"
+      expr="eval: journalSet.isEmpty() ? [0] : journalSet.collect{it.id}"/>
     <context name="_journalType" expr="eval: accountingCutOffTypeSelect == 3 ? 1 : 2"/>
     <context name="_moveDate" expr="eval: moveDate"/>
     <context name="_company" expr="eval: company.id"/>

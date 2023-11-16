@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
@@ -27,7 +27,7 @@
     <field name="product" domain="self.productTypeSelect = 'storable'"
       onChange="action-bill-of-material-group-product" form-view="product-form"
       grid-view="product-grid"/>
-    <field name="billOfMaterialSet.qty" aggregate="sum" x-scale="2"/>
+    <field name="billOfMaterialLineList.qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
     <field name="statusSelect"/>
@@ -54,24 +54,21 @@
 
     <menubar>
       <menu name="bomReportsMenu" title="Reports">
-        <item name="printItem" title="Print" action="action-bill-of-material-method-print"/>
+        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
 
       <menu name="bomOptionsMenu" title="Options">
         <item name="generateNewVersionItem" title="Generate new version"
           action="action-bill-of-material-check-other-version,action-bill-of-material-generate-new-version"
           if="__config__.app.getApp('production')?.manageBillOfMaterialVersion"/>
-        <item name="defineDefaultBomProductItem"
-          title="Define as default bill of materials of product"
-          action="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
-          hideIf="product.defaultBillOfMaterial.id == id"/>
       </menu>
     </menubar>
 
     <panel name="mainPanel">
-      <field name="statusSelect" showTitle="false" colSpan="8" readonly="false"
+      <field name="statusSelect" showTitle="false" colSpan="8" readonly="true"
         widget="NavSelect"/>
-      <field name="$defaultBOMOnProduct" readonly="true" showTitle="false" colSpan="4">
+      <field name="$defaultBOMOnProduct" readonly="true" showIf="id" showTitle="false"
+        colSpan="4">
         <viewer depends="$defaultBillOfMaterial">
                     <![CDATA[
                         <h4 class="text-right">
@@ -93,21 +90,20 @@
         </editor>
       </field>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" onChange="action-bill-of-material-record-set-dummy-field"/>
       <field name="workshopStockLocation" canEdit="false"
         domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
         if="__config__.app.getApp('production')?.getManageWorkshop()"/>
       <field name="product" canEdit="false"
-        onChange="action-bill-of-material-record-product-unit"
+        onChange="action-bill-of-material-record-product-unit,action-bill-of-material-record-set-dummy-field"
         domain="self.productTypeSelect = 'storable' AND self.productSubTypeSelect != 3 AND self.dtype = 'Product'"
-        form-view="product-form" grid-view="product-grid"/>
+        form-view="product-form" grid-view="product-grid" required="true"/>
       <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"
         canNew="true" onChange="action-bill-of-material-method-validate-prod-process"
-        domain="(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)"/>
+        onSelect="action-bill-of-material-attrs-set-prod-process-domain"/>
       <field name="qty" colSpan="3"/>
       <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
         canEdit="false" required="true"/>
-      <field name="product.defaultBillOfMaterial" hidden="true" colSpan="1"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -125,23 +121,11 @@
 					    ]]>
           </viewer>
         </field>
-        <panel-related name="billOfMaterialSetPanel" field="billOfMaterialSet"
-          title="Components" colSpan="12" height="15" orderBy="priority"
-          domain="self.defineSubBillOfMaterial = true AND self.personalized = false and (:id is null or self.id != :id)"
+        <panel-related name="billOfMaterialLineListPanel"
+          field="billOfMaterialLineList" title="Components" colSpan="12" height="15"
+          orderBy="priority" onSelect="action-bill-of-material-attrs-set-bill-of-material-domain"
           form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"
-          onChange="action-bill-of-material-record-count-number-of-components"
-          canSelect="$canSelect"/>
-        <button name="addComponentsEnMasseBtn" title="Add components in bulk"
-          onClick="action-bill-of-material-attrs-show-component-panel"/>
-        <panel name="addComponentsEnMassePanel" showTitle="false" colSpan="12" hidden="true">
-          <button name="addToComponents" title="Add to components"
-            readonlyIf="!$rawMaterials" colSpan="3" css="btn-custom"
-            onClick="save,action-bill-of-material-method-add-raw-materials,action-bill-of-material-attrs-hide-component-panel"/>
-          <field name="$rawMaterials" title="Raw materials to add to components"
-            type="one-to-many" x-target="com.axelor.apps.base.db.Product" colSpan="12"
-            domain="self.productTypeSelect = 'storable'" canNew="false" canEdit="false"
-            canSelect="true" form-view="product-form" grid-view="product-grid"/>
-        </panel>
+          onChange="action-bill-of-material-record-count-number-of-components" canSelect="false"/>
       </panel>
 
       <panel-related name="prodResidualProductListPanel"
@@ -172,57 +156,27 @@
       </panel>
     </panel-tabs>
 
+    <panel name="actionPanel" sidebar="true">
+      <button onClick="save,action-bill-of-material-method-set-validate-status"
+        name="validateBtn" title="Validate" showIf="statusSelect == 1"/>
+      <button onClick="save,action-bill-of-material-method-set-applicable-status"
+        name="makeItApplicableBtn" title="Make it applicable" showIf="statusSelect == 2"/>
+      <button onClick="save,action-bill-of-material-method-set-obsolete-status"
+        name="makeItObsoleteBtn" title="Make it obsolete" showIf="statusSelect == 3"/>
+      <button onClick="save,action-bill-of-material-method-set-draft-status"
+        name="backToDraftBtn" title="Back to draft" showIf="statusSelect > 1"/>
+      <panel name="defineDefaultBomProductPanel" hideIf="$defaultBillOfMaterial.id == id">
+        <spacer/>
+        <button
+          onClick="save,action-bill-of-material-method-set-bill-of-material-as-default-on-product"
+          colSpan="12" name="defineDefaultBomProductBtn" title="Define as default BOM of product"/>
+      </panel>
+    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
-  </form>
-
-
-  <grid name="bill-of-material-line-grid" title="Bills of material"
-    model="com.axelor.apps.production.db.BillOfMaterial">
-    <field name="priority" readonlyIf="!defineSubBillOfMaterial" width="71"/>
-    <field name="product" domain="self.productTypeSelect = 'storable'"
-      onChange="action-bill-of-material-group-product" form-view="product-form"
-      grid-view="product-grid"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="defineSubBillOfMaterial" readonly="true"
-      if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
-    <field name="hasNoManageStock"/>
-    <field name="prodProcess" readonlyIf="!defineSubBillOfMaterial"
-      grid-view="prod-process-grid" form-view="prod-process-form"/>
-  </grid>
-
-  <form name="bill-of-material-line-form" title="Bill of materials"
-    model="com.axelor.apps.production.db.BillOfMaterial"
-    onNew="action-bill-of-material-line-default-record,action-bill-of-material-attrs-price-and-qty-digits"
-    onLoad="action-bill-of-material-attrs-product-def-sub-bom,action-bill-of-material-attrs-price-and-qty-digits"
-    onSave="save,action-bill-of-material-method-name" width="large">
-    <panel name="mainPanel">
-      <field name="product" canEdit="false" onChange="action-bill-of-material-group-product"
-        domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
-        form-view="product-form" grid-view="product-grid"/>
-      <field name="defineSubBillOfMaterial" colSpan="3"
-        if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
-      <field name="hasNoManageStock" colSpan="3"/>
-      <field name="qty" colSpan="3"/>
-      <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
-        canEdit="false" required="true"/>
-      <field name="wasteRate" min="0"/>
-      <panel name="subProcessConfigurationPanel" title="Sub-process configuration"
-        showIf="defineSubBillOfMaterial" colSpan="12" hidden="true">
-        <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-        <field name="priority"/>
-      </panel>
-    </panel>
-
-    <panel-tabs name="mainPanelTab" showIf="defineSubBillOfMaterial" hidden="true">
-      <panel-related name="componentsPanel" title="Components"
-        field="billOfMaterialSet"
-        domain="self.defineSubBillOfMaterial = true AND self.personalized = false"
-        form-view="bill-of-material-line-form" grid-view="bill-of-material-line-grid"/>
-    </panel-tabs>
   </form>
 
   <action-view name="action-bill-of-material-line-view" title="Bills of material"
@@ -245,14 +199,14 @@
     <action name="action-bill-of-material-default-record"/>
     <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
     <action name="action-bill-of-material-record-count-number-of-components"/>
-    <action name="action-bill-of-material-attrs-component-panel-set-canselect"/>
+    <action name="action-bill-of-material-attrs-component-panel-set-canselect-and-product"/>
   </action-group>
 
   <action-group name="action-bill-of-material-group-on-load">
     <action name="action-bill-of-material-attrs-price-and-qty-digits"/>
     <action name="action-bill-of-material-record-count-number-of-components"/>
     <action name="action-bill-of-material-record-set-dummy-field"/>
-    <action name="action-bill-of-material-attrs-component-panel-set-canselect"/>
+    <action name="action-bill-of-material-attrs-component-panel-set-canselect-and-product"/>
   </action-group>
 
   <action-record name="action-bill-of-material-record-set-dummy-field"
@@ -274,13 +228,12 @@
     <field name="product" expr="eval:_product"/>
     <field name="name" expr="eval:_product?.name"/>
     <field name="unit" expr="eval: _product?.unit"/>
-  </action-record>
-
-  <action-record name="action-bill-of-material-line-default-record"
-    model="com.axelor.apps.production.db.BillOfMaterial">
-    <field name="qty" expr="1"/>
-    <field name="priority" if="__parent__?.billOfMaterialSet?.size() > 0"
-      expr="eval:__parent__?.billOfMaterialSet?.max{ it.getPriority() }?.getPriority() + 10"/>
+    <field name="product" expr="eval:__parent__?.product"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null"/>
+    <field name="name" expr="eval:__parent__?.product?.name"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null &amp;&amp; __parent__.product.name != null"/>
+    <field name="unit" expr="eval: __parent__?.product?.unit"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine' &amp;&amp; __parent__.product != null &amp;&amp; __parent__.product.unit != null"/>
   </action-record>
 
   <action-record name="action-bill-of-material-record-product"
@@ -299,7 +252,7 @@
 
   <action-record name="action-bill-of-material-record-count-number-of-components"
     model="com.axelor.apps.production.db.BillOfMaterial">
-    <field name="$numberOfComponents" expr="eval: billOfMaterialSet?.size() ?: 0"/>
+    <field name="$numberOfComponents" expr="eval: billOfMaterialLineList?.size() ?: 0"/>
   </action-record>
 
   <action-method name="action-bill-of-material-method-compute-cost-price">
@@ -320,10 +273,6 @@
   <action-method name="action-bill-of-material-generate-new-version">
     <call class="com.axelor.apps.production.web.BillOfMaterialController"
       method="generateNewVersion"/>
-  </action-method>
-
-  <action-method name="action-bill-of-material-method-print">
-    <call class="com.axelor.apps.production.web.BillOfMaterialController" method="print"/>
   </action-method>
 
   <action-method name="action-bill-of-material-method-validate-prod-process">
@@ -368,9 +317,12 @@
     <attribute name="hidden" for="addComponentsEnMasseBtn" expr="eval: $rawMaterials"/>
   </action-attrs>
 
-  <action-attrs name="action-bill-of-material-attrs-component-panel-set-canselect">
+  <action-attrs
+    name="action-bill-of-material-attrs-component-panel-set-canselect-and-product">
     <attribute name="value" for="$canSelect"
       expr="eval:!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+    <attribute name="readonly" for="product" expr="eval: __parent__.product != null"
+      if="__parent__?._model == 'com.axelor.apps.production.db.BillOfMaterialLine'"/>
   </action-attrs>
 
 
@@ -383,6 +335,35 @@
     <field name="prodResidualProductList" hidden="true"
       if="!__config__.app.getApp('production')?.getManageResidualProductOnBom()"/>
   </search-filters>
+
+  <action-attrs name="action-bill-of-material-attrs-set-prod-process-domain">
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation)&quot;"/>
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot;(self.product = :product OR self.isEnabledForAllProducts = true) AND self.company = :company AND ((:workshopStockLocation IS NULL AND self.workshopStockLocation IS NULL) OR self.workshopStockLocation = :workshopStockLocation) AND self.typeSelect = ${__repo__(ManufOrder).TYPE_PRODUCTION}&quot;"
+      if="__config__.app.isApp('maintenance')"/>
+  </action-attrs>
+
+  <action-method name="action-bill-of-material-method-set-draft-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setDraftStaus"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-method-set-validate-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setValidateStatus"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-method-set-applicable-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setApplicableStatus"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-method-set-obsolete-status">
+    <call class="com.axelor.apps.production.web.BillOfMaterialController"
+      method="setObsoleteStatus"/>
+  </action-method>
+
 </object-views>
 
 

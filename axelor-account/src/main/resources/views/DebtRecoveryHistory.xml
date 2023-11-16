@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="debt-recovery-history-grid" title="Debt recovery history"
     model="com.axelor.apps.account.db.DebtRecoveryHistory" canNew="false">
+    <menubar>
+      <menu name="debtRecovryHistoryAttachmentsMenu" title="Attachments" icon="fa-files-o"
+        showTitle="true">
+        <item name="exportDmsFile"
+          action="action-debit-recovery-history-export-dms-file-method" title="Export attachments"/>
+        <item name="printMultipleDmsFile"
+          action="action-debit-recovery-history-print-multiple-dms-file-method"
+          title="Print multiple attachments"/>
+      </menu>
+    </menubar>
     <field name="debtRecovery" form-view="debt-recovery-form" grid-view="debt-recovery-grid"/>
     <field name="debtRecovery.accountingSituation.partner" title="Partner"
       form-view="partner-form" grid-view="partner-grid"/>
@@ -19,6 +29,8 @@
     <field name="debtRecoveryDate"/>
     <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid"
       form-view="debt-recovery-method-line-form"/>
+    <button icon="fa-paperclip" onClick="action-debit-recovery-history-print-dms-file-method"
+      title="Attachments" name="dmsFileBtn"/>
   </grid>
 
   <form name="debt-recovery-history-form" title="Debt recovery history"
@@ -26,8 +38,7 @@
     <menubar>
       <menu name="debtRecovryHistoryReportsMenu" title="Reports" icon="fa-files-o"
         showTitle="true">
-        <item name="printReminderItem"
-          action="save,action-debit-recovery-history-print-payment-reminder-method"
+        <item name="printReminderItem" action="save,action-method-print-birt"
           title="Print payment reminder"/>
       </menu>
     </menubar>
@@ -91,9 +102,19 @@
 
   </form>
 
-  <action-method name="action-debit-recovery-history-print-payment-reminder-method">
+  <action-method name="action-debit-recovery-history-print-dms-file-method">
     <call class="com.axelor.apps.account.web.DebtRecoveryHistoryController"
-      method="printPaymentReminder"/>
+      method="printDmsFile"/>
+  </action-method>
+
+  <action-method name="action-debit-recovery-history-export-dms-file-method">
+    <call class="com.axelor.apps.account.web.DebtRecoveryHistoryController"
+      method="exportDmsFile"/>
+  </action-method>
+
+  <action-method name="action-debit-recovery-history-print-multiple-dms-file-method">
+    <call class="com.axelor.apps.account.web.DebtRecoveryHistoryController"
+      method="printMultipleDmsFile"/>
   </action-method>
 
 </object-views>
