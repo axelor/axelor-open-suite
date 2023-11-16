@@ -26,6 +26,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
+import com.axelor.db.Model;
 import java.util.List;
 
 public interface BudgetToolsService {
@@ -47,8 +48,17 @@ public interface BudgetToolsService {
 
   String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError);
 
-  boolean canAutoComputeBudgetDistribution(Company company, List<Object> list)
+  boolean canAutoComputeBudgetDistribution(Company company, List<? extends Model> list)
       throws AxelorException;
 
   List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException;
+
+  /**
+   * Check if budget key are enabled in account config of company
+   *
+   * @param company
+   * @return boolean
+   * @throws AxelorException
+   */
+  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException;
 }

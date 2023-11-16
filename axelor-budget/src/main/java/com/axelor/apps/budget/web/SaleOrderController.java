@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
@@ -49,11 +48,11 @@ public class SaleOrderController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+      BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
       if (saleOrder != null
           && saleOrder.getCompany() != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(saleOrder.getCompany())) {
-        if (!Beans.get(BudgetToolsService.class)
-                .checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
+          && budgetToolsService.checkBudgetKeyInConfig(saleOrder.getCompany())) {
+        if (!budgetToolsService.checkBudgetKeyAndRole(saleOrder.getCompany(), AuthUtils.getUser())
             && saleOrderBudgetService.isBudgetInLines(saleOrder)) {
           response.setInfo(
               I18n.get(

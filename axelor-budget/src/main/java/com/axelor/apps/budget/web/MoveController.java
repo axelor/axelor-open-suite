@@ -24,7 +24,6 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.auth.AuthUtils;
@@ -42,11 +41,11 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
+      BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
       if (move != null
           && move.getCompany() != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(move.getCompany())) {
-        if (!Beans.get(BudgetToolsService.class)
-                .checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser())
+          && budgetToolsService.checkBudgetKeyInConfig(move.getCompany())) {
+        if (!budgetToolsService.checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser())
             && moveBudgetService.isBudgetInLines(move)) {
           response.setInfo(
               I18n.get(

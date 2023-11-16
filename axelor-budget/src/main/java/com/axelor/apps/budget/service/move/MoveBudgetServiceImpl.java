@@ -36,7 +36,6 @@ import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,7 +162,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   @Override
   public void autoComputeBudgetDistribution(Move move) throws AxelorException {
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        move.getCompany(), Collections.singletonList(move.getMoveLineList()))) {
+        move.getCompany(), move.getMoveLineList())) {
       return;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {

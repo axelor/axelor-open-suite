@@ -51,7 +51,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -307,7 +306,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   @Override
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        saleOrder.getCompany(), Collections.singletonList(saleOrder.getSaleOrderLineList()))) {
+        saleOrder.getCompany(), saleOrder.getSaleOrderLineList())) {
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {

@@ -33,6 +33,7 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -131,12 +132,12 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   }
 
   @Override
-  public boolean canAutoComputeBudgetDistribution(Company company, List<Object> list)
+  public boolean canAutoComputeBudgetDistribution(Company company, List<? extends Model> list)
       throws AxelorException {
     return !CollectionUtils.isEmpty(list)
         && company != null
         && checkBudgetKeyAndRole(company, AuthUtils.getUser())
-        && budgetService.checkBudgetKeyInConfig(company);
+        && checkBudgetKeyInConfig(company);
   }
 
   public List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException {
@@ -153,5 +154,12 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         .filter(AnalyticAxisByCompany::getIncludeInBudgetKey)
         .map(AnalyticAxisByCompany::getAnalyticAxis)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException {
+    return (company != null
+        && accountConfigService.getAccountConfig(company) != null
+        && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
   }
 }

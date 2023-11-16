@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -48,7 +47,7 @@ public class InvoiceController {
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       BudgetInvoiceService budgetInvoiceService = Beans.get(BudgetInvoiceService.class);
       if (invoice != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(invoice.getCompany())) {
+          && Beans.get(BudgetToolsService.class).checkBudgetKeyInConfig(invoice.getCompany())) {
         if (invoice.getCompany() != null
             && !Beans.get(BudgetToolsService.class)
                 .checkBudgetKeyAndRole(invoice.getCompany(), AuthUtils.getUser())

@@ -61,7 +61,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -449,7 +448,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
   @Override
   public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        invoice.getCompany(), Collections.singletonList(invoice.getInvoiceLineList()))) {
+        invoice.getCompany(), invoice.getInvoiceLineList())) {
       return;
     }
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {

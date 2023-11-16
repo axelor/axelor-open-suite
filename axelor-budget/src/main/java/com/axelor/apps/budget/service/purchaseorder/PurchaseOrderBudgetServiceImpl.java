@@ -47,7 +47,6 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -344,8 +343,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   @Override
   public void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        purchaseOrder.getCompany(),
-        Collections.singletonList(purchaseOrder.getPurchaseOrderLineList()))) {
+        purchaseOrder.getCompany(), purchaseOrder.getPurchaseOrderLineList())) {
       return;
     }
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
