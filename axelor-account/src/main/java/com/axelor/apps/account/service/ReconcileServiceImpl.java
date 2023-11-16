@@ -846,10 +846,9 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Update amount remaining on invoice or refund
     this.updatePartnerAccountingSituation(reconcile);
-    // this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
+    this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.updateInvoiceTermsAmountRemaining(reconcile);
     this.updateInvoicePaymentsCanceled(reconcile);
-    this.updateInvoiceCompanyInTaxTotalRemaining(reconcile);
     this.reverseTaxPaymentMoveLines(reconcile);
     this.reversePaymentMoveLineDistributionLines(reconcile);
     if (invoice != null
