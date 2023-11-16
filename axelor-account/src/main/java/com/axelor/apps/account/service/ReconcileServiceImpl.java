@@ -506,16 +506,11 @@ public class ReconcileServiceImpl implements ReconcileService {
         && otherMove.getFunctionalOriginSelect()
             != MoveRepository.FUNCTIONAL_ORIGIN_DOUBTFUL_CUSTOMER) {
       if (otherMove.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_IRRECOVERABLE) {
-        List<InvoicePayment> invoicePaymentList =
-            invoicePaymentRepo.findByReconcile(reconcile).fetch();
-        Optional<InvoicePayment> optPayment = Optional.empty();
-        if (!ObjectUtils.isEmpty(invoicePaymentList)) {
-          optPayment =
-              invoicePaymentList.stream()
-                  .filter(invPayment -> invoice.equals(invPayment.getInvoice()))
-                  .findFirst();
+        invoicePayment = invoicePaymentRepo.findByReconcileAndInvoice(reconcile, invoice);
+
+        if (invoicePayment == null) {
+          invoicePayment = this.getExistingInvoicePayment(invoice, otherMove);
         }
-        invoicePayment = optPayment.orElse(this.getExistingInvoicePayment(invoice, otherMove));
       }
 
       if (!this.isCompanyCurrency(reconcile, invoicePayment, otherMove)) {

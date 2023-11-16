@@ -58,6 +58,7 @@
       title="Invoice term payments"/>
 
     <finder-method name="findByReconcile" using="reconcile" all="true"/>
+    <finder-method name="findByReconcileAndInvoice" using="reconcile,invoice"/>
 
     <extra-code>
    		<![CDATA[
