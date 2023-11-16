@@ -19,11 +19,13 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -39,7 +41,7 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -103,7 +105,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     switch (budgetControlLevel) {
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-          if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
+          if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
             budgetToCompare = budgetLine.getAvailableAmount();
             budgetName +=
                 ' ' + budgetLine.getFromDate().toString() + ':' + budgetLine.getToDate().toString();
@@ -181,32 +183,39 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       LocalDate date,
       BigDecimal amount,
       String name,
-      AuditableModel object) {
+      AuditableModel object)
+      throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
 
     if (!CollectionUtils.isEmpty(analyticMoveLineList)) {
+      List<AnalyticAxis> authorizedAxis = budgetToolsService.getAuthorizedAnalyticAxis(company);
+      if (CollectionUtils.isEmpty(authorizedAxis)) {
+        return "";
+      }
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        String key = budgetService.computeKey(account, company, analyticMoveLine);
+        if (authorizedAxis.contains(analyticMoveLine.getAnalyticAxis())) {
+          String key = budgetService.computeKey(account, company, analyticMoveLine);
 
-        if (!Strings.isNullOrEmpty(key)) {
-          Budget budget = budgetService.findBudgetWithKey(key, date);
+          if (!Strings.isNullOrEmpty(key)) {
+            Budget budget = budgetService.findBudgetWithKey(key, date);
 
-          if (budget != null) {
-            BudgetDistribution budgetDistribution =
-                createDistributionFromBudget(
-                    budget,
-                    amount
-                        .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
-            linkBudgetDistributionWithParent(budgetDistribution, object);
+            if (budget != null) {
+              BudgetDistribution budgetDistribution =
+                  createDistributionFromBudget(
+                      budget,
+                      amount
+                          .multiply(analyticMoveLine.getPercentage())
+                          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
+              linkBudgetDistributionWithParent(budgetDistribution, object);
 
-          } else {
-            alertMessageTokenList.add(
-                String.format(
-                    "%s - %s %s",
-                    name,
-                    I18n.get("Analytic account"),
-                    analyticMoveLine.getAnalyticAccount().getCode()));
+            } else {
+              alertMessageTokenList.add(
+                  String.format(
+                      "%s - %s %s",
+                      name,
+                      I18n.get("Analytic account"),
+                      analyticMoveLine.getAnalyticAccount().getCode()));
+            }
           }
         }
       }
@@ -245,7 +254,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
         LocalDate fromDate = budgetLine.getFromDate();
         LocalDate toDate = budgetLine.getToDate();
 
-        if (fromDate != null && DateTool.isBetween(fromDate, toDate, computeDate)) {
+        if (fromDate != null && LocalDateHelper.isBetween(fromDate, toDate, computeDate)) {
           BigDecimal amount = budgetLine.getAvailableAmount();
           budgetAmountAvailable = budgetAmountAvailable.add(amount);
         }

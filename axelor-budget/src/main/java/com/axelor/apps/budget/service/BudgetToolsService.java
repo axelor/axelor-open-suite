@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -48,4 +49,6 @@ public interface BudgetToolsService {
 
   boolean canAutoComputeBudgetDistribution(Company company, List<Object> list)
       throws AxelorException;
+
+  List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException;
 }

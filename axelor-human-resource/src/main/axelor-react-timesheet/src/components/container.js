@@ -858,7 +858,10 @@ class Container extends Component {
             }
           }
         });
-        if (currentDateTotalDuration > Number(dailyLimit)) {
+        if (
+          currentDateTotalDuration > Number(dailyLimit) &&
+          Number(dailyLimit) !== 0
+        ) {
           const updatedDateWise = handleDateWise(
             dateWise,
             obj,

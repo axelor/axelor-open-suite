@@ -140,7 +140,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(Invoice invoice) {
+  public String computeBudgetDistribution(Invoice invoice) throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -306,6 +306,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           invoice.getInvoiceDate() != null
               ? invoice.getInvoiceDate()
               : invoice.getCreatedOn().toLocalDate();
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
@@ -351,6 +352,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
                 ? invoiceLine.getInvoice().getSaleOrder().getOrderDate()
                 : invoiceLine.getInvoice().getSaleOrder().getCreationDate();
       }
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);

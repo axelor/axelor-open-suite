@@ -125,10 +125,6 @@
         <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4"
           form-view="user-form" grid-view="user-grid"/>
         <field name="exportCode" colSpan="4"/>
-        <field name="bankDetails" colSpan="4" form-view="bank-details-form"
-          grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
-          if-module="axelor-cash-management" widget="SuggestBox"
-          onSelect="action-employee-attrs-bank-details-on-select"/>
       </panel>
 
       <panel colSpan="12">
@@ -175,6 +171,10 @@
             grid-view="company-department-grid"/>
         </editor>
       </field>
+      <field name="bankDetails" colSpan="3" form-view="bank-details-form"
+        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
+        showIf="mainEmploymentContract.payCompany" if-module="axelor-cash-management"
+        widget="SuggestBox" onSelect="action-employee-attrs-bank-details-on-select"/>
     </panel>
 
     <panel-related name="employmentContractsSBSPanel" field="employmentContractList"
@@ -220,12 +220,14 @@
         colSpan="12">
         <viewer>
           <![CDATA[
-            <h4 style="text-align: center;">
-                <span class="label label-important" style="background-color: #84429f;" margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.hrManager" x-translate>HR manager</span>
-                <span class="label label-default" style="background-color: #2b9cff; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.external" x-translate>External</span>
-                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>New employee</span>
-                <span class="label label-default" style="background-color: #a1a1a1; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>Former employee</span>
-            </h4>
+            <>
+            	<Box d="flex" justifyContent="center" gap="4">
+            		{hrManager && <Badge style={{ backgroundColor: "#84429f" }}>{_t('HR manager')}</Badge>}
+            		{external && <Badge style={{ backgroundColor: "#2b9cff" }}>{_t('External')}</Badge>}
+            		{!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days') && <Badge style={{ backgroundColor: "#20BCB5" }}>{_t('New employee')}</Badge>}
+            		{leavingDate && $moment(leavingDate) < $moment() && <Badge style={{ backgroundColor: "#a1a1a1" }}>{_t('Former employee')}</Badge>}
+            	</Box>
+            </>
 	        ]]>
         </viewer>
       </field>
@@ -233,19 +235,19 @@
       <field name="contactPartner.picture" widget="Image" showTitle="false">
         <viewer depends="contactPartner.picture">
           <![CDATA[
-              <div style="text-align: center;">
-                <img ng-show="record.contactPartner.picture" ng-src="{{$image('contactPartner.picture', 'content')}}"/>
-                <img ng-show="!record.contactPartner.picture" src="img/partner-default.png" />
-              </div>
+            <>
+            	<Box d="flex" justifyContent="center">
+            		{contactPartner.picture && <Image src={$image('contactPartner.picture', 'content')}></Image>}
+	                {!contactPartner.picture && <Image src="img/partner-default.png"></Image>}
+            	</Box>
+            </>
           ]]>
         </viewer>
       </field>
 
       <field name="contactPartner.fullName" showTitle="false">
         <viewer depends="contactPartner.fullName">
-          <![CDATA[
-              <div style="text-align: center; font-weight: bold;">{{record.contactPartner.fullName}}</div>
-          ]]>
+          <![CDATA[<><Box d="flex" justifyContent="center" fontWeight="bold">{contactPartner.fullName}</Box></>]]>
         </viewer>
       </field>
 
@@ -261,12 +263,44 @@
           <viewer
             depends="contactPartner.emailAddress.address, contactPartner.mobilePhone, contactPartner.fixedPhone, fixedProPhone, mobileProPhone, phoneAtCustomer">
             <![CDATA[
-            <div ng-show="record.contactPartner.emailAddress.address"><i class="fa fa-envelope"></i> <a href="mailto:{{record.contactPartner.emailAddress.address}}">{{record.contactPartner.emailAddress.address}}</a></div>
-            <div ng-show="record.contactPartner.mobilePhone"><i class="fa fa-phone"></i> <a href="tel:{{record.contactPartner.mobilePhone}}">{{record.contactPartner.mobilePhone}}</a></div>
-            <div ng-show="record.contactPartner.fixedPhone"><i class="fa fa-phone"></i> <a href="tel:{{record.contactPartner.fixedPhone}}">{{record.contactPartner.fixedPhone}}</a></div>
-            <div ng-show="record.fixedProPhone"><i class="fa fa-phone"></i> <a href="tel:{{record.fixedProPhone}}">{{record.fixedProPhone}}</a></div>
-            <div ng-show="record.mobileProPhone"><i class="fa fa-phone"></i> <a href="tel:{{record.mobileProPhone}}">{{record.mobileProPhone}}</a></div>
-            <div ng-show="record.phoneAtCustomer"><i class="fa fa-phone"></i> <a href="tel:{{record.phoneAtCustomer}}">{{record.phoneAtCustomer}}</a></div>
+            <>
+            	{contactPartner.emailAddress.address &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="envelope-fill" fontSize="15px"/>
+            			<Link href={`mailto:${contactPartner.emailAddress.address}`}> {contactPartner.emailAddress.address} </Link>
+            		</Box>
+            	}
+            	{contactPartner.mobilePhone &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${contactPartner.mobilePhone}`}> {contactPartner.mobilePhone} </Link>
+            		</Box>
+            	}
+            	{contactPartner.fixedPhone &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${contactPartner.fixedPhone}`}> {contactPartner.fixedPhone} </Link>
+            		</Box>
+            	}
+            	{fixedProPhone &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${fixedProPhone}`}> {fixedProPhone} </Link>
+            		</Box>
+            	}
+            	{mobileProPhone &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${mobileProPhone}`}> {mobileProPhone} </Link>
+            		</Box>
+            	}
+            	{phoneAtCustomer &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${phoneAtCustomer}`}> {phoneAtCustomer} </Link>
+            		</Box>
+            	}
+            </>
           ]]>
           </viewer>
         </field>
@@ -281,12 +315,23 @@
         <field name="$medicalVisitDates" showTitle="false" colSpan="12">
           <viewer depends="lastMedicalVisitDate, nextMedicalVisitDate">
             <![CDATA[
-              <div style="font-weight: bold;" ng-show="!record.lastMedicalVisitDate" x-translate>Last medical visit : XX/XX/XXXX</div>
-              <div style="font-weight: bold;" ng-show="record.lastMedicalVisitDate" x-translate>Last medical visit :</div>
-              <div style="font-weight: bold;" ng-show="record.lastMedicalVisitDate">{{record.lastMedicalVisitDate}}</div>
-              </br>
-              <div style="font-weight: bold;" ng-show="record.nextMedicalVisitDate" x-translate>Next medical visit :</div>
-              <div style="font-weight: bold;" ng-show="record.nextMedicalVisitDate">{{record.nextMedicalVisitDate}}</div>
+              <>
+                  <Box fontWeight="bold">
+                      {!lastMedicalVisitDate && <span>{_t('Last medical visit : XX/XX/XXXX')}</span>}
+                      {lastMedicalVisitDate &&
+                          <Box>
+                      		  <Box>{_t('Last medical visit :')}</Box>
+                      		  <Box>{lastMedicalVisitDate}</Box>
+                      	  </Box>
+                      }
+                      {nextMedicalVisitDate &&
+                      	  <Box>
+                      	  	  <Box>{_t('Next medical visit :')}</Box>
+                      	      <Box>{nextMedicalVisitDate}</Box>
+                      	  </Box>
+                      }
+                  </Box>
+              </>
             ]]>
           </viewer>
         </field>
@@ -594,7 +639,7 @@
     <attribute name="domain" expr="eval: &quot;self = null&quot;" for="bankDetails"/>
     <attribute if="!mainEmploymentContract?.payCompany?.bankDetailsList?.isEmpty()"
       name="domain"
-      expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}.join(',')}) AND self.active = true&quot;"
+      expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true&quot;"
       for="bankDetails"/>
   </action-attrs>
 
@@ -626,71 +671,50 @@
     <field name="hrManager"/>
     <field name="external"/>
     <template><![CDATA[
-		<div style="transform-style: preserve-3d;margin: -16px; height: 180px;display: flex;"
-		ng-style="record.leavingDate != null && $moment(record.leavingDate) < $moment() && {'background-color': '#c9c9c9', 'color': '#fff'} ||
-		record.hrManager && {'border-style': 'inset', 'color': '#84429f'} ||
-		record.external && {'background-color': '#7dc2ff'}">
-            <div class="span4 card-image" style="display: flex;flex-direction: column;justify-content: center;align-items: center;color: black;">
-                <img ng-src="{{$image('contactPartner.picture', 'content')}}" style="width: 128px; height: 64px; object-fit: contain;" />
-                <strong>{{contactPartner.firstName}} {{contactPartner.name}}</strong>
-            </div>
-            <div class="span8" style="padding-left: 40px;display: flex;flex-direction: column;justify-content: center;position: relative;color: black;" ng-style="hrManager && {'transform': 'translateZ(-10px)'}">
-                <div style="position: absolute;z-index: -1;height: calc(100% + 16px);display: flex;align-items: center;left: 0;transform: skew(-20deg, 0deg);border-left: 2px solid #ddd;">
-                    <div ng-style="hrManager && {'background-color': '#84429f', 'color': '#fff'} || record.external && {'background-color': '#2b9cff'} || record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days') && {'background-color': '#20BCB5', 'color': '#fff'}"
-                    style="width: 30px;height: 60%;background: #ddd; color: #000; display: flex;flex-direction: column;justify-content: center;align-items: center;box-shadow: rgb(0 0 0 / 25%) 3px 3px 8px">
-                        <span ng-if="contactPartner.fixedPhone">
-                            <i class="fa fa-phone fa-flip-horizontal" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-                        </span>
-                        <span ng-if="contactPartner.mobilePhone">
-                            <i class="fa fa-mobile" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-                        </span>
-                        <span ng-if="mainEmploymentContract.payCompany.name">
-                            <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-                        </span>
-                        <span ng-if="mainEmploymentContract.companyDepartment.name">
-                            <i class="fa fa-home" style="font-size: 18px;transform: skew(20deg, 0deg);" />
-                        </span>
-                    </div>
-                </div>
-                <span>
-                    <span style="margin-left: 2rem" ng-if="contactPartner.fixedPhone">
-                        {{ contactPartner.fixedPhone}}
-                        <br/>
-                    </span>
-                    <span style="margin-left: 1.5rem"  ng-if="contactPartner.mobilePhone">
-                        {{contactPartner.mobilePhone}}
-                        <br/>
-                    </span>
-                    <span style="margin-left: 1rem" ng-if="mainEmploymentContract.payCompany.name">
-                        <strong>
-                            <span x-translate>Company</span>
-                        </strong>
-                        : {{mainEmploymentContract.payCompany.name}}
-                        <br/>
-                    </span>
-                    <span style="margin-left: 0.5rem" ng-if="mainEmploymentContract.companyDepartment.name">
-                        <strong>
-                            <span x-translate>Department</span>
-                        </strong>
-                        : {{mainEmploymentContract.companyDepartment.name}}<br/>
-                    </span>
-                </span>
-            </div>
-            <div style="display: flex;justify-content: flex-end;position: absolute;bottom: 3px;right: 6px;color: black;">
-                <span class="label label-default" ng-show="hrManager" style="background-color: #84429f; margin: 5px 0 5px 0; display: inline-table; line-height: initial; line-height: initial;" x-translate>
-                    HR manager
-                </span>
-                <span class="label label-default" ng-show="external" style="background-color: #2b9cff; margin: 5px 0 5px 5px; display: inline-table; line-height: initial;" x-translate>
-		            External
-		        </span>
-                <span class="label label-default" style="background-color: #20BCB5; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate == null && $moment(record.hireDate) > $moment().subtract(30, 'days')" x-translate>
-                    New employee
-                </span>
-                <span class="label label-default" style="background-color: #707070; margin: 5px 0 5px 5px !important; display: inline-table; line-height: initial;" ng-show="record.leavingDate != null && $moment(record.leavingDate) < $moment()" x-translate>
-		            Former employee
-		        </span>
-            </div>
-		</div>
+		<>
+			<Box style={{ height: 180, margin: "-1rem", ...(hrManager && { borderStyle: "inset" }), ...(external && { backgroundColor: "#7dc2ff" }), ...(leavingDate && $moment(leavingDate) < $moment() && { backgroundColor: "#c9c9c9" }) }}>
+			    <Box d="grid" gridTemplateColumns="35% 65%" style={{ height: 150 }}>
+			        <Box d="flex" flexDirection="column" alignItems="center" justifyContent="center">
+			            <Image src={$image('contactPartner.picture', 'content')} style={{ width: 128, height: 64 }}></Image>
+			            <Box as="strong" mt={2}>{contactPartner.firstName} {contactPartner.name}</Box>
+			        </Box>
+			        <Box position="absolute" ps={4} style={{ width: "60%", height: "100%", left: "35%", top: 0 }}>
+			            <Box d="flex" alignItems="center" borderStart borderWidth={2} w={100} h={100} style={{ transform: "skew(-20deg, 0deg)" }}>
+			                <Box style={{ height: "60%", width: "2rem", boxShadow: "rgb(0 0 0 / 25%) 3px 3px 8px", backgroundColor: "#ddd", ...(!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days') && { backgroundColor: "#20BCB5" }), ...(external && { backgroundColor: "#2b9cff" }), ...(hrManager && { backgroundColor: "#84429f" }) }} />
+
+			                <Box d="flex" alignItems="center" w={100} style={{ position: "absolute", top: "20%", left: "0.25rem", minHeight: "60%" }}>
+			                    <Box as="ul" m={0} p={0} w={100} style={{ listStyle: "none" }}>
+			                        {(() => {
+			                            const renderItem = (icon, value, title) => {
+			                                return value && String(value).trim() && (
+			                                    <Box as="li" d="flex" gap={24} style={{ transform: "skew(20deg, 0deg)" }}>
+			                                        <Icon icon={icon} color={(hrManager || (!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days'))) ? "white" : "black"}/>
+			                                        <span>{title && <strong>{title} : </strong>} {value}</span>
+			                                    </Box>
+			                                );
+			                            };
+			                            return (
+			                                <>
+			                                    {renderItem("telephone", contactPartner.fixedPhone)}
+			                                    {renderItem("phone", contactPartner.mobilePhone)}
+			                                    {renderItem("house-fill", mainEmploymentContract.payCompany.name, "Company")}
+			                                    {renderItem("house-fill", mainEmploymentContract.companyDepartment.name, "Department")}
+			                                </>
+			                            );
+			                        })()}
+			                    </Box>
+			                </Box>
+			            </Box>
+			        </Box>
+			    </Box>
+			    <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center" me={1}>
+			        {hrManager && <Badge style={{ backgroundColor: "#84429f" }}>{_t('HR manager')}</Badge>}
+			        {external && <Badge style={{ backgroundColor: "#2b9cff" }}>{_t('External')}</Badge>}
+			        {!leavingDate && $moment(hireDate) > $moment().subtract(30, 'days') && <Badge style={{ backgroundColor: "#20BCB5" }}>{_t('New employee')}</Badge>}
+			        {leavingDate && $moment(leavingDate) < $moment() && <Badge style={{ backgroundColor: "#707070" }}>{_t('Former employee')}</Badge>}
+			    </Box>
+			</Box>
+		</>
 		]]>
     </template>
   </cards>

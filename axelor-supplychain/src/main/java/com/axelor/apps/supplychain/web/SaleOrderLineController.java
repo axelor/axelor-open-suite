@@ -47,7 +47,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
@@ -62,7 +62,8 @@ public class SaleOrderLineController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
       AnalyticLineModelService analyticLineModelService = Beans.get(AnalyticLineModelService.class);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
@@ -83,7 +84,8 @@ public class SaleOrderLineController {
       ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
@@ -395,7 +397,8 @@ public class SaleOrderLineController {
   public void setAxisDomains(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null) {
         return;
@@ -412,7 +415,8 @@ public class SaleOrderLineController {
 
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null) {
         return;
@@ -432,7 +436,8 @@ public class SaleOrderLineController {
 
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -450,7 +455,8 @@ public class SaleOrderLineController {
 
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;
@@ -469,7 +475,8 @@ public class SaleOrderLineController {
 
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
+      SaleOrder saleOrder =
+          ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
       if (saleOrder == null || saleOrder.getCompany() == null) {
         return;

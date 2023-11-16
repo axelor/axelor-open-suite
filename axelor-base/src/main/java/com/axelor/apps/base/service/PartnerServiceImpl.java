@@ -45,7 +45,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.MessageRepository;
-import com.axelor.utils.ComputeNameTool;
+import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -279,7 +279,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeFullName(Partner partner) {
-    return ComputeNameTool.computeFullName(
+    return ComputeNameHelper.computeFullName(
         partner.getFirstName(),
         partner.getName(),
         partner.getPartnerSeq(),
@@ -288,7 +288,7 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String computeSimpleFullName(Partner partner) {
-    return ComputeNameTool.computeSimpleFullName(
+    return ComputeNameHelper.computeSimpleFullName(
         partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 

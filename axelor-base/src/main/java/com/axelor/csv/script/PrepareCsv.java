@@ -19,8 +19,8 @@
 package com.axelor.csv.script;
 
 import com.axelor.inject.Beans;
-import com.axelor.utils.file.CsvTool;
-import com.axelor.utils.xml.XPathParse;
+import com.axelor.utils.helpers.file.CsvHelper;
+import com.axelor.utils.xml.XPathParser;
 import com.google.common.base.CaseFormat;
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +62,7 @@ public class PrepareCsv {
         File cDir = new File(csvDir);
         List<String[]> blankData = new ArrayList<String[]>();
         DocumentBuilder dBuilder =
-            Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
+            Beans.get(XPathParser.class).getDocumentBuilderFactory().newDocumentBuilder();
         if (xDir.isDirectory() && cDir.isDirectory()) {
           for (File xf : xDir.listFiles()) {
             LOG.info("Processing XML: {} ", xf.getName());
@@ -100,7 +100,7 @@ public class PrepareCsv {
 
                 count++;
               }
-              CsvTool.csvWriter(
+              CsvHelper.csvWriter(
                   csvDir, csvFileName, ';', StringUtils.join(fieldList, ",").split(","), blankData);
               LOG.info("CSV file prepared: {} ", csvFileName);
             }
@@ -125,7 +125,7 @@ public class PrepareCsv {
   protected String getNameColumn(String fileName)
       throws SAXException, IOException, ParserConfigurationException {
     DocumentBuilder dBuilder =
-        Beans.get(XPathParse.class).getDocumentBuilderFactory().newDocumentBuilder();
+        Beans.get(XPathParser.class).getDocumentBuilderFactory().newDocumentBuilder();
     File domainFile = new File(fileName);
     if (!domainFile.exists()) return null;
     Document doc = dBuilder.parse(domainFile);

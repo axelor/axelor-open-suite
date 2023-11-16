@@ -52,7 +52,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -653,6 +653,7 @@ public class BudgetServiceImpl implements BudgetService {
       BudgetDistribution budgetDistribution, Move move, MoveLine moveLine) {
     if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
       LocalDate date = move.getDate();
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
@@ -827,9 +828,9 @@ public class BudgetServiceImpl implements BudgetService {
         budgetLineList.remove(budgetLine);
         if (!CollectionUtils.isEmpty(budgetLineList)) {
           for (BudgetLine bl : budgetLineList) {
-            if (DateTool.isBetween(
+            if (LocalDateHelper.isBetween(
                     budgetLine.getFromDate(), budgetLine.getToDate(), bl.getFromDate())
-                || DateTool.isBetween(
+                || LocalDateHelper.isBetween(
                     budgetLine.getFromDate(), budgetLine.getToDate(), bl.getToDate())) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

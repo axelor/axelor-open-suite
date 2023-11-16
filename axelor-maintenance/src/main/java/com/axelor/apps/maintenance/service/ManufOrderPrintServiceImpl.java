@@ -34,9 +34,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
   public String printManufOrders(List<Long> ids) throws IOException, AxelorException {
     List<File> printedManufOrders = new ArrayList<>();
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             ManufOrder.class,
             ids,
             new ThrowConsumer<ManufOrder, Exception>() {
@@ -89,13 +89,13 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
           I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
     String fileName = getManufOrdersFilename();
-    return PdfTool.mergePdfToFileLink(printedManufOrders, fileName);
+    return PdfHelper.mergePdfToFileLink(printedManufOrders, fileName);
   }
 
   @Override
   public String printManufOrder(ManufOrder manufOrder) throws AxelorException {
     String fileName = getFileName(manufOrder);
-    return PdfTool.getFileLinkFromPdfFile(print(manufOrder), fileName);
+    return PdfHelper.getFileLinkFromPdfFile(print(manufOrder), fileName);
   }
 
   protected File print(ManufOrder manufOrder) throws AxelorException {

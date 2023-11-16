@@ -39,15 +39,11 @@
       </panel>
       <field name="workCenterTypeSelect" colSpan="6" hidden="true"
         if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
-      <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
-        onClick="save,action-production-view-configurator-work-center-group-wizard"
-        readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null" colSpan="6"
-        hidden="true" if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
-      <field name="workCenterGroup" canNew="true" canEdit="true" canSelect="false" colSpan="6"
+      <field name="workCenterGroup" canNew="true" canEdit="true" colSpan="6"
         form-view="work-center-group-form" grid-view="work-center-group-grid"
         onChange="action-configurator-prod-process-line-group-work-center-group-onchange"
-        domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"
-        hidden="true" if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+        domain="self.workCenterTypeSelect = :workCenterTypeSelect" hidden="true"
+        if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
       <panel name="workCenterPanel" title="Work center">
         <field name="defWorkCenterAsFormula" colSpan="12"
           onChange="action-configurator-prod-process-line-change-work-center-required"/>
@@ -108,20 +104,6 @@
     </panel>
   </form>
 
-  <form model="com.axelor.apps.production.db.ConfiguratorProdProcessLine"
-    title="Work center group selection"
-    name="configurator-prod-process-line-work-center-group-wizard-form">
-    <panel name="mainPanel">
-      <field canNew="true" canEdit="false" canSelect="true" form-view="work-center-group-form"
-        name="$workCenterGroupWizard" title="Work center group template"
-        target="com.axelor.apps.production.db.WorkCenterGroup" type="many-to-one" required="true"
-        onSelect="action-attrs-production-configurator-set-work-center-group-wizard-domain"/>
-      <button name="workCenterGroupWizardSave" title="Save"
-        onClick="save,action-production-method-configurator-set-work-center-group"/>
-    </panel>
-  </form>
-
-
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-configurator-prod-process-line-attrs-default">
@@ -130,8 +112,6 @@
     <attribute name="hidden" for="workCenterGroup"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterTypeSelect"
-      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
-    <attribute name="hidden" for="buttonWorkCenterGroupWizard"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="domain" for="workCenter"
       expr="eval: &quot; self.id in (${workCenterGroup?.workCenterSet?.collect{it.id}?.join(',')}) &quot;"
@@ -153,13 +133,6 @@
     <attribute name="domain" for="workCenter"
       expr="eval: &quot; self.id in (${workCenterGroup?.workCenterSet?.collect{it.id}?.join(',')}) &quot;"
       if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-attrs-production-configurator-set-work-center-group-wizard-domain"
-    model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
-    <attribute name="domain" for="$workCenterGroupWizard"
-      expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
   </action-attrs>
 
   <action-attrs
@@ -188,6 +161,7 @@
     <action
       name="action-configurator-prod-process-line-method-work-center-group-fill-work-center"/>
     <action name="action-configurator-prod-process-line-group-work-center-onchange"/>
+    <action name="action-configurator-prod-process-line-record-update-from-workcenter"/>
   </action-group>
 
 
@@ -203,11 +177,6 @@
       method="updateCapacitySettings"/>
   </action-method>
 
-  <action-method name="action-production-method-configurator-set-work-center-group">
-    <call class="com.axelor.apps.production.web.ConfiguratorProdProcessLineController"
-      method="setWorkCenterGroup"/>
-  </action-method>
-
   <action-method
     name="action-configurator-prod-process-line-method-work-center-group-fill-work-center"
     model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
@@ -215,20 +184,31 @@
       method="fillWorkCenter"/>
   </action-method>
 
+  <!-- ACTION-RECORD -->
 
-  <!-- ACTION-VIEW -->
-
-  <action-view name="action-production-view-configurator-work-center-group-wizard"
-    title="Work center group" model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
-    <view type="form" name="configurator-prod-process-line-work-center-group-wizard-form"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="false"/>
-    <view-param name="forceEdit" value="true"/>
-    <context name="_showRecord" expr="eval: __this__.id"/>
-    <context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect"/>
-    <context name="_template" expr="true"/>
-  </action-view>
+  <action-record
+    name="action-configurator-prod-process-line-record-update-from-workcenter"
+    model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+    <field name="durationPerCycle" expr="eval: workCenter?.durationPerCycle"
+      if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="humanDuration" expr="eval: workCenter?.hrDurationPerCycle"
+      if="workCenter?.workCenterTypeSelect == 1 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="product" expr="eval: workCenter?.product"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <field name="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <field name="costAmount" expr="eval: workCenter?.costAmount"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <field name="hrProduct" expr="eval: workCenter?.hrProduct"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <field name="hrCostTypeSelect" expr="eval: workCenter?.hrCostTypeSelect"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <field name="hrCostAmount" expr="eval: workCenter?.hrCostAmount"
+      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
+    <field name="minCapacityPerCycle" expr="eval: workCenter?.minCapacityPerCycle"
+      if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="maxCapacityPerCycle" expr="eval: workCenter?.maxCapacityPerCycle"
+      if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+  </action-record>
 
 </object-views>

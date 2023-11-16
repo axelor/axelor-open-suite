@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -36,14 +37,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -57,15 +56,18 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineToolService moveLineToolService;
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineControlServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -159,14 +161,18 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (isCompanyAmount) {
       total =
           invoiceAttached == null
-              ? moveLine.getDebit().max(moveLine.getCredit())
-              : invoiceAttached.getCompanyInTaxTotal();
+              ? currencyScaleServiceAccount.getCompanyScaledValue(
+                  moveLine, moveLine.getDebit().max(moveLine.getCredit()))
+              : currencyScaleServiceAccount.getCompanyScaledValue(
+                  invoiceAttached, invoiceAttached.getCompanyInTaxTotal());
     } else {
       total =
-          invoiceAttached == null ? moveLine.getCurrencyAmount() : invoiceAttached.getInTaxTotal();
+          invoiceAttached == null
+              ? currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCurrencyAmount())
+              : currencyScaleServiceAccount.getScaledValue(
+                  invoiceAttached, invoiceAttached.getInTaxTotal());
     }
 
-    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal invoiceTermTotal =
         invoiceTermList.stream()
             .map(it -> isCompanyAmount ? it.getCompanyAmount() : it.getAmount())

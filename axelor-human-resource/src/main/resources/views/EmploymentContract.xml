@@ -50,9 +50,9 @@
       <panel name="employeeDetailsPanel">
         <field name="ref" showTitle="false" readonly="true" colSpan="12">
           <viewer depends="ref"><![CDATA[
-					<h3>
-						{{record.ref}}
-					</h3>
+					<>
+						<h3>{ref}</h3>
+					</>
 				]]></viewer>
         </field>
         <field name="employee" canSuggest="false" canNew="false" canEdit="false"

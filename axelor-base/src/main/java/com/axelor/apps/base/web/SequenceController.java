@@ -61,6 +61,11 @@ public class SequenceController {
     response.setValue("fullName", fullName);
   }
 
+  public void verifyPattern(ActionRequest request, ActionResponse response) throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceService.class).verifyPattern(sequence);
+  }
+
   public void updateSequenceVersionsMonthly(ActionRequest request, ActionResponse response) {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);

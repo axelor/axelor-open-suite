@@ -33,7 +33,7 @@ public interface MoveBudgetService {
    * @param move
    * @return String
    */
-  public String computeBudgetDistribution(Move move);
+  public String computeBudgetDistribution(Move move) throws AxelorException;
 
   /**
    * For all budgets related to this move, check budget exceed based on global budget control on

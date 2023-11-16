@@ -17,19 +17,23 @@
       <hilite color="danger"
         if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     </field>
-    <field name="amount" title="To pay / To use"/>
-    <field name="amountRemaining" title="Left to pay / to use"/>
+    <field name="amount" title="To pay / To use" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" title="Left to pay / to use"
+      x-scale="currency.numberOfDecimals"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
     <field name="financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="moveLine.move.statusSelect"/>
     <field name="isPaid" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-pfp-grid" title="Invoice terms"
@@ -53,12 +57,13 @@
     <field name="originDate"/>
     <field name="partner"/>
     <field name="dueDate"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="percentage" aggregate="sum"/>
     <field name="paymentMode"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="$originBasedPaymentDelay" type="integer" title="Payment delay"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-move-line-grid" title="Invoice terms" orderBy="sequence"
@@ -79,19 +84,26 @@
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="invoice"/>
     <field name="dueDate"/>
-    <field name="amount" title="To pay / To use"/>
-    <field name="amountRemaining" title="Left to pay / to use"/>
+    <field name="amount" title="To pay / To use" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" title="Left to pay / to use"
+      x-scale="currency.numberOfDecimals"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
     <field name="paymentMode"/>
     <field name="financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company" hidden="true"/>
+    <field name="company.currency" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-invoice-payment-grid" title="Invoice terms" orderBy="sequence"
@@ -137,9 +149,9 @@
     <field name="subrogationPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="dueDate"/>
-    <field name="amount"/>
+    <field name="amount" x-scale="currency.numberOfDecimals"/>
     <field name="paymentMode"/>
-    <field name="amountRemaining"/>
+    <field name="amountRemaining" x-scale="currency.numberOfDecimals"/>
     <field name="isPaid"/>
     <field name="isHoldBack"/>
     <field name="percentage"/>
@@ -148,11 +160,14 @@
     <field name="financialDiscount.discountRate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="financialDiscountAmount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="pfpValidateStatusSelect"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-payment-session-grid" title="Invoice terms"
@@ -227,14 +242,14 @@
         <field name="estimatedPaymentDate"
           onChange="action-invoice-term-record-update-customized-true"
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
-        <field name="amount" readonly="true"/>
+        <field name="amount" readonly="true" x-scale="currency.numberOfDecimals"/>
         <field name="percentage" readonly="true"/>
-        <field name="amountRemaining" readonly="true"/>
+        <field name="amountRemaining" readonly="true" x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
           showIf="$isMultiCurrency">
-          <field name="companyAmount"/>
+          <field name="companyAmount" x-scale="company.currency.numberOfDecimals"/>
           <spacer/>
-          <field name="companyAmountRemaining"/>
+          <field name="companyAmountRemaining" x-scale="company.currency.numberOfDecimals"/>
           <field name="$isMultiCurrency" type="boolean" hidden="true"/>
         </panel>
         <field name="paymentMode" requiredIf="invoice != null"/>
@@ -246,9 +261,11 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
@@ -258,9 +275,11 @@
         <field name="financialDiscount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount"/>
-        <field name="remainingAmountAfterFinDiscount"/>
-        <field name="amountRemainingAfterFinDiscount"/>
+        <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals"/>
+        <field name="remainingAmountAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
+        <field name="amountRemainingAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
@@ -283,14 +302,14 @@
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12">
           <field name="decisionPfpTakenDateTime"/>
-          <field name="initialPfpAmount"/>
+          <field name="initialPfpAmount" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" readonly="true"
           showIf="pfpValidateStatusSelect == 4">
           <field name="decisionPfpTakenDateTime"/>
           <field name="pfpPartialReason"/>
-          <field name="initialPfpAmount"/>
-          <field name="remainingPfpAmount"/>
+          <field name="initialPfpAmount" x-scale="currency.numberOfDecimals"/>
+          <field name="remainingPfpAmount" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3">
@@ -331,7 +350,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -339,14 +359,14 @@
         <field name="isSelectedOnPaymentSession" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
-          showIf="isSelectedOnPaymentSession"/>
+          showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -503,7 +523,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -560,17 +581,19 @@
           if="__config__.app.isApp('cash-management')"/>
         <field name="amount" title="To pay / To use"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"/>
+          validIf="amount > 0" onChange="action-invoice-term-group-move-line-amount-onchange"
+          x-scale="currency.numberOfDecimals"/>
         <field name="percentage"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-group-move-line-percentage-onchange"
           validIf="percentage > 0"/>
-        <field name="amountRemaining" title="Left to pay / to use" readonly="true"/>
+        <field name="amountRemaining" title="Left to pay / to use" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
           showIf="$isMultiCurrency">
-          <field name="companyAmount"/>
+          <field name="companyAmount" x-scale="company.currency.numberOfDecimals"/>
           <spacer/>
-          <field name="companyAmountRemaining"/>
+          <field name="companyAmountRemaining" x-scale="company.currency.numberOfDecimals"/>
           <field name="$isMultiCurrency" type="boolean" hidden="true"/>
         </panel>
         <field name="paymentMode" requiredIf="invoice != null"/>
@@ -583,9 +606,11 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
@@ -596,9 +621,12 @@
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount" readonly="true"/>
-        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
+        <field name="financialDiscountAmount" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"
+          x-scale="company.currency.numberOfDecimals"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
         <field name="invoice.originDate" hidden="true"/>
         <field name="invoice.statusSelect" hidden="true"/>
@@ -631,13 +659,13 @@
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2">
           <field name="decisionPfpTakenDateTime" readonly="true"/>
-          <field name="initialPfpAmount" readonly="true"/>
+          <field name="initialPfpAmount" readonly="true" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4">
           <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
-          <field name="initialPfpAmount" readonly="true"/>
-          <field name="remainingPfpAmount" readonly="true"/>
+          <field name="initialPfpAmount" readonly="true" x-scale="currency.numberOfDecimals"/>
+          <field name="remainingPfpAmount" readonly="true" x-scale="currency.numberOfDecimals"/>
           <field name="originInvoiceTerm" readonly="true"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" showIf="pfpValidateStatusSelect == 3">
@@ -668,7 +696,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-      <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -676,14 +705,14 @@
         <field name="isSelectedOnPaymentSession" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
-          showIf="isSelectedOnPaymentSession"/>
+          showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -737,13 +766,13 @@
         readonlyIf="isPaid || amountRemaining != amount || paymentSession">
         <field name="dueDate" readonly="true"/>
         <field name="isHoldBack" readonly="true"/>
-        <field name="amount" readonly="true"/>
-        <field name="amountRemaining" readonly="true"/>
+        <field name="amount" readonly="true" x-scale="currency.numberOfDecimals"/>
+        <field name="amountRemaining" readonly="true" x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
           showIf="$isMultiCurrency">
-          <field name="companyAmount"/>
+          <field name="companyAmount" x-scale="company.currency.numberOfDecimals"/>
           <spacer/>
-          <field name="companyAmountRemaining"/>
+          <field name="companyAmountRemaining" x-scale="company.currency.numberOfDecimals"/>
           <field name="$isMultiCurrency" type="boolean" hidden="true"/>
         </panel>
         <field name="paymentMode" requiredIf="invoice != null"/>
@@ -755,9 +784,11 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
+        <field name="currency.numberOfDecimals"/>
         <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
@@ -767,9 +798,11 @@
         <field name="financialDiscount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount"/>
-        <field name="remainingAmountAfterFinDiscount"/>
-        <field name="amountRemainingAfterFinDiscount"/>
+        <field name="financialDiscountAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="remainingAmountAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
+        <field name="amountRemainingAfterFinDiscount"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
@@ -792,14 +825,14 @@
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2" readonly="true"
           colSpan="12">
           <field name="decisionPfpTakenDateTime"/>
-          <field name="initialPfpAmount"/>
+          <field name="initialPfpAmount" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" readonly="true"
           showIf="pfpValidateStatusSelect == 4">
           <field name="decisionPfpTakenDateTime"/>
           <field name="pfpPartialReason"/>
-          <field name="initialPfpAmount"/>
-          <field name="remainingPfpAmount"/>
+          <field name="initialPfpAmount" x-scale="currency.numberOfDecimals"/>
+          <field name="remainingPfpAmount" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" readonly="true"
           showIf="pfpValidateStatusSelect == 3">
@@ -842,7 +875,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -850,14 +884,15 @@
         <field name="isSelectedOnPaymentSession" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid"
+          x-scale="company.currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
-          showIf="isSelectedOnPaymentSession"/>
+          showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
     </panel>
     <panel name="invoiceTermMoveFilePanel">

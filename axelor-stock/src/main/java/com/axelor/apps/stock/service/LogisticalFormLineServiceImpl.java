@@ -28,7 +28,7 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.script.ScriptHelper;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class LogisticalFormLineServiceImpl implements LogisticalFormLineService 
         Beans.get(LogisticalFormService.class).getFullySpreadStockMoveLineList(logisticalForm);
 
     if (!fullySpreadStockMoveLineList.isEmpty()) {
-      String idListString = StringTool.getIdListString(fullySpreadStockMoveLineList);
+      String idListString = StringHelper.getIdListString(fullySpreadStockMoveLineList);
       domainList.add(String.format("self.id NOT IN (%s)", idListString));
     }
 

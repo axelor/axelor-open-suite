@@ -32,7 +32,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -103,11 +103,13 @@ public class TicketController {
       if (ticket.getDuration() != null) {
         if (ticket.getStartDateT() != null) {
           response.setValue(
-              "endDateT", DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
+              "endDateT",
+              LocalDateHelper.plusSeconds(ticket.getStartDateT(), ticket.getDuration()));
 
         } else if (ticket.getEndDateT() != null) {
           response.setValue(
-              "startDateT", DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
+              "startDateT",
+              LocalDateHelper.minusSeconds(ticket.getEndDateT(), ticket.getDuration()));
         }
       }
     } catch (Exception e) {

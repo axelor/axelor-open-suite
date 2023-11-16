@@ -36,7 +36,7 @@ public interface BudgetInvoiceService {
    * @param invoice
    * @return String
    */
-  public String computeBudgetDistribution(Invoice invoice);
+  public String computeBudgetDistribution(Invoice invoice) throws AxelorException;
 
   /**
    * For all budgets related to this invoice, check budget exceed based on global budget control on

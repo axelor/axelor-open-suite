@@ -8,5 +8,7 @@
   <entity name="WorkCenter">
     <many-to-many name="hrSkillSet" title="Skill needed"
       ref="com.axelor.apps.talent.db.Skill"/>
+    <many-to-many name="hrEmployeeSet" ref="com.axelor.apps.hr.db.Employee"
+      title="Employees"/>
   </entity>
 </domain-models>

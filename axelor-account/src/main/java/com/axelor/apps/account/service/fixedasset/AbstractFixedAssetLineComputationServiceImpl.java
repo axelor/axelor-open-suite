@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -504,7 +504,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
       depreciationDate = computeLastProrataDepreciationDate(fixedAsset, previousFixedAssetLine);
     } else {
       depreciationDate =
-          DateTool.plusMonths(
+          LocalDateHelper.plusMonths(
               previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
 
@@ -558,13 +558,13 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
         fixedAsset.getFirstServiceDate() == null
             ? fixedAsset.getAcquisitionDate()
             : fixedAsset.getFirstServiceDate();
-    LocalDate d = DateTool.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
+    LocalDate d = LocalDateHelper.plusMonths(firstServiceDate, getDurationInMonth(fixedAsset));
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
         getComputationMethodSelect(fixedAsset))) {
-      d = DateTool.minusMonths(d, getPeriodicityInMonth(fixedAsset));
+      d = LocalDateHelper.minusMonths(d, getPeriodicityInMonth(fixedAsset));
     } else {
       d =
-          DateTool.plusMonths(
+          LocalDateHelper.plusMonths(
               previousFixedAssetLine.getDepreciationDate(), getPeriodicityInMonth(fixedAsset));
     }
     return d;

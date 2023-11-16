@@ -1,3 +1,0 @@
----
-title: "ManufOrder: Creating manuf orders from sale order will now correctly link parent and child manuf orders"
-type: fix

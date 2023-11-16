@@ -19,6 +19,8 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -35,7 +37,9 @@ import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -56,16 +60,16 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     if (company != null && user != null) {
       AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
       if (!accountConfig.getEnableBudgetKey()
-          || CollectionUtils.isEmpty(accountConfig.getBudgetDistributionRoleList())) {
+          || CollectionUtils.isEmpty(accountConfig.getBudgetDistributionRoleSet())) {
         return true;
       }
       for (Role role : user.getRoles()) {
-        if (accountConfig.getBudgetDistributionRoleList().contains(role)) {
+        if (accountConfig.getBudgetDistributionRoleSet().contains(role)) {
           return true;
         }
       }
       for (Role role : user.getGroup().getRoles()) {
-        if (accountConfig.getBudgetDistributionRoleList().contains(role)) {
+        if (accountConfig.getBudgetDistributionRoleSet().contains(role)) {
           return true;
         }
       }
@@ -133,5 +137,21 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         && company != null
         && checkBudgetKeyAndRole(company, AuthUtils.getUser())
         && budgetService.checkBudgetKeyInConfig(company);
+  }
+
+  public List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException {
+    if (company == null) {
+      return new ArrayList<>();
+    }
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    if (accountConfig == null
+        || CollectionUtils.isEmpty(accountConfig.getAnalyticAxisByCompanyList())) {
+      return new ArrayList<>();
+    }
+
+    return accountConfig.getAnalyticAxisByCompanyList().stream()
+        .filter(AnalyticAxisByCompany::getIncludeInBudgetKey)
+        .map(AnalyticAxisByCompany::getAnalyticAxis)
+        .collect(Collectors.toList());
   }
 }

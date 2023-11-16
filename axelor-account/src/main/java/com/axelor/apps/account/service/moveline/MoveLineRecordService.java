@@ -43,4 +43,6 @@ public interface MoveLineRecordService {
   void resetDebit(MoveLine moveLine);
 
   void resetPartnerFields(MoveLine moveLine);
+
+  void setCounter(MoveLine moveLine, Move move);
 }

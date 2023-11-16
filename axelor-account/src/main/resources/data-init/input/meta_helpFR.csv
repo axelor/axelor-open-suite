@@ -11,7 +11,7 @@
 "axelor-account";"Invoice";"invoice-form";"externalReference";"Ce champ permet d'indiquer un numéro de référence externe (comme une référence client ou fournisseur)."
 "axelor-account";"AppAccount";"app-account-config-form";"manageCustomerCredit";"Cette option permet de gérer le niveau d'encours des clients et d'en fixer un montant maximum. Un montant maximal d'encours accepté par défaut pour tous les clients peut être fixé par défaut dans les configurations des ventes par société.
 Le montant d'encours accepté peut également être configuré par client, dans les informations comptables des fiches clients. Vous pourrez également visualiser l'encours actuellement utilisé par chaque client."
-"axelor-account";"AccountConfig";"account-config-form";"accountChart";"Plan de compte par défaut utilisé pour cette société."
+"axelor-account";"AccountConfig";"account-config-form";"accountingConfigTemplate";"Plan de compte par défaut utilisé pour cette société."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isInvoiceMoveConsolidated";"Cette option peut s'activer sur les journaux comptables. Elle permet de regrouper les lignes d'écritures de facture par comptes comptables et par axes analytiques."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isVentilationSkipped";"Permet d'enlever l'étape de ventilation des factures pour garder seulement l'étape de validation. Une fois une facture validée, elle pourra alors être traitée comptablement sans avoir à passer par une étape de ventilation."
 "axelor-account";"Invoice";"invoice-form";"priceList";"Permet d'associer une liste de prix à utiliser spécifiquement pour cette commande. Ce champ est rempli automatiquement si une liste de prix est rattachée au tiers. "

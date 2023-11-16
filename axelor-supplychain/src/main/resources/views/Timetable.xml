@@ -26,9 +26,11 @@
       <field name="$viewerInvoiced" showTitle="false" readonly="true"
         showIf="invoiced == true" colSpan="8">
         <viewer><![CDATA[
-				<h4>
-					<span class="label label-info pull-right" x-translate>Invoiced</span>
-				</h4>
+				<>
+					<Box d="flex" justifyContent="flex-end">
+						<Badge bg="info">{_t('Invoiced')}</Badge>
+					</Box>
+				</>
 				]]></viewer>
       </field>
       <field name="title" colSpan="12"/>
@@ -72,9 +74,11 @@
       <field name="$viewerInvoiced" showTitle="false" readonly="true"
         showIf="invoiced == true" colSpan="8">
         <viewer><![CDATA[
-				<h4>
-					<span class="label label-info pull-right" x-translate>Invoiced</span>
-				</h4>
+				<>
+					<Box d="flex" justifyContent="flex-end">
+						<Badge bg="info">{_t('Invoiced')}</Badge>
+					</Box>
+				</>
 				]]></viewer>
       </field>
       <field name="title" colSpan="12"/>

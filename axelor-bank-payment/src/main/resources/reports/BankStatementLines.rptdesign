@@ -1352,7 +1352,7 @@ this.height = row["logo_height"];]]></method>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'

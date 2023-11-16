@@ -34,7 +34,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.service.ArchivingToolService;
+import com.axelor.utils.service.ArchivingService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -50,7 +50,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
   public MoveRemoveBudgetService(
       MoveRepository moveRepo,
       MoveLineRepository moveLineRepo,
-      ArchivingToolService archivingToolService,
+      ArchivingService archivingService,
       ReconcileService reconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
@@ -59,7 +59,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
     super(
         moveRepo,
         moveLineRepo,
-        archivingToolService,
+        archivingService,
         reconcileService,
         accountingSituationService,
         accountCustomerService,
@@ -77,7 +77,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
   @Transactional(rollbackOn = {Exception.class})
   public void deleteMove(Move move) {
     budgetService.updateBudgetLinesFromMove(move, true);
-    moveRepo.remove(move);
+    super.deleteMove(move);
   }
 
   /**
@@ -112,7 +112,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
     }
     String errorMessage = "";
     Map<String, String> objectsLinkToMoveLineMap =
-        archivingToolService.getObjectLinkTo(moveLine, moveLine.getId());
+        archivingService.getObjectLinkTo(moveLine, moveLine.getId());
     for (Map.Entry<String, String> entry : objectsLinkToMoveLineMap.entrySet()) {
       String modelName = entry.getKey();
       List<String> modelsToIgnore =
