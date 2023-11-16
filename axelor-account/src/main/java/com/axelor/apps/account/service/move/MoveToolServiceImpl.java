@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -53,6 +54,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -298,9 +300,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of credit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param creditMoveLineList
    * @return
    */
   @Override
@@ -313,9 +315,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of debit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param debitMoveLineList
    * @return
    */
   @Override
@@ -325,6 +327,30 @@ public class MoveToolServiceImpl implements MoveToolService {
       totalDebit = totalDebit.add(moveLine.getAmountRemaining());
     }
     return totalDebit;
+  }
+
+  /**
+   * Function that calculates the total amount remaining for a list of move lines in the move
+   * currency
+   *
+   * @param moveLineList
+   * @return
+   */
+  @Override
+  public BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList) {
+    BigDecimal totalCurrency = BigDecimal.ZERO;
+    for (MoveLine moveLine : moveLineList) {
+      totalCurrency =
+          totalCurrency.add(
+              moveLine
+                  .getAmountRemaining()
+                  .abs()
+                  .divide(
+                      moveLine.getCurrencyRate(),
+                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      RoundingMode.HALF_UP));
+    }
+    return totalCurrency;
   }
 
   /**

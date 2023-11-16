@@ -27,10 +27,12 @@ import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
@@ -39,10 +41,12 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,18 +61,24 @@ public class PaymentServiceImpl implements PaymentService {
 
   protected AppAccountService appAccountService;
   protected AppBaseService appBaseService;
+  protected CurrencyService currencyService;
+  protected MoveInvoiceTermService moveInvoiceTermService;
 
   @Inject
   public PaymentServiceImpl(
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       ReconcileService reconcileService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      CurrencyService currencyService,
+      MoveInvoiceTermService moveInvoiceTermService) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
     this.appAccountService = appAccountService;
     this.appBaseService = appBaseService;
+    this.currencyService = currencyService;
+    this.moveInvoiceTermService = moveInvoiceTermService;
   }
 
   /**
@@ -254,7 +264,15 @@ public class PaymentServiceImpl implements PaymentService {
       if (remainingPaidAmount2.compareTo(BigDecimal.ZERO) <= 0) {
         break;
       }
-      BigDecimal amountToPay = remainingPaidAmount2.min(amountRemaining);
+
+      BigDecimal currencyRate = debitMoveLine.getCurrencyRate();
+      BigDecimal amountToPay = remainingPaidAmount2.abs().min(amountRemaining);
+      BigDecimal moveLineAmount = amountToPay;
+      if (currencyRate.signum() > 0) {
+        moveLineAmount =
+            moveLineAmount.divide(
+                currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      }
 
       String invoiceName = "";
       if (debitMoveLine.getMove().getInvoice() != null) {
@@ -263,14 +281,20 @@ public class PaymentServiceImpl implements PaymentService {
         invoiceName = payVoucherElementToPay.getPaymentVoucher().getRef();
       }
 
+      LocalDate date = appAccountService.getTodayDate(company);
+
       MoveLine creditMoveLine =
           moveLineCreateService.createMoveLine(
               move,
               debitMoveLine.getPartner(),
               debitMoveLine.getAccount(),
+              moveLineAmount,
               amountToPay,
+              currencyRate,
               false,
-              appAccountService.getTodayDate(company),
+              date,
+              date,
+              date,
               moveLineNo2,
               invoiceName,
               null);
@@ -303,6 +327,8 @@ public class PaymentServiceImpl implements PaymentService {
         remainingPaidAmount2 = remainingPaidAmount2.subtract(amountRemaining);
       }
     }
+
+    moveInvoiceTermService.generateInvoiceTerms(move);
 
     for (Reconcile reconcile : reconcileList) {
       reconcileService.confirmReconcile(reconcile, true, true);
@@ -368,20 +394,43 @@ public class PaymentServiceImpl implements PaymentService {
       for (Map<Account, BigDecimal> map : allMap) {
         Account accountMap = (Account) map.values().toArray()[0];
         BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
-        BigDecimal amountDebit = amountMap.min(remainingPaidAmount2);
+        BigDecimal amountDebit = amountMap.abs().min(remainingPaidAmount2);
         if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
+          BigDecimal currencyRate;
+
+          Optional<MoveLine> optionalMoveLine =
+              creditMoveLines.stream().filter(ml -> accountMap.equals(ml.getAccount())).findFirst();
+
+          if (optionalMoveLine.isPresent()) {
+            currencyRate = optionalMoveLine.get().getCurrencyRate();
+          } else {
+            currencyRate =
+                currencyService.getCurrencyConversionRate(
+                    move.getCurrency(), company.getCurrency());
+          }
+
+          BigDecimal moveLineAmount = amountDebit;
+          if (currencyRate.signum() > 0) {
+            moveLineAmount =
+                moveLineAmount.divide(
+                    currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          }
           MoveLine debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   accountMap,
+                  moveLineAmount,
                   amountDebit,
+                  currencyRate,
                   true,
                   date,
                   dueDate,
+                  date,
                   moveLineNo2,
                   null,
                   null);
+
           move.getMoveLineList().add(debitMoveLine);
           moveLineNo2++;
 
@@ -418,6 +467,7 @@ public class PaymentServiceImpl implements PaymentService {
           }
         }
       }
+      moveInvoiceTermService.generateInvoiceTerms(move);
 
       for (Reconcile reconcile : reconcileList) {
         reconcileService.confirmReconcile(reconcile, true, true);
