@@ -35,6 +35,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.exception.AxelorException;
@@ -44,6 +46,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +70,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
   protected MoveExcessPaymentService moveExcessPaymentService;
   protected JournalRepository journalRepository;
   protected AccountConfigService accountConfigService;
+  protected CurrencyService currencyService;
 
   @Inject
   public MoveCreateFromInvoiceServiceImpl(
@@ -80,7 +85,8 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       ReconcileService reconcileService,
       MoveExcessPaymentService moveExcessPaymentService,
       AccountConfigService accountConfigService,
-      JournalRepository journalRepository) {
+      JournalRepository journalRepository,
+      CurrencyService currencyService) {
     this.appAccountService = appAccountService;
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
@@ -93,6 +99,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     this.moveExcessPaymentService = moveExcessPaymentService;
     this.accountConfigService = accountConfigService;
     this.journalRepository = journalRepository;
+    this.currencyService = currencyService;
   }
 
   /**
@@ -317,7 +324,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
             moveCreateService.createMove(
                 journal,
                 company,
-                null,
+                invoice.getCurrency(),
                 partner,
                 invoice.getInvoiceDate(),
                 invoice.getInvoiceDate(),
@@ -333,15 +340,26 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           BigDecimal totalCreditAmount = moveToolService.getTotalCreditAmount(creditMoveLineList);
           BigDecimal amount = totalCreditAmount.min(invoiceCustomerMoveLine.getDebit());
 
+          BigDecimal moveLineAmount =
+              moveToolService
+                  .getTotalCurrencyAmount(creditMoveLineList)
+                  .min(invoiceCustomerMoveLine.getCurrencyAmount());
+          LocalDate date = appAccountService.getTodayDate(company);
+
           // credit move line creation
           MoveLine creditMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   partner,
                   account,
+                  moveLineAmount,
                   amount,
+                  amount.divide(
+                      moveLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
                   false,
-                  appAccountService.getTodayDate(company),
+                  date,
+                  date,
+                  date,
                   1,
                   origin,
                   null);
@@ -401,7 +419,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
         moveCreateService.createMove(
             journal,
             company,
-            null,
+            invoice.getCurrency(),
             partner,
             invoice.getInvoiceDate(),
             invoice.getInvoiceDate(),
@@ -417,15 +435,26 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
       BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
 
+      BigDecimal moveLineAmount =
+          moveToolService
+              .getTotalCurrencyAmount(debitMoveLines)
+              .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
+      LocalDate date = appAccountService.getTodayDate(company);
+
       // debit move line creation
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
               oDmove,
               partner,
               account,
+              moveLineAmount,
               amount,
+              amount.divide(
+                  moveLineAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP),
               true,
-              appAccountService.getTodayDate(company),
+              date,
+              date,
+              date,
               1,
               origin,
               null);
