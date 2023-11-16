@@ -1043,9 +1043,8 @@ InvoiceSet.length > 0))"
 	                  </>
 		       ]]></viewer>
       </field>
-      <field name="companyInTaxTotalRemaining" css="order-subtotal" showTitle="false"
-        colSpan="12" showIf="statusSelect == 2 || statusSelect == 3"
-        x-currency="company.currency.symbol">
+      <field name="companyInTaxTotalRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol">
         <viewer depends="companyInTaxTotalRemaining"><![CDATA[
 		         <>
 		         	<dl>
