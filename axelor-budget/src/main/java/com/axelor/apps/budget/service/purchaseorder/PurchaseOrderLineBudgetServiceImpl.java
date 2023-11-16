@@ -75,7 +75,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   @Override
   @Transactional
   public String computeBudgetDistribution(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException {
     if (purchaseOrder == null || purchaseOrderLine == null) {
       return "";
     }

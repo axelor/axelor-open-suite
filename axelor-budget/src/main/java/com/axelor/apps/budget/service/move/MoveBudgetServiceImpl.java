@@ -69,7 +69,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   }
 
   @Override
-  public String computeBudgetDistribution(Move move) {
+  public String computeBudgetDistribution(Move move) throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
     if (CollectionUtils.isNotEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {

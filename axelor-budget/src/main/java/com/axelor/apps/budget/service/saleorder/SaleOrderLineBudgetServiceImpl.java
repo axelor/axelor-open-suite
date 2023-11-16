@@ -66,7 +66,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     if (saleOrder == null || saleOrderLine == null) {
       return "";
     }

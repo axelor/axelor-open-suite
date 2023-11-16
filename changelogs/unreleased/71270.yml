@@ -1,0 +1,4 @@
+---
+title: "Budget key : Fix the compute in invoices/moves/orders"
+type: fix
+description: "The compute now manage only axis related to budget key management in account config"

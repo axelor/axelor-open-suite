@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -63,7 +64,8 @@ public interface BudgetDistributionService {
       LocalDate date,
       BigDecimal amount,
       String name,
-      AuditableModel object);
+      AuditableModel object)
+      throws AxelorException;
 
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate);

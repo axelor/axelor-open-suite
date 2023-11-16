@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service;
 
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -25,6 +26,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public interface BudgetToolsService {
 
@@ -38,6 +40,8 @@ public interface BudgetToolsService {
   boolean checkBudgetKeyAndRole(Company company, User user) throws AxelorException;
 
   boolean checkBudgetKeyAndRoleForMove(Move move) throws AxelorException;
+
+  List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException;
 
   BigDecimal getAvailableAmountOnBudget(Budget budget, LocalDate date);
 
