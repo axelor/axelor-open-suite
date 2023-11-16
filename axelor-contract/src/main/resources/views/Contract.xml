@@ -155,8 +155,6 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel title="Content" name="contentPanel">
-        <label name="saveLabel" title="You need to save your contract for add lines."
-          hidden="true" showIf="isInvoicingManagement &amp;&amp; !id" css="label-bold font-red"/>
         <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement"
           colSpan="12">
           <field name="currentContractVersion" showTitle="false" colSpan="12"

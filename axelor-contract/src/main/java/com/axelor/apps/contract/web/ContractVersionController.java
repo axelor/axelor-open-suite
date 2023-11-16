@@ -139,7 +139,7 @@ public class ContractVersionController {
           request.getContext().getParent().asType(ContractVersion.class);
       Contract contract =
           contractVersion.getNextContract() == null
-              ? contractVersion.getContract()
+              ? request.getContext().getParent().getParent().asType(Contract.class)
               : contractVersion.getNextContract();
       Product product = contractLine.getProduct();
 
