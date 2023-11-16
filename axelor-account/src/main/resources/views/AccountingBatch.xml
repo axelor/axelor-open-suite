@@ -636,7 +636,9 @@
     title="Move lines concerned by doubtful customer" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-doubtful-customer-grid"/>
     <view type="form" name="move-line-form"/>
-    <domain></domain>
+    <domain>self.id IN :_moveLineIds</domain>
+    <context name="_moveLineIds"
+      expr="call: com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService:getDoubtfulCustomerPreviewList(company,doubtfulCustomerAccount)"/>
     <context name="_batchId" expr="eval: id"/>
     <context name="_actionSelect" expr="eval: actionSelect"/>
   </action-view>

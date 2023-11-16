@@ -91,64 +91,63 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
 
   @Override
   protected void process() {
-
     if (!end) {
-      Company company = batch.getAccountingBatch().getCompany();
-
-      AccountConfig accountConfig = company.getAccountConfig();
-
-      Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
-      int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
-      int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
-      String sixMonthDebtPassReason = accountConfig.getSixMonthDebtPassReason();
-      String threeMonthDebtPassReason = accountConfig.getThreeMonthDebtPassReason();
-
-      // FACTURES
-      List<MoveLine> moveLineList =
-          doubtfulCustomerService.getMoveLines(
-              company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, false);
-      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveLineList.size());
-      this.createDoubtFulCustomerMove(
-          moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
-
-      moveLineList =
-          doubtfulCustomerService.getMoveLines(
-              company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, false);
-      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveLineList.size());
-      this.createDoubtFulCustomerMove(
-          moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
-
-      // FACTURES REJETES
-      moveLineList =
-          doubtfulCustomerService.getMoveLines(
-              company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, true);
-      log.debug(
-          "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
-          moveLineList.size());
-      this.createDoubtFulCustomerRejectMove(
-          moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
-
-      moveLineList =
-          doubtfulCustomerService.getMoveLines(
-              company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, true);
-      log.debug(
-          "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
-          moveLineList.size());
-      this.createDoubtFulCustomerRejectMove(
-          moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
-
-      updateCustomerAccountLog +=
-          batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
+      super.process();
     }
   }
 
   @Override
-  protected void _processMovesByQuery(AccountingBatch accountingBatch) {}
+  protected void _processMovesByQuery(AccountingBatch accountingBatch) {
+    Company company = batch.getAccountingBatch().getCompany();
+
+    AccountConfig accountConfig = company.getAccountConfig();
+
+    Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
+    int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
+    int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
+    String sixMonthDebtPassReason = accountConfig.getSixMonthDebtPassReason();
+    String threeMonthDebtPassReason = accountConfig.getThreeMonthDebtPassReason();
+
+    // FACTURES
+    List<MoveLine> moveLineList =
+            doubtfulCustomerService.getMoveLines(
+                    company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, false);
+    log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveLineList.size());
+    this.createDoubtFulCustomerMove(
+            moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+
+    moveLineList =
+            doubtfulCustomerService.getMoveLines(
+                    company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, false);
+    log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveLineList.size());
+    this.createDoubtFulCustomerMove(
+            moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+
+    // FACTURES REJETES
+    moveLineList =
+            doubtfulCustomerService.getMoveLines(
+                    company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, true);
+    log.debug(
+            "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
+            moveLineList.size());
+    this.createDoubtFulCustomerRejectMove(
+            moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+
+    moveLineList =
+            doubtfulCustomerService.getMoveLines(
+                    company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, true);
+    log.debug(
+            "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
+            moveLineList.size());
+    this.createDoubtFulCustomerRejectMove(
+            moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+
+    updateCustomerAccountLog +=
+            batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
+  }
 
   @Override
   protected void _processMovesByIds(AccountingBatch accountingBatch) {}
-
-  protected void _processMoves(List<Move> moveList) {}
 
   /**
    * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture

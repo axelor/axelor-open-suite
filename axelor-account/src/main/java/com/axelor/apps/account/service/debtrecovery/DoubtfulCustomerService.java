@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -48,6 +49,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -429,5 +431,34 @@ public class DoubtfulCustomerService {
         .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
         .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
         .fetch();
+  }
+
+  protected List<Long> getMoveLineIds(
+      Company company, Account doubtfulCustomerAccount, int debtMonthNumber, boolean isReject) {
+    return this.getMoveLines(company, doubtfulCustomerAccount, debtMonthNumber, isReject).stream()
+        .map(MoveLine::getId)
+        .collect(Collectors.toList());
+  }
+
+  @CallMethod
+  public List<Long> getDoubtfulCustomerPreviewList(
+      Company company, Account doubtfulCustomerAccount) {
+    List<Long> idList = new ArrayList<>();
+    AccountConfig accountConfig = company.getAccountConfig();
+
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getSixMonthDebtMonthNumber(), true));
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getThreeMonthDebtMontsNumber(), true));
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getSixMonthDebtMonthNumber(), false));
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getThreeMonthDebtMontsNumber(), false));
+
+    return idList.stream().distinct().collect(Collectors.toList());
   }
 }
