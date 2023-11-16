@@ -20,21 +20,21 @@ public class PricingGroupServiceImpl implements PricingGroupService {
     }
 
     if (product != null) {
-      formula = String.format("product.id == %d ", product.getId());
+      formula = String.format("product.id == %d", product.getId());
 
       if (product.getParentProduct() != null) {
         formula =
             formula.concat(
-                String.format("OR product.id == %d ", product.getParentProduct().getId()));
+                String.format(" OR product.id == %d", product.getParentProduct().getId()));
       }
       if (productCategory != null) {
         formula =
             formula.concat(
-                String.format("OR product.productCategory.id == %d ", productCategory.getId()));
+                String.format(" OR product.productCategory.id == %d", productCategory.getId()));
       }
     } else {
       if (productCategory != null) {
-        formula = String.format("product.productCategory.id == %d ", productCategory.getId());
+        formula = String.format("product.productCategory.id == %d", productCategory.getId());
       }
     }
     return formula;
