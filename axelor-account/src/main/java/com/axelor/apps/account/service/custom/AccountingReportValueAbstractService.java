@@ -245,7 +245,8 @@ public abstract class AccountingReportValueAbstractService {
         && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAccountSet()))
         && CollectionUtils.isEmpty(column.getAccountSet())
         && CollectionUtils.isEmpty(line.getAccountSet())
-        && line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT;
+        && (line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT
+            || !accountingReport.getDisplayDetails());
   }
 
   protected boolean areAllAnalyticAccountSetsEmpty(
@@ -257,8 +258,9 @@ public abstract class AccountingReportValueAbstractService {
         && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAnalyticAccountSet()))
         && CollectionUtils.isEmpty(column.getAnalyticAccountSet())
         && CollectionUtils.isEmpty(line.getAnalyticAccountSet())
-        && line.getDetailBySelect()
-            != AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT;
+        && (line.getDetailBySelect()
+                != AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT
+            || !accountingReport.getDisplayDetails());
   }
 
   protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {
