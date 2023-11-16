@@ -75,8 +75,10 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Transactional(rollbackOn = {Exception.class})
   protected void resetStatus(Period period) {
-    super.resetStatusSelect(period);
-    periodRepo.save(period);
+
+    Period periodBDD = periodRepo.find(period.getId());
+    super.resetStatusSelect(periodBDD);
+    periodRepo.save(periodBDD);
   }
 
   @Transactional(rollbackOn = {Exception.class})
