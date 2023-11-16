@@ -24,8 +24,9 @@
       readonly="true"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Overdue moveline"/>
-    <decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate"/>
-    <decimal name="allocatedAmount" title="Allocated amount"/>
+    <decimal name="remainingAllocatedAmount" title="Amount Remaining to allocate"
+      precision="20" scale="3"/>
+    <decimal name="allocatedAmount" title="Allocated amount" precision="20" scale="3"/>
     <one-to-many name="payVoucherDueElementList"
       ref="com.axelor.apps.account.db.PayVoucherDueElement"
       title="List of invoices/schedule lines with remaining amount to pay" mappedBy="paymentVoucher"/>
@@ -50,7 +51,8 @@
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" required="true"
       title="Currency"/>
-    <decimal name="paidAmountInCurrency" title="Amount paid in currency"/>
+    <decimal name="paidAmountInCurrency" title="Amount paid in currency" precision="20"
+      scale="3"/>
 
     <integer name="operationTypeSelect" title="Payment type" required="true"
       selection="iinvoice.operation.type.select"/>
@@ -58,7 +60,8 @@
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Trading name"/>
 
-    <decimal name="remainingAmount" title="Amount remaining to allocate">
+    <decimal name="remainingAmount" title="Amount remaining to allocate" precision="20"
+      scale="3">
 			<![CDATA[
             BigDecimal totalElementToPay = BigDecimal.ZERO;
             if (getPaidAmount().signum() != 0) {
