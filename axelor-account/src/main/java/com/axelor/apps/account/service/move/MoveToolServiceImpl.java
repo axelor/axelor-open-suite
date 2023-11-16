@@ -300,9 +300,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of credit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param creditMoveLineList
    * @return
    */
   @Override
@@ -315,9 +315,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of debit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param debitMoveLineList
    * @return
    */
   @Override
@@ -330,10 +330,10 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture en monnaie de la
-   * pièce
+   * Function that calculates the total amount remaining for a list of move lines in the move
+   * currency
    *
-   * @param moveLineList Une liste de ligne d'écriture au credit
+   * @param moveLineList
    * @return
    */
   @Override
