@@ -19,7 +19,6 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
@@ -30,6 +29,8 @@ import java.time.temporal.ChronoUnit;
 
 @Singleton
 public class DurationServiceImpl implements DurationService {
+
+  protected static final int COMPUTATION_SCALING = 20;
 
   @Override
   public LocalDate computeDuration(Duration duration, LocalDate date) {
@@ -58,9 +59,6 @@ public class DurationServiceImpl implements DurationService {
     long totalDays = ChronoUnit.DAYS.between(totalStart, totalEnd);
     long totalComputedDays = ChronoUnit.DAYS.between(start, end) + 1;
     return BigDecimal.valueOf(totalComputedDays)
-        .divide(
-            BigDecimal.valueOf(totalDays),
-            AppBaseService.COMPUTATION_SCALING,
-            RoundingMode.HALF_UP);
+        .divide(BigDecimal.valueOf(totalDays), COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }
