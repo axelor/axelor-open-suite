@@ -63,7 +63,7 @@
         showIf="statusSelect == 2" onClick="action-purchase-request-group-refuse-button"/>
       <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
         onClick="action-purchase-request-group-cancel-button" hideIf="statusSelect == 6"/>
-      <button name="draftBtn" title="Draft" icon="fa-edit" showIf="statusSelect == 6"
+      <button name="draftBtn" title="Draft" icon="edit" showIf="statusSelect == 6"
         onClick="action-purchase-request-group-draft-button"/>
     </panel>
     <panel sidebar="true" name="characteristicsPanel" title="Characteristics"

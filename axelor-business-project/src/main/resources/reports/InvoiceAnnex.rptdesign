@@ -2956,13 +2956,13 @@ this.height=row["logo_height"];]]></method>
                                                     <value type="javascript">if(row["operation_type_select"] == "1" ){
 'Invoice.purchaseInvoiceNoAnnex'
 }else if(row["operation_type_select"] == "2" ){
-'Invoice.purchaseRefundNoAnnex'
+'Invoice.purchaseCreditNoteNoAnnex'
 }else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] == "1" ){
 'Invoice.draftInvoiceNoAnnex'
 }else if(row["operation_type_select"] == "3" &amp;&amp; row["status_select"] != "1" ){
 'Invoice.invoiceNoAnnex'
 }else if(row["operation_type_select"] == "4" ){
-'Invoice.refundNoAnnex'
+'Invoice.creditNoteNoAnnex'
 }</value>
                                                 </simple-property-list>
                                             </structure>

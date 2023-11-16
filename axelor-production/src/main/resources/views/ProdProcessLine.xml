@@ -24,13 +24,10 @@
       <field name="priority" colSpan="3"/>
       <panel name="workCenterGroupPanel" colSpan="12">
         <field name="workCenterTypeSelect"/>
-        <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
-          onClick="save,action-production-view-work-center-group-wizard"
-          readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null"/>
-        <field name="workCenterGroup" canNew="true" canEdit="true" canSelect="false"
-          colSpan="12" form-view="work-center-group-form" grid-view="work-center-group-grid"
+        <field name="workCenterGroup" canNew="true" canEdit="true" colSpan="6"
+          form-view="work-center-group-form" grid-view="work-center-group-grid"
           onChange="action-prod-process-line-group-work-center-group-onchange"
-          domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+          domain="self.workCenterTypeSelect = :workCenterTypeSelect"/>
       </panel>
       <field name="workCenter" grid-view="work-center-grid" form-view="work-center-form"
         canNew="workCenterGroup == null"
@@ -95,18 +92,6 @@
     </panel-mail>
   </form>
 
-  <form model="com.axelor.apps.production.db.ProdProcessLine"
-    title="Work center group selection" name="prod-process-line-work-center-group-wizard-form">
-    <panel name="mainPanel">
-      <field canNew="true" canEdit="false" canSelect="true" form-view="work-center-group-form"
-        name="$workCenterGroupWizard" title="Work center group template"
-        target="com.axelor.apps.production.db.WorkCenterGroup" type="many-to-one" required="true"
-        onSelect="action-attrs-production-set-work-center-group-wizard-domain"/>
-      <button name="workCenterGroupWizardSave" title="Save"
-        onClick="save,action-production-method-set-work-center-group"/>
-    </panel>
-  </form>
-
   <action-record name="action-prod-process-line-record-default"
     model="com.axelor.apps.production.db.ProdProcessLine">
     <field name="priority"
@@ -117,53 +102,32 @@
     <field name="outsourcing" expr="eval: __parent__?.outsourcing"/>
   </action-record>
 
-  <action-view name="action-production-view-work-center-group-wizard"
-    title="Work center group" model="com.axelor.apps.production.db.ProdProcessLine">
-    <view type="form" name="prod-process-line-work-center-group-wizard-form"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="false"/>
-    <view-param name="forceEdit" value="true"/>
-    <context name="_showRecord" expr="eval: __this__.id"/>
-    <context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect"/>
-    <context name="_template" expr="true"/>
-  </action-view>
-
-  <action-method name="action-production-method-set-work-center-group">
-    <call class="com.axelor.apps.production.web.ProdProcessLineController"
-      method="setWorkCenterGroup"/>
-  </action-method>
-
-  <action-attrs name="action-attrs-production-set-work-center-group-wizard-domain"
+  <action-record name="action-prod-process-line-record-update-from-workcenter"
     model="com.axelor.apps.production.db.ProdProcessLine">
-    <attribute name="domain" for="$workCenterGroupWizard"
-      expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
-  </action-attrs>
-
-  <action-attrs name="action-prod-process-line-attrs-update-from-workcenter">
-    <attribute name="value" for="durationPerCycle"
-      expr="eval: workCenter?.durationPerCycle"/>
-    <attribute name="value" for="humanDuration"
-      expr="eval: workCenter?.hrDurationPerCycle"/>
-    <attribute name="value" for="product" expr="eval: workCenter?.product"
+    <field name="durationPerCycle" expr="eval: workCenter?.durationPerCycle"
+      if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="humanDuration" expr="eval: workCenter?.hrDurationPerCycle"
+      if="workCenter?.workCenterTypeSelect == 1 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="product" expr="eval: workCenter?.product"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <attribute name="value" for="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
+    <field name="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <attribute name="value" for="costAmount" expr="eval: workCenter?.costAmount"
+    <field name="costAmount" expr="eval: workCenter?.costAmount"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <attribute name="value" for="hrProduct" expr="eval: workCenter?.hrProduct"
+    <field name="hrProduct" expr="eval: workCenter?.hrProduct"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <attribute name="value" for="hrCostTypeSelect"
-      expr="eval: workCenter?.hrCostTypeSelect"
+    <field name="hrCostTypeSelect" expr="eval: workCenter?.hrCostTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <attribute name="value" for="hrCostAmount" expr="eval: workCenter?.hrCostAmount"
+    <field name="hrCostAmount" expr="eval: workCenter?.hrCostAmount"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-  </action-attrs>
+    <field name="minCapacityPerCycle" expr="eval: workCenter?.minCapacityPerCycle"
+      if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="maxCapacityPerCycle" expr="eval: workCenter?.maxCapacityPerCycle"
+      if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+  </action-record>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
-    <action name="action-prod-process-line-method-duration"/>
-    <action name="action-prod-process-line-attrs-update-from-workcenter"/>
+    <action name="action-prod-process-line-record-update-from-workcenter"/>
     <action name="action-prod-process-line-method-capacity-settings"/>
     <action name="action-prod-process-line-attrs-hide-duration"/>
   </action-group>

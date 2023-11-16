@@ -18,7 +18,7 @@
     <many-to-one name="supplierPurchaseJournal" ref="com.axelor.apps.account.db.Journal"
       title="Supplier Purchase Journal"/>
     <many-to-one name="supplierCreditNoteJournal"
-      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit Note Journal"/>
+      ref="com.axelor.apps.account.db.Journal" title="Supplier Credit note Journal"/>
     <many-to-one name="rejectJournal" ref="com.axelor.apps.account.db.Journal"
       title="Rejects journal"/>
     <many-to-one name="accountClearanceJournal" ref="com.axelor.apps.account.db.Journal"
@@ -200,11 +200,11 @@
     <many-to-one name="custInvSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Customer invoices sequence"/>
     <many-to-one name="custRefSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Customer refunds sequence"/>
+      title="Customer credit notes sequence"/>
     <many-to-one name="suppInvSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Supplier invoices sequence"/>
     <many-to-one name="suppRefSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Supplier refunds sequence"/>
+      title="Supplier credit notes sequence"/>
 
     <!--Product -->
 
@@ -249,7 +249,7 @@
       ref="com.axelor.message.db.Template"/>
 
     <boolean name="isManagePassedForPayment" title="Passed for payment"/>
-    <boolean name="isManagePFPInRefund" title="Manage PFP on supplier refunds"/>
+    <boolean name="isManagePFPInRefund" title="Manage PFP on supplier credit notes"/>
     <boolean name="isManageDaybookInPFP" title="Show daybook moves in PFP menu"
       help="If this field is activated, daybook moves will been selected too in accounting PFP menu"/>
 

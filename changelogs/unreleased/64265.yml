@@ -1,0 +1,7 @@
+---
+title: "Contract : fix prorata computation when invoicing a contract and end date contract version"
+type: fix
+description: |
+  When creating a new version of a contract, the end date of the previous version
+  is now the activation date of the new version minus one day.
+  If left empty, it will be today's date minus one day.

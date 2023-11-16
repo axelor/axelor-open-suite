@@ -135,7 +135,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(Invoice invoice) {
+  public String computeBudgetDistribution(Invoice invoice) throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {

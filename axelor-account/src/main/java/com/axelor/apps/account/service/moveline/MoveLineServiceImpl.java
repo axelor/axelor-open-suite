@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -73,6 +74,7 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected int jpaLimit = 20;
+  private final int ALTERNATIVE_SCALE = 10;
 
   protected MoveLineToolService moveLineToolService;
   protected MoveLineRepository moveLineRepository;
@@ -82,6 +84,8 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
+  protected MoveLineTaxService moveLineTaxService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineServiceImpl(
@@ -92,7 +96,9 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      AccountingCutOffService cutOffService,
+      MoveLineTaxService moveLineTaxService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -101,6 +107,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
+    this.moveLineTaxService = moveLineTaxService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -164,6 +172,8 @@ public class MoveLineServiceImpl implements MoveLineService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
+
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
       return;
@@ -342,10 +352,11 @@ public class MoveLineServiceImpl implements MoveLineService {
 
     BigDecimal prorata = BigDecimal.ONE;
     if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-      prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+      prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
     }
 
-    return prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP);
+    return currencyScaleServiceAccount.getScaledValue(
+        moveLine, prorata.multiply(moveLine.getCurrencyAmount()));
   }
 
   @Override
@@ -387,11 +398,12 @@ public class MoveLineServiceImpl implements MoveLineService {
       if (daysTotal.compareTo(BigDecimal.ZERO) != 0) {
         BigDecimal prorata = BigDecimal.ONE;
         if (moveDate.isAfter(moveLine.getCutOffStartDate())) {
-          prorata = daysProrata.divide(daysTotal, 10, RoundingMode.HALF_UP);
+          prorata = daysProrata.divide(daysTotal, ALTERNATIVE_SCALE, RoundingMode.HALF_UP);
         }
 
         moveLine.setCutOffProrataAmount(
-            prorata.multiply(moveLine.getCurrencyAmount()).setScale(2, RoundingMode.HALF_UP));
+            currencyScaleServiceAccount.getScaledValue(
+                moveLine, prorata.multiply(moveLine.getCurrencyAmount())));
         moveLine.setAmountBeforeCutOffProrata(moveLine.getCredit().max(moveLine.getDebit()));
         moveLine.setDurationCutOffProrata(daysProrata.toString() + "/" + daysTotal.toString());
       }
@@ -431,10 +443,15 @@ public class MoveLineServiceImpl implements MoveLineService {
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          amount.multiply(
-              financialDiscount
-                  .getDiscountRate()
-                  .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP)));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              moveLine,
+              amount.multiply(
+                  financialDiscount
+                      .getDiscountRate()
+                      .divide(
+                          BigDecimal.valueOf(100),
+                          AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
+                          RoundingMode.HALF_UP))));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {
