@@ -19,10 +19,10 @@
       title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <boolean name="reverseCharged"/>
-    <decimal name="subTotalExcludingFixedAssets"/>
-    <decimal name="subTotalOfFixedAssets"/>
-    <decimal name="companySubTotalExcludingFixedAssets"/>
-    <decimal name="companySubTotalOfFixedAssets"/>
+    <decimal name="subTotalExcludingFixedAssets" scale="3" precision="20"/>
+    <decimal name="subTotalOfFixedAssets" scale="3" precision="20"/>
+    <decimal name="companySubTotalExcludingFixedAssets" scale="3" precision="20"/>
+    <decimal name="companySubTotalOfFixedAssets" scale="3" precision="20"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.invoice.line.tax.select" default="0"/>
   </entity>

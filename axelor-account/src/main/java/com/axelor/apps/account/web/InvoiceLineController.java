@@ -248,6 +248,8 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
@@ -255,15 +257,12 @@ public class InvoiceLineController {
 
       response.setValue(
           "inTaxPrice",
-          Beans.get(CurrencyScaleServiceAccount.class)
-              .getScaledValue(
-                  invoiceLine,
-                  Beans.get(TaxService.class)
-                      .convertUnitPrice(
-                          false,
-                          taxLine,
-                          exTaxPrice,
-                          Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice())));
+          Beans.get(TaxService.class)
+              .convertUnitPrice(
+                  false,
+                  taxLine,
+                  exTaxPrice,
+                  Beans.get(CurrencyScaleServiceAccount.class).getScale(invoiceLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -272,6 +271,9 @@ public class InvoiceLineController {
   @ErrorException
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     response.setValue("inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
   }
