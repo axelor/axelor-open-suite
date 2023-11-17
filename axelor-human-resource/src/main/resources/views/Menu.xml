@@ -61,13 +61,25 @@
 
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="my-hr-root"
     action="time.sheet.timer" order="450"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; !__config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
     icon="fa-play" icon-background="#84429f"/>
 
   <action-method name="time.sheet.timer">
     <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
       method="editTimesheetTimer"/>
   </action-method>
+
+  <menuitem title="Multiple Start&amp;Stop Timer" name="time-sheet-multiple-timer"
+    parent="my-hr-root" action="action.timesheet.view.multiple.timer"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; __config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
+    order="460" icon="fa-play" icon-background="#84429f"/>
+
+  <action-view name="action.timesheet.view.multiple.timer"
+    model="com.axelor.apps.hr.db.TSTimer" title="Multiple timer">
+    <view name="ts-multiple-timer-grid" type="grid"/>
+    <view name="ts-multi-timer-form" type="form"/>
+  </action-view>
+
 
   <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
     action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
@@ -512,17 +524,6 @@
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="validateTimesheet"/>
   </action-method>
-
-  <menuitem title="Multiple Start&amp;Stop Timer" name="time-sheet-multiple-timer"
-    parent="timesheet-root" action="action.timesheet.view.multiple.timer"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; __config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
-    order="410"/>
-
-  <action-view name="action.timesheet.view.multiple.timer"
-    model="com.axelor.apps.hr.db.TSTimer" title="Multiple timer">
-    <view name="ts-multiple-timer-grid" type="grid"/>
-    <view name="ts-multi-timer-form" type="form"/>
-  </action-view>
 
   <menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root"
     action="action.timesheet.view.timesheet.report" if="__config__.app.isApp('timesheet')"
