@@ -11,7 +11,9 @@
     <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="projectTask" ref="com.axelor.apps.project.db.ProjectTask"
-      title="Task" required="true"/>
+      title="Task"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"
+      required="true"/>
     <string name="comments" title="Comments" large="true"/>
     <datetime name="startDateTime" title="Start Time" readonly="true"/>
     <datetime name="timerStartDateT" title="Timer start date time" readonly="true"/>

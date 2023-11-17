@@ -30,6 +30,8 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -113,9 +115,20 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
   protected String computeName(TSTimer timer) {
     StringBuilder name = new StringBuilder();
-    name.append(timer.getProject().getName());
-    name.append(" ");
-    name.append(timer.getProjectTask().getName());
+    Project project = timer.getProject();
+    ProjectTask projectTask = timer.getProjectTask();
+
+    if (project != null) {
+      name.append(timer.getProject().getName());
+      name.append(" - ");
+    }
+
+    if (projectTask != null) {
+      name.append(timer.getProjectTask().getName());
+      name.append(" - ");
+    }
+
+    name.append(timer.getProduct().getName());
     return name.toString();
   }
 

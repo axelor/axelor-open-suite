@@ -9,6 +9,9 @@
     <field name="project" form-view="project-form" grid-view="project-grid"/>
     <field name="projectTask" readonlyIf="!project" domain="self.project = :project"
       widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
+    <field name="product"
+      domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND self.dtype = 'Product'"
+      widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="startDateTime"/>
     <field name="duration"/>
     <field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid"
@@ -22,6 +25,9 @@
     <field name="project" form-view="project-form" grid-view="project-grid"/>
     <field name="projectTask" readonlyIf="!project" domain="self.project = :project"
       widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
+    <field name="product"
+      domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND self.dtype = 'Product'"
+      widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="startDateTime"/>
     <field name="duration"/>
     <field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid"
@@ -39,9 +45,15 @@
         canNew="false" canEdit="false" canView="false" colSpan="6"/>
       <spacer colSpan="6"/>
       <field name="project" form-view="project-form" grid-view="project-grid"
-        domain="self.imputable = true AND self.isShowTimeSpent = true" colSpan="6"/>
+        domain="self.imputable = true AND self.isShowTimeSpent = true" colSpan="6"
+        onChange="action-ts-timer-attrs-project-onchange"/>
       <field name="projectTask" readonlyIf="!project" domain="self.project = :project"
-        widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid" colSpan="6"/>
+        widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid" colSpan="6"
+        onChange="action-ts-timer-attrs-project-task-onchange"/>
+      <field name="product" canEdit="false"
+        onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox"
+        form-view="product-activity-form" grid-view="product-activity-grid" colSpan="6"/>
+      <spacer colSpan="6"/>
       <field name="startDateTime" colSpan="6"/>
       <field name="lastStartDateT" colSpan="6"/>
       <field name="duration" widget="duration" colSpan="2" readonly="true"/>
@@ -58,10 +70,10 @@
     </panel>
     <panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
       <button name="startBtn" title="Start" onClick="action-ts-timer-record-start,save"
-        showIf="statusSelect == 1" hidden="true" readonlyIf="projectTask == null" icon="fa-play"
+        showIf="statusSelect == 1" hidden="true" readonlyIf="product == null" icon="fa-play"
         css="btn-success"/>
       <button name="resumeBtn" title="Resume" onClick="action-ts-timer-record-start,save"
-        showIf="statusSelect == 3" hidden="true" readonlyIf="projectTask == null" icon="fa-play"
+        showIf="statusSelect == 3" hidden="true" readonlyIf="product == null" icon="fa-play"
         css="btn-success"/>
       <button name="pauseBtn" title="Pause" onClick="save,action-ts-timer-method-pause,save"
         hideIf="statusSelect != 2" hidden="true" icon="fa-pause" css="btn-warning"/>
@@ -117,6 +129,21 @@
   <action-attrs name="action-ts-timer-attrs-readonly-panel">
     <attribute name="readonly" for="startAndStop"
       expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.app.getApp('timesheet')?.getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"/>
+  </action-attrs>
+
+  <action-attrs name="action-ts-timer-attrs-project-task-onchange">
+    <attribute for="product" name="value" expr="eval: projectTask?.product"/>
+    <attribute for="product" name="readonly" expr="eval: projectTask?.product"/>
+  </action-attrs>
+
+  <action-attrs name="action-ts-timer-attrs-project-onchange">
+    <attribute for="projectTask" name="value" expr="eval: null" if="!project"/>
+    <attribute for="product" name="value" expr="eval: null" if="!project"/>
+  </action-attrs>
+
+  <action-attrs name="action-ts-timer-attrs-project-task-onselect">
+    <attribute for="projectTask" name="domain"
+      expr="eval: &quot; self.project = :project&quot;"/>
   </action-attrs>
 
 </object-views>
