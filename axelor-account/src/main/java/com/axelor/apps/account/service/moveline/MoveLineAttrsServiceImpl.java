@@ -84,11 +84,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   public void addAnalyticAccountRequired(
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
+    Company company = move != null ? move.getCompany() : null;
+
     for (int i = startAxisPosition; i <= endAxisPosition; i++) {
       this.addAttr(
           "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
           "required",
-          analyticLineService.isAxisRequired(moveLine, move != null ? move.getCompany() : null, i),
+          analyticLineService.isAxisRequired(moveLine, company, i)
+              && !analyticLineService.checkAnalyticLinesByAxis(moveLine, i, company),
           attrsMap);
     }
   }
