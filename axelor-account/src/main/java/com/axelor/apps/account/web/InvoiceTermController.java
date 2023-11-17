@@ -474,7 +474,7 @@ public class InvoiceTermController {
   }
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getInvoice() != null) {
+    if (invoiceTerm.getInvoice() == null) {
       invoiceTerm.setInvoice(ContextTool.getContextParent(request.getContext(), Invoice.class, 1));
     }
   }
