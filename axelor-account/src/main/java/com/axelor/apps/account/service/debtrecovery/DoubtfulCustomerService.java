@@ -421,9 +421,9 @@ public class DoubtfulCustomerService {
 
     if (isReject) {
       query.append(
-          "self.invoiceReject IS NOT NULL AND self.invoiceReject.operationTypeSelect = :operationTypeSale");
+          "AND self.invoiceReject IS NOT NULL AND self.invoiceReject.operationTypeSelect = :operationTypeSale");
     } else {
-      query.append("self.move.functionalOriginSelect = :functionalOriginSale");
+      query.append("AND self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
     return moveLineRepo.all().filter(query.toString()).bind("company", company).bind("date", date)
