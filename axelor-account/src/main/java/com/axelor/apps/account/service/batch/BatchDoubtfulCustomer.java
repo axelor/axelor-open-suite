@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.batch;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -37,7 +38,10 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,161 +109,90 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
     Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
     int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
     int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
-    String sixMonthDebtPassReason = accountConfig.getSixMonthDebtPassReason();
-    String threeMonthDebtPassReason = accountConfig.getThreeMonthDebtPassReason();
 
-    // FACTURES
-    List<MoveLine> moveLineList =
-            doubtfulCustomerService.getMoveLines(
-                    company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, false);
-    log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveLineList.size());
-    this.createDoubtFulCustomerMove(
-            moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+    List<Pair<Integer, Boolean>> pairList =
+        Arrays.asList(
+            Pair.of(sixMonthDebtMonthNumber, false),
+            Pair.of(threeMonthDebtMonthNumber, true),
+            Pair.of(sixMonthDebtMonthNumber, true),
+            Pair.of(threeMonthDebtMonthNumber, false));
 
-    moveLineList =
-            doubtfulCustomerService.getMoveLines(
-                    company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, false);
-    log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveLineList.size());
-    this.createDoubtFulCustomerMove(
-            moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+    for (Pair<Integer, Boolean> pair : pairList) {
+      List<Long> moveLineIds =
+          doubtfulCustomerService.getMoveLineIds(
+              company, doubtfulCustomerAccount, pair.getLeft(), pair.getRight());
 
-    // FACTURES REJETES
-    moveLineList =
-            doubtfulCustomerService.getMoveLines(
-                    company, doubtfulCustomerAccount, sixMonthDebtMonthNumber, true);
-    log.debug(
-            "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
-            moveLineList.size());
-    this.createDoubtFulCustomerRejectMove(
-            moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
+      String debtPassReason =
+          pair.getLeft().equals(sixMonthDebtMonthNumber)
+              ? accountConfig.getSixMonthDebtPassReason()
+              : accountConfig.getThreeMonthDebtPassReason();
 
-    moveLineList =
-            doubtfulCustomerService.getMoveLines(
-                    company, doubtfulCustomerAccount, threeMonthDebtMonthNumber, true);
-    log.debug(
-            "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
-            moveLineList.size());
-    this.createDoubtFulCustomerRejectMove(
-            moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
+      this._processMoveLines(moveLineIds, doubtfulCustomerAccount, debtPassReason, pair.getRight());
+    }
 
     updateCustomerAccountLog +=
-            batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
+        batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
   }
 
   @Override
   protected void _processMovesByIds(AccountingBatch accountingBatch) {}
 
-  /**
-   * Procédure permettant de créer les écritures de passage en client douteux pour chaque écriture
-   * de facture
-   *
-   * @param moveLineList Une liste d'écritures de facture
-   * @param doubtfulCustomerAccount Un compte client douteux
-   * @param debtPassReason Un motif de passage en client douteux
-   * @throws AxelorException
-   */
-  public void createDoubtFulCustomerMove(
-      List<MoveLine> moveLineList, Account doubtfulCustomerAccount, String debtPassReason) {
-    for (int i = 0; i < moveLineList.size(); i++) {
-      Move move = moveLineList.get(i).getMove();
-
-      try {
-        doubtfulCustomerService.createDoubtFulCustomerMove(
-            moveRepo.find(move.getId()),
-            accountRepo.find(doubtfulCustomerAccount.getId()),
-            debtPassReason);
-
-        Move myMove = moveRepo.find(move.getId());
-
-        if (myMove.getInvoice() != null) {
-          updateInvoice(myMove.getInvoice());
-        } else {
-          updateAccountMove(myMove, true);
-        }
-
-      } catch (AxelorException e) {
-        TraceBackService.trace(
-            new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
-            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
-            batch.getId());
-
-        incrementAnomaly();
-      } catch (Exception e) {
-        TraceBackService.trace(
-            new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
-            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
-            batch.getId());
-
-        incrementAnomaly();
-
-        log.error(
-            "Anomaly generated for the invoice {}",
-            moveRepo.find(move.getId()).getInvoice().getInvoiceId());
-      } finally {
-        if (i % 10 == 0) {
-          JPA.clear();
-        }
-      }
-    }
-  }
-
-  /**
-   * Procédure permettant de créer les écritures de passage en client douteux pour chaque ligne
-   * d'écriture de rejet de facture
-   *
-   * @param moveLineList Une liste de lignes d'écritures de rejet de facture
-   * @param doubtfulCustomerAccount Un compte client douteux
-   * @param debtPassReason Un motif de passage en client douteux
-   * @throws AxelorException
-   */
-  public void createDoubtFulCustomerRejectMove(
-      List<MoveLine> moveLineList, Account doubtfulCustomerAccount, String debtPassReason) {
-
+  protected void _processMoveLines(
+      List<Long> moveLineIdList,
+      Account doubtfulCustomerAccount,
+      String debtPassReason,
+      boolean isReject) {
     int i = 0;
 
-    for (MoveLine moveLine : moveLineList) {
+    for (Long id : moveLineIdList) {
+      MoveLine moveLine = moveLineRepo.find(id);
+      Move move = moveLine.getMove();
+      Invoice invoice = isReject ? moveLine.getInvoiceReject() : move.getInvoice();
+      String invoiceId =
+          Optional.ofNullable(invoice).map(Invoice::getInvoiceId).orElse(move.getOrigin());
 
       try {
 
-        doubtfulCustomerService.createDoubtFulCustomerRejectMove(
-            moveLineRepo.find(moveLine.getId()),
-            accountRepo.find(doubtfulCustomerAccount.getId()),
-            debtPassReason);
-        updateInvoice(moveLineRepo.find(moveLine.getId()).getInvoiceReject());
+        if (isReject) {
+          doubtfulCustomerService.createDoubtFulCustomerRejectMove(
+              moveLine, doubtfulCustomerAccount, debtPassReason);
+
+          this.updateInvoice(invoice);
+        } else {
+          doubtfulCustomerService.createDoubtFulCustomerMove(
+              move, doubtfulCustomerAccount, debtPassReason);
+
+          if (invoice != null) {
+            this.updateInvoice(invoice);
+          } else {
+            this.updateAccountMove(move, true);
+          }
+        }
+
         i++;
-
       } catch (AxelorException e) {
-
         TraceBackService.trace(
             new AxelorException(
-                e,
-                e.getCategory(),
-                I18n.get("Invoice") + " %s",
-                moveLine.getInvoiceReject().getInvoiceId()),
+                e, e.getCategory(), String.format("%s %s", I18n.get("Invoice"), invoiceId)),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
+
         incrementAnomaly();
-
       } catch (Exception e) {
-
         TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get("Invoice") + " %s", moveLine.getInvoiceReject().getInvoiceId()),
-                e),
+            new Exception(String.format("%s %s", I18n.get("Invoice"), invoiceId), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
 
         log.error(
-            "Anomaly generated for the invoice {}",
-            moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
-
+            "Anomaly generated for the invoice {}", moveLine.getInvoiceReject().getInvoiceId());
       } finally {
-
         if (i % 10 == 0) {
           JPA.clear();
+
+          doubtfulCustomerAccount = accountRepo.find(doubtfulCustomerAccount.getId());
         }
       }
     }

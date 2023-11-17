@@ -402,7 +402,7 @@ public class DoubtfulCustomerService {
     return invoice;
   }
 
-  public List<MoveLine> getMoveLines(
+  public List<Long> getMoveLineIds(
       Company company, Account doubtfulCustomerAccount, int debtMonthNumber, boolean isReject) {
     LocalDate date = appBaseService.getTodayDate(company).minusMonths(debtMonthNumber);
 
@@ -422,20 +422,10 @@ public class DoubtfulCustomerService {
       query.append("self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
-    return moveLineRepo
-        .all()
-        .filter(query.toString())
-        .bind("company", company)
-        .bind("date", date)
+    return moveLineRepo.all().filter(query.toString()).bind("company", company).bind("date", date)
         .bind("doubtfulCustomerAccount", doubtfulCustomerAccount)
         .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-        .fetch();
-  }
-
-  protected List<Long> getMoveLineIds(
-      Company company, Account doubtfulCustomerAccount, int debtMonthNumber, boolean isReject) {
-    return this.getMoveLines(company, doubtfulCustomerAccount, debtMonthNumber, isReject).stream()
+        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE).fetch().stream()
         .map(MoveLine::getId)
         .collect(Collectors.toList());
   }
