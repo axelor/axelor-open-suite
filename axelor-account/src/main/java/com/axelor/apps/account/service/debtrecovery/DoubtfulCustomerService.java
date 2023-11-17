@@ -48,8 +48,12 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -428,6 +432,31 @@ public class DoubtfulCustomerService {
         .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE).fetch().stream()
         .map(MoveLine::getId)
         .collect(Collectors.toList());
+  }
+
+  public Map<Long, Pair<Integer, Boolean>> getMoveLineMap(
+      Company company, Account doubtfulCustomerAccount) {
+    Map<Long, Pair<Integer, Boolean>> moveLineMap = new HashMap<>();
+
+    for (Pair<Integer, Boolean> pair : this.getPairList(company.getAccountConfig())) {
+      for (long id :
+          this.getMoveLineIds(company, doubtfulCustomerAccount, pair.getLeft(), pair.getRight())) {
+        moveLineMap.put(id, pair);
+      }
+    }
+
+    return moveLineMap;
+  }
+
+  public List<Pair<Integer, Boolean>> getPairList(AccountConfig accountConfig) {
+    int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
+    int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
+
+    return Arrays.asList(
+        Pair.of(sixMonthDebtMonthNumber, false),
+        Pair.of(threeMonthDebtMonthNumber, true),
+        Pair.of(sixMonthDebtMonthNumber, true),
+        Pair.of(threeMonthDebtMonthNumber, false));
   }
 
   @CallMethod

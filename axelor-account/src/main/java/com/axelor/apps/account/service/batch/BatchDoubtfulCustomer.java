@@ -38,8 +38,8 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -103,29 +103,15 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
   @Override
   protected void _processByQuery(AccountingBatch accountingBatch) {
     Company company = batch.getAccountingBatch().getCompany();
-
     AccountConfig accountConfig = company.getAccountConfig();
-
     Account doubtfulCustomerAccount = accountConfig.getDoubtfulCustomerAccount();
-    int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
-    int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
 
-    List<Pair<Integer, Boolean>> pairList =
-        Arrays.asList(
-            Pair.of(sixMonthDebtMonthNumber, false),
-            Pair.of(threeMonthDebtMonthNumber, true),
-            Pair.of(sixMonthDebtMonthNumber, true),
-            Pair.of(threeMonthDebtMonthNumber, false));
-
-    for (Pair<Integer, Boolean> pair : pairList) {
+    for (Pair<Integer, Boolean> pair : doubtfulCustomerService.getPairList(accountConfig)) {
       List<Long> moveLineIds =
           doubtfulCustomerService.getMoveLineIds(
               company, doubtfulCustomerAccount, pair.getLeft(), pair.getRight());
 
-      String debtPassReason =
-          pair.getLeft().equals(sixMonthDebtMonthNumber)
-              ? accountConfig.getSixMonthDebtPassReason()
-              : accountConfig.getThreeMonthDebtPassReason();
+      String debtPassReason = this.getDebtPassReason(accountConfig, pair.getLeft());
 
       this._processMoveLines(moveLineIds, doubtfulCustomerAccount, debtPassReason, pair.getRight());
     }
@@ -134,8 +120,35 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
         batchAccountCustomer.updateAccountingSituationMarked(companyRepo.find(company.getId()));
   }
 
+  protected String getDebtPassReason(AccountConfig accountConfig, int debtMonthNumber) {
+    return debtMonthNumber == accountConfig.getSixMonthDebtMonthNumber()
+        ? accountConfig.getSixMonthDebtPassReason()
+        : accountConfig.getThreeMonthDebtPassReason();
+  }
+
   @Override
-  protected void _processByIds(AccountingBatch accountingBatch) {}
+  protected void _processByIds(AccountingBatch accountingBatch) {
+    Company company = accountingBatch.getCompany();
+    Account doubtfulCustomerAccount = company.getAccountConfig().getDoubtfulCustomerAccount();
+
+    Map<Long, Pair<Integer, Boolean>> moveLineMap =
+        doubtfulCustomerService.getMoveLineMap(company, doubtfulCustomerAccount);
+
+    for (long id : this.recordIdList) {
+      MoveLine moveLine = moveLineRepo.find(id);
+      Move move = moveLine.getMove();
+      Pair<Integer, Boolean> pair = moveLineMap.get(id);
+      String debtPassReason = this.getDebtPassReason(company.getAccountConfig(), pair.getLeft());
+      Invoice invoice = pair.getRight() ? moveLine.getInvoiceReject() : move.getInvoice();
+
+      try {
+        this._processMoveLine(
+            moveLine, move, doubtfulCustomerAccount, invoice, debtPassReason, pair.getRight());
+      } catch (Exception e) {
+        return;
+      }
+    }
+  }
 
   protected void _processMoveLines(
       List<Long> moveLineIdList,
@@ -152,22 +165,8 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
           Optional.ofNullable(invoice).map(Invoice::getInvoiceId).orElse(move.getOrigin());
 
       try {
-
-        if (isReject) {
-          doubtfulCustomerService.createDoubtFulCustomerRejectMove(
-              moveLine, doubtfulCustomerAccount, debtPassReason);
-
-          this.updateInvoice(invoice);
-        } else {
-          doubtfulCustomerService.createDoubtFulCustomerMove(
-              move, doubtfulCustomerAccount, debtPassReason);
-
-          if (invoice != null) {
-            this.updateInvoice(invoice);
-          } else {
-            this.updateAccountMove(move, true);
-          }
-        }
+        this._processMoveLine(
+            moveLine, move, doubtfulCustomerAccount, invoice, debtPassReason, isReject);
 
         i++;
       } catch (AxelorException e) {
@@ -194,6 +193,31 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
 
           doubtfulCustomerAccount = accountRepo.find(doubtfulCustomerAccount.getId());
         }
+      }
+    }
+  }
+
+  protected void _processMoveLine(
+      MoveLine moveLine,
+      Move move,
+      Account doubtfulCustomerAccount,
+      Invoice invoice,
+      String debtPassReason,
+      boolean isReject)
+      throws AxelorException {
+    if (isReject) {
+      doubtfulCustomerService.createDoubtFulCustomerRejectMove(
+          moveLine, doubtfulCustomerAccount, debtPassReason);
+
+      this.updateInvoice(invoice);
+    } else {
+      doubtfulCustomerService.createDoubtFulCustomerMove(
+          move, doubtfulCustomerAccount, debtPassReason);
+
+      if (invoice != null) {
+        this.updateInvoice(invoice);
+      } else {
+        this.updateAccountMove(move, true);
       }
     }
   }
