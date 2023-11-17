@@ -196,13 +196,15 @@
     <field name="invoice"/>
     <field name="moveLine.origin"/>
     <field name="dueDate"/>
-    <field name="paymentAmount"/>
+    <field name="paymentAmount" x-scale="currency.numberOfDecimals"/>
     <field name="applyFinancialDiscountOnPaymentSession"/>
-    <field name="financialDiscountAmount"/>
-    <field name="amountPaid" aggregate="sum"/>
+    <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals"/>
+    <field name="amountPaid" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="moveLine.partner.name" hidden="true"/>
     <field name="isSelectedOnPaymentSession" hidden="true"/>
     <field name="financialDiscount" hidden="true"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-term-debt-recovery-grid" model="com.axelor.apps.account.db.InvoiceTerm"

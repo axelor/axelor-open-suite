@@ -1402,14 +1402,14 @@ from InvoiceTerm as self
   <custom name="action-invoice-term-view-payment-session-group-by-partner-dashlet-custom"
     title="Custom">
 
-    <field name="amount" type="decimal" x-scale="2"/>
+    <field name="amount" type="decimal" x-scale="numberOfDecimals"/>
     <field name="statusSelect" title="Status"
       selection="payment.session.dashlet.status.select" widget="single-select"/>
 
     <dataset type="jpql"><![CDATA[
 	   SELECT
-	     ROUND(SUM(self.amountPaid), 2) AS amount,
-	     CASE WHEN ROUND(SUM(self.amountPaid), 2) > 0 THEN 2 ELSE 1 END AS statusSelect,
+	     ROUND(SUM(self.amountPaid), self.currency.numberOfDecimals) AS amount,
+	     CASE WHEN ROUND(SUM(self.amountPaid), self.currency.numberOfDecimals) > 0 THEN 2 ELSE 1 END AS statusSelect,
 	     CONCAT(_partner.name, CASE
 	       WHEN _subrogationPartner IS NOT NULL THEN CONCAT(' (', _subrogationPartner.name, ')')
 	       ELSE ''
@@ -1417,14 +1417,15 @@ from InvoiceTerm as self
 	     CASE
 	       WHEN _subrogationPartner IS NOT NULL THEN _subrogationBankDetails.fullName
 	       ELSE _bankDetails.fullName
-	     END AS bankDetails
+	     END AS bankDetails,
+	     self.currency.numberOfDecimals AS numberOfDecimals
 	   FROM InvoiceTerm AS self
 	   LEFT JOIN self.moveLine.partner AS _partner
 	   LEFT JOIN self.bankDetails AS _bankDetails
 	   LEFT JOIN self.subrogationPartner AS _subrogationPartner
 	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner = _subrogationPartner.id
 	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
-	   GROUP BY _partner.id, _subrogationPartner.id, _bankDetails.id, _subrogationBankDetails.id
+	   GROUP BY _partner.id, _subrogationPartner.id, _bankDetails.id, _subrogationBankDetails.id, self.currency.numberOfDecimals
 	   ORDER BY _partner.name
 	 ]]></dataset>
 

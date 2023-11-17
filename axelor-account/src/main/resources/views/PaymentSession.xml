@@ -65,7 +65,8 @@
       </panel>
       <panel name="viewerTagsPanel">
         <field name="currency.symbol" hidden="true"/>
-        <field name="sessionTotalAmountFormula" x-currency="currency.symbol" hidden="true"/>
+        <field name="sessionTotalAmountFormula" x-currency="currency.symbol" hidden="true"
+          x-scale="currency.numberOfDecimals"/>
         <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer>
             <![CDATA[<>{(sessionTotalAmountFormula < 0) && <Badge bg="info">{_t('Session total amount is negative')}</Badge>}</>]]>
