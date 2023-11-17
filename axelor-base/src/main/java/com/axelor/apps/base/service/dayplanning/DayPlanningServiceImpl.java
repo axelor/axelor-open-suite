@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.dayplanning;
 
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -222,7 +222,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
       cursorTime = endT;
       LocalTime maxTime = max(morningToTime, startT);
 
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
 
       cursorTime = maxTime;
 
@@ -233,7 +233,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     cursorTime = morningFromTime;
     if (cursorTime.isAfter(startT)) {
-      duration += DurationTool.getSecondsDuration(Duration.between(startT, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(startT, cursorTime));
     }
 
     return duration;
@@ -251,7 +251,7 @@ public class DayPlanningServiceImpl implements DayPlanningService {
 
     if (cursorTime.isAfter(afternoonToTime)) {
       LocalTime maxTime = max(afternoonToTime, startT);
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
 
       cursorTime = maxTime;
     }
@@ -263,10 +263,10 @@ public class DayPlanningServiceImpl implements DayPlanningService {
     cursorTime = afternoonFromTime;
 
     if (cursorTime.isAfter(startT) && morningToTime == null) {
-      duration += DurationTool.getSecondsDuration(Duration.between(startT, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(startT, cursorTime));
     } else if (cursorTime.isAfter(startT) && endT.isAfter(morningToTime)) {
       LocalTime maxTime = max(morningToTime, startT);
-      duration += DurationTool.getSecondsDuration(Duration.between(maxTime, cursorTime));
+      duration += DurationHelper.getSecondsDuration(Duration.between(maxTime, cursorTime));
     }
 
     return duration;

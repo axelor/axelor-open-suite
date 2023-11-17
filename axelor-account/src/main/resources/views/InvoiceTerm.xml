@@ -328,7 +328,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -499,7 +500,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -660,7 +662,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-      <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"
@@ -831,7 +834,8 @@
       <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
         showIf="paymentSession">
         <static name="pastEventText" colSpan="12">
-          <![CDATA[<span class='label label-warning'>This form is in readOnly either because the term has been paid or is attached to a payment session.</span>]]></static>
+          <![CDATA[<><Badge bg="warning">This form is in readOnly either because the term has been paid or is attached to a payment session.</Badge></>]]>
+        </static>
         <field name="paymentSession"/>
         <button name="accessPaymentSessionBtn" title="Access payment session"
           readonlyIf="paymentSession == null"

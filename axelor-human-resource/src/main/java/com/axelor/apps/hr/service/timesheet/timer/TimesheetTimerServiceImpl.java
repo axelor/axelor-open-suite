@@ -33,7 +33,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -71,10 +71,10 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   public void calculateDuration(TSTimer timer) {
     long currentDuration = timer.getDuration();
     Duration duration =
-        DurationTool.computeDuration(
+        DurationHelper.computeDuration(
             timer.getTimerStartDateT(),
             Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-    long secondes = DurationTool.getSecondsDuration(duration) + currentDuration;
+    long secondes = DurationHelper.getSecondsDuration(duration) + currentDuration;
     timer.setDuration(secondes);
   }
 

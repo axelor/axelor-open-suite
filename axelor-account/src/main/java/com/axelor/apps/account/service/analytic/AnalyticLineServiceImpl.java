@@ -33,7 +33,8 @@ import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -52,7 +53,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountService accountService;
-  protected ListToolService listToolService;
+  protected ListHelper listHelper;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
@@ -62,14 +63,14 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AnalyticToolService analyticToolService,
       AnalyticAccountRepository analyticAccountRepository,
       AccountService accountService,
-      ListToolService listToolService,
+      ListHelper listHelper,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountService = accountService;
-    this.listToolService = listToolService;
+    this.listHelper = listHelper;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
@@ -147,7 +148,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =
-              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+              listHelper.intersection(analyticAccountListByAxis, analyticAccountListByRules);
         }
       }
     }
@@ -162,12 +163,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         && line.getAccount() != null
         && line.getAccount().getCompany() != null) {
       Account account = line.getAccount();
-      Integer nbrAxis =
-          accountConfigService.getAccountConfig(account.getCompany()).getNbrOfAnalyticAxisSelect();
       return account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionRequiredOnMoveLines()
           && line.getAnalyticDistributionTemplate() == null
-          && position <= nbrAxis;
+          && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position);
     }
     return false;
   }
@@ -217,6 +216,25 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     }
 
     return analyticLine;
+  }
+
+  @Override
+  public boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
+      return false;
+    }
+
+    List<AnalyticAxisByCompany> analyticAxisByCompany =
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
+    if (ObjectUtils.notEmpty(analyticAxisByCompany)
+        && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
+      return analyticToolService.isAxisAccountSumValidated(
+          analyticLine.getAnalyticMoveLineList(),
+          analyticAxisByCompany.get(position - 1).getAnalyticAxis());
+    }
+
+    return false;
   }
 
   protected boolean checkAnalyticAxisPercentage(

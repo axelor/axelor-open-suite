@@ -10,7 +10,7 @@
     </toolbar>
     <field name="fullName"/>
     <button name="mapBtn" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
-    <button name="directionsBtn" icon="fa-location-arrow"
+    <button name="directionsBtn" icon="near_me"
       onClick="action-base-address-method-view-direction"/>
   </grid>
 
@@ -43,14 +43,14 @@
       <button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()" readonlyIf="!id">
         <button name="mapBtn" title="View map" icon="fa-map-marker"
           onClick="action-base-address-method-view-map"/>
-        <button name="directionsBtn" title="Get direction" icon="fa-location-arrow"
+        <button name="directionsBtn" title="Get direction" icon="near_me"
           onClick="action-base-address-method-view-direction"/>
       </button-group>
       <spacer name="btnGrpSpacer" colSpan="6"/>
       <button-group name="map2BtnGroup" colSpan="6" showIf="$popup()" readonlyIf="!id">
         <button name="mapBtn" title="View map" icon="fa-map-marker"
           onClick="action-base-address-method-view-map,close"/>
-        <button name="directionsBtn" title="Get direction" icon="fa-location-arrow"
+        <button name="directionsBtn" title="Get direction" icon="near_me"
           onClick="action-base-address-method-view-direction,close"/>
       </button-group>
       <field name="isUsed" hidden="true" type="boolean"/>
@@ -106,14 +106,14 @@
       <button-group colSpan="6" hideIf="$popup()" readonlyIf="!id">
         <button name="mapBtn" title="View map" icon="fa-map-marker"
           onClick="action-base-address-method-view-map"/>
-        <button name="directionsBtn" title="Get direction" icon="fa-location-arrow"
+        <button name="directionsBtn" title="Get direction" icon="near_me"
           onClick="action-base-address-method-view-direction"/>
       </button-group>
       <spacer name="btnGrpSpacer" colSpan="6"/>
       <button-group colSpan="6" showIf="$popup()" readonlyIf="!id">
         <button name="mapBtn" title="View map" icon="fa-map-marker"
           onClick="action-base-address-method-view-map,close"/>
-        <button name="directionsBtn" title="Get direction" icon="fa-location-arrow"
+        <button name="directionsBtn" title="Get direction" icon="near_me"
           onClick="action-base-address-method-view-direction,close"/>
       </button-group>
       <field name="isUsed" hidden="true" type="boolean"/>

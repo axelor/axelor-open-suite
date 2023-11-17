@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -125,7 +125,7 @@ public class AnalyticAccountServiceImpl implements AnalyticAccountService {
             accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
         if (ObjectUtils.notEmpty(analyticAxisByCompanyList)) {
           analyticAxisIdList =
-              StringTool.getIdListString(
+              StringHelper.getIdListString(
                   analyticAxisByCompanyList.stream()
                       .map(it -> it.getAnalyticAxis())
                       .collect(Collectors.toList()));

@@ -45,7 +45,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -222,7 +222,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
             "%s %s.csv", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
     Files.createDirectories(Paths.get(filePath));
     Path path = Paths.get(filePath, fileName);
-    CsvTool.csvWriter(filePath, fileName, ';', null, allMoveLineData);
+    CsvHelper.csvWriter(filePath, fileName, ';', null, allMoveLineData);
 
     try (InputStream is = new FileInputStream(path.toFile())) {
       Beans.get(MetaFiles.class).attach(is, fileName, subrogationRelease);

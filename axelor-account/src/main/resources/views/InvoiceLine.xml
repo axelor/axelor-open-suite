@@ -68,9 +68,7 @@
         <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
           showTitle="false">
           <viewer depends="$partnerLanguage">
-            <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
-              ]]>
+			<![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
         <panel name="customerInvoicePanel" colSpan="12">
@@ -124,7 +122,11 @@
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
-        <field name="companyExTaxTotal" hidden="true"/>
+        <field name="invoice.company" hidden="true"/>
+        <field name="invoice.company.currency" hidden="true"/>
+        <field name="invoice.company.currency.symbol" hidden="true"/>
+        <field name="companyExTaxTotal" hidden="true"
+          x-currency="invoice.company.currency.symbol"/>
         <field name="companyInTaxTotal" hidden="true"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
@@ -136,9 +138,7 @@
         <panel name="assetsPanel" colSpan="3" itemSpan="12">
           <field name="fixedAssets" showTitle="false" showIf="$readonly()">
             <viewer depends="fixedAssets">
-							<![CDATA[
-								<span class="label label-default" style="background-color: #B6473F; margin: 10px 0 !important; padding: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.fixedAssets" x-translate>Fixed Assets</span>
-							]]>
+			  <![CDATA[<>{fixedAssets && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Fixed Assets')}</Badge>}</>]]>
             </viewer>
           </field>
           <field name="fixedAssets" showTitle="true"

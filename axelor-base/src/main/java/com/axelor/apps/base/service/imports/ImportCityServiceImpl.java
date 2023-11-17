@@ -31,7 +31,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.studio.db.AppBase;
-import com.axelor.utils.net.URLService;
+import com.axelor.utils.helpers.net.UrlHelper;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.BufferedReader;
@@ -253,7 +253,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       File cityTextFile = new File(tempDir, CITYTEXTFILE);
 
-      URLService.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
+      UrlHelper.fileUrl(downloadFile, downloadUrl + downloadFileName, null, null);
 
       LOG.debug("path for downloaded zip file : {}", downloadFile.getPath());
 
@@ -412,7 +412,7 @@ public class ImportCityServiceImpl implements ImportCityService {
 
       cityList.add(
           String.format(
-              "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
+              "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s%n",
               cityLine[0], // country code
               cityLine[1], // zip code
               cityLine[2], // city name
@@ -421,7 +421,10 @@ public class ImportCityServiceImpl implements ImportCityService {
               cityLine[5], // department name
               cityLine[6], // department code
               cityLine[7], // canton name
-              cityLine[8])); // canton code
+              cityLine[8], // canton code
+              cityLine[9], // latitude
+              cityLine[10], // longitude
+              cityLine[11])); // accuracy
     }
 
     return this.createCityFileZipImport(cityList, cityTextFile);

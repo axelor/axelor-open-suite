@@ -49,7 +49,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProduction;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -819,7 +819,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       BigDecimal plannedDuration =
           new BigDecimal(
-                  DurationTool.getSecondsDuration(
+                  DurationHelper.getSecondsDuration(
                       Duration.between(
                           operationOrder.getPlannedStartDateT(),
                           operationOrder.getPlannedEndDateT())))

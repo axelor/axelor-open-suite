@@ -35,6 +35,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -63,7 +64,7 @@ import wslite.json.JSONException;
 public class AddressServiceImpl implements AddressService {
 
   @Inject protected AddressRepository addressRepo;
-  @Inject protected com.axelor.utils.address.AddressTool ads;
+  @Inject protected AddressHelper ads;
   @Inject protected MapService mapService;
   @Inject protected CityRepository cityRepository;
   @Inject protected StreetRepository streetRepository;

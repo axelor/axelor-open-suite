@@ -29,14 +29,16 @@ import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -58,8 +60,17 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo) {
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
   }
 
   @Override
@@ -76,7 +87,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
     ZonedDateTime todayDateTime = ZonedDateTime.now();
     if (company != null) {
-      todayDateTime = DateTool.getTodayDateTime(company.getTimezone());
+      todayDateTime = LocalDateTimeHelper.getTodayDateTime(company.getTimezone());
     }
 
     String applicationMode = AppSettings.get().get("application.mode", "prod");

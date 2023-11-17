@@ -54,7 +54,7 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.google.inject.Inject;
@@ -486,12 +486,12 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
       for (ContractLine line : lines) {
         ContractLine tmp = contractLineRepo.copy(line, false);
         tmp.setAnalyticMoveLineList(line.getAnalyticMoveLineList());
-        if (isPeriodicInvoicing) {
+        if (isPeriodicInvoicing && isTimeProratedInvoice) {
           LocalDate start = computeStartDate(contract, line, version);
           tmp.setFromDate(start);
           ratio =
               durationService.computeRatio(
-                  start, end, contract.getCurrentContractVersion().getInvoicingDuration());
+                  start, end, contract.getStartDate(), contract.getInvoicePeriodEndDate());
         }
         tmp.setQty(
             tmp.getQty()
@@ -528,7 +528,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
   protected boolean isProrata(Contract contract, ContractVersion version) {
     return isFullProrated(contract)
-        && !DateTool.isProrata(
+        && !LocalDateHelper.isProrata(
             contract.getInvoicePeriodStartDate(),
             contract.getInvoicePeriodEndDate(),
             version.getActivationDateTime().toLocalDate(),

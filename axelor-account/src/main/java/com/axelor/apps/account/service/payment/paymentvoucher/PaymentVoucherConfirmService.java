@@ -56,6 +56,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -519,7 +520,11 @@ public class PaymentVoucherConfirmService {
       // Create move line for the payment amount
       MoveLine moveLine = null;
 
-      BigDecimal currencyRate = move.getMoveLineList().get(0).getCurrencyRate();
+      BigDecimal currencyRate =
+          ObjectUtils.isEmpty(move.getMoveLineList())
+              ? currencyService.getCurrencyConversionRate(
+                  paymentVoucher.getCurrency(), company.getCurrency())
+              : move.getMoveLineList().get(0).getCurrencyRate();
       // cancelling the moveLine (excess payment) by creating the balance of all the
       // payments
       // on the same account as the moveLine (excess payment)

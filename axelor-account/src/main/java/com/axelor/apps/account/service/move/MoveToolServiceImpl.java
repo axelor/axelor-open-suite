@@ -42,16 +42,19 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -297,9 +300,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of credit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param creditMoveLineList
    * @return
    */
   @Override
@@ -312,9 +315,9 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   /**
-   * Fonction calculant le restant à utiliser total d'une liste de ligne d'écriture au credit
+   * Function that calculates the total amount remaining for a list of debit move lines
    *
-   * @param creditMoveLineList Une liste de ligne d'écriture au credit
+   * @param debitMoveLineList
    * @return
    */
   @Override
@@ -324,6 +327,30 @@ public class MoveToolServiceImpl implements MoveToolService {
       totalDebit = totalDebit.add(moveLine.getAmountRemaining().abs());
     }
     return totalDebit;
+  }
+
+  /**
+   * Function that calculates the total amount remaining for a list of move lines in the move
+   * currency
+   *
+   * @param moveLineList
+   * @return
+   */
+  @Override
+  public BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList) {
+    BigDecimal totalCurrency = BigDecimal.ZERO;
+    for (MoveLine moveLine : moveLineList) {
+      totalCurrency =
+          totalCurrency.add(
+              moveLine
+                  .getAmountRemaining()
+                  .abs()
+                  .divide(
+                      moveLine.getCurrencyRate(),
+                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      RoundingMode.HALF_UP));
+    }
+    return totalCurrency;
   }
 
   /**
@@ -504,19 +531,23 @@ public class MoveToolServiceImpl implements MoveToolService {
 
   @Override
   public void setOriginOnMoveLineList(Move move) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setOrigin(move.getOrigin());
-      }
+      moveLine.setOrigin(move.getOrigin());
     }
   }
 
   @Override
   public void setDescriptionOnMoveLineList(Move move) {
+    if (ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine != null) {
-        moveLine.setDescription(move.getDescription());
-      }
+      moveLine.setDescription(move.getDescription());
     }
   }
 
@@ -647,20 +678,22 @@ public class MoveToolServiceImpl implements MoveToolService {
   public List<Move> getMovesWithDuplicatedOrigin(Move move) {
     List<Move> moveList = null;
     StringBuilder query =
-        new StringBuilder("self.origin = :origin AND self.period.year = :periodYear");
+        new StringBuilder(
+            "self.origin = :origin AND self.period.year = :periodYear AND self.journal = :journal ");
     Map<String, Object> params = new HashMap<>();
 
-    if (!ObjectUtils.isEmpty(move.getOrigin()) && !ObjectUtils.isEmpty(move.getPeriod())) {
+    if (!Strings.isNullOrEmpty(move.getOrigin()) && move.getPeriod() != null) {
       params.put("origin", move.getOrigin());
       params.put("periodYear", move.getPeriod().getYear());
+      params.put("journal", move.getJournal());
 
       if (move.getId() != null) {
-        query.append(" AND self.id != :moveId");
+        query.append("AND self.id != :moveId ");
         params.put("moveId", move.getId());
       }
 
-      if (ObjectUtils.notEmpty(move.getPartner())) {
-        query.append(" AND self.partner = :partner");
+      if (move.getPartner() != null) {
+        query.append("AND self.partner = :partner ");
         params.put("partner", move.getPartner());
       }
 

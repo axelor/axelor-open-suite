@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
@@ -194,7 +212,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public GlobalBudget changeBudgetVersion(GlobalBudget globalBudget, BudgetVersion budgetVersion)
+  public GlobalBudget changeBudgetVersion(
+      GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
     List<Budget> budgets = globalBudget.getBudgetList();
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
@@ -215,13 +234,16 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
         budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
         budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
-        budget.setPeriodDurationSelect(0);
-        budget.clearBudgetLineList();
-        List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
-        if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
-          BudgetLine budgetLine = budgetLineList.get(0);
-          recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+        if (needRecomputeBudgetLine) {
+          budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
+          budget.clearBudgetLineList();
+          List<BudgetLine> budgetLineList = budgetService.generatePeriods(budget);
+          if (!ObjectUtils.isEmpty(budgetLineList) && budgetLineList.size() == 1) {
+            BudgetLine budgetLine = budgetLineList.get(0);
+            recomputeImputedAmountsOnBudgetLine(budgetLine, budget);
+          }
         }
+
         budgetRepository.save(budget);
       }
     }

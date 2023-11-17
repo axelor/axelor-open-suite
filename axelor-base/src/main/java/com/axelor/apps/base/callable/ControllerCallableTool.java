@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.exception.ToolExceptionMessage;
+import com.axelor.utils.exception.UtilsExceptionMessage;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -62,7 +62,7 @@ public class ControllerCallableTool<V> {
       // cause already traced in traceback
       response.setInfo(e.getCause().getMessage());
     } catch (TimeoutException e) {
-      response.setNotify(I18n.get(ToolExceptionMessage.PROCESS_BEING_COMPUTED));
+      response.setNotify(I18n.get(UtilsExceptionMessage.PROCESS_BEING_COMPUTED));
     } catch (InterruptedException e) {
       TraceBackService.trace(e);
       Thread.currentThread().interrupt();

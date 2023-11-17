@@ -72,7 +72,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -173,6 +173,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     Company company = billOfMaterial.getCompany();
+    if (company == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.NO_COMPANY_IN_BILL_OF_MATERIALS),
+          billOfMaterial.getProduct().getName());
+    }
 
     if (billOfMaterial.getQty().signum() == 0) {
       throw new AxelorException(
@@ -869,7 +875,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               && stockLocation.getCompany().getId().equals(companyId)) {
             query +=
                 " AND self.fromStockLocation.id IN ("
-                    + StringTool.getIdListString(stockLocationList)
+                    + StringHelper.getIdListString(stockLocationList)
                     + ") ";
           }
         }
@@ -906,7 +912,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.stockMove.toStockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }
@@ -921,7 +927,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     statusList.add(ManufOrderRepository.STATUS_STANDBY);
     String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
+      statusList = StringHelper.getIntegerList(status);
     }
     return statusList;
   }
@@ -1282,8 +1288,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 billOfMaterialService.getPriority(billOfMaterial),
                 IS_TO_INVOICE,
                 billOfMaterial,
-                null,
                 manufOrder.getPlannedStartDateT(),
+                manufOrder.getPlannedEndDateT(),
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
         manufOrder.setClientPartner(clientPartner);

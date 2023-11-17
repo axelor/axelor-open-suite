@@ -41,9 +41,9 @@
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="saleOrderBirtTemplate"/>
     </panel>
-    <panel name="analyticDistributionPanel" title="Analytic distribution">
-      <field name="isAnalyticDistributionRequired" widget="boolean-switch"
-        if="__config__.app.getApp('account')"/>
+    <panel name="analyticDistributionPanel" title="Analytic distribution"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()">
+      <field name="isAnalyticDistributionRequired" widget="boolean-switch"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

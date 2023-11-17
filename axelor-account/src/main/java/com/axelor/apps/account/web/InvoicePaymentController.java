@@ -42,8 +42,8 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.ContextHelper;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
@@ -108,7 +108,7 @@ public class InvoicePaymentController {
     if (bankDetailsList.isEmpty()) {
       response.setAttr("companyBankDetails", "domain", "self.id IN (0)");
     } else {
-      String idList = StringTool.getIdListString(bankDetailsList);
+      String idList = StringHelper.getIdListString(bankDetailsList);
       response.setAttr("companyBankDetails", "domain", "self.id IN (" + idList + ")");
     }
   }
@@ -314,7 +314,7 @@ public class InvoicePaymentController {
 
   public void setIsMultiCurrency(ActionRequest request, ActionResponse response) {
     try {
-      Invoice invoice = ContextTool.getContextParent(request.getContext(), Invoice.class, 1);
+      Invoice invoice = ContextHelper.getContextParent(request.getContext(), Invoice.class, 1);
       response.setAttr("$isMultiCurrency", "value", InvoiceToolService.isMultiCurrency(invoice));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

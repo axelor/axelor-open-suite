@@ -664,12 +664,15 @@ public class MoveLineController {
   public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
-      if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-        if (Beans.get(InvoiceTermPfpService.class)
-            .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
-          response.setReload(true);
+      if (moveLine.getId() != null) {
+        moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+        if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+          if (Beans.get(InvoiceTermPfpService.class)
+              .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
+            response.setReload(true);
+          }
         }
       }
 

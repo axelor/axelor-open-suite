@@ -36,7 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -260,7 +260,7 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
         response.setInfo(msg);
       }
 
-      String title = ContextTool.formatLabel(msg, ContextTool.SPAN_CLASS_WARNING, 75);
+      String title = ContextHelper.formatLabel(msg, ContextHelper.SPAN_CLASS_WARNING, 75);
 
       response.setAttr("minQtyNotRespectedLabel", "title", title);
       response.setAttr("minQtyNotRespectedLabel", "hidden", false);

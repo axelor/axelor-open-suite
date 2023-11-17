@@ -45,7 +45,7 @@
       if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -92,7 +92,7 @@
     <field name="typeSelect" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -149,7 +149,7 @@
     <field name="typeSelect" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -180,7 +180,7 @@
     <field name="typeSelect" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -260,9 +260,11 @@
           <field name="stockMoveSeq" showTitle="false" colSpan="3" css="label-bold bold large">
             <viewer>
 						<![CDATA[
-							<dl class="text-left" style="float: none;">
-								<dd class="order-subtotal-total" style="margin: 5px 0 !important; border-top: none; text-align: left; word-break:keep-all;">{{record.stockMoveSeq}}</dd>
-							</dl>
+							<>
+								<dl>
+									<dd>{stockMoveSeq}</dd>
+								</dl>
+							</>
 						]]>
             </viewer>
           </field>
@@ -272,11 +274,11 @@
             <field name="$typeTags" showTitle="false" hidden="true" showIf="$readonly()"
               readonlyIf="statusSelect != 1">
               <viewer depends="typeSelect"><![CDATA[
-			                  <h4 class="text-left">
-			                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 1" x-translate>Internal move</span>
-			                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 2" x-translate>Outgoing move</span>
-			                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.typeSelect == 3" x-translate>Incoming move</span>
-			                  </h4>
+			                  <>
+			                      {typeSelect == 1 && <Badge bg="info">{_t('Internal move')}</Badge>}
+			                      {typeSelect == 2 && <Badge bg="info">{_t('Outgoing move')}</Badge>}
+			                      {typeSelect == 3 && <Badge bg="info">{_t('Incoming move')}</Badge>}
+			                  </>
 			                ]]></viewer>
             </field>
           </panel>
@@ -288,12 +290,11 @@
               <field name="$compliantTags" showTitle="false" hidden="true"
                 showIf="$readonly()" readonlyIf="statusSelect &gt; 2" colSpan="2">
                 <viewer depends="conformitySelect, statusSelect"><![CDATA[
-											<h4 class="text-left">
-												<span class="label label-success" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 2 && record.statusSelect != 1" x-translate>Compliant</span>
-												<span class="label label-important" style="margin: 5px 0 0 10px !important; display: inline-table; line-height: initial;" ng-show="record.conformitySelect == 3 && record.statusSelect != 1" x-translate>Non-compliant</span>
-											</h4>
-
-										]]></viewer>
+							<>
+								{conformitySelect == 2 && statusSelect != 1 && <Badge bg="success">{_t('Compliant')}</Badge>}
+								{conformitySelect == 3 && statusSelect != 1 && <Badge bg="danger">{_t('Non-compliant')}</Badge>}
+							</>
+					]]></viewer>
               </field>
             </panel>
             <field name="cancelReason" readonly="true" showIf="cancelReason != null"
@@ -313,24 +314,24 @@
               <field name="availableStatusSelect" showTitle="false" showIf="statusSelect == 2"
                 readonly="true">
                 <viewer><![CDATA[
-									<h4 class="text-left">
-										<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 1" x-translate>Available</span>
-										<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 2" x-translate>Partially available</span>
-										<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availableStatusSelect == 3" x-translate>Unavailable</span>
-									</h4>
+									<>
+										{availableStatusSelect == 1 && <Badge bg="success">{_t('Available')}</Badge>}
+										{availableStatusSelect == 2 && <Badge bg="warning">{_t('Partially available')}</Badge>}
+										{availableStatusSelect == 3 && <Badge bg="danger">{_t('Unavailable')}</Badge>}
+									</>
 								]]></viewer>
               </field>
               <field name="$invoicingTags" showTitle="false" readonly="true"
                 showIf="statusSelect == 3" if-module="axelor-supplychain"
                 if="__config__.app.isApp('supplychain')">
                 <viewer depends="invoicingStatusSelect"><![CDATA[
-						<h4 class="text-left">
-							<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 0"  x-translate>Not invoiced</span>
-							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 1" x-translate>Partially invoiced</span>
-							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 2" x-translate>Invoiced</span>
-							<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 3" x-translate>Delayed invoicing</span>
-							<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoicingStatusSelect == 4" x-translate>Validated for invoicing</span>
-						</h4>
+						<>
+							{invoicingStatusSelect == 0 && <Badge bg="danger">{_t('Not invoiced')}</Badge>}
+							{invoicingStatusSelect == 1 && <Badge bg="warning">{_t('Partially invoiced')}</Badge>}
+							{invoicingStatusSelect == 2 && <Badge bg="success">{_t('Invoiced')}</Badge>}
+							{invoicingStatusSelect == 3 && <Badge bg="warning">{_t('Delayed invoicing')}</Badge>}
+							{invoicingStatusSelect == 4 && <Badge bg="success">{_t('Validated for invoicing')}</Badge>}
+						</>
 						]]>
                 </viewer>
               </field>
@@ -338,20 +339,20 @@
             <field name="$availabilityRequestTags" showTitle="false" readonly="true"
               showIf="$readonly()" colSpan="2">
               <viewer depends="pickingIsEdited,availabilityRequest,statusSelect"><![CDATA[
-								<h4 class="text-left">
-									<span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pickingIsEdited && record.statusSelect == 2" x-translate>Picking printed</span>
-									<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.availabilityRequest && record.statusSelect == 2" x-translate>Availability request</span>
-								</h4>
+								<>
+									{pickingIsEdited && statusSelect == 2 && <Badge bg="warning">{_t('Picking printed')}</Badge>}
+									{availabilityRequest && statusSelect == 2 && <Badge bg="success">{_t('Availability request')}</Badge>}
+								</>
 							]]></viewer>
             </field>
             <field name="$pfpValidationTags" showTitle="false" colSpan="2" readonly="true"
               showIf="$readonly()" if-module="axelor-supplychain"
               if="__config__.app.isApp('supplychain')">
               <viewer depends="pfpValidateStatusSelect"><![CDATA[
-	                           	<h4 class="text-left">
-									<span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pfpValidateStatusSelect == 2" x-translate>PFP authorized</span>
-									<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.pfpValidateStatusSelect == 3"  x-translate>PFP litigation</span>
-								</h4>
+								<>
+									{pfpValidateStatusSelect == 2 && <Badge bg="success">{_t('PFP authorized')}</Badge>}
+									{pfpValidateStatusSelect == 3 && <Badge bg="danger">{_t('PFP litigation')}</Badge>}
+								</>
 							]]>
               </viewer>
             </field>
@@ -426,26 +427,28 @@
           readonlyIf="statusSelect == 3 || statusSelect == 4"
           form-view="address-partner-address-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
-                	<![CDATA[<span class='label label-warning'>Warning : Delivery address is missing.</span>]]></static>
-        <field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1"
-          readonly="true" showTitle="false">
+	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
+        </static>
+        <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
+          showTitle="false">
           <viewer><![CDATA[
-
-						<dl class="dl-horizontal" style="float: none;">
-							<dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
-							<dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{$fmt('exTaxTotal')}}</dd>
-						</dl>
+						<>
+							<dl>
+								<dt>{_t('Total W.T.')}</dt>
+								<dd>{$fmt('exTaxTotal')}</dd>
+							</dl>
+						</>
 	                    ]]>
           </viewer>
         </field>
 
         <field name="fromAddressStr" hideIf="statusSelect &gt; 2" colOffset="3"
           readonlyIf="statusSelect &gt; 2" height="3">
-          <viewer>{{record.fromAddressStr}}</viewer>
+          <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
         </field>
         <field name="toAddressStr" hideIf="statusSelect &gt; 2"
           readonlyIf="statusSelect &gt; 2" height="3">
-          <viewer>{{record.toAddressStr}}</viewer>
+          <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
         </field>
       </panel>
 
@@ -473,7 +476,8 @@
           readonlyIf="statusSelect == 3 || statusSelect == 4"
           form-view="address-partner-address-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
-                	<![CDATA[<span class='label label-warning'>Warning : Delivery address is missing.</span>]]></static>
+	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
+        </static>
         <field name="estimatedDate"
           readonlyIf="(statusSelect != 1 &amp;&amp; statusSelect != 2) || pickingIsEdited"/>
         <panel stacked="true">
@@ -495,17 +499,19 @@
 
         <panel name="addressStringPanel" stacked="true" itemSpan="12">
           <field name="toAddressStr" height="3" hideIf="statusSelect &gt; 2">
-            <viewer>{{record.toAddressStr}}</viewer>
+            <viewer><![CDATA[<>{toAddressStr}</>]]></viewer>
           </field>
 
-          <field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1"
-            readonly="true" showTitle="false">
+          <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
+            showTitle="false">
             <viewer>
                           <![CDATA[
-                              <dl class="dl-horizontal" style="float: none;">
-                                  <dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
-                                  <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{$fmt('exTaxTotal')}}</dd>
-                              </dl>
+							<>
+								<dl>
+									<dt>{_t('Total W.T.')}</dt>
+									<dd>{$fmt('exTaxTotal')}</dd>
+								</dl>
+							</>
                           ]]>
             </viewer>
           </field>
@@ -538,15 +544,17 @@
         <field name="supplierShipmentRef" showIf="!isReversion"/>
         <panel stacked="true" itemSpan="12">
           <field name="fromAddressStr" height="3" hideIf="statusSelect &gt; 2">
-            <viewer>{{record.fromAddressStr}}</viewer>
+            <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
           </field>
-          <field name="exTaxTotal" css="order-subtotal" showIf="statusSelect &gt; 1"
-            readonly="true" showTitle="false">
+          <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
+            showTitle="false">
             <viewer><![CDATA[
-                              <dl class="dl-horizontal" style="float: none;">
-                                  <dt class="order-subtotal-total" style="border-top: none; text-align: left;" x-translate>Total W.T.</dt>
-                                  <dd class="order-subtotal-total" style="border-top: none; text-align: left;">{{$fmt('exTaxTotal')}}</dd>
-                              </dl>
+							<>
+								<dl>
+									<dt>{_t('Total W.T.')}</dt>
+									<dd>{$fmt('exTaxTotal')}</dd>
+								</dl>
+							</>
                           ]]>
             </viewer>
           </field>
@@ -594,11 +602,7 @@
             <field name="isIspmRequired" showIf="!$readonly()"/>
             <field name="$IspmTag" showTitle="false" showIf="$readonly()">
               <viewer>
-                               <![CDATA[
-                                   <h4 class="text-left">
-                                       <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isIspmRequired" x-translate>ISPM standard required</span>
-                                   </h4>
-                               ]]>
+               <![CDATA[<>{isIspmRequired && <Badge bg="danger">{_t('ISPM standard required')}</Badge>}</>]]>
               </viewer>
             </field>
           </panel>
@@ -711,11 +715,11 @@
     <panel name="mainPanel" colSpan="12">
       <field name="$msg" showTitle="false" colOffset="3" colSpan="6" readonly="true">
         <viewer depends="typeSelect,fromStockLocation.typeSelect">
-					<![CDATA[
-            <h5 class="text-left">
-              <span ng-show="record.typeSelect == 2 || (record.typeSelect == 1 &amp;&amp; record.fromStockLocation.typeSelect == 1)" x-translate>Do you want to generate backorder for not delivered quantities?</span>
-              <span ng-show="record.typeSelect == 3 || (record.typeSelect == 1 &amp;&amp; record.fromStockLocation.typeSelect == 3)" x-translate>Do you want to generate backorder for not received quantities?</span>
-            </h5>
+		  <![CDATA[
+            <>
+            	{(typeSelect == 2 || (typeSelect == 1 && fromStockLocation.typeSelect == 1)) && <span>{_t('Do you want to generate backorder for not delivered quantities?')}</span>}
+            	{(typeSelect == 3 || (typeSelect == 1 && fromStockLocation.typeSelect == 3)) && <span>{_t('Do you want to generate backorder for not received quantities?')}</span>}
+            </>
           ]]>
         </viewer>
       </field>
@@ -738,9 +742,15 @@
       <field name="$msg" showTitle="false" colSpan="12" readonly="true">
         <viewer depends="$percentToleranceForWapChange,$productsWithError">
 	   <![CDATA[
-              <h5 class="text-left">
-                <span x-translate>This stock move will have a huge impact (more than </span> {{record.$percentToleranceForWapChange}}<span x-translate>%) on the WAP of </span> {{record.$productsWithError}}. <span x-translate> Do you want to proceed?</span>
-             </h5>
+				<>
+				  <h5>
+				    <span>{_t('This stock move will have a huge impact (more than')} </span>
+				    {$percentToleranceForWapChange}
+				    <span> {_t('%) on the WAP of')} </span>
+				    {$productsWithError}.
+				    <span> {_t('Do you want to proceed?')}</span>
+				  </h5>
+				</>
            ]]>
         </viewer>
       </field>

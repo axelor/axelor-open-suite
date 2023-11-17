@@ -75,10 +75,6 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
     if (accountingAccount != null) {
       moveLine.setAccount(accountingAccount);
 
-      if (!accountingAccount.getUseForPartnerBalance()) {
-        moveLine.setPartner(null);
-      }
-
       AnalyticDistributionTemplate analyticDistributionTemplate =
           accountingAccount.getAnalyticDistributionTemplate();
 
