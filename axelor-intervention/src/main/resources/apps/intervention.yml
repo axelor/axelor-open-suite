@@ -1,0 +1,13 @@
+---
+name: Intervention
+code: intervention
+typeSelect: standard
+installOrder: 2360
+description: |
+  Intervention configuration
+image:
+modules:
+  axelor-intervention
+dependsOn:
+  - contract
+sequence: 56

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="EquipmentFamily" repository="none">
+    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="name" title="Name" required="true"/>
+    <decimal name="numberOfMaintenanceHours" title="Number of maintenance hours"
+      help="This is the estimated number of hours for the maintenance of this type of Equipment and will be used to give an indication of the total number of hours required on a contract."/>
+
+    <finder-method name="findByCode" using="code"/>
+  </entity>
+
+</domain-models>

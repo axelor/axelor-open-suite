@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.Picture" title="Pictures" name="picture-grid">
+    <field name="equipment"/>
+    <field name="pictureFile"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.Picture" title="Picture" name="picture-form">
+    <panel name="mainPanel">
+      <field name="equipment" required="true"/>
+      <field name="pictureFile" required="true"/>
+    </panel>
+  </form>
+
+</object-views>

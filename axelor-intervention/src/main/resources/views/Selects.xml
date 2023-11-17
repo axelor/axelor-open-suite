@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <selection name="equipment.type.select">
+    <option value="place">Place</option>
+    <option value="equipment">Equipment</option>
+  </selection>
+
+  <selection name="equipment.indicator.select">
+    <option value="1" color="green">Under contract and operational</option>
+    <option value="2" color="red">Under contract and non-operational</option>
+    <option value="3" color="blue">Off-contract and operational</option>
+    <option value="4" color="orange">Off-contract and non-operational</option>
+  </selection>
+
+</object-views>

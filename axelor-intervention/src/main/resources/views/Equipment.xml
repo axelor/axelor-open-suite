@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
+    name="equipment-grid">
+    <toolbar>
+      <button name="importLinesBtn" title="Import lines"
+        onClick="action-equipment-view-import-wizard"/>
+    </toolbar>
+    <field name="sequence"/>
+    <field name="partner"/>
+    <field name="code"/>
+    <field name="name"/>
+    <field name="parentEquipment" massUpdate="true" domain="self.typeSelect = 'place'"/>
+    <field name="typeSelect"/>
+    <field name="inService"/>
+    <field name="commissioningDate"/>
+    <field name="customerWarrantyOnPartEndDate" massUpdate="true"/>
+    <field name="equipmentFamily"/>
+    <field name="indicatorSelect" widget="single-select"/>
+    <field name="contract" massUpdate="true" hidden="true"/>
+    <field name="partner.tradingName.name" title="Partner trading name"/>
+  </grid>
+
+  <form name="equipment-tree-partner-filter-form" width="large" title="Equipments tree"
+    model="com.axelor.utils.db.Wizard" canSave="false" canNew="false" canArchive="false"
+    canAttach="false" canCopy="false" canDelete="false">
+    <panel name="filtersPanel" title="Filters" colSpan="12">
+      <field name="$sequence" colSpan="4" title="Sequence" type="string"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$partner" colSpan="4" title="Partner" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner"
+        domain="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$code" colSpan="4" title="Code" type="string"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$name" colSpan="4" title="Name" type="string"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$type" colSpan="4" title="Type" type="integer"
+        selection="equipment.type.select" widget="single-select"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$indicator" colSpan="4" title="Indicator" type="integer"
+        selection="equipment.indicator.select" widget="single-select"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$equipmentFamily" colSpan="4" title="Equipment family" type="many-to-one"
+        target="com.axelor.apps.intervention.db.EquipmentFamily"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+      <field name="$inService" colSpan="4" title="In service" type="boolean"
+        widget="boolean-switch"
+        onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
+    </panel>
+    <panel-dashlet name="equipmentsTreePanel"
+      action="action-project-view-equipment-tree-partner-filter-equipment" colSpan="12"
+      height="1000"/>
+  </form>
+
+  <tree name="equipment-tree" title="Equipments tree">
+    <column name="sequence" type="string"/>
+    <column name="partner" type="reference"/>
+    <column name="code" type="string"/>
+    <column name="name" type="string"/>
+    <column name="type" type="string" selection="equipment.type.select"
+      widget="single-select"/>
+    <column name="indicator" type="integer" selection="equipment.indicator.select"
+      widget="single-select"/>
+    <column name="_inService" type="boolean"/>
+    <column name="newBtn" type="button"/>
+    <column name="deleteBtn" type="button"/>
+    <node model="com.axelor.apps.intervention.db.Equipment"
+      domain="self.parentEquipment = null OR self.parentEquipment.partner.id != self.partner.id"
+      onClick="action-equipment-view-equipment-from-tree">
+      <field as="sequence" name="sequence"/>
+      <field as="partner" name="partner"/>
+      <field as="code" name="code"/>
+      <field as="name" name="name"/>
+      <field as="type" name="typeSelect"/>
+      <field as="indicator" name="indicatorSelect"/>
+      <field as="_inService" name="_inService"/>
+      <button name="newBtn" icon="fa-plus" onClick="action-equipment-method-new-item-on-tree"/>
+      <button name="deleteBtn" icon="fa-trash"
+        onClick="com.axelor.apps.intervention.web.EquipmentController:removeEquipment"/>
+    </node>
+    <node model="com.axelor.apps.intervention.db.Equipment" parent="parentEquipment"
+      onClick="action-equipment-view-equipment-from-tree">
+      <field as="sequence" name="sequence"/>
+      <field as="partner" name="partner"/>
+      <field as="code" name="code"/>
+      <field as="name" name="name"/>
+      <field as="type" name="typeSelect"/>
+      <field as="indicator" name="indicatorSelect"/>
+      <field as="_inService" name="_inService"/>
+      <button name="newBtn" icon="fa-plus" onClick="action-equipment-method-new-item-on-tree"/>
+      <button name="deleteBtn" icon="fa-trash"
+        onClick="com.axelor.apps.intervention.web.EquipmentController:removeEquipment"/>
+    </node>
+  </tree>
+
+  <form title="Import equipments" name="import-equipments-form"
+    model="com.axelor.utils.db.Wizard" onLoad="action-import-equipment-method-load-format-file"
+    onNew="action-import-equipment-method-load-format-file">
+    <panel name="mainPanel">
+      <field type="many-to-one" name="$_xPartner" title="Partner"
+        target="com.axelor.apps.base.db.Partner"
+        domain="self.isContact != true AND (self.isCustomer = true OR self.isProspect = true)"/>
+      <field type="many-to-one" name="$_xFile" title="CSV File to import" widget="binary-link"
+        target="com.axelor.meta.db.MetaFile"/>
+      <field type="many-to-one" name="$_xEmptyImportFormat" title="Empty import format"
+        widget="binary-link" target="com.axelor.meta.db.MetaFile" readonly="true"/>
+      <button name="importBtn" title="Import" onClick="action-equipment-method-import"
+        css="btn-success" readonlyIf="$_xPartner == null || $_xFile == null"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.intervention.db.Equipment" title="Equipment" width="large"
+    name="equipment-form" onNew="action-equipment-group-form-on-new">
+    <toolbar>
+      <button name="newEquipmentBtn" title="Create new equipment"
+        onClick="action-equipment-view-new-equipment" hidden="true" showIf="typeSelect == 'place'"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="sequence" showTitle="false" readonly="true">
+        <viewer depends="sequence"><![CDATA[<h3>{{record.sequence}}</h3>]]></viewer>
+      </field>
+      <field name="$viewerTags" showTitle="false" readonly="true">
+        <viewer depends="indicatorSelect">
+          <![CDATA[
+              <h4 style="text-align: right;">
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #4CAF50;" ng-show="record.indicatorSelect == 1" x-translate>Under contract and operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #F44336;" ng-show="record.indicatorSelect == 2" x-translate>Under contract and non-operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #2196F3;" ng-show="record.indicatorSelect == 3" x-translate>Off-contract and operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #FF9800; color: #372100" ng-show="record.indicatorSelect == 4" x-translate>Off-contract and non-operational</span>
+              </h4>
+          ]]>
+        </viewer>
+      </field>
+      <field name="indicatorSelect" colSpan="12" hidden="true"/>
+      <field name="partner"
+        domain="self.isContact != true AND (self.isCustomer = true OR self.isProspect = true)"
+        grid-view="partner-grid" form-view="partner-form" readonlyIf="parentEquipment != null"/>
+      <field name="parentEquipment" domain="self.typeSelect = 'place'"
+        grid-view="equipment-grid" form-view="equipment-form"
+        onChange="action-equipment-attrs-parent-equipment-on-change"
+        onSelect="action-equipment-attrs-fill-parent-equipment-domain"/>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="typeSelect"/>
+      <field name="inService" requiredIf="typeSelect == 'equipment'" hidden="true"
+        showIf="typeSelect != 'place'"/>
+      <field name="commissioningDate" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="customerWarrantyOnPartEndDate" requiredIf="typeSelect == 'equipment'"
+        showIf="typeSelect != 'place'"/>
+      <field name="equipmentFamily" grid-view="equipment-family-grid"
+        form-view="equipment-family-form" hidden="true" showIf="typeSelect != 'place'"
+        requiredIf="typeSelect != 'place'"/>
+      <field name="scheduleOfOperation" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="specificAccessSchedule" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="contract" form-view="contract-form" hidden="true" canNew="false"
+        domain="self.partner = :partner AND self.currentContractVersion.statusSelect = 3"
+        showIf="typeSelect != 'place'"/>
+      <field name="comments" colSpan="12"/>
+    </panel>
+    <panel-tabs>
+
+      <panel name="picturesPanel" title="Pictures">
+        <field name="pictureList" colSpan="12" showTitle="false">
+          <editor x-viewer="true">
+            <panel name="imagePanel" colSpan="6">
+              <field name="pictureFile" widget="Image" colSpan="12" showTitle="false"/>
+            </panel>
+          </editor>
+        </field>
+      </panel>
+      <panel-related field="articleEquipmentList" canNew="true"
+        showIf="typeSelect == 'equipment'" grid-view="equipment-article-equipment-grid"
+        form-view="article-equipment-form"/>
+      <!--<panel-dashlet action="action-equipment-view-linked-interventions" title="Linked interventions"
+        help="Display all linked interventions by the contract" hidden="true" showIf="typeSelect != 'place'"/> -->
+    </panel-tabs>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-view name="action-equipment-view-import-wizard" title="Import equipment"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="import-equipments-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_xPriceListId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-import-equipment-method-load-format-file">
+    <call class="com.axelor.apps.intervention.web.EquipmentController" method="loadFormatFile"/>
+  </action-method>
+
+  <action-group name="action-equipment-group-form-on-new">
+    <action name="action-equipment-method-fill-default-records"/>
+    <action name="action-equipment-attrs-parent-equipment-on-change"/>
+    <action name="action-attrs-equipment-init-commissioning-date"/>
+  </action-group>
+
+  <action-method name="action-equipment-method-fill-default-records">
+    <call class="com.axelor.apps.intervention.web.EquipmentController"
+      method="fillDefaultValues"/>
+  </action-method>
+
+  <action-attrs name="action-equipment-attrs-parent-equipment-on-change">
+    <attribute for="authorisationSelect" name="value"
+      expr="eval: parentEquipment?.authorisationSelect != null ?
+                parentEquipment?.authorisationSelect :
+                partner?.securityClassificationSelect"/>
+    <attribute for="partner" name="value" expr="eval: parentEquipment?.partner"
+      if="parentEquipment"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-equipment-init-commissioning-date">
+    <attribute name="value" for="commissioningDate"
+      expr="eval: __config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-attrs>
+
+  <action-view name="action-equipment-view-new-equipment" title="Equipment"
+    model="com.axelor.apps.intervention.db.Equipment">
+    <view type="form" name="equipment-form"/>
+    <view type="grid" name="equipment-grid"/>
+    <context name="_xPartnerId" expr="eval: partner.id"/>
+    <context name="_xParentEquipmentId" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs name="action-equipment-attrs-fill-parent-equipment-domain">
+    <attribute for="parentEquipment" name="domain"
+      expr="eval: &quot; self.typeSelect = 'place' AND self.partner.id = ${partner.id} &quot;"
+      if="partner != null"/>
+    <attribute for="parentEquipment" name="domain"
+      expr="eval: &quot; self.typeSelect =, 'place' &quot;" if="partner == null"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"
+    model="com.axelor.utils.db.Wizard">
+    <attribute for="equipmentsTreePanel" name="refresh" expr="eval: true"/>
+  </action-attrs>
+
+  <action-view name="action-project-view-equipment-tree-partner-filter-equipment"
+    title="Equipments tree" model="com.axelor.apps.intervention.db.Equipment">
+    <view type="tree" name="equipment-tree"/>
+    <domain>
+      (:sequence IS NULL OR :sequence = '' OR unaccent(UPPER(self.sequence)) LIKE CONCAT('%',
+      unaccent(UPPER(:sequence)), '%')) AND (:equipmentFamily IS NULL OR self.equipmentFamily =
+      :equipmentFamily) AND
+      (:partner IS NULL OR self.partner = :partner) AND (:code IS NULL OR :code
+      = '' OR unaccent(UPPER(self.code)) LIKE
+      CONCAT('%', unaccent(UPPER(:code)), '%')) AND (:name IS
+      NULL OR :name = '' OR unaccent(UPPER(self.name)) LIKE
+      CONCAT('%', unaccent(UPPER(:name)),'%'))
+      AND (:type IS NULL OR self.typeSelect = :type) AND (:indicator IS NULL OR
+      self.indicatorSelect
+      = :indicator) AND (:inService IS NULL OR :inService IS FALSE OR self.inService = :inService)
+    </domain>
+  </action-view>
+
+  <action-view name="action-equipment-view-equipment-from-tree" title="Equipment"
+    model="com.axelor.apps.intervention.db.Equipment">
+    <view type="form" name="equipment-form"/>
+    <context name="_showRecord" expr="eval: id"/>
+    <context name="_showSingle" expr="true"/>
+  </action-view>
+
+  <action-method name="action-equipment-method-new-item-on-tree">
+    <call class="com.axelor.apps.barkene.web.EquipmentController" method="openNewItemOnTree"/>
+  </action-method>
+
+  <search-filters name="equipment-filters"
+    model="com.axelor.apps.intervention.db.Equipment" title="Equipment filters">
+    <field name="partner.tradingName.name" title="Partner trading name"/>
+  </search-filters>
+
+</object-views>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <menuitem name="client-park-root" title="Client Park" order="-115"
+    if="__config__.app.isApp('intervention')" icon-background="grey" icon="fa-wrench" left="true"/>
+
+  <menuitem name="client-park-root-equipment-tree" title="Equipments tree"
+    parent="client-park-root" icon-background="grey" icon="fa-sitemap" left="true"
+    action="action.equipment.view.equipment.tree"/>
+
+  <action-view name="action.equipment.view.equipment.tree" title="Equipments tree"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="equipment-tree-partner-filter-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showSingle" expr="true"/>
+  </action-view>
+
+  <menuitem name="client-park-root-equipment" title="Equipments" parent="client-park-root"
+    icon-background="grey" icon="fa-microchip" left="true" action="action.equipment.view.equipment"/>
+
+  <action-view name="action.equipment.view.equipment" title="Equipments"
+    model="com.axelor.apps.intervention.db.Equipment">
+    <view type="grid" name="equipment-grid"/>
+    <view type="form" name="equipment-form"/>
+    <view-param name="search-filters" value="equipment-filters"/>
+  </action-view>
+
+  <menuitem name="client-park-root-article-equipment" title="Articles equipments"
+    parent="client-park-root" icon-background="grey" icon="fa-qrcode" left="true"
+    action="action.equipment.view.article.equipment"/>
+
+  <action-view name="action.equipment.view.article.equipment"
+    title="Articles equipments" model="com.axelor.apps.intervention.db.ArticleEquipment">
+    <view type="grid" name="article-equipment-grid"/>
+    <view type="form" name="article-equipment-form"/>
+    <view-param name="search-filters" value="article-equipment-filters"/>
+  </action-view>
+
+  <menuitem name="client-park-root-conf" title="Configuration" parent="client-park-root"
+    icon-background="grey" icon="fa-cogs" order="99"/>
+
+  <menuitem name="client-park-root-equipment-families" title="Equipment families"
+    parent="client-park-root-conf" action="action.equipment.view.equipment.families"/>
+
+  <action-view name="action.equipment.view.equipment.families"
+    title="Equipment families" model="com.axelor.apps.intervention.db.EquipmentFamily">
+    <view type="grid" name="equipment-family-grid"/>
+    <view type="form" name="equipment-family-form"/>
+  </action-view>
+
+</object-views>
