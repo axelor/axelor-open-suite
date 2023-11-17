@@ -26,9 +26,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.helpers.StringHelper;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 import org.iban4j.CountryCode;
 import org.iban4j.IbanFormatException;
 import org.iban4j.IbanUtil;
@@ -192,26 +189,6 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     }
     if (IbanUtil.isSupportedCountry(countryCode)) {
       IbanUtil.validate(iban);
-    }
-  }
-
-  @Override
-  public String getBankDetailsDomain(Company company) {
-    if (company == null) {
-      return null;
-    }
-
-    List<BankDetails> bankDetailsList = company.getBankDetailsList();
-    if (CollectionUtils.isNotEmpty(bankDetailsList)) {
-      bankDetailsList.add(company.getDefaultBankDetails());
-      String bankDetailsIds =
-          bankDetailsList.stream()
-              .distinct()
-              .map(bankDetails -> bankDetails.getId().toString())
-              .collect(Collectors.joining(","));
-      return "self.id IN (" + bankDetailsIds + ") AND self.active = true";
-    } else {
-      return "self.id = " + company.getDefaultBankDetails().getId() + " AND self.active = true";
     }
   }
 }

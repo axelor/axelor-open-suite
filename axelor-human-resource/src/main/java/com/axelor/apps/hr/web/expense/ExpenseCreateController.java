@@ -12,6 +12,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.expense.ExpenseCreateService;
+import com.axelor.apps.hr.service.expense.ExpenseLineDomainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -51,7 +52,7 @@ public class ExpenseCreateController {
 
       if (expense != null) {
         response.setView(
-            ActionView.define(I18n.get("Sale order"))
+            ActionView.define(I18n.get("Expense"))
                 .model(Expense.class.getName())
                 .add("grid", "expense-grid")
                 .add("form", "expense-form")
@@ -74,7 +75,9 @@ public class ExpenseCreateController {
     Context context = request.getContext();
     Company company = MapHelper.get(context, Company.class, "company");
     response.setAttr(
-        "bankDetails", "domain", Beans.get(BankDetailsService.class).getBankDetailsDomain(company));
+        "bankDetails",
+        "domain",
+        Beans.get(BankDetailsService.class).getActiveCompanyBankDetails(company));
   }
 
   public void getExpenseLineDomain(ActionRequest request, ActionResponse response) {
@@ -85,7 +88,7 @@ public class ExpenseCreateController {
     response.setAttr(
         "$expenseLinesToMerge",
         "domain",
-        Beans.get(ExpenseCreateService.class)
+        Beans.get(ExpenseLineDomainService.class)
             .getExpenseLineToMergeDomain(company, currency, employee));
   }
 }

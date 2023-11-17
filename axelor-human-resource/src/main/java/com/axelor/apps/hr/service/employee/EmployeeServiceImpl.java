@@ -315,7 +315,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   }
 
   public BankDetails getBankDetails(Employee employee) {
-    if (employee == null) {
+    if (employee == null || employee.getMainEmploymentContract() == null) {
       return null;
     }
 

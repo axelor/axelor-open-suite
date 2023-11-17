@@ -38,6 +38,4 @@ public interface ExpenseCreateService {
       Integer companyCbSelect,
       List<ExpenseLine> expenseLineList)
       throws AxelorException;
-
-  String getExpenseLineToMergeDomain(Company company, Currency currency, Employee employee);
 }

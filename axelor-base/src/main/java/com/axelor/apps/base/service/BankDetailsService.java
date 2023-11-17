@@ -118,6 +118,4 @@ public interface BankDetailsService {
    */
   void validateIban(String iban)
       throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException;
-
-  String getBankDetailsDomain(Company company);
 }

@@ -19,7 +19,7 @@
         target="com.axelor.apps.base.db.BankDetails" title="Bank details"
         onSelect="action-expense-create-wizard-method-get-bank-details-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"
-        if="__config__.app.getApp('base')?.getManageMultiBanks()" readonlyIf="!company"/>
+        if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       <field name="companyCbSelect" type="integer"
         title="Expense paid with company's credit card" selection="hr.expense.company.cb.payment"
         default="1"/>
