@@ -159,6 +159,8 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
+import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -528,6 +530,8 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceMergingService.class).to(InvoiceMergingServiceImpl.class);
 
+    bind(InvoiceMergingViewService.class).to(InvoiceMergingViewServiceImpl.class);
+
     bind(JournalControlService.class).to(JournalControlServiceImpl.class);
 
     bind(JournalCheckPartnerTypeService.class).to(JournalCheckPartnerTypeServiceImpl.class);
@@ -702,5 +706,7 @@ public class AccountModule extends AxelorModule {
     bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
 
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
+
+    bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
   }
 }

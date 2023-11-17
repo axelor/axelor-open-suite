@@ -3,20 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="business-project-root" title="Job costing" order="-1300"
-    icon="fa-list-alt" icon-background="blue" if="__config__.app.isApp('business-project')"/>
-
-  <menuitem name="business-project-folder" parent="business-project-root"
-    title="Project Folder" action="business.project.folder" order="100"/>
-
-  <action-view name="business.project.folder" title="Project Folder"
-    model="com.axelor.apps.businessproject.db.ProjectFolder">
-    <view type="grid" name="project-folder-grid"/>
-    <view type="form" name="project-folder-form"/>
-  </action-view>
-
-  <menuitem name="business-project-all" parent="business-project-root" order="200"
-    title="Business projects" action="business.project.all"/>
+  <menuitem name="business-project-all" parent="menu-project-root" order="200"
+    title="Business projects" action="business.project.all"
+    if="__config__.app.isApp('business-project')"/>
 
   <action-view name="business.project.all" title="Business projects"
     model="com.axelor.apps.project.db.Project">
@@ -28,9 +17,19 @@
     <context name="_fromBusinessProject" expr="eval:true"/>
   </action-view>
 
-  <menuitem name="business-project-root-invoicing-project" order="-1200"
-    title="Invoicing project" action="business.project.root.invoicing.project" icon="fa-tasks"
-    icon-background="#3f6bb9" if="__config__.app.isApp('business-project')"/>
+  <menuitem name="business-project-folder" parent="project-configurations"
+    title="Project Folders" action="business.project.folder" order="1200"
+    if="__config__.app.isApp('business-project')"/>
+
+  <action-view name="business.project.folder" title="Project Folders"
+    model="com.axelor.apps.businessproject.db.ProjectFolder">
+    <view type="grid" name="project-folder-grid"/>
+    <view type="form" name="project-folder-form"/>
+  </action-view>
+
+  <menuitem name="business-project-root-invoicing-project" order="400"
+    parent="menu-project-root" title="Invoicing project"
+    action="business.project.root.invoicing.project" if="__config__.app.isApp('business-project')"/>
 
   <action-view name="business.project.root.invoicing.project" title="Invoicing project"
     model="com.axelor.apps.businessproject.db.InvoicingProject">

@@ -187,9 +187,9 @@
 
   <selection name='iinvoice.operation.type.select'>
     <option value='1'>Supplier purchase</option>
-    <option value='2'>Supplier refund</option>
+    <option value='2'>Supplier credit notes</option>
     <option value='3'>Customer sale</option>
-    <option value='4'>Customer refund</option>
+    <option value='4'>Customer credit notes</option>
   </selection>
 
   <selection name='iinvoice.operation.sub.type.select'>
@@ -237,7 +237,7 @@
   </selection>
 
   <selection name="iaccount.account.batch.transfer.customer.reimbursement.type.select">
-    <option value="1">Customer refund</option>
+    <option value="1">Customer credit notes</option>
     <option value="2">Partner credit balance reimbursement</option>
   </selection>
 
@@ -341,7 +341,7 @@
   <selection name="invoice.payment.type.select">
     <option value="1">Advance Payment</option>
     <option value="2">Payment</option>
-    <option value="3">Refund invoice</option>
+    <option value="3">Credit note invoice</option>
     <option value="4">Invoice</option>
     <option value="5">Other</option>
     <option value="6">Advance Payment Imputation</option>
@@ -424,7 +424,7 @@
     <option value="irrecoverable">Shift to irrecoverable</option>
     <option value="chequeReject">Cheque reject</option>
     <option value="saleInterface">Sale interface</option>
-    <option value="refundInterface">Refund interface</option>
+    <option value="refundInterface">Credit note interface</option>
     <option value="treasuryInterface">Treasury interface</option>
     <option value="purchaseInterface">Purchase interface</option>
     <option value="moveLineExport">Accounting export</option>

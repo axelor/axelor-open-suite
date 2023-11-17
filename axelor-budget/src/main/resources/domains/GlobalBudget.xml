@@ -81,6 +81,7 @@
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED = 3;
 
 				//budget control type select
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_DEFAULT_VALUE = 0;
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;

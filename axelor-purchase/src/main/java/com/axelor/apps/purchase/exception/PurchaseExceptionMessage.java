@@ -87,4 +87,6 @@ public final class PurchaseExceptionMessage {
 
   public static final String DIFFERENT_SUPPLIER = /*$$(*/
       "The supplier of the purchase order is different from the default supplier of the product." /*)*/;
+  public static final String PURCHASE_ORDER_CANNOT_DELETE_VALIDATED_ORDER = /*$$(*/
+      "It is not possible to delete a validated order." /*)*/;
 }

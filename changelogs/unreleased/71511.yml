@@ -1,0 +1,5 @@
+---
+title: "Opportunity : Change field type"
+type: feature
+description: |
+  Changed back opportunityType type from string to m2o.

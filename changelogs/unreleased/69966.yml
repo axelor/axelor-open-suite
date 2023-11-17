@@ -1,3 +1,0 @@
----
-title: "Project - Sales : fix a bug where boolean to invoice via task was not working when generating a task from a sale order"
-type: fix

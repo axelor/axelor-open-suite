@@ -96,9 +96,12 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineService.balanceCreditDebit(moveLine, move);
     moveLineDefaultService.setIsOtherCurrency(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
+    moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineService.computeFinancialDiscount(moveLine);
+    moveLineRecordService.setCounter(moveLine, move);
 
+    valuesMap.put("counter", moveLine.getCounter());
     valuesMap.put("account", moveLine.getAccount());
     valuesMap.put("partner", moveLine.getPartner());
     valuesMap.put("date", moveLine.getDate());
@@ -121,6 +124,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
     valuesMap.put("remainingAmountAfterFinDiscount", moveLine.getRemainingAmountAfterFinDiscount());
     valuesMap.put("invoiceTermList", moveLine.getInvoiceTermList());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -134,8 +139,21 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
 
     return attrsMap;
+  }
+
+  @Override
+  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) {
+    Map<String, Object> valuesMap = new HashMap<>();
+
+    moveLineToolService.setDecimals(moveLine, move);
+
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
+
+    return valuesMap;
   }
 
   @Override
@@ -155,6 +173,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
       moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -178,6 +197,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
       moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -291,6 +311,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
     moveLineAttrsService.changeFocus(move, moveLine, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
 
     return attrsMap;
   }

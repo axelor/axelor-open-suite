@@ -24,6 +24,9 @@
     <date name="expectedRealisationDate" title="Expected realisation date"/>
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
+    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
+    <many-to-one name="freightCarrierMode"
+      ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
 
     <long name="generatedSaleOrderId"/>
     <extra-code>

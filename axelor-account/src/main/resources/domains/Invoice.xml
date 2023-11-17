@@ -86,7 +86,7 @@
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
     <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
     <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice"
-      title="Refunds"/>
+      title="Credit notes"/>
     <integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0"
       readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
     <many-to-one name="managementObject"

@@ -62,6 +62,10 @@
             title="On inventories"/>
           <field name="isStockCorrectionValidationEnabled" widget="boolean-switch" colSpan="6"
             title="On stock corrections"/>
+          <field name="inventoryValidationRoleSet" widget="TagSelect" placeholder="all"
+            showIf="isInventoryValidationEnabled"/>
+          <field name="stockCorrectionValidationRoleSet" widget="TagSelect" placeholder="all"
+            showIf="isStockCorrectionValidationEnabled"/>
         </panel>
         <panel name="stockAdditionPanel" title="Enable line addition" colSpan="6"
           help="If this configuration is enabled, users can add new lines to the enabled feature on mobile application.">
@@ -69,6 +73,10 @@
             colSpan="6" title="On customer deliveries"/>
           <field name="isSupplierArrivalLineAdditionEnabled" widget="boolean-switch"
             colSpan="6" title="On supplier arrivals"/>
+          <field name="customerDeliveryLineAdditionRoleSet" widget="TagSelect"
+            placeholder="all" showIf="isCustomerDeliveryLineAdditionEnabled"/>
+          <field name="supplierArrivalLineAdditionRoleSet" widget="TagSelect"
+            placeholder="all" showIf="isSupplierArrivalLineAdditionEnabled"/>
         </panel>
         <panel name="stockLineConfigPanel" title="Enable line verification" colSpan="6"
           help="For each of the following features, if configuration is enabled, users will be asked to confirm the tracking number or product of the line before accessing the details screen. If the setting is disabled, they will be able to access the details screen directly.">
@@ -76,10 +84,18 @@
             widget="boolean-switch" colSpan="6"/>
           <field name="isVerifySupplierArrivalLineEnabled" title="On supplier arrivals"
             widget="boolean-switch" colSpan="6"/>
+          <field name="verifyCustomerDeliveryLineRoleSet" widget="TagSelect" placeholder="all"
+            showIf="isVerifyCustomerDeliveryLineEnabled"/>
+          <field name="verifySupplierArrivalLineRoleSet" widget="TagSelect" placeholder="all"
+            showIf="isVerifySupplierArrivalLineEnabled"/>
           <field name="isVerifyInternalMoveLineEnabled" title="On internal moves"
             widget="boolean-switch" colSpan="6"/>
           <field name="isVerifyInventoryLineEnabled" title="On inventories"
             widget="boolean-switch" colSpan="6"/>
+          <field name="verifyInternalMoveLineRoleSet" widget="TagSelect" placeholder="all"
+            showIf="isVerifyInternalMoveLineEnabled"/>
+          <field name="verifyInventoryLineRoleSet" widget="TagSelect" placeholder="all"
+            showIf="isVerifyInventoryLineEnabled"/>
         </panel>
         <field name="manageCarrierOption" widget="boolean-switch" colSpan="12" hidden="true"/>
         <!-- This field manageCarrierOption will be used later when carrier mode is implemented in AOS

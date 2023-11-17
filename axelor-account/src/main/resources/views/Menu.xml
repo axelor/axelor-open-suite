@@ -19,10 +19,10 @@
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <menuitem name="invoice-root-custrefunds" parent="invoice-root" order="200"
-    title="Cust. Refunds" action="invoice.root.custrefunds"/>
+  <menuitem name="invoice-root-cust-credit-note" parent="invoice-root" order="200"
+    title="Cust. Credit notes" action="invoice.root.custrefunds"/>
 
-  <action-view name="invoice.root.custrefunds" title="Cust. Refunds"
+  <action-view name="invoice.root.custrefunds" title="Cust. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-refund-grid"/>
     <view type="form" name="invoice-form"/>
@@ -84,10 +84,10 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="invoice-root-purchase-suprefunds" parent="invoice-root" order="600"
-    title="Suppl. Refunds" action="invoice.root.purchase.suprefunds"/>
+  <menuitem name="invoice-root-purchase-sup-credit-note" parent="invoice-root" order="600"
+    title="Suppl. Credit notes" action="invoice.root.purchase.sup.credit.note"/>
 
-  <action-view name="invoice.root.purchase.suprefunds" title="Suppl. Refunds"
+  <action-view name="invoice.root.purchase.sup.credit.note" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-refund-grid"/>
     <view type="form" name="invoice-form"/>
@@ -839,10 +839,10 @@
   </action-view>
 
 
-  <menuitem name="top-invoicing-custrefunds" title="Cust. Refunds"
+  <menuitem name="top-invoicing-cust-credit-note" title="Cust. Credit notes"
     action="top.invoicing.custrefunds" parent="top-invoicing" top="true"/>
 
-  <action-view name="top.invoicing.custrefunds" title="Cust. Refunds"
+  <action-view name="top.invoicing.custrefunds" title="Cust. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-refund-grid"/>
     <view type="form" name="invoice-form"/>
@@ -864,10 +864,10 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
   </action-view>
 
-  <menuitem name="top-invoicing-supplrefunds" title="Suppl. Refunds"
+  <menuitem name="top-invoicing-suppl-credit-note" title="Suppl. Credit notes"
     action="top.invoicing.supplrefunds" parent="top-invoicing" top="true"/>
 
-  <action-view name="top.invoicing.supplrefunds" title="Suppl. Refunds"
+  <action-view name="top.invoicing.supplrefunds" title="Suppl. Credit notes"
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-supplier-refund-grid"/>
     <view type="form" name="invoice-form"/>
