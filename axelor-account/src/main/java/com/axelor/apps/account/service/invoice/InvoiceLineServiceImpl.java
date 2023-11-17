@@ -718,20 +718,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
             .map(
                 it ->
                     it.multiply(invoiceLine.getPrice())
-                        .divide(
-                            new BigDecimal(100),
-                            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                            RoundingMode.HALF_UP))
+                        .divide(new BigDecimal(100), RoundingMode.HALF_UP))
             .orElse(BigDecimal.ZERO);
 
-    return invoiceLine.getPrice().add(taxValue);
+    return currencyScaleServiceAccount.getScaledValue(
+        invoiceLine, invoiceLine.getPrice().add(taxValue));
   }
 
   @Override
   public Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    invoiceLineAttrsService.setPriceScale(invoice, attrsMap);
     invoiceLineAttrsService.setInTaxPriceScale(invoice, attrsMap);
     invoiceLineAttrsService.setDiscountAmountScale(invoice, attrsMap);
     invoiceLineAttrsService.setExTaxTotalScale(invoice, attrsMap);

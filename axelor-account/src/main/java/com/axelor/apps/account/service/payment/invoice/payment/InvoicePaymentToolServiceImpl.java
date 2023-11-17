@@ -101,16 +101,26 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     invoice.setAmountPaid(computeAmountPaid(invoice));
     invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
-    invoice.setCompanyInTaxTotalRemaining(
-        getAmountInInvoiceCompanyCurrency(invoice.getAmountRemaining(), invoice));
+    invoice.setCompanyInTaxTotalRemaining(computeCompanyAmountRemaining(invoice));
     updateHasPendingPayments(invoice);
     updatePaymentProgress(invoice);
     invoiceRepo.save(invoice);
     log.debug("Invoice : {}, amount paid : {}", invoice.getInvoiceId(), invoice.getAmountPaid());
   }
 
-  protected BigDecimal getAmountInInvoiceCompanyCurrency(BigDecimal amount, Invoice invoice)
-      throws AxelorException {
+  protected BigDecimal computeCompanyAmountRemaining(Invoice invoice) throws AxelorException {
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    BigDecimal amount = invoice.getAmountRemaining();
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      BigDecimal currencyAmount =
+          invoiceTermList.stream()
+              .map(InvoiceTerm::getCompanyAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (currencyAmount.signum() >= 0 || (currencyAmount.signum() == 0 && amount.signum() == 0)) {
+        return currencyAmount;
+      }
+    }
 
     return currencyService.getAmountCurrencyConvertedAtDate(
         invoice.getCurrency(),

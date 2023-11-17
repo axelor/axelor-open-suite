@@ -32,6 +32,7 @@
     <panel-related name="invoiceTermPaymentPanel" field="invoiceTermPaymentList"
       grid-view="invoice-term-payment-grid" form-view="invoice-term-payment-form" colSpan="12"
       readonly="true" showIf="invoice.invoiceTermList.length &gt; 1"/>
+
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
       <field name="amount" onChange="action-invoice-payment-group-change-amounts"

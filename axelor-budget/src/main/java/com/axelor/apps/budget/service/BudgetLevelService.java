@@ -101,14 +101,6 @@ public interface BudgetLevelService {
   public void draftChildren(BudgetLevel budgetLevel);
 
   /**
-   * Return the global budget check available select
-   *
-   * @param budget
-   * @return Integer
-   */
-  public Integer getBudgetControlLevel(Budget budget);
-
-  /**
    * Create budget key for each budget related to this section
    *
    * @param section
