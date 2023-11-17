@@ -29,6 +29,7 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -43,6 +44,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.meta.CallMethod;
+import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,6 +65,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineBudgetService saleOrderLineBudgetService;
   protected BudgetService budgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public SaleOrderBudgetServiceImpl(
@@ -82,7 +85,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
-      BudgetService budgetService) {
+      BudgetService budgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         appBaseService,
         appSupplychainService,
@@ -101,35 +105,41 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
     this.budgetService = budgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
   public void generateBudgetDistribution(SaleOrder saleOrder) {
+    if (Optional.of(appBudgetService.getAppBudget())
+        .map(AppBudget::getManageMultiBudget)
+        .orElse(true)) {
+      return;
+    }
 
-    if (CollectionUtils.isNotEmpty(saleOrder.getSaleOrderLineList())) {
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
-        if (saleOrderLine.getBudget() != null) {
-          BudgetDistribution budgetDistribution = null;
-          if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
-            Optional<BudgetDistribution> optionalBudgetDistribution =
-                saleOrderLine.getBudgetDistributionList().stream()
-                    .filter(
-                        it ->
-                            it.getBudget() != null
-                                && it.getBudget().equals(saleOrderLine.getBudget()))
-                    .findFirst();
-            budgetDistribution =
-                optionalBudgetDistribution.isPresent() ? optionalBudgetDistribution.get() : null;
-          }
-          if (budgetDistribution == null) {
-            budgetDistribution = new BudgetDistribution();
-            budgetDistribution.setBudget(saleOrderLine.getBudget());
-            saleOrderLine.addBudgetDistributionListItem(budgetDistribution);
-          }
-          budgetDistribution.setAmount(saleOrderLine.getCompanyExTaxTotal());
+      if (saleOrderLine.getBudget() != null) {
+        BudgetDistribution budgetDistribution = null;
+        if (CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
+          Optional<BudgetDistribution> optionalBudgetDistribution =
+              saleOrderLine.getBudgetDistributionList().stream()
+                  .filter(
+                      it ->
+                          it.getBudget() != null
+                              && it.getBudget().equals(saleOrderLine.getBudget()))
+                  .findFirst();
+          budgetDistribution =
+              optionalBudgetDistribution.isPresent() ? optionalBudgetDistribution.get() : null;
         }
+        if (budgetDistribution == null) {
+          budgetDistribution = new BudgetDistribution();
+          budgetDistribution.setBudget(saleOrderLine.getBudget());
+        }
+        budgetDistribution.setAmount(saleOrderLine.getCompanyExTaxTotal());
+        budgetDistributionService.linkBudgetDistributionWithParent(
+            budgetDistribution, saleOrderLine);
       }
+      saleOrderLine.setBudgetDistributionSumAmount(saleOrderLine.getCompanyExTaxTotal());
     }
   }
 
@@ -253,47 +263,32 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         && CollectionUtils.isNotEmpty(saleOrderLineList)) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
-
+      LocalDate date =
+          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-        LocalDate date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
+
         if (appBudgetService.getAppBudget().getManageMultiBudget()
             && CollectionUtils.isNotEmpty(saleOrderLine.getBudgetDistributionList())) {
 
           for (BudgetDistribution budgetDistribution : saleOrderLine.getBudgetDistributionList()) {
             Budget budget = budgetDistribution.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, budgetDistribution.getAmount());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(budgetDistribution.getAmount()));
-            }
-          }
-          for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(), budgetEntry.getValue(), date);
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, budgetDistribution.getAmount(), amountPerBudgetMap);
           }
         } else {
           Budget budget = saleOrderLine.getBudget();
           if (budget != null) {
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, saleOrderLine.getExTaxTotal());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(saleOrderLine.getExTaxTotal()));
-            }
-
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budget, amountPerBudgetMap.get(budget), date);
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
           }
         }
+      }
+
+      for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
+        budgetExceedAlert +=
+            budgetDistributionService.getBudgetExceedAlert(
+                budgetEntry.getKey(), budgetEntry.getValue(), date);
       }
     }
     return budgetExceedAlert;

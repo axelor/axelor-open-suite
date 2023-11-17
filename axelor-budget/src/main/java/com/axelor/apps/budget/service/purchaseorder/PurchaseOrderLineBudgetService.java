@@ -94,9 +94,5 @@ public interface PurchaseOrderLineBudgetService {
   String getSectionBudgetDomain(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, GlobalBudget global);
 
-  String getLineBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine,
-      PurchaseOrder purchaseOrder,
-      GlobalBudget global,
-      boolean isBudget);
+  String getLineBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 }

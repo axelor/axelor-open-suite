@@ -37,13 +37,10 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServiceImpl {
 
@@ -131,34 +128,5 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     }
 
     attrsMap.get(field).put(attr, value);
-  }
-
-  @Override
-  public Map<String, Object> getOnNewValuesMap(MoveLine moveLine, Move move)
-      throws AxelorException {
-    Map<String, Object> valuesMap = super.getOnNewValuesMap(moveLine, move);
-    valuesMap.put(
-        "$currencySymbol",
-        Optional.of(move)
-            .map(Move::getCompany)
-            .map(Company::getCurrency)
-            .map(Currency::getSymbol)
-            .orElse(null));
-
-    return valuesMap;
-  }
-
-  @Override
-  public Map<String, Object> getOnLoadValuesMap(MoveLine moveLine, Move move) {
-    Map<String, Object> valuesMap = super.getOnLoadValuesMap(moveLine, move);
-    valuesMap.put(
-        "$currencySymbol",
-        Optional.of(move)
-            .map(Move::getCompany)
-            .map(Company::getCurrency)
-            .map(Currency::getSymbol)
-            .orElse(null));
-
-    return valuesMap;
   }
 }

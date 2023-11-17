@@ -375,6 +375,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           budgetDistributionService.linkBudgetDistributionWithParent(
               budgetDistribution, invoiceLine);
         }
+        invoiceLine.setBudgetDistributionSumAmount(invoiceLine.getCompanyExTaxTotal());
       }
     }
   }

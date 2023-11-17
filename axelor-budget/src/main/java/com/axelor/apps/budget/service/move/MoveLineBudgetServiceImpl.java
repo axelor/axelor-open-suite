@@ -140,9 +140,10 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         BudgetDistribution budgetDistribution =
             budgetDistributionService.createDistributionFromBudget(
                 moveLine.getBudget(),
-                moveLine.getCredit().add(moveLine.getDebit()).abs(),
+                moveLine.getCredit().add(moveLine.getDebit()),
                 move.getDate());
         budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
+        moveLine.setBudgetDistributionSumAmount(moveLine.getCredit().add(moveLine.getDebit()));
       }
     }
   }

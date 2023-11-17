@@ -160,4 +160,18 @@ public class SaleOrderController {
       TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
+
+  public void confirm(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
+        SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
+        saleOrderBudgetService.generateBudgetDistribution(saleOrder);
+        saleOrderBudgetService.updateBudgetLinesFromSaleOrder(saleOrder);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

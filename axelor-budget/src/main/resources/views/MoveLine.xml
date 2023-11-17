@@ -14,15 +14,6 @@
       </insert>
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
-          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true" hidden="false">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[
-                              <dd>{{$fmt('companyExTaxTotal')}}</dd>
-                          ]]>
-            </viewer>
-          </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true"/>
@@ -35,7 +26,6 @@
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-method-move-line-budget-distribution-validate-amount"/>
-          <field name="$currencySymbol" hidden="true"/>
         </panel>
       </insert>
     </extend>
@@ -52,15 +42,6 @@
       </insert>
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
-          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true" hidden="false">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[
-                              <dd>{{$fmt('companyExTaxTotal')}}</dd>
-                          ]]>
-            </viewer>
-          </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true"/>
@@ -73,7 +54,6 @@
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-method-move-line-budget-distribution-validate-amount"/>
-          <field name="$currencySymbol" hidden="true"/>
         </panel>
       </insert>
     </extend>

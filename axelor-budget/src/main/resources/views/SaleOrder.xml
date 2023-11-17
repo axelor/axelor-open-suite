@@ -48,7 +48,9 @@
     <action name="save"/>
     <action name="action-method-budget-sale-order-no-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
-    <action name="action-budget-sale-order-method-update-budget-lines"
+    <action name="action-method-budget-sale-order-confirm"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-method-budget-sale-order-validate-budget-balance"
       if="__config__.app.isApp('budget')"/>
     <action name="action-sale-group-confirmed"/>
   </action-group>
@@ -128,6 +130,10 @@
 
   <action-method name="action-method-budget-sale-order-validate-budget-balance">
     <call class="com.axelor.apps.budget.web.SaleOrderController" method="validateBudgetBalance"/>
+  </action-method>
+
+  <action-method name="action-method-budget-sale-order-confirm">
+    <call class="com.axelor.apps.budget.web.SaleOrderController" method="confirm"/>
   </action-method>
 
 </object-views>
