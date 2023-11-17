@@ -506,7 +506,8 @@ public class SequenceService {
     if (sequence.getPattern() != null && sequence.getPadding() != sequence.getPattern().length()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));}
+          I18n.get(BaseExceptionMessage.SEQUENCE_PATTERN_LENGTH_NOT_VALID));
+    }
   }
 
   public String getSequenceNumber(String code, Class objectClass, String fieldName, Model model)
@@ -541,7 +542,7 @@ public class SequenceService {
             .setFlushMode(FlushModeType.COMMIT)
             .getSingleResult();
     SequenceVersion sequenceVersion = getVersion(seq, refDate);
-    String nextSeq = computeGroovySeq(sequenceVersion, seq, refDate, model);
+    String nextSeq = computeSequenceNumber(sequenceVersion, seq, refDate, model);
 
     if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()
         && objectClass != null
@@ -556,24 +557,15 @@ public class SequenceService {
     return nextSeq;
   }
 
-  protected String computeGroovySeq(
+  protected String computeSequenceNumber(
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate, Model model)
       throws AxelorException {
-
-    String seqPrefixe =
-        StringUtils.defaultString(
-            getGroovyValue(
-                sequence,
-                sequence.getGroovyOk() ? sequence.getPrefixeGroovy() : sequence.getPrefixe(),
-                model),
-            "");
-    String seqSuffixe =
-        StringUtils.defaultString(
-            getGroovyValue(
-                sequence,
-                sequence.getGroovyOk() ? sequence.getSuffixeGroovy() : sequence.getSuffixe(),
-                model),
-            "");
+    String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
+    String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
+    if (sequence.getGroovyOk()) {
+      seqPrefixe = getGroovyValue(sequence, sequence.getPrefixGroovy(), model);
+      seqSuffixe = getGroovyValue(sequence, sequence.getSuffixGroovy(), model);
+    }
 
     String sequenceValue = getSequenceValue(sequenceVersion);
 
@@ -592,7 +584,7 @@ public class SequenceService {
     return nextSeq;
   }
 
-  public String getGroovyValue(Sequence sequence, String prefixOrSuffix, Model model) {
+  protected String getGroovyValue(Sequence sequence, String prefixOrSuffix, Model model) {
     if (!Strings.isNullOrEmpty(prefixOrSuffix)
         && sequence.getGroovyOk()
         && Objects.nonNull(model)) {

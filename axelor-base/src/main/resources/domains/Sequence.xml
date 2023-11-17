@@ -17,10 +17,10 @@
     <enum name="sequenceLettersTypeSelect" default="UPPERCASE" ref="SequenceLettersTypeSelect"
       title="Uppercase / lowercase"/>
     <string name="prefixe" title="Prefix"/>
-    <boolean name="groovyOk" title="Groovy"/>
+    <boolean name="groovyOk" title="Define with a script"/>
     <string name="suffixe" title="Suffix"/>
-    <string name="prefixeGroovy" title="Prefix"/>
-    <string name="suffixeGroovy" title="Suffix"/>
+    <string name="prefixGroovy" title="Prefix"/>
+    <string name="suffixGroovy" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
     <string name="pattern" title="Pattern"/>
     <integer name="toBeAdded" title="Increment" required="true" min="1"/>
