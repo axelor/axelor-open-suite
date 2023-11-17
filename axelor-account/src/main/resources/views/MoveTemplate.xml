@@ -34,7 +34,7 @@
       <field name="automaticallyValidate"/>
       <field name="description" widget="text" colSpan="12"/>
     </panel>
-    <panel showIf="moveTemplateType.typeSelect == 2">
+    <panel showIf="moveTemplateType.typeSelect == 2 &amp;&amp; journal &amp;&amp; company">
       <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
         colSpan="12" form-view="move-template-line-in-amount-form"
         grid-view="move-template-line-in-amount-grid"
@@ -73,8 +73,8 @@
     <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
       colSpan="12" form-view="move-template-line-in-percentage-form"
       grid-view="move-template-line-in-percentage-grid"
-      onChange="action-move-template-method-set-is-valid" showIf="moveTemplateType.typeSelect == 1"
-      hidden="true"/>
+      onChange="action-move-template-method-set-is-valid"
+      showIf="moveTemplateType.typeSelect == 1 &amp;&amp; journal &amp;&amp; company" hidden="true"/>
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <field name="isValid" readonlyIf="!isValid"
         onChange="action-move-template-method-set-is-valid" colSpan="12"/>
@@ -247,13 +247,6 @@
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
-  </action-record>
-
-  <action-record name="action-move-template-wizard-line-set-move-template"
-    model="com.axelor.utils.db.Wizard">
-    <field name="date" expr="eval:__config__.date" if="date == null"/>
-    <field name="moveTemplate"
-      expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
   </action-record>
 
   <action-record name="action-move-template-wizard-line-set-move-template"

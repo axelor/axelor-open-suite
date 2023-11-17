@@ -784,7 +784,7 @@
 "The template to send message for manufacturing order is missing.","Le modèle d'envoi du message pour l'ordre de fabrication est manquant.",,
 "The time the machine starts before it can be used.","Temps que met la machine à démarrer avant de pouvoir être utilisée.",,
 "The unit of the bill of material %s is missing. Please correct it.","L'unité de la nomenclature %s est manquante. Veuillez la corriger",,
-"There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&OP forecast. Proceed?",,,
+"There currently is a ${difference} ${currency?.symbol?:currency?.name} difference between your total forecast and the S&OP forecast. Proceed?","Il y a actuellement une différence de ${difference} ${currency?.symbol?:currency?.name} entre votre prévision totale et les prévisions de ventes. Souhaitez-vous continuer?",,
 "There is no applicable bill of materials for %s","Il n'y a pas de nomenclature applicable pour %s",,
 "There no's defined nomenclature for product %s (%s)","Aucune nomenclature définie pour le produit %s (%s)",,
 "There's no configured sequence for fabrication's orders","Aucune séquence configurée pour les Ordres de fabrication",,

@@ -104,7 +104,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine) {
+  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException {
     if (invoice == null || invoiceLine == null) {
       return "";
     }

@@ -382,6 +382,9 @@
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
           onClick="save,action-stock-move-method-generate-reversion"
           showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
+        <button name="generateNewStockMoveBtn" title="Generate a new stock move"
+          icon="fa-undo" onClick="save,action-stock-move-method-generate-new-stock-move"
+          showIf="statusSelect == 3 &amp;&amp; isReversion"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="delayedInvoice" title="Facturation ultérieure"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
@@ -1207,6 +1210,10 @@
 
   <action-method name="action-stock-move-method-generate-reversion">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="generateReversion"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-generate-new-stock-move">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="generateNewStockMove"/>
   </action-method>
 
   <action-method name="action-stock-move-method-view-direction">
