@@ -220,14 +220,16 @@
     <error if="(startDate &amp;&amp; endDate) &amp;&amp; (endDate &lt; startDate)"
       message="End date must be greater than start date"/>
   </action-validate>
+
   <action-group name="action-sequence-group-onChange-groovyOk">
     <action name="action-sequence-record-empty-suffix-prefix"/>
     <action name="action-sequence-method-compute-fullname"/>
   </action-group>
+
   <action-record name="action-sequence-record-empty-suffix-prefix"
     model="com.axelor.apps.base.db.Sequence">
-    <field name="prefix" expr="eval:''" if="groovyOk"/>
-    <field name="suffix" expr="eval:''" if="groovyOk"/>
+    <field name="prefixe" expr="eval:' '" if="groovyOk"/>
+    <field name="suffixe" expr="eval:' '" if="groovyOk"/>
   </action-record>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"

@@ -563,8 +563,9 @@ public class SequenceService {
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
     if (sequence.getGroovyOk()) {
-      seqPrefixe = getGroovyValue(sequence, sequence.getPrefixGroovy(), model);
-      seqSuffixe = getGroovyValue(sequence, sequence.getSuffixGroovy(), model);
+      seqPrefixe = StringUtils.defaultString(getGroovyValue(sequence, sequence.getPrefixGroovy(), model), "");
+      seqSuffixe = StringUtils.defaultString(getGroovyValue(sequence, sequence.getSuffixGroovy(), model), "");
+
     }
 
     String sequenceValue = getSequenceValue(sequenceVersion);
