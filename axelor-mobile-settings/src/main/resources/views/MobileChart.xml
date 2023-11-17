@@ -11,7 +11,8 @@
   <form name="mobile-chart-form" title="Mobile chart"
     model="com.axelor.apps.mobilesettings.db.MobileChart" width="large">
     <panel name="mainPanel">
-      <field name="name" colSpan="8"/>
+      <field name="name" colSpan="6"/>
+      <field name="chartTypeSelect" colSpan="6"/>
       <field name="query" colSpan="12" height="10"/>
       <button name="runBtn" title="Run" onClick="action-mobile-dashboard-method-run-query"
         colSpan="3"/>

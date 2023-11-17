@@ -17,4 +17,10 @@
     <option value="mobile app">Mobile app</option>
   </selection>
 
+  <selection name='mobilesettings.mobile.chart.type.select'>
+    <option value="bar">Bar</option>
+    <option value="line">Line</option>
+    <option value="pie">Pie</option>
+  </selection>
+
 </object-views>

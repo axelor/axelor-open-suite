@@ -22,6 +22,8 @@ public class MobileChartResponseComputeServiceImpl implements MobileChartRespons
   @Override
   public MobileChartNoVersionResponse computeMobileChartNoVersionResponse(MobileChart mobileChart) {
     return new MobileChartNoVersionResponse(
-        mobileChart.getName(), mobileChartService.getValueList(mobileChart));
+        mobileChart.getName(),
+        mobileChart.getChartTypeSelect(),
+        mobileChartService.getValueList(mobileChart));
   }
 }
