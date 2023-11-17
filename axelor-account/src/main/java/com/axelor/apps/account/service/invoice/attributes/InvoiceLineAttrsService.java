@@ -5,8 +5,6 @@ import java.util.Map;
 
 public interface InvoiceLineAttrsService {
 
-  void setPriceScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
-
   void setInTaxPriceScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
 
   void setDiscountAmountScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);

@@ -25,11 +25,6 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
   }
 
   @Override
-  public void setPriceScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("price", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
-  }
-
-  @Override
   public void setInTaxPriceScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("inTaxPrice", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
   }
