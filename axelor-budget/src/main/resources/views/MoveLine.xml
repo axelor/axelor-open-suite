@@ -13,12 +13,30 @@
         <field name="move.statusSelect" hidden="true"/>
       </insert>
       <insert position="after">
-        <panel-related name="budgetDistributionListPanel" title="Budget"
-          if="__config__.app.isApp('budget')"
-          onChange="action-method-move-line-budget-distribution-validate-amount"
-          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
-          field="budgetDistributionList" form-view="move-line-budget-distribution-form"
-          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true" hidden="false">
+            <viewer depends="companyExTaxTotal">
+              <![CDATA[
+                              <dd>{{$fmt('companyExTaxTotal')}}</dd>
+                          ]]>
+            </viewer>
+          </field>
+          <field name="budgetDistributionSumAmount" colSpan="6"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true"/>
+          <field name="budget"
+            if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
+            canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
+          <panel-related name="budgetDistributionListPanel" title="Budget"
+            showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
+            field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
+            form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            onChange="action-method-move-line-budget-distribution-validate-amount"/>
+          <field name="$currencySymbol" hidden="true"/>
+        </panel>
       </insert>
     </extend>
   </form>
@@ -33,12 +51,30 @@
         <field name="move.statusSelect" hidden="true"/>
       </insert>
       <insert position="after">
-        <panel-related name="budgetDistributionListPanel"
-          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3" title="Budget"
-          onChange="action-method-move-line-budget-distribution-validate-amount"
-          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
-          field="budgetDistributionList" form-view="move-line-budget-distribution-form"
-          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+          <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true" hidden="false">
+            <viewer depends="companyExTaxTotal">
+              <![CDATA[
+                              <dd>{{$fmt('companyExTaxTotal')}}</dd>
+                          ]]>
+            </viewer>
+          </field>
+          <field name="budgetDistributionSumAmount" colSpan="6"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            readonly="true"/>
+          <field name="budget"
+            if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
+            canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
+          <panel-related name="budgetDistributionListPanel" title="Budget"
+            showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
+            field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
+            form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
+            if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+            onChange="action-method-move-line-budget-distribution-validate-amount"/>
+          <field name="$currencySymbol" hidden="true"/>
+        </panel>
       </insert>
     </extend>
   </form>
@@ -48,4 +84,7 @@
       method="validateBudgetLinesAmount"/>
   </action-method>
 
+  <action-method name="action-move-line-method-set-budget-domain">
+    <call class="com.axelor.apps.budget.web.MoveLineController" method="setBudgetDomain"/>
+  </action-method>
 </object-views>

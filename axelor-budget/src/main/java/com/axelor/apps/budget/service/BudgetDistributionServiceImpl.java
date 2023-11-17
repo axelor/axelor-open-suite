@@ -225,7 +225,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     return String.join(", ", alertMessageTokenList);
   }
 
-  protected void linkBudgetDistributionWithParent(
+  @Override
+  public void linkBudgetDistributionWithParent(
       BudgetDistribution budgetDistribution, AuditableModel object) {
 
     if (MoveLine.class.equals(EntityHelper.getEntityClass(object))) {

@@ -79,7 +79,6 @@ import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceServiceImpl;
 import com.axelor.apps.budget.service.invoice.StockMoveInvoiceBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.WorkflowCancelBudgetServiceImpl;
-import com.axelor.apps.budget.service.invoice.WorkflowValidationBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.WorkflowVentilationBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
 import com.axelor.apps.budget.service.move.MoveBudgetServiceImpl;
@@ -104,7 +103,6 @@ import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServic
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
-import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 
@@ -144,7 +142,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetInvoiceService.class).to(BudgetInvoiceServiceImpl.class);
     bind(InvoiceServiceProjectImpl.class).to(BudgetInvoiceServiceImpl.class);
     bind(WorkflowCancelServiceProjectImpl.class).to(WorkflowCancelBudgetServiceImpl.class);
-    bind(WorkflowValidationServiceProjectImpl.class).to(WorkflowValidationBudgetServiceImpl.class);
     bind(WorkflowVentilationProjectServiceImpl.class)
         .to(WorkflowVentilationBudgetServiceImpl.class);
     bind(BudgetLevelService.class).to(BudgetLevelServiceImpl.class);

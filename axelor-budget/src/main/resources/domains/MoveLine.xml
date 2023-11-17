@@ -7,9 +7,11 @@
 
   <entity name="MoveLine">
 
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
     <one-to-many ref="com.axelor.apps.budget.db.BudgetDistribution"
       name="budgetDistributionList" mappedBy="moveLine" title="Budget Distribution"/>
     <boolean name="isBudgetImputed" title="Budget distribution imputed"/>
+    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
 
   </entity>
 

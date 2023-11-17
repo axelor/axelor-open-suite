@@ -28,7 +28,7 @@
             readonly="true"/>
           <field name="budget"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
-            canEdit="false" domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
+            canEdit="false" onSelect="action-invoice-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel"
             field="budgetDistributionList" grid-view="reduce-budget-distribution-grid"
             form-view="invoice-budget-distribution-form" editable="true" colSpan="12"
@@ -59,6 +59,10 @@
 
   <action-method name="action-method-invoice-line-budget-check-budget-key-roles">
     <call class="com.axelor.apps.budget.web.InvoiceLineController" method="checkBudget"/>
+  </action-method>
+
+  <action-method name="action-invoice-line-method-set-budget-domain">
+    <call class="com.axelor.apps.budget.web.InvoiceLineController" method="setBudgetDomain"/>
   </action-method>
 
   <action-group name="action-group-budget-invoice-line-onload">

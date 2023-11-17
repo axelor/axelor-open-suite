@@ -23,19 +23,25 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
@@ -43,15 +49,18 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   protected MoveLineRepository moveLineRepository;
   protected BudgetService budgetService;
   protected BudgetDistributionService budgetDistributionService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public MoveLineBudgetServiceImpl(
       MoveLineRepository moveLineRepository,
       BudgetService budgetService,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      AppBudgetService appBudgetService) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -110,5 +119,31 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
             .orElse(null);
 
     return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+  }
+
+  @Override
+  public void manageMonoBudget(Move move) {
+    if (move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED
+        || Optional.of(appBudgetService.getAppBudget())
+            .map(AppBudget::getManageMultiBudget)
+            .orElse(true)) {
+      return;
+    }
+
+    List<MoveLine> moveLineList =
+        move.getMoveLineList().stream()
+            .filter(
+                ml -> ml.getBudget() != null && ObjectUtils.isEmpty(ml.getBudgetDistributionList()))
+            .collect(Collectors.toList());
+    if (!ObjectUtils.isEmpty(moveLineList)) {
+      for (MoveLine moveLine : moveLineList) {
+        BudgetDistribution budgetDistribution =
+            budgetDistributionService.createDistributionFromBudget(
+                moveLine.getBudget(),
+                moveLine.getCredit().add(moveLine.getDebit()).abs(),
+                move.getDate());
+        budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
+      }
+    }
   }
 }

@@ -30,6 +30,7 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetAccountService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -50,6 +51,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   protected BudgetAccountService budgetAccountService;
   protected MoveLineRepository moveLineRepo;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public MoveBudgetServiceImpl(
@@ -58,7 +60,8 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       BudgetDistributionService budgetDistributionService,
       BudgetAccountService budgetAccountService,
       MoveLineRepository moveLineRepo,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
 
     this.moveLineBudgetService = moveLineBudgetService;
     this.budgetDistributionService = budgetDistributionService;
@@ -66,6 +69,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
     this.budgetAccountService = budgetAccountService;
     this.moveLineRepo = moveLineRepo;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -103,20 +107,22 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
       for (MoveLine moveLine : moveLineList) {
-        if (CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList())
-            && !AccountTypeRepository.TYPE_INCOME.equals(
-                moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-
-          for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-            Budget budget = budgetDistribution.getBudget();
-
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, budgetDistribution.getAmount());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(budgetDistribution.getAmount()));
+        if (!AccountTypeRepository.TYPE_INCOME.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          if (appBudgetService.getAppBudget().getManageMultiBudget()
+              && CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList())) {
+            for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
+              budgetToolsService.fillAmountPerBudgetMap(
+                  budgetDistribution.getBudget(),
+                  budgetDistribution.getAmount(),
+                  amountPerBudgetMap);
             }
+          } else if (!appBudgetService.getAppBudget().getManageMultiBudget()
+              && moveLine.getBudget() != null) {
+            budgetToolsService.fillAmountPerBudgetMap(
+                moveLine.getBudget(),
+                moveLine.getCredit().max(moveLine.getDebit()),
+                amountPerBudgetMap);
           }
         }
       }

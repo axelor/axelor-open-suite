@@ -636,6 +636,7 @@ public class BudgetServiceImpl implements BudgetService {
     if (move.getStatusSelect() == MoveRepository.STATUS_NEW || move.getInvoice() != null) {
       return;
     }
+
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       move.getMoveLineList().stream()
           .filter(moveLine -> CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList()))

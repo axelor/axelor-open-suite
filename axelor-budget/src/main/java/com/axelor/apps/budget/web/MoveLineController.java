@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.web;
 
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -35,5 +36,15 @@ public class MoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
     }
+  }
+
+  public void setBudgetDomain(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = moveLine.getMove();
+    if (move == null && request.getContext().getParent() != null) {
+      move = request.getContext().getParent().asType(Move.class);
+    }
+    response.setAttr(
+        "budget", "domain", Beans.get(MoveLineBudgetService.class).getBudgetDomain(move, moveLine));
   }
 }

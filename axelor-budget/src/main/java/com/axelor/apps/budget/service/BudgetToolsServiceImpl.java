@@ -43,6 +43,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -182,5 +183,17 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         .map(BudgetLevel::getParentBudgetLevel)
         .map(BudgetLevel::getGlobalBudget)
         .orElse(null);
+  }
+
+  @Override
+  public void fillAmountPerBudgetMap(
+      Budget budget, BigDecimal amount, Map<Budget, BigDecimal> amountPerBudgetMap) {
+    if (!amountPerBudgetMap.containsKey(budget)) {
+      amountPerBudgetMap.put(budget, amount);
+    } else {
+      BigDecimal oldAmount = amountPerBudgetMap.get(budget);
+      amountPerBudgetMap.remove(budget);
+      amountPerBudgetMap.put(budget, oldAmount.add(amount));
+    }
   }
 }

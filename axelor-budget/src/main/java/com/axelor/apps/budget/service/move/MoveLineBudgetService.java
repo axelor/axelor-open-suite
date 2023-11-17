@@ -46,4 +46,6 @@ public interface MoveLineBudgetService {
   public void checkAmountForMoveLine(MoveLine moveLine) throws AxelorException;
 
   String getBudgetDomain(Move move, MoveLine moveLine);
+
+  void manageMonoBudget(Move move);
 }

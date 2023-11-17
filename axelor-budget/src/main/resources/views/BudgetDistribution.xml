@@ -340,7 +340,7 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
     <attribute name="hidden" for="budgetDistributionList.budgetAmountAvailable"
       expr="eval:__parent__?.statusSelect &gt; 2"
-      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__?._model == 'com.axelor.apps.account.db.Move'"/>
   </action-attrs>
 
   <action-attrs name="action-budget-distribution-attrs-currency-symbol">
