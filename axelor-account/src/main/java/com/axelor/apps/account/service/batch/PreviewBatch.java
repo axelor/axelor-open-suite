@@ -34,13 +34,13 @@ public abstract class PreviewBatch extends BatchStrategy {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
 
     if (this.recordIdList == null) {
-      this._processMovesByQuery(accountingBatch);
+      this._processByQuery(accountingBatch);
     } else {
-      this._processMovesByIds(accountingBatch);
+      this._processByIds(accountingBatch);
     }
   }
 
-  protected abstract void _processMovesByQuery(AccountingBatch accountingBatch);
+  protected abstract void _processByQuery(AccountingBatch accountingBatch);
 
-  protected abstract void _processMovesByIds(AccountingBatch accountingBatch);
+  protected abstract void _processByIds(AccountingBatch accountingBatch);
 }

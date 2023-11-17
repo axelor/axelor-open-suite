@@ -91,9 +91,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       }
     } else {
       if (this.recordIdList == null) {
-        this._processMovesByQuery(accountingBatch);
+        this._processByQuery(accountingBatch);
       } else {
-        this._processMovesByIds(accountingBatch);
+        this._processByIds(accountingBatch);
       }
     }
   }

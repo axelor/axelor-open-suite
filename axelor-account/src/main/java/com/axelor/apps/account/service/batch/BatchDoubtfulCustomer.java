@@ -101,7 +101,7 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
   }
 
   @Override
-  protected void _processMovesByQuery(AccountingBatch accountingBatch) {
+  protected void _processByQuery(AccountingBatch accountingBatch) {
     Company company = batch.getAccountingBatch().getCompany();
 
     AccountConfig accountConfig = company.getAccountConfig();
@@ -135,7 +135,7 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
   }
 
   @Override
-  protected void _processMovesByIds(AccountingBatch accountingBatch) {}
+  protected void _processByIds(AccountingBatch accountingBatch) {}
 
   protected void _processMoveLines(
       List<Long> moveLineIdList,

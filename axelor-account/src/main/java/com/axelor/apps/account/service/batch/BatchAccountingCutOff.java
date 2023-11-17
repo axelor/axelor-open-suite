@@ -74,7 +74,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
   }
 
   @Override
-  protected void _processMovesByQuery(AccountingBatch accountingBatch) {
+  protected void _processByQuery(AccountingBatch accountingBatch) {
     Company company = accountingBatch.getCompany();
     LocalDate moveDate = accountingBatch.getMoveDate();
     Set<Journal> journalSet = accountingBatch.getJournalSet();
@@ -105,7 +105,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
     }
   }
 
-  protected void _processMovesByIds(AccountingBatch accountingBatch) {
+  protected void _processByIds(AccountingBatch accountingBatch) {
     List<Move> moveList =
         recordIdList.stream()
             .map(it -> moveLineRepo.find(it))
