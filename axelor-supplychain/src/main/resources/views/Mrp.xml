@@ -78,7 +78,7 @@
         canNew="false" colSpan="12"/>
       <panel-related name="saleOrderLineSetPanel" field="saleOrderLineSet"
         canEdit="false" form-view="sale-order-line-menu-form" grid-view="sale-order-line-menu-grid"
-        canNew="true+" colSpan="12" onSelect="action-mrp-method-sale-order-domain"
+        canNew="false" colSpan="12" onSelect="action-mrp-method-sale-order-domain"
         help="A list of sale order lines that will be processed. The lines that can be selected are the ones conforming to the following conditions :\nProduct is storable\nProduct is managed in stock\nProduct is not excluded from mrp\nSale order/quotation has the same stockLocation or a subLocation\nIf MPS, product must be a finished product\nDelivered quantity of the line must be lower than total quantity\nThe line must conform to one or several of the mrp move types"/>
       <panel-related name="mrpForecastSetPanel" field="mrpForecastSet"
         form-view="mrp-forecast-form" grid-view="mrp-forecast-grid" colSpan="12"
