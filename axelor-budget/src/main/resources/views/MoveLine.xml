@@ -6,11 +6,11 @@
   <form id="budget-move-line-move-form" name="move-line-move-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
 
-    <extend target="//panel[@name='othersPanel']">
+    <extend target="//panel[@name='hiddenFields']">
       <insert position="inside">
-        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="account.accountType" hidden="true"/>
-        <field name="move.statusSelect" hidden="true"/>
+        <field name="account.accountType.technicalTypeSelect"/>
+        <field name="account.accountType"/>
+        <field name="move.statusSelect"/>
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel" title="Budget"
@@ -26,11 +26,11 @@
   <form id="budget-move-line-form" name="move-line-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
 
-    <extend target="//panel[@name='othersPanel']">
+    <extend target="//panel[@name='hiddenFields']">
       <insert position="inside">
-        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="account.accountType" hidden="true"/>
-        <field name="move.statusSelect" hidden="true"/>
+        <field name="account.accountType.technicalTypeSelect"/>
+        <field name="account.accountType"/>
+        <field name="move.statusSelect"/>
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel"
