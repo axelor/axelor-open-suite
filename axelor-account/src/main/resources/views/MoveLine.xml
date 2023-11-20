@@ -396,17 +396,6 @@
 					]]>
         </viewer>
       </field>
-      <field name="reconcileGroup.code" colSpan="4" showTitle="false">
-        <viewer depends="reconcileGroup.code">
-					<![CDATA[
-						<>
-							<h3>
-								<Box as="span" d="flex" justifyContent="flex-end">{reconcileGroup.code}</Box>
-							</h3>
-						</>
-					]]>
-        </viewer>
-      </field>
       <field name="reimbursementStatusSelect"
         showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
         showTitle="false" colSpan="4" readonly="true">
@@ -627,7 +616,48 @@
         <field name="companyCurrencyDecimals"/>
       </panel>
     </panel-tabs>
-
+  </form>
+  <form name="move-line-form" title="Move line" model="com.axelor.apps.account.db.MoveLine"
+    onNew="action-move-line-method-onnew" canNew="false" canDelete="false" canEdit="false"
+    onLoad="action-move-line-method-onload" canArchive="false">
+    <panel-include view="move-line-infos-form"/>
+    <panel-include view="move-line-tabs-form"/>
+    <panel name="movePanel" title="Move" sidebar="true">
+      <field name="move.statusSelect" showTitle="false" colSpan="12" widget="SingleSelect"/>
+      <field name="$technicalOriginSelectTags" showTitle="false" colSpan="6">
+        <viewer depends="move.technicalOriginSelect">
+                    <![CDATA[
+                        <>
+                            <Badge bg="primary">
+                                {_t(['Entry','Automatic','Template','Import','Mass entry'][move.technicalOriginSelect-1])}
+                            </Badge>
+                        </>
+                    ]]>
+        </viewer>
+      </field>
+      <field name="$functionalOriginTags" showTitle="false" colSpan="6">
+        <viewer depends="move.functionalOriginSelect">
+                    <![CDATA[
+                        <>
+                            <Badge bg="danger">
+                                {_t(['Opening','Closure','Sale','Purchase','Payment','Cut Off','Fixed asset','Doubtful customer','Irrecoverable'][move.functionalOriginSelect-1])}
+                            </Badge>
+                        </>
+                    ]]>
+        </viewer>
+      </field>
+      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"
+        colSpan="6"/>
+      <field name="move.company" colSpan="6"/>
+      <field name="move.journal" colSpan="6"/>
+      <field name="move.period" canView="false" colSpan="6"/>
+    </panel>
+  </form>
+  <form name="move-line-move-form" title="Move line"
+    model="com.axelor.apps.account.db.MoveLine" onNew="action-move-line-method-onnew"
+    onLoad="action-move-line-method-onload-move" width="large">
+    <panel-include view="move-line-infos-form"/>
+    <panel-include view="move-line-tabs-form"/>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
