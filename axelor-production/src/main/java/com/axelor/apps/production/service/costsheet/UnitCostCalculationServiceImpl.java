@@ -620,10 +620,8 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     if (company != null) {
       companySet.add(company);
     }
-
-    return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
-        .map(id -> id.toString())
-        .collect(Collectors.joining(","));
+    return StringTool.getIdListString(
+        billOfMaterialService.getBillOfMaterialProductList(companySet));
   }
 
   @Override

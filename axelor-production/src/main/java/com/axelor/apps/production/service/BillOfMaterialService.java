@@ -83,7 +83,7 @@ public interface BillOfMaterialService {
    * @return
    * @throws AxelorException
    */
-  List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException;
+  List<Product> getBillOfMaterialProductList(Set<Company> companySet) throws AxelorException;
 
   BillOfMaterial setDraftStatus(BillOfMaterial billOfMaterial) throws AxelorException;
 

@@ -497,20 +497,20 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     return billOfMaterial;
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public List<Long> getBillOfMaterialProductsId(Set<Company> companySet) throws AxelorException {
+  public List<Product> getBillOfMaterialProductList(Set<Company> companySet)
+      throws AxelorException {
 
     if (companySet == null || companySet.isEmpty()) {
       return Collections.emptyList();
     }
     String stringQuery =
-        "SELECT DISTINCT self.product.id from BillOfMaterial as self WHERE self.company.id in (?1)";
-    Query query = JPA.em().createQuery(stringQuery, Long.class);
+        "SELECT DISTINCT self.product from BillOfMaterial as self WHERE self.company.id in (?1)";
+    Query query = JPA.em().createQuery(stringQuery, Product.class);
 
     query.setParameter(1, companySet.stream().map(Company::getId).collect(Collectors.toList()));
-    List<Long> productIds = (List<Long>) query.getResultList();
-
-    return productIds;
+    return query.getResultList();
   }
 
   @Override
