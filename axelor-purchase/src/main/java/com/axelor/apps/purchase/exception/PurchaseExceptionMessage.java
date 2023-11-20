@@ -48,6 +48,9 @@ public final class PurchaseExceptionMessage {
       "The company is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME = /*$$(*/
       "The trading name must be the same for all purchase orders" /*)*/;
+
+  public static final String PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
+      "The fiscal position must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_REQUEST_WRONG_STATUS = /*$$(*/
       "Can only request drafted purchase order." /*)*/;
   public static final String PURCHASE_ORDER_VALIDATE_WRONG_STATUS = /*$$(*/

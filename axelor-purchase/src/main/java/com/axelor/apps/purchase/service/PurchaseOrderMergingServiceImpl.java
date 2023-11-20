@@ -1,5 +1,6 @@
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -27,7 +28,9 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     private Partner commonContactPartner = null;
     private PriceList commonPriceList = null;
     private TradingName commonTradingName = null;
+    private FiscalPosition commonFiscalPosition = null;
     private boolean allTradingNamesAreNull = true;
+    private boolean allFiscalPositionsAreNull = true;
 
     @Override
     public Company getCommonCompany() {
@@ -90,6 +93,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     }
 
     @Override
+    public FiscalPosition getCommonFiscalPosition() {
+      return commonFiscalPosition;
+    }
+
+    @Override
+    public void setCommonFiscalPosition(FiscalPosition commonFiscalPosition) {
+      this.commonFiscalPosition = commonFiscalPosition;
+    }
+
+    @Override
     public boolean getAllTradingNamesAreNull() {
       return allTradingNamesAreNull;
     }
@@ -97,6 +110,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     @Override
     public void setAllTradingNamesAreNull(boolean allTradingNamesAreNull) {
       this.allTradingNamesAreNull = allTradingNamesAreNull;
+    }
+
+    @Override
+    public boolean getAllFiscalPositionsAreNull() {
+      return allFiscalPositionsAreNull;
+    }
+
+    @Override
+    public void setAllFiscalPositionsAreNull(boolean allFiscalPositionsAreNull) {
+      this.allFiscalPositionsAreNull = allFiscalPositionsAreNull;
     }
   }
 
@@ -108,6 +131,7 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     private boolean existContactPartnerDiff = false;
     private boolean existPriceListDiff = false;
     private boolean existTradingNameDiff = false;
+    private boolean existFiscalPositionDiff = false;
 
     @Override
     public boolean isExistCurrencyDiff() {
@@ -167,6 +191,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
     @Override
     public void setExistTradingNameDiff(boolean existTradingNameDiff) {
       this.existTradingNameDiff = existTradingNameDiff;
+    }
+
+    @Override
+    public boolean isExistFiscalPositionDiff() {
+      return existFiscalPositionDiff;
+    }
+
+    @Override
+    public void setExistFiscalPositionDiff(boolean existFiscalPositionDiff) {
+      this.existFiscalPositionDiff = existFiscalPositionDiff;
     }
   }
 
@@ -294,14 +328,17 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
   protected PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
       throws AxelorException {
-    return purchaseOrderService.mergePurchaseOrders(
-        purchaseOrdersToMerge,
-        getCommonFields(result).getCommonCurrency(),
-        getCommonFields(result).getCommonSupplierPartner(),
-        getCommonFields(result).getCommonCompany(),
-        getCommonFields(result).getCommonContactPartner(),
-        getCommonFields(result).getCommonPriceList(),
-        getCommonFields(result).getCommonTradingName());
+    PurchaseOrder purchaseOrder =
+        purchaseOrderService.mergePurchaseOrders(
+            purchaseOrdersToMerge,
+            getCommonFields(result).getCommonCurrency(),
+            getCommonFields(result).getCommonSupplierPartner(),
+            getCommonFields(result).getCommonCompany(),
+            getCommonFields(result).getCommonContactPartner(),
+            getCommonFields(result).getCommonPriceList(),
+            getCommonFields(result).getCommonTradingName());
+    purchaseOrder.setFiscalPosition(getCommonFields(result).getCommonFiscalPosition());
+    return purchaseOrder;
   }
 
   protected void checkErrors(StringJoiner fieldErrors, PurchaseOrderMergingResult result) {
@@ -322,6 +359,12 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
             || getCommonFields(result).getCommonTradingName() == null)
         && !getCommonFields(result).getAllTradingNamesAreNull()) {
       fieldErrors.add(I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME));
+    }
+    if ((getChecks(result).isExistFiscalPositionDiff()
+            || getCommonFields(result).getCommonFiscalPosition() == null)
+        && !getCommonFields(result).getAllFiscalPositionsAreNull()) {
+      fieldErrors.add(
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION));
     }
   }
 
@@ -364,6 +407,14 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
       commonFields.setAllTradingNamesAreNull(false);
       checks.setExistTradingNameDiff(true);
     }
+    if (commonFields.getCommonFiscalPosition() != null
+        && !getCommonFields(result)
+            .getCommonFiscalPosition()
+            .equals(purchaseOrder.getFiscalPosition())) {
+      commonFields.setCommonFiscalPosition(null);
+      commonFields.setAllFiscalPositionsAreNull(false);
+      checks.setExistFiscalPositionDiff(true);
+    }
   }
 
   protected void fillCommonFields(
@@ -400,5 +451,11 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         .findFirst()
         .ifPresent(commonFields::setCommonTradingName);
     commonFields.setAllTradingNamesAreNull(commonFields.getCommonTradingName() == null);
+    purchaseOrdersToMerge.stream()
+        .map(PurchaseOrder::getFiscalPosition)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .ifPresent(commonFields::setCommonFiscalPosition);
+    commonFields.setAllFiscalPositionsAreNull(commonFields.getCommonFiscalPosition() == null);
   }
 }
