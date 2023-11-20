@@ -275,6 +275,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
 
       newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
+      newBudgetDistribution.setGlobalBudget(purchaseOrder.getGlobalBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 
       budgetDistributionRepository.save(newBudgetDistribution);

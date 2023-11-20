@@ -40,6 +40,7 @@
           <field name="companyDepartment" colSpan="3"
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"
             requiredIf="$enableBudgetKey"/>
+          <field name="globalBudget" title="Global budget" showIf="statusSelect &lt;= 2" domain="self.company = :company AND self.statusSelect = 2"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
             domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = 2 AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.globalBudget IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
           <button name="applyToAllBtn" title="Apply to all"
