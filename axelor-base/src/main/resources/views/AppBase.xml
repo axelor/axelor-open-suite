@@ -37,7 +37,10 @@
         <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
         <field name="teamManagement" widget="boolean-switch"/>
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch"/>
+        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
+        <field name="draftPrefix" colSpan="3"/>
+
+
         <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
@@ -48,6 +51,8 @@
         <field name="generatePartnerSequence" widget="boolean-switch"/>
         <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
+        <field name="activatePartnerRelations" widget="boolean-switch"
+          if="['supplychain','account'].any{module -> __config__.app.isApp(module)}"/>
         <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
           <field name="generateProductSequence" widget="boolean-switch"/>
           <field name="productSequenceTypeSelect" showIf="generateProductSequence"/>
@@ -66,25 +71,10 @@
           onChange="action-base-validate-multi-company-boolean"/>
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
-        <panel name="printingsPanel" title="Printings" colSpan="12">
-          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
-            colSpan="3"
-            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
-          <field name="regroupProductsTypeSelect" widget="MultiSelect"
-            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
-            colSpan="3"/>
-          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
-            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
-          <field name="regroupProductsLabelServices"
-            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
-            colspan="6"/>
-          <field name="regroupProductsLabelProducts"
-            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
-            colspan="6"/>
-        </panel>
         <panel-related field="companySpecificProductFieldsSet"
-          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false"
-          canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
+          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product' AND self.name IN ('sellable','purchasable','procurementMethodSelect','salePrice','saleCurrency','purchasePrice','purchaseCurrency','costPrice','costTypeSelect','managPriceCoef','avgPrice','autoUpdateSalePrice','lastPurchasePrice','defaultBillOfMaterial','controlOnReceipt','customsCodeNomenclature')"
+          canNew="false" canEdit="false" grid-view="meta-field-details-grid"
+          form-view="meta-field-form"/>
         <panel itemSpan="12" colSpan="6">
           <field name="defaultMailMessageTemplate"/>
           <field name="manageCcBccRelatedTo" widget="boolean-switch"/>
@@ -148,6 +138,37 @@
           form-view="global-tracking-configuration-line-form"
           grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"
           x-can-copy="true"/>
+      </panel>
+      <panel name="printingsPanel" title="Printings" colSpan="12">
+        <panel name="productPrintingsPanel" colSpan="12">
+          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
+            colSpan="3"
+            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
+          <field name="regroupProductsTypeSelect" widget="MultiSelect"
+            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
+            colSpan="3"/>
+          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
+            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+          <field name="regroupProductsLabelServices"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
+            colspan="6"/>
+          <field name="regroupProductsLabelProducts"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
+            colspan="6"/>
+        </panel>
+        <panel name="printingTemplatesPanel" colSpan="12">
+          <field name="clientSituationBirtTemplate"/>
+          <field name="companyPhoneBookBirtTemplate"/>
+          <field name="contactPhoneBookBirtTemplate"/>
+          <field name="productCatalogPGQLBirtTemplate"/>
+        </panel>
+        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
+          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
+          form-view="birt-template-config-line-form"/>
+      </panel>
+      <panel name="signaturePanel" title="Signature">
+        <field name="pfxCertificate" canNew="true" canEdit="true"
+          form-view="pfx-certificate-form"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

@@ -18,15 +18,12 @@
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.repo.DebtRecoveryHistoryRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
@@ -40,38 +37,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class DebtRecoveryHistoryController {
-
-  public void printPaymentReminder(ActionRequest request, ActionResponse response) {
-    try {
-      DebtRecoveryHistory debtRecoveryHistory =
-          request.getContext().asType(DebtRecoveryHistory.class);
-
-      debtRecoveryHistory =
-          Beans.get(DebtRecoveryHistoryRepository.class).find(debtRecoveryHistory.getId());
-
-      if (!ObjectUtils.isEmpty(debtRecoveryHistory.getDebtRecovery())) {
-        String name = I18n.get("Payment reminder") + " " + debtRecoveryHistory.getName();
-
-        String fileLink =
-            ReportFactory.createReport(IReport.DEBT_RECOVERY, name + "-${date}")
-                .addParam("DebtRecoveryHistoryID", debtRecoveryHistory.getId())
-                .addParam("Locale", ReportSettings.getPrintingLocale(null))
-                .addFormat("pdf")
-                .addParam(
-                    "Timezone",
-                    debtRecoveryHistory.getDebtRecovery().getCompany() != null
-                        ? debtRecoveryHistory.getDebtRecovery().getCompany().getTimezone()
-                        : null)
-                .toAttach(debtRecoveryHistory)
-                .generate()
-                .getFileLink();
-
-        response.setView(ActionView.define(name).add("html", fileLink).map());
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 
   public void printDmsFile(ActionRequest request, ActionResponse response) {
     try {

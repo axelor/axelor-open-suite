@@ -54,6 +54,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -72,10 +73,16 @@ import java.util.Set;
 public class IntercoServiceImpl implements IntercoService {
 
   protected PurchaseConfigService purchaseConfigService;
+  protected AnalyticLineModelService analyticLineModelService;
+
+  protected static int DEFAULT_INVOICE_COPY = 1;
 
   @Inject
-  public IntercoServiceImpl(PurchaseConfigService purchaseConfigService) {
+  public IntercoServiceImpl(
+      PurchaseConfigService purchaseConfigService,
+      AnalyticLineModelService analyticLineModelService) {
     this.purchaseConfigService = purchaseConfigService;
+    this.analyticLineModelService = analyticLineModelService;
   }
 
   @Override
@@ -269,9 +276,8 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setTaxLine(saleOrderLine.getTaxLine());
 
     // analyticalDistribution
-    purchaseOrderLine =
-        Beans.get(PurchaseOrderLineServiceSupplychainImpl.class)
-            .getAndComputeAnalyticDistribution(purchaseOrderLine, purchaseOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
     return purchaseOrderLine;
@@ -315,9 +321,9 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setTaxLine(purchaseOrderLine.getTaxLine());
 
     // analyticDistribution
-    saleOrderLine =
-        Beans.get(SaleOrderLineServiceSupplyChainImpl.class)
-            .getAndComputeAnalyticDistribution(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+
     if (saleOrderLine.getAnalyticMoveLineList() != null) {
       for (AnalyticMoveLine obj : saleOrderLine.getAnalyticMoveLineList()) {
         obj.setSaleOrderLine(saleOrderLine);

@@ -271,6 +271,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
       maxAmount =
           invoiceMoveLines.stream()
               .map(MoveLine::getAmountRemaining)
+              .map(BigDecimal::abs)
               .reduce(BigDecimal::add)
               .orElse(BigDecimal.ZERO);
     }
@@ -302,7 +303,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               customerMoveLine.getAccount().getCode());
         }
 
-        invoicePayment.addReconcileListItem(reconcile);
+        invoicePayment.setReconcile(reconcile);
       }
     }
 
@@ -376,10 +377,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
-            invoice.getMove().getMoveLineList().stream()
-                .map(MoveLine::getCurrencyRate)
-                .findAny()
-                .orElse(BigDecimal.ONE));
+            invoice.getMove() != null
+                ? invoice.getMove().getMoveLineList().stream()
+                    .map(MoveLine::getCurrencyRate)
+                    .findAny()
+                    .orElse(BigDecimal.ONE)
+                : BigDecimal.ONE);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(

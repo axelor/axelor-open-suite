@@ -27,7 +27,10 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.PaymentConditionService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
@@ -39,6 +42,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -56,7 +60,11 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   protected PeriodService periodService;
   protected PaymentConditionService paymentConditionService;
   protected InvoiceTermService invoiceTermService;
+  protected AppBaseService appBaseService;
+  protected PartnerAccountService partnerAccountService;
+  protected JournalService journalService;
   protected MoveLineService moveLineService;
+  protected PfpService pfpService;
 
   @Inject
   public MoveRecordSetServiceImpl(
@@ -65,13 +73,21 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
       PeriodService periodService,
       PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      AppBaseService appBaseService,
+      PartnerAccountService partnerAccountService,
+      JournalService journalService,
+      PfpService pfpService) {
     this.partnerRepository = partnerRepository;
     this.bankDetailsService = bankDetailsService;
     this.periodService = periodService;
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
+    this.appBaseService = appBaseService;
+    this.partnerAccountService = partnerAccountService;
+    this.journalService = journalService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -252,15 +268,14 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     }
   }
 
-  public void setPfpStatus(Move move) {
+  @Override
+  public void setPfpStatus(Move move) throws AxelorException {
     Objects.requireNonNull(move);
 
     if (move.getJournal() != null && move.getJournal().getJournalType() != null) {
       JournalType journalType = move.getJournal().getJournalType();
-      if (move.getCompany() != null
-          && move.getCompany().getAccountConfig() != null
-          && move.getCompany().getAccountConfig().getIsManagePassedForPayment()
-          && move.getCompany().getAccountConfig().getIsManagePFPInRefund()
+      if (pfpService.isManagePassedForPayment(move.getCompany())
+          && pfpService.isManagePFPInRefund(move.getCompany())
           && (journalType.getTechnicalTypeSelect()
                   == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
               || journalType.getTechnicalTypeSelect()
@@ -270,6 +285,7 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     }
   }
 
+  @Override
   public void setPfpValidatorUser(Move move) {
     Objects.requireNonNull(move);
 
@@ -316,5 +332,18 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
     values.put("$difference", difference);
 
     return values;
+  }
+
+  @Override
+  public void setSubrogationPartner(Move move) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
+      return;
+    }
+
+    if (journalService.isSubrogationOk(move.getJournal())) {
+      move.setSubrogationPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
+    } else {
+      move.setSubrogationPartner(null);
+    }
   }
 }

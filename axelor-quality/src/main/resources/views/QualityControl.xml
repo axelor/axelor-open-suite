@@ -28,7 +28,8 @@
     onLoad="action-quality-control-group-onload-actions">
     <menubar>
       <menu title="Tools">
-        <item title="Print" action="save,action-quality-control-method-print"
+        <item title="Print"
+          action="save,action-quality-control-validate-printing-settings,action-method-print-birt"
           showIf="statusSelect == 6"/>
         <item title="Send email" action="save,action-quality-control-method-send-email"
           showIf="statusSelect == 6"/>
@@ -221,11 +222,6 @@
       method="preFillOperationsFromOptionals"/>
   </action-method>
 
-  <action-method name="action-quality-control-method-print">
-    <call class="com.axelor.apps.quality.web.QualityControlController"
-      method="printQualityControl"/>
-  </action-method>
-
   <action-method name="action-quality-control-method-send-email">
     <call class="com.axelor.apps.quality.web.QualityControlController" method="sendEmail"/>
   </action-method>
@@ -241,6 +237,10 @@
     <field name="printingSettings" expr="eval: project?.company?.printingSettings"
       if="project != null &amp;&amp; project?.company != null"/>
   </action-record>
+
+  <action-validate name="action-quality-control-validate-printing-settings">
+    <error message="Please fill printing settings on quality control" if="!printingSettings"/>
+  </action-validate>
 
   <search-filters name="quality-control-filters"
     model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">

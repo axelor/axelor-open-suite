@@ -36,6 +36,9 @@
     <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
+    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global budget"/>
+
     <string name="typeSelect" title="Type" selection="budget.budget.type.select"
       readonly="true"/>
     <string name="sourceSelect" title="Source" selection="budget.budget.source.select"
@@ -69,8 +72,15 @@
     <many-to-many name="accountSet" ref="com.axelor.apps.account.db.Account"
       title="Account(s)"/>
 
+    <many-to-one name="activeVersionExpectedAmountsLine"
+      ref="com.axelor.apps.budget.db.VersionExpectedAmountsLine"
+      title="Active version expected amounts line"/>
+
+    <integer name="category" title="Category" selection="budget.scenario.category.select"
+      default="1"/>
+
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
-         <![CDATA[
+      <![CDATA[
             return code + " " + name;
          ]]>
     </string>
@@ -90,6 +100,25 @@
         // STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_VALIDATED = 2;
+
+		//budget scenario category type
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_REVENUE = 1;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_RH = 2;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_PRODUCTION = 3;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_RESULTS = 4;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_CURRENT_EXPENSES = 5;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_OPERATIONS = 6;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_FINANCING = 7;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_INVESTMENT = 8;
+        public static final int BUDGET_CATEGORY_TYPE_SELECT_TAX = 9;
+
+        //budget period select
+        public static final int BUDGET_PERIOD_SELECT_ONE_TIME = 0;
+        public static final int BUDGET_PERIOD_SELECT_ONE_MONTH = 1;
+        public static final int BUDGET_PERIOD_SELECT_TWO_MONTHS = 2;
+        public static final int BUDGET_PERIOD_SELECT_THREE_MONTHS = 3;
+        public static final int BUDGET_PERIOD_SELECT_SIX_MONTHS = 6;
+        public static final int BUDGET_PERIOD_SELECT_ONE_YEAR = 12;
 		]]>
     </extra-code>
   </entity>

@@ -41,10 +41,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +104,6 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     }
 
     for (SaleOrderLine orderLine : saleOrderLineList) {
-      checkSaleOrderLineUnit(orderLine);
       Product product = orderLine.getProduct();
       String rootName =
           saleOrder.getSaleOrderSeq() + " - " + orderLine.getSequence() + " - " + product.getName();
@@ -130,7 +129,10 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       if (root == null) {
         root = projectTaskBusinessProjectService.create(rootName, project, project.getAssignedTo());
         root.setTaskDate(startDate.toLocalDate());
-        updateSoldTime(root, orderLine);
+        if (projectTaskBusinessProjectService.isTimeUnitValid(orderLine.getUnit())) {
+          updateSoldTime(root, orderLine);
+        }
+
         productTaskTemplateService.fillProjectTask(
             project, orderLine.getQty(), orderLine, tasks, product, root, null);
         roots.add(root);
@@ -188,11 +190,18 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     childTask.setQuantity(orderLine.getQty());
     Product product = orderLine.getProduct();
     childTask.setProduct(product);
+    childTask.setUnitCost(product.getCostPrice());
+    childTask.setTotalCosts(
+        product.getCostPrice().multiply(orderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
     childTask.setExTaxTotal(orderLine.getExTaxTotal());
     Company company =
         orderLine.getSaleOrder() != null ? orderLine.getSaleOrder().getCompany() : null;
     childTask.setUnitPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
-    childTask.setTimeUnit((Unit) productCompanyService.get(product, "unit", company));
+    Unit orderLineUnit = orderLine.getUnit();
+    if (projectTaskBusinessProjectService.isTimeUnitValid(orderLineUnit)) {
+      childTask.setTimeUnit(orderLineUnit);
+    }
+
     if (orderLine.getSaleOrder().getToInvoiceViaTask()) {
       childTask.setToInvoice(true);
       childTask.setInvoicingType(ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
@@ -222,17 +231,5 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
       }
     }
     return saleOrderLineList;
-  }
-
-  protected void checkSaleOrderLineUnit(SaleOrderLine saleOrderLine) throws AxelorException {
-    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
-    if (!Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getDaysUnit())
-        && !Objects.equals(saleOrderLine.getUnit(), appBusinessProject.getHoursUnit())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PRODUCT_UNIT_ERROR),
-          saleOrderLine.getFullName(),
-          saleOrderLine.getUnit().getName());
-    }
   }
 }

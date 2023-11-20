@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -34,10 +35,11 @@ public interface BudgetDistributionService {
   /**
    * Create a budget distribution object with parameters and save
    *
-   * @param budget, amount
+   * @param budget, amount, date
    * @return BudgetDistribution
    */
-  public BudgetDistribution createDistributionFromBudget(Budget budget, BigDecimal bigDecimal);
+  public BudgetDistribution createDistributionFromBudget(
+      Budget budget, BigDecimal bigDecimal, LocalDate date);
 
   /**
    * Check amount with budget available amount watching config for budget and return an error
@@ -62,8 +64,11 @@ public interface BudgetDistributionService {
       LocalDate date,
       BigDecimal amount,
       String name,
-      AuditableModel object);
+      AuditableModel object)
+      throws AxelorException;
 
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate);
+
+  String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect);
 }

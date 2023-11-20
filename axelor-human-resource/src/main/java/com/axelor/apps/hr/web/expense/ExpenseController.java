@@ -35,7 +35,6 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
@@ -54,7 +53,6 @@ import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
@@ -66,17 +64,18 @@ import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
+import com.axelor.apps.hr.service.expense.ExpensePrintService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -91,6 +90,7 @@ import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -317,26 +317,22 @@ public class ExpenseController {
     }
   }
 
-  public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void printReportAndProofFiles(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
-
-    String name = I18n.get("Expense") + " " + expense.getFullName().replace("/", "-");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.EXPENSE, name)
-            .addParam("ExpenseId", expense.getId())
-            .addParam(
-                "Timezone",
-                expense.getCompany() != null ? expense.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(expense)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing {}", name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    response.setView(
+        ActionView.define(I18n.get("Expense"))
+            .model(DMSFile.class.getName())
+            .add("form", "dms-file-form")
+            .context(
+                "_showRecord",
+                Beans.get(ExpensePrintService.class)
+                    .uploadExpenseReport(expense)
+                    .getId()
+                    .toString())
+            .map());
   }
 
   /* Count Tags displayed on the menu items */
@@ -429,6 +425,14 @@ public class ExpenseController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
+    }
+  }
+
+  public void checkLineFile(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    if (Beans.get(ExpenseConfirmationService.class).checkAllLineHaveFile(expense)) {
+      response.setAlert(I18n.get(HumanResourceExceptionMessage.EXPENSE_JUSTIFICATION_FILE_MISSING));
     }
   }
 
@@ -716,6 +720,14 @@ public class ExpenseController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkTotalAmount(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setAttr(
+        "overAmountLimitText",
+        "hidden",
+        !Beans.get(ExpenseLineService.class).isThereOverAmountLimit(expense));
   }
 
   public void updateGeneralAndKilometricExpenseLineEmployee(

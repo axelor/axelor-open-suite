@@ -20,7 +20,7 @@ package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import java.util.List;
@@ -38,7 +38,7 @@ public interface PurchaseOrderLineBudgetService {
    * @return String
    */
   public String computeBudgetDistribution(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   /**
    * If multi budget, compute budget distribution line's budget name to fill budget name string
@@ -89,14 +89,14 @@ public interface PurchaseOrderLineBudgetService {
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder);
 
   String getGroupBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global);
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, GlobalBudget global);
 
   String getSectionBudgetDomain(
-      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, BudgetLevel global);
+      PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder, GlobalBudget global);
 
   String getLineBudgetDomain(
       PurchaseOrderLine purchaseOrderLine,
       PurchaseOrder purchaseOrder,
-      BudgetLevel global,
+      GlobalBudget global,
       boolean isBudget);
 }

@@ -51,6 +51,7 @@
     <!--we don't want a real database relation between configurator and bill of materials, so we just
       save the id -->
     <long name="billOfMaterialId"/>
+
   </entity>
 
 </domain-models>

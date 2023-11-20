@@ -216,13 +216,18 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
     } else if (move.getMoveLineList().stream()
         .anyMatch(
-            ml ->
-                ml.getMove() != null
+            ml -> {
+              try {
+                return ml.getMove() != null
                     && invoiceTermService.getPfpValidatorUserCondition(
                         ml.getMove().getInvoice(), ml)
                     && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
                     && ml.getInvoiceTermList().stream()
-                        .anyMatch(it -> it.getPfpValidatorUser() == null))) {
+                        .anyMatch(it -> it.getPfpValidatorUser() == null);
+              } catch (AxelorException e) {
+                throw new RuntimeException(e);
+              }
+            })) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
     }
 

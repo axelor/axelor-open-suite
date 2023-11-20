@@ -43,15 +43,6 @@ public interface BudgetLevelService {
   public void computeBudgetTotals(BudgetLevel budgetLevel);
 
   /**
-   * This function creates Global budget (budget) i.e. level 1 {@link BudgetLevel} from Global
-   * budget (template)
-   *
-   * @param budgetLevel
-   * @return BudgetLevel
-   */
-  public BudgetLevel createGlobalBudgets(BudgetLevel budgetLevel);
-
-  /**
    * This function imports and updates BudgetLevel.
    *
    * @param budgetLevel
@@ -83,10 +74,8 @@ public interface BudgetLevelService {
    * Find the budget level in database then set their dates and save it
    *
    * @param budgetLevel, fromDate, toDate
-   * @throws AxelorException
    */
-  public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
+  public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate);
 
   /**
    * This function set current BudgetLevel to the new project if budget in project is null.
@@ -110,14 +99,6 @@ public interface BudgetLevelService {
    * @throws AxelorException
    */
   public void draftChildren(BudgetLevel budgetLevel);
-
-  /**
-   * Return the global budget check available select
-   *
-   * @param budget
-   * @return Integer
-   */
-  public Integer getBudgetControlLevel(Budget budget);
 
   /**
    * Create budget key for each budget related to this section
@@ -161,5 +142,5 @@ public interface BudgetLevelService {
    */
   public void computeBudgetLevelTotals(Budget budget);
 
-  void resetBudgetLevel(BudgetLevel budgetLevel);
+  void recomputeBudgetLevelTotals(BudgetLevel budgetLevel);
 }
