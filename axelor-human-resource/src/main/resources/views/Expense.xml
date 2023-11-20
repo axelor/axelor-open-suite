@@ -85,7 +85,8 @@
             required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
-            canEdit="false" canView="false" onChange="action-expense-record-employee-onchange"
+            canEdit="false" canView="false"
+            onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
@@ -279,7 +280,7 @@
   <action-record name="action-expense-record-employee-onchange"
     model="com.axelor.apps.hr.db.Expense">
     <field name="bankDetails"
-      expr="eval: employee?.mainEmploymentContract?.payCompany ? employee.mainEmploymentContract.payCompany.defaultBankDetails : employee.user.activeCompany.defaultBankDetails"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -409,6 +410,12 @@
   <action-method name="action-expense-method-update-moveDate-and-period">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
       method="updateMoveDateAndPeriod"/>
+  </action-method>
+
+  <action-method
+    name="action-expense-method-update-general-and-kilometric-expense-line-employee">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="updateGeneralAndKilometricExpenseLineEmployee"/>
   </action-method>
 
   <action-attrs name="action-expense-attrs-set-total-to-refund">
