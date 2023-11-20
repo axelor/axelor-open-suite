@@ -25,6 +25,7 @@
       <bind column="DateLet" to="letteringDateTime"
         eval="DateLet ? java.time.LocalDate.parse(DateLet,'yyyyMMdd').atTime(java.time.LocalTime.NOON) : null"/>
     </bind>
+    <bind to="currencyCode" column="Idevise"/>
   </input>
 
 </csv-inputs>
