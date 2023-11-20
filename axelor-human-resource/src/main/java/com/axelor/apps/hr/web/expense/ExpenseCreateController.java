@@ -74,10 +74,13 @@ public class ExpenseCreateController {
   public void getBankDetailsDomain(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Company company = MapHelper.get(context, Company.class, "company");
-    response.setAttr(
-        "bankDetails",
-        "domain",
-        Beans.get(BankDetailsService.class).getActiveCompanyBankDetails(company));
+    String domain = Beans.get(BankDetailsService.class).getActiveCompanyBankDetails(company);
+
+    if (domain.equals("")) {
+      response.setAttr("bankDetails", "domain", "self.id IN (0)");
+    } else {
+      response.setAttr("bankDetails", "domain", domain);
+    }
   }
 
   public void getExpenseLineDomain(ActionRequest request, ActionResponse response) {
