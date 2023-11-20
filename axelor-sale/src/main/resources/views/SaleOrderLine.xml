@@ -653,8 +653,6 @@
       if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
     <action name="action-sale-order-line-attrs-is-requested-qty-readonly"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"/>
-    <action name="action-record-sale-order-line-future-qty"
-      if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-attrs-hide-ati"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
@@ -677,8 +675,6 @@
       name="action-sale-order-line-attrs-show-delivery-panel"/>
     <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     <action name="action-sale-order-attrs-hide-ati"/>
-    <action name="action-record-sale-order-line-future-qty"
-      if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-line-record-complementary-products-to-handle"/>
     <action name="action-sale-order-line-method-fill-max-discount"/>
     <action name="action-sale-order-line-method-translate-product-description-and-name"/>
