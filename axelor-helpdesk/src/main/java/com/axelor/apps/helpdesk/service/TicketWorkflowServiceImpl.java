@@ -7,7 +7,6 @@ import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-
 import java.util.Objects;
 import java.util.Optional;
 

@@ -4,14 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="ticket-status-grid" title="Ticket statuses"
-    model="com.axelor.apps.helpdesk.db.TicketStatus" orderBy="priority">
+    model="com.axelor.apps.helpdesk.db.TicketStatus" orderBy="priority" canMove="true">
     <field name="name"/>
-    <field name="priority"/>
-    <field name="$isClosedStatus" type="boolean" title="Closed status"/>
-    <field name="$isInProgressStatus" type="boolean" title="On going status"/>
-    <field name="$isResolvedStatus" type="boolean" title="Resolved status"/>
   </grid>
-
   <form name="ticket-status-form" title="Ticket status"
     model="com.axelor.apps.helpdesk.db.TicketStatus">
     <panel name="mainPanel">
