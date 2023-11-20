@@ -14,8 +14,9 @@
     <field name="paymentMode"/>
     <field name="partnerTypeSelect"/>
     <field name="paymentDate"/>
-    <field name="sessionTotalAmountFormula"/>
+    <field name="sessionTotalAmountFormula" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -65,6 +66,7 @@
       </panel>
       <panel name="viewerTagsPanel">
         <field name="currency.symbol" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="sessionTotalAmountFormula" x-currency="currency.symbol" hidden="true"
           x-scale="currency.numberOfDecimals"/>
         <field name="$viewerTags" showTitle="false" readonly="true">
