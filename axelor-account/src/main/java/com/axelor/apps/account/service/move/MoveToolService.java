@@ -143,6 +143,8 @@ public interface MoveToolService {
    */
   BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList);
 
+  BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList);
+
   /**
    * Compute the balance amount : total debit - total credit
    *
@@ -203,6 +205,8 @@ public interface MoveToolService {
   void setDescriptionOnMoveLineList(Move move);
 
   BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
+
+  boolean isMultiCurrency(Move move);
 
   List<Integer> getMoveStatusSelect(String moveStatusSelect, Company company);
 }

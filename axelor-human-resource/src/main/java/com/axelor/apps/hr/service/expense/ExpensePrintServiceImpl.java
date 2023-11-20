@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
@@ -5,6 +23,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -32,17 +51,20 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
   protected AppBaseService appBaseService;
   protected HRConfigService hrConfigService;
   protected PrintFromBirtTemplateService printFromBirtTemplateService;
+  protected PdfService pdfService;
 
   @Inject
   public ExpensePrintServiceImpl(
       MetaFiles metaFiles,
       AppBaseService appBaseService,
       HRConfigService hrConfigService,
-      PrintFromBirtTemplateService printFromBirtTemplateService) {
+      PrintFromBirtTemplateService printFromBirtTemplateService,
+      PdfService pdfService) {
     this.metaFiles = metaFiles;
     this.appBaseService = appBaseService;
     this.hrConfigService = hrConfigService;
     this.printFromBirtTemplateService = printFromBirtTemplateService;
+    this.pdfService = pdfService;
   }
 
   @Override
@@ -68,8 +90,12 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
     List<File> fileList = new ArrayList<>();
     File reportFile = getReportFile(expense);
     fileList.add(reportFile);
-    List<MetaFile> metaFileList = getExpenseLineJustificationFiles(expense);
-    fileList.addAll(convertMetaFileToFile(metaFileList));
+    List<MetaFile> pdfMetaFileList = getExpenseLinePdfJustificationFiles(expense);
+    List<MetaFile> imageConvertedMetaFileList =
+        pdfService.convertImageToPdf(getExpenseLineImageJustificationFiles(expense));
+
+    fileList.addAll(convertMetaFileToFile(imageConvertedMetaFileList));
+    fileList.addAll(convertMetaFileToFile(pdfMetaFileList));
 
     return PdfTool.mergePdf(fileList);
   }
@@ -91,10 +117,19 @@ public class ExpensePrintServiceImpl implements ExpensePrintService {
     return birtTemplate;
   }
 
-  protected List<MetaFile> getExpenseLineJustificationFiles(Expense expense) {
+  protected List<MetaFile> getExpenseLinePdfJustificationFiles(Expense expense) {
     return expense.getGeneralExpenseLineList().stream()
         .map(ExpenseLine::getJustificationMetaFile)
         .filter(Objects::nonNull)
+        .filter(file -> "application/pdf".equals(file.getFileType()))
+        .collect(Collectors.toList());
+  }
+
+  protected List<MetaFile> getExpenseLineImageJustificationFiles(Expense expense) {
+    return expense.getGeneralExpenseLineList().stream()
+        .map(ExpenseLine::getJustificationMetaFile)
+        .filter(Objects::nonNull)
+        .filter(file -> file.getFileType().startsWith("image"))
         .collect(Collectors.toList());
   }
 

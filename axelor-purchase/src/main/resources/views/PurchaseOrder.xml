@@ -983,8 +983,7 @@
   <action-method
     name="action-purchase-order-method-check-analytic-distribution-template">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="checkPurchaseOrderAnalyticDistributionTemplate"
-      if="company?.purchaseConfig?.isAnalyticDistributionRequired"/>
+      method="checkPurchaseOrderAnalyticDistributionTemplate"/>
   </action-method>
 
   <action-method name="action-purchase-order-method-set-status-to-validated">

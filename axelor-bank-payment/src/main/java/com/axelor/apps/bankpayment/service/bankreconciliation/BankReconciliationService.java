@@ -41,7 +41,7 @@ public interface BankReconciliationService {
       BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
       throws AxelorException;
 
-  BankReconciliation computeBalances(BankReconciliation bankReconciliation);
+  BankReconciliation computeBalances(BankReconciliation bankReconciliation) throws AxelorException;
 
   void compute(BankReconciliation bankReconciliation);
 
@@ -108,7 +108,8 @@ public interface BankReconciliationService {
 
   void correct(BankReconciliation bankReconciliation, User user);
 
-  BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation);
+  BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
   BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException;

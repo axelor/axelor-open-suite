@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.production.service.operationorder;
 
 import static com.axelor.apps.production.exceptions.ProductionExceptionMessage.INVALID_SCHEDULING_AND_CAPACITY_CONFIGURATION;
@@ -16,6 +34,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapFiniteCapacityService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAsapInfiniteCapacityService;
 import com.axelor.apps.production.service.operationorder.planning.OperationOrderPlanningAtTheLatestFiniteCapacityService;
@@ -45,6 +64,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   protected OperationOrderService operationOrderService;
   protected OperationOrderPlanningInfiniteCapacityService
       operationOrderPlanningInfiniteCapacityService;
+  protected ManufOrderWorkflowService manufOrderWorkflowService;
 
   @Inject
   public OperationOrderPlanningServiceImpl(
@@ -55,7 +75,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
       WeeklyPlanningService weeklyPlanningService,
       ManufOrderService manufOrderService,
       OperationOrderService operationOrderService,
-      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService) {
+      OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
+      ManufOrderWorkflowService manufOrderWorkflowService) {
     this.productionConfigService = productionConfigService;
     this.operationOrderStockMoveService = operationOrderStockMoveService;
     this.machineService = machineService;
@@ -65,6 +86,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     this.operationOrderService = operationOrderService;
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
+    this.manufOrderWorkflowService = manufOrderWorkflowService;
   }
 
   @Override
@@ -125,6 +147,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     for (OperationOrder operationOrder : sortedOperationOrders) {
       operationOrderPlanningCommonService.plan(operationOrder);
     }
+    manufOrderWorkflowService.setOperationOrderMaxPriority(manufOrder);
   }
 
   @Override
