@@ -7,16 +7,17 @@ import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+
 import java.util.Objects;
 import java.util.Optional;
 
 public class TicketWorkflowServiceImpl implements TicketWorkflowService {
 
-  protected TicketStatusService ticketStatuSService;
+  protected TicketStatusService ticketStatusService;
 
   @Inject
   public TicketWorkflowServiceImpl(TicketStatusService ticketStatusService) {
-    this.ticketStatuSService = ticketStatusService;
+    this.ticketStatusService = ticketStatusService;
   }
 
   @Override
@@ -24,7 +25,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatuSService.findOngoingStatus())
+        Optional.ofNullable(ticketStatusService.findOngoingStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
@@ -39,7 +40,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatuSService.findResolvedStatus())
+        Optional.ofNullable(ticketStatusService.findResolvedStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
@@ -54,7 +55,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatuSService.findClosedStatus())
+        Optional.ofNullable(ticketStatusService.findClosedStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
@@ -69,7 +70,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatuSService.findDefaultStatus())
+        Optional.ofNullable(ticketStatusService.findDefaultStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
