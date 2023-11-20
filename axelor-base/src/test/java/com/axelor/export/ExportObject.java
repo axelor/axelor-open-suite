@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.test;
+package com.axelor.export;
 
 import com.axelor.utils.helpers.file.CsvHelper;
 import java.io.File;
@@ -35,7 +35,7 @@ import java.util.Map.Entry;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
@@ -65,7 +65,7 @@ public class ExportObject {
   private String csvPath = "/home/axelor/Desktop/";
 
   @Test
-  public void exportObject() {
+  void exportObject() {
 
     File moduleDir = new File(modulesPath);
 

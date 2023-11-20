@@ -1418,6 +1418,12 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
+  public static final String IMPORT_FEC_MISSING_CURRENCY = /*$$(*/
+      "Currency is required to import accounting entries/entry lines. Either there is no currency input or the currency code has no match with existing records." /*)*/;
+
+  public static final String IMPORT_FEC_CURRENCY_INCOHERENCE = /*$$(*/
+      "The imported entry lines contain(s) more than one currency. Currency must be unique/identical on all lines of the same entry. This one will constitute the currency of the entry." /*)*/;
+
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;
 
