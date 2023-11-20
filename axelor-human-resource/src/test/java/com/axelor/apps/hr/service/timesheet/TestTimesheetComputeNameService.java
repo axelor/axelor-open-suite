@@ -4,19 +4,19 @@
  * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
+ * it under the terms of the GNU Affero General License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.test;
+package com.axelor.apps.hr.service.timesheet;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -26,31 +26,30 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestTimesheetComputeNameService {
-  protected TimesheetComputeNameServiceImpl timesheetComputeNameService;
-  protected DateService dateService;
+class TestTimesheetComputeNameService {
+  private static TimesheetComputeNameServiceImpl timesheetComputeNameService;
+  private static DateService dateService;
 
-  @Before
-  public void prepare() throws AxelorException {
+  @BeforeAll
+  static void prepare() throws AxelorException {
     dateService = mock(DateService.class);
     when(dateService.getDateFormat()).thenReturn(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     timesheetComputeNameService = new TimesheetComputeNameServiceImpl(dateService);
   }
 
   @Test
-  public void testComputeEmptyFullName() {
+  void testComputeEmptyFullName() {
     Timesheet emptyTimesheet = new Timesheet();
 
     String result = timesheetComputeNameService.computeTimesheetFullname(emptyTimesheet);
 
-    Assert.assertEquals("", result);
+    Assertions.assertEquals("", result);
   }
 
   @Test
@@ -61,22 +60,22 @@ public class TestTimesheetComputeNameService {
 
     String result = timesheetComputeNameService.computeTimesheetFullname(timesheet1);
 
-    Assert.assertEquals("P0048 - Axelor", result);
+    Assertions.assertEquals("P0048 - Axelor", result);
   }
 
   @Test
-  public void testComputeFullnameWithFromDate() {
+  void testComputeFullnameWithFromDate() {
     Partner contactPartner = createPartner("P0048 - Axelor");
     Employee employee = createEmployee(contactPartner);
     Timesheet timesheet = createTimeSheet(employee, LocalDate.of(2023, 01, 10), null);
 
     String result = timesheetComputeNameService.computeTimesheetFullname(timesheet);
 
-    Assert.assertEquals("P0048 - Axelor 10/01/2023", result);
+    Assertions.assertEquals("P0048 - Axelor 10/01/2023", result);
   }
 
   @Test
-  public void testComputeFullnameWithFromDateAndToDate() {
+  void testComputeFullnameWithFromDateAndToDate() {
     Partner contactPartner = createPartner("P0048 - Axelor");
     Employee employee3 = createEmployee(contactPartner);
     Timesheet timesheet =
@@ -84,7 +83,7 @@ public class TestTimesheetComputeNameService {
 
     String result = timesheetComputeNameService.computeTimesheetFullname(timesheet);
 
-    Assert.assertEquals("P0048 - Axelor 10/01/2023-12/01/2023", result);
+    Assertions.assertEquals("P0048 - Axelor 10/01/2023-12/01/2023", result);
   }
 
   protected Partner createPartner(String fullName) {

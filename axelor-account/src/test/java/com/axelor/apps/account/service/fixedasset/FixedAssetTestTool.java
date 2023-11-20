@@ -4,16 +4,16 @@
  * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
+ * it under the terms of the GNU Affero General License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
@@ -25,16 +25,16 @@ import com.axelor.apps.account.db.FixedAssetType;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-public class FixedAssetTestTool {
+class FixedAssetTestTool {
 
-  public static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
+  static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
       boolean isProrataTemporis) {
     return createFixedAssetCategoryFromIsProrataTemporis(isProrataTemporis, false);
   }
 
-  public static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
+  static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
       boolean isProrataTemporis, boolean usProrataTemporis) {
     FixedAssetType fixedAssetType = new FixedAssetType();
     FixedAssetCategory fixedAssetCategory = new FixedAssetCategory();
@@ -44,7 +44,7 @@ public class FixedAssetTestTool {
     return fixedAssetCategory;
   }
 
-  public static FixedAssetLine createFixedAssetLine(
+  static FixedAssetLine createFixedAssetLine(
       LocalDate depreciationDate,
       BigDecimal depreciationBase,
       BigDecimal depreciation,
@@ -59,7 +59,7 @@ public class FixedAssetTestTool {
     return fixedAssetLine;
   }
 
-  public static FixedAsset createFixedAsset(
+  static FixedAsset createFixedAsset(
       String computationMethodSelect,
       LocalDate acquisitionDate,
       LocalDate firstDepreciationDate,
@@ -79,7 +79,7 @@ public class FixedAssetTestTool {
         grossValue);
   }
 
-  public static FixedAsset createFixedAsset(
+  static FixedAsset createFixedAsset(
       String computationMethodSelect,
       BigDecimal degressiveCoef,
       LocalDate acquisitionDate,
@@ -106,20 +106,19 @@ public class FixedAssetTestTool {
   }
 
   // Compare fields only if fields in expected fixed asset line are not null
-  public static void assertFixedAssetLineEquals(
-      FixedAssetLine expectedLine, FixedAssetLine actualLine) {
+  static void assertFixedAssetLineEquals(FixedAssetLine expectedLine, FixedAssetLine actualLine) {
     if (expectedLine.getDepreciationDate() != null) {
-      Assert.assertEquals(expectedLine.getDepreciationDate(), actualLine.getDepreciationDate());
+      Assertions.assertEquals(expectedLine.getDepreciationDate(), actualLine.getDepreciationDate());
     }
     if (expectedLine.getDepreciation() != null) {
-      Assert.assertEquals(expectedLine.getDepreciation(), actualLine.getDepreciation());
+      Assertions.assertEquals(expectedLine.getDepreciation(), actualLine.getDepreciation());
     }
     if (expectedLine.getCumulativeDepreciation() != null) {
-      Assert.assertEquals(
+      Assertions.assertEquals(
           expectedLine.getCumulativeDepreciation(), actualLine.getCumulativeDepreciation());
     }
     if (expectedLine.getAccountingValue() != null) {
-      Assert.assertEquals(expectedLine.getAccountingValue(), actualLine.getAccountingValue());
+      Assertions.assertEquals(expectedLine.getAccountingValue(), actualLine.getAccountingValue());
     }
   }
 }

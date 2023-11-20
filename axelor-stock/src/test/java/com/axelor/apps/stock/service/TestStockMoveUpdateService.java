@@ -4,37 +4,37 @@
  * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
+ * it under the terms of the GNU Affero General License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockMove;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestStockMoveUpdateService {
+class TestStockMoveUpdateService {
 
-  private StockMoveUpdateService stockMoveUpdateService;
+  private static StockMoveUpdateService stockMoveUpdateService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() {
     stockMoveUpdateService = new StockMoveUpdateServiceImpl(null, null, null, null, null, null);
   }
 
   @Test
-  public void testUpdateUnknownStatus() {
+  void testUpdateUnknownStatus() {
     StockMove stockMove = new StockMove();
     stockMove.setStatusSelect(5);
     int status = 6;
@@ -44,7 +44,7 @@ public class TestStockMoveUpdateService {
     } catch (AxelorException e) {
       errorMessage = e.getMessage();
     }
-    Assert.assertEquals(
+    Assertions.assertEquals(
         "Workflow to update status to value 6 is not supported for stock move.", errorMessage);
   }
 }

@@ -4,16 +4,16 @@
  * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
+ * it under the terms of the GNU Affero General License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
@@ -28,28 +28,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestFixedAssetLineToolService {
+class TestFixedAssetLineToolService {
 
-  private FixedAssetLineToolService fixedAssetLineToolService;
+  private static FixedAssetLineToolService fixedAssetLineToolService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() {
     fixedAssetLineToolService = new FixedAssetLineToolServiceImpl();
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineEmpty() {
+  void groupAndSortByDateFixedAssetLineEmpty() {
     FixedAsset fixedAsset = createFixedAsset(12, new ArrayList<>(), new ArrayList<>());
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAssetLineToolService.groupAndSortByDateFixedAssetLine(fixedAsset).isEmpty());
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineSimpleCasePeriodicityMonth() {
+  void groupAndSortByDateFixedAssetLineSimpleCasePeriodicityMonth() {
     List<LocalDate> fiscalDateList =
         Lists.newArrayList(
             LocalDate.of(2022, 3, 31),
@@ -71,11 +71,11 @@ public class TestFixedAssetLineToolService {
             LocalDate.of(2022, 4, 30),
             LocalDate.of(2022, 5, 31),
             LocalDate.of(2022, 6, 30));
-    Assert.assertEquals(expectedSet, localDateResults);
+    Assertions.assertEquals(expectedSet, localDateResults);
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineRealCasePeriodicityYear() {
+  void groupAndSortByDateFixedAssetLineRealCasePeriodicityYear() {
     List<LocalDate> fiscalDateList =
         Lists.newArrayList(
             LocalDate.of(2023, 1, 31),
@@ -99,7 +99,7 @@ public class TestFixedAssetLineToolService {
             LocalDate.of(2025, 1, 31),
             LocalDate.of(2026, 1, 31),
             LocalDate.of(2026, 9, 20));
-    Assert.assertEquals(expectedSet, localDateResults);
+    Assertions.assertEquals(expectedSet, localDateResults);
   }
 
   protected FixedAsset createFixedAsset(

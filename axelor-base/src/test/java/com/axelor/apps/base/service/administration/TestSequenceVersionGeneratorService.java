@@ -4,16 +4,16 @@
  * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as
+ * it under the terms of the GNU Affero General License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
+ * GNU Affero General License for more details.
  *
- * You should have received a copy of the GNU Affero General Public License
+ * You should have received a copy of the GNU Affero General License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.administration;
@@ -27,17 +27,17 @@ import com.axelor.apps.base.db.SequenceVersion;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.time.LocalDate;
 import java.util.Optional;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestSequenceVersionGeneratorService {
+class TestSequenceVersionGeneratorService {
 
-  private SequenceVersionGeneratorQueryService sequenceVersionGeneratorQueryService;
-  private SequenceVersionGeneratorService sequenceVersionGeneratorService;
+  private static SequenceVersionGeneratorQueryService sequenceVersionGeneratorQueryService;
+  private static SequenceVersionGeneratorService sequenceVersionGeneratorService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() {
     LocalDate todayDate = LocalDate.of(2022, 5, 13);
     AppBaseService appBaseService = mock(AppBaseService.class);
     sequenceVersionGeneratorQueryService = mock(SequenceVersionGeneratorQueryService.class);
@@ -48,7 +48,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetMonth() {
+  void testGenerationResetMonth() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequenceResetByMonth(1L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -63,7 +63,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetMonthWithoutLinesFound() {
+  void testGenerationResetMonthWithoutLinesFound() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequenceResetByMonth(2L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -76,7 +76,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetMonthWithoutLinesInSameMonth() {
+  void testGenerationResetMonthWithoutLinesInSameMonth() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequenceResetByMonth(3L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -91,7 +91,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetMonthWithoutLinesBeforeInSameMonth() {
+  void testGenerationResetMonthWithoutLinesBeforeInSameMonth() {
     LocalDate refDate = LocalDate.of(2021, 1, 15);
     Sequence sequence = createSequenceResetByMonth(3L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -106,7 +106,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetYear() {
+  void testGenerationResetYear() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequenceResetByYear(4L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -121,7 +121,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetYearWithoutLinesFound() {
+  void testGenerationResetYearWithoutLinesFound() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequenceResetByYear(5L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -134,7 +134,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationResetYearWithoutLinesInSameYear() {
+  void testGenerationResetYearWithoutLinesInSameYear() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequenceResetByYear(6L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -149,7 +149,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationNoReset() {
+  void testGenerationNoReset() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequence(7L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -162,7 +162,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   @Test
-  public void testGenerationWithoutLinesFound() {
+  void testGenerationWithoutLinesFound() {
     LocalDate refDate = LocalDate.of(2021, 4, 22);
     Sequence sequence = createSequence(8L);
     when(sequenceVersionGeneratorQueryService.lastActiveSequenceVersion(sequence))
@@ -200,7 +200,7 @@ public class TestSequenceVersionGeneratorService {
   }
 
   protected void assertEquals(SequenceVersion expected, SequenceVersion actual) {
-    Assert.assertEquals(expected.getStartDate(), actual.getStartDate());
-    Assert.assertEquals(expected.getEndDate(), actual.getEndDate());
+    Assertions.assertEquals(expected.getStartDate(), actual.getStartDate());
+    Assertions.assertEquals(expected.getEndDate(), actual.getEndDate());
   }
 }
