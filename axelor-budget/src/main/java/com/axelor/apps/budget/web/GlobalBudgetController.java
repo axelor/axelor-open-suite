@@ -126,7 +126,8 @@ public class GlobalBudgetController {
             Beans.get(BudgetVersionService.class)
                 .createNewVersion(globalBudget, globalBudget.getName());
         globalBudget =
-            Beans.get(GlobalBudgetService.class).changeBudgetVersion(globalBudget, budgetVersion);
+            Beans.get(GlobalBudgetService.class)
+                .changeBudgetVersion(globalBudget, budgetVersion, false);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -148,7 +149,8 @@ public class GlobalBudgetController {
         Beans.get(BudgetVersionRepository.class)
             .find(Long.valueOf(partialBudgetVersion.get("id").toString()));
     globalBudget =
-        Beans.get(GlobalBudgetService.class).changeBudgetVersion(globalBudget, selectedVersion);
+        Beans.get(GlobalBudgetService.class)
+            .changeBudgetVersion(globalBudget, selectedVersion, true);
   }
 
   public void setBudgetVersionDomain(ActionRequest request, ActionResponse response) {

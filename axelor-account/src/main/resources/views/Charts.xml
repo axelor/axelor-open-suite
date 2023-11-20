@@ -1156,8 +1156,8 @@ from InvoiceTerm as self
   </chart>
 
   <chart onInit="action.account.chart.set.from.to.date.month"
-    name="chart.invoice.sale.refund.situation"
-    title="Invoice and Refunds Sale situation (tax incl.)">
+    name="chart.invoice.sale.credit.note.situation"
+    title="Invoice and Credit notes Sale situation (tax incl.)">
     <search-fields>
       <field name="fromDate" type="date" title="From Date" x-required="true"/>
       <field name="toDate" type="date" title="To Date" x-required="true"/>

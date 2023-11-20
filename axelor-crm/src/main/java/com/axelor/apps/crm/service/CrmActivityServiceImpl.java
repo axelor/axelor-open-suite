@@ -207,7 +207,7 @@ public class CrmActivityServiceImpl implements CrmActivityService {
               "opportunity",
               opportunity.getOpportunityRating().toString(),
               opportunity.getOpportunityStatus().getName(),
-              opportunity.getOpportunityType());
+              opportunity.getOpportunityType().getName());
       data.put("closedWonStatus", closedWinStatus);
       data.put("closedLostStatus", closedLostStatus);
       eventMapList.add(data);

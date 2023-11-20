@@ -34,7 +34,6 @@ public final class ContractExceptionMessage {
       "You cannot terminate a contract before version activation date." /*)*/;
   public static final String CONTRACT_CANT_REMOVE_INVOICED_LINE = /*$$(*/
       "You cannot remove a line which has been already invoiced." /*)*/;
-  public static final String CONTRACT_EMPTY_PRODUCT = /*$$(*/ "The product can't be empty." /*)*/;
   public static final String CONTRACT_MISSING_FROM_VERSION = /*$$(*/
       "There is no contract associated with this version." /*)*/;
   public static final String CONTRACT_MISSING_FIRST_PERIOD = /*$$(*/

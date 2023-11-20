@@ -131,7 +131,7 @@
         <panel name="inTaxTotalPanel" readonly="true">
           <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
             <viewer
-              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund,currency.symbol">
+              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund">
 		                    <![CDATA[
 			                  <>
 			                     <dl>

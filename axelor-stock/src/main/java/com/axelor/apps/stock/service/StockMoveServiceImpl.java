@@ -169,7 +169,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setFreightCarrierMode(freightCarrierMode);
     stockMove.setCarrierPartner(carrierPartner);
     stockMove.setForwarderPartner(forwarderPartner);
-    stockMove.setIncoterm(incoterm);
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      stockMove.setIncoterm(incoterm);
+    }
     stockMove.setNote(note);
     stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(clientPartner, toAddress));
 
@@ -852,33 +854,21 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMove.getToAddress() != null) {
       newStockMove.setFromAddress(stockMove.getToAddress());
     }
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-      newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
-    }
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-      newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
-    }
+    setStockMoveTypeSelect(newStockMove, stockMove);
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL) {
-      newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
-    }
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
             newStockMove.getTypeSelect(), newStockMove.getCompany()));
 
-    newStockMove.setName(
-        stockMoveToolService.computeName(
-            newStockMove,
-            String.format(
-                I18n.get(StockExceptionMessage.STOCK_MOVE_8),
-                newStockMove.getStockMoveSeq(),
-                stockMove.getStockMoveSeq())));
+    setStockMoveName(newStockMove, stockMove);
+
     if (stockMove.getPartner() != null) {
       newStockMove.setShipmentMode(stockMove.getPartner().getShipmentMode());
       newStockMove.setFreightCarrierMode(stockMove.getPartner().getFreightCarrierMode());
       newStockMove.setCarrierPartner(stockMove.getPartner().getCarrierPartner());
     }
+    newStockMove.setIsReversion(!stockMove.getIsReversion());
     newStockMove.setReversionOriginStockMove(stockMove);
     newStockMove.setFromAddressStr(stockMove.getToAddressStr());
     newStockMove.setNote(stockMove.getNote());
@@ -886,11 +876,34 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setNumOfPalettes(stockMove.getNumOfPalettes());
     newStockMove.setGrossMass(stockMove.getGrossMass());
     newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
-    newStockMove.setIsReversion(true);
     newStockMove.setIsWithBackorder(stockMove.getIsWithBackorder());
     newStockMove.setOrigin(stockMove.getOrigin());
     setOrigin(stockMove, newStockMove);
     newStockMove.setGroupProductsOnPrintings(stockMove.getGroupProductsOnPrintings());
+  }
+
+  protected void setStockMoveTypeSelect(StockMove newStockMove, StockMove stockMove) {
+    switch (stockMove.getTypeSelect()) {
+      case StockMoveRepository.TYPE_INCOMING:
+        newStockMove.setTypeSelect(StockMoveRepository.TYPE_OUTGOING);
+        break;
+      case StockMoveRepository.TYPE_OUTGOING:
+        newStockMove.setTypeSelect(StockMoveRepository.TYPE_INCOMING);
+        break;
+      default:
+        newStockMove.setTypeSelect(StockMoveRepository.TYPE_INTERNAL);
+        break;
+    }
+  }
+
+  protected void setStockMoveName(StockMove newStockMove, StockMove stockMove) {
+    newStockMove.setName(
+        stockMoveToolService.computeName(
+            newStockMove,
+            String.format(
+                I18n.get(StockExceptionMessage.STOCK_MOVE_8),
+                newStockMove.getStockMoveSeq(),
+                stockMove.getStockMoveSeq())));
   }
 
   @Override
@@ -1476,5 +1489,13 @@ public class StockMoveServiceImpl implements StockMoveService {
               stockMove.getStockMoveSeq()),
           stockMove);
     }
+  }
+
+  @Override
+  public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException {
+
+    LOG.debug("Creation of a new stock move from the stock move {}", stockMove.getStockMoveSeq());
+
+    return copyAndSplitStockMoveReverse(stockMove, false);
   }
 }

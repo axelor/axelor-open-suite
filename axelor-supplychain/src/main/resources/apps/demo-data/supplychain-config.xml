@@ -27,8 +27,7 @@
   </input>
 
   <input file="supplychain_supplyChainConfig.csv" separator=";"
-    type="com.axelor.apps.supplychain.db.SupplyChainConfig" search="self.importId = :importId"
-    update="true"/>
+    type="com.axelor.apps.supplychain.db.SupplyChainConfig" search="self.importId = :importId"/>
 
   <input file="studio_appSupplychain.csv" separator=";"
     type="com.axelor.studio.db.AppSupplychain" search="self.app.code = :code"

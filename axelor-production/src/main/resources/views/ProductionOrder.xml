@@ -35,15 +35,7 @@
       <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
         widget="NavSelect"/>
       <field name="productionOrderSeq"/>
-      <field name="prioritySelect">
-        <viewer>
-                <![CDATA[
-                    <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 1" x-translate>Low</span>
-                    <span class="label label-warning" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 2" x-translate>Normal</span>
-                    <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.prioritySelect == 3" x-translate>High</span>
-                ]]>
-        </viewer>
-      </field>
+      <field name="prioritySelect" widget="SingleSelect"/>
       <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
         domain="self.isCustomer = true" canEdit="false"
         onChange="action-production-order-atts-sale-order-onchange-client-partner"/>
