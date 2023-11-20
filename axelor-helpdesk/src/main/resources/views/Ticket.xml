@@ -20,23 +20,27 @@
     <field name="prioritySelect" widget="single-select"/>
     <field name="ticketStatus"/>
     <field name="timerState" hidden="true"/>
-    <field name="ticketStatus.isClosedStatus" hidden="true"/>
+    <field name="$isClosed" hidden="true"/>
     <field name="progressSelect" widget="SelectProgress"/>
     <button name="takeChargeBtn" icon="fa-suitcase" hideIf="assignedToUser.id == _user.id"
       help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"
-      readonlyIf="ticketStatus.isClosedStatus"/>
+      readonlyIf="$isClosed"/>
     <button name="startTicketBtn" icon="fa-play" onClick="action-ticket-group-on-start"
-      readonlyIf="timerState == true || ticketStatus.isClosedStatus"/>
+      readonlyIf="timerState == true || $isClosed"/>
     <button name="pauseBtn" icon="fa-pause" onClick="action-ticket-group-on-pause"
-      readonlyIf="timerState == false || ticketStatus.isClosedStatus"/>
+      readonlyIf="timerState == false || $isClosed"/>
     <button name="validateTicketBtn" icon="fa-check"
-      onClick="action-ticket-group-on-validate" readonlyIf="ticketStatus.isClosedStatus"/>
+      onClick="action-ticket-group-on-validate" readonlyIf="$isClosed"/>
     <button name="finishTicketBtn" icon="fa-power-off" onClick="action-ticket-group-on-close"
-      readonlyIf="ticketStatus.isClosedStatus"/>
+      readonlyIf="$isClosed"/>
+    <field name="$isClosed" type="boolean" hidden="true"/>
+    <field name="$isInProgress" type="boolean" hidden="true"/>
+    <field name="$isResolved" type="boolean" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form"
-    onNew="action-ticket-group-on-new" onLoad="action-ticket-group-timer-process">
+    onNew="action-ticket-group-on-new"
+    onLoad="action-ticket-group-timer-process,action-ticket-method-update-dummy-status">
     <panel name="mainPanel" colSpan="12">
 
       <field name="ticketStatus" colSpan="12" readonly="true" showTitle="false"
@@ -102,13 +106,12 @@
 
     <panel name="actionsPanel" sidebar="true">
       <button name="startTicketBtn" title="Start" icon="fa-play"
-        hideIf="ticketStatus.isClosedStatus || ticketStatus.isOngoingStatus || ticketStatus.isResolvedStatus"
+        hideIf="$isClosed || $isInProgress || $isResolved"
         onClick="save,action-ticket-group-on-start"/>
       <button name="validateTicketBtn" title="Resolve" icon="fa-check"
-        hideIf="ticketStatus.isResolvedStatus || ticketStatus.isClosedStatus"
-        onClick="save,action-ticket-group-on-validate"/>
+        hideIf="$isResolved || $isClosed" onClick="save,action-ticket-group-on-validate"/>
       <button name="finishTicketBtn" title="Close" icon="fa-power-off" css="btn-danger"
-        hideIf="ticketStatus.isClosedStatus" onClick="save,action-ticket-group-on-close"/>
+        hideIf="$isClosed" onClick="save,action-ticket-group-on-close"/>
     </panel>
 
     <panel name="characteristicsPanel" title="Characteristics" sidebar="true"
@@ -139,9 +142,9 @@
       <field name="slaPolicy.reachStageTicketStatus" hidden="true"/>
       <field name="slaPolicy.reachStageTicketStatus.priority" hidden="true"/>
       <field name="ticketStatus.priority" hidden="true"/>
-      <field name="ticketStatus.isResolvedStatus" hidden="true"/>
-      <field name="ticketStatus.isClosedStatus" hidden="true"/>
-      <field name="ticketStatus.isOngoingStatus" hidden="true"/>
+      <field name="$isResolved" hidden="true" type="boolean"/>
+      <field name="$isClosed" hidden="true" type="boolean"/>
+      <field name="$isInProgress" hidden="true" type="boolean"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="6"/>
@@ -217,8 +220,7 @@
 
   <action-record name="action-ticket-record-to-set-progress-select"
     model="com.axelor.apps.helpdesk.db.Ticket">
-    <field name="progressSelect" expr="100" if="ticketStatus.isResolvedStatus"/>
-    <field name="progressSelect" expr="0" if="!ticketStatus.isResolvedStatus"/>
+    <field name="progressSelect" expr="100"/>
   </action-record>
 
   <action-record name="action-ticket-record-to-fill-startDate"
@@ -241,6 +243,7 @@
     <action name="action-ticket-record-to-fill-startDate"/>
     <action name="action-ticket-record-set-customer"/>
     <action name="action-ticket-method-set-default-status"/>
+    <action name="action-ticket-method-update-dummy-status"/>
   </action-group>
 
   <action-group name="action-ticket-group-on-start">
@@ -249,6 +252,7 @@
     <action name="action-ticket-record-to-fill-startDate"/>
     <action name="action-ticket-method-compute-from-start-date-time"/>
     <action name="action-ticket-method-set-start-status"/>
+    <action name="action-ticket-method-update-dummy-status"/>
     <action name="save"/>
   </action-group>
 
@@ -259,6 +263,7 @@
     <action name="action-ticket-record-to-fill-endDate"/>
     <action name="action-ticket-method-compute-from-end-date-time"/>
     <action name="action-ticket-method-set-validate-status"/>
+    <action name="action-ticket-method-update-dummy-status"/>
     <action name="action-ticket-record-to-set-progress-select"/>
     <action name="save"/>
   </action-group>
@@ -268,6 +273,7 @@
     <action name="action-ticket-method-pause"/>
     <action name="action-ticket-method-compute-real-total-duration"/>
     <action name="action-ticket-method-set-closed-status"/>
+    <action name="action-ticket-method-update-dummy-status"/>
     <action name="save"/>
   </action-group>
 
@@ -276,6 +282,11 @@
     <action name="action-ticket-method-pause"/>
     <action name="save"/>
   </action-group>
+
+  <action-method name="action-ticket-method-update-dummy-status">
+    <call class="com.axelor.apps.helpdesk.web.TicketController" method="updateDummyStatus"/>
+  </action-method>
+
 
   <action-method name="action-ticket-method-compute-from-start-date-time">
     <call class="com.axelor.apps.helpdesk.web.TicketController"

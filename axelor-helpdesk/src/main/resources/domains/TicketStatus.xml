@@ -9,29 +9,10 @@
 
     <string name="name" title="Name" required="true"/>
     <integer name="priority" title="Priority" required="true"/>
-    <boolean name="isResolvedStatus" title="Resolved status"/>
-    <boolean name="isOngoingStatus" title="On going status"/>
-    <boolean name="isClosedStatus" title="Closed status"/>
-
-    <finder-method name="findDefaultStatus" using=""
-      filter="self.isClosedStatus = false AND self.isResolvedStatus = false AND self.isOngoingStatus = false"
-      orderBy="priority"/>
-
-    <finder-method name="findOngoingStatus" using=""
-      filter="self.isOngoingStatus = true" orderBy="priority"/>
-
-    <finder-method name="findResolvedStatus" using=""
-      filter="self.isResolvedStatus = true" orderBy="priority"/>
-
-    <finder-method name="findClosedStatus" using=""
-      filter="self.isClosedStatus = true" orderBy="priority"/>
 
     <track>
       <field name="name"/>
       <field name="priority"/>
-      <field name="isResolvedStatus"/>
-      <field name="isOngoingStatus"/>
-      <field name="isClosedStatus"/>
     </track>
 
   </entity>

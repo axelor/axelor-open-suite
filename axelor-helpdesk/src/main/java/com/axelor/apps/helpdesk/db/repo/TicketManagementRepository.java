@@ -22,14 +22,22 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.TicketService;
+import com.axelor.apps.helpdesk.service.TicketStatusService;
+import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
+import com.axelor.studio.db.AppHelpdesk;
 import com.google.inject.Inject;
+import java.util.Map;
+import java.util.Optional;
 
 public class TicketManagementRepository extends TicketRepository {
 
   @Inject private TicketService ticketService;
 
-  @Inject private TicketStatusRepository ticketStatusRepository;
+  @Inject private TicketStatusService ticketStatusRepository;
+
+  @Inject private AppHelpdeskService appHelpdeskService;
   @Inject private AppBaseService appBaseService;
 
   @Override
@@ -53,5 +61,36 @@ public class TicketManagementRepository extends TicketRepository {
     copy.setStartDateT(appBaseService.getTodayDateTime().toLocalDateTime());
     copy.setTicketSeq(null);
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+
+    AppHelpdesk appHelpdesk = appHelpdeskService.getHelpdeskApp();
+
+    if (context.get("_model") != null
+        && context.get("_model").toString().equals(Ticket.class.getName())
+        && context.get("id") != null) {
+
+      Long id = (Long) json.get("id");
+      if (id != null) {
+        TicketStatus ticketStatus =
+            Optional.ofNullable(find(id)).map(Ticket::getTicketStatus).orElse(null);
+        json.put(
+            "$isClosed",
+            ticketStatus != null && ticketStatus.equals(appHelpdesk.getClosedTicketStatus()));
+        json.put(
+            "$isInProgress",
+            ticketStatus != null && ticketStatus.equals(appHelpdesk.getInProgressTicketStatus()));
+        json.put(
+            "$isResolved",
+            ticketStatus != null && ticketStatus.equals(appHelpdesk.getResolvedTicketStatus()));
+      } else {
+        json.put("$isClosed", false);
+        json.put("$isInProgress", false);
+        json.put("$isResolved", false);
+      }
+    }
+    return super.populate(json, context);
   }
 }

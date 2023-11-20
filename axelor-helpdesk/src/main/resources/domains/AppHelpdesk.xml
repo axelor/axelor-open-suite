@@ -12,6 +12,13 @@
     <boolean name="isSla" title="SLA" default="false"/>
     <boolean name="manageTimer" title="Manage Timer" default="false"/>
 
+    <many-to-one name="resolvedTicketStatus"
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Resolved status"/>
+    <many-to-one name="closedTicketStatus"
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Closed status"/>
+    <many-to-one name="inProgressTicketStatus"
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="On going status"/>
+
     <track>
       <field name="isSla" on="UPDATE"/>
       <field name="manageTimer" on="UPDATE"/>

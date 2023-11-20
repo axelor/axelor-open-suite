@@ -4,7 +4,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
-import com.axelor.apps.helpdesk.db.repo.TicketStatusRepository;
 import com.axelor.apps.helpdesk.exceptions.HelpdeskExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -13,11 +12,11 @@ import java.util.Optional;
 
 public class TicketWorkflowServiceImpl implements TicketWorkflowService {
 
-  protected TicketStatusRepository ticketStatusRepository;
+  protected TicketStatusService ticketStatuSService;
 
   @Inject
-  public TicketWorkflowServiceImpl(TicketStatusRepository ticketStatusRepository) {
-    this.ticketStatusRepository = ticketStatusRepository;
+  public TicketWorkflowServiceImpl(TicketStatusService ticketStatusService) {
+    this.ticketStatuSService = ticketStatusService;
   }
 
   @Override
@@ -25,7 +24,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatusRepository.findOngoingStatus())
+        Optional.ofNullable(ticketStatuSService.findOngoingStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
@@ -40,7 +39,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatusRepository.findResolvedStatus())
+        Optional.ofNullable(ticketStatuSService.findResolvedStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
@@ -55,7 +54,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatusRepository.findClosedStatus())
+        Optional.ofNullable(ticketStatuSService.findClosedStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
@@ -70,7 +69,7 @@ public class TicketWorkflowServiceImpl implements TicketWorkflowService {
     Objects.requireNonNull(ticket);
 
     TicketStatus ticketStatus =
-        Optional.ofNullable(ticketStatusRepository.findDefaultStatus())
+        Optional.ofNullable(ticketStatuSService.findDefaultStatus())
             .orElseThrow(
                 () ->
                     new AxelorException(
