@@ -27,6 +27,8 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BudgetToolsService {
@@ -61,4 +63,14 @@ public interface BudgetToolsService {
    * @throws AxelorException
    */
   public boolean checkBudgetKeyInConfig(Company company) throws AxelorException;
+
+  BigDecimal getAvailableAmountOnBudget(Budget budget, LocalDate date);
+
+  /**
+   * Return the global budget check available select
+   *
+   * @param budget
+   * @return Integer
+   */
+  public Integer getBudgetControlLevel(Budget budget);
 }

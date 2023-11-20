@@ -377,42 +377,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   }
 
   @Override
-  public Integer getBudgetControlLevel(Budget budget) {
-
-    if (appBudgetService.getAppBudget() == null
-        || !appBudgetService.getAppBudget().getCheckAvailableBudget()) {
-      return null;
-    }
-
-    if (budget != null
-        && budget.getBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget() != null
-        && budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getGlobalBudget()
-                .getCheckAvailableSelect()
-            != null
-        && budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getGlobalBudget()
-                .getCheckAvailableSelect()
-            != 0) {
-      return budget
-          .getBudgetLevel()
-          .getParentBudgetLevel()
-          .getGlobalBudget()
-          .getCheckAvailableSelect();
-    } else {
-      return appBudgetService.getAppBudget().getCheckAvailableBudget()
-          ? BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE
-          : null;
-    }
-  }
-
-  @Override
   @Transactional
   public void computeChildrenKey(BudgetLevel section) throws AxelorException {
     if (section.getId() == null) {

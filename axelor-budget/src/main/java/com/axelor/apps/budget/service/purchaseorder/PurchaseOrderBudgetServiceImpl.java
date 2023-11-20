@@ -181,10 +181,11 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
             budgetDistribution = new BudgetDistribution();
             budgetDistribution.setBudget(purchaseOrderLine.getBudget());
             budgetDistribution.setBudgetAmountAvailable(
-                budgetDistribution
-                    .getBudget()
-                    .getTotalAmountExpected()
-                    .subtract(budgetDistribution.getBudget().getTotalAmountCommitted()));
+                budgetToolsService.getAvailableAmountOnBudget(
+                    purchaseOrderLine.getBudget(),
+                    purchaseOrderLine.getPurchaseOrder() != null
+                        ? purchaseOrderLine.getPurchaseOrder().getOrderDate()
+                        : null));
 
             purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
           }
@@ -314,7 +315,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
         if (!budgetDistributionList.isEmpty() && budget != null) {
           for (BudgetDistribution budgetDistribution : budgetDistributionList) {
             budgetDistribution.setBudgetAmountAvailable(
-                budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
+                budgetToolsService.getAvailableAmountOnBudget(
+                    budget, purchaseOrder.getOrderDate()));
           }
         }
       }

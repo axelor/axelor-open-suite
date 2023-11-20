@@ -48,6 +48,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -81,6 +82,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected AppBaseService appBaseService;
 
+  protected AppStockService appStockService;
+
   protected AppSupplychainService appSupplychainService;
 
   protected SaleOrderRepository saleOrderRepo;
@@ -103,6 +106,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
+      AppStockService appStockService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -116,6 +120,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleInvoicingStateService saleInvoicingStateService) {
 
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
@@ -206,7 +211,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
     invoiceTermService.computeInvoiceTerms(invoice);
-    invoice.setIncoterm(saleOrder.getIncoterm());
+
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      invoice.setIncoterm(saleOrder.getIncoterm());
+    }
     invoice = invoiceRepo.save(invoice);
 
     return invoice;

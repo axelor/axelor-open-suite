@@ -81,10 +81,12 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   }
 
   @Override
-  public BudgetDistribution createDistributionFromBudget(Budget budget, BigDecimal amount) {
+  public BudgetDistribution createDistributionFromBudget(
+      Budget budget, BigDecimal amount, LocalDate date) {
     BudgetDistribution budgetDistribution = new BudgetDistribution();
     budgetDistribution.setBudget(budget);
-    budgetDistribution.setBudgetAmountAvailable(budget.getAvailableAmount());
+    budgetDistribution.setBudgetAmountAvailable(
+        budgetToolsService.getAvailableAmountOnBudget(budget, date));
     budgetDistribution.setAmount(amount);
 
     return budgetDistribution;
@@ -95,7 +97,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
     String budgetExceedAlert = "";
 
-    Integer budgetControlLevel = budgetLevelService.getBudgetControlLevel(budget);
+    Integer budgetControlLevel = budgetToolsService.getBudgetControlLevel(budget);
     if (budget == null || budgetControlLevel == null) {
       return budgetExceedAlert;
     }
@@ -205,7 +207,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                       budget,
                       amount
                           .multiply(analyticMoveLine.getPercentage())
-                          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
+                          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                      date);
+
               linkBudgetDistributionWithParent(budgetDistribution, object);
 
             } else {
@@ -244,22 +248,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate) {
 
-    if (budgetDistribution.getBudget() != null
-        && !ObjectUtils.isEmpty(budgetDistribution.getBudget().getBudgetLineList())
-        && computeDate != null) {
-      List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
-      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
-
-      for (BudgetLine budgetLine : budgetLineList) {
-        LocalDate fromDate = budgetLine.getFromDate();
-        LocalDate toDate = budgetLine.getToDate();
-
-        if (fromDate != null && LocalDateHelper.isBetween(fromDate, toDate, computeDate)) {
-          BigDecimal amount = budgetLine.getAvailableAmount();
-          budgetAmountAvailable = budgetAmountAvailable.add(amount);
-        }
-      }
-      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
+    if (budgetDistribution.getBudget() != null && computeDate != null) {
+      budgetDistribution.setBudgetAmountAvailable(
+          budgetToolsService.getAvailableAmountOnBudget(
+              budgetDistribution.getBudget(), computeDate));
     } else {
       budgetDistribution.setBudgetAmountAvailable(BigDecimal.ZERO);
     }
@@ -336,7 +328,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                     budget,
                     amount
                         .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP));
+                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                    date);
             linkBudgetDistributionWithParent(budgetDistribution, object);
           }
         }

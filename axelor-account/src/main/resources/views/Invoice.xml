@@ -634,7 +634,10 @@
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
+            grid-view="incoterm-grid"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+          <spacer colSpan="6"
+            if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer><![CDATA[<>{addressStr}</>]]></viewer>
@@ -874,7 +877,6 @@ InvoiceSet.length > 0))"
     </panel-tabs>
 
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
-      <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
@@ -922,23 +924,25 @@ InvoiceSet.length > 0))"
       hideIf="partner == null">
       <field name="currency.code" hidden="true"/>
       <field name="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal">
+      <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"/>
+      <field name="taxTotal" x-currency="currency.symbol" hidden="true"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+        <viewer depends="exTaxTotal,taxTotal">
         	<![CDATA[
 	                  <>
 	                     <dl>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+	                     		<dd>{$fmt('exTaxTotal')}</dd>
 	                     	</Box>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+	                     		<dd>{$fmt('taxTotal')}</dd>
 	                     	</Box>
 	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+	                     		<dd>{$fmt('inTaxTotal')}</dd>
 	                     	</Box>
 	                     </dl>
 	                  </>
@@ -997,14 +1001,14 @@ InvoiceSet.length > 0))"
         </viewer>
         <editor></editor>
       </field>
-      <field name="inTaxTotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
+      <field name="amountRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol">
+        <viewer depends="amountRemaining"><![CDATA[
 		         <>
 		         	<dl>
 				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{currency.symbol} {$fmt('amountRemaining')}</dd>
+				 			<dd>{$fmt('amountRemaining')}</dd>
 				 		</Box>
 		         	</dl>
 		         </>
@@ -1018,37 +1022,39 @@ InvoiceSet.length > 0))"
       <field name="company.currency" hidden="true"/>
       <field name="company.currency.code" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>
-      <field name="companyInTaxTotalRemaining" hidden="true"/>
-      <field name="companyInTaxTotal" showTitle="false" colSpan="12">
-        <viewer
-          depends="companyExTaxTotal,company.currency.symbol,companyTaxTotal,companyInTaxTotal,companyInTaxTotalRemaining"><![CDATA[
+      <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"/>
+      <field name="companyTaxTotal" x-currency="company.currency.symbol" hidden="true"/>
+      <field name="companyInTaxTotal" showTitle="false" colSpan="12"
+        x-currency="company.currency.symbol">
+        <viewer depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal"><![CDATA[
 	                  <>
 	                     <dl>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{company.currency.symbol} {$fmt('companyExTaxTotal')}</dd>
+	                     		<dd>{$fmt('companyExTaxTotal')}</dd>
 	                     	</Box>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{company.currency.symbol} {$fmt('companyTaxTotal')}</dd>
+	                     		<dd>{$fmt('companyTaxTotal')}</dd>
 	                     	</Box>
 	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{company.currency.symbol} {$fmt('companyInTaxTotal')}</dd>
+	                     		<dd>{$fmt('companyInTaxTotal')}</dd>
 	                     	</Box>
 	                     </dl>
 	                  </>
 		       ]]></viewer>
       </field>
-      <field name="companyInTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="companyInTaxTotalRemaining,company.currency.symbol"><![CDATA[
+      <field name="companyInTaxTotalRemaining" css="order-subtotal" showTitle="false"
+        colSpan="12" showIf="statusSelect == 2 || statusSelect == 3"
+        x-currency="company.currency.symbol">
+        <viewer depends="companyInTaxTotalRemaining"><![CDATA[
 		         <>
 		         	<dl>
 				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{company.currency.symbol} {$fmt('companyInTaxTotalRemaining')}</dd>
+				 			<dd>{$fmt('companyInTaxTotalRemaining')}</dd>
 				 		</Box>
 		         	</dl>
 		         </>
@@ -1254,7 +1260,6 @@ InvoiceSet.length > 0))"
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"/>
-        <field name="amountRemaining" hidden="true"/>
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
           canView="false"/>
@@ -1267,23 +1272,25 @@ InvoiceSet.length > 0))"
 
     <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6">
       <field name="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal,inTaxTotal">
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+        <viewer depends="exTaxTotal,taxTotal,inTaxTotal">
         	<![CDATA[
 	                  <>
 	                     <dl>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
+	                     		<dd>{$fmt('exTaxTotal')}</dd>
 	                     	</Box>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
 	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
+	                     		<dd>{$fmt('taxTotal')}</dd>
 	                     	</Box>
 	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
 	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
+	                     		<dd>{$fmt('inTaxTotal')}</dd>
 	                     	</Box>
 	                     </dl>
 	                  </>
@@ -1319,14 +1326,14 @@ InvoiceSet.length > 0))"
         </viewer>
         <editor/>
       </field>
-      <field name="inTaxTotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
+      <field name="amountRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol">
+        <viewer depends="amountRemaining"><![CDATA[
 		         <>
 		         	<dl>
 				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
 				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{currency.symbol} {$fmt('amountRemaining')}</dd>
+				 			<dd>{$fmt('amountRemaining')}</dd>
 				 		</Box>
 		         	</dl>
 		         </>
