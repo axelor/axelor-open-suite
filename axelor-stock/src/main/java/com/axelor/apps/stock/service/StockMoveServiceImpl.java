@@ -169,7 +169,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setFreightCarrierMode(freightCarrierMode);
     stockMove.setCarrierPartner(carrierPartner);
     stockMove.setForwarderPartner(forwarderPartner);
-    stockMove.setIncoterm(incoterm);
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      stockMove.setIncoterm(incoterm);
+    }
     stockMove.setNote(note);
     stockMove.setIsIspmRequired(stockMoveToolService.getDefaultISPM(clientPartner, toAddress));
 
