@@ -638,7 +638,7 @@
     <view type="form" name="move-line-form"/>
     <domain>self.id IN :_moveLineIds</domain>
     <context name="_moveLineIds"
-      expr="call: com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService:getDoubtfulCustomerPreviewList(company,doubtfulCustomerAccount)"/>
+      expr="call: com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService:getDoubtfulCustomerPreviewList(company,company.accountConfig.doubtfulCustomerAccount)"/>
     <context name="_batchId" expr="eval: id"/>
     <context name="_actionSelect" expr="eval: actionSelect"/>
   </action-view>
