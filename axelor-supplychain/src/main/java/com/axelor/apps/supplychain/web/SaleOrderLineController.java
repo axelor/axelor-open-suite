@@ -34,9 +34,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.ReservedQtyService;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
-import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.*;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -163,6 +161,7 @@ public class SaleOrderLineController {
    * @param request
    * @param response
    */
+  @Deprecated(since = "15/11/2023")
   public void requestQty(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -368,6 +367,23 @@ public class SaleOrderLineController {
       saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
       Beans.get(SaleOrderLineServiceSupplyChain.class)
           .updateStockMoveReservationDateTime(saleOrderLine);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /**
+   * Called from sale order line form view, on request reserved qty click. call {@link
+   * ProductReservationService#requestReservedQty}
+   *
+   * @param request axelor http resquest
+   * @param response axelor http response
+   */
+  public void requestReservedQty(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+      Beans.get(ProductReservationService.class).requestReservedQty(saleOrderLine.getId());
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

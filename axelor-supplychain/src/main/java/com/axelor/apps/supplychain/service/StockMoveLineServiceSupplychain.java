@@ -28,6 +28,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -107,4 +108,10 @@ public interface StockMoveLineServiceSupplychain {
       throws AxelorException;
 
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) throws AxelorException;
+
+  /**
+   * @return first stockMoveLine with status {@link StockMoveRepository#STATUS_PLANNED} link where
+   *     its saleOrderLine is saleOrderLine parameter
+   */
+  StockMoveLine getPlannedStockMoveLine(SaleOrderLine saleOrderLine);
 }

@@ -42,6 +42,11 @@
 
 
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
+
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservation"
+      mappedBy="originSaleOrderLine"/>
+
     <extra-code>
   		<![CDATA[
             // SALE SUPPLY SELECT

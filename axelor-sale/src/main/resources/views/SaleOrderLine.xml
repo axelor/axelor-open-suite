@@ -252,6 +252,7 @@
         </panel>
         <panel name="reservationPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
+          <!-- TODO CMR encore utile avec le insert dans la vue supplyChain ? -->
           <field name="requestedReservedQty" colSpan="6" hidden="true"
             if-module="axelor-supplychain"
             onChange="action-supplychain-attrs-sale-order-line-max-requested-reserved-qty"
@@ -666,6 +667,7 @@
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
     <action name="action-sale-order-line-attrs-hidden-analytic-distribution-panel"/>
+    <action name="action-method-split-product-reservation-of-sale-order-line-by-type"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">

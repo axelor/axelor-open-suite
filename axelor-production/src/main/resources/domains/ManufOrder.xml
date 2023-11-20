@@ -116,6 +116,11 @@
     <!-- Added this field to identify unsaved manufacturing orders in multi-level planning -->
     <string name="manualMOSeq" transient="true"/>
 
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservation"
+      mappedBy="originManufOrder"/>
+
+
     <unique-constraint columns="manufOrderSeq,company"/>
 
     <extra-code><![CDATA[

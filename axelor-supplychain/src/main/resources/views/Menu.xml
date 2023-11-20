@@ -249,6 +249,15 @@
     <context name="_isReversion" expr="eval: false"/>
   </action-view>
 
+  <menuitem name="stock-root-reservation-allocation" parent="stock-root"
+    title="Product reservation" action="stock.root.product.reservation" order="450"/>
+
+  <action-view name="stock.root.product.reservation" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <view type="grid" name="product-reservation-grid"/>
+    <view type="form" name="product-reservation-form"/>
+  </action-view>
+
   <menuitem name="stock-root-conf-invoice-blocking-reason" title="Invoice blocking reason"
     parent="stock-root-conf" action="action.stock.view.invoice.blocking.reason" order="1100"/>
 

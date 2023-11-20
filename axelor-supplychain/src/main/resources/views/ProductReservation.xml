@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="product-reservation-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" orderBy="product.code"
+    canDelete="false">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-attrs-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <field name="productReservationType" selection="stock.product.reservation.type.select"
+      required="true"/>
+    <field name="product" required="true"/>
+    <field name="qty" required="true" title="Quantity"/>
+    <field name="requestedReservedType" selection="stock.requested.reservation.type.select"/>
+    <field name="priorityReservationDateTime"/>
+    <field name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"/>
+    <field name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"/>
+    <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <field name="$originManufOrder" x-related="originManufOrderId"
+      ref="com.axelor.apps.production.db.ManufOrder" if="originManufOrderId!=null"/>
+    <field name="status" selection="stock.product.reservation.status.select" readonly="true"
+      required="true"/>
+  </grid>
+
+  <grid name="product-reservation-requested-reserved-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" orderBy="product.code"
+    canDelete="false" canNew="true" canEdit="true" editable="true"
+    onNew="action-method-sale-order-line-product-reservation-requested-reserved-grid-on-new"
+    canSave="true">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-attrs-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <field name="product" required="true"/>
+    <field name="qty" required="true" title="Requested qty"/>
+    <field name="$availableQty" required="true" title="Avail. qty" readonly="true"
+      canEdit="false"/>
+    <field name="status" selection="stock.product.reservation.status.select" readonly="true"
+      canEdit="false"/>
+
+    <field name="requestedReservedType" selection="stock.requested.reservation.type.select"
+      hidden="true"/>
+    <field name="priorityReservationDateTime" hidden="true"/>
+    <field name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation" hidden="true"/>
+    <field name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" hidden="true"/>
+    <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      hidden="true"/>
+    <field name="$originManufOrder" x-related="originManufOrderId"
+      ref="com.axelor.apps.production.db.ManufOrder" if="originManufOrderId!=null" hidden="true"/>
+
+
+  </grid>
+
+  <grid name="product-reservation-reserved-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" orderBy="product.code"
+    canDelete="false" editable="true"
+    onNew="action-method-sale-order-line-product-reservation-reserved-grid-on-new">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-attrs-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <field name="product" required="true"/>
+    <field name="qty" title="Requested qty" required="true"/>
+    <field name="stockLocation" required="true"/>
+    <field name="trackingNumber"/>
+    <field name="$availableQty" title="Avail. qty" canEdit="false" readonly="true"/>
+    <field name="status" selection="stock.product.reservation.status.select" readonly="true"
+      canEdit="false"/>
+
+    <field name="requestedReservedType" selection="stock.requested.reservation.type.select"
+      hidden="true"/>
+    <field name="priorityReservationDateTime" hidden="true"/>
+    <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      hidden="true"/>
+    <field name="$originManufOrder" x-related="originManufOrderId"
+      ref="com.axelor.apps.production.db.ManufOrder" if="originManufOrderId!=null" hidden="true"/>
+
+  </grid>
+
+
+  <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
+    model="com.axelor.apps.supplychain.db.ProductReservation" width="large"
+    onSave="save,action-method-product-reservation-update-status"
+    onLoad="action-product-reservation-attrs-set-origin-manuf-order">
+    <toolbar>
+      <button name="cancelBtn" title="Cancel"
+        onClick="action-product-reservation-attrs-cancel" showIf="id" icon="fa-times"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <panel name="general" colSpan="12">
+        <field name="productReservationType" colSpan="6" required="true"/>
+        <field name="status" colSpan="6"/>
+        <field name="product" colSpan="6" showIf="productReservationType != ''"
+          required="true" domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"/>
+        <field name="qty" colSpan="6" showIf="productReservationType !=''" required="true"
+          validIf="qty &gt; 0"/>
+        <field name="description" colSpan="12" showIf="productReservationType !=''"
+          widget="html" large="true"/>
+      </panel>
+      <panel name="reservation" showIf="productReservationType == 1 &amp;&amp; product !=null"
+        colSpan="12">
+        <field name="priorityReservationDateTime" colSpan="6"
+          requiredIf="productReservationType == 1" widget="date-time"/>
+        <field name="requestedReservedType" colSpan="6"
+          requiredIf="productReservationType == 1"
+          selection="stock.requested.reservation.type.select"/>
+      </panel>
+      <panel name="allocation" showIf="productReservationType == 2 &amp;&amp; product !=null"
+        colSpan="12">
+        <field name="stockLocation" colSpan="6" requiredIf="productReservationType == 2"/>
+        <field name="trackingNumber" title="Tracking number"
+          showIf="product.trackingNumberConfiguration != null" colSpan="6"
+          requiredIf="product.trackingNumberConfiguration != null"/>
+        <field name="product.trackingNumberConfiguration" showIf="false"/>
+      </panel>
+      <panel name="origin" colSpan="12" showIf="product !=null">
+        <field name="originSaleOrderLine" colSpan="6" requiredIf="originManufOrder == null"
+          domain="self.product.id = :product"/>
+        <field name="originManufOrderId" colSpan="6" requiredIf="originSaleOrderLine == null"
+          showIf="false"/>
+        <field name="$originManufOrder" title="Manuf order" colSpan="12" canNew="false"
+          canEdit="false" onChange="action-product-reservation-attrs-set-origin-manuf-order-id"
+          domain="self.product.id = :product" requiredIf="originSaleOrderLine == null"
+          x-target="com.axelor.apps.production.db.ManufOrder" x-type="many-to-one"
+          x-target-name="manufOrderSeq"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-attrs name="action-product-reservation-attrs-set-origin-manuf-order-id"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <attribute name="value" for="originManufOrderId" expr="eval:$originManufOrder?.id"/>
+  </action-attrs>
+
+  <action-attrs name="action-product-reservation-attrs-set-origin-manuf-order"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <attribute for="$originManufOrder" name="value"
+      expr="select:SELECT manufOrder FROM ManufOrder manufOrder WHERE manufOrder.id = :originManufOrderId"/>
+    <attribute name="refresh" for="$originManufOrder" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-product-reservation-attrs-cancel"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <attribute name="value" for="status" expr="eval:3"/>
+  </action-attrs>
+
+
+  <!-- <action-method name="action-method-choose-product-reservation-origin"> <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+    method="chooseOrigin"/> </action-method> -->
+
+  <action-method name="action-method-product-reservation-update-status">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="updateStatus"/>
+  </action-method>
+
+  <!-- On New productReservation -->
+
+  <action-method
+    name="action-method-sale-order-line-product-reservation-requested-reserved-grid-on-new">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="onNewSaleOrderLineProductReservationRequestedReserved"/>
+  </action-method>
+
+  <action-method
+    name="action-method-sale-order-line-product-reservation-reserved-grid-on-new">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="onNewSaleOrderLineProductReservationReserved"/>
+  </action-method>
+
+  <action-method
+    name="action-method-manuf-order-product-reservation-requested-reserved-grid-on-new">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="onNewManufOrderProductReservationRequestedReserved"/>
+  </action-method>
+
+  <action-method
+    name="action-method-manuf-order-product-reservation-reserved-grid-on-new">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="onNewManufOrderProductReservationReserved"/>
+  </action-method>
+  <!-- <action-attrs name="action-attrs-product-reservation-requested-reserved-grid-on-new" model="com.axelor.apps.supplychain.db.ProductReservation">
+    <attribute for="$product" name="value" expr="eval: product"/> </action-attrs> -->
+
+
+
+</object-views>

@@ -374,4 +374,17 @@ public final class SupplychainExceptionMessage {
       "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
+
+  public static final String ALLOCATION_QTY_BY_TRACKING_NUMBER_IS_NOT_AVAILABLE =
+      /*$$(*/ "Allocation quantity is not available for this tracking number at this location." /*)*/;
+
+  public static final String ALLOCATION_QTY_BY_PRODUCT_IS_NOT_AVAILABLE =
+      /*$$(*/ "Allocation quantity is not available for this product at this location." /*)*/;
+
+  public static final String PRODUCT_RESERVATION_INVALID =
+      /*$$(*/ "Product reservation invalid" /*)*/;
+
+  public static final String TITLE_PRODUCT_RESERVATION = /*$$(*/ "Product reservation" /*)*/;
+
+  public static final String TYPE_OF_RESERVATION = /*$$(*/ "Type of reservation" /*)*/;
 }

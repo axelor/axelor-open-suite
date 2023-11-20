@@ -93,14 +93,7 @@ import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
-import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
-import com.axelor.apps.supplychain.service.MrpServiceImpl;
-import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
-import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
-import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.*;
 
 public class ProductionModule extends AxelorModule {
 

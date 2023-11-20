@@ -651,4 +651,14 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     }
     return new ArrayList<>();
   }
+
+  public StockMoveLine getPlannedStockMoveLine(SaleOrderLine saleOrderLine) {
+    return stockMoveLineRepository
+        .all()
+        .filter(
+            "self.saleOrderLine = :saleOrderLine " + "AND self.stockMove.statusSelect = :planned")
+        .bind("saleOrderLine", saleOrderLine)
+        .bind("planned", StockMoveRepository.STATUS_PLANNED)
+        .fetchOne();
+  }
 }
