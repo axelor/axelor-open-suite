@@ -97,7 +97,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
             .createTimesheetLine(
                 timer.getProject(),
                 timer.getProjectTask(),
-                null,
+                timer.getProduct(),
                 timer.getEmployee(),
                 startDateTime,
                 timesheet,

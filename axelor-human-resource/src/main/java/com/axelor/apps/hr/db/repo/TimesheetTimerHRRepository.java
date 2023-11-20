@@ -52,6 +52,7 @@ public class TimesheetTimerHRRepository extends TSTimerRepository {
     TimesheetLine timesheetLine = tsTimer.getTimesheetLine();
 
     timesheetLine.setProject(tsTimer.getProject());
+    timesheetLine.setProduct(tsTimer.getProduct());
     timesheetLine.setProjectTask(tsTimer.getProjectTask());
     timesheetLine.setHoursDuration(
         tsTimerService.convertSecondDurationInHours(tsTimer.getDuration()));
