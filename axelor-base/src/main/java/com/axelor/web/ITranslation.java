@@ -49,5 +49,5 @@ public interface ITranslation {
       "Populated custom field: %s"; /*)*/
 
   public static final String PRICING_OBSERVER_NO_PRICING = /*$$(*/
-      "No pricing scale used for this product"; /*)*/
+      "No pricing scale used for this record"; /*)*/
 }

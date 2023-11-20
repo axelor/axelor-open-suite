@@ -28,7 +28,7 @@ public interface ITranslation {
   public static final String SALE_ORDER_LINE_TOTAL = /*$$(*/ "SaleOrderLine.total"; /*)*/
 
   public static final String SALE_ORDER_LINE_OBSERVER_NO_PRICING = /*$$(*/
-      "No pricing scale used for this product"; /*)*/
+      "No pricing scale used for this record"; /*)*/
   public static final String PRICING_CUSTOM_TITLE_PREVIOUS_PRICING = /*$$(*/
       "Previous pricing"; /*)*/
   public static final String PRICING_CUSTOM_TITLE_NEXT_PRICING = /*$$(*/ "Next pricing"; /*)*/
