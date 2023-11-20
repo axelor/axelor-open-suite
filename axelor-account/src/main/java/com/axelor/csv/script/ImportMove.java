@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
@@ -76,6 +77,13 @@ public class ImportMove {
     MoveLine moveLine = (MoveLine) bean;
     FECImport fecImport = null;
     try {
+
+      if (values.get("Idevise") == null || StringUtils.isEmpty((String) values.get("Idevise"))) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.IMPORT_FEC_MISSING_CURRENCY));
+      }
+
       if (values.get("FECImport") != null) {
         fecImport = fecImportRepository.find(((FECImport) values.get("FECImport")).getId());
       }
@@ -148,8 +156,14 @@ public class ImportMove {
         move.setPeriod(period);
 
         if (values.get("Idevise") != null) {
-          move.setCurrency(
-              Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString()));
+          Currency currency =
+              Beans.get(CurrencyRepository.class).findByCode(values.get("Idevise").toString());
+          if (currency == null) {
+            throw new AxelorException(
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                I18n.get(AccountExceptionMessage.IMPORT_FEC_MISSING_CURRENCY));
+          }
+          move.setCurrency(currency);
           move.setCurrencyCode(values.get("Idevise").toString());
         }
 
@@ -215,6 +229,21 @@ public class ImportMove {
       }
 
       move.addMoveLineListItem(moveLine);
+
+      List<String> currencyList =
+          move.getMoveLineList().stream()
+              .map(MoveLine::getCurrencyCode)
+              .filter(Objects::nonNull)
+              .distinct()
+              .collect(Collectors.toList());
+
+      if (!move.getCurrency().getCode().equals(moveLine.getCurrencyCode())
+          || currencyList.size() > 1) {
+        throw new AxelorException(
+            fecImport,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.IMPORT_FEC_CURRENCY_INCOHERENCE));
+      }
 
       setMovePartner(move, moveLine);
 
