@@ -34,6 +34,7 @@
       <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="4"/>
       <field name="planningSet" colSpan="6" canNew="false" widget="TagSelect"
         placeholder="All"/>
+      <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"/>
       <field name="isActive" widget="boolean-switch" colSpan="4"/>
       <field name="instruction" colSpan="12" widget="html"/>
 

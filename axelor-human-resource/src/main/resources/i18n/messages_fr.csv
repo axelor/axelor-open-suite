@@ -31,7 +31,7 @@
 "Allow Injection","Autoriser Injection",,
 "Allow expense creation","Autoriser la saisie des frais",,
 "Allow negative value for leaves","Autoriser valeurs négatives pour congés",,
-"Allow negative values for employee leaves","Autoriser valeurs négatives pour Congés employés",,
+"Allow negative values for employee leaves","Autoriser valeurs négatives pour congés employés",,
 "Allow to associate a product to the timesheet line (pre-requisite: only for product type that are services and Activity field is TRUE). Additional configuration can also be found in Application config --> Users/companies --> Companies --> Human resources config.","Permet d'associer des produits à des lignes de feuille de temps (pré-requis : uniquement pour les produits dont le type est 'service' et le champ 'Activité' doit être coché). Des configurations complémentaires sont disponibles dans Config applicative --> utilisateurs/sociétés --> sociétés --> sélectionner société --> Config RH.",,
 "Allow updates via editor","Autoriser les MAJ via l'éditeur",,
 "Alone meal","Repas seul",,
