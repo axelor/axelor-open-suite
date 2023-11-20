@@ -64,6 +64,7 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -694,6 +695,26 @@ public class ExpenseController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateGeneralAndKilometricExpenseLineEmployee(
+      ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    Employee employee = expense.getEmployee();
+    if (ObjectUtils.notEmpty(employee)) {
+
+      List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
+      if (ObjectUtils.notEmpty(generalExpenseLineList)) {
+        generalExpenseLineList.forEach(genexpLine -> genexpLine.setEmployee(employee));
+      }
+      List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+      if (ObjectUtils.notEmpty(kilometricExpenseLineList)) {
+        kilometricExpenseLineList.forEach(kilexpLine -> kilexpLine.setEmployee(employee));
+      }
+
+      response.setValue("generalExpenseLineList", generalExpenseLineList);
+      response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
     }
   }
 }
