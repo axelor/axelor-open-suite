@@ -13,8 +13,6 @@
     <bind column="Credit" eval="Credit ? Credit.replace(',', '.') : 0" to="credit"/>
     <bind column="PieceRef" to="origin"/>
     <bind column="EcritureLib" to="description"/>
-    <bind column="Montantdevise" eval="Montantdevise ? Montantdevise.replace(',', '.') : 0"
-      to="currencyAmount"/>
     <bind column="EcritureLet" search="self.code = :EcritureLet" if="EcritureLet"
       to="reconcileGroup">
       <bind column="EcritureLet" to="code"/>
