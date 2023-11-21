@@ -13,6 +13,7 @@
     <string name="trackingNumberSeq" namecolumn="true" title="Tracking Nbr." required="true"/>
     <decimal name="counter" title="Counter" precision="20" scale="10"/>
     <string name="origin" title="Origin"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="supplier" title="Supplier"/>
     <string name="note" title="Note" large="true"/>
 
     <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>

@@ -20,6 +20,7 @@
     <field name="perishableExpirationDate"/>
     <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
     <field name="origin"/>
+    <field name="supplier"/>
   </grid>
 
   <form name="tracking-number-form" title="Tracking number"
@@ -34,6 +35,7 @@
       <field name="perishableExpirationDate"/>
       <field name="counter"/>
       <field name="origin"/>
+      <field name="supplier"/>
       <field name="note" colSpan="12"/>
     </panel>
     <panel name="barcodePanel" title="Barcode"
@@ -46,7 +48,7 @@
 
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber" onLoad="action-tracking-number-attrs-set-scale"
-    onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line,action-tracking-number-attrs-set-scale">
+    onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line,action-tracking-number-attrs-set-scale,action-tracking-number-record-set-supplier">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
@@ -55,6 +57,7 @@
       <field name="perishableExpirationDate" readonly="false"/>
       <field name="counter" hidden="true"/>
       <field name="origin"/>
+      <field name="supplier"/>
       <field name="note" colSpan="12"/>
     </panel>
   </form>
@@ -145,5 +148,12 @@
       expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
       if="id != null"/>
   </action-attrs>
+
+  <action-record name="action-tracking-number-record-set-supplier"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field
+      if="eval: __parent__?.stockMove?.typeSelect == 3 &amp;&amp; __parent__?.purchaseOrderLine?.purchaseOrder?.supplierPartner != null "
+      name="supplier" expr="eval: __parent__?.purchaseOrderLine?.purchaseOrder?.supplierPartner"/>
+  </action-record>
 
 </object-views>
