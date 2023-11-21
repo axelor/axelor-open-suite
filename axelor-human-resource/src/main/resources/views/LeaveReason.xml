@@ -19,10 +19,8 @@
         <viewer>
           <![CDATA[
             <>
-              <h4>
                   {!isActive && <Badge as="span" bg="danger">{_t('Inactive')}</Badge>}
                   {isActive && <Badge as="span" bg="success">{_t('Active')}</Badge>}
-              </h4>
             </>
           ]]>
         </viewer>
