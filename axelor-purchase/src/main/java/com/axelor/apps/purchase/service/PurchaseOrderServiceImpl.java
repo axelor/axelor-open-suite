@@ -250,7 +250,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-    purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
+    this.setDraftSequence(purchaseOrder);
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());

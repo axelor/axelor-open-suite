@@ -11,7 +11,8 @@
           action="action-purchase-order-method-show-purchase-order"/>
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="mergeQuotationsItem" title="Merge quotations" action="purchase.order.merge"/>
+        <item name="mergeQuotationsItem" title="Merge quotations"
+          action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -104,7 +105,7 @@
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <button name="confirmBtn" title="Confirm"
-        onClick="action-group-purchase-order-merge-action" colSpan="12" width="200px"/>
+        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
     </panel>
   </form>
 
@@ -427,7 +428,8 @@
           action="action-purchase-order-method-show-purchase-order"/>
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="mergeQuotationsItem" title="Merge quotations" action="purchase.order.merge"/>
+        <item name="mergeQuotationsItem" title="Merge quotations"
+          action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -607,9 +609,7 @@
   </action-group>
 
   <action-group name="action-group-purchase-order-merge-action">
-    <action name="action-purchase-order-method-merge-purchase"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-    <action name="action-purchase-order-method-merge-supplychain"/>
+    <action name="action-purchase-order-method-merge-purchase"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-partner-onchange">
@@ -830,8 +830,8 @@
     <context name="status" expr="eval: _status"/>
   </action-view>
 
-  <action-view name="purchase.order.merge" title="Merge purchase orders"
-    model="com.axelor.utils.db.Wizard">
+  <action-view name="action-purchase-order-view-open-merge-form"
+    title="Merge purchase orders" model="com.axelor.utils.db.Wizard">
     <view type="form" name="purchase-order-merge-form"/>
   </action-view>
 
@@ -866,8 +866,13 @@
   </action-validate>
 
   <action-method name="action-purchase-order-method-merge-purchase">
-    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
       method="mergePurchaseOrder"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-merge-from-pop-up">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
+      method="mergePurchaseOrderFromPopUp"/>
   </action-method>
 
   <action-method name="action-purchase-order-method-fill-price-list">
@@ -877,12 +882,6 @@
   <action-method name="action-purchase-order-method-price-list-domain">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="changePriceListDomain"/>
-  </action-method>
-
-  <action-method name="action-purchase-order-method-merge-supplychain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')"/>
   </action-method>
 
   <action-method

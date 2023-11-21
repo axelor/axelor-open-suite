@@ -112,6 +112,7 @@
 "Invoicing","Facturation",,
 "It is not possible to delete a validated order.","Il n'est pas possible de supprimer une commande validée.",,
 "Last update","Dernière modification",,
+"List of purchase orders to merge is empty","La liste des commandes fournisseurs est vide",,
 "Manage multiple purchase quantity","Gestion des quantités multiples d'achat",,
 "Manage purchase order versions","Gérer les versions des commandes fournisseurs",,
 "Manage purchases unit on products","Gérer les unités d'achat sur les produits",,
