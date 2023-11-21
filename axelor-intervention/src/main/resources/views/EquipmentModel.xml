@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid model="com.axelor.apps.intervention.db.EquipmentModel" title="Equipment models"
+    name="equipment-model-grid">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="parentEquipmentModel" massUpdate="true" domain="self.typeSelect = 'place'"/>
+    <field name="typeSelect"/>
+    <field name="inService"/>
+    <field name="equipmentFamily"/>
+    <field name="updatableQuantities"/>
+    <field name="numberOfElementsToGenerate"/>
+    <field name="partner.tradingName.name" title="Partner trading name"/>
+    <button icon="fa-plus" name="newBtn"
+      onClick="action-equipment-model-view-new-equipment-model"/>
+    <button icon="fa-trash" name="deleteBtn"
+      onClick="action-equipment-model-script-remove-equipment-model"/>
+  </grid>
+
+  <form model="com.axelor.apps.intervention.db.EquipmentModel" title="Equipment model"
+    width="large" name="equipment-model-form" onNew="action-equipment-model-attrs-set-default">
+    <toolbar>
+      <button name="newEquipmentModelBtn" title="Create new equipment model"
+        onClick="action-equipment-model-view-new-equipment-model" hidden="true"
+        showIf="typeSelect == 'place'"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <field name="parentEquipmentModel" domain="self.typeSelect = 'place'"
+        grid-view="equipment-grid" form-view="equipment-form"
+        onSelect="action-equipment-model-attrs-fill-parent-equipment-model-domain"/>
+      <field name="code"/>
+      <field name="name"/>
+      <field name="typeSelect"/>
+      <field name="inService" requiredIf="typeSelect == 'equipment'" hidden="true"
+        showIf="typeSelect != 'place'"/>
+      <field name="equipmentFamily" grid-view="equipment-family-grid"
+        form-view="equipment-family-form" hidden="true" showIf="typeSelect != 'place'"
+        requiredIf="typeSelect != 'place'"/>
+      <field name="scheduleOfOperation" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="specificAccessSchedule" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="updatableQuantities" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="numberOfElementsToGenerate" hidden="true" showIf="typeSelect != 'place'"/>
+      <field name="comments" colSpan="12"/>
+      <field name="parkModel" hidden="true"/>
+    </panel>
+    <panel-mail name="mailsPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <tree name="equipment-model-tree" title="Equipments tree">
+    <column name="code" type="string"/>
+    <column name="name" type="string"/>
+    <column name="type" type="string" widget="single-select"/>
+    <column name="_inService" type="boolean"/>
+    <column name="newBtn" type="button"/>
+    <column name="deleteBtn" type="button"/>
+    <node model="com.axelor.apps.intervention.db.EquipmentModel"
+      domain="self.parentEquipmentModel = null" onClick="action-equipment-model-view-from-tree">
+      <field as="code" name="code"/>
+      <field as="name" name="name"/>
+      <field as="type" name="typeSelect" selection="equipment.type.select"/>
+      <field as="_inService" name="_inService"/>
+      <button name="newBtn" icon="fa-plus"
+        onClick="action-equipment-model-view-new-equipment-model"/>
+      <button name="deleteBtn" icon="fa-trash"
+        onClick="action-equipment-model-script-remove-equipment-model"/>
+    </node>
+    <node model="com.axelor.apps.intervention.db.EquipmentModel" parent="parentEquipmentModel"
+      onClick="action-equipment-model-view-from-tree">
+      <field as="code" name="code"/>
+      <field as="name" name="name"/>
+      <field as="type" name="typeSelect" selection="equipment.type.select"/>
+      <field as="_inService" name="_inService"/>
+      <button name="newBtn" icon="fa-plus"
+        onClick="action-equipment-model-view-new-equipment-model"/>
+      <button name="deleteBtn" icon="fa-trash"
+        onClick="action-equipment-model-script-remove-equipment-model"/>
+    </node>
+  </tree>
+
+  <action-view name="action-equipment-model-view-new-equipment-model"
+    title="Equipment model" model="com.axelor.apps.intervention.db.EquipmentModel">
+    <view type="form" name="equipment-model-form" if="typeSelect == 'place'"/>
+    <view-param name="popup" value="reload"/>
+    <context name="_xParentEquipmentModelId" expr="eval: id"/>
+    <context name="_xParkModelId" expr="eval: parkModel?.id"/>
+  </action-view>
+
+  <action-script name="action-equipment-model-script-remove-equipment-model">
+    <script language="groovy" transactional="true">
+      <![CDATA[
+        if ($request.context.id == null) return
+        def equipmentModel = __repo__(EquipmentModel).find($request.context.id)
+        if (equipmentModel == null) return
+        __repo__(EquipmentModel).remove(equipmentModel)
+        $response.reload = true
+      ]]>
+    </script>
+  </action-script>
+
+  <action-attrs name="action-equipment-model-attrs-set-default">
+    <attribute for="parkModel" name="value"
+      expr="eval: __repo__(ParkModel).find(_xParkModelId)" if="_xParkModelId"/>
+    <attribute for="parentEquipmentModel" name="value"
+      expr="eval: __repo__(EquipmentModel).find(_xParentEquipmentModelId)"
+      if="_xParentEquipmentModelId"/>
+  </action-attrs>
+
+  <action-attrs name="action-equipment-model-attrs-fill-parent-equipment-model-domain">
+    <attribute for="parentEquipmentModel" name="domain"
+      expr="eval: &quot; self.typeSelect = 'place' AND self.parkModel.id = ${__parent__?.id} &quot;"
+      if="__parent__"/>
+    <attribute for="parentEquipmentModel" name="domain"
+      expr="eval: &quot; self.id = ${_xParentEquipmentModelId} &quot;" if="_xParentEquipmentModelId"/>
+  </action-attrs>
+
+  <action-view name="action-equipment-model-view-from-tree" title="Equipment model"
+    model="com.axelor.apps.intervention.db.EquipmentModel">
+    <view type="form" name="equipment-model-form"/>
+    <view-param name="popup" value="reload"/>
+    <context name="_showRecord" expr="eval: id"/>
+    <context name="_showSingle" expr="true"/>
+  </action-view>
+
+</object-views>

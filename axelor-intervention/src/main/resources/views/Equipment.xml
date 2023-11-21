@@ -69,7 +69,6 @@
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.Equipment"
-      domain="self.parentEquipment = null OR self.parentEquipment.partner.id != self.partner.id"
       onClick="action-equipment-view-equipment-from-tree">
       <field as="sequence" name="sequence"/>
       <field as="partner" name="partner"/>

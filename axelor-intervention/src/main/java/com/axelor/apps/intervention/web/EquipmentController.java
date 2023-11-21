@@ -91,7 +91,7 @@ public class EquipmentController {
               .getContext()
               .get("_model")
               .toString()
-              .equals("com.axelor.apps.barkene.db.Equipment")) {
+              .equals("com.axelor.apps.intervention.db.Equipment")) {
         EquipmentRepository equipmentRepository = Beans.get(EquipmentRepository.class);
         Beans.get(EquipmentService.class)
             .removeEquipment(

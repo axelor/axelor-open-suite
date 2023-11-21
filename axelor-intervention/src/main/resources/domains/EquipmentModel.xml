@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/domain-models"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="intervention" package="com.axelor.apps.intervention.db"/>
+
+  <entity name="EquipmentModel">
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Designation" required="true"/>
+    <string name="typeSelect" title="Type" selection="equipment.type.select" required="true"
+      massUpdate="true"/>
+    <boolean name="inService" title="In service" default="true"/>
+    <string name="scheduleOfOperation" title="Schedule of operation"/>
+    <string name="specificAccessSchedule" title="Specific access schedule"/>
+    <string name="comments" title="Comments"/>
+
+    <boolean name="updatableQuantities" title="Updatable quantities" nullable="false"/>
+    <integer name="numberOfElementsToGenerate" title="Number of elements to generate"
+      nullable="false" min="1" default="1"/>
+    <many-to-one name="parkModel" ref="com.axelor.apps.intervention.db.ParkModel"
+      title="Park model"/>
+
+    <many-to-one name="parentEquipmentModel" title="Parent model"
+      ref="com.axelor.apps.intervention.db.EquipmentModel"/>
+
+    <many-to-one name="equipmentFamily" title="Equipment family"
+      ref="com.axelor.apps.intervention.db.EquipmentFamily" massUpdate="true"/>
+
+  </entity>
+
+</domain-models>

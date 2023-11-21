@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="park-model-grid" title="Park models"
+    model="com.axelor.apps.intervention.db.ParkModel">
+    <field name="name"/>
+    <button icon="fa-cogs" name="generateEquipments"
+      onClick="action-park-model-show-confirmation"/>
+  </grid>
+
+  <form name="park-model-form" title="Park model"
+    model="com.axelor.apps.intervention.db.ParkModel" width="large">
+    <toolbar>
+      <button name="generateEquipmentsBtn" title="Generate equipments"
+        onClick="action-park-model-show-confirmation"/>
+    </toolbar>
+    <panel name="mainPanel">
+      <help colSpan="12" hidden="true" showIf="!id">
+        <![CDATA[
+          Please save to add equipments to your park model.
+        ]]>
+      </help>
+      <field name="name" colSpan="12"/>
+    </panel>
+    <panel-related field="equipmentModelList" grid-view="equipment-model-grid"
+      form-view="equipment-model-form" hidden="true" showIf="id" onChange="save"/>
+    <panel-dashlet action="action-park-model-show-equipment-models-tree"
+      title="Equipment models" hidden="true" showIf="id"/>
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" name="park-model-confirmation-wizard-form"
+    onNew="action-park-model-confirmation-method-set-defaults" title="Confirm">
+    <panel name="mainPanel">
+      <field colSpan="4" name="$_xParkModel" required="true"
+        onChange="action-park-model-confirmation-method-park-model-change"
+        target="com.axelor.apps.intervention.db.ParkModel" title="Park model" type="many-to-one"/>
+      <field colSpan="4" name="$_xPartner" required="true"
+        domain="(self.isContact IS FALSE OR self.isContact IS NULL) AND self.isCustomer IS TRUE"
+        target="com.axelor.apps.base.db.Partner" title="Partner" type="many-to-one"/>
+      <field colSpan="4" name="$_xContract" target="com.axelor.apps.contract.db.Contract"
+        title="Contract" type="many-to-one"
+        domain="self.partner = :_xPartner AND self.currentContractVersion.statusSelect = 3"/>
+      <field colSpan="4" name="$_xCommissioningDate" title="Commissioning date" type="date"/>
+      <field colSpan="4" name="$_xCustomerWarrantyOnPartEndDate"
+        title="Customer warranty on part end date" type="date"/>
+
+      <field name="$_xEquipmentModelList" grid-view="test" type="one-to-many" title="Equipments" colSpan="12"
+             target="com.axelor.apps.intervention.db.EquipmentModel" canRemove="false" canNew="false" canSelect="false" >
+
+      </field>
+
+      <field name="$_xEquipmentModelList" type="one-to-many" title="Equipments" colSpan="12"
+        target="com.axelor.apps.intervention.db.EquipmentModel" canRemove="false" canNew="false">
+        <editor x-show-titles="false" x-viewer="true">
+          <field name="code" readonly="true" colSpan="4"/>
+          <field name="name" readonly="true" colSpan="4"/>
+          <field name="$qtyToGenerate" type="integer" title="Qty" colSpan="4"
+            readonlyIf="!updatableQuantities"/>
+          <field name="updatableQuantities" colSpan="12" hidden="true"/>
+          <field name="id" type="long" colSpan="12" hidden="true"/>
+        </editor>
+      </field>
+
+      <button colOffset="6" name="confirmBtn" css="btn-success"
+        onClick="action-park-model-method-generate-equipments"
+        readonlyIf="$_xParkModel == null || $_xPartner == null" title="Confirm"/>
+    </panel>
+  </form>
+
+  <grid title="TEst" name="test" model="com.axelor.apps.intervention.db.EquipmentModel" editable="true" edit-icon="false">
+    <field name="code" readonly="true"/>
+    <field name="name" readonly="true"/>
+    <field name="$qtyToGenerate" type="integer" title="Qty"
+           />
+    <field name="updatableQuantities" hidden="true"/>
+    <field name="id" type="long" hidden="true"/>
+  </grid>
+
+  <action-view model="com.axelor.utils.db.Wizard"
+    name="action-park-model-show-confirmation" title="Confirm">
+    <view name="park-model-confirmation-wizard-form" type="form"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <context expr="eval: id" name="_parkModelId"/>
+  </action-view>
+
+  <action-view name="action-park-model-show-equipment-models-tree"
+    title="Equipment models" model="com.axelor.apps.intervention.db.EquipmentModel">
+    <view type="tree" name="equipment-model-tree"/>
+    <domain>self.parkModel.id = :_parkModelId</domain>
+    <context name="_parkModelId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-park-model-confirmation-method-set-defaults">
+    <call class="com.axelor.apps.intervention.web.ParkModelController" method="setDefaults"/>
+  </action-method>
+
+  <action-method name="action-park-model-confirmation-method-park-model-change">
+    <call class="com.axelor.apps.intervention.web.ParkModelController" method="parkModelChange"/>
+  </action-method>
+
+  <action-method name="action-park-model-method-generate-equipments">
+    <call class="com.axelor.apps.intervention.web.ParkModelController"
+      method="generateEquipments"/>
+  </action-method>
+
+</object-views>

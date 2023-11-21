@@ -8,7 +8,7 @@
 
   <menuitem name="client-park-root-equipment-tree" title="Equipments tree"
     parent="client-park-root" icon-background="grey" icon="fa-sitemap" left="true"
-    action="action.equipment.view.equipment.tree"/>
+    action="action.equipment.view.equipment.tree" order="1"/>
 
   <action-view name="action.equipment.view.equipment.tree" title="Equipments tree"
     model="com.axelor.utils.db.Wizard">
@@ -18,7 +18,7 @@
   </action-view>
 
   <menuitem name="client-park-root-equipment" title="Equipments" parent="client-park-root"
-    icon-background="grey" icon="fa-microchip" left="true" action="action.equipment.view.equipment"/>
+    icon-background="grey" icon="fa-microchip" left="true" action="action.equipment.view.equipment" order="2"/>
 
   <action-view name="action.equipment.view.equipment" title="Equipments"
     model="com.axelor.apps.intervention.db.Equipment">
@@ -29,13 +29,23 @@
 
   <menuitem name="client-park-root-article-equipment" title="Articles equipments"
     parent="client-park-root" icon-background="grey" icon="fa-qrcode" left="true"
-    action="action.equipment.view.article.equipment"/>
+    action="action.equipment.view.article.equipment" order="3"/>
 
   <action-view name="action.equipment.view.article.equipment"
     title="Articles equipments" model="com.axelor.apps.intervention.db.ArticleEquipment">
     <view type="grid" name="article-equipment-grid"/>
     <view type="form" name="article-equipment-form"/>
     <view-param name="search-filters" value="article-equipment-filters"/>
+  </action-view>
+
+  <menuitem name="client-park-root-park-model" title="Park models"
+    parent="client-park-root" icon-background="grey" icon="fa-qrcode" left="true"
+    action="action.equipment.view.equipment.model" order="4"/>
+
+  <action-view name="action.equipment.view.equipment.model" title="Park models"
+    model="com.axelor.apps.intervention.db.ParkModel">
+    <view type="grid" name="park-model-grid"/>
+    <view type="form" name="park-model-form"/>
   </action-view>
 
   <menuitem name="client-park-root-conf" title="Configuration" parent="client-park-root"
@@ -48,6 +58,16 @@
     title="Equipment families" model="com.axelor.apps.intervention.db.EquipmentFamily">
     <view type="grid" name="equipment-family-grid"/>
     <view type="form" name="equipment-family-form"/>
+  </action-view>
+
+  <menuitem name="test" title="test" action="action.test"/>
+
+  <action-view name="action.test" title="Test" model="com.axelor.apps.intervention.db.Equipment">
+    <view type="tree" name="equipment-tree"/>
+    <domain>
+      self.inService = false
+    </domain>
+    <context name="_seq" expr="test"/>
   </action-view>
 
 </object-views>
