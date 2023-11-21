@@ -71,14 +71,22 @@
           onChange="action-sequence-method-verify-pattern"/>
       </panel>
 
-      <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname" showIf="!prefixGroovyOk"/>
-      <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname" showIf="!suffixGroovyOk"/>
-      <field name="prefixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" showIf="prefixGroovyOk"
-        widget="CodeEditor" x-code-syntax="groovy" height="100"/>
-      <field name="suffixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" widget="CodeEditor"
-        x-code-syntax="groovy" showIf="suffixGroovyOk" height="100"/>
+      <panel colSpan="12">
+        <panel stacked="true">
+          <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            onChange="action-sequence-method-compute-fullname" showIf="!prefixGroovyOk"/>
+          <field name="prefixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            showIf="prefixGroovyOk" widget="CodeEditor" x-code-syntax="groovy" height="100"/>
+        </panel>
+
+        <panel stacked="true">
+          <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            onChange="action-sequence-method-compute-fullname" showIf="!suffixGroovyOk"/>
+          <field name="suffixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" widget="CodeEditor"
+            x-code-syntax="groovy" showIf="suffixGroovyOk" height="100"/>
+        </panel>
+      </panel>
+
       <field name="prefixGroovyOk"
         hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
         onChange="action-sequence-group-onChange-groovyOk"/>
