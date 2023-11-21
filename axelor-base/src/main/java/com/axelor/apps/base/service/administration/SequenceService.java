@@ -562,10 +562,11 @@ public class SequenceService {
       throws AxelorException {
     String seqPrefixe = StringUtils.defaultString(sequence.getPrefixe(), "");
     String seqSuffixe = StringUtils.defaultString(sequence.getSuffixe(), "");
-    if (sequence.getGroovyOk()) {
-      seqPrefixe = StringUtils.defaultString(getGroovyValue(sequence, sequence.getPrefixGroovy(), model), "");
-      seqSuffixe = StringUtils.defaultString(getGroovyValue(sequence, sequence.getSuffixGroovy(), model), "");
-
+    if (sequence.getPrefixGroovyOk()) {
+      seqPrefixe = StringUtils.defaultString(getGroovyValue(sequence.getPrefixGroovy(), model), "");
+    }
+    if (sequence.getSuffixGroovyOk()) {
+      seqSuffixe = StringUtils.defaultString(getGroovyValue(sequence.getSuffixGroovy(), model), "");
     }
 
     String sequenceValue = getSequenceValue(sequenceVersion);
@@ -585,13 +586,21 @@ public class SequenceService {
     return nextSeq;
   }
 
-  protected String getGroovyValue(Sequence sequence, String prefixOrSuffix, Model model) {
-    if (!Strings.isNullOrEmpty(prefixOrSuffix)
-        && sequence.getGroovyOk()
-        && Objects.nonNull(model)) {
-      Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
-      return String.valueOf(new GroovyScriptHelper(cxt).eval(prefixOrSuffix));
+  protected String getGroovyValue(String prefixOrSuffix, Model model) throws AxelorException {
+
+    if (!Strings.isNullOrEmpty(prefixOrSuffix) && Objects.nonNull(model)) {
+      try {
+        Context cxt = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
+        return String.valueOf(new GroovyScriptHelper(cxt).eval(prefixOrSuffix));
+
+      } catch (Exception e) {
+        throw new AxelorException(
+            e,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.SEQUENCE_GROOVY_CONFIGURATION));
+      }
     }
+
     return prefixOrSuffix;
   }
 }

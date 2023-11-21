@@ -103,7 +103,7 @@ public class SequenceController {
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
       sequence = EntityHelper.getEntity(sequence);
-      if (!sequence.getGroovyOk()) {
+      if (!sequence.getPrefixGroovyOk() || !sequence.getSuffixGroovyOk()) {
         Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
       }
     } catch (Exception e) {

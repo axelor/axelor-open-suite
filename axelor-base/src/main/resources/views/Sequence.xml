@@ -72,14 +72,17 @@
       </panel>
 
       <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname" showIf="!groovyOk"/>
+        onChange="action-sequence-method-compute-fullname" showIf="!prefixGroovyOk"/>
       <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname" showIf="!groovyOk"/>
-      <field name="prefixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" showIf="groovyOk"
-        widget="CodeEditor" x-code-syntax="groovy"/>
+        onChange="action-sequence-method-compute-fullname" showIf="!suffixGroovyOk"/>
+      <field name="prefixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" showIf="prefixGroovyOk"
+        widget="CodeEditor" x-code-syntax="groovy" height="100"/>
       <field name="suffixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" widget="CodeEditor"
-        x-code-syntax="groovy" showIf="groovyOk"/>
-      <field name="groovyOk"
+        x-code-syntax="groovy" showIf="suffixGroovyOk" height="100"/>
+      <field name="prefixGroovyOk"
+        hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
+        onChange="action-sequence-group-onChange-groovyOk"/>
+      <field name="suffixGroovyOk"
         hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
         onChange="action-sequence-group-onChange-groovyOk"/>
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
@@ -228,8 +231,8 @@
 
   <action-record name="action-sequence-record-empty-suffix-prefix"
     model="com.axelor.apps.base.db.Sequence">
-    <field name="prefixe" expr="eval:' '" if="groovyOk"/>
-    <field name="suffixe" expr="eval:' '" if="groovyOk"/>
+    <field name="prefixe" expr="eval:' '" if="prefixGroovyOk"/>
+    <field name="suffixe" expr="eval:' '" if="suffixGroovyOk"/>
   </action-record>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
