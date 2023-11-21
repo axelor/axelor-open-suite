@@ -282,7 +282,7 @@ public class PurchaseOrderLineController {
     }
   }
 
-  public void accountOnChange(ActionRequest request, ActionResponse response) {
+  public void computeAccount(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
           ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
