@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -116,20 +117,19 @@ public class StockMoveLineController {
     response.setValues(clearedStockMoveLineMap);
   }
 
+  @SuppressWarnings("unchecked")
   public void splitStockMoveLineByTrackingNumber(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
 
     if (context.get("trackingNumbers") == null) {
       response.setAlert(I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR));
     } else {
-      @SuppressWarnings("unchecked")
       LinkedHashMap<String, Object> stockMoveLineMap =
           (LinkedHashMap<String, Object>) context.get("_stockMoveLine");
       Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
       StockMoveLine stockMoveLine =
-          Beans.get(StockMoveLineRepository.class).find(new Long(stockMoveLineId));
+          Beans.get(StockMoveLineRepository.class).find(Long.valueOf(stockMoveLineId));
 
-      @SuppressWarnings("unchecked")
       ArrayList<LinkedHashMap<String, Object>> trackingNumbers =
           (ArrayList<LinkedHashMap<String, Object>>) context.get("trackingNumbers");
 
@@ -143,28 +143,40 @@ public class StockMoveLineController {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
     StockMove stockMove = null;
+    Boolean fromStockMove = false;
     if (context.getParent() != null
-        && context.getParent().get("_model").equals("com.axelor.apps.stock.db.StockMove")) {
+        && StockMove.class.equals(context.getParent().getContextClass())) {
       stockMove = context.getParent().asType(StockMove.class);
+      fromStockMove = true;
     } else if (stockMoveLine.getStockMove() != null
         && stockMoveLine.getStockMove().getId() != null) {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
     }
 
-    boolean _hasWarranty = false, _isPerishable = false, _isSeqUsedForSerialNumber = false;
-    if (stockMoveLine.getProduct() != null) {
-      Product product = stockMoveLine.getProduct();
-      _hasWarranty = product.getHasWarranty();
-      _isPerishable = product.getIsPerishable();
-      if (product.getTrackingNumberConfiguration() != null) {
-        _isSeqUsedForSerialNumber =
-            product.getTrackingNumberConfiguration().getUseTrackingNumberSeqAsSerialNbr();
-      }
+    boolean _isSeqUsedForSerialNumber = false;
+    Product product = stockMoveLine.getProduct();
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        product.getTrackingNumberConfiguration();
+    if (trackingNumberConfiguration != null) {
+      _isSeqUsedForSerialNumber = trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr();
+    }
+
+    String formName = "stock-move-line-create-tracking-number-wizard-form";
+    String title = I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_TITLE_1);
+
+    if ("stock-move-line-consumed-production-grid".equals(context.get("_viewName"))
+        || (fromStockMove && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
+            || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+                && trackingNumberConfiguration.getIsSaleTrackingManaged()
+                && (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
+                    || trackingNumberConfiguration.getIsProductionTrackingManaged())))) {
+      formName = "stock-move-line-select-tracking-number-wizard-form";
+      title = I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_TITLE_2);
     }
     response.setView(
-        ActionView.define(I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_TITLE))
+        ActionView.define(title)
             .model(Wizard.class.getName())
-            .add("form", "stock-move-line-track-number-wizard-form")
+            .add("form", formName)
             .param("popup", "reload")
             .param("show-toolbar", "false")
             .param("show-confirm", "false")
@@ -172,8 +184,6 @@ public class StockMoveLineController {
             .param("popup-save", "false")
             .context("_stockMove", stockMove)
             .context("_stockMoveLine", stockMoveLine)
-            .context("_hasWarranty", _hasWarranty)
-            .context("_isPerishable", _isPerishable)
             .context("_isSeqUsedForSerialNumber", _isSeqUsedForSerialNumber)
             .map());
   }
@@ -251,8 +261,8 @@ public class StockMoveLineController {
     Integer stockMoveLineId = (Integer) stockMoveLineMap.get("id");
     Integer stockMoveId = (Integer) stockMoveMap.get("id");
     StockMoveLine stockMoveLine =
-        Beans.get(StockMoveLineRepository.class).find(new Long(stockMoveLineId));
-    StockMove stockMove = Beans.get(StockMoveRepository.class).find(new Long(stockMoveId));
+        Beans.get(StockMoveLineRepository.class).find(Long.valueOf(stockMoveLineId));
+    StockMove stockMove = Beans.get(StockMoveRepository.class).find(Long.valueOf(stockMoveId));
 
     if (stockMoveLine == null
         || stockMoveLine.getProduct() == null
@@ -279,11 +289,9 @@ public class StockMoveLineController {
               ? detailStockLocationLine.getCurrentQty()
               : BigDecimal.ZERO;
       Map<String, Object> map = new HashMap<String, Object>();
-      map.put("trackingNumber", trackingNumber);
       map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
       map.put("counter", BigDecimal.ZERO);
       map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
-      map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
       map.put("$availableQty", availableQty);
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
       map.put("origin", trackingNumber.getOrigin());
