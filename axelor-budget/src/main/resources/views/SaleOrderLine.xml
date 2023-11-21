@@ -161,8 +161,7 @@
   </action-method>
 
   <action-method name="action-budget-sale-order-line-method-compute-account">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="computeAccount"/>
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="computeAccount"/>
   </action-method>
 
 </object-views>

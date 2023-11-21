@@ -122,7 +122,7 @@
   </action-group>
 
   <action-group name="action-budget-purchase-order-line-group-account-onchange">
-    <action name="action-budget-purchase-order-line-method-account-onchange"/>
+    <action name="action-budget-purchase-order-line-method-compute-account"/>
     <action name="action-purchase-order-line-group-manage-analytic"/>
   </action-group>
 
@@ -234,9 +234,9 @@
       method="setAnalyticDistributionPanelHidden"/>
   </action-method>
 
-  <action-method name="action-budget-purchase-order-line-method-account-onchange">
+  <action-method name="action-budget-purchase-order-line-method-compute-account">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="accountOnChange"/>
+      method="computeAccount"/>
   </action-method>
 
 </object-views>

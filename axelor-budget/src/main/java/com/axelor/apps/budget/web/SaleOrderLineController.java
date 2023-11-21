@@ -278,7 +278,7 @@ public class SaleOrderLineController {
     }
   }
 
-  public void accountOnChange(ActionRequest request, ActionResponse response) {
+  public void computeAccount(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = ContextTool.getContextParent(request.getContext(), SaleOrder.class, 1);
 
