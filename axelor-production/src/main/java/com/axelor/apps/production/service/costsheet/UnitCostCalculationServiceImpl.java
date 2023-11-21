@@ -513,8 +513,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
-    String domain = null;
+    String domain;
     String bomsProductsList = createBomProductList(unitCostCalculation, company);
+    if (bomsProductsList.isEmpty()) {
+      bomsProductsList = "0";
+    }
     if (this.hasDefaultBOMSelected()) {
       if (company != null) {
         domain =
@@ -576,7 +579,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
 
     return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
-        .map(id -> id.toString())
+        .map(Object::toString)
         .collect(Collectors.joining(","));
   }
 
