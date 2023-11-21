@@ -8,9 +8,11 @@
     <field name="depositNumber" width="120"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="companyBankDetails"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="depositDate"/>
     <field name="depositType"/>
-    <field name="totalAmount"/>
+    <field name="totalAmount" x-scale="currency.numberOfDecimals"/>
     <field name="chequeCount"/>
     <field name="publicationDate"/>
   </grid>
@@ -30,6 +32,7 @@
         <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false"
           colSpan="4"/>
         <field name="currency" canEdit="false" colSpan="4"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="depositDate" colSpan="4"/>
         <panel name="companyBankDetailsPanel" colSpan="12">
           <field name="companyBankDetails"
@@ -106,7 +109,7 @@
 
     <panel name="paymentDetailsPanel"
       showIf="paymentVoucherList &amp;&amp; paymentVoucherList.length > 0">
-      <field name="totalAmount"/>
+      <field name="totalAmount" x-scale="currency.numberOfDecimals"/>
       <field name="chequeCount"/>
     </panel>
 
@@ -213,7 +216,8 @@
     <field name="chequeBank"/>
     <field name="chequeNumber"/>
     <field name="currency"/>
-    <field name="paidAmount"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="paidAmount" x-scale="currency.numberOfDecimals"/>
     <field name="chequeDueDate"/>
   </grid>
 
@@ -239,8 +243,9 @@
     <panel name="mainPanel" colSpan="12" readonly="true">
       <field name="partner"/>
       <field name="paymentDate"/>
-      <field name="paidAmount"/>
+      <field name="paidAmount" x-scale="currency.numberOfDecimals"/>
       <field name="currency"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel name="chequeDetailsPanel" title="Cheque" colSpan="12">
       <field name="chequeOwner" required="true"/>
