@@ -1080,9 +1080,6 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
 
-  public static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
-      "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
-
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
 

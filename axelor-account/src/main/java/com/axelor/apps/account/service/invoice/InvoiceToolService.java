@@ -388,4 +388,15 @@ public class InvoiceToolService {
         && invoice.getCompany() != null
         && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
   }
+
+  public static void checkUseForPartnerBalanceAndReconcileOk(Invoice invoice)
+      throws AxelorException {
+    if (invoice.getPartnerAccount() != null
+        && (!invoice.getPartnerAccount().getReconcileOk()
+            || !invoice.getPartnerAccount().getUseForPartnerBalance())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
+    }
+  }
 }
