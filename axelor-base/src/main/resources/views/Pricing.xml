@@ -74,7 +74,7 @@
           onChange="action-pricing-method-set-formula-field"/>
         <field name="linkedPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
-        <field name="formula" hideIf="product || productCategory"
+        <field name="formula" readonlyIf="product || productCategory"
           requiredIf="!product &amp;&amp; !productCategory" widget="CodeEditor" colSpan="12"
           x-code-syntax="groovy" onChange="action-pricing-method-clear-fields-related-to-formula"/>
       </panel>

@@ -158,7 +158,7 @@ public class PricingServiceImpl implements PricingService {
     List<Pricing> filteredPricings = new ArrayList<>();
     for (Pricing pricing : pricings) {
       try {
-        if ((Boolean) scriptHelper.eval(pricing.getFormula())) {
+        if (Boolean.TRUE.equals(scriptHelper.eval(pricing.getFormula()))) {
           filteredPricings.add(pricing);
         }
       } catch (Exception e) {
