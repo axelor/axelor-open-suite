@@ -16,18 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.quality.exception;
+package com.axelor.apps.quality.service;
 
-public final class QualityExceptionMessage {
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.quality.db.QIStatus;
 
-  private QualityExceptionMessage() {}
+public interface QualityImprovementService {
 
-  public static final String QUALITY_IMPROVEMENT_SEQUENCE_ERROR = /*$$(*/
-      "The company %s doesn't have any configured sequence for Quality improvement" /*)*/;
-
-  public static final String QI_RESOLUTION_DECISION_INVALID_SUM_OF_QUANTITIES = /*$$(*/
-      "Sum of quantities of the decisions for a default must not be greater than the default's quantity" /*)*/;
-
-  public static final String DEFAULT_QI_STATUS_NOT_FOUND = /*$$(*/
-      "No status have been found for the QA, please register at least one in the configurations" /*)*/;
+  QIStatus getDefaultQIStatus() throws AxelorException;
 }
