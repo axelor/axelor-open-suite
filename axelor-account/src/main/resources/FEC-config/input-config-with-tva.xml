@@ -9,11 +9,12 @@
       partnerName, moveLine_origin, moveLineOriginDate, description, debit, credit, reconcileGroupCode, reconcileGroupDateOfLettering,
       validationDate, currencyAmount, move_currency</header> -->
     <bind column="CompAuxNum" search="self.partnerSeq = :CompAuxNum" to="partner" update="true"/>
-    <bind column="Debit" eval="Debit.replace(',', '.')" to="debit"/>
-    <bind column="Credit" eval="Credit.replace(',', '.')" to="credit"/>
+    <bind column="Debit" eval="Debit ? Debit.replace(',', '.') : 0" to="debit"/>
+    <bind column="Credit" eval="Credit ? Credit.replace(',', '.') : 0" to="credit"/>
     <bind column="PieceRef" to="origin"/>
     <bind column="EcritureLib" to="description"/>
-    <bind column="Montantdevise" eval="Montantdevise.replace(',', '.')" to="currencyAmount"/>
+    <bind column="Montantdevise" eval="Montantdevise ? Montantdevise.replace(',', '.') : 0"
+      to="currencyAmount"/>
     <bind column="EcritureLet" search="self.code = :EcritureLet" if="EcritureLet"
       to="reconcileGroup">
       <bind column="EcritureLet" to="code"/>
@@ -23,6 +24,7 @@
     <bind column="taxCode"
       search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))"
       to="taxLine" update="true"/>
+    <bind to="currencyCode" column="Idevise"/>
   </input>
 
 

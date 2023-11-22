@@ -328,6 +328,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
       "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
 
+  public static final String MOVE_LINE_TAX_LINE_MISSING = /*$$(*/
+      "Tax line must be filled when an account of type tax is selected in order to be able to properly reconcile the payments (with the split of taxes included) : Please verify the move line(s) : %s." /*)*/;
+
   /* Invoice payment controller */
   public static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
       "You must select at least one invoice term line to pay" /*)*/;
@@ -1414,6 +1417,12 @@ public final class AccountExceptionMessage {
 
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
+
+  public static final String IMPORT_FEC_MISSING_CURRENCY = /*$$(*/
+      "Currency is required to import accounting entries/entry lines. Either there is no currency input or the currency code has no match with existing records." /*)*/;
+
+  public static final String IMPORT_FEC_CURRENCY_INCOHERENCE = /*$$(*/
+      "The imported entry lines contain(s) more than one currency. Currency must be unique/identical on all lines of the same entry. This one will constitute the currency of the entry." /*)*/;
 
   public static final String ACCOUNT_MANAGEMENT_CASH_ACCOUNT_MISSING_PAYMENT = /*$$(*/
       "Please select a cash account in config of the payment mode %s" /*)*/;

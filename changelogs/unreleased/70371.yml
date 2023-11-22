@@ -1,0 +1,3 @@
+---
+title: "Payment session : Fix demo data not allowing daybook moves to be retrieved in payment session despite that status being enabled"
+type: fix

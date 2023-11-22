@@ -122,7 +122,11 @@
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
         <field name="invoice" hidden="true"/>
-        <field name="companyExTaxTotal" hidden="true"/>
+        <field name="invoice.company" hidden="true"/>
+        <field name="invoice.company.currency" hidden="true"/>
+        <field name="invoice.company.currency.symbol" hidden="true"/>
+        <field name="companyExTaxTotal" hidden="true"
+          x-currency="invoice.company.currency.symbol"/>
         <field name="companyInTaxTotal" hidden="true"/>
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>

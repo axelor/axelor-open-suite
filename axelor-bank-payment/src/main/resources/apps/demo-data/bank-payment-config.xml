@@ -9,8 +9,7 @@
   </input>
 
   <input file="bankpayment_bankPaymentConfig.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId"
-    update="true"/>
+    type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId"/>
 
   <input file="account_accountingBatch.csv" separator=";"
     type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code">

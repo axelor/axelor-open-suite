@@ -1,0 +1,3 @@
+---
+title: "FEC Import: Correctly import move lines with currency and check for incoherence."
+type: fix

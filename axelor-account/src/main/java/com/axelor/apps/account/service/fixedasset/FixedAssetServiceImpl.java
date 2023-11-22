@@ -536,7 +536,8 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               transferredReason,
               createdFixedAsset.getComments());
       filterListsByDates(createdFixedAsset, disposalDate);
-    } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION) {
+    } else if (transferredReason == FixedAssetRepository.TRANSFERED_REASON_CESSION
+        || transferredReason == FixedAssetRepository.TRANSFERED_REASON_SCRAPPING) {
       depreciationFixedAssetLine =
           computeCession(fixedAsset, disposalDate, disposalAmount, transferredReason, comments);
       filterListsByDates(fixedAsset, disposalDate);
