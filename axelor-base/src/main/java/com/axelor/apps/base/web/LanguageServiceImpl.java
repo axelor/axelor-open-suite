@@ -37,7 +37,7 @@ public class LanguageServiceImpl implements LanguageService {
 
   @Transactional
   @Override
-  public void saveExistingLanguageObejctToMetaSelect(
+  public void saveExistingLanguageObjectToMetaSelect(
       Language language, String oldName, String oldCode) {
     Query<MetaSelect> metaSelectQuery =
         metaSelectRepository.all().filter("self.name = :selectName");
@@ -60,7 +60,7 @@ public class LanguageServiceImpl implements LanguageService {
 
   @Transactional
   @Override
-  public void saveNewLanguageObejctToMetaSelect(Language language) {
+  public void saveNewLanguageObjectToMetaSelect(Language language) {
     Query<MetaSelect> metaSelectQuery =
         metaSelectRepository.all().filter("self.name = :selectName");
     metaSelectQuery.bind("selectName", "select.language");
@@ -80,11 +80,9 @@ public class LanguageServiceImpl implements LanguageService {
   @Override
   public void removeLanguageLinkedMetaSelectItem(Language language) {
     MetaSelectItemRepository metaSelectItemRepository = Beans.get(MetaSelectItemRepository.class);
-    String oldName = language.getName();
-    String oldCode = language.getCode();
     Query<MetaSelectItem> metaSelectItemQuery =
         metaSelectItemRepository.all().filter("self.title = :oldName and self.value = :oldCode");
-    metaSelectItemQuery.bind("oldName", oldName).bind("oldCode", oldCode);
+    metaSelectItemQuery.bind("oldName", language.getName()).bind("oldCode", language.getCode());
     List<MetaSelectItem> metaSelectItemList = metaSelectItemQuery.fetch();
     MetaSelectItem metaSelectItem = metaSelectItemList.get(0);
     metaSelectItemRepository.remove(metaSelectItem);

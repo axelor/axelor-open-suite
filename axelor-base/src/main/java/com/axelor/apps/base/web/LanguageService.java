@@ -4,10 +4,10 @@ import com.axelor.apps.base.db.Language;
 
 public interface LanguageService {
 
-  public void saveExistingLanguageObejctToMetaSelect(
+  public void saveExistingLanguageObjectToMetaSelect(
       Language language, String oldName, String oldCode);
 
-  public void saveNewLanguageObejctToMetaSelect(Language language);
+  public void saveNewLanguageObjectToMetaSelect(Language language);
 
   public void removeLanguageLinkedMetaSelectItem(Language language);
 

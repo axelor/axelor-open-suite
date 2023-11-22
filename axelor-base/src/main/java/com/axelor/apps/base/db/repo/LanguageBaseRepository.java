@@ -9,23 +9,25 @@ import javax.persistence.EntityManager;
 public class LanguageBaseRepository extends LanguageRepository {
   @Override
   public Language save(Language entity) {
+    // Get the original object by EntityManager.
     EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
-    Language oldLanguageObject;
+    Language oldLanguageObject = em.find(Language.class, entity.getId());
     LanguageService languageService = Beans.get(LanguageService.class);
-    oldLanguageObject = em.find(Language.class, entity.getId());
+
     if (oldLanguageObject != null) {
-      String oldName = oldLanguageObject.getName();
-      String oldCode = oldLanguageObject.getCode();
-      languageService.saveExistingLanguageObejctToMetaSelect(entity, oldName, oldCode);
+      // Save modifications of an existing Language obj and link to MetaSelectItem.
+      languageService.saveExistingLanguageObjectToMetaSelect(
+          entity, oldLanguageObject.getName(), oldLanguageObject.getCode());
     } else {
-      languageService.saveNewLanguageObejctToMetaSelect(entity);
+      // Create a new Language obj and link to MetaSelectItem
+      languageService.saveNewLanguageObjectToMetaSelect(entity);
     }
     return super.save(entity);
   }
 
   @Override
   public void remove(Language entity) {
-
+    // Remove the corresponding value in MetaSelectItem before remove the Language obj.
     LanguageService languageService = Beans.get(LanguageService.class);
     languageService.removeLanguageLinkedMetaSelectItem(entity);
     super.remove(entity);
