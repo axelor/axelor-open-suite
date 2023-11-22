@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.DPAE;
@@ -52,6 +51,4 @@ public interface EmployeeService extends UserService {
   public BirtTemplate getAnnualReportBirtTemplate(Employee employee) throws AxelorException;
 
   public BirtTemplate getEmpPhoneBookBirtTemplate() throws AxelorException;
-
-  BankDetails getBankDetails(Employee employee);
 }

@@ -42,9 +42,4 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController"
       method="getExpenseDomain"/>
   </action-method>
-
-  <action-attrs name="action-expense-create-wizard-attrs-expense-domain">
-    <attribute for="expense" name="domain"
-      expr="eval: &quot;self.employee.id = ${__user__?.employee?.id} &quot;"/>
-  </action-attrs>
 </object-views>
