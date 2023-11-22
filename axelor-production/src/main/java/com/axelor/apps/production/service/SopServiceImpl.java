@@ -22,11 +22,15 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.Sop;
 import com.axelor.apps.production.db.SopLine;
@@ -35,19 +39,28 @@ import com.axelor.apps.production.db.repo.SopRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.db.MrpForecast;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class SopServiceImpl implements SopService {
 
   public static final int FETCH_LIMIT = 1;
+  public static BigDecimal TOTAL_FORECAST = BigDecimal.ZERO;
   protected AppBaseService appBaseService;
   protected SopRepository sopRepo;
   protected PeriodRepository periodRepo;
@@ -56,6 +69,10 @@ public class SopServiceImpl implements SopService {
   protected CurrencyService currencyService;
   protected CurrencyRepository currencyRepo;
   protected LocalDate today;
+  protected ProductCompanyService productCompanyService;
+  protected CompanyRepository companyRepository;
+  protected ProductRepository productRepository;
+  protected MrpForecastRepository mrpForecastRepository;
 
   @Inject
   SopServiceImpl(
@@ -65,7 +82,11 @@ public class SopServiceImpl implements SopService {
       SopLineRepository sopLineRepo,
       CurrencyService currencyService,
       AppBaseService appBaseService,
-      CurrencyRepository currencyRepo) {
+      CurrencyRepository currencyRepo,
+      ProductCompanyService productCompanyService,
+      CompanyRepository companyRepository,
+      ProductRepository productRepository,
+      MrpForecastRepository mrpForecastRepository) {
     this.sopRepo = sopRepo;
     this.periodRepo = periodRepo;
     this.saleOrderLineRepo = saleOrderLineRepo;
@@ -73,6 +94,10 @@ public class SopServiceImpl implements SopService {
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.currencyRepo = currencyRepo;
+    this.productCompanyService = productCompanyService;
+    this.companyRepository = companyRepository;
+    this.productRepository = productRepository;
+    this.mrpForecastRepository = mrpForecastRepository;
   }
 
   @Override
@@ -191,5 +216,59 @@ public class SopServiceImpl implements SopService {
     sopLine = sopLineRepo.find(sopLine.getId());
     sopLine.setSopSalesForecast(exTaxSum);
     sopLineRepo.save(sopLine);
+  }
+
+  @Override
+  @SuppressWarnings("unchecked")
+  public SortedSet<Map<String, Object>> fillMrpForecast(
+      ProductCategory productCategory, Map<String, Object> sopLineMap, Company company)
+      throws AxelorException {
+    SortedSet<Map<String, Object>> mrpForecastSet =
+        new TreeSet<>(Comparator.comparing(m -> (String) m.get("code")));
+    Period period =
+        periodRepo.find(
+            Long.parseLong(((Map<String, Object>) sopLineMap.get("period")).get("id").toString()));
+    List<Product> productList =
+        productRepository
+            .all()
+            .filter("self.productCategory.id = ?1 ", productCategory.getId())
+            .fetch();
+    if (productList != null) {
+      for (Product product : productList) {
+        Map<String, Object> map = new HashMap<>();
+        MrpForecast mrpForecast =
+            mrpForecastRepository
+                .all()
+                .filter(
+                    "self.product.id = ?1 AND self.technicalOrigin = ?2 AND self.forecastDate >= ?3 AND self.forecastDate <= ?4",
+                    product.getId(),
+                    MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP,
+                    period.getFromDate(),
+                    period.getToDate())
+                .fetchOne();
+        BigDecimal salePrice =
+            (BigDecimal)
+                productCompanyService.get(
+                    product, "salePrice", companyRepository.find(company.getId()));
+        if (mrpForecast != null) {
+          map = Mapper.toMap(mrpForecast);
+          BigDecimal totalPrice = mrpForecast.getQty().multiply(salePrice);
+          map.put("$totalPrice", totalPrice);
+          map.put("$unitPrice", salePrice);
+          map.put("code", product.getCode());
+          TOTAL_FORECAST = TOTAL_FORECAST.add(totalPrice);
+          mrpForecastSet.add(map);
+          continue;
+        }
+        map.put("product", product);
+        map.put("qty", BigDecimal.ZERO);
+        map.put("$totalPrice", BigDecimal.ZERO);
+        map.put("$unitPrice", salePrice);
+        map.put("code", product.getCode());
+        map.put("forecastDate", period.getToDate());
+        mrpForecastSet.add(map);
+      }
+    }
+    return mrpForecastSet;
   }
 }

@@ -18,10 +18,14 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.stock.db.StockLocation;
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface MrpForecastProductionService {
 
@@ -30,4 +34,10 @@ public interface MrpForecastProductionService {
       List<LinkedHashMap<String, Object>> mrpForecastList,
       StockLocation stockLocation,
       int technicalOrigin);
+
+  public BigDecimal computeTotalForecast(List<Map<String, Object>> mrpForecastList, Company company)
+      throws AxelorException;
+
+  public List<Map<String, Object>> resetMrpForecasts(
+      List<Map<String, Object>> mrpForecastList, Company company) throws AxelorException;
 }

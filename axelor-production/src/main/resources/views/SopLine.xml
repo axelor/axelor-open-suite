@@ -83,6 +83,7 @@
     <view-param name="show-confirm" value="false"/>
     <context name="_productCategory" expr="eval: _parent?.productCategory"/>
     <context name="_sopLine" expr="eval: __this__"/>
+    <context name="_company" expr="eval: _parent?.company"/>
   </action-view>
 
   <action-group name="action-sop-line-group-total-price-onchange">
