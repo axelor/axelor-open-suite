@@ -157,5 +157,6 @@ public class ProductionModule extends AxelorModule {
     bind(MachineService.class).to(MachineServiceImpl.class);
     bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
     bind(ProductReservationService.class).to(ProductReservationServiceImpl.class);
+    bind(ProductReservationServiceImpl.class).to(ProductReservationServiceProductionImpl.class);
   }
 }

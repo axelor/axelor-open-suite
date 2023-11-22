@@ -123,14 +123,9 @@
       method="checkInvoicedOrDeliveredOrderQty"/>
   </action-method>
 
-  <action-method name="action-method-sale-order-line-request-reserved-qty">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
-      method="requestReservedQty"/>
-  </action-method>
+  <!-- <action-method name="action-method-sale-order-line-request-reserved-qty"> <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+    method="requestReservedQty"/> </action-method> -->
 
-
-  <!-- CMR TODO : deprecated. Appelait la demande de réservation dans le module vente. Je vais surement
-    reprendre cette méthode mais pour les allocations -->
   <action-method name="action-method-sale-order-line-request-qty">
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="requestQty"/>
   </action-method>

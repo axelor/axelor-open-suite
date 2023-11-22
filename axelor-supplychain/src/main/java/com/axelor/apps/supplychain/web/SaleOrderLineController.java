@@ -373,6 +373,8 @@ public class SaleOrderLineController {
     }
   }
 
+  /*
+   */
   /**
    * Called from sale order line form view, on request reserved qty click. call {@link
    * ProductReservationService#requestReservedQty}
@@ -380,13 +382,16 @@ public class SaleOrderLineController {
    * @param request axelor http resquest
    * @param response axelor http response
    */
-  public void requestReservedQty(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      Beans.get(ProductReservationService.class).requestReservedQty(saleOrderLine.getId());
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  /*
+
+    public void requestReservedQty(ActionRequest request, ActionResponse response) {
+      try {
+        SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+        Beans.get(ProductReservationService.class).requestReservedQty(saleOrderLine.getId());
+        response.setReload(true);
+      } catch (Exception e) {
+        TraceBackService.trace(response, e);
+      }
     }
-  }
+  */
 }

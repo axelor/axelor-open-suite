@@ -200,6 +200,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     updateFixedAssets(stockMove);
 
+    Beans.get(ProductReservationService.class).onRealizeStockMove(stockMove);
+
     return newStockSeq;
   }
 

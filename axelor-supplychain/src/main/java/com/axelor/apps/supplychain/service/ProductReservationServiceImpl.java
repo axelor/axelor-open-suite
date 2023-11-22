@@ -7,9 +7,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.*;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationService;
@@ -25,11 +23,11 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
+import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,13 +123,23 @@ public class ProductReservationServiceImpl implements ProductReservationService 
             .fetchStream()
             .map(ProductReservation::getQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-    BigDecimal realQty =
-        Beans.get(StockLocationService.class)
-            .getRealQty(
-                productReservation.getProduct().getId(),
-                productReservation.getStockLocation().getId(),
-                productReservation.getStockLocation().getCompany().getId());
-    return realQty.subtract(alreadyAllocatedQty);
+    boolean canGetRealQty =
+        productReservation.getProduct() != null
+            && productReservation.getProduct().getId() != null
+            && productReservation.getStockLocation() != null
+            && productReservation.getStockLocation().getId() != null
+            && productReservation.getStockLocation().getCompany() != null
+            && productReservation.getStockLocation().getCompany().getId() != null;
+    BigDecimal realQty = BigDecimal.ZERO;
+    if (canGetRealQty) {
+      realQty =
+          Beans.get(StockLocationService.class)
+              .getRealQty(
+                  productReservation.getProduct().getId(),
+                  productReservation.getStockLocation().getId(),
+                  productReservation.getStockLocation().getCompany().getId());
+    }
+    return realQty.subtract(alreadyAllocatedQty).setScale(2, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal computeAvailableQuantityForProduct(ProductReservation productReservation) {
@@ -145,7 +153,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   }
 
   // TODO move to StockLocationLineRepository
-  private BigDecimal getRealQty(Product product, StockLocation stockLocation) {
+  protected BigDecimal getRealQty(Product product, StockLocation stockLocation) {
     String query = "self.product = :product";
     if (stockLocation != null) {
       query += " AND self.stockLocation = :stockLocation";
@@ -162,6 +170,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         .orElse(BigDecimal.ZERO);
   }
 
+  // TODO supprimer ?
   @Override
   public Optional<ProductReservation> getReservedQty(StockMoveLine stockMoveLine) {
     Product product = stockMoveLine.getProduct();
@@ -177,7 +186,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   }
 
   /**
-   * Création d'une réservation : TODO CMR i18n commentaire
+   * TODO : supprimer ? Création d'une réservation
    *
    * @param stockMoveLine
    * @param qty
@@ -198,7 +207,8 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   }
 
   /**
-   * avoir tous les productreservation correspondant TODO CMR traduire javadoc
+   * TODO : a supprimer si on supprime setRequestedReservedQty avoir tous les productreservation
+   * correspondant
    *
    * @param stockMoveLine
    * @param qty
@@ -214,6 +224,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
     // productReservation.setRequestedReservedType(typeProductReservationReservation);
   }
 
+  /** TODO à supprimer */
   @Override
   public Optional<ProductReservation> getRequestedReservedQty(StockMoveLine stockMoveLine) {
     Product product = stockMoveLine.getProduct();
@@ -390,7 +401,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         (Map<String, Object>) productReseravationMap.get("originSaleOrderLine");
     if (originSaleOrderLineMap != null) {
       Long saleOrderLineId = Long.valueOf(originSaleOrderLineMap.get("id").toString());
-      SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLineId);
+      SaleOrderLine saleOrderLine = JPA.find(SaleOrderLine.class, saleOrderLineId);
       productReservationToSave.setOriginSaleOrderLine(saleOrderLine);
     }
 
@@ -422,6 +433,16 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       Long stockLocationId = Long.valueOf(stockLocationMap.get("id").toString());
       StockLocation stockLocation = Beans.get(StockLocationRepository.class).find(stockLocationId);
       productReservationToSave.setStockLocation(stockLocation);
+    }
+
+    // reload TracingNumber
+    @SuppressWarnings("unchecked")
+    Map<String, Object> trackingNumberMap =
+        (Map<String, Object>) productReseravationMap.get("trackingNumber");
+    if (trackingNumberMap != null) {
+      Long trackingNumberId = Long.valueOf(trackingNumberMap.get("id").toString());
+      TrackingNumber trackingNumber = JPA.find(TrackingNumber.class, trackingNumberId);
+      productReservationToSave.setTrackingNumber(trackingNumber);
     }
 
     productReservationRepository.save(productReservationToSave);
@@ -464,15 +485,8 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         .fetch();
   }
 
-  public static final Map<String, String> MAP_ORIGIN_SETTER_NAME_BY_CLASS_NAME =
-      Map.of(
-          "com.axelor.apps.production.db.SaleOrderLine",
-          "setOriginSaleOrderLine",
-          "com.axelor.apps.production.db.ManufOrder",
-          "setOriginManufOrder");
-
   @Override
-  public void enrichProductReservation(
+  public void enrichProductReservationOnNew(
       ProductReservation newProductReservation,
       Long productId,
       String originModelClassName,
@@ -491,17 +505,20 @@ public class ProductReservationServiceImpl implements ProductReservationService 
     updateStatus(newProductReservation, false);
   }
 
-  /** invoke reflect method because of ManufOrder is unknown in supplychain */
-  private void setOrigin(ProductReservation newProductReservation, Model originInstanceModel) {
-    try {
-      String methodName =
-          MAP_ORIGIN_SETTER_NAME_BY_CLASS_NAME.get(originInstanceModel.getClass().getName());
-      Method sumInstanceMethod =
-          ProductReservation.class.getMethod(methodName, originInstanceModel.getClass());
-      sumInstanceMethod.invoke(newProductReservation, originInstanceModel);
-    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-      TraceBackService.trace(e); // never happen
-    }
+  /**
+   * Never called. Override concrete implementation called is
+   * ProductReservationServiceProductionImpl#setOrigin thanks to bind in ProductionModule#configure
+   */
+  public void setOrigin(ProductReservation newProductReservation, Model originInstanceModel) {
+    throw new RuntimeException("Should never be called"); // never happen
+  }
+
+  /**
+   * Never called. Override concrete implementation called is
+   * ProductReservationServiceProductionImpl#getOrigin thanks to bind in ProductionModule#configure
+   */
+  public Model getOrigin(ProductReservation productReservationToSave, Model originInstanceModel) {
+    throw new RuntimeException("Should never be called"); // never happen
   }
 
   private Model getInstanceModel(String modelClassName) {
@@ -530,5 +547,76 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       return Long.valueOf(oId.toString());
     }
     return null;
+  }
+
+  // REALIZE STOCKMOVE
+
+  @Override
+  public void onRealizeStockMove(StockMove stockMove) {
+    StockLocation fromStockLocation = stockMove.getFromStockLocation();
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    stockMoveLineList
+        .parallelStream()
+        .anyMatch(
+            line -> {
+              return productReservationRepository
+                      .findByProductReservationTypeAndStockLocationAndProduct(
+                          AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
+                          fromStockLocation,
+                          line.getProduct())
+                      .count()
+                  > 0;
+            });
+    /*
+        select spr.id, spr.product, spr.stock_location from supplychain_product_reservation spr
+    inner join stock_stock_move_line ssml on spr.product = ssml.product and ssml.from_stock_location = spr.stock_location
+    inner join stock_stock_move ssm on ssm.id=ssml.stock_move
+    where
+    ssm.id = :stockMoveId and
+    spr.product_reservation_type = :productReservationTypeAllocation and
+      */
+    // javax.persistence.Query nativeQuery =
+    Query nativeQuery =
+        JPA.em()
+            .createNativeQuery(
+                "SELECT id, archived, import_id, import_origin, process_instance_id, \"version\","
+                    + " created_on, updated_on, attrs, description, is_allocation, is_reservation,"
+                    + " priority_reservation_date_time, product_reservation_type, qty,"
+                    + " requested_reserved_type, status, created_by, updated_by,"
+                    + " origin_sale_order_line, product, stock_location, tracking_number,"
+                    + " origin_manuf_order_id,"
+                    + " origin_manuf_order"
+                    + " FROM supplychain_product_reservation as spr "
+                    + " INNER JOIN stock_stock_move_line as ssml on spr.product = ssml.product and ssml.from_stock_location = spr.stock_location"
+                    + " INNER JOIN stock_stock_move as ssm on ssm.id=ssml.stock_move"
+                    + " WHERE"
+                    + " ssm.id=:stockMoveId AND"
+                    + " spr.product_reservation_type=:productReservationTypeAllocation AND"
+                    + " spr.status=:status AND"
+                    + " spr.qty > 0 AND"
+                    + " (spr.archived is NULL OR spr.archived = false)",
+                ProductReservation.class);
+    nativeQuery.setParameter("stockMoveId", stockMove.getId());
+    nativeQuery.setParameter(
+        "productReservationTypeAllocation",
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION);
+    nativeQuery.setParameter(
+        "status", AbstractProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS);
+
+    List<?> resultList = nativeQuery.getResultList();
+
+    resultList.forEach(
+        pr -> {
+          ProductReservation productReservation = (ProductReservation) pr;
+          if (productReservation.getProduct() != null
+              && productReservation.getProduct().getTrackingNumberConfiguration() == null) {
+            StockLocation stockLocation = productReservation.getStockLocation();
+            System.out.println(
+                "CMR produit sans tracking :::: " + productReservation.getProduct().getCode());
+          } else {
+            System.out.println(
+                "CMR produit avec tracking :::: " + productReservation.getProduct().getCode());
+          }
+        });
   }
 }

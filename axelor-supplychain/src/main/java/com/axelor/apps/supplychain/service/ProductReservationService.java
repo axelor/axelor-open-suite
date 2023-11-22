@@ -20,8 +20,10 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.db.Model;
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,11 +81,15 @@ public interface ProductReservationService {
   List<ProductReservation> findProductReservation(
       int productReservationType, Long productId, String originModelClassName, Long originId);
 
-  void enrichProductReservation(
+  void enrichProductReservationOnNew(
       ProductReservation newProductReservation,
       Long productId,
       String model,
       Long originId,
       int typeProductReservationReservation)
       throws AxelorException;
+
+  void setOrigin(ProductReservation productReservationToSave, Model originInstanceModel);
+
+  void onRealizeStockMove(StockMove stockMove);
 }

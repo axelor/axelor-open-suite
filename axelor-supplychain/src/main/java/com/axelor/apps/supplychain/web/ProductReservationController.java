@@ -192,7 +192,7 @@ public class ProductReservationController {
         (Map<String, Object>) request.getRawContext().get("_parent"); // saleOrderLine
 
     // origin
-    String model = mapParent.get(REQUEST_FIELDNAME_MODEL).toString();
+    String originModelClassName = mapParent.get(REQUEST_FIELDNAME_MODEL).toString();
     Long originId = Long.valueOf(mapParent.get("id").toString());
 
     // product
@@ -203,8 +203,8 @@ public class ProductReservationController {
         request.getContext().asType(ProductReservation.class);
 
     // enriched the entity ProductReservation
-    productReservationService.enrichProductReservation(
-        newProductReservation, productId, model, originId, typeProductReservation);
+    productReservationService.enrichProductReservationOnNew(
+        newProductReservation, productId, originModelClassName, originId, typeProductReservation);
 
     // manage response
     fillResponseWithProductReservationOnNew(response, newProductReservation);
@@ -252,6 +252,7 @@ public class ProductReservationController {
         RESPONSE_ATTRIBUTE_NAME_VALUE,
         newProductReservation.getOriginSaleOrderLine());
     try {
+      // TODO push in prodservprod
       Method getterManufOrder =
           ProductReservation.class.getMethod(
               "getOriginManufOrder"); // reflection because supplychain do not know ManufOrder class
