@@ -17,110 +17,105 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.Sop;
+import com.axelor.apps.production.db.SopLine;
 import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MrpForecastController {
-
-  @Inject MrpForecastProductionService mrpForecastProductionService;
-  @Inject ProductRepository productRepo;
 
   @SuppressWarnings("unchecked")
   public void generateMrpForecast(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
 
-    LinkedHashMap<String, Object> sopLineMap =
-        (LinkedHashMap<String, Object>) context.get("_sopLine");
-    LinkedHashMap<String, Object> periodMap =
-        (LinkedHashMap<String, Object>) sopLineMap.get("period");
-    Period period =
-        Beans.get(PeriodRepository.class).find(Long.parseLong(periodMap.get("id").toString()));
+    SopLine sopLine = Mapper.toBean(SopLine.class, (Map<String, Object>) context.get("_sopLine"));
+    Period period = Beans.get(PeriodRepository.class).find(sopLine.getPeriod().getId());
 
-    ArrayList<LinkedHashMap<String, Object>> mrpForecastList =
-        (ArrayList<LinkedHashMap<String, Object>>) context.get("mrpForecasts");
-
-    LinkedHashMap<String, Object> stockLocationMap =
-        (LinkedHashMap<String, Object>) context.get("stockLocation");
-
+    List<MrpForecast> mrpForecastList =
+        ((List<Map<String, Object>>) context.get("mrpForecasts"))
+            .stream()
+                .map(map -> Mapper.toBean(MrpForecast.class, map))
+                .collect(Collectors.toList());
     StockLocation stockLocation =
         Beans.get(StockLocationRepository.class)
-            .find(Long.parseLong(stockLocationMap.get("id").toString()));
-    if (mrpForecastList != null && !mrpForecastList.isEmpty()) {
-      mrpForecastProductionService.generateMrpForecast(
-          period,
-          mrpForecastList,
-          stockLocation,
-          MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP);
+            .find(
+                Long.parseLong(
+                    ((LinkedHashMap<String, Object>) context.get("stockLocation"))
+                        .get("id")
+                        .toString()));
+
+    if (CollectionUtils.isNotEmpty(mrpForecastList)) {
+      Beans.get(MrpForecastProductionService.class)
+          .generateMrpForecast(
+              period,
+              mrpForecastList,
+              stockLocation,
+              MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP);
     }
     response.setCanClose(true);
   }
 
-  public void computeTotalForecast(ActionRequest request, ActionResponse response) {
-
+  @SuppressWarnings("unchecked")
+  public void computeTotalForecast(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
-    @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> mrpForecastList =
-        (ArrayList<LinkedHashMap<String, Object>>) context.get("mrpForecasts");
-    BigDecimal totalForecast = BigDecimal.ZERO;
-    BigDecimal sopSalesForecast = new BigDecimal(context.get("sopSalesForecast").toString());
-    if (mrpForecastList != null) {
-      for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
-        BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
-        if (qty.compareTo(BigDecimal.ZERO) == 0) {
-          continue;
-        }
-        @SuppressWarnings("unchecked")
-        LinkedHashMap<String, Object> productMap =
-            (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
-        BigDecimal unitPrice = new BigDecimal(productMap.get("salePrice").toString());
-        totalForecast = totalForecast.add(qty.multiply(unitPrice));
-      }
-    }
+    Sop sop = Mapper.toBean(Sop.class, (Map<String, Object>) context.get("_sop"));
+    Company company = Beans.get(CompanyRepository.class).find(sop.getCompany().getId());
+
+    List<MrpForecast> mrpForecastList =
+        ((List<Map<String, Object>>) context.get("mrpForecasts"))
+            .stream()
+                .map(map -> Mapper.toBean(MrpForecast.class, map))
+                .collect(Collectors.toList());
+    BigDecimal totalForecast =
+        Beans.get(MrpForecastProductionService.class)
+            .computeTotalForecast(mrpForecastList, company);
     response.setValue("$totalForecast", totalForecast);
     response.setValue(
         "$difference",
-        sopSalesForecast
+        (new BigDecimal(context.get("sopSalesForecast").toString()))
             .subtract(totalForecast)
             .setScale(Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice())
             .abs());
   }
 
-  public void resetMrpForecasts(ActionRequest request, ActionResponse response) {
-
+  @SuppressWarnings("unchecked")
+  public void resetMrpForecasts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
-    @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> mrpForecastList =
-        (ArrayList<LinkedHashMap<String, Object>>) context.get("mrpForecasts");
-    BigDecimal totalForecast = BigDecimal.ZERO;
-    BigDecimal sopSalesForecast = new BigDecimal(context.get("sopSalesForecast").toString());
-    if (mrpForecastList != null) {
-      for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
-        @SuppressWarnings("unchecked")
-        LinkedHashMap<String, Object> productMap =
-            (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
-        BigDecimal unitPrice = new BigDecimal(productMap.get("salePrice").toString());
-        mrpForecastItem.put("qty", BigDecimal.ZERO);
-        mrpForecastItem.put("$totalPrice", BigDecimal.ZERO);
-        mrpForecastItem.put("$unitPrice", unitPrice);
-      }
-    }
-    response.setValue("$mrpForecasts", mrpForecastList);
-    response.setValue("$totalForecast", totalForecast);
-    response.setValue("$difference", sopSalesForecast);
+    Sop sop = Mapper.toBean(Sop.class, (Map<String, Object>) context.get("_sop"));
+    Company company = Beans.get(CompanyRepository.class).find(sop.getCompany().getId());
+    List<MrpForecast> mrpForecastList =
+        ((List<Map<String, Object>>) context.get("mrpForecasts"))
+            .stream()
+                .map(map -> Mapper.toBean(MrpForecast.class, map))
+                .collect(Collectors.toList());
+
+    response.setValue(
+        "$mrpForecasts",
+        Beans.get(MrpForecastProductionService.class).resetMrpForecasts(mrpForecastList, company));
+    response.setValue("$totalForecast", BigDecimal.ZERO);
+    response.setValue("$difference", new BigDecimal(context.get("sopSalesForecast").toString()));
   }
 }

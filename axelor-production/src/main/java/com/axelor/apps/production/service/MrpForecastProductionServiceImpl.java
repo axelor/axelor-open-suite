@@ -17,54 +17,58 @@
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.MrpForecast;
 import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MrpForecastProductionServiceImpl implements MrpForecastProductionService {
 
   protected final ProductRepository productRepo;
   protected final MrpForecastRepository mrpForecastRepo;
+  protected final ProductCompanyService productCompanyService;
 
   @Inject
   public MrpForecastProductionServiceImpl(
-      ProductRepository productRepo, MrpForecastRepository mrpForecastRepo) {
+      ProductRepository productRepo,
+      MrpForecastRepository mrpForecastRepo,
+      ProductCompanyService productCompanyService) {
     this.productRepo = productRepo;
     this.mrpForecastRepo = mrpForecastRepo;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
-  @SuppressWarnings("unchecked")
   @Transactional(rollbackOn = Exception.class)
   public void generateMrpForecast(
       Period period,
-      List<LinkedHashMap<String, Object>> mrpForecastList,
+      List<MrpForecast> mrpForecastList,
       StockLocation stockLocation,
       int technicalOrigin) {
 
-    for (LinkedHashMap<String, Object> mrpForecastItem : mrpForecastList) {
-      Long id =
-          mrpForecastItem.get("id") != null
-              ? Long.parseLong(mrpForecastItem.get("id").toString())
-              : null;
-      BigDecimal qty = new BigDecimal(mrpForecastItem.get("qty").toString());
-      LinkedHashMap<String, Object> productMap =
-          (LinkedHashMap<String, Object>) mrpForecastItem.get("product");
-      Product product = productRepo.find(Long.parseLong(productMap.get("id").toString()));
-      LocalDate forecastDate = LocalDate.parse(mrpForecastItem.get("forecastDate").toString());
+    for (MrpForecast mrpForecast : mrpForecastList) {
+      Long id = mrpForecast.getId();
+      BigDecimal qty = mrpForecast.getQty();
+      LocalDate forecastDate = mrpForecast.getForecastDate();
       if (id != null && qty.compareTo(BigDecimal.ZERO) == 0) {
         mrpForecastRepo.remove(mrpForecastRepo.find(id));
       } else if (qty.compareTo(BigDecimal.ZERO) != 0) {
+        Product product = productRepo.find(mrpForecast.getProduct().getId());
         this.createOrUpdateMrpForecast(
             id, forecastDate, product, stockLocation, qty, technicalOrigin);
       }
@@ -96,5 +100,40 @@ public class MrpForecastProductionServiceImpl implements MrpForecastProductionSe
     mrpForecast.setUnit(unit);
     mrpForecast.setStatusSelect(MrpForecastRepository.STATUS_DRAFT);
     mrpForecastRepo.save(mrpForecast);
+  }
+
+  @Override
+  public BigDecimal computeTotalForecast(List<MrpForecast> mrpForecastList, Company company)
+      throws AxelorException {
+    BigDecimal totalForecast = BigDecimal.ZERO;
+    if (CollectionUtils.isNotEmpty(mrpForecastList)) {
+      for (MrpForecast mrpForecast : mrpForecastList) {
+        BigDecimal qty = mrpForecast.getQty();
+        if (qty.signum() == 0) {
+          continue;
+        }
+        totalForecast =
+            totalForecast.add(qty.multiply(getSalePrice(mrpForecast.getProduct(), company)));
+      }
+    }
+    return totalForecast;
+  }
+
+  @Override
+  public List<Map<String, Object>> resetMrpForecasts(
+      List<MrpForecast> mrpForecastList, Company company) throws AxelorException {
+    List<Map<String, Object>> data = new ArrayList<>();
+    for (MrpForecast mrpForecast : mrpForecastList) {
+      Map<String, Object> map = Mapper.toMap(mrpForecast);
+      map.put("qty", BigDecimal.ZERO);
+      map.put("$totalPrice", BigDecimal.ZERO);
+      map.put("$unitPrice", getSalePrice(mrpForecast.getProduct(), company));
+      data.add(map);
+    }
+    return data;
+  }
+
+  protected BigDecimal getSalePrice(Product product, Company company) throws AxelorException {
+    return (BigDecimal) productCompanyService.get(product, "salePrice", company);
   }
 }
