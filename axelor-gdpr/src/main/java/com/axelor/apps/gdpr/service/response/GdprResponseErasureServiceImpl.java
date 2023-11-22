@@ -184,7 +184,9 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
     }
 
     // check configured objects if it contains one sided m2o
-    cleanOtherReferences(reference, metaModel, anonymizationResult);
+    if (depth == 0) {
+      cleanOtherReferences(reference, metaModel, anonymizationResult);
+    }
 
     reference.setArchived(true);
 
@@ -540,6 +542,7 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
           gdprResponseService.extractReferenceFromModelAndId(
               relationshipAnonymizer.getModel().getFullName(),
               (long) relationshipAnonymizer.getModelId());
+
       if (newObject == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
