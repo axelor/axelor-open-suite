@@ -43,7 +43,7 @@
   <form name="sop-line-generate-mps-forecasts-wizard-form" title="Generate MPS forecasts"
     model="com.axelor.utils.db.Wizard" onNew="action-sop-line-wizard-method-fill-mrp-forecasts">
     <panel name="wizardPanel" colSpan="12">
-      <panel-related name="$mrpForecastPanel" field="$mrpForecasts" canSelect="false"
+      <panel-related name="mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
         target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
         <field name="forecastDate" title="Forecast date" type="date" required="true"
@@ -80,7 +80,7 @@
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="show-confirm" value="false"/>
-    <context name="_productCategory" expr="eval: _parent?.productCategory"/>
+    <context name="_sop" expr="eval: __parent__"/>
     <context name="_sopLine" expr="eval: __this__"/>
   </action-view>
 
