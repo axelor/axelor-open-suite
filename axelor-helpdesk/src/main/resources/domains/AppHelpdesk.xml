@@ -18,6 +18,8 @@
       ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Closed status"/>
     <many-to-one name="inProgressTicketStatus"
       ref="com.axelor.apps.helpdesk.db.TicketStatus" title="On going status"/>
+    <many-to-one name="defaultTicketStatus"
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Default status"/>
 
     <track>
       <field name="isSla" on="UPDATE"/>

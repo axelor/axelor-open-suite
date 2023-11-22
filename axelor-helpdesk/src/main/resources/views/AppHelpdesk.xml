@@ -11,9 +11,10 @@
       <field name="manageTimer" widget="boolean-switch" colSpan="3"/>
     </panel>
     <panel name="statusPanel">
+      <field name="defaultTicketStatus"/>
+      <field name="inProgressTicketStatus"/>
       <field name="resolvedTicketStatus"/>
       <field name="closedTicketStatus"/>
-      <field name="inProgressTicketStatus"/>
     </panel>
 
     <panel-mail name="mailPanel">
