@@ -24,7 +24,6 @@
     <bind column="taxCode"
       search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))"
       to="taxLine" update="true"/>
-    <bind to="currencyCode" column="Idevise"/>
   </input>
 
 
