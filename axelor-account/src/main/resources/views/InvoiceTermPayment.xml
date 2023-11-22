@@ -13,7 +13,7 @@
 
   <form name="invoice-term-payment-form" title="Invoice term payment"
     model="com.axelor.apps.account.db.InvoiceTermPayment"
-    onLoad="action-invoice-term-payment-attrs-is-multi-currency">
+    onLoad="action-invoice-term-payment-group-onload">
     <panel name="mainPanel" readonly="true">
       <field name="invoiceTerm" form-view="invoice-term-form"
         grid-view="invoice-term-move-line-grid" colSpan="12"/>
@@ -27,10 +27,30 @@
     </panel>
   </form>
 
+  <action-group name="action-invoice-term-payment-group-onload">
+    <action name="action-invoice-term-payment-attrs-is-multi-currency"/>
+    <action name="action-invoice-term-payment-attrs-set-scale"/>
+  </action-group>
+
   <action-attrs name="action-invoice-term-payment-attrs-is-multi-currency">
     <attribute name="value" for="$isMultiCurrency" if="invoiceTerm.invoice != null"
       expr="eval: invoiceTerm.invoice.currency?.code != invoiceTerm.invoice.company?.currency?.code"/>
     <attribute name="value" for="$isMultiCurrency" if="invoiceTerm.invoice == null"
       expr="eval: invoiceTerm.moveLine.move?.currency?.code != invoiceTerm.moveLine.move?.company?.currency?.code"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-term-payment-attrs-set-scale">
+    <attribute name="scale" for="paidAmount" if="invoiceTerm.invoice != null"
+      expr="eval: invoiceTerm.invoice.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="paidAmount" if="invoiceTerm.invoice == null"
+      expr="eval: invoiceTerm.moveLine.move?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="companyPaidAmount" if="invoiceTerm.invoice != null"
+      expr="eval: invoiceTerm.invoice.company?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="companyPaidAmount" if="invoiceTerm.invoice == null"
+      expr="eval: invoiceTerm.moveLine.move?.company?.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="financialDiscountAmount" if="invoiceTerm.invoice != null"
+      expr="eval: invoiceTerm.invoice.currency?.numberOfDecimals"/>
+    <attribute name="scale" for="financialDiscountAmount" if="invoiceTerm.invoice == null"
+      expr="eval: invoiceTerm.moveLine.move?.currency?.numberOfDecimals"/>
   </action-attrs>
 </object-views>

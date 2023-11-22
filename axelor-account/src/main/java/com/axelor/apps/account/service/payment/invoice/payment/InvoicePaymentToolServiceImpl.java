@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -69,6 +70,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -80,7 +82,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -89,6 +92,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -407,7 +411,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   public void computeFromInvoiceTermPayments(InvoicePayment invoicePayment) {
-    BigDecimal newAmount = invoicePayment.getAmount();
+    BigDecimal newAmount =
+        currencyScaleServiceAccount.getScaledValue(invoicePayment, invoicePayment.getAmount());
+
     BigDecimal taxRate =
         invoicePayment.getFinancialDiscountTotalAmount().signum() == 0
             ? BigDecimal.ZERO
@@ -421,30 +427,40 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     invoicePayment.setFinancialDiscountTotalAmount(BigDecimal.ZERO);
 
     for (InvoiceTermPayment invoiceTermPayment : invoicePayment.getInvoiceTermPaymentList()) {
-      invoicePayment.setAmount(invoicePayment.getAmount().add(invoiceTermPayment.getPaidAmount()));
+      invoicePayment.setAmount(
+          currencyScaleServiceAccount.getScaledValue(
+              invoicePayment, invoicePayment.getAmount().add(invoiceTermPayment.getPaidAmount())));
       invoicePayment.setFinancialDiscountTotalAmount(
-          invoicePayment
-              .getFinancialDiscountTotalAmount()
-              .add(invoiceTermPayment.getFinancialDiscountAmount()));
+          currencyScaleServiceAccount.getScaledValue(
+              invoicePayment,
+              invoicePayment
+                  .getFinancialDiscountTotalAmount()
+                  .add(invoiceTermPayment.getFinancialDiscountAmount())));
     }
 
     invoicePayment.setFinancialDiscountTotalAmount(
-        invoicePayment
-            .getFinancialDiscountTotalAmount()
-            .multiply(newAmount)
-            .divide(
-                invoicePayment.getAmount(),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP));
+        currencyScaleServiceAccount.getScaledValue(
+            invoicePayment,
+            invoicePayment
+                .getFinancialDiscountTotalAmount()
+                .multiply(newAmount)
+                .divide(
+                    invoicePayment.getAmount(),
+                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                    RoundingMode.HALF_UP)));
     invoicePayment.setAmount(newAmount);
     invoicePayment.setFinancialDiscountTaxAmount(
-        invoicePayment
-            .getFinancialDiscountTotalAmount()
-            .multiply(taxRate.divide(new BigDecimal(100)))
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+        currencyScaleServiceAccount.getScaledValue(
+            invoicePayment,
+            invoicePayment
+                .getFinancialDiscountTotalAmount()
+                .multiply(taxRate.divide(new BigDecimal(100)))
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)));
     invoicePayment.setFinancialDiscountAmount(
-        invoicePayment
-            .getFinancialDiscountTotalAmount()
-            .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
+        currencyScaleServiceAccount.getScaledValue(
+            invoicePayment,
+            invoicePayment
+                .getFinancialDiscountTotalAmount()
+                .subtract(invoicePayment.getFinancialDiscountTaxAmount())));
   }
 }
