@@ -15,6 +15,7 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,6 +28,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   protected LeaveManagementRepository leaveManagementRepository;
   protected LeaveManagementService leaveManagementService;
   protected PublicHolidayHrService publicHolidayHrService;
+  protected LeaveLineService leaveLineService;
 
   @Inject
   public IncrementLeaveServiceImpl(
@@ -36,7 +38,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
       AppHumanResourceService appHumanResourceService,
       LeaveManagementRepository leaveManagementRepository,
       LeaveManagementService leaveManagementService,
-      PublicHolidayHrService publicHolidayHrService) {
+      PublicHolidayHrService publicHolidayHrService,
+      LeaveLineService leaveLineService) {
     this.leaveReasonRepository = leaveReasonRepository;
     this.employeeRepository = employeeRepository;
     this.appBaseService = appBaseService;
@@ -44,8 +47,10 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     this.leaveManagementRepository = leaveManagementRepository;
     this.leaveManagementService = leaveManagementService;
     this.publicHolidayHrService = publicHolidayHrService;
+    this.leaveLineService = leaveLineService;
   }
 
+  @Transactional
   @Override
   public void updateEmployeeLeaveLines(LeaveReason leaveReason, Employee employee) {
     List<LeaveLine> leaveLineList = employee.getLeaveLineList();
@@ -56,20 +61,13 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
             .orElse(null);
     LeaveManagement leaveManagement = createLeaveManagement(leaveReason, employee);
     if (leaveLine == null) {
-      LeaveLine newLeaveLine = createNewLeaveLine(leaveReason, leaveManagement);
+      LeaveLine newLeaveLine = leaveLineService.createNewLeaveLine(leaveReason, leaveManagement);
       leaveManagementService.computeQuantityAvailable(newLeaveLine);
       employee.addLeaveLineListItem(newLeaveLine);
     } else {
       leaveLine.addLeaveManagementListItem(leaveManagement);
       leaveManagementService.computeQuantityAvailable(leaveLine);
     }
-  }
-
-  protected LeaveLine createNewLeaveLine(LeaveReason leaveReason, LeaveManagement leaveManagement) {
-    LeaveLine newLeaveLine = new LeaveLine();
-    newLeaveLine.addLeaveManagementListItem(leaveManagement);
-    newLeaveLine.setLeaveReason(leaveReason);
-    return newLeaveLine;
   }
 
   protected LeaveManagement createLeaveManagement(LeaveReason leaveReason, Employee employee) {

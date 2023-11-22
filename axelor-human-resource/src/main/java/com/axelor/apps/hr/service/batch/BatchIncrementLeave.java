@@ -1,6 +1,5 @@
 package com.axelor.apps.hr.service.batch;
 
-import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Employee;
@@ -9,11 +8,11 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.service.leave.IncrementLeaveService;
 import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.common.base.Joiner;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -51,7 +50,6 @@ public class BatchIncrementLeave extends AbstractBatch {
     }
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   protected void incrementLeaveForEmployees(Long id) {
     List<Employee> employeeList;
     int offset = 0;
@@ -64,6 +62,7 @@ public class BatchIncrementLeave extends AbstractBatch {
         incrementLeaveService.updateEmployeeLeaveLines(leaveReason, employee);
       }
     }
+    JPA.clear();
   }
 
   protected Query<Employee> getEmployeeQuery(LeaveReason leaveReason) {
@@ -72,12 +71,10 @@ public class BatchIncrementLeave extends AbstractBatch {
       return query;
     }
 
-    List<Long> idList =
-        leaveReason.getPlanningSet().stream()
-            .map(WeeklyPlanning::getId)
-            .collect(Collectors.toList());
-
-    String filter = "self.weeklyPlanning in (" + Joiner.on(",").join(idList) + ")";
+    String filter =
+        "self.weeklyPlanning in ("
+            + StringHelper.getIdListString(leaveReason.getPlanningSet())
+            + ")";
     query.filter(filter);
 
     return query;
