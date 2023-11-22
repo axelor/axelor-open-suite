@@ -70,6 +70,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.StringJoiner;
@@ -689,5 +690,14 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     stockMove = stockMoveRepo.find(stockMove.getId());
     stockMove.setInvoicingStatusSelect(StockMoveRepository.STATUS_VALIDATED_INVOICE);
     stockMoveRepo.save(stockMove);
+  }
+
+  @Override
+  public void fillRealQuantities(StockMove stockMove) {
+    Objects.requireNonNull(stockMove);
+
+    if (stockMove.getStockMoveLineList() != null) {
+      stockMove.getStockMoveLineList().forEach(sml -> sml.setRealQty(sml.getQty()));
+    }
   }
 }
