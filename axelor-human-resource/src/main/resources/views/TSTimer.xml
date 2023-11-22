@@ -47,7 +47,7 @@
       <field name="project" form-view="project-form" grid-view="project-grid"
         domain="self.imputable = true AND self.isShowTimeSpent = true" colSpan="6"
         onChange="action-ts-timer-attrs-project-onchange"/>
-      <field name="projectTask" readonlyIf="!project" domain="self.project = :project"
+      <field name="projectTask" onSelect="action-ts-timer-attrs-project-task-onselect"
         widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid" colSpan="6"
         onChange="action-ts-timer-attrs-project-task-onchange"/>
       <field name="product" canEdit="false"
@@ -90,6 +90,11 @@
     canNew="true">
     <panel-include view="ts-timer-form"/>
   </form>
+
+  <action-attrs name="action-hr-timesheet-timer-attrs-domain-product">
+    <attribute name="domain" for="product"
+      expr="eval:project == null || project?.productSet.empty ? &quot;self.isActivity = true AND self.dtype = 'Product'&quot; : &quot;self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND self.dtype = 'Product'&quot;"/>
+  </action-attrs>
 
   <action-record name="action-hr-ts-timer-record-default"
     model="com.axelor.apps.hr.db.TSTimer">
@@ -134,6 +139,7 @@
   <action-attrs name="action-ts-timer-attrs-project-task-onchange">
     <attribute for="product" name="value" expr="eval: projectTask?.product"/>
     <attribute for="product" name="readonly" expr="eval: projectTask?.product"/>
+    <attribute for="project" name="value" expr="eval: projectTask?.project"/>
   </action-attrs>
 
   <action-attrs name="action-ts-timer-attrs-project-onchange">
@@ -143,7 +149,11 @@
 
   <action-attrs name="action-ts-timer-attrs-project-task-onselect">
     <attribute for="projectTask" name="domain"
-      expr="eval: &quot; self.project = :project&quot;"/>
+      expr="eval: &quot; self.project = :project AND self.assignedTo.employee = :employee &quot;"
+      if="project"/>
+    <attribute for="projectTask" name="domain"
+      expr="eval: &quot; self.assignedTo.employee = :employee &quot;" if="!project"/>
   </action-attrs>
+
 
 </object-views>

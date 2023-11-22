@@ -31,8 +31,8 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -42,6 +42,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -116,19 +117,19 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   protected String computeName(TSTimer timer) {
     StringBuilder name = new StringBuilder();
     Project project = timer.getProject();
-    ProjectTask projectTask = timer.getProjectTask();
+    LocalDateTime startDateTime = timer.getStartDateTime();
 
     if (project != null) {
-      name.append(timer.getProject().getName());
-      name.append(" - ");
-    }
-
-    if (projectTask != null) {
-      name.append(timer.getProjectTask().getName());
-      name.append(" - ");
+      String code = timer.getProject().getCode();
+      if (StringUtils.notEmpty(code)) {
+        name.append(timer.getProject().getCode());
+        name.append(" - ");
+      }
     }
 
     name.append(timer.getProduct().getName());
+    name.append(" - ");
+    name.append(startDateTime);
     return name.toString();
   }
 
