@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="manuf-order-form" id="supplychain-manuf-order-form" title="Manuf Order"
+    model="com.axelor.apps.production.db.ManufOrder" width="large" extension="true">
+
+    <extend target="/">
+      <!--<attribute name="onNew" value="action-supplychain-group-sale-saleorderline-onnew"/> -->
+      <!--<attribute name="onLoad" value="action-sale-order-line-supplychain-group-onload"/> -->
+      <attribute name="onLoad" value="action-manuf-order-supplychain-group-onload"/>
+      <!--<attribute name="onSave" value="action-sale-order-line-supplychain-group-onsave"/> -->
+    </extend>
+
+    <extend target="//panel[@name='detailsPanel']">
+      <insert position="after"><!-- Specifications said Keep old workflow, not replace -->
+        <panel
+          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
+          if-module="axelor-supplychain" name="productReservationPanel" colSpan="12">
+          <!-- ProductReservation RequestedReserved -->
+          <panel name="productReservationRequestedReservedPanel" colSpan="12">
+            <panel name="productReservationRequestedReservedBtnPanel" colSpan="6"
+              showIf="$productReservationRequestedReservedList.length==0">
+              <button name="productReservationRequestReservedBtn" title="Reservation request"
+                onClick="save,action-attrs-show-product-reservation-requested-reserved-list-panel"/>
+              <field name="$flagShowProductReservationRequestedReservedList" hideIf="true"/>
+            </panel>
+            <panel-related name="productReservationRequestedReservedListPanel"
+              field="$productReservationRequestedReservedList" title="Requested reserved lines"
+              colSpan="12" type="one-to-many"
+              target="com.axelor.apps.supplychain.db.ProductReservation" canNew="true"
+              canEdit="true" grid-view="product-reservation-requested-reserved-grid"
+              form-view="product-reservation-form"
+              hideIf="$productReservationRequestedReservedList.length==0 &amp;&amp; !$flagShowProductReservationRequestedReservedList"
+              onChange="action-method-sale-order-line-product-reservation-requested-reserved-on-change"/>
+          </panel>
+          <!-- ProductReservation Reserved -->
+          <panel name="productReservationReservedPanel" colSpan="12">
+            <panel name="productReservationReservedBtnPanel" colSpan="6"
+              showIf="$productReservationReservedList.length==0">
+              <button name="productReservationReservedBtn" title="Allocation request"
+                colSpan="6" onClick="save,action-attrs-show-product-reservation-reserved-list-panel"/>
+              <field name="$flagShowProductReservationReservedList" hideIf="true"/>
+            </panel>
+            <panel-related name="productReservationReservedListPanel"
+              field="$productReservationReservedList" title="Reserved lines" colSpan="12"
+              type="one-to-many" target="com.axelor.apps.supplychain.db.ProductReservation"
+              canNew="true" canEdit="true" grid-view="product-reservation-reserved-grid"
+              form-view="product-reservation-form"
+              hideIf="$productReservationReservedList.length==0 &amp;&amp; !$flagShowProductReservationReservedList"
+              onChange="action-method-sale-order-line-product-reservation-reserved-on-change"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-manuf-order-supplychain-group-onload">
+    <action name="action-manuf-order-group-onload"/>
+    <action name="action-method-split-product-reservation-of-manuf-order-by-type"/>
+  </action-group>
+
+  <action-method name="action-method-split-product-reservation-of-manuf-order-by-type">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="getProductReservationListsOfManufOrderByType"/>
+  </action-method>
+
+  <!-- onChange productReservationList -->
+
+  <action-method
+    name="action-method-manuf-order-product-reservation-requested-reserved-on-change">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="onChangeManufOrderProductReservationRequestedReserved"/>
+  </action-method>
+
+  <action-method
+    name="action-method-manufOrder-product-reservation-reserved-on-change">
+    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
+      method="onChangeManufOrderProductReservationReserved"/>
+  </action-method>
+
+  <action-attrs
+    name="action-attrs-show-product-reservation-requested-reserved-list-panel">
+    <attribute name="hidden" for="productReservationRequestedReservedListPanel"
+      expr="eval: false"/>
+    <attribute for="$flagShowProductReservationRequestedReservedList" name="value"
+      expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-show-product-reservation-reserved-list-panel">
+    <attribute for="productReservationReservedListPanel" name="hidden" expr="eval: false"/>
+    <attribute for="$flagShowProductReservationReservedList" name="value"
+      expr="eval: true"/>
+  </action-attrs>
+
+</object-views>

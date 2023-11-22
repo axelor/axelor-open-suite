@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.ProductReservation;
-
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +36,8 @@ public interface ProductReservationService {
    * @param productionReservation : we will update its status
    * @param isHaveToSave : true to in db
    */
-  void updateStatus(ProductReservation productionReservation, boolean isHaveToSave) throws AxelorException;
+  void updateStatus(ProductReservation productionReservation, boolean isHaveToSave)
+      throws AxelorException;
 
   Optional<ProductReservation> getReservedQty(StockMoveLine stockMoveLine);
 
@@ -59,7 +59,31 @@ public interface ProductReservationService {
 
   BigDecimal getAvailableQty(ProductReservation productReservation) throws AxelorException;
 
-  void saveSelectedProductReservation(List<Map<String,Object>> rawProductReservationRequestedReservedList);
+  void saveSelectedProductReservationInMapList(
+      List<Map<String, Object>> rawProductReservationMapList, int productReservationType);
 
-  LinkedHashMap<Object, Object> setMapSaleOrderLine(SaleOrderLine proxySaleOrderLine, Map<String, Object> mapParent, ProductReservation newProductReservation);
+  LinkedHashMap<Object, Object> setMapSaleOrderLine(
+      SaleOrderLine proxySaleOrderLine,
+      Map<String, Object> mapParent,
+      ProductReservation newProductReservation);
+
+  Long getProductIdFromMap(Map<String, Object> mapParent);
+
+  void createSaleOrderLineProductReservation(
+      ProductReservation newProductReservation,
+      Long productId,
+      SaleOrderLine proxySaleOrderLine,
+      int productReservationType)
+      throws AxelorException;
+
+  List<ProductReservation> findProductReservation(
+      int productReservationType, Long productId, String originModelClassName, Long originId);
+
+  void enrichProductReservation(
+      ProductReservation newProductReservation,
+      Long productId,
+      String model,
+      Long originId,
+      int typeProductReservationReservation)
+      throws AxelorException;
 }

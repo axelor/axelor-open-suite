@@ -48,10 +48,8 @@
     <field name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber" hidden="true"/>
     <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       hidden="true"/>
-    <field name="$originManufOrder" x-related="originManufOrderId"
-      ref="com.axelor.apps.production.db.ManufOrder" if="originManufOrderId!=null" hidden="true"/>
-
-
+    <field name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
+      hidden="true"/>
   </grid>
 
   <grid name="product-reservation-reserved-grid" title="Product reservation"
@@ -75,8 +73,8 @@
     <field name="priorityReservationDateTime" hidden="true"/>
     <field name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       hidden="true"/>
-    <field name="$originManufOrder" x-related="originManufOrderId"
-      ref="com.axelor.apps.production.db.ManufOrder" if="originManufOrderId!=null" hidden="true"/>
+    <field name="originManufOrder" ref="com.axelor.apps.production.db.ManufOrder"
+      hidden="true"/>
 
   </grid>
 
@@ -119,13 +117,8 @@
       <panel name="origin" colSpan="12" showIf="product !=null">
         <field name="originSaleOrderLine" colSpan="6" requiredIf="originManufOrder == null"
           domain="self.product.id = :product"/>
-        <field name="originManufOrderId" colSpan="6" requiredIf="originSaleOrderLine == null"
-          showIf="false"/>
-        <field name="$originManufOrder" title="Manuf order" colSpan="12" canNew="false"
-          canEdit="false" onChange="action-product-reservation-attrs-set-origin-manuf-order-id"
-          domain="self.product.id = :product" requiredIf="originSaleOrderLine == null"
-          x-target="com.axelor.apps.production.db.ManufOrder" x-type="many-to-one"
-          x-target-name="manufOrderSeq"/>
+        <field name="originManufOrder" colSpan="6" requiredIf="originManufOrder == null"
+          domain="self.product.id = :product"/>
       </panel>
     </panel>
   </form>

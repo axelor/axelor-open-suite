@@ -21,7 +21,6 @@
     <many-to-one name="originSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sale order lines"/>
     <string name="description" title="Description"/>
-    <long name="originManufOrderId" title="Orig. MO"/>
     <integer name="status" selection="stock.product.reservation.status.select"
       readonly="true" required="true" title="Status"/>
     <boolean name="isAllocation"><!-- TODO CMR test en tant que transient -->
@@ -49,6 +48,9 @@
 
     <finder-method name="findByOriginSaleOrderLineAndProductReservationType"
       using="productReservationType,originSaleOrderLine" all="true" cacheable="true"/>
+
+    <finder-method name="findByOriginManufOrderAndProductReservationType"
+      using="productReservationType,originManufOrder" all="true" cacheable="true"/>
 
     <extra-imports>
       <![CDATA[

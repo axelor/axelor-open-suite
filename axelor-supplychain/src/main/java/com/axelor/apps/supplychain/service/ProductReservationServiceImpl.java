@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -18,18 +19,17 @@ import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,12 +37,18 @@ import org.slf4j.LoggerFactory;
 public class ProductReservationServiceImpl implements ProductReservationService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected ProductReservationRepository productReservationRepository;
+  private final ProductReservationRepository productReservationRepository;
+  private final ProductRepository productRepository;
 
   @Inject
-  public ProductReservationServiceImpl(ProductReservationRepository productReservationRepository) {
+  public ProductReservationServiceImpl(
+      ProductReservationRepository productReservationRepository,
+      ProductRepository productRepository) {
     this.productReservationRepository = productReservationRepository;
+    this.productRepository = productRepository;
   }
+
+  // UPDATE STATUS
 
   @Override
   @Transactional
@@ -105,6 +111,8 @@ public class ProductReservationServiceImpl implements ProductReservationService 
     }
   }
 
+  // AVAILABLE QTY
+
   protected BigDecimal computeAvailableQuantityForTrackingNumber(
       ProductReservation productReservation) throws AxelorException {
     BigDecimal alreadyAllocatedQty =
@@ -127,31 +135,17 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   }
 
   protected BigDecimal computeAvailableQuantityForProduct(ProductReservation productReservation) {
-    Product product = productReservation.getProduct();
-    StockLocation stockLocation = productReservation.getStockLocation();
-    if (Boolean.TRUE.equals(productReservation.getIsAllocation())) {
-      return computeAvailableQuantityForProductReservationReserved(product, stockLocation);
-    }
-    return computeAvailableQuantityForProductReservationRequestedReserved(product);
-  }
-
-  private BigDecimal computeAvailableQuantityForProductReservationRequestedReserved(
-      Product product) {
     BigDecimal realQty;
     BigDecimal reservedQty;
-    reservedQty = getReservedQty(product, null);
-    realQty = getRealQty(product, null);
+    reservedQty =
+        productReservationRepository.getReservedQty(
+            productReservation.getProduct(), productReservation.getStockLocation());
+    realQty = getRealQty(productReservation.getProduct(), productReservation.getStockLocation());
     return realQty.subtract(reservedQty).setScale(2, RoundingMode.HALF_UP);
   }
 
-  private BigDecimal computeAvailableQuantityForProductReservationReserved(
-      Product product, StockLocation stockLocation) {
-    BigDecimal reservedQty = getReservedQty(product, stockLocation);
-    BigDecimal realQty = getRealQty(product, stockLocation);
-    return realQty.subtract(reservedQty).setScale(2, RoundingMode.HALF_UP);
-  }
-
-  protected BigDecimal getRealQty(Product product, StockLocation stockLocation) {
+  // TODO move to StockLocationLineRepository
+  private BigDecimal getRealQty(Product product, StockLocation stockLocation) {
     String query = "self.product = :product";
     if (stockLocation != null) {
       query += " AND self.stockLocation = :stockLocation";
@@ -164,37 +158,6 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         .bind("product", product)
         .fetchStream()
         .map(StockLocationLine::getCurrentQty)
-        .reduce(BigDecimal::add)
-        .orElse(BigDecimal.ZERO);
-  }
-
-  public BigDecimal getReservedQty(Product product, StockLocation stockLocation) {
-    if (stockLocation == null) {
-      return sumQtyOrZero(
-          productReservationRepository
-              .findByProductReservationTypeAndStatusAndProduct(
-                  AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
-                  AbstractProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS,
-                  product)
-              .fetchStream());
-    }
-    return sumQtyOrZero(
-        productReservationRepository
-            .findByProductReservationTypeAndStatusAndStockLocationAndProduct(
-                AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
-                AbstractProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS,
-                stockLocation,
-                product)
-            .fetchStream());
-  }
-
-  protected BigDecimal sumQtyOrZero(Stream<ProductReservation> productReservationStream) {
-    return productReservationStream
-        .filter(
-            productReservation ->
-                productReservation.getQty() != null
-                    && !Objects.equals(productReservation.getQty(), BigDecimal.ZERO))
-        .map(ProductReservation::getQty)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO);
   }
@@ -299,14 +262,6 @@ public class ProductReservationServiceImpl implements ProductReservationService 
     }
   }
 
-  // NEW
-
-  /**
-   * required
-   *
-   * @param saleOrderLine
-   * @throws AxelorException
-   */
   @Transactional(rollbackOn = {Exception.class})
   public void updateRequestedReservedQty(SaleOrderLine saleOrderLine, StockMoveLine stockMoveLine) {
 
@@ -317,7 +272,6 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         saleOrderLine,
         fromStockLocation,
         AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
-
   }
 
   private void findBySaleOrderLine(
@@ -339,9 +293,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
     ProductReservation productReservation = new ProductReservation();
     productReservation.setProductReservationType(productReservationType);
     productReservation.setQty(saleOrderLine.getQty());
-    // productReservation.setRequestedReservedType(null);// on ne sait pas au moment de la création
     productReservation.setProduct(saleOrderLine.getProduct());
-    // productReservation.setStockLocation(null);// une réservation n'a pas de stocklocation
   }
 
   protected SaleOrderLine findSaleOrderLineOrWarn(Long saleOrderLineId) {
@@ -373,7 +325,8 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       SaleOrderLine saleOrderLineProxy) {
     return productReservationRepository
         .findByOriginSaleOrderLineAndProductReservationType(
-            ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION, saleOrderLineProxy)
+            AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION,
+            saleOrderLineProxy)
         .fetch();
   }
 
@@ -382,7 +335,8 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       SaleOrderLine saleOrderLineProxy) {
     return productReservationRepository
         .findByOriginSaleOrderLineAndProductReservationType(
-            ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION, saleOrderLineProxy)
+            AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
+            saleOrderLineProxy)
         .fetch();
   }
 
@@ -392,30 +346,189 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   }
 
   @Override
-  public void saveSelectedProductReservation(List<Map<String,Object>> rawProductReservationRequestedReservedList) {
-    try {
-      @SuppressWarnings("unchecked")//always ok
-      Class<? extends Model> productReservationClass = (Class<? extends Model>) Class.forName(ProductReservation.class.getName());
-      rawProductReservationRequestedReservedList.stream()
-              .filter(rawMap -> Boolean.TRUE.equals(Boolean.valueOf(rawMap.get("selected").toString())))
-              .forEach(
-                      rawMap -> {
-                        ProductReservation productReservation =  (ProductReservation) Mapper.toBean(productReservationClass, rawMap);
-                        JPA.em().merge(productReservation.getProduct());//avoid detach persistenceException
-                        Beans.get(ProductReservationRepository.class).save(productReservation);
-                      });
-    } catch (ClassNotFoundException e) {
-      TraceBackService.trace(e);// never happen
+  @Transactional(rollbackOn = {Exception.class})
+  public void saveSelectedProductReservationInMapList(
+      List<Map<String, Object>> rawProductReservationMapList, int productReservationType) {
+
+    rawProductReservationMapList.stream()
+        .filter(this::isSelected)
+        .findFirst()
+        .ifPresent(
+            productReservationMapSelected ->
+                saveProductReservationMap(productReservationMapSelected, productReservationType));
+  }
+
+  protected boolean isSelected(Map<String, Object> producReservationMap) {
+    return Boolean.TRUE.equals(Boolean.valueOf(producReservationMap.get("selected").toString()));
+  }
+
+  protected void saveProductReservationMap(
+      Map<String, Object> productReseravationMap, int productReservationType) {
+
+    ProductReservation productReservationToSave = new ProductReservation();
+
+    // id reload productReservation
+    if (productReseravationMap.get("id") != null) {
+      Long id = Long.valueOf(productReseravationMap.get("id").toString());
+      productReservationToSave = productReservationRepository.find(id);
     }
 
+    // productReservationType
+    productReservationToSave.setProductReservationType(productReservationType);
 
+    // status
+    Integer status = Integer.valueOf(productReseravationMap.get("status").toString());
+    productReservationToSave.setStatus(status);
+
+    // Qty
+    BigDecimal qty = new BigDecimal(productReseravationMap.get("qty").toString());
+    productReservationToSave.setQty(qty);
+
+    // reload originSaleOrderLine
+    @SuppressWarnings("unchecked")
+    Map<String, Object> originSaleOrderLineMap =
+        (Map<String, Object>) productReseravationMap.get("originSaleOrderLine");
+    if (originSaleOrderLineMap != null) {
+      Long saleOrderLineId = Long.valueOf(originSaleOrderLineMap.get("id").toString());
+      SaleOrderLine saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLineId);
+      productReservationToSave.setOriginSaleOrderLine(saleOrderLine);
+    }
+
+    // reload manufOrder
+    @SuppressWarnings("unchecked")
+    Map<String, Object> originManufOrderMap =
+        (Map<String, Object>) productReseravationMap.get("originManufOrder");
+    if (originManufOrderMap != null) {
+      Long manufOrderId = Long.valueOf(originManufOrderMap.get("id").toString());
+      Model originInstanceModel = getInstanceModel("com.axelor.apps.production.db.ManufOrder");
+      assert originInstanceModel != null;
+      originInstanceModel.setId(manufOrderId);
+      originInstanceModel = JPA.find(originInstanceModel.getClass(), originInstanceModel.getId());
+      setOrigin(productReservationToSave, originInstanceModel);
+    }
+
+    // reload Product
+    @SuppressWarnings("unchecked")
+    Map<String, Object> productMap = (Map<String, Object>) productReseravationMap.get("product");
+    Long productId = Long.valueOf(productMap.get("id").toString());
+    Product product = productRepository.find(productId);
+    productReservationToSave.setProduct(product);
+
+    // reload StockLocation
+    @SuppressWarnings("unchecked")
+    Map<String, Object> stockLocationMap =
+        (Map<String, Object>) productReseravationMap.get("stockLocation");
+    if (stockLocationMap != null) {
+      Long stockLocationId = Long.valueOf(stockLocationMap.get("id").toString());
+      StockLocation stockLocation = Beans.get(StockLocationRepository.class).find(stockLocationId);
+      productReservationToSave.setStockLocation(stockLocation);
+    }
+
+    productReservationRepository.save(productReservationToSave);
   }
 
   @Override
-  public LinkedHashMap<Object, Object> setMapSaleOrderLine(SaleOrderLine proxySaleOrderLine, Map<String, Object> mapParent, ProductReservation newProductReservation) {
-      LinkedHashMap<Object, Object> mapSaleOrderLine = new LinkedHashMap<>();
-      mapSaleOrderLine.put("id", mapParent.get("id"));
-      newProductReservation.setOriginSaleOrderLine(proxySaleOrderLine);
-      return mapSaleOrderLine;
+  public LinkedHashMap<Object, Object> setMapSaleOrderLine(
+      SaleOrderLine proxySaleOrderLine,
+      Map<String, Object> mapParent,
+      ProductReservation newProductReservation) {
+    LinkedHashMap<Object, Object> mapSaleOrderLine = new LinkedHashMap<>();
+    mapSaleOrderLine.put("id", mapParent.get("id"));
+    newProductReservation.setOriginSaleOrderLine(proxySaleOrderLine);
+    return mapSaleOrderLine;
+  }
+
+  @Override
+  public void createSaleOrderLineProductReservation(
+      ProductReservation newProductReservation,
+      Long productId,
+      SaleOrderLine proxySaleOrderLine,
+      int productReservationType)
+      throws AxelorException {
+    newProductReservation.setProductReservationType(productReservationType);
+    Product product = productRepository.find(productId);
+    newProductReservation.setProduct(product);
+    newProductReservation.setOriginSaleOrderLine(proxySaleOrderLine);
+    updateStatus(newProductReservation, false);
+  }
+
+  @Override
+  public List<ProductReservation> findProductReservation(
+      int productReservationType, Long productId, String originModelClassName, Long originId) {
+    Model originInstanceModel = getInstanceModel(originModelClassName);
+    assert originInstanceModel != null;
+    originInstanceModel.setId(originId);
+    return productReservationRepository
+        .findByOriginAndProductReservationType(
+            productReservationType, originInstanceModel, productId)
+        .fetch();
+  }
+
+  public static final Map<String, String> MAP_ORIGIN_SETTER_NAME_BY_CLASS_NAME =
+      Map.of(
+          "com.axelor.apps.production.db.SaleOrderLine",
+          "setOriginSaleOrderLine",
+          "com.axelor.apps.production.db.ManufOrder",
+          "setOriginManufOrder");
+
+  @Override
+  public void enrichProductReservation(
+      ProductReservation newProductReservation,
+      Long productId,
+      String originModelClassName,
+      Long originId,
+      int typeProductReservationReservation)
+      throws AxelorException {
+    Model originInstanceModel = getInstanceModel(originModelClassName);
+    assert originInstanceModel != null;
+    originInstanceModel.setId(originId);
+
+    newProductReservation.setProductReservationType(typeProductReservationReservation);
+    Product product = productRepository.find(productId);
+    newProductReservation.setProduct(product);
+    originInstanceModel = JPA.find(originInstanceModel.getClass(), originInstanceModel.getId());
+    setOrigin(newProductReservation, originInstanceModel);
+    updateStatus(newProductReservation, false);
+  }
+
+  /** invoke reflect method because of ManufOrder is unknown in supplychain */
+  private void setOrigin(ProductReservation newProductReservation, Model originInstanceModel) {
+    try {
+      String methodName =
+          MAP_ORIGIN_SETTER_NAME_BY_CLASS_NAME.get(originInstanceModel.getClass().getName());
+      Method sumInstanceMethod =
+          ProductReservation.class.getMethod(methodName, originInstanceModel.getClass());
+      sumInstanceMethod.invoke(newProductReservation, originInstanceModel);
+    } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+      TraceBackService.trace(e); // never happen
+    }
+  }
+
+  private Model getInstanceModel(String modelClassName) {
+    try {
+      @SuppressWarnings("unchecked")
+      Class<? extends Model> modelClass =
+          (Class<? extends Model>)
+              Class.forName(
+                  modelClassName); // maybe handle ManufOrder, unknown in supplychain module
+      return modelClass.getDeclaredConstructor().newInstance();
+    } catch (ClassNotFoundException
+        | InvocationTargetException
+        | InstantiationException
+        | IllegalAccessException
+        | NoSuchMethodException e) {
+      TraceBackService.trace(e); // never happen
+    }
+    return null;
+  }
+
+  public Long getProductIdFromMap(Map<String, Object> map) {
+    @SuppressWarnings("unchecked")
+    Map<String, Object> mapProduct = (Map<String, Object>) map.get("product");
+    if ((mapProduct != null) && (mapProduct.get("id") != null)) {
+      Object oId = mapProduct.get("id");
+      return Long.valueOf(oId.toString());
+    }
+    return null;
   }
 }

@@ -1,10 +1,7 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.db.repo.AbstractProductReservationRepository;
 import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
@@ -12,19 +9,42 @@ import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
 public class ProductReservationController {
-  public static final String COMPUTED_ATTR_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST =
+  public static final String RESPONSE_ATTRIBUTE_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST =
       "$productReservationRequestedReservedList";
-  public static final String COMPUTED_ATTR_PRODUCT_RESERVATION_RESERVED_LIST =
+  public static final String RESPONSE_ATTRIBUTE_PRODUCT_RESERVATION_RESERVED_LIST =
       "$productReservationReservedList";
+  public static final String RESPONSE_ATTRIBUTE_NAME_VALUE = "value";
+  public static final String RESPONSE_FIELD_NAME_RESERVATION_TYPE = "ReservationType";
+  public static final String RESPONSE_FIELD_NAME_ORIGIN_SALE_ORDER_LINE = "originSaleOrderLine";
+  public static final String RESPONSE_FIELD_NAME_ORIGIN_MANUF_ORDER = "originManufOrder";
+  public static final String RESPONSE_FIELD_NAME_STATUS = "status";
+  public static final String RESPONSE_FIELD_NAME_AVAILABLE_QTY = "$availableQty";
+  public static final String RESPONSE_FIELD_NAME_PRODUCT = "product";
+  public static final String REQUEST_FIELD_NAME_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST =
+      "productReservationRequestedReservedList";
+  public static final String REQUEST_FIELD_NAME_PRODUCT_RESERVATION_RESERVED_LIST =
+      "productReservationReservedList";
+
+  public static final Map<Integer, String>
+      MAP_RESPONSE_FIELD_NAME_PRODUCT_RESERVATION_LIST_BY_PRODUCT_RESERVATION_TYPE =
+          Map.of(
+              AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION,
+                  RESPONSE_ATTRIBUTE_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST,
+              AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
+                  RESPONSE_ATTRIBUTE_PRODUCT_RESERVATION_RESERVED_LIST);
+  public static final String REQUEST_FIELDNAME_MODEL = "_model";
 
   @Inject public ProductReservationService productReservationService;
+
+  // ACTION from FORM VIEW PRODUCT RESERVATION
 
   public void updateStatus(ActionRequest request, ActionResponse response) {
     try {
@@ -38,161 +58,266 @@ public class ProductReservationController {
     }
   }
 
+  // ACTION from FORM VIEW SALE ORDER LINE ON LOAD
+
   /**
    * Populate HTTP Response fields
    *
    * <ul>
-   *   <li>{@value #COMPUTED_ATTR_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST}
-   *   <li>{@value #COMPUTED_ATTR_PRODUCT_RESERVATION_RESERVED_LIST}
+   *   <li>{@value #RESPONSE_ATTRIBUTE_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST}
+   *   <li>{@value #RESPONSE_ATTRIBUTE_PRODUCT_RESERVATION_RESERVED_LIST}
    * </ul>
    */
-  public void populateProductReservationOfSaleOrderLineByType(
+  public void getProductReservationListsOfSaleOrderLineByType(
       ActionRequest request, ActionResponse response) {
     try {
-
-      SaleOrderLine saleOrderLineProxy = request.getContext().asType(SaleOrderLine.class);
-
-      populateResponseWithProductReservationRequestedReservedList(response, saleOrderLineProxy);
-      populateResponseWithProductReservationReservedList(response, saleOrderLineProxy);
-
+      /*
+            SaleOrderLine saleOrderLineProxy = request.getContext().asType(SaleOrderLine.class);
+            fillResponseWithProductReservationRequestedReservedList(response, saleOrderLineProxy);
+            fillResponseWithProductReservationReservedList(response, saleOrderLineProxy);
+      */
+      sendResponseTwoProductReservationListOnLoad(request, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
   }
 
-  protected void populateResponseWithProductReservationReservedList(
-      ActionResponse response, SaleOrderLine saleOrderLineProxy) {
-    List<ProductReservation> productReservationReservedList =
-        productReservationService.findProductReservationReservedOfSaleOrderLine(saleOrderLineProxy);
-    response.setAttr(
-        COMPUTED_ATTR_PRODUCT_RESERVATION_RESERVED_LIST, "value", productReservationReservedList);
-  }
-
-  protected void populateResponseWithProductReservationRequestedReservedList(
-      ActionResponse response, SaleOrderLine saleOrderLineProxy) {
-    List<ProductReservation> productReservationRequestedReservedList =
-        productReservationService.findProductReservationRequestedReservedOfSaleOrderLine(
-            saleOrderLineProxy);
-    response.setAttr(
-        COMPUTED_ATTR_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST,
-        "value",
-        productReservationRequestedReservedList);
-  }
-
-  // ON NEW CHANGE (before save)
-
-  public void onNewSaleOrderLineProductReservationRequestedReserved(
-      ActionRequest request, ActionResponse response) throws AxelorException {
-
-    fullFilSaleOrderLineProductReservationRequestedReserved(request, response);
-  }
-
-  protected void fullFilSaleOrderLineProductReservationRequestedReserved(ActionRequest request, ActionResponse response) throws AxelorException {
-
-    // entity
-    ProductReservation newProductReservation =
-        request.getContext().asType(ProductReservation.class);
-
-    // check Origin
-    @SuppressWarnings("unchecked")
-    Map<String,Object> mapParent = (Map<String,Object>) request.getRawContext().get("_parent");//saleOrderLine
-    if (!SaleOrderLine.class.getName().equals(mapParent.get("_model").toString())) {
-      return;
-    }
-
-    // set type
-    newProductReservation.setProductReservationType(
-        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
-    response.setAttr(
-        "ReservationType",
-        "value",
-        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
-
-    // set product
-    Product product = findProduct(mapParent, newProductReservation);
-    newProductReservation.setProduct(product);
-    response.setAttr("product", "value", product);
-
-    // set origin
-    SaleOrderLine proxySaleOrderLine = request.getContext().getParent().asType(SaleOrderLine.class);
-    LinkedHashMap<Object, Object> mapSaleOrderLine = Beans.get(ProductReservationService.class).setMapSaleOrderLine(proxySaleOrderLine, mapParent, newProductReservation);
-    response.setAttr("originSaleOrderLine", "value", mapSaleOrderLine);
-
-    // set availableQty
-    BigDecimal availableQty =
-        Beans.get(ProductReservationService.class).getAvailableQty(newProductReservation);
-    response.setAttr("$availableQty", "value", availableQty);
-
-    // set status
-    Beans.get(ProductReservationService.class).updateStatus(newProductReservation, false);
-    response.setAttr("status", "value", newProductReservation.getStatus());
-  }
-
-  protected Product findProduct(Map<String, Object> mapParent, ProductReservation newProductReservation) {
-    @SuppressWarnings("unchecked")
-    Map<String,Object> mapProduct = (Map<String,Object>) mapParent.get("product");
-    Object oId = mapProduct.get("id");
-    Long id = Long.valueOf(oId.toString());
-    Product product = Beans.get(ProductRepository.class).find(id);
-    return product;
-  }
-
-  public void onNewSaleOrderLineProductReservationReserved(
+  public void getProductReservationListsOfManufOrderByType(
       ActionRequest request, ActionResponse response) {
-    ProductReservation newProductReservation =
-        request.getContext().asType(ProductReservation.class);
-
-    System.out.println("onNewSaleOrderLineProductReservationReserved " + newProductReservation);
-    response.setError("Not implemented");
+    try {
+      sendResponseTwoProductReservationListOnLoad(request, response);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
+
+  protected void sendResponseTwoProductReservationListOnLoad(
+      ActionRequest request, ActionResponse response) {
+    String model = request.getRawContext().get(REQUEST_FIELDNAME_MODEL).toString();
+    Long originId = Long.valueOf(request.getRawContext().get("id").toString());
+    Long productId = productReservationService.getProductIdFromMap(request.getRawContext());
+
+    sendResponseTwoProductReservationListOnLoad(
+        response,
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION,
+        productId,
+        model,
+        originId);
+    sendResponseTwoProductReservationListOnLoad(
+        response,
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION,
+        productId,
+        model,
+        originId);
+  }
+
+  protected void sendResponseTwoProductReservationListOnLoad(
+      ActionResponse response,
+      int productReservationType,
+      Long productId,
+      String originModelClassName,
+      Long originId) {
+
+    // find list
+    List<ProductReservation> productReservationList =
+        productReservationService.findProductReservation(
+            productReservationType, productId, originModelClassName, originId);
+
+    // put in response
+    response.setAttr(
+        MAP_RESPONSE_FIELD_NAME_PRODUCT_RESERVATION_LIST_BY_PRODUCT_RESERVATION_TYPE.get(
+            productReservationType),
+        RESPONSE_ATTRIBUTE_NAME_VALUE,
+        productReservationList);
+  }
+
+  // CLICK new Button
 
   public void onNewManufOrderProductReservationRequestedReserved(
       ActionRequest request, ActionResponse response) {
-    ProductReservation newProductReservation =
-        request.getContext().asType(ProductReservation.class);
-
-    System.out.println(
-        "onNewManufOrderProductReservationRequestedReserved " + newProductReservation);
-    response.setError("Not implemented");
+    try {
+      sendResponseProductReservationOnNew(
+          request,
+          response,
+          AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void onNewManufOrderProductReservationReserved(
       ActionRequest request, ActionResponse response) {
+    try {
+      sendResponseProductReservationOnNew(
+          request,
+          response,
+          AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  // ACTION FROM SALEORDERLINE VIEW : NEW PRODUCT RESERVATION
+
+  public void onNewSaleOrderLineProductReservationRequestedReserved(
+      ActionRequest request, ActionResponse response) {
+    try {
+      sendResponseProductReservationOnNew(
+          request,
+          response,
+          AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onNewSaleOrderLineProductReservationReserved(
+      ActionRequest request, ActionResponse response) throws AxelorException {
+    try {
+      sendResponseProductReservationOnNew(
+          request,
+          response,
+          AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected void sendResponseProductReservationOnNew(
+      ActionRequest request, ActionResponse response, int typeProductReservation)
+      throws AxelorException {
+
+    @SuppressWarnings("unchecked")
+    Map<String, Object> mapParent =
+        (Map<String, Object>) request.getRawContext().get("_parent"); // saleOrderLine
+
+    // origin
+    String model = mapParent.get(REQUEST_FIELDNAME_MODEL).toString();
+    Long originId = Long.valueOf(mapParent.get("id").toString());
+
+    // product
+    Long productId = productReservationService.getProductIdFromMap(mapParent);
+
+    // entities from HttpRequest
     ProductReservation newProductReservation =
         request.getContext().asType(ProductReservation.class);
 
-    System.out.println("onNewManufOrderProductReservationReserved " + newProductReservation);
-    response.setError("Not implemented");
+    // enriched the entity ProductReservation
+    productReservationService.enrichProductReservation(
+        newProductReservation, productId, model, originId, typeProductReservation);
+
+    // manage response
+    fillResponseWithProductReservationOnNew(response, newProductReservation);
   }
 
-  // CHANGE (confirm save)
+  /*  protected void fillResponseWithSaleOrderLineProductReservationOnNew(
+      ActionRequest request, ActionResponse response, int typeProductReservationReservation)
+      throws AxelorException {
+
+    // check Origin
+    @SuppressWarnings("unchecked")
+    Map<String, Object> mapParent =
+        (Map<String, Object>) request.getRawContext().get("_parent"); // saleOrderLine
+    if (!SaleOrderLine.class.getName().equals(mapParent.get(REQUEST_FIELDNAME_MODEL).toString())) {
+      return;
+    }
+
+    // entities from HttpRequest
+    ProductReservation newProductReservation =
+        request.getContext().asType(ProductReservation.class);
+    Class<SaleOrderLine> type = SaleOrderLine.class;
+    SaleOrderLine proxySaleOrderLine = request.getContext().getParent().asType(type);
+
+    // enriched the entity ProductReservation
+    Long productId = productReservationService.getProductIdFromMap(mapParent);
+    productReservationService.createSaleOrderLineProductReservation(
+        newProductReservation, productId, proxySaleOrderLine, typeProductReservationReservation);
+
+    // manage response
+    fillResponseWithProductReservationOnNew(response, newProductReservation);
+  }*/
+
+  protected void fillResponseWithProductReservationOnNew(
+      ActionResponse response, ProductReservation newProductReservation) throws AxelorException {
+    response.setAttr(
+        RESPONSE_FIELD_NAME_RESERVATION_TYPE,
+        RESPONSE_ATTRIBUTE_NAME_VALUE,
+        newProductReservation.getProductReservationType());
+    response.setAttr(
+        RESPONSE_FIELD_NAME_PRODUCT,
+        RESPONSE_ATTRIBUTE_NAME_VALUE,
+        newProductReservation.getProduct());
+    response.setAttr(
+        RESPONSE_FIELD_NAME_ORIGIN_SALE_ORDER_LINE,
+        RESPONSE_ATTRIBUTE_NAME_VALUE,
+        newProductReservation.getOriginSaleOrderLine());
+    try {
+      Method getterManufOrder =
+          ProductReservation.class.getMethod(
+              "getOriginManufOrder"); // reflection because supplychain do not know ManufOrder class
+      response.setAttr(
+          RESPONSE_FIELD_NAME_ORIGIN_MANUF_ORDER,
+          RESPONSE_ATTRIBUTE_NAME_VALUE,
+          getterManufOrder.invoke(newProductReservation));
+    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      TraceBackService.trace(e); // never happen
+    }
+    response.setAttr(
+        RESPONSE_FIELD_NAME_STATUS,
+        RESPONSE_ATTRIBUTE_NAME_VALUE,
+        newProductReservation.getStatus());
+    BigDecimal availableQty = productReservationService.getAvailableQty(newProductReservation);
+    response.setAttr(
+        RESPONSE_FIELD_NAME_AVAILABLE_QTY, RESPONSE_ATTRIBUTE_NAME_VALUE, availableQty);
+  }
+
+  // ON CHANGE (confirm --> save)
 
   public void onChangeSaleOrderLineProductReservationRequestedReserved(
       ActionRequest request, ActionResponse response) {
-      @SuppressWarnings("unchecked")
-      List<Map<String,Object>> rawProductReservationRequestedReservedList =
-          (List<Map<String,Object>>) request.getRawContext().get("productReservationRequestedReservedList");
-      productReservationService.saveSelectedProductReservation(rawProductReservationRequestedReservedList);
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> changedProductReservationRequestedReservedMapList =
+        (List<Map<String, Object>>)
+            request
+                .getRawContext()
+                .get(REQUEST_FIELD_NAME_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST);
+    productReservationService.saveSelectedProductReservationInMapList(
+        changedProductReservationRequestedReservedMapList,
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
   }
 
   public void onChangeSaleOrderLineProductReservationReserved(
       ActionRequest request, ActionResponse response) {
-    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-    System.out.println("onChangeSaleOrderLineProductReservationReserved " + saleOrderLine);
-    response.setError("Not implemented");
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> changedProductReservationReservedMapList =
+        (List<Map<String, Object>>)
+            request.getRawContext().get(REQUEST_FIELD_NAME_PRODUCT_RESERVATION_RESERVED_LIST);
+    productReservationService.saveSelectedProductReservationInMapList(
+        changedProductReservationReservedMapList,
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION);
   }
 
   public void onChangeManufOrderProductReservationRequestedReserved(
       ActionRequest request, ActionResponse response) {
-
-    System.out.println("onChangeManufOrderProductReservationRequestedReserved ");
-    response.setError("Not implemented");
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> changedProductReservationRequestedReservedMapList =
+        (List<Map<String, Object>>)
+            request
+                .getRawContext()
+                .get(REQUEST_FIELD_NAME_PRODUCT_RESERVATION_REQUESTED_RESERVED_LIST);
+    productReservationService.saveSelectedProductReservationInMapList(
+        changedProductReservationRequestedReservedMapList,
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION);
   }
 
   public void onChangeManufOrderProductReservationReserved(
       ActionRequest request, ActionResponse response) {
-
-    System.out.println("onChangeManufOrderProductReservationReserved ");
-    response.setError("Not implemented");
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> changedProductReservationReservedMapList =
+        (List<Map<String, Object>>)
+            request.getRawContext().get(REQUEST_FIELD_NAME_PRODUCT_RESERVATION_RESERVED_LIST);
+    productReservationService.saveSelectedProductReservationInMapList(
+        changedProductReservationReservedMapList,
+        AbstractProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION);
   }
 }
