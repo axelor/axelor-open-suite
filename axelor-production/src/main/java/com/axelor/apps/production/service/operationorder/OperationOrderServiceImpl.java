@@ -439,4 +439,44 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     return Lists.reverse(getSortedOperationOrderList(operationOrders));
   }
+
+  @Override
+  public boolean isTimeBeforeNextOperation(OperationOrder operationOrder) {
+    boolean isTimeBeforeNextOperation = false;
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+
+    if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED
+        && operationOrder.getPriority() == manufOrder.getOperationOrderMaxPriority()) {
+
+      OperationOrder previousPriorityOperationOrder = getPreviousPriorityOperationOrder(manufOrder);
+      if (previousPriorityOperationOrder != null
+          && previousPriorityOperationOrder.getProdProcessLine() != null) {
+        isTimeBeforeNextOperation = checkTimeBeforeNextOperation(previousPriorityOperationOrder);
+      }
+    }
+    return isTimeBeforeNextOperation;
+  }
+
+  protected OperationOrder getPreviousPriorityOperationOrder(ManufOrder manufOrder) {
+    return manufOrder.getOperationOrderList().stream()
+        .filter(op -> op.getPriority() < manufOrder.getOperationOrderMaxPriority())
+        .filter(op -> op.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED)
+        .max(
+            Comparator.comparing(OperationOrder::getPriority)
+                .thenComparing(OperationOrder::getRealEndDateT))
+        .orElse(null);
+  }
+
+  protected boolean checkTimeBeforeNextOperation(OperationOrder previousPriorityOperationOrder) {
+    return appProductionService
+        .getTodayDateTime()
+        .toLocalDateTime()
+        .isBefore(
+            previousPriorityOperationOrder
+                .getRealEndDateT()
+                .plusSeconds(
+                    previousPriorityOperationOrder
+                        .getProdProcessLine()
+                        .getTimeBeforeNextOperation()));
+  }
 }

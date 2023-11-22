@@ -47,11 +47,12 @@
     <field name="manufOrder.prodProcess" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
+    <field name="$isTimeBeforeNextOperation" type="boolean" hidden="true"/>
     <button name="planBtn" icon="fa-calendar" onClick="action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
     <button name="startBtn" icon="fa-play"
       onClick="action-operation-order-group-start-or-resume"
-      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
+      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || (($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority')))) || $isTimeBeforeNextOperation)"/>
     <button name="pauseBtn" icon="fa-pause" onClick="action-operation-order-group-pause,save"
       readonlyIf="statusSelect != 4"/>
     <button name="finishBtn" icon="fa-power-off"
@@ -78,12 +79,13 @@
     <field name="manufOrder.prodProcess" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
+    <field name="$isTimeBeforeNextOperation" type="boolean" hidden="true"/>
     <button name="planBtn" icon="fa-calendar"
       onClick="save,action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
     <button name="startBtn" icon="fa-play"
       onClick="save,action-operation-order-group-start-or-resume"
-      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
+      readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || (($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority')))) || $isTimeBeforeNextOperation)"/>
     <button name="pauseBtn" icon="fa-pause"
       onClick="save,action-operation-order-group-pause,save" readonlyIf="statusSelect != 4"/>
     <button name="finishBtn" icon="fa-power-off"
@@ -115,7 +117,7 @@
       <field name="manufOrder" colSpan="3" hidden="true" readonly="true"/>
       <field name="outsourcing" colSpan="3"/>
       <field name="isToInvoice" colSpan="3"/>
-      <field name="prodProcessLine" hidden="true"/>
+      <field name="prodProcessLine"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
         <viewer>
 		  <![CDATA[<>{prodProcessLine.optional && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Optional')}</Badge>}</>]]>
@@ -184,11 +186,12 @@
       <field name="manufOrder.prodProcess" hidden="true"/>
       <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
       <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
+      <field name="$isTimeBeforeNextOperation" type="boolean" hidden="true"/>
       <button name="planBtn" title="Plan" icon="fa-calendar" colSpan="12"
         hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
         onClick="save,action-operation-order-method-plan" hidden="true"/>
       <button name="startBtn" title="Start" icon="fa-play"
-        showIf="(statusSelect == 3 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
+        showIf="(statusSelect == 3 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || ((statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) &amp;&amp; !$isTimeBeforeNextOperation) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
         colSpan="12" onClick="save,action-operation-order-group-start,save" hidden="true"/>
       <button name="cancelBtn" title="Cancel" icon="fa-times-circle"
         showIf="statusSelect != 2 &amp;&amp; statusSelect != 6" colSpan="12"

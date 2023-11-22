@@ -805,6 +805,8 @@
 "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?",,,
 "This workflow is not supported for operation order status.",,,
 "Thursday hours",,,
+"Time before next operation (hh:mm:ss)",,,
+"Time before the next operation of the same manufacturing order.",,,
 "Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle.",,,
 "Time between two operations (hhh:mm:ss)",,,
 "Time between two operations. This is the time to wait until the end of a operation to start a new one within the work center.",,,
