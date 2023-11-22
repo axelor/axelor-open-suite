@@ -825,6 +825,8 @@
 "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?","Cette gamme a déjà les versions suivantes : <br/><ul> %s </ul>Et ces nouvelles versions en ont peut-etre déjà quelques unes. Voulez-vous toujours en créer une nouvelle ?",,
 "This workflow is not supported for operation order status.","Le statut cible n'est pas valide en raison du statut actuel de l'opération.",,
 "Thursday hours","Heures Jeudi",,
+"Time before next operation (hh:mm:ss)","Temps avant prochaine opération (hh:mm:ss)",,
+"Time before the next operation of the same manufacturing order.","Temps d'attente avant la prochaine opération du même ordre de fabrication.",,
 "Time between two cycles. This is the time to wait until the end of a cycle to start a new cycle.","Temps entre deux cycles. Il s'agit du temps qu'il faut attendre après la fin d'un cycle pour pouvoir en commencer un nouveau.",,
 "Time between two operations (hhh:mm:ss)","Temps inter-operations (hhh:mm:ss)",,
 "Time between two operations. This is the time to wait until the end of a operation to start a new one within the work center.","Temps inter-opérations. Il s'agit du temps qu'il faut attendre après la fin d'une opération afin de pouvoir en commencer une nouvelle",,
