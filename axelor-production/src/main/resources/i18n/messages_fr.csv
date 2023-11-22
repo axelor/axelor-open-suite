@@ -523,6 +523,7 @@
 "Outsourcing location","Emplacement de sous-traitance",,
 "Outsourcing order","Ordre externalisé",,
 "Outsourcing purchase order cannot be generated. Please fill hours unit in your base configuration.","La commande d'achat de sous-traitance n'a pas pu être générée. Merci de remplir l'unité des heures dans la configuration de base.",,
+"Outsourcing purchase orders","Commande d'achat sous-traitant",,
 "Outsourcing stock location","Emplacement de sous-traitance",,
 "Parent",,,
 "Parent BOM","Nomenclature parente",,
