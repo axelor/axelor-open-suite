@@ -24,7 +24,7 @@
     width="large">
     <panel name="mainPanel">
       <field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form"
-        domain="self.manageAccumulation = true" onChange="action-leave-line-record-set-name"/>
+        onChange="action-leave-line-record-set-name"/>
       <field name="quantity" readonly="true"/>
       <field name="daysToValidate" readonly="true" colSpan="4"/>
       <field name="daysValidated" readonly="true" colSpan="4"/>
