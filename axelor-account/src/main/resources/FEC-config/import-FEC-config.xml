@@ -24,7 +24,6 @@
       <bind to="code" column="EcritureLet"/>
       <bind column="DateLet" adapter="LocalDate" if="DateLet" to="dateOfLettering"/>
     </bind>
-    <bind to="currencyCode" column="Idevise"/>
   </input>
 
 </csv-inputs>
