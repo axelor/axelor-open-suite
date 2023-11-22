@@ -927,7 +927,10 @@ public class IrrecoverableService {
         }
       } else {
         amount =
-            invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
+            invoiceMoveLine
+                .getCredit()
+                .multiply(prorataRate)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
           if (invoiceMoveLine.getVatSystemSelect() == null
