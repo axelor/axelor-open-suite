@@ -26,6 +26,8 @@
       color="info"/>
     <hilite if="invoiced" color="success"/>
     <field name="project"/>
+    <field name="saleOrder.currency" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="saleOrder.saleOrderSeq" width="120" title="Reference"/>
     <field name="saleOrder.creationDate"/>
     <field name="product.code" width="120"/>
@@ -33,8 +35,9 @@
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum"
       readonly="true" x-scale="2"/>
-    <field name="exTaxTotal" aggregate="sum" readonly="true"/>
-    <field name="amountInvoiced"/>
+    <field name="exTaxTotal" aggregate="sum" readonly="true"
+      x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="amountInvoiced" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="saleOrder.currency"/>
     <field name="toInvoice"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"

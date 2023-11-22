@@ -20,6 +20,8 @@
     <field name="deliveryState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
+    <field name="saleOrder.currency" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
@@ -35,9 +37,9 @@
       onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxPrice" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
     <field name="availableStatus" if="__config__.app.isApp('supplychain')">
@@ -58,13 +60,15 @@
     <field name="saleOrder.clientPartner"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
+    <field name="saleOrder.currency" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="deliveredQty" aggregate="sum" x-scale="2"/>
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="exTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
     <field name="saleOrder.confirmationDateTime"/>
@@ -74,14 +78,16 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="saleOrder"/>
     <field name="saleOrder.inTaxTotal"/>
+    <field name="saleOrder.currency" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="inTaxPrice" x-scale="2"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxPrice" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
   </grid>
 
   <form name="sale-order-line-project-form" title="SO line"
@@ -207,7 +213,7 @@
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-            hidden="true"/>
+            hidden="true" x-scale="saleOrder.currency.numberOfDecimals"/>
           <panel name="discountPanel" colSpan="12"
             readonlyIf="$isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
@@ -216,11 +222,13 @@
             <panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
               <field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-                onChange="action-sale-order-line-group-discount-amount-onchange"/>
+                onChange="action-sale-order-line-group-discount-amount-onchange"
+                x-scale="saleOrder.currency.numberOfDecimals"/>
               <field name="discountDerogation" colSpan="3"
                 onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"/>
             </panel>
             <field name="priceDiscounted" colSpan="3" hidden="true" readonly="true"/>
+
             <field name="$maxDiscount" colSpan="12" showTitle="false" showIf="$maxDiscount"
               readonly="true">
               <viewer>
@@ -239,8 +247,10 @@
             onChange="action-group-sale-saleorderline-tax-line-onchange"
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
             form-view="tax-line-form"/>
-          <field name="exTaxTotal" readonly="true" colSpan="3"/>
-          <field name="inTaxTotal" readonly="true" colSpan="3"/>
+          <field name="exTaxTotal" readonly="true" colSpan="3"
+            x-scale="saleOrder.currency.numberOfDecimals"/>
+          <field name="inTaxTotal" readonly="true" colSpan="3"
+            x-scale="saleOrder.currency.numberOfDecimals"/>
         </panel>
         <panel name="reservationPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
@@ -312,10 +322,13 @@
       </panel>
       <panel name="marginPanel" title="Margin" readonlyIf="$isReadOnly !== false">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"/>
-        <field name="subTotalGrossMargin" readonly="true"/>
+          onChange="action-sale-order-line-method-compute-subMargin"
+          x-scale="$companyCurrency.numberOfDecimals"/>
+        <field name="subTotalGrossMargin" readonly="true"
+          x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
-        <field name="subTotalMarkup" readonly="true"/>
+        <field name="subTotalMarkup" readonly="true"
+          x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
           target="com.axelor.apps.base.db.Currency"/>
       </panel>
@@ -341,7 +354,7 @@
       <panel name="invoicingFollowUpPanel" title="Invoicing"
         readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
-        <field name="amountInvoiced"/>
+        <field name="amountInvoiced" x-scale="saleOrder.currency.numberOfDecimals"/>
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
@@ -405,7 +418,7 @@
           colSpan="4" hidden="true"/>
         <field name="inTaxPrice"
           onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-          colSpan="4" hidden="true"/>
+          colSpan="4" hidden="true" x-scale=""/>
         <panel name="discountPanel" title="Discount">
           <field name="discountTypeSelect"
             onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
@@ -419,10 +432,12 @@
         onChange="action-group-sale-saleorderline-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form"/>
-      <field name="exTaxTotal" readonly="true"/>
-      <field name="inTaxTotal" readonly="true"/>
+      <field name="exTaxTotal" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
+      <field name="inTaxTotal" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
+      <field name="saleOrder.currency" hidden="true"/>
+      <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
       </panel>
@@ -435,10 +450,13 @@
     <panel-tabs hideIf="typeSelect == 1" name="allPanelTab">
       <panel name="marginPanel" title="Margin">
         <field name="subTotalCostPrice"
-          onChange="action-sale-order-line-method-compute-subMargin"/>
-        <field name="subTotalGrossMargin" readonly="true"/>
+          onChange="action-sale-order-line-method-compute-subMargin"
+          x-scale="$companyCurrency.numberOfDecimals"/>
+        <field name="subTotalGrossMargin" readonly="true"
+          x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
-        <field name="subTotalMarkup" readonly="true"/>
+        <field name="subTotalMarkup" readonly="true"
+          x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
           target="com.axelor.apps.base.db.Currency"/>
       </panel>
