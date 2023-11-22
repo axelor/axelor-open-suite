@@ -713,6 +713,8 @@
     <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
+    <field name="outsourcingOrder" expr="eval: supplierPartner?.isSubcontractor"
+      if="__config__.app.isApp('production')"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-set-group-product-on-printing"
