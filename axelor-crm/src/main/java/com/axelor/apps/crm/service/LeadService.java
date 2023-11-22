@@ -34,7 +34,7 @@ public interface LeadService {
    * @return
    * @throws AxelorException
    */
-  public String getSequence() throws AxelorException;
+  public String getSequence(Partner partner) throws AxelorException;
 
   /**
    * Assign user company to partner
