@@ -88,6 +88,8 @@ import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseCreateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
+import com.axelor.apps.hr.service.expense.ExpenseCreateWizardServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseFetchMoveService;
 import com.axelor.apps.hr.service.expense.ExpenseFetchMoveServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseFetchPeriodService;
@@ -258,5 +260,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineCheckResponseService.class).to(ExpenseLineCheckResponseServiceImpl.class);
     bind(ExpenseCheckResponseService.class).to(ExpenseCheckResponseServiceImpl.class);
     bind(ExpenseLineDomainService.class).to(ExpenseLineDomainServiceImpl.class);
+    bind(ExpenseCreateWizardService.class).to(ExpenseCreateWizardServiceImpl.class);
   }
 }

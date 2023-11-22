@@ -45,4 +45,8 @@ public interface ExpenseToolService {
       throws AxelorException;
 
   boolean isKilometricExpenseLine(ExpenseLine expenseLine);
+
+  boolean listHasSeveralCurrencies(List<ExpenseLine> expenseLineList);
+
+  boolean listHasSeveralEmployees(List<ExpenseLine> expenseLineList);
 }

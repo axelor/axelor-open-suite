@@ -562,17 +562,20 @@ public class ExpenseController {
       return;
     }
 
-    Long empId;
+    Long empId = expenseLine.getEmployee().getId();
     if (expenseLine.getExpense() != null) {
       setExpense(request, expenseLine);
     }
     Expense expense = expenseLine.getExpense();
 
-    if (expense != null && expenseLine.getEmployee() != null) {
-      empId = expense.getEmployee().getId();
-    } else {
-      empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
+    if (empId == null) {
+      if (expense != null && expenseLine.getEmployee() != null) {
+        empId = expense.getEmployee().getId();
+      } else {
+        empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
+      }
     }
+
     Employee employee = Beans.get(EmployeeRepository.class).find(empId);
 
     BigDecimal amount = BigDecimal.ZERO;
