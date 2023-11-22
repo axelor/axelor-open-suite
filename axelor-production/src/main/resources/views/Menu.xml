@@ -51,6 +51,16 @@
     <context name="_isPersonalized" expr="eval: true"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-import-bill-of-material"
+    parent="manufacturing-root-bill-of-material-root" title="Import"
+    action="manufacturing.root.import.bill.of.material" order="300"/>
+
+  <action-view name="manufacturing.root.import.bill.of.material"
+    title="Bill of material imports" model="com.axelor.apps.production.db.BillOfMaterialImport">
+    <view type="grid" name="bill-of-material-import-grid"/>
+    <view type="form" name="bill-of-material-import-form"/>
+  </action-view>
+
   <menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
     title="Production processes" action="manufacturing.root.prod.process" order="200"/>
 
@@ -476,6 +486,17 @@
     <view-param name="forceTitle" value="true"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: 2"/>
+  </action-view>
+
+  <menuitem name="manufacturing-conf-bill-of-material-import-source"
+    parent="manufacturing-conf" title="Bill of material import sources"
+    action="manufacturing.conf.bill.of.material.import.source" order="1100"/>
+
+  <action-view name="manufacturing.conf.bill.of.material.import.source"
+    title="Bill of material import sources"
+    model="com.axelor.apps.production.db.BillOfMaterialImportSource">
+    <view type="grid" name="bill-of-material-import-source-grid"/>
+    <view type="form" name="bill-of-material-import-source-form"/>
   </action-view>
 
   <menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf"

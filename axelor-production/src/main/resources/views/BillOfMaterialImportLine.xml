@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="bill-of-material-import-line-grid" title="Bill of material import lines"
+    model="com.axelor.apps.production.db.BillOfMaterialImportLine">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="bomLevel"/>
+    <field name="product"/>
+    <field name="quantity"/>
+    <field name="unit"/>
+  </grid>
+
+  <form name="bill-of-material-import-line-form" title="Bill of material import line"
+    model="com.axelor.apps.production.db.BillOfMaterialImportLine">
+    <panel name="namePanel">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="product"/>
+      <field name="quantity" colSpan="3"/>
+      <field name="unit" colSpan="3"/>
+      <field name="bomLevel"/>
+      <field name="mark"/>
+      <field name="parent"/>
+      <field name="description" widget="binary-link"/>
+    </panel>
+  </form>
+
+  <tree name="bill-of-material-import-line-tree" title="Bill of material import line tree">
+    <column name="code" type="string"/>
+    <column name="name" type="string"/>
+    <column name="bomLevel" type="integer"/>
+    <column name="product" type="reference"/>
+    <column name="quantity" type="decimal"/>
+    <column name="unit" type="reference"/>
+    <node model="com.axelor.apps.production.db.BillOfMaterialImportLine">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="bomLevel"/>
+      <field name="product"/>
+      <field name="quantity"/>
+      <field name="unit"/>
+    </node>
+    <node model="com.axelor.apps.production.db.BillOfMaterialImportLine" parent="parent">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="bomLevel"/>
+      <field name="product"/>
+      <field name="quantity"/>
+      <field name="unit"/>
+    </node>
+  </tree>
+
+  <action-view name="action-bill-of-material-import-line-view-tree"
+    title="Imported BoM tree" model="com.axelor.apps.production.db.BillOfMaterialImportLine">
+    <view type="tree" name="bill-of-material-import-line-tree"/>
+    <view type="form" name="bill-of-material-import-line-form"/>
+    <domain>self.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+</object-views>
+
+

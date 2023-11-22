@@ -343,4 +343,7 @@ public final class ProductionExceptionMessage {
 
   public static final String LOOP_IN_BILL_OF_MATERIALS = /*$$(*/
       "The system found a loop in your bill of materials, please correct concerned data" /*)*/;
+
+  public static final String BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY = /*$$(*/
+      "Parents are not done properly in input file." /*)*/;
 }
