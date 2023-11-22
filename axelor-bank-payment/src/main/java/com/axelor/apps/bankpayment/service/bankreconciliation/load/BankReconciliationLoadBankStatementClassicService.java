@@ -19,28 +19,35 @@
 package com.axelor.apps.bankpayment.service.bankreconciliation.load;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
-import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BankReconciliationLoadService {
+public class BankReconciliationLoadBankStatementClassicService
+    extends BankReconciliationLoadBankStatementAbstractService {
 
   protected BankReconciliationLineService bankReconciliationLineService;
+  protected BankStatementLineFilterService bankStatementLineFilterService;
 
   @Inject
-  public BankReconciliationLoadService(
-      BankReconciliationLineService bankReconciliationLineService) {
-
+  public BankReconciliationLoadBankStatementClassicService(
+      BankReconciliationRepository bankReconciliationRepository,
+      BankReconciliationService bankReconciliationService,
+      BankReconciliationLineService bankReconciliationLineService,
+      BankStatementLineFilterService bankStatementLineFilterService) {
+    super(bankReconciliationRepository, bankReconciliationService);
     this.bankReconciliationLineService = bankReconciliationLineService;
+    this.bankStatementLineFilterService = bankStatementLineFilterService;
   }
 
   @Transactional
@@ -51,12 +58,7 @@ public class BankReconciliationLoadService {
   }
 
   @Transactional
-  public void loadBankStatementLines(BankReconciliation bankReconciliation) {
-    loadBankStatementLines(bankReconciliation, true);
-  }
-
-  @Transactional
-  public void loadBankStatementLines(
+  protected void loadBankStatementLines(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     List<BankStatementLine> bankStatementLineList =
@@ -71,48 +73,13 @@ public class BankReconciliationLoadService {
     }
   }
 
-  /**
-   * Write the filter for the bank statement line query, depending on boolean parameters.
-   *
-   * @param includeOtherBankStatements whether we include other bank statement.
-   * @param includeBankStatement whether we include the bank statement given in parameter. this
-   *     parameter cannot be false if includeOtherBankstatements is false.
-   * @return the filter.
-   */
-  protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements,
-      boolean includeBankStatement,
-      boolean isLineTypeMovement) {
-
-    String filter =
-        "self.bankDetails = :bankDetails"
-            + " and self.currency = :currency"
-            + " and self.bankStatement.statusSelect = :statusImported";
-
-    if (!includeOtherBankStatements && includeBankStatement) {
-      filter += " and self.bankStatement = :bankStatement";
-    } else if (includeOtherBankStatements && includeBankStatement) {
-      filter += " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
-    } else {
-      filter +=
-          " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
-              + " and self.bankStatement != :bankStatement";
-    }
-
-    if (isLineTypeMovement) {
-      filter += " and self.amountRemainToReconcile > 0";
-    }
-
-    return filter;
-  }
-
   protected List<BankStatementLine> getBankStatementLines(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
     String queryFilter =
-        getBankStatementLinesFilter(
-            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true);
+        bankStatementLineFilterService.getBankStatementLinesFilterWithAmountToReconcile(
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
     Query<BankStatementLine> bankStatementLinesQuery =
         JPA.all(BankStatementLine.class)
             .bind("bankDetails", bankReconciliation.getBankDetails())
@@ -128,20 +95,5 @@ public class BankReconciliationLoadService {
       bankStatementLinesQuery.bind("existingBankStatementLines", existingBankStatementLineIds);
     }
     return bankStatementLinesQuery.filter(queryFilter).fetch();
-  }
-
-  protected List<Long> getExistingBankStatementLines(BankReconciliation bankReconciliation) {
-    List<Long> bankStatementLineIds = Lists.newArrayList();
-    List<BankReconciliationLine> bankReconciliationLines =
-        bankReconciliation.getBankReconciliationLineList();
-    if (CollectionUtils.isEmpty(bankReconciliationLines)) {
-      return bankStatementLineIds;
-    }
-    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
-      if (bankReconciliationLine.getBankStatementLine() != null) {
-        bankStatementLineIds.add(bankReconciliationLine.getBankStatementLine().getId());
-      }
-    }
-    return bankStatementLineIds;
   }
 }
