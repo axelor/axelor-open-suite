@@ -30,6 +30,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -134,24 +135,10 @@ public class InvoiceController {
     BudgetInvoiceService budgetInvoiceService = Beans.get(BudgetInvoiceService.class);
     if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       if (budgetInvoiceService.isBudgetInLines(invoice)) {
-
         String budgetExceedAlert = budgetInvoiceService.getBudgetExceedAlert(invoice);
-        if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
-          budgetExceedAlert =
-              Beans.get(BudgetToolsService.class)
-                  .getBudgetExceedMessage(budgetExceedAlert, false, false);
-          response.setAlert(budgetExceedAlert);
-        }
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, false, response);
       } else {
-
-        Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
-        if (isError != null) {
-          if (isError) {
-            response.setError(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
-          } else {
-            response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
-          }
-        }
+        BudgetControllerTool.verifyMissingBudget(response);
       }
     }
   }

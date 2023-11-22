@@ -23,9 +23,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -86,24 +86,10 @@ public class MoveController {
     MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
     if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
       if (moveBudgetService.isBudgetInLines(move)) {
-
         String budgetExceedAlert = moveBudgetService.getBudgetExceedAlert(move);
-        if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
-          budgetExceedAlert =
-              Beans.get(BudgetToolsService.class)
-                  .getBudgetExceedMessage(budgetExceedAlert, false, false);
-          response.setAlert(budgetExceedAlert);
-        }
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, false, response);
       } else {
-
-        Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
-        if (isError != null) {
-          if (isError) {
-            response.setError(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
-          } else {
-            response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
-          }
-        }
+        BudgetControllerTool.verifyMissingBudget(response);
       }
     }
   }

@@ -28,6 +28,7 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -181,28 +182,9 @@ public class SaleOrderController {
     if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
       if (saleOrderBudgetService.isBudgetInLines(saleOrder)) {
         String budgetExceedAlert = saleOrderBudgetService.getBudgetExceedAlert(saleOrder);
-        if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
-          Boolean isError = Beans.get(AppBudgetService.class).isBudgetExceedValuesError(true);
-          if (isError != null) {
-            budgetExceedAlert =
-                Beans.get(BudgetToolsService.class)
-                    .getBudgetExceedMessage(budgetExceedAlert, true, isError);
-            if (isError) {
-              response.setError(I18n.get(budgetExceedAlert));
-            } else {
-              response.setAlert(I18n.get(budgetExceedAlert));
-            }
-          }
-        }
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, true, response);
       } else {
-        Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
-        if (isError != null) {
-          if (isError) {
-            response.setError(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
-          } else {
-            response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
-          }
-        }
+        BudgetControllerTool.verifyMissingBudget(response);
       }
     }
   }
