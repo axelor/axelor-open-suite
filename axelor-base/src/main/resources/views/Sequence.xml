@@ -75,15 +75,15 @@
         <panel stacked="true">
           <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
             onChange="action-sequence-method-compute-fullname" showIf="!prefixGroovyOk"/>
-          <field name="prefixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-            showIf="prefixGroovyOk" widget="CodeEditor" x-code-syntax="groovy" height="100"/>
+          <field name="prefixGroovy" showIf="prefixGroovyOk" widget="CodeEditor"
+            x-code-syntax="groovy" height="100"/>
         </panel>
 
         <panel stacked="true">
           <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
             onChange="action-sequence-method-compute-fullname" showIf="!suffixGroovyOk"/>
-          <field name="suffixGroovy" pattern="^[^\/\\?*:\|&quot;&lt;>]*$" widget="CodeEditor"
-            x-code-syntax="groovy" showIf="suffixGroovyOk" height="100"/>
+          <field name="suffixGroovy" widget="CodeEditor" x-code-syntax="groovy"
+            showIf="suffixGroovyOk" height="100"/>
         </panel>
       </panel>
 
