@@ -63,6 +63,8 @@
 
   <input file="hr_hrBatch.csv" type="com.axelor.apps.hr.db.HrBatch" separator=";"/>
 
+  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
+
   <input file="hr_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
 
   <input file="hr_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"

@@ -1,0 +1,4 @@
+---
+title: "Budget : Add automatic budget computation with a configuration on global budget for moves, invoices and orders"
+type: feature
+description: "Add also a new field to say if budget exceed message will be raised and if it's in alert or in error"

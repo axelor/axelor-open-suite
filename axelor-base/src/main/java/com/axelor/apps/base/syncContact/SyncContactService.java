@@ -237,7 +237,7 @@ public class SyncContactService {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     String seq =
         Beans.get(SequenceService.class)
-            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);

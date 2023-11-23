@@ -336,4 +336,6 @@ public interface StockMoveLineService {
   public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine);
 
   Map<String, Object> getClearedStockMoveLineMap();
+
+  void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException;
 }

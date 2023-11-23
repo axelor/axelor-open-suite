@@ -47,7 +47,8 @@ public class CashManagementForecastRecapRepository extends ForecastRecapReposito
                     SequenceRepository.FORECAST_RECAP_SEQUENCE,
                     company,
                     ForecastRecap.class,
-                    "forecastRecapSeq");
+                    "forecastRecapSeq",
+                    entity);
 
         if (sequence == null) {
           throw new AxelorException(

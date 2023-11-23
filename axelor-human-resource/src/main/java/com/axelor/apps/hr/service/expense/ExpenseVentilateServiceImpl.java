@@ -151,7 +151,11 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     if (sequence != null) {
       expense.setExpenseSeq(
           sequenceService.getSequenceNumber(
-              sequence, expense.getSentDateTime().toLocalDate(), Expense.class, "expenseSeq"));
+              sequence,
+              expense.getSentDateTime().toLocalDate(),
+              Expense.class,
+              "expenseSeq",
+              expense));
       if (expense.getExpenseSeq() != null) {
         return;
       }
