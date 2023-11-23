@@ -21,8 +21,8 @@
     <string name="chequeNumber" title="Cheque number"/>
     <many-to-one name="move" ref="com.axelor.apps.account.db.Move" title="Move"
       readonly="true" index="idx_account_inv_payment_move"/>
-    <one-to-many name="reconcileList" ref="com.axelor.apps.account.db.Reconcile"
-      readonly="true" title="Reconciliations" mappedBy="invoicePayment"/>
+    <many-to-one name="reconcile" ref="com.axelor.apps.account.db.Reconcile"
+      readonly="true" title="Reconcile"/>
 
     <many-to-one name="invoice" ref="com.axelor.apps.account.db.Invoice"
       initParam="true"/>
@@ -60,8 +60,8 @@
       ref="com.axelor.apps.account.db.InvoiceTermPayment" mappedBy="invoicePayment"
       title="Invoice term payments"/>
 
-    <finder-method name="findByReconcileId" using="Long:reconcileId"
-      filter="(:reconcileId) MEMBER OF self.reconcileList " all="true"/>
+    <finder-method name="findByReconcile" using="reconcile" all="true"/>
+    <finder-method name="findByReconcileAndInvoice" using="reconcile,invoice"/>
 
     <extra-code>
    		<![CDATA[

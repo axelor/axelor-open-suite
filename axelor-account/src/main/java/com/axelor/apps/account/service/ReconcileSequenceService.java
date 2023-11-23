@@ -51,7 +51,8 @@ public class ReconcileSequenceService {
             SequenceRepository.RECONCILE,
             reconcile.getDebitMoveLine().getMove().getCompany(),
             Reconcile.class,
-            "reconcileSeq");
+            "reconcileSeq",
+            reconcile);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -213,7 +213,8 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
             SequenceRepository.FIXED_ASSET,
             fixedAsset.getCompany(),
             FixedAsset.class,
-            "fixedAssetSeq");
+            "fixedAssetSeq",
+            fixedAsset);
     return seq;
   }
 

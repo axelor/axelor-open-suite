@@ -102,9 +102,19 @@
           and App mobile -->
       </panel>
       <panel name="hrConfigPanel" title="HR" showIf="isHRAppEnabled">
-        <field name="isMultiCurrencyEnabled" widget="boolean-switch"/>
-        <field name="isProjectInvoicingEnabled" widget="boolean-switch"/>
-        <field name="isKilometricExpenseLineAllowed" widget="boolean-switch"/>
+        <panel name="expenseConfigPanel" title="Expenses" itemSpan="12">
+          <field name="isMultiCurrencyEnabled" widget="boolean-switch"/>
+          <field name="isExpenseProjectInvoicingEnabled" widget="boolean-switch"/>
+          <field name="isKilometricExpenseLineAllowed" widget="boolean-switch"/>
+          <field name="isManualCreationOfExpenseAllowed" widget="boolean-switch"/>
+          <field name="isLineCreationOfExpenseDetailsAllowed" widget="boolean-switch"/>
+        </panel>
+        <panel name="timesheetConfigPanel" title="Timesheets" itemSpan="12">
+          <field name="isManualCreationOfTimesheetAllowed" widget="boolean-switch"/>
+          <field name="isLineCreationOfTimesheetDetailsAllowed" widget="boolean-switch"/>
+          <field name="isEditionOfDateAllowed" widget="boolean-switch"/>
+          <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch"/>
+        </panel>
       </panel>
     </panel-tabs>
 

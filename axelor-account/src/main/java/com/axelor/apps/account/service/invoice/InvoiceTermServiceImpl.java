@@ -1377,7 +1377,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      invoicePayment.addReconcileListItem(reconcile);
+      invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 

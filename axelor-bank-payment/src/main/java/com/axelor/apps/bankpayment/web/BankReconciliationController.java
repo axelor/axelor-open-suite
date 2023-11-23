@@ -30,6 +30,7 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLoadBankStatementService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationValidateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
@@ -130,8 +131,8 @@ public class BankReconciliationController {
         bankReconciliation = bankReconciliationService.computeInitialBalance(bankReconciliation);
       }
       if (bankReconciliation != null) {
-        bankReconciliationService.loadBankStatement(
-            bankReconciliationRepository.find(bankReconciliation.getId()));
+        Beans.get(BankReconciliationLoadBankStatementService.class)
+            .loadBankStatement(bankReconciliationRepository.find(bankReconciliation.getId()), true);
 
         if (company != null && company.getBankPaymentConfig() != null) {
           if (bankReconciliation
@@ -168,7 +169,8 @@ public class BankReconciliationController {
       bankReconciliation =
           Beans.get(BankReconciliationRepository.class).find(bankReconciliation.getId());
       bankReconciliation.setIncludeOtherBankStatements(true);
-      Beans.get(BankReconciliationService.class).loadBankStatement(bankReconciliation, false);
+      Beans.get(BankReconciliationLoadBankStatementService.class)
+          .loadBankStatement(bankReconciliation, false);
 
       response.setReload(true);
     } catch (Exception e) {

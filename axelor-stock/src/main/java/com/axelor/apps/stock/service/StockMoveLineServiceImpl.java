@@ -1642,4 +1642,26 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     clearedStockMoveLineMap.put("trackingNumber", null);
     return clearedStockMoveLineMap;
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
+    Integer type = stockMove.getTypeSelect();
+    if (type == StockMoveRepository.TYPE_INTERNAL) {
+      return;
+    }
+    List<StockMoveLine> stockMoveLineList = new ArrayList<>(stockMove.getStockMoveLineList());
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      Product product = stockMoveLine.getProduct();
+      if (product == null) {
+        return;
+      }
+      this.assignOrGenerateTrackingNumber(
+          stockMoveLine,
+          stockMove,
+          product,
+          product.getTrackingNumberConfiguration(),
+          type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
+    }
+  }
 }

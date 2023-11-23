@@ -75,6 +75,7 @@
         </panel>
 
         <field name="comments" widget="html"/>
+        <field name="automaticBudgetComputation" widget="boolean-switch"/>
       </panel>
       <panel name="globalBudgetLevelButtonPanel" colSpan="3" stacked="true">
         <button name="draftBtn" title="draftBtn"

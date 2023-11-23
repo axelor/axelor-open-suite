@@ -37,15 +37,20 @@ public final class PurchaseExceptionMessage {
       "You must configure Purchase module for the company %s" /*)*/;
 
   /** Merge purchase order */
+  public static final String PURCHASE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
+      "List of purchase orders to merge is empty" /*)*/;
+
   public static final String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/
       "The currency is required and must be the same for all purchase orders" /*)*/;
-
   public static final String PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER = /*$$(*/
       "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME = /*$$(*/
       "The trading name must be the same for all purchase orders" /*)*/;
+
+  public static final String PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
+      "The fiscal position must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_REQUEST_WRONG_STATUS = /*$$(*/
       "Can only request drafted purchase order." /*)*/;
   public static final String PURCHASE_ORDER_VALIDATE_WRONG_STATUS = /*$$(*/

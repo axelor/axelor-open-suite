@@ -38,7 +38,8 @@ public class RawMaterialRequirementServiceImpl implements RawMaterialRequirement
                 SequenceRepository.RAW_MATERIAL_REQUIREMENT,
                 rawMaterialRequirement.getCompany(),
                 RawMaterialRequirement.class,
-                "code");
+                "code",
+                rawMaterialRequirement);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -19,19 +19,20 @@
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.budget.service.AppBudgetService;
-import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetService;
+import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveController {
 
@@ -40,11 +41,11 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
+      BudgetToolsService budgetToolsService = Beans.get(BudgetToolsService.class);
       if (move != null
           && move.getCompany() != null
-          && Beans.get(BudgetService.class).checkBudgetKeyInConfig(move.getCompany())) {
-        if (!Beans.get(BudgetToolsService.class)
-                .checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser())
+          && budgetToolsService.checkBudgetKeyInConfig(move.getCompany())) {
+        if (!budgetToolsService.checkBudgetKeyAndRole(move.getCompany(), AuthUtils.getUser())
             && moveBudgetService.isBudgetInLines(move)) {
           response.setInfo(
               I18n.get(
@@ -67,35 +68,29 @@ public class MoveController {
     }
   }
 
-  public void checkBudgetDistribution(ActionRequest request, ActionResponse response) {
-
-    try {
-      Move move = request.getContext().asType(Move.class);
-      MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
-      if (moveBudgetService.checkMissingBudgetDistributionOnAccountedMove(move)) {
-        Boolean isError = Beans.get(AppBudgetService.class).isMissingBudgetCheckError();
-        if (isError != null) {
-          if (isError) {
-            response.setError(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND_ERROR));
-          } else {
-            response.setAlert(I18n.get(BudgetExceptionMessage.NO_BUDGET_VALUES_FOUND));
-          }
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+  @ErrorException
+  public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Move move = request.getContext().asType(Move.class);
+    MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
+    if (move != null
+        && !CollectionUtils.isEmpty(move.getMoveLineList())
+        && !moveBudgetService.isBudgetInLines(move)) {
+      moveBudgetService.autoComputeBudgetDistribution(move);
+      response.setValue("moveLineList", move.getMoveLineList());
     }
   }
 
-  public void validateBudgetBalance(ActionRequest request, ActionResponse response) {
-
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      Beans.get(MoveBudgetService.class).getBudgetExceedAlert(move);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
+  public void validateAccounting(ActionRequest request, ActionResponse response) {
+    Move move = request.getContext().asType(Move.class);
+    MoveBudgetService moveBudgetService = Beans.get(MoveBudgetService.class);
+    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+      if (moveBudgetService.isBudgetInLines(move)) {
+        String budgetExceedAlert = moveBudgetService.getBudgetExceedAlert(move);
+        BudgetControllerTool.verifyBudgetExceed(budgetExceedAlert, false, response);
+      } else {
+        BudgetControllerTool.verifyMissingBudget(response);
+      }
     }
   }
 }
