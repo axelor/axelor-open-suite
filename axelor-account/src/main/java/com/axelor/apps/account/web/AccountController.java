@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServ
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.translation.ITranslation;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.tool.MassUpdateTool;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
@@ -39,7 +40,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class AccountController {
@@ -219,6 +223,30 @@ public class AccountController {
       response.setFlash(message);
       response.setCanClose(true);
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setParentAccountDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      String domain =
+          "self.company.id = "
+              + Optional.ofNullable(account.getCompany()).map(Company::getId).orElse(null);
+      if (account.getId() != null) {
+        List<Long> singleIdList = new ArrayList<>();
+        singleIdList.add(account.getId());
+        List<Long> allAccountsSubAccountIncluded =
+            Beans.get(AccountService.class).getAllAccountsSubAccountIncluded(singleIdList);
+        domain +=
+            " AND self.id NOT IN ("
+                + allAccountsSubAccountIncluded.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(","))
+                + ")";
+      }
+      response.setAttr("parentAccount", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

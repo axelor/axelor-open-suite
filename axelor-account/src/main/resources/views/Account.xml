@@ -77,7 +77,8 @@
           onChange="action-account-group-company-onChange" readonlyIf="parentAccount != null"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
-          domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
+          onSelect="action-account-method-set-parent-account-domain" form-view="account-form"
+          grid-view="account-grid"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
         <field name="reconcileOk" widget="boolean-switch" colSpan="3" readonlyIf="$isReadOnly"/>
         <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
@@ -347,6 +348,10 @@
 
   <action-method name="action-method-wizard-mass-update-all">
     <call class="com.axelor.apps.account.web.AccountController" method="massUpdateAll"/>
+  </action-method>
+
+  <action-method name="action-account-method-set-parent-account-domain">
+    <call class="com.axelor.apps.account.web.AccountController" method="setParentAccountDomain"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
