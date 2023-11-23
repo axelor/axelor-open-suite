@@ -1,3 +1,70 @@
+## [6.5.22] (2023-11-23)
+
+#### :exclamation: Breaking Change
+
+* InvoicePayment/Reconcile: Change the link between the models
+
+The previous link between Reconcile and Invoice Payment was a list of reconcile in the invoice payment and a link to the payment in reconcile. Now, the link will be just a link to the reconcile in the payment.
+
+This technical change means that existing payments on invoice must be migrated to avoid issues. Please run the following SQL script on your database:
+
+```sql
+ALTER TABLE account_invoice_payment ADD COLUMN IF NOT EXISTS reconcile bigint;
+
+UPDATE account_invoice_payment payment SET reconcile = (SELECT id FROM account_reconcile reconcile WHERE reconcile.invoice_payment = payment.id) WHERE payment.reconcile IS NULL;
+
+UPDATE account_invoice_payment payment SET reconcile = (
+	SELECT MIN(reconcile.id) FROM account_reconcile reconcile 
+	INNER JOIN account_invoice_term_payment itp ON itp.invoice_payment = payment.id 
+	INNER JOIN account_invoice_term it ON it.id = itp.invoice_term
+	INNER JOIN account_move_line ml ON ml.id = it.move_line
+	WHERE reconcile.debit_move_line = ml.id OR reconcile.credit_move_line = ml.id) WHERE payment.reconcile IS NULL;
+
+ALTER TABLE account_reconcile DROP COLUMN invoice_payment;
+```
+
+
+#### Fixed
+
+* MRP Line: fixed an issue preventing to open a partner from a MRP line.
+* Invoice: fixed description on move during invoice validation.
+* Stock location line: fixed quantity displayed by indicators in form view.
+* Invoice: fixed currency being emptied on operation type change.
+* Bank statement: added missing french translation when we try to delete a bank statement.
+* Invoice: fixed an issue where enabling pfp management and opening a previously created supplier invoice would make it look unsaved.
+* Fixed asset: fixed inconsistency in accounting report.
+* Bank reconciliation: selectable move line are now based on the currency amount.
+* Move Template: hide move template line grid when journal or company is not filled.
+* Project task: fixed broken time panel in project task.
+* Expense: fixed an issue were employee was not modified in the lines when modifying the employee on the expense.
+* City: fixed errors when importing city with geonames.
+* Period: fixed status not reset on closure.
+* Invoice / Reconcile: fixed issue preventing from paying an invoice with a canceled payment.
+* Unit cost calculation: fixed error when trying to select a product.
+* InvoiceTerm: fixed rounding issue when we unreconcile an invoice payment.
+* Forecast: fixed a bug that occured when changing a forecast date from the MRP.
+* Fixed asset category: fixed wrong filter on ifrs depreciation and charge accounts not allowing to select special type accounts.
+* Appraisal: fixed appraisal generation from template.
+* Move: fixed error when we set origin on move without move lines.
+* Advance payment: fixed invoice term management and advance payment imputation values in multi currency.
+* Bill of exchange: fixed managing invoice terms in placement and payment.
+* SOP: fixed quantity field not following the "number of decimal for quantity fields" configuration.
+* Contract template: fixed wrong payment mode in contract template from demo data.
+* Period/Move: fixed new move removal at period closure.
+* SOP: added missing french translation.
+* Period: fixed errors not being displayed correctly during the closure process.
+* Move: fixed error when we set description on move without move lines.
+* Move template: fixed filters on accounting accounts in move template lines.
+* SOP line: fixed an issue where SOP process does not fetch the product price from the product per company configuration.
+* Contract: fixed prorata computation when invoicing a contract and end date contract version
+
+When creating a new version of a contract, the end date of the previous version
+is now the activation date of the new version minus one day.
+If left empty, it will be today's date minus one day.
+
+* Bank order: do not copy "has been sent to bank" on duplication.
+* Product details: fixed a bug occuring on stock details.
+
 ## [6.5.21] (2023-11-09)
 
 #### Fixed
@@ -937,6 +1004,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.22]: https://github.com/axelor/axelor-open-suite/compare/v6.5.21...v6.5.22
 [6.5.21]: https://github.com/axelor/axelor-open-suite/compare/v6.5.20...v6.5.21
 [6.5.20]: https://github.com/axelor/axelor-open-suite/compare/v6.5.19...v6.5.20
 [6.5.19]: https://github.com/axelor/axelor-open-suite/compare/v6.5.18...v6.5.19
