@@ -356,6 +356,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
 
+    stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+
     String draftSeq;
 
     // Set the sequence.
