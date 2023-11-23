@@ -1,0 +1,3 @@
+---
+title: "Period : fix throw of exception during the closure process"
+type: fix
