@@ -17,7 +17,7 @@
     <many-to-one name="mainBillOfMaterialGenerated"
       title="Main bill of material generated" ref="com.axelor.apps.production.db.BillOfMaterial"/>
     <one-to-many name="billOfMaterialImportLineList" title="Results"
-      ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
+      mappedBy="billOfMaterialImport" ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
 
   </entity>
 </domain-models>

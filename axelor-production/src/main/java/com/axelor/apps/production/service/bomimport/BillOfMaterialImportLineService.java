@@ -19,11 +19,8 @@
 package com.axelor.apps.production.service.bomimport;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.ImportHistory;
-import com.axelor.apps.production.db.BillOfMaterialImport;
-import java.io.IOException;
+import com.axelor.apps.production.db.BillOfMaterialImportLine;
 
-public interface BillOfMaterialImportService {
-  ImportHistory processImport(BillOfMaterialImport billOfMaterialImport)
-      throws AxelorException, IOException;
+public interface BillOfMaterialImportLineService {
+  Integer computeBoMLevel(BillOfMaterialImportLine billOfMaterialImportLine) throws AxelorException;
 }

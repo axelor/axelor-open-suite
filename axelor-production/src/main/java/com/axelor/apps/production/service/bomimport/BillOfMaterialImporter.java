@@ -28,7 +28,6 @@ import com.axelor.apps.production.db.BillOfMaterialImport;
 import com.axelor.apps.production.db.BillOfMaterialImportLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialImportLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialImportRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -43,6 +42,8 @@ import java.util.Map;
 
 public class BillOfMaterialImporter extends Importer {
 
+  protected final int FETCH_LIMIT = 10;
+  protected final BillOfMaterialImportLineService billOfMaterialImportLineService;
   protected final BillOfMaterialImportRepository billOfMaterialImportRepository;
   protected final BillOfMaterialImportLineRepository billOfMaterialImportLineRepository;
   protected final List<BillOfMaterialImportLine> billOfMaterialImportLineList = new ArrayList<>();
@@ -50,8 +51,10 @@ public class BillOfMaterialImporter extends Importer {
 
   @Inject
   public BillOfMaterialImporter(
+      BillOfMaterialImportLineService billOfMaterialImportLineService,
       BillOfMaterialImportRepository billOfMaterialImportRepository,
       BillOfMaterialImportLineRepository billOfMaterialImportLineRepository) {
+    this.billOfMaterialImportLineService = billOfMaterialImportLineService;
     this.billOfMaterialImportRepository = billOfMaterialImportRepository;
     this.billOfMaterialImportLineRepository = billOfMaterialImportLineRepository;
   }
@@ -134,7 +137,7 @@ public class BillOfMaterialImporter extends Importer {
         setDescriptionAndBillOfMaterialImport(
             billOfMaterialImport, listener, billOfMaterialImportLine);
         setBoMLevel(listener, billOfMaterialImportLine);
-        if (i % 10 == 0) {
+        if (i % FETCH_LIMIT == 0) {
           JPA.clear();
         }
         i++;
@@ -161,32 +164,11 @@ public class BillOfMaterialImporter extends Importer {
 
   @Transactional
   protected void setBoMLevel(
-      ImporterListener listener,
-      BillOfMaterialImportLine billOfMaterialImportLine) {
+      ImporterListener listener, BillOfMaterialImportLine billOfMaterialImportLine) {
     try {
-      computeBoMLevel(billOfMaterialImportLine);
+      billOfMaterialImportLineService.computeBoMLevel(billOfMaterialImportLine);
     } catch (Exception e) {
       listener.handle(billOfMaterialImportLine, e);
     }
-  }
-
-  protected Integer computeBoMLevel(BillOfMaterialImportLine billOfMaterialImportLine)
-      throws AxelorException {
-    if (billOfMaterialImportLine != null) {
-      if (billOfMaterialImportLine.getParent() == null) {
-        billOfMaterialImportLine.setBomLevel(0);
-        return 0;
-      } else if (billOfMaterialImportLine.getParent().getBomLevel() != null) {
-        billOfMaterialImportLine.setBomLevel(
-            billOfMaterialImportLine.getParent().getBomLevel() + 1);
-        return billOfMaterialImportLine.getBomLevel();
-      }
-      billOfMaterialImportLine.setBomLevel(
-          computeBoMLevel(billOfMaterialImportLine.getParent()) + 1);
-      return billOfMaterialImportLine.getBomLevel();
-    }
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_INCONSISTENCY,
-        ProductionExceptionMessage.BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY);
   }
 }

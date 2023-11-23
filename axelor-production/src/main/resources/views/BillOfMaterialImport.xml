@@ -36,6 +36,10 @@
     <call class="com.axelor.apps.production.web.BillOfMaterialImportController" method="run"/>
   </action-method>
 
+  <action-method name="action-bill-of-material-import-method-validate">
+    <call class="com.axelor.apps.production.web.BillOfMaterialImportController" method="run"/>
+  </action-method>
+
 </object-views>
 
 
