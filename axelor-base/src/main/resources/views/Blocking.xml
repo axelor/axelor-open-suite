@@ -5,7 +5,7 @@
 
   <grid name="blocking-grid" title="Blockings" model="com.axelor.apps.base.db.Blocking"
     orderBy="-blockingToDate">
-    <hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" background="danger"/>
+    <hilite if="$moment(blockingToDate) &gt; $moment()" background="danger"/>
     <field name="companySet" form-view="company-form" grid-view="company-grid"/>
     <field name="blockingSelect" selection="base.blocking.select"/>
     <field name="blockingToDate"/>
