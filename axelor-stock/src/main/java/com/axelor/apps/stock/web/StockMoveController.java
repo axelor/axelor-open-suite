@@ -74,8 +74,7 @@ public class StockMoveController {
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
-      StockMove sm = Beans.get(StockMoveRepository.class).find(stockMove.getId());
-      Beans.get(StockMoveService.class).plan(sm);
+      Beans.get(StockMoveService.class).plan(Beans.get(StockMoveRepository.class).find(stockMove.getId()));
       response.setReload(true);
       if (traceBackService.countMessageTraceBack(stockMove) > tracebackCount) {
         traceBackService
