@@ -111,6 +111,14 @@
         public static final int BUDGET_CATEGORY_TYPE_SELECT_FINANCING = 7;
         public static final int BUDGET_CATEGORY_TYPE_SELECT_INVESTMENT = 8;
         public static final int BUDGET_CATEGORY_TYPE_SELECT_TAX = 9;
+
+        //budget period select
+        public static final int BUDGET_PERIOD_SELECT_ONE_TIME = 0;
+        public static final int BUDGET_PERIOD_SELECT_ONE_MONTH = 1;
+        public static final int BUDGET_PERIOD_SELECT_TWO_MONTHS = 2;
+        public static final int BUDGET_PERIOD_SELECT_THREE_MONTHS = 3;
+        public static final int BUDGET_PERIOD_SELECT_SIX_MONTHS = 6;
+        public static final int BUDGET_PERIOD_SELECT_ONE_YEAR = 12;
 		]]>
     </extra-code>
   </entity>

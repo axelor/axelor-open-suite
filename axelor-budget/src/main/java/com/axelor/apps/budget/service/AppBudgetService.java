@@ -26,4 +26,6 @@ public interface AppBudgetService extends AppBaseService {
   public AppBudget getAppBudget();
 
   Boolean isMissingBudgetCheckError();
+
+  Boolean isBudgetExceedValuesError(boolean isOrder);
 }

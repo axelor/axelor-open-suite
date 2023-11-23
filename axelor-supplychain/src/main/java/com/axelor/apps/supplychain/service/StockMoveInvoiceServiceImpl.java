@@ -41,6 +41,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -76,6 +77,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected InvoiceLineRepository invoiceLineRepository;
   protected SupplyChainConfigService supplyChainConfigService;
   protected AppBaseService appBaseService;
+  protected AppStockService appStockService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -88,7 +90,8 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AppStockService appStockService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -99,6 +102,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -187,7 +191,9 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
-      invoice.setIncoterm(saleOrder.getIncoterm());
+      if (appStockService.getAppStock().getIsIncotermEnabled()) {
+        invoice.setIncoterm(saleOrder.getIncoterm());
+      }
 
       // fill default advance payment invoice
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {

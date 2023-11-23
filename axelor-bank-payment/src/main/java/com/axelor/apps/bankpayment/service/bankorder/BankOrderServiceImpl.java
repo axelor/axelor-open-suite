@@ -60,6 +60,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
@@ -77,6 +78,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -104,6 +106,7 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected PaymentSessionRepository paymentSessionRepo;
   protected MoveCancelBankPaymentService moveCancelBankPaymentService;
   protected MoveRepository moveRepo;
+  protected CurrencyService currencyService;
 
   @Inject
   public BankOrderServiceImpl(
@@ -120,7 +123,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      CurrencyService currencyService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
@@ -136,6 +140,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.paymentSessionRepo = paymentSessionRepo;
     this.moveCancelBankPaymentService = moveCancelBankPaymentService;
     this.moveRepo = moveRepo;
+    this.currencyService = currencyService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -216,6 +221,16 @@ public class BankOrderServiceImpl implements BankOrderService {
     List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
     if (bankOrderLines != null) {
       for (BankOrderLine bankOrderLine : bankOrderLines) {
+        bankOrderLine.setCompanyCurrencyAmount(
+            bankOrderLine.getBankOrder().getIsMultiCurrency()
+                ? currencyService
+                    .getAmountCurrencyConvertedAtDate(
+                        bankOrder.getBankOrderCurrency(),
+                        bankOrder.getCompanyCurrency(),
+                        bankOrderLine.getBankOrderAmount(),
+                        bankOrderLine.getBankOrderDate())
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+                : bankOrderLine.getBankOrderAmount());
         BigDecimal amount = bankOrderLine.getCompanyCurrencyAmount();
         if (amount != null) {
           companyCurrencyTotalAmount = companyCurrencyTotalAmount.add(amount);
@@ -865,7 +880,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrder.setBankOrderSeq(
-        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq")));
+        (sequenceService.getSequenceNumber(
+            sequence, date, BankOrder.class, "bankOrderSeq", bankOrder)));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;

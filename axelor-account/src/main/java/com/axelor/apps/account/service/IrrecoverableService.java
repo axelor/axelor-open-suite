@@ -161,18 +161,15 @@ public class IrrecoverableService {
     Company company = irrecoverable.getCompany();
 
     this.testCompanyField(company);
-
-    if (irrecoverable.getName() == null) {
-      irrecoverable.setName(this.getSequence(company));
-    }
-
     irrecoverable.setInvoiceSet(new HashSet<Invoice>());
     irrecoverable.getInvoiceSet().addAll(this.getInvoiceList(company));
     irrecoverable.getInvoiceSet().addAll(this.getRejectInvoiceList(company));
 
     irrecoverable.setPaymentScheduleLineSet(new HashSet<PaymentScheduleLine>());
     irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
-
+    if (irrecoverable.getName() == null) {
+      irrecoverable.setName(this.getSequence(company, irrecoverable));
+    }
     irrecoverableRepo.save(irrecoverable);
   }
 
@@ -1141,11 +1138,11 @@ public class IrrecoverableService {
     accountConfigService.getIrrecoverableStandardRateTax(accountConfig);
   }
 
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, Irrecoverable irrecoverable) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name");
+            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name", irrecoverable);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -221,7 +221,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.SALES_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -237,7 +237,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
   public String getRefundExportNumber(Company company) throws AxelorException {
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.REFUND_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -254,7 +254,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.TREASURY_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,
@@ -271,7 +271,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     String exportNumber =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber");
+            SequenceRepository.PURCHASE_INTERFACE, company, Move.class, "exportNumber", null);
     if (exportNumber == null) {
       throw new AxelorException(
           company,

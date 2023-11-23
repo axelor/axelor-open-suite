@@ -20,7 +20,6 @@ package com.axelor.apps.talent.service;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmploymentContract;
-import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.talent.db.Appraisal;
 import com.axelor.apps.talent.db.repo.AppraisalRepository;
 import com.axelor.auth.db.User;
@@ -125,9 +124,6 @@ public class AppraisalServiceImpl implements AppraisalService {
 
     for (Employee employee :
         employees.stream().filter(Objects::nonNull).collect(Collectors.toList())) {
-      if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
-        continue;
-      }
       Appraisal appraisal = appraisalRepo.copy(appraisalTemplate, false);
       appraisal.setEmployee(employee);
       if (appraisal.getCompany() == null) {

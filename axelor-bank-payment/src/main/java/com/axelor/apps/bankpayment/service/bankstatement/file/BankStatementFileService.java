@@ -37,7 +37,7 @@ public abstract class BankStatementFileService {
   protected final BankStatementImportService bankStatementService;
 
   @Inject
-  public BankStatementFileService(
+  protected BankStatementFileService(
       BankStatementRepository bankStatementRepository,
       BankStatementImportService bankStatementService) {
     this.bankStatementRepository = bankStatementRepository;
@@ -67,8 +67,10 @@ public abstract class BankStatementFileService {
   }
 
   protected BankStatement findBankStatement() {
-    return JPA.em().contains(bankStatement)
-        ? bankStatement
-        : bankStatementRepository.find(bankStatement.getId());
+    bankStatement =
+        JPA.em().contains(bankStatement)
+            ? bankStatement
+            : bankStatementRepository.find(bankStatement.getId());
+    return bankStatement;
   }
 }

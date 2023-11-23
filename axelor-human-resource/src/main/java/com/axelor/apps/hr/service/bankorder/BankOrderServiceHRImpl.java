@@ -33,6 +33,7 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
@@ -64,6 +65,7 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
       MoveRepository moveRepo,
+      CurrencyService currencyService,
       ExpensePaymentService expensePaymentService) {
     super(
         bankOrderRepo,
@@ -79,7 +81,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         paymentSessionCancelService,
         paymentSessionRepo,
         moveCancelBankPaymentService,
-        moveRepo);
+        moveRepo,
+        currencyService);
     this.expensePaymentService = expensePaymentService;
   }
 

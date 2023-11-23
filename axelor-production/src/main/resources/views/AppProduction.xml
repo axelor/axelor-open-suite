@@ -7,81 +7,80 @@
     model="com.axelor.studio.db.AppProduction" canDelete="false" canNew="false" width="large"
     onSave="action-app-production-method-check-outsourcing-disabled-onsave">
     <panel name="productionConfigurationPanel" colSpan="12">
-      <panel name="saleOrderPanel" title="Sale order">
-        <field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto"
-          widget="boolean-switch"/>
-        <field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO"
-          widget="boolean-switch"/>
-        <field name="oneProdOrderPerSO" showIf="prodOrderMgtOnSO" widget="boolean-switch"/>
-        <field name="autoPlanManufOrderFromSO" showIf="prodOrderMgtOnSO"
-          widget="boolean-switch"/>
+      <panel name="firstConfigurationPanel" colSpan="6" itemSpan="12">
+        <panel name="productionAndManufOrdersPanel"
+          title="Production &amp; manufacturing Orders">
+          <field name="prodOrderMgtOnSO" readonlyIf="productionOrderGenerationAuto"
+            widget="boolean-switch"/>
+          <field name="productionOrderGenerationAuto" showIf="prodOrderMgtOnSO"
+            widget="boolean-switch"/>
+          <field name="oneProdOrderPerSO" showIf="prodOrderMgtOnSO" widget="boolean-switch"/>
+          <field name="autoPlanManufOrderFromSO" showIf="prodOrderMgtOnSO"
+            widget="boolean-switch"/>
+          <field name="isManufOrderPlannedAfterMerge" title="Automatically plan after fusion"
+            widget="boolean-switch"/>
+        </panel>
+        <panel name="billOfMaterialPanel" title="Bill of materials">
+          <field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
+          <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+          <field name="nbDecimalDigitForBomQty"/>
+        </panel>
+        <panel name="prodProcessPanel" title="Production process">
+          <field name="manageProdProcessVersion" widget="boolean-switch"/>
+          <field name="manageWorkCenterGroup" widget="boolean-switch"/>
+          <field name="isInputInHundredthHours" widget="boolean-switch"/>
+          <field name="manageBusinessProduction"
+            onChange="action-app-production-manage-business-production-record-onchange"
+            title="Manage business production" if-module="axelor-business-production"
+            widget="boolean-switch"/>
+          <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
+            if-module="axelor-business-production" showIf="manageBusinessProduction"/>
+          <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
+            widget="boolean-switch"
+            showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
+          <field name="operationContinuitySelect"/>
+        </panel>
+
       </panel>
-      <panel name="configuratorPanel" title="Configurator">
-        <field name="enableConfigurator" widget="boolean-switch"/>
-        <field name="enableToolManagement"/>
-      </panel>
-      <panel name="billOfMaterialPanel" title="Bill of materials">
-        <field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
-        <field name="manageResidualProductOnBom" widget="boolean-switch"/>
-        <field name="nbDecimalDigitForBomQty"/>
-      </panel>
-      <panel name="manufacturingProcessPanel" title="Manufacturing process">
-        <field name="workCenterProduct"
-          domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'"
-          form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
-      </panel>
-      <panel name="prodProcessPanel" title="Production process">
-        <field name="manageProdProcessVersion" widget="boolean-switch"/>
-        <field name="manageWorkCenterGroup" widget="boolean-switch"/>
-        <field name="isInputInHundredthHours" widget="boolean-switch"/>
-        <field name="manageBusinessProduction"
-          onChange="action-app-production-manage-business-production-record-onchange"
-          title="Manage business production" if-module="axelor-business-production"
-          widget="boolean-switch"/>
-        <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
-          if-module="axelor-business-production" showIf="manageBusinessProduction"/>
-        <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
-          widget="boolean-switch"
-          showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
-        <field name="operationContinuitySelect"/>
-      </panel>
-      <panel name="barcodeTypeConfigPanel">
-        <field name="barcodeTypeConfig" title="Barcode Type"/>
-      </panel>
-      <panel name="manufOrderPanel" title="Manuf order">
-        <field name="isManufOrderPlannedAfterMerge" title="Automatically plan after fusion"
-          widget="boolean-switch"/>
-      </panel>
-      <panel name="costSheetPanel" title="Cost sheet">
-        <field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
-        <field name="manageCostSheetGroup" widget="boolean-switch"/>
-        <field name="productCostSheetGroup" showIf="manageCostSheetGroup"
-          form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
-          domain="self.costTypeSelect = 1"/>
-        <field name="workCenterCostSheetGroup" showIf="manageCostSheetGroup"
-          form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
-          domain="self.costTypeSelect = 2"/>
-        <field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"
-          widget="boolean-switch"/>
-        <field name="isCostPerProcessLine" widget="boolean-switch"/>
-      </panel>
-      <panel name="printingPanel" title="Printings">
-        <field name="printPlannedDateOnManufOrder"/>
-      </panel>
-      <panel name="stockLocationPanel" title="Stock Location">
-        <field name="manageWorkshop" widget="boolean-switch"/>
-        <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4"
-          selection="production.manuf.order.status.select"/>
-      </panel>
-      <panel name="outsourcingPanel" title="Outsourcing">
-        <field name="manageOutsourcing"
-          onChange="action-app-production-validate-manage-outsourcing-onchange"/>
-      </panel>
-      <panel name="mpsPanel" title="MPS">
-        <field name="manageMpsCharge"/>
+
+      <panel name="secondConfigurationPanel" colSpan="6" itemSpan="12">
+        <panel name="mainConfiguratorPanel" title="Main configurations">
+          <field name="enableConfigurator" widget="boolean-switch"/>
+          <field name="enableToolManagement" widget="boolean-switch"/>
+          <field name="manageOutsourcing" widget="boolean-switch"
+            onChange="action-app-production-validate-manage-outsourcing-onchange"/>
+          <field name="manageMpsCharge" widget="boolean-switch"/>
+          <panel name="manageWorkshopPanel" colSpan="6" itemSpan="12">
+            <field name="manageWorkshop" widget="boolean-switch"/>
+          </panel>
+          <panel name="mOFilterOnStockDetailStatusSelectPanel" colSpan="5" itemSpan="12">
+            <field name="mOFilterOnStockDetailStatusSelect" widget="MultiSelect"
+              selection="production.manuf.order.status.select"/>
+          </panel>
+        </panel>
+        <panel name="costSheetPanel" title="Cost sheet">
+          <field name="workCenterProduct"
+            domain="self.productTypeSelect = 'service' AND self.dtype = 'Product'"
+            form-view="product-form" grid-view="product-grid" canEdit="false" colSpan="12"/>
+          <field name="cycleUnit" form-view="unit-form" grid-view="unit-grid"/>
+          <field name="manageCostSheetGroup" widget="boolean-switch"/>
+          <field name="productCostSheetGroup" showIf="manageCostSheetGroup"
+            form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
+            domain="self.costTypeSelect = 1"/>
+          <field name="workCenterCostSheetGroup" showIf="manageCostSheetGroup"
+            form-view="cost-sheet-group-form" grid-view="cost-sheet-group-grid"
+            domain="self.costTypeSelect = 2"/>
+          <field name="subtractProdResidualOnCostSheet" showIf="manageResidualProductOnBom"
+            widget="boolean-switch"/>
+          <field name="isCostPerProcessLine" widget="boolean-switch"/>
+        </panel>
+        <panel name="printingPanel" title="Printings">
+          <field name="printPlannedDateOnManufOrder"/>
+          <field name="barcodeTypeConfig" title="Barcode Type"/>
+        </panel>
       </panel>
       <panel name="actionsPanel">
-        <button name="generateProductionConfigurationsBtn" colSpan="4"
+        <button name="generateProductionConfigurationsBtn" colSpan="6"
           title="Generate production configurations"
           onClick="save,com.axelor.apps.production.web.AppProductionController:generateProductionConfigurations"/>
         <panel-dashlet name="confProductionConfigDashletPanel"

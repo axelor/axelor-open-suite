@@ -18,7 +18,8 @@
 
   <form name="qi-resolution-decision-form" title="QI Resolution Decision"
     model="com.axelor.apps.quality.db.QIResolutionDecision"
-    onNew="action-qi-resolution-decision-record-set-acceptance">
+    onLoad="action-qi-resolution-decision-attrs-set-fields-readonly"
+    onNew="action-qi-resolution-decision-group-on-new">
     <panel name="mainPanel">
       <field name="acceptance"/>
       <field name="qiDecision" grid-view="qi-decision-grid" form-view="qi-decision-form"
@@ -26,6 +27,8 @@
         onChange="action-qi-resolution-decision-group-qi-decision-on-change"/>
       <field name="quantity" onChange="action-qi-resolution-decision-group-quantity-on-change"/>
       <field name="description" widget="html" colSpan="12"/>
+      <field name="qiDecisionDistributionSet" colSpan="12"
+        grid-view="qi-decision-distribution-grid" form-view="qi-decision-distribution-form"/>
       <field name="qiResolutionDefault" grid-view="qi-resolution-default-grid"
         form-view="qi-resolution-default-form"
         onSelect="action-qi-resolution-decision-attrs-set-qi-resolution-default-domain"
@@ -39,9 +42,9 @@
       <field name="directCost"
         onChange="action-qi-resolution-decision-record-compute-total-cost"/>
       <field name="totalCost" readonly="true"/>
-      <field name="acceptedQty"
+      <field name="acceptedQty" readonly="true"
         onChange="action-qi-resolution-decision-group-accepted-qty-on-change"/>
-      <field name="rejectedQty"
+      <field name="rejectedQty" readonly="true"
         onChange="action-qi-resolution-decision-group-rejected-qty-on-change"/>
     </panel>
     <panel-mail name="mailPanel">
@@ -49,6 +52,12 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-group name="action-qi-resolution-decision-group-on-new">
+    <action name="action-qi-resolution-decision-record-set-acceptance"/>
+    <action name="action-qi-resolution-decision-attrs-set-fields-readonly"
+      if="_parent?._readOnlyFlag != null"/>
+  </action-group>
 
   <action-group name="action-qi-resolution-decision-group-qi-decision-on-change">
     <action name="action-qi-resolution-decision-record-set-acceptance"/>
@@ -115,6 +124,12 @@
 
     <attribute name="value" for="description" expr="eval: qiDecision?.name"
       if="!description"/>
+  </action-attrs>
+
+  <action-attrs name="action-qi-resolution-decision-attrs-set-fields-readonly">
+    <attribute name="readonly" for="quantity" expr="eval:_parent?._readOnlyFlag"/>
+    <attribute name="readonly" for="acceptedQty" expr="eval:!_parent?._readOnlyFlag"/>
+    <attribute name="readonly" for="rejectedQty" expr="eval:!_parent?._readOnlyFlag"/>
   </action-attrs>
 
   <action-record name="action-qi-resolution-decision-record-set-acceptance"

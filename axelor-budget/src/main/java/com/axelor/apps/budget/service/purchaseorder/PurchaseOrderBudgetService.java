@@ -42,7 +42,7 @@ public interface PurchaseOrderBudgetService {
    * @param purchaseOrder
    * @return String
    */
-  public String computeBudgetDistribution(PurchaseOrder purchaseOrder);
+  public String computeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
 
   /**
    * Take all budget distribution on this purchase order and throw an error if the total amount of
@@ -72,4 +72,6 @@ public interface PurchaseOrderBudgetService {
   public void applyToallBudgetDistribution(PurchaseOrder purchaseOrder);
 
   public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
+
+  void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
 }

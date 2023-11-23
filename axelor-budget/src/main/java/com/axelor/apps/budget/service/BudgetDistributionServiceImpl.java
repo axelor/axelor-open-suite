@@ -19,15 +19,18 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
@@ -78,10 +81,12 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   }
 
   @Override
-  public BudgetDistribution createDistributionFromBudget(Budget budget, BigDecimal amount) {
+  public BudgetDistribution createDistributionFromBudget(
+      Budget budget, BigDecimal amount, LocalDate date) {
     BudgetDistribution budgetDistribution = new BudgetDistribution();
     budgetDistribution.setBudget(budget);
-    budgetDistribution.setBudgetAmountAvailable(budget.getAvailableAmount());
+    budgetDistribution.setBudgetAmountAvailable(
+        budgetToolsService.getAvailableAmountOnBudget(budget, date));
     budgetDistribution.setAmount(amount);
 
     return budgetDistribution;
@@ -92,7 +97,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
     String budgetExceedAlert = "";
 
-    Integer budgetControlLevel = budgetLevelService.getBudgetControlLevel(budget);
+    Integer budgetControlLevel = budgetToolsService.getBudgetControlLevel(budget);
     if (budget == null || budgetControlLevel == null) {
       return budgetExceedAlert;
     }
@@ -180,33 +185,41 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       LocalDate date,
       BigDecimal amount,
       String name,
-      AuditableModel object) {
+      AuditableModel object)
+      throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
 
     if (!CollectionUtils.isEmpty(analyticMoveLineList)) {
+      List<AnalyticAxis> authorizedAxis = budgetToolsService.getAuthorizedAnalyticAxis(company);
+      if (CollectionUtils.isEmpty(authorizedAxis)) {
+        return "";
+      }
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
-        String key = budgetService.computeKey(account, company, analyticMoveLine);
+        if (authorizedAxis.contains(analyticMoveLine.getAnalyticAxis())) {
+          String key = budgetService.computeKey(account, company, analyticMoveLine);
 
-        if (!Strings.isNullOrEmpty(key)) {
-          Budget budget = budgetService.findBudgetWithKey(key, date);
+          if (!Strings.isNullOrEmpty(key)) {
+            Budget budget = budgetService.findBudgetWithKey(key, date);
 
-          if (budget != null) {
-            BudgetDistribution budgetDistribution =
-                createDistributionFromBudget(
-                    budget,
-                    amount
-                        .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100))
-                        .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
-            linkBudgetDistributionWithParent(budgetDistribution, object);
+            if (budget != null) {
+              BudgetDistribution budgetDistribution =
+                  createDistributionFromBudget(
+                      budget,
+                      amount
+                          .multiply(analyticMoveLine.getPercentage())
+                          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                      date);
 
-          } else {
-            alertMessageTokenList.add(
-                String.format(
-                    "%s - %s %s",
-                    name,
-                    I18n.get("Analytic account"),
-                    analyticMoveLine.getAnalyticAccount().getCode()));
+              linkBudgetDistributionWithParent(budgetDistribution, object);
+
+            } else {
+              alertMessageTokenList.add(
+                  String.format(
+                      "%s - %s %s",
+                      name,
+                      I18n.get("Analytic account"),
+                      analyticMoveLine.getAnalyticAccount().getCode()));
+            }
           }
         }
       }
@@ -235,22 +248,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate) {
 
-    if (budgetDistribution.getBudget() != null
-        && !ObjectUtils.isEmpty(budgetDistribution.getBudget().getBudgetLineList())
-        && computeDate != null) {
-      List<BudgetLine> budgetLineList = budgetDistribution.getBudget().getBudgetLineList();
-      BigDecimal budgetAmountAvailable = BigDecimal.ZERO;
-
-      for (BudgetLine budgetLine : budgetLineList) {
-        LocalDate fromDate = budgetLine.getFromDate();
-        LocalDate toDate = budgetLine.getToDate();
-
-        if (fromDate != null && LocalDateHelper.isBetween(fromDate, toDate, computeDate)) {
-          BigDecimal amount = budgetLine.getAvailableAmount();
-          budgetAmountAvailable = budgetAmountAvailable.add(amount);
-        }
-      }
-      budgetDistribution.setBudgetAmountAvailable(budgetAmountAvailable);
+    if (budgetDistribution.getBudget() != null && computeDate != null) {
+      budgetDistribution.setBudgetAmountAvailable(
+          budgetToolsService.getAvailableAmountOnBudget(
+              budgetDistribution.getBudget(), computeDate));
     } else {
       budgetDistribution.setBudgetAmountAvailable(BigDecimal.ZERO);
     }
@@ -300,5 +301,39 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     return query;
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(
+      List<AnalyticMoveLine> analyticMoveLineList,
+      Account account,
+      Company company,
+      LocalDate date,
+      BigDecimal amount,
+      AuditableModel object) {
+    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      String key = budgetService.computeKey(account, company, analyticMoveLine);
+
+      if (!Strings.isNullOrEmpty(key)) {
+        Budget budget = budgetService.findBudgetWithKey(key, date);
+
+        if (budget != null) {
+          GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
+          if (globalBudget != null && globalBudget.getAutomaticBudgetComputation()) {
+            BudgetDistribution budgetDistribution =
+                createDistributionFromBudget(
+                    budget,
+                    amount
+                        .multiply(analyticMoveLine.getPercentage())
+                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                    date);
+            linkBudgetDistributionWithParent(budgetDistribution, object);
+          }
+        }
+      }
+    }
   }
 }

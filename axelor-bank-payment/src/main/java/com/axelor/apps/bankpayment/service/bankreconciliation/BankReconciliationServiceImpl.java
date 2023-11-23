@@ -45,22 +45,17 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
-import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -121,8 +116,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected BankDetailsService bankDetailsService;
-  protected BankReconciliationLoadAFB120Service bankReconciliationLoadAFB120Service;
-  protected BankReconciliationLoadService bankReconciliationLoadService;
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
   protected BankPaymentConfigService bankPaymentConfigService;
@@ -152,8 +145,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       BankDetailsService bankDetailsService,
-      BankReconciliationLoadAFB120Service bankReconciliationLoadAFB120Service,
-      BankReconciliationLoadService bankReconciliationLoadService,
       JournalRepository journalRepository,
       AccountRepository accountRepository,
       BankPaymentConfigService bankPaymentConfigService,
@@ -182,8 +173,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.bankDetailsService = bankDetailsService;
-    this.bankReconciliationLoadAFB120Service = bankReconciliationLoadAFB120Service;
-    this.bankReconciliationLoadService = bankReconciliationLoadService;
     this.journalRepository = journalRepository;
     this.accountRepository = accountRepository;
     this.bankPaymentConfigService = bankPaymentConfigService;
@@ -733,37 +722,6 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
 
     return bankDetailsService.getActiveCompanyBankDetails(
         bankReconciliation.getCompany(), bankReconciliation.getCurrency());
-  }
-
-  @Override
-  @Transactional
-  public void loadBankStatement(BankReconciliation bankReconciliation) {
-    loadBankStatement(bankReconciliation, true);
-  }
-
-  @Override
-  @Transactional
-  public void loadBankStatement(
-      BankReconciliation bankReconciliation, boolean includeBankStatement) {
-
-    BankStatement bankStatement = bankReconciliation.getBankStatement();
-
-    BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
-
-    switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        bankReconciliationLoadAFB120Service.loadBankStatement(
-            bankReconciliation, includeBankStatement);
-        break;
-
-      default:
-        bankReconciliationLoadService.loadBankStatement(bankReconciliation, includeBankStatement);
-    }
-
-    compute(bankReconciliation);
-
-    bankReconciliationRepository.save(bankReconciliation);
   }
 
   @Override

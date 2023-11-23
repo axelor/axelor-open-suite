@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="quality-config-grid" title="Quality configurations"
+    model="com.axelor.apps.quality.db.QualityConfig">
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+  </grid>
+
+  <form name="quality-config-form" title="Quality configuration"
+    model="com.axelor.apps.quality.db.QualityConfig" width="large">
+    <panel name="mainPanel">
+      <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+      <field name="decisionDistributionBirtTemplate"
+        domain="self.ref = 'com.axelor.apps.quality.db.QiDecisionDistribution' AND self.refId = :id"/>
+      <field name="qiDecisionDistributionSequence" form-view="sequence-form"
+        grid-view="sequence-grid" canNew="true" canEdit="true"
+        domain="self.ref = 'com.axelor.apps.quality.db.QiDecisionDistribution' AND self.refId = :id"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-view name="action-company-view-quality-config"
+    title="Quality config (${ name })" model="com.axelor.apps.quality.db.QualityConfig">
+    <view type="form" name="quality-config-form"/>
+    <context name="_showRecord" expr="eval: __self__.qualityConfig?.id"/>
+    <context name="_company" expr="eval: __this__"/>
+  </action-view>
+
+</object-views>
