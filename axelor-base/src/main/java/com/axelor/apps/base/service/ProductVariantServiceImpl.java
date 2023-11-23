@@ -822,12 +822,6 @@ public class ProductVariantServiceImpl implements ProductVariantService {
                 product.addAccountManagementListItem(
                     accountManagementRepository.copy(accountManagement, false)));
     product.setInventoryTypeSelect(productModel.getInventoryTypeSelect());
-    product.setHasWarranty(productModel.getHasWarranty());
-    product.setWarrantyNbrOfMonths(productModel.getWarrantyNbrOfMonths());
-    product.setIsPerishable(productModel.getIsPerishable());
-    product.setPerishableNbrOfMonths(productModel.getPerishableNbrOfMonths());
-    product.setCheckExpirationDateAtStockMoveRealization(
-        productModel.getCheckExpirationDateAtStockMoveRealization());
     return product;
   }
 }

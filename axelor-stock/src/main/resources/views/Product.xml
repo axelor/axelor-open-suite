@@ -131,17 +131,8 @@
       <insert position="after">
         <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
           showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('stock')">
-          <panel colSpan="12" name="trackingDetailsPanel">
-            <field name="hasWarranty"/>
-            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
-            <field name="isPerishable"/>
-            <field name="perishableNbrOfMonths" showIf="isPerishable"/>
-            <field name="checkExpirationDateAtStockMoveRealization"
-              showIf="hasWarranty || isPerishable"/>
-          </panel>
           <panel colSpan="12" name="trackingConfigPanel">
-            <field name="trackingNumberConfiguration"
-              requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true"
+            <field name="trackingNumberConfiguration" canNew="true"
               form-view="tracking-number-configuration-form"
               grid-view="tracking-number-configuration-grid"/>
           </panel>

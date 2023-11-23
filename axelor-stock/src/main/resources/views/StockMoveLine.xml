@@ -492,13 +492,16 @@
           readonly="true"/>
         <field name="counter" title="Quantity"
           readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
+        <field name="hasWarranty"/>
         <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="false"/>
+        <field name="isPerishable"/>
         <field name="perishableExpirationDate" title="Perishable expiration date"
           readonly="false"/>
+        <field name="checkExpirationDateAtStockMoveRealization"/>
         <field name="origin" title="Origin"/>
         <field name="note" title="Note" colSpan="12"/>
       </panel-related>
-      <button name="availableTranckingNumberBtn" title="Display available tracking numbers"
+      <button name="availableTrackingNumberBtn" title="Display available tracking numbers"
         onClick="action-stock-move-line-method-display-available-tracking-number"/>
       <button name="validateBtn" title="Validate"
         onClick="action-stock-move-line-method-update-lines"/>
@@ -551,6 +554,8 @@
       expr="eval: _hasWarranty &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)"/>
     <attribute name="readonly" for="perishableExpirationDate"
       expr="eval: _isPerishable &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)"/>
+    <attribute name="readonly" for="checkExpirationDateAtStockMoveRealization"
+      expr="eval: _isPerishable &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)"/>
     <attribute name="hidden" for="availableTranckingNumberBtn"
       expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 3)"/>
     <attribute name="hidden" for="$trackingNumbers.$availableQty"
@@ -562,6 +567,9 @@
       expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
       if="__parent__ != null &amp;&amp; __parent__._hasWarranty"/>
     <attribute name="readonly" for="perishableExpirationDate"
+      expr="__repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
+      if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
+    <attribute name="readonly" for="checkExpirationDateAtStockMoveRealization"
       expr="__repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
       if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
   </action-attrs>
@@ -678,6 +686,9 @@
     <field name="perishableExpirationDate"
       expr="eval: __repo__(TrackingNumber).find(trackingNumber?.id).perishableExpirationDate"
       if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
+    <field name="checkExpirationDateAtStockMoveRealization"
+      expr="eval: __repo__(TrackingNumber).find(trackingNumber?.id).perishableExpirationDate"
+      if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
   </action-record>
 
   <action-record name="action-stock-move-line-wizard-record-set-dates"
@@ -687,6 +698,10 @@
 	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.warrantyExpirationDate : null"
       if="__parent__ != null &amp;&amp; __parent__._hasWarranty"/>
     <field name="perishableExpirationDate"
+      expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ?
+	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.perishableExpirationDate : null"
+      if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
+    <field name="checkExpirationDateAtStockMoveRealization"
       expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ?
 	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.perishableExpirationDate : null"
       if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>

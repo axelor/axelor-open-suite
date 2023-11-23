@@ -14,6 +14,11 @@
     <field name="generateSaleAutoTrackingNbr"/>
     <field name="hasSaleAutoSelectTrackingNbr"/>
     <field name="saleAutoTrackingNbrOrderSelect"/>
+    <field name="hasWarranty"/>
+    <field name="warrantyNbrOfMonths"/>
+    <field name="isPerishable"/>
+    <field name="perishableNbrOfDays"/>
+    <field name="checkExpirationDateAtStockMoveRealization"/>
     <field name="saleQtyByTracking" x-scale="2"/>
     <field name="purchaseQtyByTracking" x-scale="2"/>
     <field name="productionQtyByTracking" x-scale="2"/>
@@ -27,6 +32,16 @@
     width="large">
     <panel name="namePanel">
       <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
+    </panel>
+    <panel name="warrantyPanel" title="Warranty">
+      <field name="hasWarranty"/>
+      <field name="warrantyNbrOfMonths" readonlyIf="!hasWarranty"/>
+    </panel>
+    <panel name="perishabilityPanel" title="Perishability">
+      <field name="isPerishable"
+        onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"/>
+      <field name="perishableNbrOfDays" readonlyIf="!isPerishable"/>
+      <field name="checkExpirationDateAtStockMoveRealization" readonlyIf="!isPerishable"/>
     </panel>
     <panel name="barCodePanel" title="Barcode"
       if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
@@ -153,5 +168,11 @@
     <domain>self.trackingNumberConfiguration.id = :trackingNumberConfigurationId</domain>
     <context name="trackingNumberConfigurationId" expr="eval: id"/>
   </action-view>
+
+  <action-record
+    name="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"
+    model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
+    <field name="checkExpirationDateAtStockMoveRealization" if="!isPerishable" expr="false"/>
+  </action-record>
 
 </object-views>

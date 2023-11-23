@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -154,11 +155,13 @@ public class StockMoveLineController {
     boolean _hasWarranty = false, _isPerishable = false, _isSeqUsedForSerialNumber = false;
     if (stockMoveLine.getProduct() != null) {
       Product product = stockMoveLine.getProduct();
-      _hasWarranty = product.getHasWarranty();
-      _isPerishable = product.getIsPerishable();
-      if (product.getTrackingNumberConfiguration() != null) {
+      TrackingNumberConfiguration trackingNumberConfiguration =
+          product.getTrackingNumberConfiguration();
+      if (trackingNumberConfiguration != null) {
         _isSeqUsedForSerialNumber =
-            product.getTrackingNumberConfiguration().getUseTrackingNumberSeqAsSerialNbr();
+            trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr();
+        _hasWarranty = trackingNumberConfiguration.getHasWarranty();
+        _isPerishable = trackingNumberConfiguration.getIsPerishable();
       }
     }
     response.setView(

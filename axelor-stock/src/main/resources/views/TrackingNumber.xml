@@ -16,8 +16,11 @@
       color="success"/>
     <field name="trackingNumberSeq" width="120"/>
     <field name="product" form-view="product-form" grid-view="product-grid"/>
+    <field name="hasWarranty"/>
     <field name="warrantyExpirationDate"/>
+    <field name="isPerishable"/>
     <field name="perishableExpirationDate"/>
+    <field name="checkExpirationDateAtStockMoveRealization"/>
     <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
     <field name="origin"/>
   </grid>
@@ -30,8 +33,11 @@
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
         domain="self.dtype = 'Product'"/>
+      <field name="hasWarranty"/>
       <field name="warrantyExpirationDate"/>
+      <field name="isPerishable"/>
       <field name="perishableExpirationDate"/>
+      <field name="checkExpirationDateAtStockMoveRealization"/>
       <field name="counter"/>
       <field name="origin"/>
       <field name="note" colSpan="12"/>
@@ -51,8 +57,11 @@
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
         domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
+      <field name="hasWarranty"/>
       <field name="warrantyExpirationDate" readonly="false"/>
+      <field name="isPerishable"/>
       <field name="perishableExpirationDate" readonly="false"/>
+      <field name="checkExpirationDateAtStockMoveRealization"/>
       <field name="counter" hidden="true"/>
       <field name="origin"/>
       <field name="note" colSpan="12"/>
@@ -124,10 +133,10 @@
   </action-record>
 
   <action-attrs name="action-tracking-number-attrs-from-stock-move-line">
-    <attribute name="hidden" expr="eval: !__parent__?.product?.hasWarranty"
-      for="warrantyExpirationDate"/>
-    <attribute name="hidden" expr="eval: !__parent__?.product?.isPerishable"
-      for="perishableExpirationDate"/>
+    <attribute name="hidden" expr="eval: !hasWarranty" for="warrantyExpirationDate"/>
+    <attribute name="hidden" expr="eval: !isPerishable" for="perishableExpirationDate"/>
+    <attribute name="hidden" expr="eval: !isPerishable"
+      for="checkExpirationDateAtStockMoveRealization"/>
   </action-attrs>
 
   <action-attrs name="action-tracking-number-attrs-product-stock-move-line">
