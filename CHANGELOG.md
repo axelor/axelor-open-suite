@@ -1,3 +1,32 @@
+## [6.3.33] (2023-11-23)
+
+#### Fixed
+
+* MRP Line: fixed an issue preventing to open a partner from a MRP line.
+* Invoice: fixed description on move during invoice validation.
+* Stock location line: fixed quantity displayed by indicators in form view.
+* Invoice: fixed currency being emptied on operation type change.
+* Fixed asset: fixed inconsistency in accounting report.
+* Bank reconciliation: selectable move line are now based on the currency amount.
+* Move Template: hide move template line grid when journal or company is not filled.
+* Expense: fixed an issue were employee was not modified in the lines when modifying the employee on the expense.
+* City: fixed errors when importing city with geonames.
+* Unit cost calculation: fixed error when trying to select a product.
+* Forecast: fixed a bug that occured when changing a forecast date from the MRP.
+* Fixed asset category: fixed wrong filter on ifrs depreciation and charge accounts not allowing to select special type accounts.
+* Appraisal: fixed appraisal generation from template.
+* Move: fixed error when we set origin on move without move lines.
+* Move: fixed object related errors on delete.
+* Move: fixed error when we set description on move without move lines.
+* Contract: fixed prorata computation when invoicing a contract and end date contract version
+
+When creating a new version of a contract, the end date of the previous version
+is now the activation date of the new version minus one day.
+If left empty, it will be today's date minus one day.
+
+* Bank order: do not copy "has been sent to bank" on duplication.
+* Product details: fixed a bug occuring on stock details.
+
 ## [6.3.32] (2023-11-09)
 
 #### Fixed
@@ -921,6 +950,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.33]: https://github.com/axelor/axelor-open-suite/compare/v6.3.32...v6.3.33
 [6.3.32]: https://github.com/axelor/axelor-open-suite/compare/v6.3.31...v6.3.32
 [6.3.31]: https://github.com/axelor/axelor-open-suite/compare/v6.3.30...v6.3.31
 [6.3.30]: https://github.com/axelor/axelor-open-suite/compare/v6.3.29...v6.3.30
