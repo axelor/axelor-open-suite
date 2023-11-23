@@ -7,6 +7,10 @@ import com.axelor.rpc.ActionResponse;
 public class LanguageController {
   public void convertToLowercase(ActionRequest request, ActionResponse response) {
     Language language = request.getContext().asType(Language.class);
-    response.setValue("code", language.getCode().toLowerCase());
+    if (language.getCode() != null) {
+      response.setValue("code", language.getCode().toLowerCase());
+    } else {
+      response.setError("The Code field must not be empty!");
+    }
   }
 }
