@@ -35,7 +35,6 @@ import com.axelor.apps.budget.db.repo.BudgetLevelManagementRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
-import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -307,19 +306,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setFromDate(fromDate);
     budgetLevel.setToDate(toDate);
     budgetLevelManagementRepository.save(budgetLevel);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void setProjectBudget(BudgetLevel budgetLevel) {
-    Project project = budgetLevel.getProject();
-
-    if (project.getBudget() != null) {
-      return;
-    }
-
-    project.setBudget(budgetLevel);
-    projectRepo.save(project);
   }
 
   @Override

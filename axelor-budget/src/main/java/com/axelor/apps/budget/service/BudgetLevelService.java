@@ -78,13 +78,6 @@ public interface BudgetLevelService {
   public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate);
 
   /**
-   * This function set current BudgetLevel to the new project if budget in project is null.
-   *
-   * @param budgetLevel
-   */
-  public void setProjectBudget(BudgetLevel budgetLevel);
-
-  /**
    * Set the status to valid then save it
    *
    * @param budgetLevel

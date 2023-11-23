@@ -141,14 +141,6 @@ public class BudgetLevelController {
     }
   }
 
-  public void setProjectBudget(ActionRequest request, ActionResponse response) {
-    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-    if (budgetLevel.getProject() != null) {
-      Beans.get(BudgetLevelService.class).setProjectBudget(budgetLevel);
-    }
-  }
-
   public void computeChildrenKey(ActionRequest request, ActionResponse response) {
     try {
       BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
