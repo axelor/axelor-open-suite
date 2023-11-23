@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
@@ -38,9 +39,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -68,6 +71,7 @@ public class ImportMove {
   @Inject private AppAccountService appAccountService;
   @Inject private PeriodService periodService;
   @Inject private FECImportRepository fecImportRepository;
+  @Inject private SequenceService sequenceService;
 
   private String lastImportDate;
 
@@ -211,8 +215,21 @@ public class ImportMove {
         moveLine.setAccount(account);
       }
 
-      if (moveLine.getReconcileGroup() != null) {
-        moveLine.getReconcileGroup().setCompany(company);
+      ReconcileGroup reconcileGroup = moveLine.getReconcileGroup();
+
+      if (reconcileGroup != null) {
+        reconcileGroup.setCompany(company);
+
+        if (StringUtils.isEmpty(reconcileGroup.getCode())) {
+          String reconcileGroupCode =
+              sequenceService.getSequenceNumber(
+                  SequenceRepository.RECONCILE_GROUP_FINAL,
+                  move.getCompany(),
+                  ReconcileGroup.class,
+                  "code");
+
+          reconcileGroup.setCode(reconcileGroupCode);
+        }
       }
 
       move.addMoveLineListItem(moveLine);
