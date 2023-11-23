@@ -38,7 +38,7 @@
   <form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
     width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
     <panel name="statusPanel" colSpan="12">
-      <field name="statusSelect" readonly="true" widget="NavSelect"/>
+      <field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false"/>
     </panel>
     <panel name="startAndStopPanel" title="Start&amp;Stop Timer" colSpan="12">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
