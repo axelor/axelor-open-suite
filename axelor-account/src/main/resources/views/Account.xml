@@ -95,7 +95,8 @@
           readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
-          domain="self.company = :company" form-view="account-form" grid-view="account-grid"
+          onSelect="action-account-method-set-parent-account-domain" form-view="account-form"
+          grid-view="account-grid"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
@@ -503,6 +504,10 @@
   <action-method name="action-account-method-wizard-reconcile-line">
     <call class="com.axelor.apps.account.web.AccountController"
       method="setAmountRemainingReconciliableMoveLines"/>
+  </action-method>
+
+  <action-method name="action-account-method-set-parent-account-domain">
+    <call class="com.axelor.apps.account.web.AccountController" method="setParentAccountDomain"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
