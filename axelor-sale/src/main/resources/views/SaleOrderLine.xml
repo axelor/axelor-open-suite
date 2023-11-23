@@ -213,7 +213,7 @@
           <field name="inTaxPrice" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3"
             onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-            hidden="true" x-scale="saleOrder.currency.numberOfDecimals"/>
+            hidden="true"/>
           <panel name="discountPanel" colSpan="12"
             readonlyIf="$isReadOnly !== false || deliveryState == 3">
             <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
@@ -248,9 +248,12 @@
             domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
             form-view="tax-line-form"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
-            x-scale="saleOrder.currency.numberOfDecimals"/>
+            x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" readonly="true" colSpan="3"
-            x-scale="saleOrder.currency.numberOfDecimals"/>
+            x-scale="$currency.numberOfDecimals"/>
+          <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
+            hidden="true"/>
+          <field name="$currency.numberOfDecimals" hidden="true"/>
         </panel>
         <panel name="reservationPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
@@ -331,6 +334,7 @@
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
           target="com.axelor.apps.base.db.Currency"/>
+        <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="deliveryPanel" title="Delivery">
         <field name="desiredDeliveryDate" readonlyIf="$availabiltyRequest"/>
@@ -354,7 +358,7 @@
       <panel name="invoicingFollowUpPanel" title="Invoicing"
         readonlyIf="$isReadOnly !== false" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">
-        <field name="amountInvoiced" x-scale="saleOrder.currency.numberOfDecimals"/>
+        <field name="amountInvoiced" x-scale="$currency.numberOfDecimals"/>
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
@@ -418,7 +422,7 @@
           colSpan="4" hidden="true"/>
         <field name="inTaxPrice"
           onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-          colSpan="4" hidden="true" x-scale=""/>
+          colSpan="4" hidden="true"/>
         <panel name="discountPanel" title="Discount">
           <field name="discountTypeSelect"
             onChange="action-sale-order-line-method-compute,action-sale-order-line-attrs-discountamount-title,action-sale-order-line-method-compute-analytic-distribution"/>
@@ -432,12 +436,13 @@
         onChange="action-group-sale-saleorderline-tax-line-onchange"
         domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form"/>
-      <field name="exTaxTotal" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
-      <field name="inTaxTotal" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
+      <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
+      <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
         form-view="tax-equiv-form"/>
-      <field name="saleOrder.currency" hidden="true"/>
-      <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+      <field name="$currency" hidden="true" type="many-to-one"
+        target="com.axelor.apps.base.db.Currency"/>
+      <field name="$currency.numberOfDecimals" hidden="true"/>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
       </panel>
@@ -459,6 +464,7 @@
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
           target="com.axelor.apps.base.db.Currency"/>
+        <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
@@ -554,6 +560,7 @@
     <action name="action-sale-order-line-record-project"/>
     <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
+    <action name="action-sale-order-line-attrs-set-currency"/>
     <action name="action-sale-order-attrs-hide-ati"/>
     <action name="action-supplychain-sale-order-line-attrs-hide-button"/>
     <action name="action-sale-order-line-attrs-fill-estimated-date"/>
@@ -578,6 +585,7 @@
     <action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
     <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
+    <action name="action-sale-order-line-attrs-set-currency"/>
     <action name="action-supplychain-sale-order-line-attrs-hide-button"/>
     <action name="action-sale-order-line-method-check-qty"
       if="__config__.app.getApp('sale')?.manageMultipleSaleQuantity"/>
@@ -854,6 +862,13 @@
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
     <attribute name="value" for="$companyCurrency"
       expr="eval:saleOrder?.company?.currency" if="saleOrder != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-set-currency">
+    <attribute name="value" for="$currency" expr="eval:__parent__?.currency"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+    <attribute name="value" for="$currency" expr="eval:saleOrder?.currency"
+      if="saleOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-hidden-fields-for-client">

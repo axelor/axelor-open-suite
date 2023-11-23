@@ -26,7 +26,6 @@
       color="info"/>
     <hilite if="invoiced" color="success"/>
     <field name="project"/>
-    <field name="saleOrder.currency" hidden="true"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="saleOrder.saleOrderSeq" width="120" title="Reference"/>
     <field name="saleOrder.creationDate"/>
