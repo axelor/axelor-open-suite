@@ -9,15 +9,9 @@
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>
-    <many-to-one ref="com.axelor.apps.base.db.BirtTemplate"
-      name="decisionDistributionBirtTemplate" title="Decision distribution template"/>
-    <many-to-one ref="com.axelor.apps.base.db.Sequence"
-      name="qiDecisionDistributionSequence" title="Decision distribution sequence"/>
 
     <track>
       <field name="company" on="UPDATE"/>
-      <field name="decisionDistributionBirtTemplate" on="UPDATE"/>
-      <field name="qiDecisionDistributionSequence" on="UPDATE"/>
     </track>
 
   </entity>

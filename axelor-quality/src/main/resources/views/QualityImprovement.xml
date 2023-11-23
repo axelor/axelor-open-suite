@@ -142,8 +142,6 @@
               <field name="defaultWrittenBy" form-view="user-form" grid-view="user-grid"
                 onChange="action-quality-improvement-record-set-default-written-on"/>
               <field name="defaultWrittenOn"/>
-              <field name="qiDecisionDistributionList" showTitle="false" colSpan="12"
-                form-view="qi-decision-distribution-form" grid-view="qi-decision-distribution-grid"/>
               <field name="qiResolutionDefaultsList" showTitle="false" colSpan="12"
                 form-view="qi-resolution-default-form" grid-view="qi-resolution-default-grid"/>
             </panel>

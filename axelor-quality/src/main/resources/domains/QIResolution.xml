@@ -19,8 +19,6 @@
     <datetime name="decisionsWrittenOn" title="Decisions written on"/>
     <one-to-many name="qiResolutionDecisionsList" title="Decisions"
       ref="com.axelor.apps.quality.db.QIResolutionDecision" mappedBy="qiResolution"/>
-    <one-to-many ref="com.axelor.apps.quality.db.QiDecisionDistribution"
-      name="qiDecisionDistributionList" title="Distributions" mappedBy="qiResolution"/>
 
     <track>
       <field name="qi"/>
