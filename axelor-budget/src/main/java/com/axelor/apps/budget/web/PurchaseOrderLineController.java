@@ -96,7 +96,14 @@ public class PurchaseOrderLineController {
 
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      PurchaseOrder purchaseOrder;
+
+      if (PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
+        purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      } else {
+        purchaseOrder = request.getContext().asType(PurchaseOrderLine.class).getPurchaseOrder();
+      }
+
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
         response.setAttr(
             "budgetDistributionPanel",
