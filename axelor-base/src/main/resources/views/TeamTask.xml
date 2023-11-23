@@ -13,44 +13,62 @@
   </grid>
 
   <form name="team-task-form" id="base-team-task-form" title="Task"
-    model="com.axelor.team.db.TeamTask" onNew="action-team-task-group-onnew">
-    <panel showIf="nextTeamTask">
-      <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
-    </panel>
+    model="com.axelor.team.db.TeamTask" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-team-task-group-onnew"/>
+      <insert position="before">
+        <panel showIf="nextTeamTask">
+          <field name="doApplyToAllNextTasks" colSpan="12" widget="InlineCheckbox"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@title='Overview']">
+      <attribute name="title" value=""/>
+    </extend>
 
-    <panel>
-      <field name="name"/>
-      <field name="team"/>
-      <field name="priority"/>
-      <field name="status"/>
-      <field name="taskDate" onChange="action-team-task-record-set-date-or-frequency-changed"/>
-      <field name="taskDeadline"/>
-      <field name="taskDuration"/>
-      <field name="assignedTo"/>
-      <field name="description" colSpan="12" widget="html"/>
+    <extend target="//field[@name='assignedTo']">
+      <move position="after" source="//field[@name='description']"/>
+    </extend>
+    <extend target="//field[@name='description']">
+      <attribute name="widget" value="html"/>
+      <insert position="after">
+        <field name="typeSelect" hidden="true"/>
+      </insert>
+    </extend>
 
-      <field name="typeSelect" hidden="true"/>
-    </panel>
+    <extend target="//field[@name='taskDate']">
+      <attribute name="onChange"
+        value="action-team-task-record-set-date-or-frequency-changed"/>
+    </extend>
+    <extend target="//field[@name='relatedModel']">
+      <replace></replace>
+    </extend>
+    <extend target="//field[@name='role']">
+      <replace></replace>
+    </extend>
 
-    <panel-tabs>
-      <panel title="Frequency">
-        <field name="frequency"
-          onChange="action-team-task-record-set-date-or-frequency-changed" domain="1 &lt;&gt; 1"
-          canNew="true" grid-view="frequency-grid" form-view="frequency-form"/>
-        <field name="nextTeamTask" hidden="true" showIf="nextTeamTask"/>
-        <field name="isFirst" hidden="true"/>
-        <field name="doUpdateNextTasks" hidden="true"/>
-        <field name="hasDateOrFrequencyChanged" hidden="true"/>
-      </panel>
-      <panel name="rolePanel" title="Role">
-        <field name="role"/>
-      </panel>
-    </panel-tabs>
+    <extend target="//panel[@title='Attributes']">
+      <replace></replace>
+    </extend>
 
-    <panel-mail>
-      <mail-messages limit="4"/>
-      <mail-followers/>
-    </panel-mail>
+    <extend target="/">
+      <insert position="after">
+        <panel-tabs>
+          <panel title="Frequency">
+            <field name="frequency" canNew="true"
+              onChange="action-team-task-record-set-date-or-frequency-changed" domain="1 &lt;> 1"
+              form-view="frequency-form" grid-view="frequency-grid"/>
+            <field name="nextTeamTask" hidden="true" showIf="nextTeamTask"/>
+            <field name="isFirst" hidden="true"/>
+            <field name="doUpdateNextTasks" hidden="true"/>
+            <field name="hasDateOrFrequencyChanged" hidden="true"/>
+          </panel>
+          <panel name="rolePanel" title="Role">
+            <field name="role"/>
+          </panel>
+        </panel-tabs>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-team-task-group-onnew">
