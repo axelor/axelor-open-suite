@@ -32,6 +32,8 @@
     <boolean name="computeOtherPeriod" title="Compute on comparison period"/>
     <boolean name="balanceBeforePeriod" title="Period's start balance"/>
     <boolean name="negateValue" title="Negate value"/>
+    <boolean name="hideDetailedLinesWithoutMoves"
+      title="Hide detailed lines without any move"/>
     <many-to-many name="accountTypeSet" title="Account types"
       ref="com.axelor.apps.account.db.AccountType"/>
     <many-to-many name="accountSet" title="Accounts"

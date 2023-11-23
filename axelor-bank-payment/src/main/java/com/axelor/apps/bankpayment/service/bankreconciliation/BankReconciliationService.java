@@ -49,10 +49,6 @@ public interface BankReconciliationService {
 
   String createDomainForBankDetails(BankReconciliation bankReconciliation);
 
-  void loadBankStatement(BankReconciliation bankReconciliation);
-
-  void loadBankStatement(BankReconciliation bankReconciliation, boolean includeBankStatement);
-
   String getJournalDomain(BankReconciliation bankReconciliation);
 
   String getCashAccountDomain(BankReconciliation bankReconciliation);

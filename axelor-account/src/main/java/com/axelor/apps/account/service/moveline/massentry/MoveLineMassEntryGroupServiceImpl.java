@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -51,6 +52,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineRecordService moveLineRecordService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected MoveLineToolService moveLineToolService;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
@@ -66,6 +68,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineRecordService moveLineRecordService,
       AnalyticAttrsService analyticAttrsService,
+      MoveLineToolService moveLineToolService,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.massEntryService = massEntryService;
     this.moveLineGroupService = moveLineGroupService;
@@ -78,6 +81,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineRecordService = moveLineRecordService;
     this.analyticAttrsService = analyticAttrsService;
+    this.moveLineToolService = moveLineToolService;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
@@ -106,6 +110,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     moveLineMassEntryRecordService.setCurrencyRate(move, moveLine);
     moveLineDefaultService.setFinancialDiscount(moveLine);
     moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
+    moveLineToolService.setDecimals(moveLine, move);
 
     valuesMap.put("inputAction", moveLine.getInputAction());
     valuesMap.put("temporaryMoveNumber", moveLine.getTemporaryMoveNumber());
@@ -140,6 +145,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("deliveryDate", moveLine.getDeliveryDate());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
 
     return valuesMap;
   }
@@ -413,6 +420,8 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("movePfpValidatorUser", moveLine.getMovePfpValidatorUser());
     valuesMap.put("cutOffStartDate", moveLine.getCutOffStartDate());
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
+    valuesMap.put("currencyDecimals", moveLine.getCurrencyDecimals());
+    valuesMap.put("companyCurrencyDecimals", moveLine.getCompanyCurrencyDecimals());
     valuesMap.put("isEdited", moveLine.getIsEdited());
     valuesMap.put("fieldsErrorList", moveLine.getFieldsErrorList());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());

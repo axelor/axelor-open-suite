@@ -38,6 +38,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
@@ -91,6 +92,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   protected UserRepository userRepo;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PfpService pfpService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public InvoiceTermServiceImpl(
@@ -104,7 +106,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       JournalService journalService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       UserRepository userRepo,
-      PfpService pfpService) {
+      PfpService pfpService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.appAccountService = appAccountService;
@@ -116,6 +119,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     this.journalService = journalService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.pfpService = pfpService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -142,11 +146,17 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
         sum =
             sum.add(
-                invoiceTerm.getAmount().divide(invoice.getInTaxTotal(), 10, RoundingMode.HALF_UP));
+                invoiceTerm
+                    .getAmount()
+                    .divide(
+                        invoice.getInTaxTotal(),
+                        AppBaseService.COMPUTATION_SCALING,
+                        RoundingMode.HALF_UP));
       }
     }
-    return sum.multiply(BigDecimal.valueOf(100))
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+
+    return currencyScaleServiceAccount.getScaledValue(
+        invoice, sum.multiply(BigDecimal.valueOf(100)));
   }
 
   protected BigDecimal computePercentageSum(MoveLine moveLine) {
@@ -301,11 +311,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       }
 
       companyAmountRemaining =
-          companyAmount
-              .multiply(ratioPaid)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-      companyAmount =
-          companyAmount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, companyAmount.multiply(ratioPaid));
+      companyAmount = currencyScaleServiceAccount.getCompanyScaledValue(invoiceTerm, companyAmount);
     }
 
     invoiceTerm.setCompanyAmount(companyAmount);
@@ -444,7 +452,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .multiply(invoiceTermPercentage)
             .divide(
                 BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                currencyScaleServiceAccount.getScale(moveLine),
                 RoundingMode.HALF_UP);
     invoiceTerm.setAmount(amount);
     invoiceTerm.setAmountRemaining(amount);
@@ -894,7 +902,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           .getPercentage()
           .multiply(total)
           .divide(
-              new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+              new BigDecimal(100),
+              currencyScaleServiceAccount.getScale(invoiceTerm),
+              RoundingMode.HALF_UP);
     }
   }
 
@@ -1224,7 +1234,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      invoicePayment.addReconcileListItem(reconcile);
+      invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 

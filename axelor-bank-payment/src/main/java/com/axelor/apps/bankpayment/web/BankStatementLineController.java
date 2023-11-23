@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementLineService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;

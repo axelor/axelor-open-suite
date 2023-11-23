@@ -170,6 +170,16 @@
     <context name="_isOutsourcingLoc" expr="eval:true"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-outsourcing-purchase-orders"
+    title="Outsourcing purchase orders" parent="manufacturing-root-outsourcing"
+    action="manufacturing.root.outsourcing.purchase.orders" order="400"/>
+
+  <action-view name="manufacturing.root.outsourcing.purchase.orders"
+    title="Outsourcing purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.outsourcingOrder = true</domain>
+  </action-view>
 
   <menuitem name="manufacturing-root-charge-by-machine-dashboard"
     parent="manufacturing-root" title="Charge by machine"
@@ -542,15 +552,13 @@
   </action-view>
 
 
-  <menuitem name="manufacturing-conf-work-center-group-model" parent="manufacturing-conf"
-    title="Models of work center group" action="manufacturing.conf.work.center.group.model"
+  <menuitem name="manufacturing-conf-work-center-groups" parent="manufacturing-conf"
+    title="Work center groups" action="manufacturing.conf.work.center.group"
     if="__config__.app.getApp('production')?.getManageWorkCenterGroup()" order="1300"/>
 
-  <action-view name="manufacturing.conf.work.center.group.model"
-    title="Models of work center group" model="com.axelor.apps.production.db.WorkCenterGroup">
-    <view type="grid" name="work-center-group-model-grid"/>
-    <view type="form" name="work-center-group-model-form"/>
-    <domain>self.template IS TRUE</domain>
-    <context name="_template" expr="eval: true"/>
+  <action-view name="manufacturing.conf.work.center.group" title="Work center groups"
+    model="com.axelor.apps.production.db.WorkCenterGroup">
+    <view type="grid" name="work-center-group-grid"/>
+    <view type="form" name="work-center-group-form"/>
   </action-view>
 </object-views>

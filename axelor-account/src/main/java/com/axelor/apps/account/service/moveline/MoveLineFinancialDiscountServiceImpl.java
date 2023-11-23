@@ -9,6 +9,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -35,6 +36,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected FinancialDiscountService financialDiscountService;
   protected MoveLineCreateService moveLineCreateService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineFinancialDiscountServiceImpl(
@@ -42,12 +44,14 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       InvoiceTermService invoiceTermService,
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
-      MoveLineCreateService moveLineCreateService) {
+      MoveLineCreateService moveLineCreateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
     this.moveLineCreateService = moveLineCreateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -81,7 +85,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
       moveLine.setFinancialDiscountRate(financialDiscount.getDiscountRate());
       moveLine.setFinancialDiscountTotalAmount(
-          this.computeFinancialDiscountTotalAmount(financialDiscount, moveLine, amount));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              moveLine,
+              this.computeFinancialDiscountTotalAmount(financialDiscount, moveLine, amount)));
       moveLine.setRemainingAmountAfterFinDiscount(
           amount.subtract(moveLine.getFinancialDiscountTotalAmount()));
     } else {

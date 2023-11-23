@@ -329,6 +329,7 @@
     <attribute for="machine" name="value" expr="eval: workCenter?.machine"/>
     <attribute name="hidden" for="machine"
       expr="eval: workCenter?.workCenterTypeSelect == 1"/>
+    <attribute for="employeeSet" name="value" expr="eval: workCenter?.hrEmployeeSet"/>
   </action-attrs>
 
   <action-attrs name="action-operation-order-attrs-set-work-center-domain">

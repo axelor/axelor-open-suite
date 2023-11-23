@@ -11,7 +11,8 @@
     type="com.axelor.apps.account.db.FiscalPosition"
     search="self.code = :code AND self.importId = :importId"/>
 
-  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account">
+  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
+    search="self.code = :code AND self.company.id = :_companyId">
     <bind to="company" search="self.id = :_companyId" update="true"/>
   </input>
 
@@ -26,7 +27,7 @@
   </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.code = :code AND self.company.id = :_companyId " update="true"
+    search="self.code = :code AND self.company.id = :_companyId" update="true"
     call="com.axelor.csv.script.ImportAccount:importAccount">
     <bind to="parentAccount"
       search="self.code = :parent_code AND self.company.id = :_companyId" update="true"/>
@@ -45,7 +46,7 @@
   </input>
 
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
-    search="self.importId = :importId AND self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
+    search="self.importId = :importId"/>
 
   <input file="account_accountManagement.csv" separator=";"
     type="com.axelor.apps.account.db.AccountManagement">

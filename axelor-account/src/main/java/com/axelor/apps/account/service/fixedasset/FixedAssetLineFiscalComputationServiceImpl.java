@@ -43,8 +43,8 @@ public class FixedAssetLineFiscalComputationServiceImpl
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
-        && fixedAsset.getFailoverDate().isAfter(fixedAsset.getFirstDepreciationDate())) {
-      return fixedAsset.getFailoverDate();
+        && fixedAsset.getImportDepreciationDate().isAfter(fixedAsset.getFirstDepreciationDate())) {
+      return fixedAsset.getImportDepreciationDate();
     }
     return fixedAsset.getFiscalFirstDepreciationDate();
   }
@@ -99,7 +99,7 @@ public class FixedAssetLineFiscalComputationServiceImpl
   @Override
   protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
-        && fixedAsset.getFiscalNbrOfPastDepreciations() > 0) {
+        && fixedAsset.getImportFiscalNbrOfPastDepreciations() > 0) {
       // This case means that prorata temporis was already computed in another software.
       return false;
     }
@@ -120,12 +120,12 @@ public class FixedAssetLineFiscalComputationServiceImpl
   @Override
   protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
 
-    return BigDecimal.valueOf(fixedAsset.getFiscalNbrOfPastDepreciations());
+    return BigDecimal.valueOf(fixedAsset.getImportFiscalNbrOfPastDepreciations());
   }
 
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
-    return fixedAsset.getFiscalAlreadyDepreciatedAmount();
+    return fixedAsset.getImportFiscalAlreadyDepreciatedAmount();
   }
 
   @Override

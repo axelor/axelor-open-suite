@@ -17,10 +17,14 @@ import java.time.LocalDate;
 public class InvoiceTermFinancialDiscountServiceImpl
     implements InvoiceTermFinancialDiscountService {
   protected AppAccountService appAccountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
-  public InvoiceTermFinancialDiscountServiceImpl(AppAccountService appAccountService) {
+  public InvoiceTermFinancialDiscountServiceImpl(
+      AppAccountService appAccountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.appAccountService = appAccountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -54,9 +58,8 @@ public class InvoiceTermFinancialDiscountServiceImpl
       invoiceTerm.setFinancialDiscountDeadlineDate(
           this.computeFinancialDiscountDeadlineDate(invoiceTerm));
       invoiceTerm.setRemainingAmountAfterFinDiscount(
-          remainingAmountAfterFinDiscount
-              .multiply(percentage)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              invoiceTerm, remainingAmountAfterFinDiscount.multiply(percentage)));
       invoiceTerm.setFinancialDiscountAmount(
           invoiceTerm.getAmount().subtract(invoiceTerm.getRemainingAmountAfterFinDiscount()));
 

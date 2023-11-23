@@ -51,7 +51,7 @@ public class MrpManagementRepository extends MrpRepository {
         String seq =
             Beans.get(SequenceService.class)
                 .getSequenceNumber(
-                    SequenceRepository.SUPPLYCHAIN_MRP, company, Mrp.class, "mrpSeq");
+                    SequenceRepository.SUPPLYCHAIN_MRP, company, Mrp.class, "mrpSeq", entity);
 
         if (seq == null) {
           throw new AxelorException(

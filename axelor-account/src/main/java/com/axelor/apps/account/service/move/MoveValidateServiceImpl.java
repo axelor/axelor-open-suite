@@ -39,6 +39,7 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -105,6 +106,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveControlService moveControlService;
   protected MoveCutOffService moveCutOffService;
   protected MoveLineCheckService moveLineCheckService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
   protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
@@ -127,6 +129,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
@@ -146,6 +149,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveControlService = moveControlService;
     this.moveCutOffService = moveCutOffService;
     this.moveLineCheckService = moveLineCheckService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
@@ -646,7 +650,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setJournalName(journal.getName());
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
+    moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
     moveLine.setCompanyCurrencyCode(company.getCurrency().getCode());
+    moveLine.setCompanyCurrencyDecimals(company.getCurrency().getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
@@ -901,7 +907,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         .multiply(moveLine.getTaxLine().getValue())
         .divide(
             BigDecimal.valueOf(100),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            currencyScaleServiceAccount.getCompanyScale(moveLine),
             RoundingMode.HALF_UP);
   }
 

@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -71,6 +72,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository) {
     super(
@@ -92,6 +94,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
         moveControlService,
         moveCutOffService,
         moveLineCheckService,
+        currencyScaleServiceAccount,
         moveLineFinancialDiscountService);
     this.expenseRepository = expenseRepository;
   }
