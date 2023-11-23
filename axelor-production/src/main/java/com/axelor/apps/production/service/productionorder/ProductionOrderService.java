@@ -34,7 +34,7 @@ public interface ProductionOrderService {
 
   public ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
 
-  public String getProductionOrderSeq() throws AxelorException;
+  public String getProductionOrderSeq(ProductionOrder productionOrder) throws AxelorException;
 
   /**
    * Generate a Production Order

@@ -332,7 +332,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
         .map(InvoiceTermPayment::getFinancialDiscountAmount)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .setScale(2, RoundingMode.HALF_UP);
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getFinancialDiscountTaxAmount(
@@ -355,7 +355,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .setScale(2, RoundingMode.HALF_UP);
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected LocalDate getFinancialDiscountDeadlineDate(

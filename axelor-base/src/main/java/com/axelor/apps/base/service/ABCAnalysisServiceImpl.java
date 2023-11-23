@@ -365,7 +365,8 @@ public class ABCAnalysisServiceImpl implements ABCAnalysisService {
     }
 
     abcAnalysis.setAbcAnalysisSeq(
-        sequenceService.getSequenceNumber(sequence, ABCAnalysis.class, "abcAnalysisSeq"));
+        sequenceService.getSequenceNumber(
+            sequence, ABCAnalysis.class, "abcAnalysisSeq", abcAnalysis));
   }
 
   @Override

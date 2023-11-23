@@ -73,7 +73,8 @@ public class PurchaseOrderController {
 
         response.setValue(
             "purchaseOrderSeq",
-            Beans.get(PurchaseOrderService.class).getSequence(purchaseOrder.getCompany()));
+            Beans.get(PurchaseOrderService.class)
+                .getSequence(purchaseOrder.getCompany(), purchaseOrder));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

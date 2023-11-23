@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -571,10 +572,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal percentage =
         amount
             .multiply(BigDecimal.valueOf(100))
-            .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
+            .divide(
+                moveLine.getCurrencyAmount(),
+                AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
 
     analyticMoveLine.setPercentage(percentage);
-    analyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
+    analyticMoveLine.setAmount(
+        amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
   }
 
   protected void generateTaxMoveLine(

@@ -71,10 +71,28 @@
           onChange="action-sequence-method-verify-pattern"/>
       </panel>
 
-      <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname"/>
-      <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname"/>
+      <panel colSpan="12">
+        <panel stacked="true">
+          <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            onChange="action-sequence-method-compute-fullname" showIf="!prefixGroovyOk"/>
+          <field name="prefixGroovy" showIf="prefixGroovyOk" widget="CodeEditor"
+            x-code-syntax="groovy" height="100"/>
+        </panel>
+
+        <panel stacked="true">
+          <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            onChange="action-sequence-method-compute-fullname" showIf="!suffixGroovyOk"/>
+          <field name="suffixGroovy" widget="CodeEditor" x-code-syntax="groovy"
+            showIf="suffixGroovyOk" height="100"/>
+        </panel>
+      </panel>
+
+      <field name="prefixGroovyOk"
+        hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
+        onChange="action-sequence-group-onChange-groovyOk"/>
+      <field name="suffixGroovyOk"
+        hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
+        onChange="action-sequence-group-onChange-groovyOk"/>
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
       <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
@@ -213,6 +231,17 @@
     <error if="(startDate &amp;&amp; endDate) &amp;&amp; (endDate &lt; startDate)"
       message="End date must be greater than start date"/>
   </action-validate>
+
+  <action-group name="action-sequence-group-onChange-groovyOk">
+    <action name="action-sequence-record-empty-suffix-prefix"/>
+    <action name="action-sequence-method-compute-fullname"/>
+  </action-group>
+
+  <action-record name="action-sequence-record-empty-suffix-prefix"
+    model="com.axelor.apps.base.db.Sequence">
+    <field name="prefixe" expr="eval:' '" if="prefixGroovyOk"/>
+    <field name="suffixe" expr="eval:' '" if="suffixGroovyOk"/>
+  </action-record>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
     title="Sequence filters">
