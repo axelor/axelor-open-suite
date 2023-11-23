@@ -40,6 +40,8 @@
           onClick="action.mobile.settings.translation.view"/>
         <button name="viewTracebacksBtn" title="View tracebacks"
           onClick="action.mobile.settings.tracebacks.view"/>
+        <button name="viewDashboardBtn" title="View dashboards"
+          onClick="action.hr.config.mobile.dashboards.view"/>
       </panel>
       <panel name="configAppPanel" title="App configuration">
         <button name="stockAppBtn" title="Config Stock" hidden="true"
@@ -118,9 +120,6 @@
       </panel>
     </panel-tabs>
 
-    <panel-related field="mobileDashboardList" grid-view="mobile-dashboard-grid"
-      form-view="mobile-dashboard-form"/>
-
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -189,6 +188,19 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord"
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-hr').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.mobile.settings.tracebacks.view" title="Mobile tracebacks"
+    model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.origin = 'mobile app'</domain>
+  </action-view>
+
+  <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
+    model="com.axelor.apps.mobilesettings.db.MobileDashboard">
+    <view type="grid" name="mobile-dashboard-grid"/>
+    <view type="form" name="mobile-dashboard-form"/>
   </action-view>
 
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">

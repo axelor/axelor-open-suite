@@ -4,8 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="mobile-dashboard-line-grid" title="Mobile dashboard lines"
-    model="com.axelor.apps.mobilesettings.db.MobileDashboardLine">
+    model="com.axelor.apps.mobilesettings.db.MobileDashboardLine" editable="true">
     <field name="name"/>
+    <field name="mobileChart1" canNew="true" canEdit="true"/>
+    <field name="mobileChart2" canNew="true" canEdit="true"/>
+    <field name="mobileChart3" canNew="true" canEdit="true"/>
+    <field name="mobileChart4" canNew="true" canEdit="true"/>
   </grid>
 
   <form name="mobile-dashboard-line-form" title="Mobile dashboard line"

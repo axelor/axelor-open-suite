@@ -5,6 +5,9 @@
 
   <grid name="mobile-dashboard-grid" title="Mobile dashboard"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
+    <toolbar>
+      <button name="showChartsBtn" title="Show charts" onClick="action.mobile.chart.view"/>
+    </toolbar>
     <field name="name"/>
   </grid>
 
@@ -15,7 +18,6 @@
       <field name="mobileDashboardLineList" grid-view="mobile-dashboard-line-grid"
         form-view="mobile-dashboard-line-form" colSpan="12"/>
     </panel>
-
   </form>
 
 </object-views>

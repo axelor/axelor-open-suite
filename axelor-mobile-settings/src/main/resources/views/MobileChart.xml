@@ -26,4 +26,9 @@
       method="getJsonResponse"/>
   </action-method>
 
+  <action-view name="action.mobile.chart.view" title="Mobile Chart"
+    model="com.axelor.apps.mobilesettings.db.MobileChart">
+    <view type="grid" name="mobile-chart-grid"/>
+    <view type="form" name="mobile-chart-form"/>
+  </action-view>
 </object-views>
