@@ -82,7 +82,7 @@
     <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"
       scale="3"/>
     <decimal name="subMarginRate" title="Sub margin rate"/>
-    <decimal name="subTotalMarkup" title="Sub Total markup" precision="20" scale="3"/>
+    <decimal name="subTotalMarkup" title="Sub Total markup"/>
 
     <!-- Champ technique non affiché, utilisé pour les reportings -->
     <decimal name="companyExTaxTotal" title="Total W.T. in company currency" hidden="true"

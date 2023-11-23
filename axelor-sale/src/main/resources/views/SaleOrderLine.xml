@@ -330,8 +330,7 @@
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
-        <field name="subTotalMarkup" readonly="true"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+        <field name="subTotalMarkup" readonly="true"/>
         <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
           target="com.axelor.apps.base.db.Currency"/>
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
@@ -460,8 +459,7 @@
         <field name="subTotalGrossMargin" readonly="true"
           x-scale="$companyCurrency.numberOfDecimals"/>
         <field name="subMarginRate" readonly="true"/>
-        <field name="subTotalMarkup" readonly="true"
-          x-scale="$companyCurrency.numberOfDecimals"/>
+        <field name="subTotalMarkup" readonly="true"/>
         <field name="$companyCurrency" readonly="true" title="Currency" type="many-to-one"
           target="com.axelor.apps.base.db.Currency"/>
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
