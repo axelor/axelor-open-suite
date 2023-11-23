@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -412,9 +412,9 @@
 	                        <>
 	                        	<Box d="flex" justifyContent="flex-end" gap="4" flexWrap="wrap">
 	                        		{operationTypeSelect == 1 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier purchase')}</Badge>}
-	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier refund')}</Badge>}
+	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier credit note')}</Badge>}
 	                        		{operationTypeSelect == 3 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer sale')}</Badge>}
-	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer refund')}</Badge>}
+	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer credit note')}</Badge>}
 
 	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Standard invoice')}</Badge>}
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Advance payment invoice')}</Badge>}
@@ -634,7 +634,10 @@
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
+            grid-view="incoterm-grid"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+          <spacer colSpan="6"
+            if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer><![CDATA[<>{addressStr}</>]]></viewer>
@@ -681,9 +684,9 @@
           <field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
           <field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
         </panel>
-        <panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"
-          colSpan="12" showTitle="false">
-          <button name="createRefundBtn" title="Generate refund" colSpan="3"
+        <panel name="refundPanel" title="Credit note"
+          showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
+          <button name="createRefundBtn" title="Generate credit note" colSpan="3"
             showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
             onClick="save,action-invoice-method-create-refund,save"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
@@ -918,7 +921,7 @@ InvoiceSet.length > 0))"
       </panel>
     </panel>
     <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"
-      hideIf="partner == null">
+      hideIf="partner == null" gap="0">
       <field name="currency.code" hidden="true"/>
       <field name="currency.symbol" hidden="true"/>
       <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"/>
@@ -927,21 +930,14 @@ InvoiceSet.length > 0))"
         <viewer depends="exTaxTotal,taxTotal">
         	<![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     </Box>
 	                  </>
 		         ]]>
         </viewer>
@@ -953,43 +949,39 @@ InvoiceSet.length > 0))"
                 <![CDATA[
 				<>
 					<Box d="flex" flexDirection="column">
-						<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
-							<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" alignItems="center">
-								<dt>
-									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"}><Icon icon="link" fontSize="22.5px"/></Box>
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+							<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+								<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+								{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+								{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+								{typeSelect == 5 && <span> {_t('On')} </span>}
+								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								<span>{$fmt('paymentDate')}</span>
+							</Box>
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {$fmt('amount')}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('amount')}</Box>}
+						</Box>
+
+						{applyFinancialDiscount &&
+							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+								<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Discounted on')} </span>}
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled discount on')} </span>}
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending discount')} </span>}
 									{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
 									{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
 									{typeSelect == 5 && <span> {_t('On')} </span>}
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
-									{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
-								</dt>
-								{typeSelect == 8 ? <dd>{currency.symbol} {$fmt('amount')}</dd> : <dd>-{currency.symbol} {$fmt('amount')}</dd>}
-							</Box>
-						</Box>
-
-						{applyFinancialDiscount &&
-							<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
-								<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" alignItems="center">
-									<dt>
-										<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"}><Icon icon="link" fontSize="22.5px"/></Box>
-										{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Discounted on')} </span>}
-										{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled discount on')} </span>}
-										{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending discount')} </span>}
-										{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
-										{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
-										{typeSelect == 5 && <span> {_t('On')} </span>}
-										{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
-										{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
-										<span>{$fmt('paymentDate')}</span>
-									</dt>
-									{financialDiscountTaxAmount > 0 && <dd>-{currency.symbol} {$fmt('financialDiscountTotalAmount')}</dd>}
-									{financialDiscountTaxAmount == 0 && <dd>-{currency.symbol} {$fmt('financialDiscountAmount')}</dd>}
 								</Box>
+								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('financialDiscountTotalAmount')}</Box>}
+								{financialDiscountTaxAmount == 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('financialDiscountAmount')}</Box>}
 							</Box>
 						}
 					</Box>
@@ -1002,12 +994,10 @@ InvoiceSet.length > 0))"
         showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol">
         <viewer depends="amountRemaining"><![CDATA[
 		         <>
-		         	<dl>
-				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{$fmt('amountRemaining')}</dd>
-				 		</Box>
-		         	</dl>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('amountRemaining')}</Box>
+				 	</Box>
 		         </>
 		      ]]>
         </viewer>
@@ -1015,7 +1005,8 @@ InvoiceSet.length > 0))"
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
-      hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
+      hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code"
+      gap="0">
       <field name="company.currency" hidden="true"/>
       <field name="company.currency.code" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>
@@ -1025,21 +1016,14 @@ InvoiceSet.length > 0))"
         x-currency="company.currency.symbol">
         <viewer depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal"><![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{$fmt('companyExTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{$fmt('companyTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{$fmt('companyInTaxTotal')}</dd>
-	                     	</Box>
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyExTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
+	                     </Box>
 	                  </>
 		       ]]></viewer>
       </field>
@@ -1047,12 +1031,10 @@ InvoiceSet.length > 0))"
         showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol">
         <viewer depends="companyInTaxTotalRemaining"><![CDATA[
 		         <>
-		         	<dl>
-				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{$fmt('companyInTaxTotalRemaining')}</dd>
-				 		</Box>
-		         	</dl>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('companyInTaxTotalRemaining')}</Box>
+				 	</Box>
 		         </>
 		       ]]>
         </viewer>
@@ -1139,9 +1121,9 @@ InvoiceSet.length > 0))"
 					<![CDATA[
 	                   <>
 	                       {operationTypeSelect == 1 && <Badge bg="danger">{_t('Supplier purchase')}</Badge>}
-	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier refund')}</Badge>}
+	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier credit note')}</Badge>}
 	                       {operationTypeSelect == 3 && <Badge bg="danger">{_t('Customer sale')}</Badge>}
-	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer refund')}</Badge>}
+	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer credit note')}</Badge>}
 	                   </>
 					]]>
           </viewer>
@@ -1266,7 +1248,7 @@ InvoiceSet.length > 0))"
       </panel>
     </panel>
 
-    <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6">
+    <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6" gap="0">
       <field name="currency.symbol" hidden="true"/>
       <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
       <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
@@ -1274,21 +1256,14 @@ InvoiceSet.length > 0))"
         <viewer depends="exTaxTotal,taxTotal,inTaxTotal">
         	<![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     </Box>
 	                  </>
 		         ]]>
         </viewer>
@@ -1299,23 +1274,21 @@ InvoiceSet.length > 0))"
           depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
                 <![CDATA[
 					<>
-						<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
-							<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" alignItems="center">
-								<dt>
-									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"}><Icon icon="link" fontSize="22.5px"/></Box>
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
-									{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
-									{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
-									{typeSelect == 5 && <span> {_t('On')} </span>}
-									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
-									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
-									{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
-									<span>{$fmt('paymentDate')}</span>
-								</dt>
-								{typeSelect == 8 ? <dd>{currency.symbol} {$fmt('amount')}</dd> : <dd>-{currency.symbol} {$fmt('amount')}</dd>}
+						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+							<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+								<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+								{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+								{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+								{typeSelect == 5 && <span> {_t('On')} </span>}
+								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								<span>{$fmt('paymentDate')}</span>
 							</Box>
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {$fmt('amount')}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('amount')}</Box>}
 						</Box>
 					</>
                 ]]>
@@ -1326,12 +1299,10 @@ InvoiceSet.length > 0))"
         showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol">
         <viewer depends="amountRemaining"><![CDATA[
 		         <>
-		         	<dl>
-				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{$fmt('amountRemaining')}</dd>
-				 		</Box>
-		         	</dl>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('amountRemaining')}</Box>
+				 	</Box>
 		         </>
 		      ]]>
         </viewer>
@@ -2271,6 +2242,11 @@ InvoiceSet.length > 0))"
       method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
+  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
   <action-method name="action-invoice-method-create-advance-payment-domain">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="fillAdvancePaymentInvoiceSetDomain"/>
@@ -2674,7 +2650,7 @@ InvoiceSet.length > 0))"
   </search-filters>
 
   <search-filters name="supplier-refunds-filters"
-    model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+    model="com.axelor.apps.account.db.Invoice" title="Supplier credit notes filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"

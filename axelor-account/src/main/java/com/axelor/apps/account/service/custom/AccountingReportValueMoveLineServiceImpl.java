@@ -519,6 +519,10 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
                 endDate)
             .fetch();
 
+    if (line.getHideDetailedLinesWithoutMoves() && moveLineList.isEmpty()) {
+      return;
+    }
+
     BigDecimal result =
         this.getResultFromMoveLine(
             accountingReport,

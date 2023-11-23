@@ -18,7 +18,11 @@
  */
 package com.axelor.apps.quality.service.app;
 
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
+import com.axelor.apps.quality.db.QualityConfig;
+import com.axelor.apps.quality.db.repo.QualityConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -29,10 +33,14 @@ import com.axelor.studio.db.repo.AppQualityRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
 
   private AppQualityRepository appQualityRepo;
+  private CompanyRepository companyRepository;
+  private QualityConfigRepository qualityConfigRepository;
 
   @Inject
   public AppQualityServiceImpl(
@@ -43,7 +51,9 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
-      AppQualityRepository appQualityRepo) {
+      AppQualityRepository appQualityRepo,
+      CompanyRepository companyRepository,
+      QualityConfigRepository qualityConfigRepository) {
     super(
         appRepo,
         metaFiles,
@@ -53,10 +63,24 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
         metaModuleRepo,
         metaFileRepo);
     this.appQualityRepo = appQualityRepo;
+    this.companyRepository = companyRepository;
+    this.qualityConfigRepository = qualityConfigRepository;
   }
 
   @Override
   public AppQuality getAppQuality() {
     return appQualityRepo.all().fetchOne();
+  }
+
+  @Override
+  @Transactional
+  public void generateQualityConfigurations() {
+    List<Company> companies = companyRepository.all().filter("self.qualityConfig is null").fetch();
+
+    for (Company company : companies) {
+      QualityConfig qualityConfig = new QualityConfig();
+      qualityConfig.setCompany(company);
+      qualityConfigRepository.save(qualityConfig);
+    }
   }
 }

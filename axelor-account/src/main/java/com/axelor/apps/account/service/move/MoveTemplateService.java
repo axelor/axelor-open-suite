@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
@@ -77,6 +78,7 @@ public class MoveTemplateService {
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveRecordUpdateService moveRecordUpdateService;
+  protected MoveLineToolService moveLineToolService;
 
   protected List<String> exceptionsList;
 
@@ -94,8 +96,8 @@ public class MoveTemplateService {
       MoveTemplateRepository moveTemplateRepo,
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
-      MoveRecordUpdateService moveRecordUpdateService) {
-
+      MoveRecordUpdateService moveRecordUpdateService,
+      MoveLineToolService moveLineToolService) {
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
@@ -109,6 +111,7 @@ public class MoveTemplateService {
     this.moveLineTaxService = moveLineTaxService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveRecordUpdateService = moveRecordUpdateService;
+    this.moveLineToolService = moveLineToolService;
 
     this.exceptionsList = Lists.newArrayList();
   }
@@ -277,6 +280,8 @@ public class MoveTemplateService {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
 
+            moveLineToolService.setDecimals(moveLine, move);
+
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveRecordUpdateService.updateDueDate(move, false, false);
 
@@ -394,6 +399,7 @@ public class MoveTemplateService {
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveRecordUpdateService.updateDueDate(move, false, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+            moveLineToolService.setDecimals(moveLine, move);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);

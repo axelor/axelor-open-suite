@@ -196,6 +196,9 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_NOT_SAVED_RECORD = /*$$(*/
       "Can't generate draft sequence number on an unsaved record." /*)*/;
 
+  public static final String SEQUENCE_PATTERN_LENGTH_NOT_VALID = /*$$(*/
+      "The pattern length should be equal to padding ." /*)*/;
+
   public static final String SEQUENCE_LENGTH_NOT_VALID = /*$$(*/
       "Total sequence length must be less than 15 characters." /*)*/;
 
@@ -620,4 +623,6 @@ public final class BaseExceptionMessage {
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
+  public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
+      "An error occurred while generating the sequence. Please check the configuration." /*)*/;
 }

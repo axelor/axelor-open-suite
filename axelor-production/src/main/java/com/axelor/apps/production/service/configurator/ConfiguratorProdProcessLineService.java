@@ -21,7 +21,6 @@ package com.axelor.apps.production.service.configurator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ConfiguratorProdProcessLine;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.rpc.JsonContext;
 
 public interface ConfiguratorProdProcessLineService {
@@ -39,9 +38,5 @@ public interface ConfiguratorProdProcessLineService {
       ConfiguratorProdProcessLine confProdProcessLine,
       boolean isConsProOnOperation,
       JsonContext attributes)
-      throws AxelorException;
-
-  public void setWorkCenterGroup(
-      ConfiguratorProdProcessLine confProdProcessLine, WorkCenterGroup workCenterGroup)
       throws AxelorException;
 }

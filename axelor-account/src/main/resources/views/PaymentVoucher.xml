@@ -315,7 +315,7 @@
     <filter title="Customer payments with remaining">
       <domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
     </filter>
-    <filter title="Customer refunds">
+    <filter title="Customer credit notes">
       <domain>self.operationTypeSelect = 4</domain>
     </filter>
     <filter title="Supplier payments">

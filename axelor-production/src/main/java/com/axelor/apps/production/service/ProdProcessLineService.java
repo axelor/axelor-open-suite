@@ -22,13 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.WorkCenterGroup;
 import java.math.BigDecimal;
 
 public interface ProdProcessLineService {
-
-  public void setWorkCenterGroup(ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup)
-      throws AxelorException;
 
   /**
    * Compute the entire cycle duration of the prod process line with qty given.

@@ -1928,7 +1928,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
@@ -2272,7 +2272,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
