@@ -11,10 +11,11 @@
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="account.accountType" hidden="true"/>
         <field name="move.statusSelect" hidden="true"/>
+        <field name="move.invoice" hidden="true"/>
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel" title="Budget"
-          if="__config__.app.isApp('budget')"
+          if="__config__.app.isApp('budget')" readonlyIf="move.invoice"
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
@@ -31,11 +32,12 @@
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="account.accountType" hidden="true"/>
         <field name="move.statusSelect" hidden="true"/>
+        <field name="move.invoice" hidden="true"/>
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel"
-          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3" title="Budget"
-          onChange="action-method-move-line-budget-distribution-validate-amount"
+          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3 || move.invoice"
+          title="Budget" onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
           grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>

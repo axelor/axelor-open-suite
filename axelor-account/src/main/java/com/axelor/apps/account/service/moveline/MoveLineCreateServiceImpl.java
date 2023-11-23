@@ -482,42 +482,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 origin,
                 invoiceLine.getProductName());
 
-        List<AnalyticMoveLine> analyticMoveLineList =
-            CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-                ? new ArrayList<>()
-                : new ArrayList<>(moveLine.getAnalyticMoveLineList());
-        moveLine.clearAnalyticMoveLineList();
-
-        moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
-        if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
-          for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-            AnalyticMoveLine analyticMoveLine =
-                analyticMoveLineGenerateRealService.createFromForecast(
-                    invoiceAnalyticMoveLine, moveLine);
-            moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
-          }
-        } else {
-          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-        }
-
-        if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-          moveLine.setAnalyticMoveLineList(analyticMoveLineList);
-        }
-
-        analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
-
-        TaxLine taxLine = invoiceLine.getTaxLine();
-        if (taxLine != null) {
-          moveLine.setTaxLine(taxLine);
-          moveLine.setTaxRate(taxLine.getValue());
-          moveLine.setTaxCode(taxLine.getTax().getCode());
-        }
-
-        // Cut off
-        if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
-          moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
-          moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
-        }
+        moveLine = fillMoveLineWithInvoiceLine(moveLine, invoiceLine, move.getCompany());
 
         moveLines.add(moveLine);
       }
@@ -650,6 +615,52 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     return moveLines;
+  }
+
+  @Override
+  public MoveLine fillMoveLineWithInvoiceLine(
+      MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
+    if (moveLine == null || invoiceLine == null) {
+      return null;
+    }
+
+    List<AnalyticMoveLine> analyticMoveLineList =
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
+
+    moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        AnalyticMoveLine analyticMoveLine =
+            analyticMoveLineGenerateRealService.createFromForecast(
+                invoiceAnalyticMoveLine, moveLine);
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+    } else {
+      moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+    }
+
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
+
+    analyticLineService.setAnalyticAccount(moveLine, company);
+
+    TaxLine taxLine = invoiceLine.getTaxLine();
+    if (taxLine != null) {
+      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxRate(taxLine.getValue());
+      moveLine.setTaxCode(taxLine.getTax().getCode());
+    }
+
+    // Cut off
+    if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
+      moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
+    }
+    return moveLine;
   }
 
   protected List<MoveLine> addInvoiceTermMoveLines(
