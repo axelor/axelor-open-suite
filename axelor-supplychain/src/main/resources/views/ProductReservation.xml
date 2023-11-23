@@ -117,7 +117,7 @@
       <panel name="origin" colSpan="12" showIf="product !=null">
         <field name="originSaleOrderLine" colSpan="6" requiredIf="originManufOrder == null"
           domain="self.product.id = :product"/>
-        <field name="originManufOrder" colSpan="6" requiredIf="originManufOrder == null"
+        <field name="originManufOrder" colSpan="6" requiredIf="originSaleOrderLine == null"
           domain="self.product.id = :product"/>
       </panel>
     </panel>
