@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.test;
+package com.axelor.csv;
 
 import com.axelor.utils.file.CsvTool;
 import com.google.common.base.CaseFormat;
@@ -30,7 +30,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -39,12 +39,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class PrepareCsv {
+class PrepareCsv {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Test
-  public void prepareCsv() {
+  void prepareCsv() {
     String xmlDir = System.getProperty("xmlDir");
     String csvDir = System.getProperty("csvDir");
     List<String> ignoreType = Arrays.asList("one-to-one", "many-to-many", "one-to-many");

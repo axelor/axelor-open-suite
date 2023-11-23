@@ -16,56 +16,55 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.test;
+package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
-import com.axelor.apps.base.service.BankDetailsFullNameComputeServiceImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestBankDetailsFullNameComputeService {
+class TestBankDetailsFullNameComputeService {
 
-  protected BankDetailsFullNameComputeService bankDetailsFullNameComputeService;
+  private static BankDetailsFullNameComputeService bankDetailsFullNameComputeService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() {
     bankDetailsFullNameComputeService = new BankDetailsFullNameComputeServiceImpl();
   }
 
   @Test
-  public void testComputeEmptyFullName() {
+  void testComputeEmptyFullName() {
     BankDetails emptyBankDetails = new BankDetails();
 
     String result = bankDetailsFullNameComputeService.computeBankDetailsFullName(emptyBankDetails);
 
-    Assert.assertEquals("", result);
+    Assertions.assertEquals("", result);
   }
 
   @Test
-  public void testComputeFullnameMinimal() {
+  void testComputeFullnameMinimal() {
     Bank bank = createBank("CCCCFRPPXXX - BNP Paribas");
     BankDetails bankDetails = createBankDetails(bank, "FR7699333020961963437764029", "", "");
 
     String result = bankDetailsFullNameComputeService.computeBankDetailsFullName(bankDetails);
 
-    Assert.assertEquals("FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
+    Assertions.assertEquals("FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
   @Test
-  public void testComputeFullnameWithLabel() {
+  void testComputeFullnameWithLabel() {
     Bank bank = createBank("CCCCFRPPXXX - BNP Paribas");
     BankDetails bankDetails = createBankDetails(bank, "FR7699333020961963437764029", "Axelor", "");
 
     String result = bankDetailsFullNameComputeService.computeBankDetailsFullName(bankDetails);
 
-    Assert.assertEquals("Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
+    Assertions.assertEquals(
+        "Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
   @Test
-  public void testComputeFullnameWithCode() {
+  void testComputeFullnameWithCode() {
     BankDetails bankDetails3 = new BankDetails();
     Bank bank3 = createBank("CCCCFRPPXXX - BNP Paribas");
     bankDetails3.setBank(bank3);
@@ -74,11 +73,12 @@ public class TestBankDetailsFullNameComputeService {
 
     String result = bankDetailsFullNameComputeService.computeBankDetailsFullName(bankDetails3);
 
-    Assert.assertEquals("AXE - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
+    Assertions.assertEquals(
+        "AXE - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
   @Test
-  public void testComputeFullnameWithCodeAndLabel() {
+  void testComputeFullnameWithCodeAndLabel() {
 
     Bank bank = createBank("CCCCFRPPXXX - BNP Paribas");
     BankDetails bankDetails =
@@ -86,7 +86,7 @@ public class TestBankDetailsFullNameComputeService {
 
     String result = bankDetailsFullNameComputeService.computeBankDetailsFullName(bankDetails);
 
-    Assert.assertEquals(
+    Assertions.assertEquals(
         "AXE - Axelor - FR7699333020961963437764029 - CCCCFRPPXXX - BNP Paribas", result);
   }
 
