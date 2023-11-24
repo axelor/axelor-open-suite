@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="tour-grid" model="com.axelor.apps.crm.db.Tour" title="Tours">
+    <field name="name"/>
+    <field name="date"/>
+    <field name="salespersonUser"/>
+    <button name="viewItinerary" title="View itinerary" icon="fa-map" onClick=""/>
+    <button name="validate" title="Validate" icon="fa-check"
+      onClick="action-tour-method-set-validated"/>
+  </grid>
+
+  <form name="tour-form" title="Tour" model="com.axelor.apps.crm.db.Tour">
+    <panel name="mainPanel">
+      <field name="name" colSpan="4"/>
+      <field name="date" colSpan="4"/>
+      <field name="salespersonUser" colSpan="4"/>
+      <field name="tourLineList" colSpan="12" editable="true" canMove="true"
+        form-view="tour-line-form" grid-view="tour-line-grid"/>
+    </panel>
+
+    <panel sidebar="true" name="actionsPanel">
+      <button name="viewItinerary" title="View itinerary" icon="fa-map" onClick=""/>
+      <button name="validate" title="Validate" css="btn-success" icon="fa-check"
+        onClick="action-tour-method-set-validated"/>
+    </panel>
+  </form>
+
+  <action-method name="action-tour-method-set-validated">
+    <call class="com.axelor.apps.crm.web.TourController" method="setValidated"/>
+  </action-method>
+
+</object-views>

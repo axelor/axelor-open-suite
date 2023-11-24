@@ -56,6 +56,8 @@ import com.axelor.apps.crm.service.PartnerCrmService;
 import com.axelor.apps.crm.service.PartnerCrmServiceImpl;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
 import com.axelor.apps.crm.service.PartnerEmailDomainToolServiceImpl;
+import com.axelor.apps.crm.service.TourService;
+import com.axelor.apps.crm.service.TourServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.service.app.AppCrmServiceImpl;
 
@@ -82,5 +84,6 @@ public class CrmModule extends AxelorModule {
     bind(PartnerEmailDomainToolService.class).to(PartnerEmailDomainToolServiceImpl.class);
     bind(CrmActivityService.class).to(CrmActivityServiceImpl.class);
     bind(LeadDuplicateService.class).to(LeadDuplicateServiceImpl.class);
+    bind(TourService.class).to(TourServiceImpl.class);
   }
 }

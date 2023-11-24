@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="TourLine">
+
+    <integer name="tourLineOrder" title="Order" required="true"/>
+    <many-to-one name="tour" ref="com.axelor.apps.crm.db.Tour" title="Tour"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      required="true"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"
+      required="true"/>
+    <many-to-one name="event" ref="com.axelor.apps.crm.db.Event" title="Event"/>
+    <boolean name="validated" title="Validated" required="true"/>
+
+  </entity>
+
+</domain-models>

@@ -27,6 +27,7 @@
       SELECT ICAL_EVENT.start_date_time FROM ICAL_EVENT WHERE ICAL_EVENT.partner = id AND ICAL_EVENT.start_date_time > NOW() AND ICAL_EVENT.status_select = 1 ORDER BY ICAL_EVENT.start_date_time ASC LIMIT 1
       ]]>
     </datetime>
+    <datetime name="lastVisitDateT" title="Last visit date"/>
 
     <!-- Change title -->
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"

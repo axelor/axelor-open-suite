@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="tour-line-grid" title="Tour lines" model="com.axelor.apps.crm.db.TourLine"
+    canMove="true" editable="true" orderBy="tourLineOrder">
+    <field name="tourLineOrder"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="address"/>
+    <field name="validated"/>
+    <field name="event"/>
+    <field name="tour"/>
+  </grid>
+
+  <form name="tour-line-form" title="Tour line" model="com.axelor.apps.crm.db.TourLine">
+    <panel name="mainPanel">
+      <field name="tourLineOrder"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="address"/>
+      <field name="validated"/>
+      <field name="event"/>
+      <field name="tour"/>
+    </panel>
+  </form>
+
+</object-views>
