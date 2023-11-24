@@ -222,7 +222,8 @@
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
       <field name="toInvoice"/>
-      <field name="isKilometricLine"/>
+      <field name="isKilometricLine" widget="boolean-radio" x-true-text="Kilometric"
+        x-false-text="General"/>
     </panel>
 
     <panel name="classicPanel" title="Main" showIf="!isKilometricLine">

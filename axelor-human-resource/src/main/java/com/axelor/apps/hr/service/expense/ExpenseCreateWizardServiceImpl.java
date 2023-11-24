@@ -78,14 +78,22 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
             .findFirst()
             .orElse(0L);
     Long employeeId = getEmployeeId();
-    return "self.employee = " + employeeId + " AND self.currency.id = " + currencyId;
+    return "self.statusSelect = "
+        + ExpenseRepository.STATUS_DRAFT
+        + " AND self.employee = "
+        + employeeId
+        + " AND self.currency.id = "
+        + currencyId;
   }
 
   protected Long getEmployeeId() {
-    Long employeeId = null;
+    Long employeeId = 0L;
     User user = AuthUtils.getUser();
     if (user != null) {
-      employeeId = user.getEmployee().getId();
+      Employee employee = user.getEmployee();
+      if (employee != null) {
+        employeeId = employee.getId();
+      }
     }
     return employeeId;
   }
