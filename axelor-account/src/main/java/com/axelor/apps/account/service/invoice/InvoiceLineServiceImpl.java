@@ -730,7 +730,6 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     invoiceLineAttrsService.setInTaxPriceScale(invoice, attrsMap);
-    invoiceLineAttrsService.setDiscountAmountScale(invoice, attrsMap);
     invoiceLineAttrsService.setExTaxTotalScale(invoice, attrsMap);
     invoiceLineAttrsService.setInTaxTotalScale(invoice, attrsMap);
     invoiceLineAttrsService.setCompanyExTaxTotalScale(invoice, attrsMap);
