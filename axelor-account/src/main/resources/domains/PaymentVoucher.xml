@@ -19,7 +19,7 @@
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Company bank details"/>
     <date name="paymentDate" title="Payment date"/>
-    <decimal name="paidAmount" title="Amount paid"/>
+    <decimal name="paidAmount" title="Amount paid" precision="20" scale="3"/>
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User" title="User"
       readonly="true"/>
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
