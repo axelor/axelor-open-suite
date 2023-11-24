@@ -12,6 +12,10 @@
 
   <form model="com.axelor.apps.account.db.ImportFECType" title="Import FEC type"
     name="import-fec-type-form">
+    <toolbar>
+      <button name="reloadStandardBindingFileBtn" title="Reload standard binding file"
+        onClick="save,action-import-fec-type-view-default-file-wizard"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="name"/>
       <field name="bindMetaFile" widget="binary-link"/>
@@ -20,5 +24,28 @@
     </panel>
   </form>
 
+  <form name="reload-binding-file-wizard-form" model="com.axelor.utils.db.Wizard"
+    title="Reload standard binding file">
+    <panel name="mainPanel">
+      <field name="$bindingFileName" title="Binding file name" type="string"
+        selection="account.import.fec.type.select"/>
+      <button name="confirmBtn" title="Confirm" readonlyIf="!$bindingFileName"
+        onClick="action-wizard-method-set-standard-binding-file,close"/>
+    </panel>
+  </form>
 
+  <action-view name="action-import-fec-type-view-default-file-wizard"
+    model="com.axelor.utils.db.Wizard" title="Reload standard binding file">
+    <view type="form" name="reload-binding-file-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_fecTypeId" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-wizard-method-set-standard-binding-file">
+    <call method="setStandardBindingfile"
+      class="com.axelor.apps.account.web.ImportFECTypeController"/>
+  </action-method>
 </object-views>

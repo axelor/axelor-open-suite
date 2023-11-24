@@ -178,7 +178,7 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  public static final String BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND = /*$$(*/
+  public static final String FILE_NOT_FOUND_IN_STANDARD_APPLICATION = /*$$(*/
       "%s was not found in the standard application." /*)*/;
 
   /** Tax service */
