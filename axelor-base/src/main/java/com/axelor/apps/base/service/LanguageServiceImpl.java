@@ -1,7 +1,6 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Language;
-import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.meta.db.MetaSelect;
@@ -10,12 +9,10 @@ import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.util.List;
 
 public class LanguageServiceImpl implements LanguageService {
   protected MetaSelectRepository metaSelectRepository;
   protected MetaSelectItemRepository metaSelectItemRepository;
-  protected LanguageRepository languageRepository;
 
   private static final String SELECT_NAME = "select.language";
   private static final String NATIVE_SELECT_LANGUAGE_MODULE = "axelor-core";
@@ -24,11 +21,9 @@ public class LanguageServiceImpl implements LanguageService {
   @Inject
   public LanguageServiceImpl(
       MetaSelectRepository metaSelectRepository,
-      MetaSelectItemRepository metaSelectItemRepository,
-      LanguageRepository languageRepository) {
+      MetaSelectItemRepository metaSelectItemRepository) {
     this.metaSelectRepository = metaSelectRepository;
     this.metaSelectItemRepository = metaSelectItemRepository;
-    this.languageRepository = languageRepository;
   }
 
   /**
@@ -44,35 +39,34 @@ public class LanguageServiceImpl implements LanguageService {
   @Override
   public void saveLanguageToMetaSelect(
       Language language, String oldName, String oldCode, boolean isNew) {
-    // find the overridden metaSelect object in axelor-base module
-    Query<MetaSelect> metaSelectQuery =
-        metaSelectRepository
-            .all()
-            .filter("self.name = :selectName and self.module = :newModuleName");
-    metaSelectQuery
-        .bind("selectName", SELECT_NAME)
-        .bind("newModuleName", NEW_SELECT_LANGUAGE_MODULE);
-    MetaSelect metaSelect = metaSelectQuery.fetchOne();
-    if (metaSelect == null) {
-      // A new MetaSelect should be created.
-      metaSelect = copyMetaSelect();
-      if (metaSelect == null) return;
-    }
+    MetaSelect metaSelect;
     MetaSelectItem metaSelectItem;
     if (!isNew) {
       metaSelectItem = findMetaSelectItem(oldName, oldCode);
       if (metaSelectItem == null) return;
       metaSelectItem.setTitle(language.getName());
       metaSelectItem.setValue(language.getCode());
+      metaSelectItemRepository.save(metaSelectItem);
     } else {
       // new metaSelectItem
+      Query<MetaSelect> metaSelectQuery =
+          metaSelectRepository
+              .all()
+              .filter("self.name = :selectName and self.module = :newModuleName");
+      metaSelectQuery
+          .bind("selectName", SELECT_NAME)
+          .bind("newModuleName", NEW_SELECT_LANGUAGE_MODULE);
+      metaSelect = metaSelectQuery.fetchOne();
+      if (metaSelect == null) {
+        metaSelect = copyMetaSelect();
+      }
       metaSelectItem = new MetaSelectItem();
       metaSelectItem.setOrder((int) getCountMetaSelectItemFromQuery());
       metaSelectItem.setTitle(language.getName());
       metaSelectItem.setValue(language.getCode());
       metaSelect.addItem(metaSelectItem);
+      metaSelectRepository.save(metaSelect);
     }
-    metaSelectRepository.save(metaSelect);
   }
 
   /**
@@ -102,12 +96,8 @@ public class LanguageServiceImpl implements LanguageService {
    */
   public long getCountMetaSelectItemFromQuery() {
     Query<MetaSelectItem> metaSelectItemQuery =
-        metaSelectItemRepository
-            .all()
-            .filter("self.select.name = :selectName and self.select.module = :moduleName");
-    metaSelectItemQuery
-        .bind("selectName", SELECT_NAME)
-        .bind("moduleName", NEW_SELECT_LANGUAGE_MODULE);
+        metaSelectItemRepository.all().filter("self.select.name = :selectName");
+    metaSelectItemQuery.bind("selectName", SELECT_NAME);
     return metaSelectItemQuery.count();
   }
 
@@ -151,8 +141,7 @@ public class LanguageServiceImpl implements LanguageService {
    * MetaSelectItems from the original MetaSelect to the new MetaSelect.
    */
   @Transactional
-  @Override
-  public MetaSelect copyMetaSelect() {
+  protected MetaSelect copyMetaSelect() {
     // fetch the native MetaSelect
     Query<MetaSelect> metaSelectQuery =
         metaSelectRepository
@@ -164,9 +153,7 @@ public class LanguageServiceImpl implements LanguageService {
     MetaSelect nativeMetaSelect = metaSelectQuery.fetchOne();
     if (nativeMetaSelect == null) return null;
     MetaSelect overriddenMetaSelect = getOverriddenMetaSelectFromNativeMetaSelect(nativeMetaSelect);
-    System.out.println("overriddenMetaSelect:" + overriddenMetaSelect);
-    metaSelectRepository.save(overriddenMetaSelect);
-    return overriddenMetaSelect;
+    return metaSelectRepository.save(overriddenMetaSelect);
   }
 
   /**
@@ -175,23 +162,22 @@ public class LanguageServiceImpl implements LanguageService {
    * @param nativeMetaSelect
    * @return overriddenMetaSelect
    */
-  private MetaSelect getOverriddenMetaSelectFromNativeMetaSelect(MetaSelect nativeMetaSelect) {
+  protected MetaSelect getOverriddenMetaSelectFromNativeMetaSelect(MetaSelect nativeMetaSelect) {
     MetaSelect overriddenMetaSelect = new MetaSelect();
     Integer oldPriority = nativeMetaSelect.getPriority();
     overriddenMetaSelect.setName(SELECT_NAME);
     overriddenMetaSelect.setModule(NEW_SELECT_LANGUAGE_MODULE);
     overriddenMetaSelect.setPriority(oldPriority + 1);
 
-    List<MetaSelectItem> nativeMetaSelectItemList = nativeMetaSelect.getItems();
-    MetaSelectItem newMetaSelectItem;
-    for (MetaSelectItem nativeMetaSelectItem : nativeMetaSelectItemList) {
-      newMetaSelectItem = new MetaSelectItem();
-      newMetaSelectItem.setTitle(nativeMetaSelectItem.getTitle());
-      newMetaSelectItem.setValue(nativeMetaSelectItem.getValue());
-      newMetaSelectItem.setOrder(nativeMetaSelectItem.getOrder());
-      overriddenMetaSelect.addItem(newMetaSelectItem);
-      System.out.println(overriddenMetaSelect);
-    }
+    //        List<MetaSelectItem> nativeMetaSelectItemList = nativeMetaSelect.getItems();
+    //        MetaSelectItem newMetaSelectItem;
+    //        for (MetaSelectItem nativeMetaSelectItem : nativeMetaSelectItemList) {
+    //            newMetaSelectItem = new MetaSelectItem();
+    //            newMetaSelectItem.setTitle(nativeMetaSelectItem.getTitle());
+    //            newMetaSelectItem.setValue(nativeMetaSelectItem.getValue());
+    //            newMetaSelectItem.setOrder(nativeMetaSelectItem.getOrder());
+    //            overriddenMetaSelect.addItem(newMetaSelectItem);
+    //        }
     return overriddenMetaSelect;
   }
 }
