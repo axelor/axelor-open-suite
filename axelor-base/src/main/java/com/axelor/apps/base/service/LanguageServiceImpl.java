@@ -115,6 +115,10 @@ public class LanguageServiceImpl implements LanguageService {
     metaSelectItemRepository.remove(metaSelectItem);
   }
 
+  /**
+   * Before remove an MetaSelectItem, we have to update other records' order_seq field.
+   * @param orderNumber
+   */
   @Transactional
   public void updateOrderNumber(int orderNumber) {
     javax.persistence.Query query =
@@ -168,16 +172,6 @@ public class LanguageServiceImpl implements LanguageService {
     overriddenMetaSelect.setName(SELECT_NAME);
     overriddenMetaSelect.setModule(NEW_SELECT_LANGUAGE_MODULE);
     overriddenMetaSelect.setPriority(oldPriority + 1);
-
-    //        List<MetaSelectItem> nativeMetaSelectItemList = nativeMetaSelect.getItems();
-    //        MetaSelectItem newMetaSelectItem;
-    //        for (MetaSelectItem nativeMetaSelectItem : nativeMetaSelectItemList) {
-    //            newMetaSelectItem = new MetaSelectItem();
-    //            newMetaSelectItem.setTitle(nativeMetaSelectItem.getTitle());
-    //            newMetaSelectItem.setValue(nativeMetaSelectItem.getValue());
-    //            newMetaSelectItem.setOrder(nativeMetaSelectItem.getOrder());
-    //            overriddenMetaSelect.addItem(newMetaSelectItem);
-    //        }
     return overriddenMetaSelect;
   }
 }
