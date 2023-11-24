@@ -36,11 +36,10 @@
     <panel name="mainPanel" readonlyIf="statusSelect != 0">
       <field name="typeSelect" showIf="id" colSpan="12"/>
       <field name="amount" onChange="action-invoice-payment-group-change-amounts"
-        x-scale="currency.numberOfDecimals"/>
+        x-scale="$currencyScale"/>
       <field name="currency" canEdit="false" readonlyIf="$isMultiCurrency"
         form-view="currency-form" grid-view="currency-grid"
         onChange="action-invoice-payment-group-change-amounts"/>
-      <field name="currency.numberOfDecimals" hidden="true"/>
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
@@ -62,23 +61,24 @@
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
+      <field name="$currencyScale" hidden="true"/>
     </panel>
     <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
       <field name="applyFinancialDiscount" readonly="true"/>
       <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
         showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
-        readonly="true" x-scale="currency.numberOfDecimals"/>
+        readonly="true" x-scale="$currencyScale"/>
       <panel name="financialDiscountAmountPanel"
         showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
         <field name="financialDiscount"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"
-          x-scale="currency.numberOfDecimals"/>
+          x-scale="$currencyScale"/>
         <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"
-          x-scale="currency.numberOfDecimals"/>
+          x-scale="$currencyScale"/>
         <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"
-          x-scale="currency.numberOfDecimals"/>
+          x-scale="$currencyScale"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel" showIf="id">
@@ -149,12 +149,15 @@
     <action name="action-invoice-payment-method-filter-payment-mode"/>
     <action name="action-invoice-payment-method-load-invoice-terms"/>
     <action name="action-invoice-payment-method-change-amount"/>
+    <action name="action-invoice-payment-attrs-currency-scale"/>
     <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-change-amounts">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-method-change-amount"/>
+    <action name="action-invoice-payment-method-change-amount"/>
+    <action name="action-invoice-payment-attrs-currency-scale"/>
     <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
@@ -205,6 +208,10 @@
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
     <attribute for="currency" name="readonly"
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-payment-attrs-currency-scale">
+    <attribute name="value" for="$currencyScale" expr="eval: currency.numberOfDecimals"/>
   </action-attrs>
 
   <action-method name="action-invoice-payment-method-filter-payment-mode">
