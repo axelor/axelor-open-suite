@@ -111,6 +111,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public ReconcileServiceImpl(
@@ -135,7 +136,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       SubrogationReleaseWorkflowService subrogationReleaseWorkflowService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -159,6 +161,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -191,7 +194,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+              currencyScaleServiceAccount.getCompanyScaledValue(debitMoveLine, amount),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
@@ -576,7 +579,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
-    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    total = currencyScaleServiceAccount.getScaledValue(moveLine, total);
 
     if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
         && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {

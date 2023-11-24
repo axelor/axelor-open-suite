@@ -162,6 +162,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
           Budget budget = null;
           for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
             budget = budgetDistribution.getBudget();
+            // TODO ADD FIX FOR INVOICE PAYEMENT BUGDET
             budget.setTotalAmountPaid(
                 budget
                     .getTotalAmountPaid()
