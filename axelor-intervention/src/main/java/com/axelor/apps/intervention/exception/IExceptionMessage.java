@@ -19,6 +19,8 @@ package com.axelor.apps.intervention.exception;
 
 public interface IExceptionMessage {
 
+  String EQUIPMENT_MODEL_REMOVE_NOT_ALLOWED = /*$$(*/
+      "Impossible to remove equipment model that has children's equipment models" /*)*/;
   String EQUIPMENT_REMOVE_NO_ALLOWED = /*$$(*/
       "Impossible to remove equipment that has children's equipment" /*)*/;
 }

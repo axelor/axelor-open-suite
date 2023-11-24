@@ -46,11 +46,6 @@
       <field colSpan="4" name="$_xCustomerWarrantyOnPartEndDate"
         title="Customer warranty on part end date" type="date"/>
 
-      <field name="$_xEquipmentModelList" grid-view="test" type="one-to-many" title="Equipments" colSpan="12"
-             target="com.axelor.apps.intervention.db.EquipmentModel" canRemove="false" canNew="false" canSelect="false" >
-
-      </field>
-
       <field name="$_xEquipmentModelList" type="one-to-many" title="Equipments" colSpan="12"
         target="com.axelor.apps.intervention.db.EquipmentModel" canRemove="false" canNew="false">
         <editor x-show-titles="false" x-viewer="true">
@@ -68,15 +63,6 @@
         readonlyIf="$_xParkModel == null || $_xPartner == null" title="Confirm"/>
     </panel>
   </form>
-
-  <grid title="TEst" name="test" model="com.axelor.apps.intervention.db.EquipmentModel" editable="true" edit-icon="false">
-    <field name="code" readonly="true"/>
-    <field name="name" readonly="true"/>
-    <field name="$qtyToGenerate" type="integer" title="Qty"
-           />
-    <field name="updatableQuantities" hidden="true"/>
-    <field name="id" type="long" hidden="true"/>
-  </grid>
 
   <action-view model="com.axelor.utils.db.Wizard"
     name="action-park-model-show-confirmation" title="Confirm">

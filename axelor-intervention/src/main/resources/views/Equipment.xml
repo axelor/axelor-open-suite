@@ -38,7 +38,7 @@
         onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
       <field name="$name" colSpan="4" title="Name" type="string"
         onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
-      <field name="$type" colSpan="4" title="Type" type="integer"
+      <field name="$type" colSpan="4" title="Type" type="string"
         selection="equipment.type.select" widget="single-select"
         onChange="action-equipment-attrs-equipment-tree-partner-filter-refresh-dashlet"/>
       <field name="$indicator" colSpan="4" title="Indicator" type="integer"
@@ -210,10 +210,6 @@
   </action-method>
 
   <action-attrs name="action-equipment-attrs-parent-equipment-on-change">
-    <attribute for="authorisationSelect" name="value"
-      expr="eval: parentEquipment?.authorisationSelect != null ?
-                parentEquipment?.authorisationSelect :
-                partner?.securityClassificationSelect"/>
     <attribute for="partner" name="value" expr="eval: parentEquipment?.partner"
       if="parentEquipment"/>
   </action-attrs>

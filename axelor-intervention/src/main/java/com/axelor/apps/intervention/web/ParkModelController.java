@@ -90,15 +90,15 @@ public class ParkModelController {
         return;
       }
 
-      ParkModel parkModel = MapHelper.get(request.getContext(), ParkModel.class, "$_xParkModel");
-      Partner partner = MapHelper.get(request.getContext(), Partner.class, "$_xPartner");
-      Contract contract = MapHelper.get(request.getContext(), Contract.class, "$_xContract");
+      ParkModel parkModel = MapHelper.get(request.getContext(), ParkModel.class, "_xParkModel");
+      Partner partner = MapHelper.get(request.getContext(), Partner.class, "_xPartner");
+      Contract contract = MapHelper.get(request.getContext(), Contract.class, "_xContract");
       LocalDate commissioningDate =
-          MapHelper.get(request.getContext(), LocalDate.class, "$_xCommissioningDate");
+          MapHelper.get(request.getContext(), LocalDate.class, "_xCommissioningDate");
       LocalDate customerWarrantyOnPartEndDate =
-          MapHelper.get(request.getContext(), LocalDate.class, "$_xCustomerWarrantyOnPartEndDate");
+          MapHelper.get(request.getContext(), LocalDate.class, "_xCustomerWarrantyOnPartEndDate");
       LocalDate customerMoWarrantyEndDate =
-          MapHelper.get(request.getContext(), LocalDate.class, "$_xCustomerMoWarrantyEndDate");
+          MapHelper.get(request.getContext(), LocalDate.class, "_xCustomerMoWarrantyEndDate");
 
       List<Map<String, Object>> equipmentModels =
           (List<Map<String, Object>>) request.getContext().get("_xEquipmentModelList");
@@ -111,17 +111,16 @@ public class ParkModelController {
             MapHelper.get(equipmentModel, Integer.class, "$qtyToGenerate"));
       }
 
-      /*List<Long> ids =
-      Beans.get(ParkModelService.class)
+      List<Long> ids =
+          Beans.get(ParkModelService.class)
               .generateEquipments(
-                      parkModel,
-                      partner,
-                      commissioningDate,
-                      customerWarrantyOnPartEndDate,
-                      customerMoWarrantyEndDate,
-                      contract,
-                      quantitiesMap);*/
-      List<Long> ids = null;
+                  parkModel,
+                  partner,
+                  commissioningDate,
+                  customerWarrantyOnPartEndDate,
+                  customerMoWarrantyEndDate,
+                  contract,
+                  quantitiesMap);
 
       response.setCanClose(true);
       if (CollectionUtils.isEmpty(ids)) {

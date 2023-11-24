@@ -74,7 +74,7 @@ public class ArticleEquipmentController {
     try {
       List<ArticleEquipment> articleEquipmentList =
           MapHelper.getSelectedObjects(ArticleEquipment.class, request.getContext());
-      Equipment equipment = MapHelper.get(request.getContext(), Equipment.class, "$_xEquipment");
+      Equipment equipment = MapHelper.get(request.getContext(), Equipment.class, "_xEquipment");
 
       if (CollectionUtils.isNotEmpty(articleEquipmentList)) {
         if (articleEquipmentList.stream()

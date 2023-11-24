@@ -51,6 +51,27 @@
     </panel>
   </form>
 
+  <form title="Change equipment" name="article-equipments-change-equipment-form"
+    model="com.axelor.utils.db.Wizard"
+    onNew="action-article-equipment-change-equipment-attrs-default">
+    <panel>
+      <field name="$_xEquipment" title="Equipment" type="many-to-one"
+        target="com.axelor.apps.intervention.db.Equipment" required="true"
+        domain="self.typeSelect = 'equipment' AND self.partner = :_xPartner"
+        grid-view="equipment-grid" form-view="equipment-form"/>
+      <button name="changeEquipmentBtn" title="Change equipment"
+        onClick="action-article-equipment-change-equipment"/>
+    </panel>
+    <panel hidden="true">
+      <field name="$_xPartner" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-article-equipment-change-equipment-attrs-default">
+    <attribute for="$_xPartner" name="value"
+      expr="eval: _ctxPartnerId == null ? null : __repo__(Partner).find(_ctxPartnerId)"/>
+  </action-attrs>
+
   <action-method name="action-article-equipment-change-equipment">
     <call class="com.axelor.apps.intervention.web.ArticleEquipmentController"
       method="changeEquipment"/>
