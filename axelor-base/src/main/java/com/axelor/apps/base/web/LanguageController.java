@@ -9,8 +9,6 @@ public class LanguageController {
     Language language = request.getContext().asType(Language.class);
     if (language.getCode() != null) {
       response.setValue("code", language.getCode().toLowerCase());
-    } else {
-      response.setError("The Code field must not be empty!");
     }
   }
 }

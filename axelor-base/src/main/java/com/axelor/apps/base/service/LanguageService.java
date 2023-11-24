@@ -1,6 +1,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Language;
+import com.axelor.meta.db.MetaSelect;
 
 public interface LanguageService {
   /**
@@ -21,4 +22,6 @@ public interface LanguageService {
    * @param language
    */
   public void removeLanguageLinkedMetaSelectItem(Language language);
+
+  public MetaSelect copyMetaSelect();
 }
