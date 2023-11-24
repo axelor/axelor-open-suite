@@ -12,7 +12,7 @@
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-purchase-order-view-open-merge-form"/>
+          action="action-purchase-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -1025,5 +1025,11 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
+
+  <action-method
+    name="action-purchase-order-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
+      method="convertSelectedLinesToMergeLines"/>
+  </action-method>
 
 </object-views>
