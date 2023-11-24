@@ -7,8 +7,6 @@ public interface InvoiceLineAttrsService {
 
   void setInTaxPriceScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
 
-  void setDiscountAmountScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
-
   void setExTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
 
   void setInTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
