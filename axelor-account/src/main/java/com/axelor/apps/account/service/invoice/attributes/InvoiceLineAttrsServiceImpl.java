@@ -30,12 +30,6 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
   }
 
   @Override
-  public void setDiscountAmountScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr(
-        "discountAmount", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
-  }
-
-  @Override
   public void setExTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("exTaxTotal", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
   }
