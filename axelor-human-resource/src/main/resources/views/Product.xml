@@ -74,12 +74,6 @@
       <panel name="trackingNumberPanel" title="Tracking number"
         showIf="productTypeSelect != 'service'" showTitle="false" if-module="axelor-stock"
         if="__config__.app.isApp('stock')">
-        <panel colSpan="12" name="warantyDetailsPanel">
-          <field name="hasWarranty"/>
-          <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
-          <field name="isPerishable"/>
-          <field name="perishableNbrOfMonths" showIf="isPerishable"/>
-        </panel>
         <panel name="trackingNumberConfigPanel" colSpan="12">
           <field name="trackingNumberConfiguration" canNew="true"
             grid-view="tracking-number-configuration-grid"
@@ -267,10 +261,6 @@
 
   <search-filters name="product-expense-filters"
     model="com.axelor.apps.base.db.Product" title="Product expense filters">
-    <field name="hasWarranty" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="warrantyNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="isPerishable" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <field name="perishableNbrOfMonths" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="trackingNumberConfiguration" hidden="true"
       if="!__config__.app.isApp('stock')"/>
     <field name="isAnalyticCapture" hidden="true" if="!__config__.app.isApp('account')"/>

@@ -63,12 +63,6 @@
     <date name="startDate" title="Product launch Date" initParam="true"/>
     <date name="endDate" title="Product pulled off market Date" initParam="true"/>
 
-    <boolean name="hasWarranty" title="Warranty"/>
-    <boolean name="isPerishable" title="Perishable"/>
-    <integer name="warrantyNbrOfMonths" title="Warranty length (in months)"/>
-    <integer name="perishableNbrOfMonths" title="Time before expiry (in months)"/>
-    <boolean name="checkExpirationDateAtStockMoveRealization"/>
-
     <many-to-one name="productVariantConfig"
       ref="com.axelor.apps.base.db.ProductVariantConfig"/>
     <many-to-one name="productVariant" ref="com.axelor.apps.base.db.ProductVariant"/>
@@ -194,10 +188,6 @@
       <field name="costPrice"/>
       <field name="managPriceCoef"/>
       <field name="costTypeSelect"/>
-      <field name="hasWarranty"/>
-      <field name="warrantyNbrOfMonths"/>
-      <field name="isPerishable"/>
-      <field name="perishableNbrOfMonths"/>
       <message if="true" on="UPDATE">Product updated</message>
     </track>
   </entity>

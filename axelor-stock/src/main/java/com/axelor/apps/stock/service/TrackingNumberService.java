@@ -102,21 +102,28 @@ public class TrackingNumberService {
 
     TrackingNumber trackingNumber = new TrackingNumber();
 
-    if (product.getIsPerishable()) {
-      trackingNumber.setPerishableExpirationDate(
-          date.plusMonths(product.getPerishableNbrOfMonths()));
-    }
-    if (product.getHasWarranty()) {
-      trackingNumber.setWarrantyExpirationDate(date.plusMonths(product.getWarrantyNbrOfMonths()));
-    }
-
     trackingNumber.setProduct(product);
     trackingNumber.setCounter(BigDecimal.ZERO);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
         product.getTrackingNumberConfiguration();
+    boolean isPerishable = trackingNumberConfiguration.getIsPerishable();
+    trackingNumber.setIsPerishable(isPerishable);
+    if (isPerishable) {
+      trackingNumber.setPerishableExpirationDate(
+          date.plusDays(trackingNumberConfiguration.getPerishableNbrOfDays()));
+    }
+    boolean hasWarranty = trackingNumberConfiguration.getHasWarranty();
+    trackingNumber.setHasWarranty(hasWarranty);
+    if (hasWarranty) {
+      trackingNumber.setWarrantyExpirationDate(
+          date.plusMonths(trackingNumberConfiguration.getWarrantyNbrOfMonths()));
+    }
+    trackingNumber.setCheckExpirationDateAtStockMoveRealization(
+        trackingNumberConfiguration.getCheckExpirationDateAtStockMoveRealization());
 
-    if (trackingNumberConfiguration.getSequence() == null) {
+    Sequence sequence = trackingNumberConfiguration.getSequence();
+    if (sequence == null) {
       throw new AxelorException(
           product,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -125,7 +132,6 @@ public class TrackingNumberService {
           product.getCode());
     }
 
-    Sequence sequence = trackingNumberConfiguration.getSequence();
     String seq;
     while (true) {
       seq = sequenceService.getSequenceNumber(sequence, TrackingNumber.class, "trackingNumberSeq");
