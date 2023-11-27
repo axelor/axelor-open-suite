@@ -396,7 +396,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           inTaxTotal.divide(
               taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
               currencyScale,
-              BigDecimal.ROUND_HALF_UP);
+              RoundingMode.HALF_UP);
     }
 
     companyExTaxTotal = this.getCompanyExTaxTotal(exTaxTotal, invoice);
@@ -729,9 +729,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   public Map<String, Map<String, Object>> setScale(InvoiceLine invoiceLine, Invoice invoice) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    invoiceLineAttrsService.setInTaxPriceScale(invoice, attrsMap);
-    invoiceLineAttrsService.setExTaxTotalScale(invoice, attrsMap);
-    invoiceLineAttrsService.setInTaxTotalScale(invoice, attrsMap);
+    invoiceLineAttrsService.setInTaxPriceScale(invoice, attrsMap, null);
+    invoiceLineAttrsService.setExTaxTotalScale(invoice, attrsMap, null);
+    invoiceLineAttrsService.setInTaxTotalScale(invoice, attrsMap, null);
     invoiceLineAttrsService.setCompanyExTaxTotalScale(invoice, attrsMap);
     invoiceLineAttrsService.setCompanyInTaxTotalScale(invoice, attrsMap);
 

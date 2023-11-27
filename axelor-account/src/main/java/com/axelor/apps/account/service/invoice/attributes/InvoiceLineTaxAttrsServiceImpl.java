@@ -6,12 +6,12 @@ import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
+public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsService {
 
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
-  public InvoiceLineAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+  public InvoiceLineTaxAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
@@ -25,20 +25,20 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
   }
 
   @Override
-  public void setInTaxPriceScale(
+  public void setExTaxBaseScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        this.computeField("inTaxPrice", prefix),
+        this.computeField("exTaxBase", prefix),
         "scale",
         currencyScaleServiceAccount.getScale(invoice),
         attrsMap);
   }
 
   @Override
-  public void setExTaxTotalScale(
+  public void setTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        this.computeField("exTaxTotal", prefix),
+        this.computeField("taxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getScale(invoice),
         attrsMap);
@@ -51,26 +51,6 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
         this.computeField("inTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getScale(invoice),
-        attrsMap);
-  }
-
-  @Override
-  public void setCompanyExTaxTotalScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr(
-        "companyExTaxTotal",
-        "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
-        attrsMap);
-  }
-
-  @Override
-  public void setCompanyInTaxTotalScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr(
-        "companyInTaxTotal",
-        "scale",
-        currencyScaleServiceAccount.getCompanyScale(invoice),
         attrsMap);
   }
 

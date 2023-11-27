@@ -155,22 +155,30 @@ import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
-import com.axelor.apps.account.service.invoice.attributes.InvoiceAttrsService;
-import com.axelor.apps.account.service.invoice.attributes.InvoiceAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsServiceImpl;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsService;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineTaxAttrsServiceImpl;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttrsService;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceTermPaymentAttrsServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
@@ -713,8 +721,16 @@ public class AccountModule extends AxelorModule {
 
     bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 
-    bind(InvoiceAttrsService.class).to(InvoiceAttrsServiceImpl.class);
-
     bind(InvoiceLineAttrsService.class).to(InvoiceLineAttrsServiceImpl.class);
+
+    bind(InvoiceLineTaxAttrsService.class).to(InvoiceLineTaxAttrsServiceImpl.class);
+
+    bind(InvoiceLineGroupService.class).to(InvoiceLineGroupServiceImpl.class);
+
+    bind(InvoiceLineTaxGroupService.class).to(InvoiceLineTaxGroupServiceImpl.class);
+
+    bind(InvoiceTermPaymentGroupService.class).to(InvoiceTermPaymentGroupServiceImpl.class);
+
+    bind(InvoiceTermPaymentAttrsService.class).to(InvoiceTermPaymentAttrsServiceImpl.class);
   }
 }
