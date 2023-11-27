@@ -123,13 +123,23 @@
 
   <action-group name="action-group-budget-purchase-order-request-onclick">
     <action name="save"/>
-    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"
+    <action name="action-purchase-order-method-budget-auto-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+    <action name="action-purchase-order-method-budget-validate-request"
       if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
+
+  <action-method
+    name="action-purchase-order-method-budget-auto-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="autoComputeBudgetDistribution"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-budget-validate-request">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="validateRequest"/>
+  </action-method>
 
   <action-record name="action-budget-purchase-order-record-get-budget-balance"
     model="com.axelor.apps.purchase.db.PurchaseOrder">

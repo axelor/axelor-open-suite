@@ -47,6 +47,10 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
   @Transactional(rollbackOn = {Exception.class})
   public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
     bankStatementFileAFB120Service.process(bankStatement);
+
+    // The process from bankStatementFileAFB120Service clears the JPA cache, so we need to find the
+    // bank statement.
+    bankStatement = bankStatementRepository.find(bankStatement.getId());
     checkImport(bankStatement);
     updateBankDetailsBalance(bankStatement);
     setBankStatementImported(bankStatement);

@@ -58,7 +58,11 @@ public class PaymentSessionAccountRepository extends PaymentSessionRepository {
     Company company = paymentSession.getCompany();
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PAYMENT_SESSION, company, PaymentSession.class, "sequence");
+            SequenceRepository.PAYMENT_SESSION,
+            company,
+            PaymentSession.class,
+            "sequence",
+            paymentSession);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -68,6 +68,9 @@
       <button name="supplyChainConfigBtn" title="Supply Chain config" width="100%"
         colSpan="6" onClick="action-company-view-supply-chain-config" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
+      <button name="qualityConfigBtn" title="Quality config" width="100%" colSpan="6"
+        onClick="action-company-view-quality-config" if-module="axelor-quality"
+        if="__config__.app.isApp('quality')"/>
     </panel>
 
     <panel name="notesPanel" title="Notes" showIf="$popup()" readonly="true">

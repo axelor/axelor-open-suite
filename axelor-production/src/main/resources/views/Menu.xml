@@ -170,6 +170,16 @@
     <context name="_isOutsourcingLoc" expr="eval:true"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-outsourcing-purchase-orders"
+    title="Outsourcing purchase orders" parent="manufacturing-root-outsourcing"
+    action="manufacturing.root.outsourcing.purchase.orders" order="400"/>
+
+  <action-view name="manufacturing.root.outsourcing.purchase.orders"
+    title="Outsourcing purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.outsourcingOrder = true</domain>
+  </action-view>
 
   <menuitem name="manufacturing-root-charge-by-machine-dashboard"
     parent="manufacturing-root" title="Charge by machine"

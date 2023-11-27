@@ -436,10 +436,10 @@
           showTitle="false">
           <viewer><![CDATA[
 						<>
-							<dl>
-								<dt>{_t('Total W.T.')}</dt>
-								<dd>{$fmt('exTaxTotal')}</dd>
-							</dl>
+							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+							</Box>
 						</>
 	                    ]]>
           </viewer>
@@ -510,10 +510,10 @@
             <viewer>
                           <![CDATA[
 							<>
-								<dl>
-									<dt>{_t('Total W.T.')}</dt>
-									<dd>{$fmt('exTaxTotal')}</dd>
-								</dl>
+								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								</Box>
 							</>
                           ]]>
             </viewer>
@@ -553,10 +553,10 @@
             showTitle="false">
             <viewer><![CDATA[
 							<>
-								<dl>
-									<dt>{_t('Total W.T.')}</dt>
-									<dd>{$fmt('exTaxTotal')}</dd>
-								</dl>
+								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								</Box>
 							</>
                           ]]>
             </viewer>
@@ -590,7 +590,7 @@
 
         <panel itemSpan="3">
           <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"
-            canEdit="false"/>
+            canEdit="false" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
           <field name="trackingNumber"/>
           <field name="modeOfTransport"/>
           <field name="deliveryCondition" height="3"

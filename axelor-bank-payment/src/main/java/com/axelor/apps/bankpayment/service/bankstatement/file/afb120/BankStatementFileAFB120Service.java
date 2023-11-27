@@ -113,6 +113,7 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     }
 
     JPA.clear();
+    findBankStatement();
   }
 
   @Transactional

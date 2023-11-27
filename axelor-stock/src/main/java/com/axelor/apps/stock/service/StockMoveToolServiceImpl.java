@@ -92,11 +92,13 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
    *
    * @param stockMoveType Type de mouvement de stock
    * @param company la société
+   * @param stockMove
    * @return la chaine contenant la séquence du StockMove
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
   @Override
-  public String getSequenceStockMove(int stockMoveType, Company company) throws AxelorException {
+  public String getSequenceStockMove(int stockMoveType, Company company, StockMove stockMove)
+      throws AxelorException {
 
     String ref = "";
 
@@ -104,7 +106,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       case StockMoveRepository.TYPE_INTERNAL:
         ref =
             sequenceService.getSequenceNumber(
-                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq");
+                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq", stockMove);
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -116,7 +118,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       case StockMoveRepository.TYPE_INCOMING:
         ref =
             sequenceService.getSequenceNumber(
-                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq");
+                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq", stockMove);
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -128,7 +130,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       case StockMoveRepository.TYPE_OUTGOING:
         ref =
             sequenceService.getSequenceNumber(
-                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq");
+                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq", stockMove);
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
