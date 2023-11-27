@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -307,6 +308,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
+    Partner supplier =
+        stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+                && !stockMove.getIsReversion()
+            ? stockMove.getPartner()
+            : null;
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
@@ -319,7 +325,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
-              stockMove.getOrigin()));
+              stockMove.getOrigin(),
+              supplier));
 
       generateTrakingNumberCounter++;
 
@@ -330,14 +337,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
-
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
               qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
-              stockMove.getOrigin()));
+              stockMove.getOrigin(),
+              supplier));
     }
   }
 

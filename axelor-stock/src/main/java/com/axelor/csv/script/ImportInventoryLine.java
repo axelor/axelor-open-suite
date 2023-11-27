@@ -19,8 +19,11 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
@@ -72,15 +75,19 @@ public class ImportInventoryLine {
 
       InventoryLine inventoryLineNew;
 
+      Inventory inventory = inventoryLine.getInventory();
+      StockLocation stockLocation = inventory.getStockLocation();
+      Company company = stockLocation.getCompany();
+
       for (int i = 0; i < inventoryLine.getRealQty().intValue(); i += qtyByTracking.intValue()) {
 
         trackingNumber =
             trackingNumberService.createTrackingNumber(
                 inventoryLine.getProduct(),
-                inventoryLine.getInventory().getStockLocation().getCompany(),
-                appBaseService.getTodayDate(
-                    inventoryLine.getInventory().getStockLocation().getCompany()),
-                inventoryLine.getInventory().getInventorySeq());
+                company,
+                appBaseService.getTodayDate(company),
+                inventory.getInventorySeq(),
+                null);
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
           trackingNumber.setCounter(realQtyRemaning);

@@ -67,6 +67,7 @@ public class StockTrackingNumberRestController {
                 requestBody.fetchCompany(),
                 Beans.get(AppBaseService.class).getTodayDate(requestBody.fetchCompany()),
                 requestBody.getOrigin(),
+                null,
                 requestBody.getNotes());
 
     return ResponseConstructor.buildCreateResponse(
