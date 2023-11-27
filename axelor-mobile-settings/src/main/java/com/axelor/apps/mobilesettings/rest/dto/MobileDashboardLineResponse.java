@@ -5,9 +5,9 @@ import java.util.List;
 public class MobileDashboardLineResponse {
 
   protected String name;
-  protected List<MobileChartNoVersionResponse> chartList;
+  protected List<MobileChartResponse> chartList;
 
-  public MobileDashboardLineResponse(String name, List<MobileChartNoVersionResponse> chartList) {
+  public MobileDashboardLineResponse(String name, List<MobileChartResponse> chartList) {
     this.name = name;
     this.chartList = chartList;
   }
@@ -16,7 +16,7 @@ public class MobileDashboardLineResponse {
     return name;
   }
 
-  public List<MobileChartNoVersionResponse> getChartList() {
+  public List<MobileChartResponse> getChartList() {
     return chartList;
   }
 }

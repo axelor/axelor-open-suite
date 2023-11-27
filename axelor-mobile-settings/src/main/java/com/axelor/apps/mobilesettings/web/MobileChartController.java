@@ -10,7 +10,7 @@ public class MobileChartController {
   public void getJsonResponse(ActionRequest request, ActionResponse response) {
     MobileChart mobileChart = request.getContext().asType(MobileChart.class);
     response.setValue(
-        "response",
+        "$response",
         Beans.get(MobileChartService.class).getJsonResponse(mobileChart).toJSONString());
   }
 }

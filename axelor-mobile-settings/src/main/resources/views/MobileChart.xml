@@ -17,7 +17,8 @@
       <button name="runBtn" title="Run" onClick="action-mobile-dashboard-method-run-query"
         colSpan="3"/>
       <spacer colSpan="9"/>
-      <field name="response" colSpan="12" height="10"/>
+      <field type="string" name="$response" title="Response" colSpan="12" height="10"
+        widget="text"/>
     </panel>
   </form>
 
