@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
@@ -62,6 +63,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
   private final int RETURN_SCALE = 2;
 
   @Inject
@@ -71,13 +73,15 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetLevelService budgetLevelService,
       BudgetRepository budgetRepo,
       BudgetService budgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
     this.budgetRepo = budgetRepo;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -162,7 +166,6 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
           Budget budget = null;
           for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
             budget = budgetDistribution.getBudget();
-            // TODO ADD FIX FOR INVOICE PAYEMENT BUGDET
             budget.setTotalAmountPaid(
                 budget
                     .getTotalAmountPaid()
@@ -170,7 +173,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                         budgetDistribution
                             .getAmount()
                             .multiply(ratio)
-                            .round(new MathContext(RETURN_SCALE, RoundingMode.HALF_UP))));
+                            .round(
+                                new MathContext(
+                                    currencyScaleServiceAccount.getCompanyScale(invoice),
+                                    RoundingMode.HALF_UP))));
             budgetRepo.save(budget);
           }
         }
@@ -329,7 +335,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                     budget,
                     amount
                         .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                        .divide(
+                            new BigDecimal(100),
+                            currencyScaleServiceAccount.getCompanyScale(company),
+                            RoundingMode.HALF_UP),
                     date);
             linkBudgetDistributionWithParent(budgetDistribution, object);
           }
