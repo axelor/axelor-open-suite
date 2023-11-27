@@ -2,6 +2,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -53,7 +54,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       }
     }
 
-    computeAndAddTaxToList(map, purchaseOrderLineTaxList);
+    computeAndAddTaxToList(map, purchaseOrderLineTaxList, purchaseOrder.getCurrency());
     orderLineTaxService.setSpecificNotes(
         customerSpecificNote,
         purchaseOrder,
@@ -121,10 +122,12 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
   }
 
   protected void computeAndAddTaxToList(
-      Map<TaxLine, PurchaseOrderLineTax> map, List<PurchaseOrderLineTax> purchaseOrderLineTaxList) {
+      Map<TaxLine, PurchaseOrderLineTax> map,
+      List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
+      Currency currency) {
     for (PurchaseOrderLineTax purchaseOrderLineTax : map.values()) {
       // Dans la devise de la commande
-      orderLineTaxService.computeTax(purchaseOrderLineTax);
+      orderLineTaxService.computeTax(purchaseOrderLineTax, currency);
       purchaseOrderLineTaxList.add(purchaseOrderLineTax);
 
       LOG.debug(
