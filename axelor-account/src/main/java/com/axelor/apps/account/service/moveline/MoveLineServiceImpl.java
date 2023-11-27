@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -321,7 +322,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public boolean checkManageCutOffDates(MoveLine moveLine) {
-    return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
+    return appAccountService.getAppAccount().getManageCutOffPeriod()
+        && moveLine.getAccount() != null
+        && moveLine.getAccount().getManageCutOffPeriod();
+  }
+
+  @Override
+  public boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect) {
+    return this.checkManageCutOffDates(moveLine)
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+                MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+            .contains(functionalOriginSelect);
   }
 
   @Override
