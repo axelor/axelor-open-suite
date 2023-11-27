@@ -105,12 +105,7 @@ public class SaleOrderLineController {
 
         if (Beans.get(AppSaleService.class).getAppSale().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
-              pricingService.getRandomPricing(
-                  saleOrder.getCompany(),
-                  saleOrderLine.getProduct(),
-                  saleOrderLine.getProduct().getProductCategory(),
-                  SaleOrderLine.class.getSimpleName(),
-                  null);
+              pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
 
           if (defaultPricing.isPresent()
               && !saleOrderLineService.hasPricingLine(saleOrderLine, saleOrder)) {
