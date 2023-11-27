@@ -13,7 +13,7 @@
     <field name="toDate"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="statusSelect"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
+    <field name="globalBudget"/>
     <field name="typeSelect"/>
     <field name="sourceSelect"/>
     <field name="inChargeUser" hidden="true"/>
@@ -24,31 +24,6 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
-  </grid>
-
-  <grid model="com.axelor.apps.budget.db.Budget" title="Budgets" name="budget-detailed-grid"
-    orderBy="budgetLevel.parentBudgetLevel.globalBudget,budgetLevel.parentBudgetLevel,budgetLevel"
-    groupBy="budgetLevel.parentBudgetLevel.globalBudget,budgetLevel.parentBudgetLevel,budgetLevel">
-    <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="!$popup()"/>
-    <field name="name" readonlyIf="!$popup()"/>
-    <field name="inChargeUser"/>
-    <field name="fromDate" readonlyIf="!$popup()"/>
-    <field name="toDate" readonlyIf="!$popup()"/>
-    <field name="totalAmountExpected" aggregate="sum" title="Initial"/>
-    <field name="totalAmountCommitted" title="Total amount committed" aggregate="sum"/>
-    <field name="totalFirmGap" aggregate="sum"/>
-    <field name="realizedWithNoPo" aggregate="sum"/>
-    <field name="realizedWithPo" aggregate="sum"/>
-    <field name="simulatedAmount" aggregate="sum"/>
-    <field name="availableAmountWithSimulated" aggregate="sum"/>
-    <field name="availableAmount" title="Total amount available" aggregate="sum"/>
-    <field name="statusSelect"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect"/>
-    <field name="sourceSelect"/>
-    <field name="budgetLevel" hidden="true"/>
-    <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget.versionNumber"/>
   </grid>
 
   <grid name="budget-lines-grid" title="Budgets" model="com.axelor.apps.budget.db.Budget"
@@ -64,6 +39,44 @@
     <field name="toDate"/>
   </grid>
 
+  <tree name="budget-tree" title="Budget Levels">
+    <column name="name" type="string"/>
+    <column name="code" type="string"/>
+    <column name="totalAmountExpected"/>
+    <column name="totalAmountCommitted"/>
+    <column name="totalFirmGap"/>
+    <column name="realizedWithNoPo"/>
+    <column name="realizedWithPo"/>
+    <column name="simulatedAmount"/>
+    <column name="availableAmountWithSimulated"/>
+
+    <node model="com.axelor.apps.budget.db.BudgetLevel"
+      domain="self.parentBudgetLevel is null ANS self.globalBudget.id = :_globalId "
+      onClick="action-budget-view-budget-level">
+      <field as="name" name="name"/>
+      <field as="code" name="code"/>
+      <field name="totalAmountExpected"/>
+      <field name="totalAmountCommitted"/>
+      <field name="totalFirmGap"/>
+      <field name="realizedWithNoPo"/>
+      <field name="realizedWithPo"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmountWithSimulated"/>
+    </node>
+    <node model="com.axelor.apps.budget.db.BudgetLevel" parent="parentBudgetLevel"
+      onClick="action-budget-view-budget-level">
+      <field as="name" name="name"/>
+      <field as="code" name="code"/>
+      <field name="totalAmountExpected"/>
+      <field name="totalAmountCommitted"/>
+      <field name="totalFirmGap"/>
+      <field name="realizedWithNoPo"/>
+      <field name="realizedWithPo"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmountWithSimulated"/>
+    </node>
+  </tree>
+
   <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
     width="large" onNew="budget-action-budget-group-onnew"
     onLoad="budget-action-budget-group-onload"
@@ -75,11 +88,11 @@
       <field name="fullName" hidden="true" showTitle="false" colSpan="12"/>
       <field name="code" required="true" colSpan="2"/>
       <field name="name" required="true" colSpan="4"/>
-      <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
+      <field name="budgetLevel" readonlyIf="$popup()" colSpan="3"
         onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-        domain="self.parentBudgetLevel != null" form-view="budget-section-budget-level-form"/>
-      <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-        colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
+        form-view="budget-level-form"/>
+      <field name="globalBudget" title="Global budget" colSpan="3" requiredIf="!$popup()"
+        grid-view="global-budget-grid" form-view="global-budget-form"/>
       <field name="typeSelect" colSpan="3"/>
       <field name="sourceSelect" colSpan="3"/>
       <field name="budgetKey" colSpan="6" readonly="true"/>
@@ -159,12 +172,11 @@
         <field name="code" required="true" colSpan="2"
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
-        <field name="budgetLevel" form-view="budget-section-budget-level-form"
+        <field name="budgetLevel" form-view="budget-level-form"
           onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-          readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
-          domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-          colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
+          readonlyIf="$popup()" colSpan="3"/>
+        <field name="globalBudget" title="Global budget" colSpan="3" requiredIf="!$popup()"
+          grid-view="global-budget-grid" form-view="global-budget-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <field name="category" colSpan="4"/>
         <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
@@ -173,13 +185,12 @@
           onChange="action-budget-budget-validate-dates" required="true"/>
         <field name="$globalId" hidden="true"/>
         <field name="statusSelect" hidden="true"/>
-        <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget" hidden="true"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget.statusSelect" hidden="true"/>
+        <field name="globalBudget" hidden="true"/>
+        <field name="globalBudget.statusSelect" hidden="true"/>
       </panel>
       <panel name="budgetDistributionLineOrderLineBtnPanel"
         if="__config__.app.isApp('supplychain')" colSpan="3" stacked="true" hidden="true"
-        showIf="budgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel.globalBudget.statusSelect == 2">
+        showIf="globalBudget != null &amp;&amp; globalBudget.statusSelect == 2">
         <button name="showBudgetDistributionLineOrderLineBtn"
           showIf="totalAmountCommitted &gt; 0 || totalAmountRealized &gt; 0"
           onClick="action-budget-group-view-budget-distribution-order-line"
@@ -323,7 +334,7 @@
       expr="eval: !(typeSelect == com.axelor.apps.budget.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_TEMPLATE)"/>
     <attribute name="title" for="availableAmount"
       expr="eval: com.axelor.i18n.I18n.get('Remains for sale')"
-      if="budgetLevel?.parentBudgetLevel?.globalBudget?.budgetTypeSelect == 2"/>
+      if="globalBudget?.budgetTypeSelect == 2"/>
     <attribute for="code" name="focus" expr="true"/>
   </action-attrs>
 
@@ -339,21 +350,18 @@
 
   <action-record name="action-budget-record-on-new"
     model="com.axelor.apps.budget.db.Budget">
-    <field name="company" expr="eval: _parent?.company ?: __user__.activeCompany"/>
+    <field name="company" expr="eval: __parent__?.company ?: __user__.activeCompany"/>
     <field name="inChargeUser"
-      expr="eval: _parent?._parent?._parent?.budgetManager != null ? _parent?._parent?._parent.budgetManager : __user__"/>
+      expr="eval: __parent__?.budgetManager != null ? __parent__.budgetManager : __user__"/>
     <field name="typeSelect" expr="eval: _typeSelect"/>
-    <field name="typeSelect" expr="eval: _parent?._parent?._parent?.typeSelect"
-      if="_parent?._parent?._parent"/>
-    <field name="sourceSelect" expr="eval: _parent?._parent?._parent?.sourceSelect"
-      if="_parent?._parent?._parent"/>
     <field name="sourceSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM"
-      if="(_typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET) || (_parent?.typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET)"/>
-    <field name="fromDate" expr="eval: _parent?.fromDate"/>
-    <field name="toDate" expr="eval: _parent?.toDate"/>
-    <field name="budgetLevel" expr="eval: _parent"
-      if="!budgetLevel &amp;&amp; (_parent?.code != null || _parent?.name != null)"/>
+      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM"/>
+    <field name="fromDate" expr="eval: __parent__?.fromDate"/>
+    <field name="toDate" expr="eval: __parent__?.toDate"/>
+    <field name="budgetLevel" expr="eval: __parent__"
+      if="!budgetLevel &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
+    <field name="globalBudget" expr="eval: __parent__"
+      if="!globalBudget &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
     <field name="$globalId" expr="eval: _globalId" if="_globalId"/>
     <field name="$globalId" expr="eval: 0" if="!_globalId"/>
   </action-record>

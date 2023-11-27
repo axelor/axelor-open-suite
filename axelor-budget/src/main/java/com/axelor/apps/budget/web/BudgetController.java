@@ -23,7 +23,6 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.Budget;
@@ -43,7 +42,6 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetController {
@@ -126,10 +124,14 @@ public class BudgetController {
       }
 
       Budget budget = request.getContext().asType(Budget.class);
-      Company company = getGlobalCompany(request, response);
+      GlobalBudget globalBudget = getGlobalBudget(request, response);
+      Company company = null;
+      if (globalBudget != null) {
+        company = globalBudget.getCompany();
+      }
 
-      if (company != null && company.getId() != null) {
-        company = Beans.get(CompanyRepository.class).find(company.getId());
+      if (company != null) {
+
         boolean checkBudgetKey =
             Beans.get(BudgetToolsService.class).checkBudgetKeyInConfig(company);
         response.setAttr("accountSet", "hidden", !checkBudgetKey);
@@ -159,28 +161,11 @@ public class BudgetController {
       Long companyId = 0L;
       int budgetType = 0;
 
-      GlobalBudget globalBudget =
-          Optional.ofNullable(budget.getBudgetLevel())
-              .map(BudgetLevel::getParentBudgetLevel)
-              .map(BudgetLevel::getGlobalBudget)
-              .orElse(null);
+      GlobalBudget globalBudget = getGlobalBudget(request, response);
       if (globalBudget != null && globalBudget.getCompany() != null) {
         companyId = globalBudget.getCompany().getId();
 
         budgetType = globalBudget.getBudgetTypeSelect();
-      } else {
-        globalBudget =
-            Optional.ofNullable(request.getContext())
-                .map(Context::getParent)
-                .map(Context::getParent)
-                .map(Context::getParent)
-                .map(context -> context.asType(GlobalBudget.class))
-                .orElse(null);
-        if (globalBudget != null && globalBudget.getCompany() != null) {
-          companyId = globalBudget.getCompany().getId();
-
-          budgetType = globalBudget.getBudgetTypeSelect();
-        }
       }
 
       response.setAttr(
@@ -216,7 +201,13 @@ public class BudgetController {
   public void createBudgetKey(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      Beans.get(BudgetService.class).createBudgetKey(budget);
+      GlobalBudget globalBudget = getGlobalBudget(request, response);
+      Company company = null;
+      if (globalBudget != null) {
+        company = globalBudget.getCompany();
+      }
+
+      Beans.get(BudgetService.class).createBudgetKey(budget, company);
       response.setValues(budget);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -238,7 +229,11 @@ public class BudgetController {
       if (budget.getAnalyticAccount() != null) {
         response.setValue("analyticAccount", null);
       } else {
-        Company company = getGlobalCompany(request, response);
+        GlobalBudget globalBudget = getGlobalBudget(request, response);
+        Company company = null;
+        if (globalBudget != null) {
+          company = globalBudget.getCompany();
+        }
 
         List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
 
@@ -263,7 +258,11 @@ public class BudgetController {
             "domain",
             "self.analyticAxis.id = " + budget.getAnalyticAxis().getId());
       } else {
-        Company company = getGlobalCompany(request, response);
+        GlobalBudget globalBudget = getGlobalBudget(request, response);
+        Company company = null;
+        if (globalBudget != null) {
+          company = globalBudget.getCompany();
+        }
 
         List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
 
@@ -281,27 +280,40 @@ public class BudgetController {
     }
   }
 
-  public Company getGlobalCompany(ActionRequest request, ActionResponse response) {
-    Budget budget = request.getContext().asType(Budget.class);
+  public GlobalBudget getGlobalBudget(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Budget budget = context.asType(Budget.class);
     GlobalBudget globalBudget =
-        Optional.ofNullable(budget.getBudgetLevel())
-            .map(BudgetLevel::getParentBudgetLevel)
-            .map(BudgetLevel::getGlobalBudget)
-            .orElse(null);
-    if (globalBudget != null && globalBudget.getCompany() != null) {
-      return globalBudget.getCompany();
-    } else if (budget.getId() != null) {
-      globalBudget =
-          Optional.ofNullable(request.getContext())
-              .map(Context::getParent)
-              .map(Context::getParent)
-              .map(Context::getParent)
-              .map(context -> context.asType(GlobalBudget.class))
-              .orElse(null);
-      if (globalBudget != null && globalBudget.getCompany() != null) {
-        return globalBudget.getCompany();
-      }
+        Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudget(budget);
+    if (globalBudget != null) {
+      return globalBudget;
     }
+    if (context == null) {
+      return null;
+    }
+
+    if (context.getOrDefault("parent", null) != null
+        && GlobalBudget.class.isAssignableFrom(context.getParent().getContextClass())) {
+      return context.getParent().asType(GlobalBudget.class);
+    }
+    if (context.getOrDefault("parent", null) != null
+        && BudgetLevel.class.isAssignableFrom(context.getParent().getContextClass())) {
+      return getGlobalBudgetUsingBudgetLevel(context.getParent());
+    }
+
     return null;
+  }
+
+  protected GlobalBudget getGlobalBudgetUsingBudgetLevel(Context context) {
+    if (context == null) {
+      return null;
+    }
+
+    if (context.getOrDefault("parent", null) != null
+        && GlobalBudget.class.isAssignableFrom(context.getParent().getContextClass())) {
+      return context.getParent().asType(GlobalBudget.class);
+    }
+
+    return getGlobalBudgetUsingBudgetLevel(context.getParent());
   }
 }

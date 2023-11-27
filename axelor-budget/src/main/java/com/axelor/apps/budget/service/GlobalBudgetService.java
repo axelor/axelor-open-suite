@@ -23,6 +23,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.GlobalBudgetTemplate;
+import java.util.List;
 
 public interface GlobalBudgetService {
   void validateDates(GlobalBudget globalBudget) throws AxelorException;
@@ -37,4 +38,14 @@ public interface GlobalBudgetService {
   GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException;
+
+  void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException;
+
+  void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
+
+  List<Budget> getAllBudgets(GlobalBudget globalBudget);
+
+  List<Long> getAllBudgetIds(GlobalBudget globalBudget);
+
+  void fillGlobalBudgetOnBudget(GlobalBudget globalBudget);
 }

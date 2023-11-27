@@ -33,6 +33,7 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.GlobalBudgetTemplate;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -225,18 +226,18 @@ public interface BudgetService {
    * Compute all available with simulated amount in budget lines, set the total available with
    * simulated on budget and set on budget
    *
-   * @param move, budget
+   * @param budget
    */
-  public void computeTotalAvailableWithSimulatedAmount(Move move, Budget budget);
+  public void computeTotalAvailableWithSimulatedAmount(Budget budget);
 
   /**
    * If budget key is allowed (via config), check that analytic and account are filled then compute
    * key and check if unique. An error can be throwed at every stage of process.
    *
-   * @param budget
+   * @param budget, company
    * @throws AxelorException
    */
-  public void createBudgetKey(Budget budget) throws AxelorException;
+  public void createBudgetKey(Budget budget, Company company) throws AxelorException;
 
   /**
    * Get all accounts that are linked to this company and active from immobilisation, payable,
@@ -312,4 +313,9 @@ public interface BudgetService {
       GlobalBudget global,
       Map<String, Object> variableAmountMap)
       throws AxelorException;
+
+  void computeAvailableFields(Budget budget);
+
+  @Transactional
+  void archiveBudget(Budget budget);
 }
