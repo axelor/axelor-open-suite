@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="import-export-translation-grid" title="Import/Export translation"
+    model="com.axelor.apps.base.db.ImportExportTranslation">
+    <field name="name" title="Name"/>
+    <field name="languageSet" title="Languages" widget="tagSelect"/>
+    <field name="uploadFile" title="Uploaded File"/>
+
+  </grid>
+
+  <form name="import-export-translation-form" title="Import/Export translation"
+    model="com.axelor.apps.base.db.ImportExportTranslation">
+    <panel name="importExportPanel" title="Import/Export" showTitle="false">
+      <field name="name" title="Name" colSpan="4"/>
+      <field name="languageSet" title="Languages" widget="tagSelect" colSpan="4"/>
+      <field name="uploadFile" title="Uploaded File" colSpan="4"/>
+      <button name="Export" title="Export" colSpan="6"
+        onClick="action-import-export-translation-method-export"/>
+      <button name="Import" title="Import" colSpan="6" onClick=""/>
+    </panel>
+  </form>
+
+  <action-method name="action-import-export-translation-method-export">
+    <call class="com.axelor.apps.base.web.ImportExportTranslationController"
+      method="exportTranslation"/>
+  </action-method>
+
+</object-views>
