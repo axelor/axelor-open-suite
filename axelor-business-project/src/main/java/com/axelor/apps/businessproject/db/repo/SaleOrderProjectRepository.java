@@ -30,11 +30,12 @@ public class SaleOrderProjectRepository extends SaleOrderSupplychainRepository {
 
     SaleOrder copy = super.copy(entity, deep);
 
-    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")
-        && copy.getSaleOrderLineList() != null) {
+    if (Beans.get(AppBusinessProjectService.class).isApp("business-project")) {
       copy.setProject(null);
-      for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setProject(null);
+      if (copy.getSaleOrderLineList() != null) {
+        for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
+          saleOrderLine.setProject(null);
+        }
       }
     }
 
