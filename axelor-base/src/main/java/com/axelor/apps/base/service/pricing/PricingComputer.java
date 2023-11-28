@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingLine;
 import com.axelor.apps.base.db.PricingRule;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -57,24 +56,15 @@ public class PricingComputer extends AbstractObservablePricing {
   private final Context context;
   private final Pricing pricing;
   private final Model model;
-  private final Product product;
-  private final Class<? extends Model> classModel;
   private static final int MAX_ITERATION = 100;
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PricingService pricingService;
 
-  protected PricingComputer(
-      Context context,
-      Pricing pricing,
-      Model model,
-      Product product,
-      Class<? extends Model> classModel) {
+  protected PricingComputer(Context context, Pricing pricing, Model model) {
     this.context = Objects.requireNonNull(context);
     this.pricing = Objects.requireNonNull(pricing);
-    this.product = Objects.requireNonNull(product);
     this.model = Objects.requireNonNull(model);
-    this.classModel = Objects.requireNonNull(classModel);
     this.pricingService = Beans.get(PricingService.class);
   }
 
@@ -96,27 +86,25 @@ public class PricingComputer extends AbstractObservablePricing {
   }
 
   /**
-   * Method that creates a instance of PricingCompute intialized with pricing, model, product and
-   * modelClass
+   * Method that creates a instance of PricingCompute intialized with pricing, model
    *
    * @param pricing : non-null
    * @param model: non-null
-   * @param product the concerned product: non-null
-   * @param classModel: non-null
    * @throws AxelorException
    */
-  public static <T extends Model> PricingComputer of(
-      Pricing pricing, T model, Product product, Class<T> classModel) throws AxelorException {
+  public static <T extends Model> PricingComputer of(Pricing pricing, T model)
+      throws AxelorException {
     Objects.requireNonNull(pricing);
     Objects.requireNonNull(model);
+    Class<? extends Model> klass = EntityHelper.getEntityClass(model);
     LOG.debug(
         "Creating new instance of PricingComputer with pricing {} and model {} of class {}",
         pricing,
         model,
-        classModel.getSimpleName());
+        klass.getSimpleName());
     try {
-      Context context = new Context(Mapper.toMap(model), classModel);
-      return new PricingComputer(context, pricing, model, product, classModel);
+      Context context = new Context(Mapper.toMap(model), klass);
+      return new PricingComputer(context, pricing, model);
 
     } catch (Exception e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
@@ -129,7 +117,7 @@ public class PricingComputer extends AbstractObservablePricing {
    * @throws AxelorException
    */
   public void apply() throws AxelorException {
-    if (context == null || pricing == null || model == null || product == null) {
+    if (context == null || pricing == null || model == null) {
       throw new IllegalStateException("This instance has not been correctly initialized");
     }
     LOG.debug("Starting application of pricing {} with model {}", this.pricing, this.model);
@@ -145,7 +133,7 @@ public class PricingComputer extends AbstractObservablePricing {
       Optional<Pricing> optChildPricing;
 
       if (pricing.getLinkedPricing() == null) {
-        optChildPricing = getPreviousPricing(currentPricing);
+        optChildPricing = getPreviousPricing(currentPricing, model);
       } else {
         optChildPricing = Optional.ofNullable(currentPricing.getLinkedPricing());
       }
@@ -159,14 +147,10 @@ public class PricingComputer extends AbstractObservablePricing {
     notifyFinished();
   }
 
-  protected Optional<Pricing> getPreviousPricing(Pricing pricing) throws AxelorException {
+  protected Optional<Pricing> getPreviousPricing(Pricing pricing, Model model)
+      throws AxelorException {
     List<Pricing> childPricings =
-        pricingService.getPricings(
-            this.pricing.getCompany(),
-            this.product,
-            this.product.getProductCategory(),
-            this.classModel.getSimpleName(),
-            pricing);
+        pricingService.getPricings(this.pricing.getCompany(), this.model, pricing);
 
     if (childPricings.isEmpty()) {
       return Optional.empty();
@@ -176,9 +160,9 @@ public class PricingComputer extends AbstractObservablePricing {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(BaseExceptionMessage.PRICING_2),
-              this.product.getName() + "/" + this.product.getProductCategory().getName(),
+              pricing.getFormula(),
               pricing.getCompany().getName(),
-              classModel.getSimpleName()));
+              EntityHelper.getEntityClass(model).getSimpleName()));
     }
 
     return Optional.ofNullable(childPricings.get(0));
@@ -235,10 +219,12 @@ public class PricingComputer extends AbstractObservablePricing {
           }
           if (fieldToPopulate.getJson() && resultPricingRule.getMetaJsonField() != null) {
             String newMetaJsonAttrs = buildMetaJsonAttrs(resultPricingRule, result);
-            Mapper.of(classModel).set(model, fieldToPopulate.getName(), newMetaJsonAttrs);
+            Mapper.of(EntityHelper.getEntityClass(model))
+                .set(model, fieldToPopulate.getName(), newMetaJsonAttrs);
             notifyMetaJsonFieldToPopulate(resultPricingRule.getMetaJsonField());
           } else {
-            Mapper.of(classModel).set(model, fieldToPopulate.getName(), result);
+            Mapper.of(EntityHelper.getEntityClass(model))
+                .set(model, fieldToPopulate.getName(), result);
             putInContext(fieldToPopulate.getName(), result);
           }
         }
@@ -277,7 +263,8 @@ public class PricingComputer extends AbstractObservablePricing {
     LOG.debug("Populating {} of {} with {}", resultPricingRule.getFieldToPopulate(), model, result);
 
     Object attrsObject =
-        Mapper.of(classModel).get(model, resultPricingRule.getFieldToPopulate().getName());
+        Mapper.of(EntityHelper.getEntityClass(model))
+            .get(model, resultPricingRule.getFieldToPopulate().getName());
     String metaJsonAttrs;
     if (attrsObject == null) {
       metaJsonAttrs = "";
@@ -298,8 +285,6 @@ public class PricingComputer extends AbstractObservablePricing {
    * This method will return every pricing lines that classify the model in the pricing.
    *
    * @param pricing: non-null
-   * @param model non-null
-   * @param classModel-null
    */
   protected List<PricingLine> getMatchedPricingLines(Pricing pricing) {
     if (context == null || model == null) {
@@ -321,10 +306,6 @@ public class PricingComputer extends AbstractObservablePricing {
 
   /**
    * This method will return every pricing lines that classify the model in the pricing configured.
-   *
-   * @param pricing: non-null
-   * @param model non-null
-   * @param classModel-null
    */
   public List<PricingLine> getMatchedPricingLines() {
 
