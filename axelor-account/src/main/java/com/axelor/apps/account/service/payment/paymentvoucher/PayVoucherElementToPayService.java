@@ -118,8 +118,7 @@ public class PayVoucherElementToPayService {
   public PayVoucherElementToPay updateElementToPayWithFinancialDiscount(
       PayVoucherElementToPay payVoucherElementToPay,
       PayVoucherDueElement payVoucherDueElement,
-      PaymentVoucher paymentVoucher)
-      throws AxelorException {
+      PaymentVoucher paymentVoucher) {
     if (!payVoucherDueElement.getApplyFinancialDiscount()
         || payVoucherDueElement.getFinancialDiscount() == null
         || this.isPartialPayment(
@@ -127,6 +126,12 @@ public class PayVoucherElementToPayService {
       if (payVoucherDueElement.getApplyFinancialDiscount()) {
         this.resetRemainingAmounts(
             payVoucherElementToPay, payVoucherDueElement.getFinancialDiscountTotalAmount());
+      } else {
+        payVoucherElementToPay.setFinancialDiscount(
+            payVoucherElementToPay.getInvoiceTerm().getFinancialDiscount());
+        payVoucherElementToPay.setApplyFinancialDiscount(true);
+        this.updateFinancialDiscount(payVoucherElementToPay);
+        payVoucherElementToPay.setApplyFinancialDiscount(false);
       }
 
       return payVoucherElementToPay;
@@ -135,7 +140,8 @@ public class PayVoucherElementToPayService {
     FinancialDiscount financialDiscount = payVoucherDueElement.getFinancialDiscount();
     LocalDate financialDiscountDeadlineDate =
         payVoucherDueElement.getFinancialDiscountDeadlineDate();
-    if (financialDiscountDeadlineDate.compareTo(paymentVoucher.getPaymentDate()) >= 0) {
+
+    if (!financialDiscountDeadlineDate.isBefore(paymentVoucher.getPaymentDate())) {
       payVoucherElementToPay.setApplyFinancialDiscount(true);
       payVoucherElementToPay.setFinancialDiscount(financialDiscount);
       payVoucherElementToPay.setFinancialDiscountDeadlineDate(financialDiscountDeadlineDate);

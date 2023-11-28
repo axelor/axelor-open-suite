@@ -47,7 +47,7 @@
       name="discountPanel" title="Financial discount" readonly="true"
       showIf="applyFinancialDiscount">
       <field name="financialDiscount"/>
-      <field name="financialDiscountDeadlineDate"/>
+      <field name="financialDiscountDeadlineDate" showIf="financialDiscountDeadlineDate"/>
       <field name="totalAmountWithFinancialDiscount"/>
       <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
       <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
