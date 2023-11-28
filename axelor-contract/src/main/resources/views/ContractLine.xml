@@ -54,6 +54,7 @@
     onLoad="action-contract-line-group-edit-view">
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
+        <field name="pricing" canNew="true" form-view="pricing-form" grid-view="pricing-grid"/>
         <field name="product" canEdit="false"
           onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
         <field name="productName"/>
