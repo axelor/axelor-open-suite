@@ -59,6 +59,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
+      PeriodServiceAccount periodServiceAccount,
       MoveLineTaxService moveLineTaxService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
