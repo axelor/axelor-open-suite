@@ -360,7 +360,7 @@
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="financialDiscountAmount" readonly="true"
-          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
+          showIf="applyFinancialDiscountOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
