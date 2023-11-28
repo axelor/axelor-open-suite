@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -70,6 +71,13 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
 
   @Override
   public void addAnalyticAxisAttrs(
+      Company company, int massEntryStatusSelect, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
+    this.addAnalyticAxisAttrs(company, this.getMoveLineFieldName(massEntryStatusSelect), attrsMap);
+  }
+
+  @Override
+  public void addAnalyticAxisAttrs(
       Company company, String parentField, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     if (analyticToolService.isManageAnalytic(company)) {
@@ -109,6 +117,12 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
     String result = String.format("axis%dAnalyticAccount", axisPosition);
 
     return parentField != null ? parentField + "." + result : result;
+  }
+
+  protected String getMoveLineFieldName(int massEntryStatusSelect) {
+    return massEntryStatusSelect != MoveRepository.MASS_ENTRY_STATUS_NULL
+        ? "moveLineMassEntryList"
+        : "moveLineList";
   }
 
   public void addAnalyticAxisDomains(

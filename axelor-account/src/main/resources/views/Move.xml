@@ -73,7 +73,7 @@
 
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
-    onNew="action-account-group-onnew" onLoad="action-account-group-onLoad"
+    onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
     onSave="action-account-move-group-onsave">
     <toolbar>
       <button name="printBtn" title="Print Move" icon="fa-print"
@@ -92,7 +92,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-group-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="2"/>
+            grid-view="company-grid" colSpan="2" onSelect="action-move-method-company-onselect"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
@@ -270,7 +270,7 @@
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
-          onClick="action-move-method-generate-counterpart"/>
+          onClick="action-move-group-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
           onClick="action-move-method-generate-tax-lines"/>
@@ -428,7 +428,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-method-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="3"/>
+            grid-view="company-grid" colSpan="3" onSelect="action-move-method-company-onselect"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
@@ -555,6 +555,11 @@
     <action name="action-method-account-move-validate-pfp"/>
   </action-group>
 
+  <action-group name="action-move-group-generate-counterpart">
+    <action name="action-move-method-generate-counterpart"/>
+    <action name="save" if="statusSelect != 4 &amp;&amp; statusSelect &gt;= 2"/>
+  </action-group>
+
   <!-- ACTION GROUP WITH ALERT -->
 
   <action-group name="action-move-group-description-onchange">
@@ -581,11 +586,6 @@
 
   <action-group name="action-account-group-onnew">
     <action name="action-account-move-method-onnew"/>
-    <action name="action-move-method-check-period"/>
-  </action-group>
-
-  <action-group name="action-account-group-onLoad">
-    <action name="action-account-move-method-onLoad"/>
     <action name="action-move-method-check-period"/>
   </action-group>
 
@@ -806,6 +806,10 @@
 
   <action-method name="action-move-method-check-period-permission">
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
+  </action-method>
+
+  <action-method name="action-move-method-company-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
   </action-method>
 
   <!-- ACTION VIEW -->

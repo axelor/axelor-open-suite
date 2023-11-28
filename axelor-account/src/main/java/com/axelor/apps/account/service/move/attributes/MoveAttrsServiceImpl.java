@@ -33,8 +33,10 @@ import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -55,6 +57,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   protected MovePfpService movePfpService;
   protected AnalyticToolService analyticToolService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected CompanyRepository companyRepository;
 
   @Inject
   public MoveAttrsServiceImpl(
@@ -64,7 +67,8 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
       MoveViewHelperService moveViewHelperService,
       MovePfpService movePfpService,
       AnalyticToolService analyticToolService,
-      AnalyticAttrsService analyticAttrsService) {
+      AnalyticAttrsService analyticAttrsService,
+      CompanyRepository companyRepository) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
@@ -72,6 +76,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     this.movePfpService = movePfpService;
     this.analyticToolService = analyticToolService;
     this.analyticAttrsService = analyticAttrsService;
+    this.companyRepository = companyRepository;
   }
 
   protected void addAttr(
@@ -132,17 +137,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     }
 
     this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
-  }
-
-  @Override
-  public void addMoveLineAnalyticAttrs(Move move, Map<String, Map<String, Object>> attrsMap)
-      throws AxelorException {
-    String fieldNameToSet = "moveLineList";
-    if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      fieldNameToSet = "moveLineMassEntryList";
-    }
-
-    analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), fieldNameToSet, attrsMap);
   }
 
   @Override
@@ -405,5 +399,18 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
             .allMatch(InvoiceTerm::getIsPaid);
 
     this.addAttr("subrogationPartner", "readonly", isReadonly, attrsMap);
+  }
+
+  @Override
+  public void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    String companyIds =
+        companyRepository.all().filter("self.accountConfig IS NOT NULL").fetch().stream()
+            .map(Company::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
+
+    String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
+
+    this.addAttr("company", "domain", domain, attrsMap);
   }
 }

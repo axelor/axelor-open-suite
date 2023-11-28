@@ -36,7 +36,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -288,8 +287,6 @@ public interface InvoiceTermService {
   boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
 
   boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
-
-  BigDecimal computeParentTotal(Context context);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 

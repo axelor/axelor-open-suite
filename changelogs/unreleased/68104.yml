@@ -1,6 +1,0 @@
----
-title: "FEC Import: now fill correctly the header partner"
-type: fix
-description: |
-  Multi-partner : no partner in header
-  Mono-partner : fill partner in header

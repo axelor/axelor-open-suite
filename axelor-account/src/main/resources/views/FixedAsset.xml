@@ -136,7 +136,8 @@
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
         readonlyIf="statusSelect > 1">
         <field name="isEqualToFiscalDepreciation" colSpan="12" widget="boolean"
-          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"/>
+          onChange="action-attrs-fixed-asset-fiscal-depreciation-equal,action-attrs-account-fixed-asset-reset-residual-value,action-attrs-fixed-asset-set-readonly-residual-value,action-fixed-asset-method-check-depreciation-plans"
+          showIf="depreciationPlanSelect.includes(&quot;1&quot;)"/>
         <field name="firstDepreciationDate"
           onChange="action-fixed-asset-validate-check-first-depreciation-date"
           requiredIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"/>
@@ -756,8 +757,8 @@
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="fiscalNumberOfDepreciation"
       expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
-    <attribute name="value" for="isEqualToFiscalDepreciation" expr="eval:false"
-      if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
+    <attribute name="value" for="isEqualToFiscalDepreciation"
+      expr="eval:depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;2&quot;)"/>
 
   </action-attrs>
 
@@ -775,7 +776,8 @@
       expr="eval:fixedAssetCategory?.durationInMonth"/>
     <attribute name="value" for="ifrsNumberOfDepreciation"
       expr="eval:fixedAssetCategory?.numberOfDepreciation"/>
-    <attribute name="value" for="isIfrsEqualToFiscalDepreciation" expr="eval:true"/>
+    <attribute name="value" for="isIfrsEqualToFiscalDepreciation"
+      expr="eval:depreciationPlanSelect.contains(&quot;1&quot;) &amp;&amp; depreciationPlanSelect.contains(&quot;4&quot;)"/>
 
   </action-attrs>
 
