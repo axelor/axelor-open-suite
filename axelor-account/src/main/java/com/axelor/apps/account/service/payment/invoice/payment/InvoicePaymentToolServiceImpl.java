@@ -444,18 +444,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             invoicePayment
                 .getFinancialDiscountTotalAmount()
                 .multiply(newAmount)
-                .divide(
-                    invoicePayment.getAmount(),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP)));
+                .divide(invoicePayment.getAmount())));
     invoicePayment.setAmount(newAmount);
     invoicePayment.setFinancialDiscountTaxAmount(
         currencyScaleServiceAccount.getScaledValue(
             invoicePayment,
             invoicePayment
                 .getFinancialDiscountTotalAmount()
-                .multiply(taxRate.divide(new BigDecimal(100)))
-                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)));
+                .multiply(taxRate.divide(new BigDecimal(100)))));
     invoicePayment.setFinancialDiscountAmount(
         currencyScaleServiceAccount.getScaledValue(
             invoicePayment,

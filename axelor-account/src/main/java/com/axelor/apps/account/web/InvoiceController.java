@@ -34,12 +34,13 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
-import com.axelor.apps.account.service.invoice.attributes.InvoiceAttrsService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.base.AxelorException;
@@ -1292,10 +1293,10 @@ public class InvoiceController {
       }
 
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-      InvoiceAttrsService invoiceAttrsService = Beans.get(InvoiceAttrsService.class);
-
-      invoiceAttrsService.setInvoiceLineScale(invoice, attrsMap);
-      invoiceAttrsService.setInvoiceLineTaxScale(invoice, attrsMap);
+      Beans.get(InvoiceLineGroupService.class)
+          .setInvoiceLineScale(invoice, attrsMap, "invoiceLineList.");
+      Beans.get(InvoiceLineTaxGroupService.class)
+          .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList.");
 
       response.setAttrs(attrsMap);
     } catch (Exception e) {

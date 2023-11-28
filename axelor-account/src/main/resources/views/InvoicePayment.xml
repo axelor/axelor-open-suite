@@ -40,6 +40,7 @@
       <field name="currency" canEdit="false" readonlyIf="$isMultiCurrency"
         form-view="currency-form" grid-view="currency-grid"
         onChange="action-invoice-payment-group-change-amounts"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
@@ -155,7 +156,6 @@
 
   <action-group name="action-invoice-payment-group-change-amounts">
     <action name="action-invoice-payment-record-manual-change"/>
-    <action name="action-invoice-payment-method-change-amount"/>
     <action name="action-invoice-payment-method-change-amount"/>
     <action name="action-invoice-payment-attrs-currency-scale"/>
     <action name="action-invoice-payment-method-new-discount"/>
