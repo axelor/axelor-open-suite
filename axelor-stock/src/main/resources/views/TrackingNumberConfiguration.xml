@@ -37,7 +37,7 @@
       <field name="hasWarranty"/>
       <field name="warrantyNbrOfMonths" hideIf="!hasWarranty"/>
       <field name="isPerishable"
-             onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"/>
+        onChange="action-tracking-number-config-record-set-check-expiration-date-to-false-if-is-perishable-is-false"/>
       <field name="perishableNbrOfDays" hideIf="!isPerishable"/>
       <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
     </panel>

@@ -33,11 +33,11 @@
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
         domain="self.dtype = 'Product'"/>
-      <field name="hasWarranty"/>
-      <field name="warrantyExpirationDate"/>
-      <field name="isPerishable"/>
-      <field name="perishableExpirationDate"/>
-      <field name="checkExpirationDateAtStockMoveRealization"/>
+      <field name="hasWarranty" readonly="true" hideIf="!hasWarranty"/>
+      <field name="warrantyExpirationDate" hideIf="!hasWarranty"/>
+      <field name="isPerishable" readonly="true" hideIf="!isPerishable"/>
+      <field name="perishableExpirationDate" hideIf="!isPerishable"/>
+      <field name="checkExpirationDateAtStockMoveRealization" hideIf="!isPerishable"/>
       <field name="counter"/>
       <field name="origin"/>
       <field name="note" colSpan="12"/>
