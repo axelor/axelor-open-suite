@@ -1,0 +1,8 @@
+"importId";"subject";"startDateTime";"endDateTime";"description";"qiDecision.importId";"qiAction.importId";"advancement";"qiProcess.importId";"fixedAmount";"directCost";"totalCost";"qiResolutionDefaultsSet"
+"100";"Revoir le conditionnement avec le fournisseur";"NOW[-5M09H00m]";"NOW[-5M09H30m]";;"8";"1";"20";"4";"500";"1000";;"1"
+"101";"Revoir le processus";"NOW[-4M09H00m]";"NOW[-4M09H45m]";;"8";;;"5";;"600";;"2"
+"102";"Rédiger une nouvelle procédure";"NOW[-3M09H15m]";"NOW[-3M09H45m]";;"8";"2";;"5";;"400";;"3"
+"103";"Prévoir audit";"NOW[-2M09H00m]";"NOW[-2M09H45m]";;"8";"1";;"1";"500";;;"4"
+"104";"Revoir la procédure d'emballage";"NOW[-1M09H00m]";"NOW[-1M10H00m]";;"8";"5";"100";"1";"200";"200";;"5"
+"105";"Audit fournisseur";"NOW[-21d09H00m]";"NOW[-21d09H50m]";;"8";"1";"20";;;"800";;"6"
+"106";"Revue des procédures";"NOW[-14d11H00m]";"NOW[-14d12H00m]";;"8";"6";;"1";;"100";;"6"
