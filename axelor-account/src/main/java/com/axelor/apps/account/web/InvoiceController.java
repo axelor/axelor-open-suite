@@ -1281,4 +1281,12 @@ public class InvoiceController {
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }
+
+  public void computePricing(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
 }

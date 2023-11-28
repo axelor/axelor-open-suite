@@ -886,6 +886,8 @@ InvoiceSet.length > 0))"
         prompt="Are you sure you want to ventilate the invoice ?"/>
       <button name="validateAndVentilateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-validate-and-ventilate-onclick"/>
+      <button name="computePricingBtn" onClick="action-invoice-method-compute-line-pricing"
+        title="Compute pricing"/>
       <panel name="paymentActionsPanel" hidden="true" showIf="id" itemSpan="12">
         <button name="passedForPaymentValidationBtn" css="btn-success" hidden="true"
           title="Passed for payment validation" onClick="action-invoice-group-pfp-validate"
@@ -2796,5 +2798,9 @@ InvoiceSet.length > 0))"
     <action name="save"/>
     <action name="action-invoice-view-reports-wizard"/>
   </action-group>
+
+  <action-method name="action-invoice-method-compute-line-pricing">
+    <call class="com.axelor.apps.contract.web.InvoiceController" method="computePricing"/>
+  </action-method>
 
 </object-views>
