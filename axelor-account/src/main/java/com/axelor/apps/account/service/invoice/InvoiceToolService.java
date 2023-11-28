@@ -342,6 +342,8 @@ public class InvoiceToolService {
     copy.setHasPendingPayments(false);
     copy.setReasonOfRefusalToPay(null);
     copy.setReasonOfRefusalToPayStr(null);
+    copy.setSubrogationRelease(null);
+    copy.setSubrogationReleaseMove(null);
   }
 
   /**
