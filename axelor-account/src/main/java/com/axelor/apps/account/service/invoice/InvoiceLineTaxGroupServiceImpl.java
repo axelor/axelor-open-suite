@@ -19,9 +19,9 @@ public class InvoiceLineTaxGroupServiceImpl implements InvoiceLineTaxGroupServic
   public void setInvoiceLineTaxScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     if (invoice != null && ObjectUtils.notEmpty(invoice.getInvoiceLineTaxList())) {
-      invoiceLineTaxAttrsService.setExTaxBaseScale(invoice, attrsMap, prefix);
-      invoiceLineTaxAttrsService.setTaxTotalScale(invoice, attrsMap, prefix);
-      invoiceLineTaxAttrsService.setInTaxTotalScale(invoice, attrsMap, prefix);
+      invoiceLineTaxAttrsService.addExTaxBaseScale(invoice, attrsMap, prefix);
+      invoiceLineTaxAttrsService.addTaxTotalScale(invoice, attrsMap, prefix);
+      invoiceLineTaxAttrsService.addInTaxTotalScale(invoice, attrsMap, prefix);
     }
   }
 }

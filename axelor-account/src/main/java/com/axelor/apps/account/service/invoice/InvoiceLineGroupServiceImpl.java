@@ -16,13 +16,12 @@ public class InvoiceLineGroupServiceImpl implements InvoiceLineGroupService {
   }
 
   @Override
-  public void setInvoiceLineScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+  public void setInvoiceLineScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     if (invoice != null && ObjectUtils.notEmpty(invoice.getInvoiceLineList())) {
-      String prefix = "invoiceLineList";
-
-      invoiceLineAttrsService.setInTaxPriceScale(invoice, attrsMap, prefix);
-      invoiceLineAttrsService.setExTaxTotalScale(invoice, attrsMap, prefix);
-      invoiceLineAttrsService.setInTaxTotalScale(invoice, attrsMap, prefix);
+      invoiceLineAttrsService.addInTaxPriceScale(invoice, attrsMap, prefix);
+      invoiceLineAttrsService.addExTaxTotalScale(invoice, attrsMap, prefix);
+      invoiceLineAttrsService.addInTaxTotalScale(invoice, attrsMap, prefix);
     }
   }
 }

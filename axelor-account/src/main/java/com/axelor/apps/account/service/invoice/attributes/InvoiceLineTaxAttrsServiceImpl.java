@@ -24,8 +24,12 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
     attrsMap.get(field).put(attr, value);
   }
 
+  protected String computeField(String field, String prefix) {
+    return String.format("%s%s", prefix, field);
+  }
+
   @Override
-  public void setExTaxBaseScale(
+  public void addExTaxBaseScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
         this.computeField("exTaxBase", prefix),
@@ -35,7 +39,7 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
   }
 
   @Override
-  public void setTaxTotalScale(
+  public void addTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
         this.computeField("taxTotal", prefix),
@@ -45,16 +49,12 @@ public class InvoiceLineTaxAttrsServiceImpl implements InvoiceLineTaxAttrsServic
   }
 
   @Override
-  public void setInTaxTotalScale(
+  public void addInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
         this.computeField("inTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getScale(invoice),
         attrsMap);
-  }
-
-  protected String computeField(String field, String prefix) {
-    return prefix != null ? prefix.concat(".").concat(field) : field;
   }
 }

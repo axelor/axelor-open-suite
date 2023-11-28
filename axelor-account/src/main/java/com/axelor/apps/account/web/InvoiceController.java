@@ -1293,9 +1293,10 @@ public class InvoiceController {
       }
 
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-      Beans.get(InvoiceLineGroupService.class).setInvoiceLineScale(invoice, attrsMap);
+      Beans.get(InvoiceLineGroupService.class)
+          .setInvoiceLineScale(invoice, attrsMap, "invoiceLineList.");
       Beans.get(InvoiceLineTaxGroupService.class)
-          .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList");
+          .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList.");
 
       response.setAttrs(attrsMap);
     } catch (Exception e) {

@@ -5,16 +5,18 @@ import java.util.Map;
 
 public interface InvoiceLineAttrsService {
 
-  void setInTaxPriceScale(
+  void addInTaxPriceScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
-  void setExTaxTotalScale(
+  void addExTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
-  void setInTaxTotalScale(
+  void addInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
-  void setCompanyExTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
+  void addCompanyExTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 
-  void setCompanyInTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap);
+  void addCompanyInTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 }

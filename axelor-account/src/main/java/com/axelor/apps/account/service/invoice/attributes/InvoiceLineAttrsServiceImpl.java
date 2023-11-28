@@ -24,8 +24,12 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     attrsMap.get(field).put(attr, value);
   }
 
+  protected String computeField(String field, String prefix) {
+    return String.format("%s%s", prefix, field);
+  }
+
   @Override
-  public void setInTaxPriceScale(
+  public void addInTaxPriceScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
         this.computeField("inTaxPrice", prefix),
@@ -35,7 +39,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
   }
 
   @Override
-  public void setExTaxTotalScale(
+  public void addExTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
         this.computeField("exTaxTotal", prefix),
@@ -45,7 +49,7 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
   }
 
   @Override
-  public void setInTaxTotalScale(
+  public void addInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
         this.computeField("inTaxTotal", prefix),
@@ -55,26 +59,22 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
   }
 
   @Override
-  public void setCompanyExTaxTotalScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+  public void addCompanyExTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        "companyExTaxTotal",
+        this.computeField("companyExTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getCompanyScale(invoice),
         attrsMap);
   }
 
   @Override
-  public void setCompanyInTaxTotalScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+  public void addCompanyInTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        "companyInTaxTotal",
+        this.computeField("companyInTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getCompanyScale(invoice),
         attrsMap);
-  }
-
-  protected String computeField(String field, String prefix) {
-    return prefix != null ? prefix.concat(".").concat(field) : field;
   }
 }
