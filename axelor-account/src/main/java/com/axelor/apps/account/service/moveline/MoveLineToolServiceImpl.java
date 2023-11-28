@@ -48,6 +48,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.Query;
 
 @RequestScoped
@@ -347,8 +348,8 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
       Account account, TaxLine taxLine, Integer vatSystem, Long id, MoveLine ml) {
     return ml.getTaxLine() != null
         && ml.getTaxLine().equals(taxLine)
-        && ml.getVatSystemSelect() == vatSystem
-        && ml.getId() != id
+        && Objects.equals(ml.getVatSystemSelect(), vatSystem)
+        && !Objects.equals(ml.getId(), id)
         && ml.getAccount().getAccountType() != null
         && AccountTypeRepository.TYPE_TAX.equals(
             ml.getAccount().getAccountType().getTechnicalTypeSelect())

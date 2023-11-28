@@ -8,6 +8,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
@@ -19,6 +20,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -37,6 +39,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   protected FinancialDiscountService financialDiscountService;
   protected MoveLineCreateService moveLineCreateService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public MoveLineFinancialDiscountServiceImpl(
@@ -45,13 +48,15 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       FinancialDiscountService financialDiscountService,
       MoveLineCreateService moveLineCreateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      MoveLineToolService moveLineToolService) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.financialDiscountService = financialDiscountService;
     this.moveLineCreateService = moveLineCreateService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -269,6 +274,42 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
     if (moveLine != null && financialDiscountVat && taxAccount != null) {
       counter =
+          this.createOrUpdateFinancialDiscountTaxMoveLine(
+              move,
+              moveLine,
+              taxAccount,
+              tax.getActiveTaxLine(),
+              partner,
+              origin,
+              description,
+              financialDiscountTaxAmount,
+              paymentDate,
+              counter,
+              vatSystem,
+              isDebit);
+    }
+
+    return counter;
+  }
+
+  protected int createOrUpdateFinancialDiscountTaxMoveLine(
+      Move move,
+      MoveLine moveLine,
+      Account taxAccount,
+      TaxLine taxLine,
+      Partner partner,
+      String origin,
+      String description,
+      BigDecimal financialDiscountTaxAmount,
+      LocalDate paymentDate,
+      int counter,
+      int vatSystem,
+      boolean isDebit)
+      throws AxelorException {
+    MoveLine taxMoveLine = this.getTaxMoveLine(move, taxAccount, taxLine, vatSystem);
+
+    if (taxMoveLine == null) {
+      counter =
           this.createFinancialDiscountTaxMoveLine(
               move,
               moveLine,
@@ -281,9 +322,26 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               counter,
               vatSystem,
               isDebit);
+    } else {
+      this.updateFinancialDiscountTaxMoveLine(moveLine, financialDiscountTaxAmount, isDebit);
     }
 
     return counter;
+  }
+
+  protected MoveLine getTaxMoveLine(Move move, Account account, TaxLine taxLine, int vatSystem) {
+    return move.getMoveLineList().stream()
+        .filter(
+            ml ->
+                moveLineToolService
+                    .isEqualTaxMoveLine(
+                        account,
+                        taxLine,
+                        vatSystem,
+                        null,
+                        ml))
+        .findFirst()
+        .orElse(null);
   }
 
   protected int createFinancialDiscountTaxMoveLine(
@@ -320,6 +378,23 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     move.addMoveLineListItem(financialDiscountVatMoveLine);
 
     return counter;
+  }
+
+  protected void updateFinancialDiscountTaxMoveLine(
+      MoveLine moveLine, BigDecimal amount, boolean isDebit) {
+    BigDecimal signum = BigDecimal.valueOf(moveLine.getCurrencyAmount().signum());
+    BigDecimal signedAmount;
+
+    if (isDebit) {
+      moveLine.setDebit(moveLine.getDebit().add(amount));
+      signedAmount = moveLine.getDebit().multiply(signum);
+    } else {
+      moveLine.setCredit(moveLine.getCredit().add(amount));
+      signedAmount = moveLine.getCredit().multiply(signum);
+    }
+
+    moveLine.setCurrencyAmount(signedAmount);
+    moveLine.setAmountRemaining(signedAmount);
   }
 
   @Override
