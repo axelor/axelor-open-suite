@@ -470,12 +470,13 @@
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           title="Details Lines" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
-          canMove="true" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+          canMove="true"
+          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
-          readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
-          form-view="sale-order-line-form" grid-view="sale-order-line-editable-grid"
-          orderBy="sequence"
+          readonlyIf="clientPartner == null || statusSelect != 1" colSpan="12" height="30"
+          field="saleOrderLineList" form-view="sale-order-line-form"
+          grid-view="sale-order-line-editable-grid" orderBy="sequence"
           onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
@@ -1437,6 +1438,7 @@
     <action name="action-sale-order-record-set-group-product-on-printing"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
+    <action name="action-sale-order-attrs-set-line-field-scale"/>
   </action-group>
 
   <action-group name="action-sale-order-group-set-defualts-from-opportunity">

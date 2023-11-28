@@ -81,6 +81,10 @@
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="description"/>
+    <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
+      <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+      <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
+    </field>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
