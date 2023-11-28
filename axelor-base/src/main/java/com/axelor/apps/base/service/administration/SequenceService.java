@@ -484,7 +484,7 @@ public class SequenceService {
   public void validateSequence(Sequence sequence) throws AxelorException {
     String draftPrefix = getDraftPrefix();
 
-    if (sequence.getPrefixe().startsWith(draftPrefix))
+    if (sequence.getPrefixe() != null && sequence.getPrefixe().startsWith(draftPrefix))
       throw new AxelorException(
           sequence,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

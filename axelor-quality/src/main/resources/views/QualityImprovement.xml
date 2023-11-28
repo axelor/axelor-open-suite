@@ -16,7 +16,7 @@
   <form name="quality-improvement-form" title="Quality improvement"
     model="com.axelor.apps.quality.db.QualityImprovement" width="large"
     onLoad="action-quality-improvement-group-on-load"
-    onNew="action-quality-improvement-record-on-new">
+    onNew="action-quality-improvement-method-set-default-values-on-new">
     <panel name="mainPanel">
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
         widget="NavSelect"/>
@@ -247,12 +247,10 @@
     </template>
   </kanban>
 
-  <action-record name="action-quality-improvement-record-on-new"
-    model="com.axelor.apps.quality.db.QualityImprovement">
-    <field name="qiStatus" expr="eval: __repo__(QIStatus).findDefaultStatus()"/>
-    <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-  </action-record>
+  <action-method name="action-quality-improvement-method-set-default-values-on-new">
+    <call class="com.axelor.apps.quality.web.QualityImprovementController"
+      method="setDefaultValues"/>
+  </action-method>
 
   <action-attrs name="action-quality-improvement-attrs-set-defaults">
     <attribute name="title" for="qiIdentification.stockMove"
