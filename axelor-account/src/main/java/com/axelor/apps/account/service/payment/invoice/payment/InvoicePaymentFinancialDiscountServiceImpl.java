@@ -46,10 +46,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
                 it ->
                     it.getInvoiceTerm() != null
                         && it.getInvoiceTerm().getApplyFinancialDiscount()
-                        && !invoiceTermService.isPartiallyPaid(it.getInvoiceTerm())
-                        && !invoicePayment
-                            .getPaymentDate()
-                            .isAfter(it.getInvoiceTerm().getFinancialDiscountDeadlineDate()))
+                        && !invoiceTermService.isPartiallyPaid(it.getInvoiceTerm()))
             .collect(Collectors.toList());
 
     if (CollectionUtils.isEmpty(invoiceTermPaymentList)) {
@@ -74,8 +71,17 @@ public class InvoicePaymentFinancialDiscountServiceImpl
             .subtract(invoicePayment.getFinancialDiscountTaxAmount()));
     invoicePayment.setTotalAmountWithFinancialDiscount(
         invoicePayment.getAmount().add(invoicePayment.getFinancialDiscountTotalAmount()));
-    invoicePayment.setFinancialDiscountDeadlineDate(
-        this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList));
+
+    LocalDate financialDiscountDeadlineDate =
+        this.getFinancialDiscountDeadlineDate(invoiceTermPaymentList);
+
+    if (invoicePayment.getFinancialDiscountDeadlineDate() == null
+        && financialDiscountDeadlineDate.isBefore(invoicePayment.getPaymentDate())) {
+      invoicePayment.setApplyFinancialDiscount(false);
+      this.resetFinancialDiscount(invoicePayment);
+    }
+
+    invoicePayment.setFinancialDiscountDeadlineDate(financialDiscountDeadlineDate);
   }
 
   protected void resetFinancialDiscount(InvoicePayment invoicePayment) {

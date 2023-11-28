@@ -40,8 +40,7 @@
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
-      <field name="paymentDate"
-        onChange="action-invoice-payment-method-apply-financial-discount"/>
+      <field name="paymentDate" onChange="action-invoice-payment-group-payment-date-onchange"/>
       <field name="delayReason" showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
       <field name="invoice.dueDate" showIf="paymentDate &gt; invoice.dueDate"/>
       <field name="companyBankDetails" canEdit="false"
@@ -62,17 +61,14 @@
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
-      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0" showIf="financialDiscount">
+      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0" showIf="!$isMultiCurrency">
       <field name="applyFinancialDiscount" readonlyIf="$isPartialPayment"
         onChange="action-invoice-payment-group-apply-financial-discount-on-change"/>
-      <field name="financialDiscount" showIf="applyFinancialDiscount" readonly="true"
-        requiredIf="applyFinancialDiscount"/>
-      <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
-        showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
-        readonly="true"/>
-      <panel name="financialDiscountAmountPanel"
-        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
-        <field name="financialDiscount"/>
+      <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
+      <panel name="financialDiscountPanel" readonly="true" showIf="applyFinancialDiscount"
+        colSpan="12">
+        <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
+          showIf="totalAmountWithFinancialDiscount" readonly="true"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
         <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
@@ -165,7 +161,10 @@
     <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
-
+  <action-group name="action-invoice-payment-group-payment-date-onchange">
+    <action name="action-invoice-payment-method-apply-financial-discount"/>
+    <action name="action-invoice-payment-method-new-discount"/>
+  </action-group>
 
   <action-validate name="action-invoice-payment-validate-mass-payment">
     <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
