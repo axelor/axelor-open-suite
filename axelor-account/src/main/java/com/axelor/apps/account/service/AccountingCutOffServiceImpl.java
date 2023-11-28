@@ -51,6 +51,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -88,6 +89,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
   protected CurrencyService currencyService;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineRepository moveLineRepository;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
   protected int counter = 0;
 
   @Inject
@@ -111,8 +113,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
       MoveLineService moveLineService,
       CurrencyService currencyService,
       TaxAccountToolService taxAccountToolService,
-      MoveLineRepository moveLineRepository) {
-
+      MoveLineRepository moveLineRepository,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.moveCreateService = moveCreateService;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
@@ -133,6 +135,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     this.currencyService = currencyService;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineRepository = moveLineRepository;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -569,10 +572,14 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal percentage =
         amount
             .multiply(BigDecimal.valueOf(100))
-            .divide(moveLine.getCurrencyAmount(), 2, RoundingMode.HALF_UP);
+            .divide(
+                moveLine.getCurrencyAmount(),
+                AppAccountService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
 
     analyticMoveLine.setPercentage(percentage);
-    analyticMoveLine.setAmount(amount.setScale(2, RoundingMode.HALF_UP));
+    analyticMoveLine.setAmount(
+        amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
   }
 
   protected void generateTaxMoveLine(
@@ -592,7 +599,9 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
 
     BigDecimal currencyTaxAmount =
         InvoiceLineManagement.computeAmount(
-            productMoveLine.getCurrencyAmount(), taxLine.getValue().divide(new BigDecimal(100)));
+            productMoveLine.getCurrencyAmount(),
+            taxLine.getValue().divide(new BigDecimal(100)),
+            currencyScaleServiceAccount.getScale(move));
     boolean isDebit = productMoveLine.getDebit().signum() > 0;
 
     currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);

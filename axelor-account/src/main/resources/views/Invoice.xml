@@ -41,10 +41,12 @@
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
@@ -193,10 +195,12 @@
       width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -244,10 +248,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
@@ -304,10 +309,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidateStatusSelect" title="PFP"/>
@@ -352,9 +358,10 @@
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -373,9 +380,11 @@
     <field name="invoiceId" width="120"/>
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
   </grid>
@@ -924,9 +933,13 @@ InvoiceSet.length > 0))"
       hideIf="partner == null" gap="0">
       <field name="currency.code" hidden="true"/>
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"/>
-      <field name="taxTotal" x-currency="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" x-currency="currency.symbol" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="exTaxTotal,taxTotal">
         	<![CDATA[
 	                  <>
@@ -945,7 +958,7 @@ InvoiceSet.length > 0))"
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 				<>
 					<Box d="flex" flexDirection="column">
@@ -963,7 +976,7 @@ InvoiceSet.length > 0))"
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {$fmt('amount')}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('amount')}</Box>}
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 
 						{applyFinancialDiscount &&
@@ -980,8 +993,8 @@ InvoiceSet.length > 0))"
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
 								</Box>
-								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('financialDiscountTotalAmount')}</Box>}
-								{financialDiscountTaxAmount == 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('financialDiscountAmount')}</Box>}
+								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
+								{financialDiscountTaxAmount == 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountAmount).toFixed(currency.numberOfDecimals)}</Box>}
 							</Box>
 						}
 					</Box>
@@ -991,7 +1004,8 @@ InvoiceSet.length > 0))"
         <editor></editor>
       </field>
       <field name="amountRemaining" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol">
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="amountRemaining"><![CDATA[
 		         <>
 		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
@@ -1010,10 +1024,13 @@ InvoiceSet.length > 0))"
       <field name="company.currency" hidden="true"/>
       <field name="company.currency.code" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>
-      <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"/>
-      <field name="companyTaxTotal" x-currency="company.currency.symbol" hidden="true"/>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
+      <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
+      <field name="companyTaxTotal" x-currency="company.currency.symbol" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
       <field name="companyInTaxTotal" showTitle="false" colSpan="12"
-        x-currency="company.currency.symbol">
+        x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
         <viewer depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal"><![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -1028,7 +1045,8 @@ InvoiceSet.length > 0))"
 		       ]]></viewer>
       </field>
       <field name="companyInTaxTotalRemaining" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol">
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol"
+        x-scale="company.currency.numberOfDecimals">
         <viewer depends="companyInTaxTotalRemaining"><![CDATA[
 		         <>
 		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
@@ -1201,7 +1219,8 @@ InvoiceSet.length > 0))"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
           form-view="invoice-line-client-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+          onChange="action-invoice-group-invoice-line-list-report-onchange" canMove="true"
+          orderBy="sequence"/>
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
@@ -1250,9 +1269,13 @@ InvoiceSet.length > 0))"
 
     <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6" gap="0">
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="exTaxTotal,taxTotal,inTaxTotal">
         	<![CDATA[
 	                  <>
@@ -1271,7 +1294,7 @@ InvoiceSet.length > 0))"
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 					<>
 						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
@@ -1288,7 +1311,7 @@ InvoiceSet.length > 0))"
 								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 								<span>{$fmt('paymentDate')}</span>
 							</Box>
-							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {$fmt('amount')}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {$fmt('amount')}</Box>}
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 					</>
                 ]]>
@@ -1296,7 +1319,8 @@ InvoiceSet.length > 0))"
         <editor/>
       </field>
       <field name="amountRemaining" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol">
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="amountRemaining"><![CDATA[
 		         <>
 		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
@@ -1540,6 +1564,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
     <action name="action-invoice-attrs-set-subrogation-partner-readonly"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1640,14 +1665,12 @@ InvoiceSet.length > 0))"
     <action name="save"/>
   </action-group>
 
-
   <action-group name="action-invoice-group-pfp-validate">
     <action name="save"/>
     <action name="action-invoice-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <action name="action-method-account-invoice-validate-pfp"/>
   </action-group>
-
 
   <action-group name="action-invoice-group-add-invoice-payment">
     <action name="save"/>
@@ -1662,6 +1685,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
@@ -1759,6 +1783,11 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-invoice-line-list-report-onchange">
+    <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-mode-onchange">
@@ -2403,6 +2432,10 @@ InvoiceSet.length > 0))"
   <action-method name="action-invoice-method-update-subrogation-partner">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="updateSubrogationPartner"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-invoice-line-list-scale">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="setInvoiceLinesScale"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
