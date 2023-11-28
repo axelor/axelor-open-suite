@@ -25,8 +25,13 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.db.Tour;
+import com.axelor.apps.crm.db.TourLine;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
+import com.axelor.apps.crm.db.repo.TourRepository;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -52,6 +58,8 @@ public class MapRestCrm {
   @Inject private LeadRepository leadRepo;
 
   @Inject private OpportunityRepository opportunityRepo;
+
+  @Inject private TourRepository tourRepository;
 
   private JsonNodeFactory factory = JsonNodeFactory.instance;
 
@@ -179,6 +187,54 @@ public class MapRestCrm {
 
         objectNode.put("pinColor", "pink");
         objectNode.put("pinChar", I18n.get(ITranslation.PIN_CHAR_OPPORTUNITY));
+        arrayNode.add(objectNode);
+      }
+
+      mapRestService.setData(mainNode, arrayNode);
+    } catch (Exception e) {
+      mapRestService.setError(mainNode, e);
+    }
+
+    return mainNode;
+  }
+
+  @Path("/tour/{id}")
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
+  public JsonNode getTour(@PathParam("id") long id) {
+    ObjectNode mainNode = factory.objectNode();
+
+    try {
+      Tour tour = tourRepository.find(id);
+      List<TourLine> tourLineList = tour.getTourLineList();
+      if (ObjectUtils.isEmpty(tourLineList)) {
+        return mainNode;
+      }
+
+      ArrayNode arrayNode = factory.arrayNode();
+
+      for (TourLine tourLine : tourLineList) {
+        ObjectNode objectNode = factory.objectNode();
+        Partner partner = tourLine.getPartner();
+        objectNode.put("fullName", partner.getFullName());
+
+        Address address = tourLine.getAddress();
+        if (!StringUtils.isBlank(address.getFullName())) {
+          String addressString = mapRestService.makeAddressString(address, objectNode);
+          if (StringUtils.isBlank(addressString)) {
+            continue;
+          }
+          objectNode.put("address", addressString);
+        }
+        objectNode.put(
+            "fixedPhone", partner.getFixedPhone() != null ? partner.getFixedPhone() : "");
+        objectNode.put(
+            "emailAddress",
+            partner.getEmailAddress() != null ? partner.getEmailAddress().getAddress() : "");
+        objectNode.put("pinColor", "blue");
+        objectNode.put("pinChar", "T");
+
         arrayNode.add(objectNode);
       }
 

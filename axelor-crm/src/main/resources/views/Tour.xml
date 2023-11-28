@@ -7,7 +7,8 @@
     <field name="name"/>
     <field name="date"/>
     <field name="salespersonUser"/>
-    <button name="viewItinerary" title="View itinerary" icon="fa-map" onClick=""/>
+    <button name="viewItinerary" title="View itinerary" icon="fa-map"
+      onClick="action-tour-view-tour-on-map"/>
     <button name="validate" title="Validate" icon="fa-check"
       onClick="action-tour-method-set-validated"/>
   </grid>
@@ -22,7 +23,8 @@
     </panel>
 
     <panel sidebar="true" name="actionsPanel">
-      <button name="viewItinerary" title="View itinerary" icon="fa-map" onClick=""/>
+      <button name="viewItinerary" title="View itinerary" icon="fa-map"
+        onClick="save,action-tour-view-tour-on-map"/>
       <button name="validate" title="Validate" css="btn-success" icon="fa-check"
         onClick="action-tour-method-set-validated"/>
     </panel>
@@ -32,4 +34,7 @@
     <call class="com.axelor.apps.crm.web.TourController" method="setValidated"/>
   </action-method>
 
+  <action-method name="action-tour-view-tour-on-map">
+    <call class="com.axelor.apps.crm.web.TourController" method="showTourOnMap"/>
+  </action-method>
 </object-views>

@@ -18,11 +18,17 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Tour;
 import com.axelor.apps.crm.service.TourService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.studio.db.repo.AppBaseRepository;
 
 public class TourController {
 
@@ -32,5 +38,23 @@ public class TourController {
       Beans.get(TourService.class).setValidated(tour);
     }
     response.setReload(true);
+  }
+
+  public void showTourOnMap(ActionRequest request, ActionResponse response) {
+    try {
+      Tour tour = request.getContext().asType(Tour.class);
+      AppBaseService appBaseService = Beans.get(AppBaseService.class);
+      MapService mapService = Beans.get(MapService.class);
+      response.setView(
+          ActionView.define(I18n.get(Tour.class.getSimpleName()))
+              .add(
+                  "html",
+                  appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE
+                      ? mapService.getMapURI("tour", tour.getId())
+                      : mapService.getOsmMapURI("tour", tour.getId()))
+              .map());
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
   }
 }
