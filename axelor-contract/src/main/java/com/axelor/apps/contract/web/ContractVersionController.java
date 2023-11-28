@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.AxelorAlertException;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -41,6 +43,8 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.Comparator;
+
+import static com.axelor.apps.base.db.repo.TraceBackRepository.CATEGORY_MISSING_FIELD;
 
 @Singleton
 public class ContractVersionController {
@@ -129,11 +133,13 @@ public class ContractVersionController {
     }
   }
 
-  public void changeProduct(ActionRequest request, ActionResponse response) {
+  public void changeProduct(ActionRequest request, ActionResponse response) throws AxelorException {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
     ContractLine contractLine = new ContractLine();
-
+    if (request.getContext().getParent().getParent().get("partner")==null)
+      throw new AxelorException(CATEGORY_MISSING_FIELD,I18n.get("Please fill a partner"));
     try {
+
       contractLine = request.getContext().asType(ContractLine.class);
 
       ContractVersion contractVersion =
