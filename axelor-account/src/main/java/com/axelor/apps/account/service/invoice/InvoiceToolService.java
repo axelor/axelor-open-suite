@@ -340,6 +340,8 @@ public class InvoiceToolService {
     copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
     copy.setHasPendingPayments(false);
+    copy.setReasonOfRefusalToPay(null);
+    copy.setReasonOfRefusalToPayStr(null);
   }
 
   /**
