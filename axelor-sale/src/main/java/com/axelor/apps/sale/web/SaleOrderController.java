@@ -71,15 +71,12 @@ import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -660,12 +657,20 @@ public class SaleOrderController {
         "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
   }
 
-  public void onLineChange(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void onLineChange(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
-    response.setValues(saleOrder);
-    response.setAttr(
-        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+    try {
+      if (saleOrder == null) {
+        return;
+      }
+
+      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+
+      response.setValues(saleOrder);
+      response.setAttrs(Beans.get(SaleOrderAttrsService.class).onChangeSaleOrderLine(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void createNewVersion(ActionRequest request, ActionResponse response)
@@ -721,24 +726,5 @@ public class SaleOrderController {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
     response.setReload(true);
-  }
-
-  public void setSaleOrderLinesScale(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    try {
-      if (saleOrder == null || CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        return;
-      }
-
-      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-      SaleOrderAttrsService saleOrderAttrsService = Beans.get(SaleOrderAttrsService.class);
-
-      saleOrderAttrsService.setSaleOrderLineScale(saleOrder, attrsMap);
-      saleOrderAttrsService.setSaleOrderLineTaxScale(saleOrder, attrsMap);
-
-      response.setAttrs(attrsMap);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
   }
 }

@@ -20,14 +20,6 @@
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
     </extend>
-    <extend target="//panel-related[@name='detailLinesPanel']">
-      <attribute name="onChange"
-        value="supplychain-action-sale-order-group-sale-order-line-on-change"/>
-    </extend>
-    <extend target="//field[@name='saleOrderLineList']">
-      <attribute name="onChange"
-        value="supplychain-action-sale-order-group-sale-order-line-on-change"/>
-    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -148,11 +140,6 @@
     <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
     <action
       name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
-  </action-group>
-
-  <action-group name="supplychain-action-sale-order-group-sale-order-line-on-change">
-    <action name="action-sale-order-group-sale-order-line-on-change"/>
-    <action name="supplychain-action-create-shipment-cost-line"/>
   </action-group>
 
   <!-- ACTION METHOD -->

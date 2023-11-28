@@ -461,7 +461,7 @@
         <panel-related name="detailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
           form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence"
-          onChange="action-sale-order-group-sale-order-line-on-change"
+          onChange="action-sale-order-method-on-line-change"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true" if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
@@ -474,9 +474,8 @@
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-group-sale-order-line-on-change"
-          onClick="action-orderSaleLine-tree" canMove="true"
-          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+          onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
+          canMove="true" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -1566,11 +1565,6 @@
     <action name="action-sale-order-method-version-recovery-btn"/>
   </action-group>
 
-  <action-group name="action-sale-order-group-sale-order-line-on-change">
-    <action name="action-sale-order-method-on-line-change"/>
-    <action name="action-sale-order-method-set-sale-order-line-list-scale"/>
-  </action-group>
-
   <action-validate name="action-sale-order-validate-quotation">
     <error message="Please enter at least one detail line." if="saleOrderLineList?.isEmpty()"/>
     <alert
@@ -2160,10 +2154,6 @@
   <action-method name="action-sale-method-printing-settings-default-values">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="fillDefaultPrintingSettings"/>
-  </action-method>
-
-  <action-method name="action-sale-order-method-set-sale-order-line-list-scale">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="setSaleOrderLinesScale"/>
   </action-method>
 
   <action-validate name="action-sale-order-validate-check-on-confirm">
