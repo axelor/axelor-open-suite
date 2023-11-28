@@ -237,8 +237,8 @@
 
   <action-group name="action-global-budget-group-draft-children">
     <action name="action-global-budget-validate-alert-draft-children"/>
-    <action name="action-global-budget-method-draft-children"/>
     <action name="save"/>
+    <action name="action-global-budget-method-draft-children"/>
   </action-group>
 
   <action-validate name="action-global-budget-validate-alert-draft-children">

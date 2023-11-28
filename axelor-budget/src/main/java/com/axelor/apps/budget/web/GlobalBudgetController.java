@@ -73,7 +73,7 @@ public class GlobalBudgetController {
   public void draftChildren(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     Beans.get(GlobalBudgetWorkflowService.class).draftChildren(globalBudget);
-    response.setValues(globalBudget);
+    response.setReload(true);
   }
 
   @ErrorException

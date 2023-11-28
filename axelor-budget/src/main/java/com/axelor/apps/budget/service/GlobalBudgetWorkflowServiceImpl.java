@@ -37,17 +37,20 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
   protected GlobalBudgetService globalBudgetService;
+  protected GlobalBudgetRepository globalBudgetRepository;
 
   @Inject
   public GlobalBudgetWorkflowServiceImpl(
       BudgetLevelService budgetLevelService,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
-      GlobalBudgetService globalBudgetService) {
+      GlobalBudgetService globalBudgetService,
+      GlobalBudgetRepository globalBudgetRepository) {
     this.budgetLevelService = budgetLevelService;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
     this.globalBudgetService = globalBudgetService;
+    this.globalBudgetRepository = globalBudgetRepository;
   }
 
   @Override
@@ -94,7 +97,8 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
   @Transactional(rollbackOn = {Exception.class})
   public void draftChildren(GlobalBudget globalBudget) {
 
-    // clearBudgetVersions(globalBudget);
+    clearBudgetVersions(globalBudget);
+    globalBudget = globalBudgetRepository.find(globalBudget.getId());
 
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
@@ -107,9 +111,12 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
     }
 
     globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT);
+    globalBudgetRepository.save(globalBudget);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void clearBudgetVersions(GlobalBudget globalBudget) {
+    globalBudget = globalBudgetRepository.find(globalBudget.getId());
     if (ObjectUtils.isEmpty(globalBudget.getBudgetVersionList())) {
       return;
     }
@@ -132,5 +139,6 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
         budget.setActiveVersionExpectedAmountsLine(null);
       }
     }
+    globalBudgetRepository.save(globalBudget);
   }
 }
