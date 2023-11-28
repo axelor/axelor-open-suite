@@ -1,0 +1,3 @@
+---
+title: "Add a check on saleOrderLineList in SaleOrderProjectRepository.copy to remove the NPE."
+type: fix
