@@ -491,7 +491,7 @@ public final class BaseExceptionMessage {
       "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
 
   public static final String PRICING_2 = /*$$(*/
-      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+      "There is already a pricing that has the selected pricing as previous pricing, for the formula '%s', company '%s' and model '%s'." /*)*/;
 
   public static final String PRICING_3 = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;

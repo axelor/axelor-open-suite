@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
@@ -135,10 +136,11 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
   @Inject
   public SaleOrderMergingServiceSupplyChainImpl(
       SaleOrderCreateService saleOrdreCreateService,
+      SaleOrderRepository saleOrderRepository,
       AppSaleService appSaleService,
       AppBaseService appBaseService,
       AppStockService appStockService) {
-    super(saleOrdreCreateService);
+    super(saleOrdreCreateService, saleOrderRepository);
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
