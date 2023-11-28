@@ -72,6 +72,7 @@
     <boolean name="isToRevaluate" title="To revaluate"/>
     <decimal name="initialPricePerYear" title="Initial price per year"/>
     <decimal name="yearlyPriceRevalued" title="Price revalued yearly"/>
+    <many-to-one name="pricing" ref="com.axelor.apps.base.db.Pricing" title="Pricing"/>
 
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
