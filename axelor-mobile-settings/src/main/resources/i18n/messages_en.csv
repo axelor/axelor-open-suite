@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value.",,,
+"A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value. <br>Example : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- The JPQL query must select at least 2 values. <br>- The first selected value must be a string type. <br>- The second selected value must be a number type (long, decimal, integer). <br>- If more than 2 values are selected, they will be ignored. <br>",,,
 "Activate invoicing on projects",,,
 "Activate multi currency",,,
 "Allow edition of date",,,
@@ -34,6 +34,7 @@
 "Custom field",,,
 "Customize menus",,,
 "Customize translations",,,
+"Donut",,,
 "Enable addition of new lines in customer delivery.",,,
 "Enable addition of new lines in supplier arrival.",,,
 "Enable app",,,
@@ -104,6 +105,7 @@
 "Stock config",,,
 "Technical name",,,
 "Technical name should be the menu key used in module export on mobile application.",,,
+"There is an error with the query : \n",,,
 "Timesheets",,,
 "Use qrCode for user connection",,,
 "User",,,

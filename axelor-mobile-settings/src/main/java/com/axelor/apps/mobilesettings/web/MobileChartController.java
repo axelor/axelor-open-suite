@@ -1,5 +1,6 @@
 package com.axelor.apps.mobilesettings.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.service.MobileChartService;
 import com.axelor.inject.Beans;
@@ -7,10 +8,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class MobileChartController {
-  public void getJsonResponse(ActionRequest request, ActionResponse response) {
+  public void getJsonResponse(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     MobileChart mobileChart = request.getContext().asType(MobileChart.class);
     response.setValue(
-        "$response",
-        Beans.get(MobileChartService.class).getJsonResponse(mobileChart).toJSONString());
+        "$response", Beans.get(MobileChartService.class).getQueryResponse(mobileChart));
   }
 }

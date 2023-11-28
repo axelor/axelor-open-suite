@@ -1,5 +1,6 @@
 package com.axelor.apps.mobilesettings.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.service.MobileChartResponseComputeService;
 import com.axelor.inject.Beans;
@@ -29,7 +30,8 @@ public class MobileChartRestController {
   @Path("/{mobileChartId}")
   @GET
   @HttpExceptionHandler
-  public Response getMobileChart(@PathParam("mobileChartId") Long mobileChartId) {
+  public Response getMobileChart(@PathParam("mobileChartId") Long mobileChartId)
+      throws AxelorException {
     new SecurityCheck().writeAccess(MobileChart.class).createAccess(MobileChart.class).check();
     MobileChart mobileChart =
         ObjectFinder.find(MobileChart.class, mobileChartId, ObjectFinder.NO_VERSION);

@@ -1,5 +1,5 @@
 "key","message","comment","context"
-"A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value.","Une requête JPQL SELECT doit être utilisée. La première information récupérée depuis la requête doit être l'étiquette et la deuxième doit être la valeur associée.",,
+"A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value. <br>Example : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- The JPQL query must select at least 2 values. <br>- The first selected value must be a string type. <br>- The second selected value must be a number type (long, decimal, integer). <br>- If more than 2 values are selected, they will be ignored. <br>","Une requête JPQL SELECT doit être utilisée. La première information récupérée depuis la requête doit être l'étiquette et la deuxième doit être la valeur associée. <br>Exemple : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- La requête JPQL doit contenir au moins 2 valeurs. <br>- La première valeur choisie doit être de type string. <br>- La seconde valeur doit être de type nombre (long, decimal, integer). <br>- Si plus de 2 valeurs sont sélectionnées, elles seront ignorées. <br>",,
 "Activate invoicing on projects","Activer l'imputation sur les projets",,
 "Activate multi currency","Activer le multi-devise",,
 "Allow edition of date","Autoriser l'édition de la date",,
@@ -34,6 +34,7 @@
 "Custom field","Champ personnalisé",,
 "Customize menus","Personnaliser les menus",,
 "Customize translations","Personnaliser les traductions",,
+"Donut",,,
 "Enable addition of new lines in customer delivery.","Activer l'ajout de nouvelles lignes dans les livraisons client.",,
 "Enable addition of new lines in supplier arrival.","Activer l'ajout de nouvelles lignes dans les réceptions fournisseur.",,
 "Enable app","Activer l'application",,
@@ -104,6 +105,7 @@
 "Stock config",,,
 "Technical name","Nom technique",,
 "Technical name should be the menu key used in module export on mobile application.","Le nom technique correspond à la clé du menu utilisée dans l'export du module sur l'application mobile.",,
+"There is an error with the query : \n",,,
 "Timesheets","Feuilles de temps",,
 "Use qrCode for user connection","Utiliser le code-barre pour la connexion utilisateur",,
 "User",,,

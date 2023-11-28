@@ -21,6 +21,7 @@
     <option value="bar">Bar</option>
     <option value="line">Line</option>
     <option value="pie">Pie</option>
+    <option value="donut">Donut</option>
   </selection>
 
 </object-views>

@@ -1,5 +1,6 @@
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.db.MobileDashboardLine;
@@ -21,7 +22,8 @@ public class MobileDashboardResponseComputeServiceImpl
   }
 
   @Override
-  public MobileDashboardResponse computeMobileDashboardResponse(MobileDashboard mobileDashboard) {
+  public MobileDashboardResponse computeMobileDashboardResponse(MobileDashboard mobileDashboard)
+      throws AxelorException {
     List<MobileDashboardLineResponse> mobileDashboardLineResponseList = new ArrayList<>();
     for (MobileDashboardLine mobileDashboardLine : mobileDashboard.getMobileDashboardLineList()) {
       List<MobileChartResponse> mobileChartResponseList = new ArrayList<>();
@@ -36,7 +38,8 @@ public class MobileDashboardResponseComputeServiceImpl
   }
 
   protected void addMobileChartResponses(
-      MobileDashboardLine mobileDashboardLine, List<MobileChartResponse> mobileChartResponseList) {
+      MobileDashboardLine mobileDashboardLine, List<MobileChartResponse> mobileChartResponseList)
+      throws AxelorException {
     addMobileChartResponse(mobileDashboardLine.getMobileChart1(), mobileChartResponseList);
     addMobileChartResponse(mobileDashboardLine.getMobileChart2(), mobileChartResponseList);
     addMobileChartResponse(mobileDashboardLine.getMobileChart3(), mobileChartResponseList);
@@ -44,7 +47,8 @@ public class MobileDashboardResponseComputeServiceImpl
   }
 
   protected void addMobileChartResponse(
-      MobileChart mobileChart, List<MobileChartResponse> mobileChartResponseList) {
+      MobileChart mobileChart, List<MobileChartResponse> mobileChartResponseList)
+      throws AxelorException {
     if (mobileChart != null) {
       mobileChartResponseList.add(
           mobileChartResponseComputeService.computeMobileChartResponse(mobileChart));

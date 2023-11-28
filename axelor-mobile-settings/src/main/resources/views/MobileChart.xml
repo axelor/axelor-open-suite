@@ -11,6 +11,10 @@
   <form name="mobile-chart-form" title="Mobile chart"
     model="com.axelor.apps.mobilesettings.db.MobileChart" width="large">
     <panel name="mainPanel">
+      <help colSpan="12">
+        <![CDATA[A JPQL SELECT query must be used. The first information fetched from the query must be the label and the second one the value. <br>Example : <br>SELECT partner.fullName, count(so.id) FROM Partner partner LEFT JOIN SaleOrder so on partner.id = so.clientPartner GROUP BY partner.fullName <br>Note : <br>- The JPQL query must select at least 2 values. <br>- The first selected value must be a string type. <br>- The second selected value must be a number type (long, decimal, integer). <br>- If more than 2 values are selected, they will be ignored. <br>
+        ]]>
+      </help>
       <field name="name" colSpan="6"/>
       <field name="chartTypeSelect" colSpan="6"/>
       <field name="query" colSpan="12" height="10"/>
@@ -18,7 +22,7 @@
         colSpan="3"/>
       <spacer colSpan="9"/>
       <field type="string" name="$response" title="Response" colSpan="12" height="10"
-        widget="text"/>
+        widget="text" showIf="$response" readonly="true"/>
     </panel>
   </form>
 
