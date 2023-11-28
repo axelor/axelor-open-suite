@@ -148,12 +148,6 @@
     <field name="toDate" expr="eval: toDate == null ? __parent__?.toDate : toDate"/>
   </action-record>
 
-  <action-record name="action-budget-level-record-parent-budget-level-onchange"
-    model="com.axelor.apps.budget.db.BudgetLevel">
-    <field name="sourceSelect" expr="eval: parentBudgetLevel?.sourceSelect"/>
-    <field name="typeSelect" expr="eval: parentBudgetLevel?.typeSelect"/>
-  </action-record>
-
   <action-record name="action-budget-level-record-set-defaults"
     model="com.axelor.apps.budget.db.BudgetLevel">
     <field name="statusSelect"
