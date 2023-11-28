@@ -22,6 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.pricing.PricingGroupService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -61,5 +62,24 @@ public class PricingController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void setFormulaField(ActionRequest request, ActionResponse response) {
+    Pricing pricing = request.getContext().asType(Pricing.class);
+    String formula = "";
+
+    if (pricing != null) {
+      formula =
+          Beans.get(PricingGroupService.class)
+              .computeFormulaField(pricing.getProduct(), pricing.getProductCategory());
+    }
+
+    response.setValue("formula", formula);
+  }
+
+  public void clearFieldsRelatedToFormula(ActionRequest request, ActionResponse response) {
+    Pricing pricing = request.getContext().asType(Pricing.class);
+
+    response.setValues(Beans.get(PricingGroupService.class).clearFieldsRelatedToFormula(pricing));
   }
 }
