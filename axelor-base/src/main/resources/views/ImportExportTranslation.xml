@@ -16,16 +16,22 @@
     <panel name="importExportPanel" title="Import/Export" showTitle="false">
       <field name="name" title="Name" colSpan="4"/>
       <field name="languageSet" title="Languages" widget="tagSelect" colSpan="4"/>
-      <field name="uploadFile" title="Uploaded File" colSpan="4"/>
-      <button name="Export" title="Export" colSpan="6"
+      <field name="uploadFile" title="Uploaded File" colSpan="4" widget="binary-link"/>
+      <button name="export" title="Export" colSpan="6"
         onClick="action-import-export-translation-method-export"/>
-      <button name="Import" title="Import" colSpan="6" onClick=""/>
+      <button name="import" title="Import" colSpan="6"
+        onClick="action-import-export-translation-method-import"/>
     </panel>
   </form>
 
   <action-method name="action-import-export-translation-method-export">
     <call class="com.axelor.apps.base.web.ImportExportTranslationController"
       method="exportTranslation"/>
+  </action-method>
+
+  <action-method name="action-import-export-translation-method-import">
+    <call class="com.axelor.apps.base.web.ImportExportTranslationController"
+      method="importTranslation"/>
   </action-method>
 
 </object-views>

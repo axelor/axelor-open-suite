@@ -4,6 +4,8 @@ import com.axelor.apps.base.db.ImportExportTranslation;
 import java.io.IOException;
 
 public interface ImportExportTranslationService {
-  public String exportTranslations(ImportExportTranslation importExportTranslation)
+  public void exportTranslations(ImportExportTranslation importExportTranslation)
       throws IOException;
+
+  //  public void importTranslations();
 }
