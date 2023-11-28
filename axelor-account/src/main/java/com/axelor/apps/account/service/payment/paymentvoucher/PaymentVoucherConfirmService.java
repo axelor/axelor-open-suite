@@ -688,8 +688,6 @@ public class PaymentVoucherConfirmService {
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
             || paymentVoucher.getOperationTypeSelect()
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-    LocalDate dueDate =
-        moveLineToPay.getDueDate() != null ? moveLineToPay.getDueDate() : paymentDate;
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
     String invoiceName = this.getInvoiceName(moveLineToPay, payVoucherElementToPay);
@@ -711,7 +709,7 @@ public class PaymentVoucherConfirmService {
         null,
         financialDiscountAmount,
         payVoucherElementToPay.getFinancialDiscountTaxAmount(),
-        dueDate,
+        paymentDate,
         moveLineNo,
         isDebitToPay,
         financialDiscountVat);
