@@ -18,15 +18,26 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.base.service.pricing.PricingGroupService;
 import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
+import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import java.util.List;
 
 public class PricingController {
 
@@ -81,5 +92,58 @@ public class PricingController {
     Pricing pricing = request.getContext().asType(Pricing.class);
 
     response.setValues(Beans.get(PricingGroupService.class).clearFieldsRelatedToFormula(pricing));
+  }
+
+  public void usePricings(ActionRequest request, ActionResponse response) {
+
+    try {
+      String modelName = request.getModel();
+      Context context = request.getContext();
+      Long recordId = Long.valueOf(context.get("id").toString());
+      Company company = (Company) request.getContext().get("company");
+      if (modelName != null && recordId != null) {
+        usePricings(company, Class.forName(modelName), recordId);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void usePricingsList(ActionRequest request, ActionResponse response) {
+
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (ObjectUtils.isEmpty(idList)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.NO_RECORD_SELECTED_TO_PRINT));
+      }
+
+      String modelName = request.getModel();
+      Company company = (Company) request.getContext().get("company");
+
+      if (modelName != null) {
+        usePricings(company, Class.forName(modelName), idList);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  protected <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
+      throws AxelorException {
+    Model model = JPA.find((Class<T>) modelClass, modelId);
+    Beans.get(PricingGenericService.class).usePricings(company, model);
+  }
+
+  protected <T extends Model> void usePricings(
+      Company company, Class<?> modelClass, List<Integer> idList) throws AxelorException {
+    for (Number id : idList) {
+      usePricings(company, modelClass, id.longValue());
+
+      JPA.clear();
+    }
   }
 }
