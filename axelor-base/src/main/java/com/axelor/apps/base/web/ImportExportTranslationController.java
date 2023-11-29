@@ -5,7 +5,6 @@ import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.apps.base.service.ImportExportTranslationService;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.io.IOException;
@@ -27,10 +26,10 @@ public class ImportExportTranslationController {
         request.getContext().asType(ImportExportTranslation.class);
     importExportTranslation =
         Beans.get(ImportExportTranslationRepository.class).find(importExportTranslation.getId());
-    MetaFile uploadFile = importExportTranslation.getUploadFile();
 
-    System.out.println(uploadFile.getFileName());
+    ImportExportTranslationService importExportTranslationService =
+        Beans.get(ImportExportTranslationService.class);
 
-    System.out.println(uploadFile.getFilePath());
+    importExportTranslationService.importTranslations(importExportTranslation);
   }
 }

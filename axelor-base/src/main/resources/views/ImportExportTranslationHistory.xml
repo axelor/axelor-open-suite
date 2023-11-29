@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="import-export-translation-history-grid" title="Import/Export Translation History"
+    model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
+    <field name="actionType"/>
+    <field name="recordNumber"/>
+    <field name="errorNumber"/>
+  </grid>
+
+  <form name="import-export-translation-history-form" title="Import/Export Translation History"
+    model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
+    <panel name="importExportTranslationHistoryPanel" showTitle="false"
+      title="Import/Export Translation History Panel" colSpan="12">
+      <field name="actionType"/>
+      <field name="recordNumber"/>
+      <field name="errorNumber"/>
+    </panel>
+  </form>
+
+
+</object-views>

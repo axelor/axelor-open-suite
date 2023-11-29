@@ -1,10 +1,12 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ImportExportTranslation;
+import com.axelor.apps.base.db.ImportExportTranslationHistory;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
@@ -13,7 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +95,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       }
     } while (true);
 
+    long countRecords = 0;
+
     for (Map.Entry entry : map.entrySet()) {
       String key = (String) entry.getKey();
       Object[] value = (Object[]) entry.getValue();
@@ -100,6 +106,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         row[j + 1] = (String) value[j];
       }
       translationList.add(row);
+      countRecords++;
     }
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
@@ -107,6 +114,13 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), importExportTranslation);
     }
+    ImportExportTranslationHistory importExportTranslationHistory =
+        new ImportExportTranslationHistory();
+    importExportTranslationHistory.setActionType("Export");
+    importExportTranslationHistory.setRecordNumber(countRecords);
+    importExportTranslationHistory.setErrorNumber(0L);
+    importExportTranslation.addImportExportTranslationHistoryListItem(
+        importExportTranslationHistory);
     importExportTranslationRepository.save(importExportTranslation);
   }
 
@@ -179,5 +193,71 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
                     + "where base_import_export_translation.id = :curId ")
             .setParameter("curId", importExportTranslationId);
     return (List<String>) languageQuery.getResultList();
+  }
+
+  @Override
+  public Path importTranslations(ImportExportTranslation importExportTranslation) {
+    Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
+    char separator = ';';
+    List<String[]> data = null;
+    try {
+      data = CsvHelper.cSVFileReader(filePath.toString(), separator);
+    } catch (Exception e) {
+
+    }
+
+    List<String> headers = Arrays.asList(data.get(0));
+    //    System.out.println(headers);
+    for (int i = 1; i < data.size(); i++) {
+      List<String> dataLine = Arrays.asList(data.get(i));
+      //      System.out.println(dataLine);
+      insertOrUpdateTranslation(dataLine, headers);
+    }
+
+    return null;
+  }
+
+  @Transactional
+  protected void insertOrUpdateTranslation(List<String> dataLine, List<String> headers) {
+    String key = dataLine.get(0);
+    for (int i = 1; i < dataLine.size(); i++) {
+      // dataLine: messageKey, en_value, fr_value, L3_value, ...
+      String messageValue = dataLine.get(i);
+      String languageCode = headers.get(i);
+
+      Query existenceQuery =
+          JPA.em()
+              .createNativeQuery(
+                  "select message_key "
+                      + "from meta_translation "
+                      + "where meta_translation.language = :languageCode "
+                      + "and message_value = :messageValue ")
+              .setParameter("languageCode", languageCode)
+              .setParameter("messageValue", messageValue);
+
+      List existenceQueryResultList = existenceQuery.getResultList();
+      if (existenceQueryResultList.isEmpty()) {
+        // insert
+        MetaTranslation metaTranslation = new MetaTranslation();
+        metaTranslation.setKey(key);
+        metaTranslation.setLanguage(languageCode);
+        metaTranslation.setMessage(messageValue);
+        metaTranslationRepository.save(metaTranslation);
+      } else {
+        // update
+        Query updateQuery =
+            JPA.em()
+                .createNativeQuery(
+                    "update meta_translation "
+                        + "set message_value = :messageValue "
+                        + "where message_key = :key "
+                        + "and meta_translation.language = :languageCode ")
+                .setParameter("messageValue", messageValue)
+                .setParameter("key", key)
+                .setParameter("languageCode", languageCode);
+        int updateNumber = updateQuery.executeUpdate();
+        //        System.out.println(updateNumber);
+      }
+    }
   }
 }

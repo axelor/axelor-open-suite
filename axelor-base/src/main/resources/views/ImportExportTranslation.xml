@@ -22,6 +22,12 @@
       <button name="import" title="Import" colSpan="6"
         onClick="action-import-export-translation-method-import"/>
     </panel>
+    <panel name="importExportHistoryPanel" title="Import/Export Histoty" showTitle="false"
+      colSpan="12">
+      <field name="importExportTranslationHistoryList"
+        grid-view="import-export-translation-history-grid"
+        form-view="import-export-translation-history-form" colSpan="12"/>
+    </panel>
   </form>
 
   <action-method name="action-import-export-translation-method-export">
