@@ -3,6 +3,7 @@ package com.axelor.apps.base.service.pricing;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
@@ -37,6 +38,10 @@ public class PricingGenericServiceImpl implements PricingGenericService {
         pricingList.stream()
             .filter(pricing -> pricing.getLinkedPricing() == null)
             .collect(Collectors.toList());
+
+    if (ObjectUtils.isEmpty(pricingList)) {
+      return;
+    }
 
     for (Pricing pricing : pricingList) {
       PricingComputer pricingComputer = PricingComputer.of(pricing, model);
