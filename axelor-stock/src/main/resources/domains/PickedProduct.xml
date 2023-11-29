@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="PickedProduct" lang="java">
+    <many-to-one name="massStockMove" title="Mass move"
+      ref="com.axelor.apps.stock.db.MassStockMove"/>
+    <many-to-one name="pickedProduct" title="Product"
+      ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking number"/>
+    <many-to-one name="fromStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Source location"/>
+    <decimal name="currentQty" title="Current qty"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="pickedQty" title="Picked qty"/>
+    <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"/>
+    <one-to-many ref="com.axelor.apps.stock.db.StoredProduct" name="storedProductList"
+      mappedBy="pickedProduct"/>
+
+  </entity>
+
+</domain-models>

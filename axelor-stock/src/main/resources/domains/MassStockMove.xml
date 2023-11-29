@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="MassStockMove" lang="java" cacheable="true">
+    <string name="sequence" title="Sequence" namecolumn="true"/>
+    <integer name="statusSelect" selection="stock.mass.stock.move.status.select"
+      title="Status" default="1"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Transition location (cart)"/>
+    <many-to-one name="commonFromStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common source location"/>
+    <many-to-one name="commonToStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Common destination location"/>
+    <one-to-many name="pickedProductList" ref="com.axelor.apps.stock.db.PickedProduct"
+      title="Picked products" mappedBy="massStockMove"/>
+    <one-to-many name="storedProductList" ref="com.axelor.apps.stock.db.StoredProduct"
+      title="Stored products" mappedBy="massStockMove"/>
+
+    <extra-code><![CDATA[
+	   	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_IN_PROGRESS = 2;
+		public static final int STATUS_REALIZED = 3;
+		public static final int STATUS_CANCELED = 4;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

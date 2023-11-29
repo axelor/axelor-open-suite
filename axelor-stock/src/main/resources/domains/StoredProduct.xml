@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StoredProduct" lang="java">
+    <many-to-one name="massStockMove" title="Mass move"
+      ref="com.axelor.apps.stock.db.MassStockMove"/>
+    <many-to-one name="storedProduct" title="Product"
+      ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking number"/>
+    <decimal name="currentQty" title="Current qty"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Destination location"/>
+    <decimal name="storedQty" title="Stored qty"/>
+    <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"/>
+    <many-to-one name="pickedProduct" ref="com.axelor.apps.stock.db.PickedProduct"/>
+
+    <entity-listener class="com.axelor.apps.stock.db.repo.StoredProductListener"/>
+
+  </entity>
+
+</domain-models>
