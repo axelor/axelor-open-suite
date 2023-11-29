@@ -223,7 +223,10 @@ public abstract class AccountingReportValueAbstractService {
     return CollectionUtils.isEmpty(accountingReport.getAnalyticAccountSet())
         && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAnalyticAccountSet()))
         && CollectionUtils.isEmpty(column.getAnalyticAccountSet())
-        && CollectionUtils.isEmpty(line.getAnalyticAccountSet());
+        && CollectionUtils.isEmpty(line.getAnalyticAccountSet())
+        && (line.getDetailBySelect()
+                != AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT
+            || !accountingReport.getDisplayDetails());
   }
 
   protected String getAccountFilterQueryList(String accountFilter) {

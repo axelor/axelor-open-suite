@@ -22,20 +22,26 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.PricingLine;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.repo.PricingLineRepository;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
+import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,19 +70,13 @@ public class PricingServiceImpl implements PricingService {
   }
 
   @Override
-  public Optional<Pricing> getRandomPricing(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing pricing) {
-    return getPricings(company, product, productCategory, modelName, null).stream().findAny();
+  public Optional<Pricing> getRandomPricing(Company company, Model model, Pricing pricing) {
+    return getPricings(company, model, null).stream().findAny();
   }
 
   @Override
-  public Optional<Pricing> getRootPricingForNextPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName) {
-    List<Pricing> pricings = getAllPricings(company, product, productCategory, modelName);
+  public Optional<Pricing> getRootPricingForNextPricings(Company company, Model model) {
+    List<Pricing> pricings = getAllPricings(company, model);
 
     Set<Long> pricingsPointedTo =
         pricings.stream()
@@ -99,15 +99,10 @@ public class PricingServiceImpl implements PricingService {
   }
 
   @Override
-  public List<Pricing> getPricings(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing pricing) {
+  public List<Pricing> getPricings(Company company, Model model, Pricing pricing) {
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
-    pricingFetchFilter(filter, bindings, company, modelName);
+    pricingFetchFilter(filter, bindings, company, model);
 
     if (pricing != null) {
       filter.append("AND self.linkedPricing = :linkedPricing ");
@@ -118,27 +113,28 @@ public class PricingServiceImpl implements PricingService {
 
     filter.append("AND (self.archived = false OR self.archived is null) ");
 
-    appendProductFilter(product, productCategory, filter, bindings);
     LOG.debug("Filtering pricing with {}", filter);
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+    List<Pricing> pricings = pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+
+    return appendFormulaFilter(pricings, model);
   }
 
   @Override
-  public List<Pricing> getAllPricings(
-      Company company, Product product, ProductCategory productCategory, String modelName) {
+  public List<Pricing> getAllPricings(Company company, Model model) {
     StringBuilder filter = new StringBuilder();
     Map<String, Object> bindings = new HashMap<>();
-    pricingFetchFilter(filter, bindings, company, modelName);
+    pricingFetchFilter(filter, bindings, company, model);
 
     filter.append("AND (self.archived = false OR self.archived is null) ");
 
-    appendProductFilter(product, productCategory, filter, bindings);
     LOG.debug("Filtering pricing with {}", filter);
-    return pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+    List<Pricing> pricings = pricingRepo.all().filter(filter.toString()).bind(bindings).fetch();
+
+    return appendFormulaFilter(pricings, model);
   }
 
   protected void pricingFetchFilter(
-      StringBuilder filter, Map<String, Object> bindings, Company company, String modelName) {
+      StringBuilder filter, Map<String, Object> bindings, Company company, Model model) {
     LOG.debug("Fetching pricings");
 
     filter.append("self.startDate <= :todayDate ");
@@ -150,44 +146,27 @@ public class PricingServiceImpl implements PricingService {
       bindings.put("company", company);
     }
 
-    if (modelName != null) {
+    if (model != null) {
       filter.append("AND self.concernedModel.name = :modelName ");
-      bindings.put("modelName", modelName);
+      bindings.put("modelName", EntityHelper.getEntityClass(model).getSimpleName());
     }
   }
 
-  protected void appendProductFilter(
-      Product product,
-      ProductCategory productCategory,
-      StringBuilder filter,
-      Map<String, Object> bindings) {
-    StringBuilder productFilter = new StringBuilder();
-    productFilter.append("(");
-    if (product != null) {
-      productFilter.append("self.product = :product ");
-      bindings.put("product", product);
-
-      if (product.getParentProduct() != null) {
-        productFilter.append("OR self.product = :parentProduct ");
-        bindings.put("parentProduct", product.getParentProduct());
-      }
-      if (productCategory != null) {
-        productFilter.append("OR self.productCategory = :productCategory ");
-        bindings.put("productCategory", productCategory);
-      }
-    } else {
-      if (productCategory != null) {
-        productFilter.append("self.productCategory = :productCategory ");
-        bindings.put("productCategory", productCategory);
+  protected List<Pricing> appendFormulaFilter(List<Pricing> pricings, Model model) {
+    Context scriptContext = new Context(Mapper.toMap(model), EntityHelper.getEntityClass(model));
+    ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+    List<Pricing> filteredPricings = new ArrayList<>();
+    for (Pricing pricing : pricings) {
+      try {
+        if (Boolean.TRUE.equals(scriptHelper.eval(pricing.getFormula()))) {
+          filteredPricings.add(pricing);
+        }
+      } catch (Exception e) {
+        TraceBackService.trace(e);
       }
     }
-    productFilter.append(")");
 
-    // if productFilter is more than just "()"
-    if (productFilter.length() > 2) {
-      filter.append("AND ");
-      filter.append(productFilter);
-    }
+    return filteredPricings;
   }
 
   @Override
@@ -241,6 +220,7 @@ public class PricingServiceImpl implements PricingService {
     currentPricing.setImportOrigin(pricing.getImportOrigin());
     currentPricing.setProduct(pricing.getProduct());
     currentPricing.setProductCategory(pricing.getProductCategory());
+    currentPricing.setFormula(pricing.getFormula());
     currentPricing.setVersion(pricing.getVersion());
     currentPricing.setAttrs(pricing.getAttrs());
     currentPricing.clearPricingLineList();
