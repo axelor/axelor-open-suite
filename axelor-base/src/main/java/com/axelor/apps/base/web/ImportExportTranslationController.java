@@ -19,6 +19,7 @@ public class ImportExportTranslationController {
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
     importExportTranslationService.exportTranslations(importExportTranslation);
+    response.setReload(true);
   }
 
   public void importTranslation(ActionRequest request, ActionResponse response) {
@@ -26,10 +27,10 @@ public class ImportExportTranslationController {
         request.getContext().asType(ImportExportTranslation.class);
     importExportTranslation =
         Beans.get(ImportExportTranslationRepository.class).find(importExportTranslation.getId());
-
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
-
     importExportTranslationService.importTranslations(importExportTranslation);
+    response.setInfo("File successfully imported.");
+    response.setReload(true);
   }
 }

@@ -2,6 +2,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.ImportExportTranslationHistory;
+import com.axelor.apps.base.db.repo.ImportExportTranslationHistoryRepository;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
@@ -27,13 +28,18 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
 
   protected MetaTranslationRepository metaTranslationRepository;
   protected ImportExportTranslationRepository importExportTranslationRepository;
+  protected ImportExportTranslationHistoryRepository importExportTranslationHistoryRepository;
+
+  public static final int LIMIT = 50;
 
   @Inject
   public ImportExportTranslationServiceImpl(
       MetaTranslationRepository metaTranslationRepository,
-      ImportExportTranslationRepository importExportTranslationRepository) {
+      ImportExportTranslationRepository importExportTranslationRepository,
+      ImportExportTranslationHistoryRepository importExportTranslationHistoryRepository) {
     this.metaTranslationRepository = metaTranslationRepository;
     this.importExportTranslationRepository = importExportTranslationRepository;
+    this.importExportTranslationHistoryRepository = importExportTranslationHistoryRepository;
   }
 
   /**
@@ -55,7 +61,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     for (int i = 1; i < headers.length; i++) {
       headers[i] = languageHeaders.get(i - 1);
     }
-    int limit = 50;
     int offset = 0;
     Object[] messageRecord;
     String messageKey;
@@ -68,8 +73,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     Map<String, String[]> map = new HashMap<>();
     do {
       JPA.clear();
-      messageQueryResultList =
-          getResultListByLimitAndOffset(limit, offset, importExportTranslation);
+      messageQueryResultList = getResultListByLimitAndOffset(offset, importExportTranslation);
       if (messageQueryResultList.isEmpty()) {
         break;
       } else {
@@ -81,7 +85,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           if (!map.containsKey(messageKey)) {
             messageValueArray = new String[languageNumber];
             int position = findPosition(languageCode, headers) - 1;
-
             messageValueArray[position] = messageValue;
             map.put(messageKey, messageValueArray);
           } else {
@@ -91,12 +94,10 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
             map.put(messageKey, messageValueArray);
           }
         }
-        offset += limit;
+        offset += LIMIT;
       }
     } while (true);
-
-    long countRecords = 0;
-
+    long countRecords = 0L;
     for (Map.Entry entry : map.entrySet()) {
       String key = (String) entry.getKey();
       Object[] value = (Object[]) entry.getValue();
@@ -114,6 +115,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), importExportTranslation);
     }
+    importExportTranslation = importExportTranslationRepository.find(id);
     ImportExportTranslationHistory importExportTranslationHistory =
         new ImportExportTranslationHistory();
     importExportTranslationHistory.setActionType("Export");
@@ -127,13 +129,12 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   /**
    * This method creates a query in database of translation records with a limit and an offset.
    *
-   * @param limit
    * @param offset
    * @param importExportTranslation
    * @return Queried result list with the limit and the offset.
    */
   protected List<Object[]> getResultListByLimitAndOffset(
-      int limit, int offset, ImportExportTranslation importExportTranslation) {
+      int offset, ImportExportTranslation importExportTranslation) {
     Query messageQuery =
         JPA.em()
             .createNativeQuery(
@@ -150,7 +151,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
                     + "limit :limit "
                     + "offset :offset ")
             .setParameter("curId", importExportTranslation.getId())
-            .setParameter("limit", limit)
+            .setParameter("limit", LIMIT)
             .setParameter("offset", offset);
     return messageQuery.getResultList();
   }
@@ -195,6 +196,14 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     return (List<String>) languageQuery.getResultList();
   }
 
+  /**
+   * This method imports the translation file and saves each record into ImportExportTranslation
+   * obj.
+   *
+   * @param importExportTranslation
+   * @return
+   */
+  @Transactional
   @Override
   public Path importTranslations(ImportExportTranslation importExportTranslation) {
     Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
@@ -205,36 +214,55 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     } catch (Exception e) {
 
     }
-
     List<String> headers = Arrays.asList(data.get(0));
-    //    System.out.println(headers);
+    long dataLineNumber = 0L;
     for (int i = 1; i < data.size(); i++) {
       List<String> dataLine = Arrays.asList(data.get(i));
-      //      System.out.println(dataLine);
-      insertOrUpdateTranslation(dataLine, headers);
+      dataLineNumber += insertOrUpdateTranslation(dataLine, headers);
     }
-
-    return null;
+    ImportExportTranslationHistory importExportTranslationHistory =
+        new ImportExportTranslationHistory();
+    importExportTranslation =
+        importExportTranslationRepository.find(importExportTranslation.getId());
+    importExportTranslationHistory.setActionType("Import");
+    importExportTranslationHistory.setRecordNumber(dataLineNumber);
+    importExportTranslationHistory.setErrorNumber(0L);
+    importExportTranslationHistory.setImportExportTranslation(importExportTranslation);
+    importExportTranslation.addImportExportTranslationHistoryListItem(
+        importExportTranslationHistory);
+    importExportTranslationRepository.save(importExportTranslation);
+    return filePath;
   }
 
+  /**
+   * This method insert/update each dataLine.
+   *
+   * @param dataLine
+   * @param headers
+   * @return total records imported or updated for the dataLine.
+   */
   @Transactional
-  protected void insertOrUpdateTranslation(List<String> dataLine, List<String> headers) {
+  protected long insertOrUpdateTranslation(List<String> dataLine, List<String> headers) {
+    long importNumber = 0L;
     String key = dataLine.get(0);
+
+    if (dataLine.size() != headers.size()) {
+      // error
+    }
+
     for (int i = 1; i < dataLine.size(); i++) {
       // dataLine: messageKey, en_value, fr_value, L3_value, ...
       String messageValue = dataLine.get(i);
       String languageCode = headers.get(i);
-
       Query existenceQuery =
           JPA.em()
               .createNativeQuery(
-                  "select message_key "
+                  "select message_value "
                       + "from meta_translation "
                       + "where meta_translation.language = :languageCode "
-                      + "and message_value = :messageValue ")
+                      + "and message_key = :key ")
               .setParameter("languageCode", languageCode)
-              .setParameter("messageValue", messageValue);
-
+              .setParameter("key", key);
       List existenceQueryResultList = existenceQuery.getResultList();
       if (existenceQueryResultList.isEmpty()) {
         // insert
@@ -255,9 +283,10 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
                 .setParameter("messageValue", messageValue)
                 .setParameter("key", key)
                 .setParameter("languageCode", languageCode);
-        int updateNumber = updateQuery.executeUpdate();
-        //        System.out.println(updateNumber);
+        updateQuery.executeUpdate();
       }
+      importNumber++;
     }
+    return importNumber;
   }
 }
