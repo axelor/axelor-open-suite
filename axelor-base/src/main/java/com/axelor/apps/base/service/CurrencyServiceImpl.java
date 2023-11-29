@@ -42,14 +42,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class CurrencyServiceImpl {
+public class CurrencyServiceImpl implements CurrencyService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AppBaseService appBaseService;
-
   protected CurrencyConversionLineRepository currencyConversionLineRepo;
-
   private LocalDate today;
 
   @Inject
@@ -193,7 +191,7 @@ public class CurrencyServiceImpl {
    * @throws AxelorException
    */
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
-      BigDecimal amount, BigDecimal exchangeRate) throws AxelorException {
+      BigDecimal amount, BigDecimal exchangeRate) {
 
     // If the start currency is different from end currency
     // So we convert the amount
