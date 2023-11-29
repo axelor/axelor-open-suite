@@ -225,6 +225,7 @@ public class InvoicePaymentController {
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+      boolean amountError = false;
 
       if (invoiceId > 0) {
         List<InvoiceTerm> invoiceTerms =
@@ -241,6 +242,7 @@ public class InvoicePaymentController {
         if (!invoicePayment.getManualChange()
             || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
+          amountError = true;
         }
 
         List<Long> invoiceTermIdList =
@@ -261,6 +263,8 @@ public class InvoicePaymentController {
               .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount, amount);
         }
         response.setValues(invoicePayment);
+        response.setAttr(
+            "amountErrorPanel", "hidden", !invoicePayment.getManualChange() || !amountError);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
