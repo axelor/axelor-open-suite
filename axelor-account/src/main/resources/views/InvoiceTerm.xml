@@ -357,14 +357,17 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
-        <field name="applyFinancialDiscountOnPaymentSession"
-          readonlyIf="!_openFromPaymentSession"
-          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
-        <field name="financialDiscountAmount" readonly="true"
-          showIf="applyFinancialDiscountOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"
-          x-scale="company.currency.numberOfDecimals"/>
+        <panel name="paymentSessionFinancialDiscountPanel"
+          if="__config__.app.getApp('account').getManageFinancialDiscount()">
+          <field name="applyFinancialDiscountOnPaymentSession"
+            readonlyIf="!_openFromPaymentSession"
+            showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
+            onChange="action-invoice-term-record-set-amount-paid"/>
+          <field name="financialDiscountAmount" readonly="true"
+            showIf="applyFinancialDiscountOnPaymentSession"
+            onChange="action-invoice-term-record-set-amount-paid"
+            x-scale="company.currency.numberOfDecimals"/>
+        </panel>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
@@ -436,9 +439,9 @@
         <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="$companyCurrencyScale" hidden="true"/>
       </panel>
-      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount"
+      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
+        itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hidden="true" showIf="applyFinancialDiscount"
         readonlyIf="amount != amountRemaining || paymentSession || isPaid">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
@@ -612,9 +615,9 @@
         <field name="currency.numberOfDecimals" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
-      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount" readonlyIf="paymentSession">
+      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
+        itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hidden="true" showIf="applyFinancialDiscount" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>

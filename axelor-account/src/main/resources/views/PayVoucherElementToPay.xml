@@ -36,10 +36,12 @@
         validIf="$readonly() || $number(amountToPay) &lt;= $number($maxAmountToPay)"
         onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
       <field name="applyFinancialDiscount" readonlyIf="$isFinancialDiscountReadonly"
+        showIf="invoiceTerm.applyFinancialDiscount"
         onChange="action-pay-voucher-element-to-pay-method-update-financial-discount"
         if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"
         showIf="moveLineGenerated"/>
+      <field name="invoiceTerm.applyFinancialDiscount" hidden="true"/>
       <field name="$maxAmountToPay" type="decimal" hidden="true"/>
       <field name="$isFinancialDiscountReadonly" type="boolean" hidden="true"/>
     </panel>

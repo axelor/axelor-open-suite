@@ -60,12 +60,14 @@
       <field name="invoice.tradingName"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
+      <field name="invoice.financialDiscount" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
       <field name="$isPartialPayment" type="boolean" hidden="true"/>
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
-      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0" showIf="!$isMultiCurrency">
+      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0"
+      showIf="invoice.financialDiscount &amp;&amp; !$isMultiCurrency">
       <field name="applyFinancialDiscount" readonlyIf="$isPartialPayment"
         onChange="action-invoice-payment-group-apply-financial-discount-on-change"/>
       <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>

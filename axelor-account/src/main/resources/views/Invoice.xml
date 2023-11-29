@@ -802,7 +802,8 @@ InvoiceSet.length > 0))"
           showIf="[2,3].includes(statusSelect) &amp;&amp; ( invoiceAutomaticMail || invoiceAutomaticMailOnValidate )"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
-      <panel name="financialDiscountPanel" colSpan="12" title="Financial discount">
+      <panel name="financialDiscountPanel" colSpan="12" title="Financial discount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()">
         <field name="financialDiscount" readonlyIf="[3,4].includes(statusSelect)"
           onChange="action-invoice-group-financial-discount"/>
         <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
