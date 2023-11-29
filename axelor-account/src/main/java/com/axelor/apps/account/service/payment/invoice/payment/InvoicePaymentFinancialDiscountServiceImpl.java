@@ -113,7 +113,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
                     .multiply(it.getPaidAmount())
                     .divide(
                         it.getInvoiceTerm().getAmountRemainingAfterFinDiscount(),
-                        10,
+                        AppBaseService.COMPUTATION_SCALING,
                         RoundingMode.HALF_UP);
               } catch (Exception e) {
                 throw new RuntimeException(e);
