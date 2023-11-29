@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Singleton
-public class CurrencyService {
+public class CurrencyServiceImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -53,7 +53,7 @@ public class CurrencyService {
   private LocalDate today;
 
   @Inject
-  public CurrencyService(
+  public CurrencyServiceImpl(
       AppBaseService appBaseService, CurrencyConversionLineRepository currencyConversionLineRepo) {
 
     this.appBaseService = appBaseService;
@@ -63,7 +63,7 @@ public class CurrencyService {
     this.currencyConversionLineRepo = currencyConversionLineRepo;
   }
 
-  public CurrencyService(AppBaseService appBaseService, LocalDate today) {
+  public CurrencyServiceImpl(AppBaseService appBaseService, LocalDate today) {
 
     this.appBaseService = appBaseService;
     this.today = today;
