@@ -149,7 +149,6 @@
       </bind>
 
       <bind node="useCondition" to="useCondition"/>
-      <bind node="billOfMaterialId" to="billOfMaterialId"/>
 
     </bind>
 

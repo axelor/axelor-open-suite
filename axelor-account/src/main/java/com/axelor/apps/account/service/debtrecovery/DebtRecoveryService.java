@@ -25,9 +25,6 @@ import com.axelor.apps.account.db.DebtRecoveryHistory;
 import com.axelor.apps.account.db.DebtRecoveryMethod;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
@@ -50,13 +47,11 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.db.Query;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.MultiRelatedRepository;
-import com.axelor.utils.date.DateTool;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -68,6 +63,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,62 +124,33 @@ public class DebtRecoveryService {
   }
 
   /**
-   * Fonction permettant de calculer le solde exigible relançable d'un tiers
+   * Fonction qui récupère la plus ancienne date d'échéance d'une liste d'échéances
    *
-   * @param moveLineList
-   * @param partner
-   * @return Le solde exigible relançable
-   */
-  public BigDecimal getBalanceDueDebtRecovery(List<MoveLine> moveLineList, Partner partner) {
-    BigDecimal balanceSubstract = this.getSubstractBalanceDue(partner);
-    BigDecimal balanceDueDebtRecovery = BigDecimal.ZERO;
-    for (MoveLine moveLine : moveLineList) {
-      balanceDueDebtRecovery = balanceDueDebtRecovery.add(moveLine.getAmountRemaining());
-    }
-    balanceDueDebtRecovery = balanceDueDebtRecovery.add(balanceSubstract);
-    return balanceDueDebtRecovery;
-  }
-
-  public BigDecimal getSubstractBalanceDue(Partner partner) {
-    List<? extends MoveLine> moveLineQuery =
-        moveLineRepo.all().filter("self.partner = ?1", partner).fetch();
-    BigDecimal balance = BigDecimal.ZERO;
-    for (MoveLine moveLine : moveLineQuery) {
-      if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-        if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-          balance = balance.subtract(moveLine.getAmountRemaining());
-        }
-      }
-    }
-    return balance;
-  }
-
-  /**
-   * Fonction qui récupère la plus ancienne date d'échéance d'une liste de lignes d'écriture
-   *
-   * @param moveLineList Une liste de lignes d'écriture
+   * @param invoiceTermList Une liste d'échéances
    * @return la plus ancienne date d'échéance
    */
-  public LocalDate getOldDateMoveLine(List<MoveLine> moveLineList) {
-    LocalDate minMoveLineDate;
+  public LocalDate getOldDateInvoiceTerm(List<InvoiceTerm> invoiceTermList, Company company) {
+    LocalDate minInvoiceTermDate;
 
-    if (!moveLineList.isEmpty()) {
-      minMoveLineDate =
+    if (!invoiceTermList.isEmpty()) {
+      minInvoiceTermDate =
           appAccountService.getTodayDate(
-              moveLineList.get(0).getMove() != null
-                  ? moveLineList.get(0).getMove().getCompany()
+              company != null
+                  ? company
                   : Optional.ofNullable(AuthUtils.getUser())
                       .map(User::getActiveCompany)
                       .orElse(null));
-      for (MoveLine moveLine : moveLineList) {
-        if (minMoveLineDate.isAfter(moveLine.getDueDate())) {
-          minMoveLineDate = moveLine.getDueDate();
+
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        LocalDate invoiceTermDueDate = invoiceTerm.getDueDate();
+        if (invoiceTermDueDate != null && minInvoiceTermDate.isAfter(invoiceTermDueDate)) {
+          minInvoiceTermDate = invoiceTermDueDate;
         }
       }
     } else {
-      minMoveLineDate = null;
+      minInvoiceTermDate = null;
     }
-    return minMoveLineDate;
+    return minInvoiceTermDate;
   }
 
   /**
@@ -227,101 +194,23 @@ public class DebtRecoveryService {
    * @param debtRecovery Une relance
    * @return La date de référence
    */
-  public LocalDate getReferenceDate(DebtRecovery debtRecovery) {
+  public LocalDate getReferenceDate(DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
     AccountingSituation accountingSituation = this.getAccountingSituation(debtRecovery);
-    List<MoveLine> moveLineList =
-        this.getMoveLineDebtRecovery(
-            accountingSituation.getPartner(),
-            accountingSituation.getCompany(),
-            debtRecovery.getTradingName());
 
-    // Date la plus ancienne des lignes d'écriture
-    LocalDate minMoveLineDate = getOldDateMoveLine(moveLineList);
-    log.debug("minMoveLineDate : {}", minMoveLineDate);
+    // 1: Date la plus ancienne des échéances
+    LocalDate minInvoiceTermDate =
+        getOldDateInvoiceTerm(invoiceTermList, accountingSituation.getCompany());
+    log.debug("minMoveLineDate : {}", minInvoiceTermDate);
 
     // 2: Date la plus récente des relances
     LocalDate debtRecoveryLastDate = getLastDateDebtRecovery(debtRecovery);
     log.debug("debtRecoveryLastDate : {}", debtRecoveryLastDate);
 
     // Date de référence : Date la plus récente des deux ensembles (1 et 2)
-    LocalDate debtRecoveryRefDate = getLastDate(minMoveLineDate, debtRecoveryLastDate);
+    LocalDate debtRecoveryRefDate = getLastDate(minInvoiceTermDate, debtRecoveryLastDate);
     log.debug("debtRecoveryRefDate : {}", debtRecoveryRefDate);
 
     return debtRecoveryRefDate;
-  }
-
-  /**
-   * Returns a list of recoverable move lines of a partner in the scope of the activity of a company
-   *
-   * @param partner The partner to be concerned by the move lines
-   * @param company The company to be concerned by the move lines
-   * @param tradingName (Optional) The trading name to be concerned by the move lines
-   * @return A list of recoverable move lines
-   */
-  @SuppressWarnings("unchecked")
-  public List<MoveLine> getMoveLineDebtRecovery(
-      Partner partner, Company company, TradingName tradingName) {
-    List<MoveLine> moveLineList = new ArrayList<MoveLine>();
-
-    List<MoveLine> moveLineQuery = (List<MoveLine>) this.getMoveLine(partner, company, tradingName);
-
-    int mailTransitTime = company.getAccountConfig().getMailTransitTime();
-
-    for (MoveLine moveLine : moveLineQuery) {
-      if (moveLine.getMove() != null && !moveLine.getMove().getIgnoreInDebtRecoveryOk()) {
-        Move move = moveLine.getMove();
-        // facture exigibles non bloquée en relance et dont la date de facture + délai
-        // d'acheminement < date du jour
-        if (move.getStatusSelect() != MoveRepository.STATUS_CANCELED
-            && move.getInvoice() != null
-            && !move.getInvoice().getDebtRecoveryBlockingOk()
-            && !move.getInvoice().getSchedulePaymentOk()
-            && ((move.getInvoice().getInvoiceDate()).plusDays(mailTransitTime))
-                .isBefore(appAccountService.getTodayDate(company))) {
-          if ((moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
-              && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
-            if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-                moveLineList.add(moveLine);
-              }
-            }
-          }
-        }
-        InvoiceTerm invoiceTerm =
-            invoiceTermRepo
-                .all()
-                .filter("self.moveLine.id = :moveLineId")
-                .bind("moveLineId", moveLine.getId())
-                .fetchOne();
-        if (move.getInvoice() == null || invoiceTerm != null) {
-          if ((moveLine.getPaymentScheduleLine() != null || invoiceTerm != null)
-              && (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0)
-              && moveLine.getDueDate() != null
-              && (appAccountService.getTodayDate(company).isAfter(moveLine.getDueDate())
-                  || appAccountService.getTodayDate(company).isEqual(moveLine.getDueDate()))) {
-            if (moveLine.getAccount() != null && moveLine.getAccount().getUseForPartnerBalance()) {
-              if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-                moveLineList.add(moveLine);
-              }
-            }
-          }
-        }
-      }
-    }
-    return moveLineList;
-  }
-
-  public List<Invoice> getInvoiceList(List<MoveLine> moveLineList) {
-    List<Invoice> invoiceList = new ArrayList<Invoice>();
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getMove().getInvoice() != null
-          && !moveLine.getMove().getInvoice().getDebtRecoveryBlockingOk()) {
-        invoiceList.add(moveLine.getMove().getInvoice());
-      }
-    }
-    return invoiceList;
   }
 
   public List<Invoice> getInvoiceListFromInvoiceTerm(List<InvoiceTerm> invoiceTermList) {
@@ -335,53 +224,74 @@ public class DebtRecoveryService {
     return invoiceList;
   }
 
-  public List<PaymentScheduleLine> getPaymentScheduleList(
-      List<MoveLine> moveLineList, Partner partner) {
-    List<PaymentScheduleLine> paymentScheduleLineList = new ArrayList<PaymentScheduleLine>();
-    for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getMove().getInvoice() == null) {
-        // Ajout à la liste des échéances exigibles relançables
-        PaymentScheduleLine paymentScheduleLine = getPaymentScheduleFromMoveLine(partner, moveLine);
-        if (paymentScheduleLine != null) {
-          // Si un montant reste à payer, c'est à dire une échéance rejeté
-          if (moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0) {
-            paymentScheduleLineList.add(paymentScheduleLine);
-          }
-        }
-      }
-    }
-    return paymentScheduleLineList;
+  protected void addInvoiceTerms(
+      Partner partner, Company company, TradingName tradingName, List<Long> idList) {
+    LocalDate todayDate = appAccountService.getTodayDate(company);
+    int mailTransitTime = company.getAccountConfig().getMailTransitTime();
+
+    javax.persistence.Query invoiceTermQuery =
+        JPA.em()
+            .createQuery(computeQuery(tradingName))
+            .setParameter("partner", partner)
+            .setParameter("company", company)
+            .setParameter("todayDate", todayDate)
+            .setParameter("todayDateMinusTransitTime", todayDate.minusDays(mailTransitTime))
+            .setParameter("daybookStatus", MoveRepository.STATUS_DAYBOOK)
+            .setParameter("accountedStatus", MoveRepository.STATUS_ACCOUNTED)
+            .setParameter("paymentSessionStatus", PaymentSessionRepository.STATUS_ONGOING)
+            .setParameter("functionalOriginSelect", MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+
+    invoiceTermQuery = addTradingNameBinding(tradingName, invoiceTermQuery);
+
+    idList.addAll(invoiceTermQuery.getResultList());
   }
 
-  /**
-   * Recovers all move lines for a specific partner, in the scope of the activities of a company,
-   * and optionally, for a specific trading name.
-   *
-   * @param partner A partner to be concerned by the move lines
-   * @param company A company to be concerned by the move lines
-   * @param tradingName (Optional) A trading name to be concerned by the move lines
-   * @return all corresponding move lines as a List
-   */
-  public List<? extends MoveLine> getMoveLine(
-      Partner partner, Company company, TradingName tradingName) {
-
-    Query<MoveLine> query;
-    if (tradingName == null) {
-      query =
-          moveLineRepo
-              .all()
-              .filter("self.partner = ?1 and self.move.company = ?2", partner, company);
-    } else {
-      query =
-          moveLineRepo
-              .all()
-              .filter(
-                  "self.partner = ?1 and self.move.company = ?2 and self.move.tradingName = ?3",
-                  partner,
-                  company,
-                  tradingName);
+  protected javax.persistence.Query addTradingNameBinding(
+      TradingName tradingName, javax.persistence.Query invoiceTermQuery) {
+    if (tradingName != null) {
+      invoiceTermQuery = invoiceTermQuery.setParameter("tradingName", tradingName);
     }
-    return query.fetch();
+    return invoiceTermQuery;
+  }
+
+  protected String computeQuery(TradingName tradingName) {
+    StringBuilder query = new StringBuilder();
+
+    computeQueryJoins(query);
+    computeQueryConditions(tradingName, query);
+
+    return query.toString();
+  }
+
+  protected void computeQueryConditions(TradingName tradingName, StringBuilder query) {
+    query.append(
+        "WHERE (paymentsession.id IS NULL OR paymentsession.statusSelect != :paymentSessionStatus) ");
+    query.append("AND invoiceterm.amountRemaining > 0 ");
+    query.append("AND invoiceterm.isPaid IS FALSE ");
+    query.append("AND invoiceterm.debtRecoveryBlockingOk IS FALSE ");
+    query.append("AND moveline.id IS NOT NULL ");
+    query.append("AND moveline.partner = :partner ");
+    query.append("AND move.company = :company ");
+    query.append("AND invoiceterm.dueDate IS NOT NULL ");
+    query.append("AND move.id IS NOT NULL ");
+    query.append("AND move.date IS NOT NULL ");
+    query.append("AND move.date < :todayDateMinusTransitTime ");
+    query.append("AND invoiceterm.dueDate <= :todayDate ");
+    query.append("AND move.functionalOriginSelect = :functionalOriginSelect ");
+    query.append("AND move.statusSelect IN (:daybookStatus, :accountedStatus) ");
+
+    if (tradingName != null) {
+      query.append("AND move.tradingName = :tradingName ");
+    }
+  }
+
+  protected void computeQueryJoins(StringBuilder query) {
+    query.append("SELECT DISTINCT invoiceterm.id ");
+    query.append("FROM InvoiceTerm invoiceterm ");
+    query.append(
+        "LEFT JOIN PaymentSession paymentsession ON paymentsession.id = invoiceterm.paymentSession ");
+    query.append("LEFT JOIN MoveLine moveline ON moveline.id = invoiceterm.moveLine ");
+    query.append("LEFT JOIN Move move ON move.id = moveline.move ");
   }
 
   /**
@@ -395,78 +305,12 @@ public class DebtRecoveryService {
    * @throws AxelorException
    */
   public List<InvoiceTerm> getInvoiceTerms(
-      Partner partner, Company company, TradingName tradingName) throws AxelorException {
+      Partner partner, Company company, TradingName tradingName) {
+    List<Long> idList = new ArrayList<>();
 
-    int mailTransitTime = accountConfigService.getAccountConfig(company).getMailTransitTime();
+    addInvoiceTerms(partner, company, tradingName, idList);
 
-    Query<InvoiceTerm> query =
-        invoiceTermRepo
-            .all()
-            .filter(
-                "(self.paymentSession IS NULL OR self.paymentSession.statusSelect != :paymentSessionStatus) "
-                    + " and self.amountRemaining > 0 "
-                    + " and self.isPaid IS FALSE "
-                    + " and self.debtRecoveryBlockingOk IS FALSE "
-                    + " and self.moveLine IS NOT NULL "
-                    + " and self.moveLine.move.company = :company "
-                    + " and self.moveLine.partner = :partner "
-                    + (tradingName != null
-                        ? " and self.moveLine.move.tradingName = :tradingName"
-                        : ""))
-            .bind("paymentSessionStatus", PaymentSessionRepository.STATUS_ONGOING)
-            .bind("company", company)
-            .bind("partner", partner);
-
-    if (tradingName != null) {
-      query.bind("tradingName", tradingName);
-    }
-
-    List<InvoiceTerm> invoiceTermList = query.fetch();
-    List<InvoiceTerm> invoiceTermWithDateCheck = Lists.newArrayList();
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      if (invoiceTerm.getDueDate() != null
-          && invoiceTerm.getMoveLine() != null
-          && invoiceTerm.getMoveLine().getMove() != null
-          && invoiceTerm.getMoveLine().getMove().getDate() != null
-          && invoiceTerm
-              .getMoveLine()
-              .getMove()
-              .getDate()
-              .plusDays(mailTransitTime)
-              .isBefore(appAccountService.getTodayDate(company))
-          && (appAccountService.getTodayDate(company).isAfter(invoiceTerm.getDueDate())
-              || appAccountService.getTodayDate(company).isEqual(invoiceTerm.getDueDate()))) {
-        invoiceTermWithDateCheck.add(invoiceTerm);
-      }
-    }
-
-    return invoiceTermWithDateCheck;
-  }
-
-  /**
-   * Méthode permettant de récupérer une ligne d'échéancier depuis une ligne d'écriture
-   *
-   * @param partner Un tiers
-   * @param moveLine
-   * @return
-   */
-  public PaymentScheduleLine getPaymentScheduleFromMoveLine(Partner partner, MoveLine moveLine) {
-    return paymentScheduleLineRepo.all().filter("self.rejectMoveLine = ?1", moveLine).fetchOne();
-  }
-
-  /**
-   * Procédure permettant de tester si aujourd'hui nous sommes dans une période particulière
-   *
-   * @param dayBegin Le jour du début de la période
-   * @param dayEnd Le jour de fin de la période
-   * @param monthBegin Le mois de début de la période
-   * @param monthEnd Le mois de fin de la période
-   * @return Sommes-nous dans la période?
-   */
-  public boolean periodOk(Company company, int dayBegin, int dayEnd, int monthBegin, int monthEnd) {
-
-    return DateTool.dateInPeriod(
-        appAccountService.getTodayDate(company), dayBegin, monthBegin, dayEnd, monthEnd);
+    return invoiceTermRepo.findByIds(idList.stream().distinct().collect(Collectors.toList()));
   }
 
   public DebtRecovery getDebtRecovery(Partner partner, Company company) throws AxelorException {
@@ -635,7 +479,7 @@ public class DebtRecoveryService {
         }
 
         LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
-        LocalDate referenceDate = this.getReferenceDate(debtRecovery);
+        LocalDate referenceDate = this.getReferenceDate(debtRecovery, invoiceTermList);
 
         boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
 
@@ -647,17 +491,16 @@ public class DebtRecoveryService {
               debtRecovery,
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               "%s :\n"
-                          + I18n.get("Partner")
-                          + " %s, "
-                          + I18n.get("Company")
-                          + " %s : "
-                          + tradingName
-                      != null
-                  ? I18n.get("Trading name") + " %s : "
-                  : "" + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
+                  + I18n.get("Partner")
+                  + " %s, "
+                  + I18n.get("Company")
+                  + " %s : "
+                  + (tradingName != null ? I18n.get("Trading name") + " %s : " : "")
+                  + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
               I18n.get(BaseExceptionMessage.EXCEPTION),
               partner.getName(),
-              company.getName());
+              company.getName(),
+              tradingName != null ? tradingName.getName() : "");
         }
         if (debtRecovery.getDebtRecoveryMethod() == null) {
           fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);
@@ -747,7 +590,9 @@ public class DebtRecoveryService {
 
     if (debtRecovery.getInvoiceDebtRecoverySet() != null && oldReferenceDate != null) {
       return debtRecovery.getInvoiceDebtRecoverySet().stream()
-          .allMatch(invoice -> invoice.getDueDate().isAfter(oldReferenceDate));
+          .allMatch(
+              invoice ->
+                  invoice.getDueDate() != null && invoice.getDueDate().isAfter(oldReferenceDate));
     }
     return false;
   }
@@ -761,12 +606,6 @@ public class DebtRecoveryService {
       DebtRecovery debtRecovery, List<InvoiceTerm> invoiceTermList) {
     debtRecovery.setInvoiceTermDebtRecoverySet(Sets.newHashSet());
     debtRecovery.getInvoiceTermDebtRecoverySet().addAll(invoiceTermList);
-  }
-
-  public void updatePaymentScheduleLineDebtRecovery(
-      DebtRecovery debtRecovery, List<PaymentScheduleLine> paymentSchedueLineList) {
-    debtRecovery.setPaymentScheduleLineDebtRecoverySet(new HashSet<PaymentScheduleLine>());
-    debtRecovery.getPaymentScheduleLineDebtRecoverySet().addAll(paymentSchedueLineList);
   }
 
   public AccountingSituation getAccountingSituation(DebtRecovery debtRecovery) {

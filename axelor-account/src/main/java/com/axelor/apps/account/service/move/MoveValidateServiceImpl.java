@@ -290,8 +290,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLineToolService.checkDateInPeriod(move, moveLine);
       }
 
-      moveLineTaxService.checkTaxMoveLines(move);
-
+      moveLineTaxService.checkDuplicateTaxMoveLines(move);
+      moveLineTaxService.checkEmptyTaxLines(move.getMoveLineList());
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
       this.checkMoveLineDescription(move);

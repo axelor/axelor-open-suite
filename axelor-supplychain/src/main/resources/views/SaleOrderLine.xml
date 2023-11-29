@@ -175,12 +175,6 @@
     <context name="locationId" expr="eval: __parent__.stockLocation?.id"/>
   </action-view>
 
-  <action-record name="action-record-sale-order-line-future-qty"
-    model="com.axelor.apps.sale.db.SaleOrderLine">
-    <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(product.id, __parent__.stockLocation.id, null)"/>
-  </action-record>
-
   <action-record name="action-record-sale-order-line-fill-request-qty"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="isQtyRequested"

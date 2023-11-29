@@ -133,7 +133,6 @@
       <defProdProcessAsFormula>false</defProdProcessAsFormula>
       <defProdProcessAsConfigurator>true</defProdProcessAsConfigurator>
       <useCondition></useCondition>
-      <billOfMaterialId>64</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -161,7 +160,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>1</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>58</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -189,7 +187,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>1</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>59</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -217,7 +214,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>1</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>60</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -245,7 +241,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>1</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>61</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -273,7 +268,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>1</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>62</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -301,7 +295,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>1</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>63</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -327,7 +320,6 @@
       <defProdProcessAsFormula>false</defProdProcessAsFormula>
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <useCondition></useCondition>
-      <billOfMaterialId>49</billOfMaterialId>
     </configurator-bom>
 
     <configurator-bom>
@@ -354,7 +346,6 @@
       <defProdProcessAsConfigurator>false</defProdProcessAsConfigurator>
       <parentConfiguratorBOMId>8</parentConfiguratorBOMId>
       <useCondition></useCondition>
-      <billOfMaterialId>48</billOfMaterialId>
     </configurator-bom>
   </configurator-boms>
 

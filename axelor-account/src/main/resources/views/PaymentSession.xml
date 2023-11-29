@@ -64,6 +64,8 @@
         <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"/>
       </panel>
       <panel name="viewerTagsPanel">
+        <field name="currency.symbol" hidden="true"/>
+        <field name="sessionTotalAmountFormula" x-currency="currency.symbol" hidden="true"/>
         <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer><![CDATA[
 	                       <h4>
@@ -74,7 +76,7 @@
         <button name="sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol" x-field="sessionTotalAmountFormula"/>
+          x-field="sessionTotalAmountFormula"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"
@@ -130,7 +132,8 @@
       <field name="assignedToUser"/>
       <field name="journal" readonlyIf="!company"
         onSelect="action-payment-session-method-set-journal-domain"/>
-      <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+      <field name="currency" form-view="currency-form" grid-view="currency-grid"
+        readonly="true"/>
     </panel>
     <panel name="accountingSettingsPanel" title="Accounting Settings"
       readonlyIf="statusSelect > 1 &amp;&amp; $hasInvoiceTerm" itemSpan="6">

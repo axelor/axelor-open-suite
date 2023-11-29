@@ -20,14 +20,21 @@ package com.axelor.apps.bankpayment.test;
 
 import com.axelor.apps.bankpayment.ebics.service.EbicsUserService;
 import com.axelor.apps.base.AxelorException;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestEbicsOrderNumber {
+class TestEbicsOrderNumber {
+
+  private static EbicsUserService ebicsUserService;
+
+  @BeforeAll
+  static void prepare() {
+    ebicsUserService = new EbicsUserService();
+  }
 
   @Test
-  public void validateOrderId() {
-    EbicsUserService ebicsUserService = new EbicsUserService();
+  void validateOrderId() {
     try {
       ebicsUserService.getNextOrderNumber("01.AC");
     } catch (AxelorException e) {
@@ -36,8 +43,7 @@ public class TestEbicsOrderNumber {
   }
 
   @Test
-  public void testPossibleOrderNumbers() {
-    EbicsUserService ebicsUserService = new EbicsUserService();
+  void testPossibleOrderNumbers() {
     int i = 0;
     String orderNo = "A000";
     try {
@@ -48,7 +54,7 @@ public class TestEbicsOrderNumber {
     } catch (AxelorException e) {
       System.out.println(e.getMessage());
       System.out.println("Maximum possible order numbers: " + i);
-      Assert.assertTrue(i == (36 * 36 * 36));
+      Assertions.assertEquals((36 * 36 * 36), i);
     }
   }
 }

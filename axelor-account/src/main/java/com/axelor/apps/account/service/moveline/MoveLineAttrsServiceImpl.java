@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
@@ -32,6 +33,7 @@ import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
@@ -49,6 +51,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected MoveLineControlService moveLineControlService;
   protected AnalyticLineService analyticLineService;
   protected PeriodServiceAccount periodServiceAccount;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
@@ -56,12 +59,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       MoveLineControlService moveLineControlService,
       AnalyticLineService analyticLineService,
-      PeriodServiceAccount periodServiceAccount) {
+      PeriodServiceAccount periodServiceAccount,
+      MoveLineTaxService moveLineTaxService) {
     this.accountConfigService = accountConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
     this.periodServiceAccount = periodServiceAccount;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   protected void addAttr(
@@ -125,11 +130,14 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   public void addAnalyticAccountRequired(
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
+    Company company = move != null ? move.getCompany() : null;
+
     for (int i = startAxisPosition; i <= endAxisPosition; i++) {
       this.addAttr(
           "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
           "required",
-          analyticLineService.isAxisRequired(moveLine, move != null ? move.getCompany() : null, i),
+          analyticLineService.isAxisRequired(moveLine, company, i)
+              && !analyticLineService.checkAnalyticLinesByAxis(moveLine, i, company),
           attrsMap);
     }
   }
@@ -232,38 +240,41 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   }
 
   @Override
-  public void addAccountDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
-    if (move == null) {
-      return;
-    }
+  public void addAccountDomain(
+      Journal journal, Company company, Map<String, Map<String, Object>> attrsMap) {
+    String validAccountTypes = "0";
+    String validAccounts = "0";
 
-    String validAccountTypes =
-        move.getJournal().getValidAccountTypeSet().stream()
-            .map(AccountType::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
+    if (journal != null) {
+      validAccountTypes =
+          journal.getValidAccountTypeSet().stream()
+              .map(AccountType::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
 
-    if (StringUtils.isEmpty(validAccountTypes)) {
-      validAccountTypes = "0";
-    }
+      if (StringUtils.isEmpty(validAccountTypes)) {
+        validAccountTypes = "0";
+      }
 
-    String validAccounts =
-        move.getJournal().getValidAccountSet().stream()
-            .map(Account::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
+      validAccounts =
+          journal.getValidAccountSet().stream()
+              .map(Account::getId)
+              .map(Objects::toString)
+              .collect(Collectors.joining(","));
 
-    if (StringUtils.isEmpty(validAccounts)) {
-      validAccounts = "0";
+      if (StringUtils.isEmpty(validAccounts)) {
+        validAccounts = "0";
+      }
     }
 
     String domain =
         String.format(
-            "self.statusSelect = %s AND self.company.id = %d AND (self.accountType.id IN (%s) OR self.id IN (%s))",
-            AccountRepository.STATUS_ACTIVE,
-            move.getCompany().getId(),
-            validAccountTypes,
-            validAccounts);
+            "self.statusSelect = %s AND (self.accountType.id IN (%s) OR self.id IN (%s))",
+            AccountRepository.STATUS_ACTIVE, validAccountTypes, validAccounts);
+
+    if (company != null) {
+      domain = domain.concat(String.format(" AND self.company.id = %d", company.getId()));
+    }
 
     this.addAttr("account", "domain", domain, attrsMap);
   }
@@ -293,5 +304,17 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
 
     this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addTaxLineRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(
+        "taxLine",
+        "required",
+        moveLineTaxService.isMoveLineTaxAccountRequired(moveLine, move.getFunctionalOriginSelect())
+            || (moveLine.getAccount() != null
+                && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
+        attrsMap);
   }
 }

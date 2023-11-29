@@ -56,8 +56,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -698,16 +696,28 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
+
       BigDecimal paidAmount =
           invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount());
+      BigDecimal companyPaidAmount =
+          invoiceTermPayment
+              .getCompanyPaidAmount()
+              .add(invoiceTermPayment.getFinancialDiscountAmount());
+
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().add(paidAmount));
+      invoiceTerm.setCompanyAmountRemaining(
+          invoiceTerm.getCompanyAmountRemaining().add(companyPaidAmount));
+
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+
       if (invoiceTerm.getAmountRemaining().signum() > 0) {
         invoiceTerm.setIsPaid(false);
+
         Invoice invoice = invoiceTerm.getInvoice();
         if (invoice != null) {
           invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
         }
+
         invoiceTermRepo.save(invoiceTerm);
       }
     }
@@ -1252,7 +1262,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (invoiceTerm.getInvoice() != null) {
       InvoicePayment invoicePayment =
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
-      invoicePayment.addReconcileListItem(reconcile);
+      invoicePayment.setReconcile(reconcile);
 
       List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
 
@@ -1340,23 +1350,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .orElse(BigDecimal.ZERO);
 
     return amountToPay.compareTo(amount) >= 0;
-  }
-
-  @Override
-  public BigDecimal computeParentTotal(Context context) {
-    BigDecimal total = BigDecimal.ZERO;
-    if (context.getParent() != null) {
-      Invoice invoice = ContextTool.getContextParent(context, Invoice.class, 1);
-      if (invoice != null) {
-        total = invoice.getInTaxTotal();
-      } else {
-        MoveLine moveLine = ContextTool.getContextParent(context, MoveLine.class, 1);
-        if (moveLine != null) {
-          total = moveLine.getDebit().max(moveLine.getCredit());
-        }
-      }
-    }
-    return total;
   }
 
   @Override

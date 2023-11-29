@@ -1,3 +1,210 @@
+## [7.0.15] (2023-11-23)
+
+#### :exclamation: Breaking Change
+
+* InvoicePayment/Reconcile: Change the link between the models
+
+The previous link between Reconcile and Invoice Payment was a list of reconcile in the invoice payment and a link to the payment in reconcile. Now, the link will be just a link to the reconcile in the payment.
+
+This technical change means that existing payments on invoice must be migrated to avoid issues. Please run the following SQL script on your database:
+
+```sql
+ALTER TABLE account_invoice_payment ADD COLUMN IF NOT EXISTS reconcile bigint;
+
+UPDATE account_invoice_payment payment SET reconcile = (SELECT id FROM account_reconcile reconcile WHERE reconcile.invoice_payment = payment.id) WHERE payment.reconcile IS NULL;
+
+UPDATE account_invoice_payment payment SET reconcile = (
+	SELECT MIN(reconcile.id) FROM account_reconcile reconcile 
+	INNER JOIN account_invoice_term_payment itp ON itp.invoice_payment = payment.id 
+	INNER JOIN account_invoice_term it ON it.id = itp.invoice_term
+	INNER JOIN account_move_line ml ON ml.id = it.move_line
+	WHERE reconcile.debit_move_line = ml.id OR reconcile.credit_move_line = ml.id) WHERE payment.reconcile IS NULL;
+
+ALTER TABLE account_reconcile DROP COLUMN invoice_payment;
+```
+
+
+#### Fixed
+
+* MRP Line: fixed an issue preventing to open a partner from a MRP line.
+* Invoice: fixed description on move during invoice validation.
+* Move template: fixed due date not being set on generated move.
+* Stock location line: fixed quantity displayed by indicators in form view.
+* Invoice: fixed currency being emptied on operation type change.
+* Move: fixed autofill fields at move line creation according to partner accounting config.
+* Bank statement: added missing french translation when we try to delete a bank statement.
+* Invoice: fixed an issue where enabling pfp management and opening a previously created supplier invoice would make it look unsaved.
+* Fixed asset: fixed inconsistency in accounting report.
+* Bank reconciliation: selectable move line are now based on the currency amount.
+* Move Template: hide move template line grid when journal or company is not filled.
+* Project task: fixed broken time panel in project task.
+* Expense: fixed an issue were employee was not modified in the lines when modifying the employee on the expense.
+* City: fixed errors when importing city with geonames.
+* Period: fixed status not reset on closure.
+* Analytic move line: fixed required on analytic axis when the sum of analytic move line percentage is equal to 100.
+* Invoice / Reconcile: fixed issue preventing from paying an invoice with a canceled payment.
+* Unit cost calculation: fixed error when trying to select a product.
+* InvoiceTerm: fixed rounding issue when we unreconcile an invoice payment.
+* Forecast: fixed a bug that occured when changing a forecast date from the MRP.
+* Fixed asset category: fixed wrong filter on ifrs depreciation and charge accounts not allowing to select special type accounts.
+* Appraisal: fixed appraisal generation from template.
+* Move: fixed error when we set origin on move without move lines.
+* Advance payment: fixed invoice term management and advance payment imputation values in multi currency.
+* Bill of exchange: fixed managing invoice terms in placement and payment.
+* SOP: fixed quantity field not following the "number of decimal for quantity fields" configuration.
+* Contract template: fixed wrong payment mode in contract template from demo data.
+* Period/Move: fixed new move removal at period closure.
+* SOP: added missing french translation.
+* Period: fixed errors not being displayed correctly during the closure process.
+* Move: fixed error when we set description on move without move lines.
+* Move template: fixed filters on accounting accounts in move template lines.
+* SOP line: fixed an issue where SOP process does not fetch the product price from the product per company configuration.
+* Contract: fixed prorata computation when invoicing a contract and end date contract version
+
+When creating a new version of a contract, the end date of the previous version
+is now the activation date of the new version minus one day.
+If left empty, it will be today's date minus one day.
+
+* Bank order: do not copy "has been sent to bank" on duplication.
+* Product details: fixed a bug occuring on stock details.
+
+## [7.0.14] (2023-11-09)
+
+#### Fixed
+
+* App builder: update studio dependency to 1.0.5 to get the following fix:
+
+    - fixed NPE upon save of a custom model with a menu
+
+* App Base: set company-specific product fields domain.
+* Accounting report: fixed an issue in Journal report (11) where debit and credit were not displayed in the recap by account table.
+* Accounting dashboard: removed blank panel in "accounting details with invoice terms" dashboard.
+* Move line: fixed error when we create a move line in multi currency.
+* Move line: fixed error at first move line creation related to counter initialization.
+* Move: fixed an error when we update invoice terms in move line.
+* Move: fixed an error when we reconcile move lines without tax line.
+* Move: added journal verification when we check duplicate origins.
+* Fixed asset: fixed an issue after selecting a category where set depreciations for economic and ifrs were not computed correctly.
+* Fixed asset: hide "isEqualToFiscalDepreciation" field when fiscal plan not selected.
+* CRM: opening an event from custom view in prospect, leads or opportunity is now editable.
+* Custom accounting report: fixed legacy report option being displayed for all account report types.
+* Cost sheet: fixed issue in the order of calculation on bill of materials.
+* Configurator BOM: Fixed a concurrent error when generating a bill of materials from the same configurator.
+* Employee: to fix bank details error, moved the field to main employment contract panel.
+* FEC Import: prevent potential errors when using demo data config file.
+* Contract: fixed "NullPointerException" error when emptying the product on a contract line.
+* Manufacturing order: company is now required in the form view.
+* Sale order (Quotation): fixed "End of validity date" computation on copy.
+* Debt recovery: fixed balance due in debt recovery accounting batch.
+* Analytic: fixed display of analytic panel when it is not managed by account in sale order and purchase order.
+* Lead: prevent the user from editing the postal code when a city is filled to avoid inconsistencies.
+* CRM Event: when an event is created from CRM, correctly prefill "related to".
+* Move: added journal verification when we check duplicate origins.
+* Opportunity: company is now required in the form view.
+* Sale: hide 'Timetable templates' entry menu on config.
+* Maintenance: reset the status when duplicating a maintenance request.
+
+## [7.0.13] (2023-10-27)
+
+#### Fixed
+
+* App builder: update studio dependency to 1.0.4 to get the following fix:
+
+    - fixed StudioActionView duplication on every save
+
+* Debt Recovery: fixed error message on debt recovery generation to display correctly trading name.
+* Invoice/Move: fixed due date when we set invoice date, move date or when we update payment condition.
+* FEC Import: fixed issue when importing FEC with empty date of lettering.
+* FEC Import: the header partner is now filled correctly
+
+    - Multi-partner: no partner in header
+    - Mono-partner: fill partner in header
+
+* Analytic: fixed analytic distribution verification at validation/confirmation of purchase order/sale order when analytic is not managed.
+* Payment Voucher: fixed display of load/reset imputation lines and payment voucher confirm button when paid amount is 0 or when we do not select any line.
+* Period closure: fixed a bug where status of period was reset on error on closure.
+* Manufacturing order: fixed an issue where outsourcing was not activated in operations while it was active on production process lines.
+* Payment voucher: fixed error at payment voucher confirmation without move lines.
+* Move: removed period verification when we opening a move.
+* Payment voucher: removed paid line control at payment voucher confirmation.
+* Fixed asset: fixed popup error "Cannot get property 'fixedAssetType' on null object" displayed when clearing fixed asset category field.
+* Cost sheet: replaced 'NullPointerException' error by a correct message when an applicable bill of materials is not found on cost calculation.
+* axelor-config.properties: enabled Modern theme by default.
+
+## [7.0.12] (2023-10-18)
+
+#### Fixed
+
+* Update App Builder dependency to 1.0.3
+
+This version provides a fix for an issue causing the application to create a new file for each app on startup.
+
+If you have this issue and want to clear existing files in your server, please follow these steps:
+
+* Shutdown tomcat
+* Execute the SQL script below
+* Clear all application images from the server disk
+* Restart tomcat
+
+```sql
+UPDATE studio_app
+SET image = null
+WHERE image in
+      (SELECT id
+       FROM meta_file
+       where file_path LIKE 'app-%'
+         AND file_type = 'image/png');
+
+DELETE
+FROM meta_file
+WHERE file_path LIKE 'app-%'
+  AND file_type = 'image/png';
+```
+
+* Product: fixed stock indicators computation.
+* Project: fixed french translation for 'Create business project from this template'.
+* Payment session: set currency field readonly on payment session.
+* Period: improved period closure process from year form.
+* Sale order: fixed duplicated 'Advance Payment' panel.
+* Manufacturing order: fixed "Circular dependency" error preventing to start operation orders.
+* Purchase request: fixed 'Group by product' option not working when generating a purchase order.
+* Sequence: fixed sequence duplication causing a NPE error.
+* Move: fixed an error when we create a move line with a partner without any accounting situation.
+* Move: fixed error displayed when trying to open an invoice term.
+* SOP/MPS: fixed a bug where an existing forecast was modified instead of creating a new one when the forecast was on a different date.
+
+## [7.0.11] (2023-10-06)
+
+#### Fixed
+
+* Period: set period status at open if closure fails.
+* Move template: fixed description not being filled on moves generated from a percentage based template.
+* Interco invoice: fixed default bank details on invoice generated by interco.
+* Invoice term: on removal, improved error message if invoice term is still linked to a object.
+* Sale order line: fixed error when emptying product if the 'check stock' feature is enabled for sale orders.
+* Sale order line: fixed an issue where updating quantity on a line did not updated the quantity of complementary products.
+* Move: fixed due dates not being recomputed on date change.
+* Stock move: filled correct default stock locations on creating a new stock move.
+* Stock move: fixed wrong french translation on stock move creation and cancelation.
+* User: encrypt password when importing user data-init.
+* Print template: iText dependency has been replaced by Boxable and PDFBox.
+* Cost calculation: fixed the import of cost price calculation.
+* HR: fixed an issue preventing people from creating a required new training.
+* Task: improved performance of the batch used to update project tasks.
+* Mail template: fixed error when importing demo data.
+* Sale order: fixed an error occurring when generating analytic move line of complementary product.
+* Invoicing dashboard: fixed error on turnover per month charts.
+* Move: fixed reverse charge tax computation.
+* Debt recovery: fixed missing letter template error message.
+* GDPR request: changed UI for selecting search results.
+* Project: fixed tracebacks not showing on project totals batch anomalies.
+* Reconcile: fixed multiple move lines reconciliation.
+* Move: fixed move lines consolidation.
+* Irrecoverable: fixed tax computing.
+* Move: fixed multi invoice term due dates being wrongly updated when accounting.
+* Debt recovery batch: reduced the execution time.
+* Bank reconciliation: fixed balance not considering move status.
+
 ## [7.0.10] (2023-09-21)
 
 #### Fixed
@@ -529,6 +736,11 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.15]: https://github.com/axelor/axelor-open-suite/compare/v7.0.14...v7.0.15
+[7.0.14]: https://github.com/axelor/axelor-open-suite/compare/v7.0.13...v7.0.14
+[7.0.13]: https://github.com/axelor/axelor-open-suite/compare/v7.0.12...v7.0.13
+[7.0.12]: https://github.com/axelor/axelor-open-suite/compare/v7.0.11...v7.0.12
+[7.0.11]: https://github.com/axelor/axelor-open-suite/compare/v7.0.10...v7.0.11
 [7.0.10]: https://github.com/axelor/axelor-open-suite/compare/v7.0.9...v7.0.10
 [7.0.9]: https://github.com/axelor/axelor-open-suite/compare/v7.0.8...v7.0.9
 [7.0.8]: https://github.com/axelor/axelor-open-suite/compare/v7.0.7...v7.0.8

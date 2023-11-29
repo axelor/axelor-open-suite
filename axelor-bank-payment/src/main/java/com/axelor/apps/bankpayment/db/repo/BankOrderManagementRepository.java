@@ -26,6 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import javax.persistence.PersistenceException;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderManagementRepository extends BankOrderRepository {
 
@@ -62,13 +63,15 @@ public class BankOrderManagementRepository extends BankOrderRepository {
     copy.setSendingDateTime(null);
     copy.setBankOrderSeq(null);
 
-    for (BankOrderLine bankOrderLine : copy.getBankOrderLineList()) {
-      bankOrderLine.setSenderMove(null);
-      bankOrderLine.setReceiverMove(null);
-      bankOrderLine.setRejectMove(null);
+    if (CollectionUtils.isNotEmpty(copy.getBankOrderLineList())) {
+      for (BankOrderLine bankOrderLine : copy.getBankOrderLineList()) {
+        bankOrderLine.setSenderMove(null);
+        bankOrderLine.setReceiverMove(null);
+        bankOrderLine.setRejectMove(null);
+      }
     }
     copy.setAreMovesGenerated(false);
-
+    copy.setHasBeenSentToBank(false);
     return copy;
   }
 
