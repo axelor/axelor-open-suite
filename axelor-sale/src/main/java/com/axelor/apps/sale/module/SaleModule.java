@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingGenericServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingObserverImpl;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
@@ -50,6 +51,7 @@ import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderDomainServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
 import com.axelor.apps.sale.service.SalePricingGenericServiceImpl;
+import com.axelor.apps.sale.service.SalePricingMetaServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -146,5 +148,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineTaxService.class).to(SaleOrderLineTaxServiceImpl.class);
     bind(PricingObserverImpl.class).to(SaleOrderLinePricingObserver.class);
     bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
+    bind(PricingMetaServiceImpl.class).to(SalePricingMetaServiceImpl.class);
   }
 }

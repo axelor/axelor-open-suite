@@ -184,6 +184,7 @@ import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
+import com.axelor.apps.base.service.meta.BaseMetaService;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
 import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfServiceImpl;
@@ -193,6 +194,8 @@ import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.base.service.pricing.PricingGenericServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingGroupService;
 import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingMetaService;
+import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingObserver;
 import com.axelor.apps.base.service.pricing.PricingObserverImpl;
 import com.axelor.apps.base.service.pricing.PricingService;
@@ -240,6 +243,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.service.CustomMetaService;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
@@ -397,5 +401,7 @@ public class BaseModule extends AxelorModule {
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
     bind(CurrencyScaleService.class).to(CurrencyScaleServiceImpl.class);
+    bind(CustomMetaService.class).to(BaseMetaService.class);
+    bind(PricingMetaService.class).to(PricingMetaServiceImpl.class);
   }
 }
