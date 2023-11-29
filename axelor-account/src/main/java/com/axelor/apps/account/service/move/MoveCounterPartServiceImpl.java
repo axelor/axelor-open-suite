@@ -132,7 +132,6 @@ public class MoveCounterPartServiceImpl implements MoveCounterPartService {
     return move.getMoveLineList().stream()
         .map(MoveLine::getCurrencyAmount)
         .reduce(BigDecimal::add)
-        .map(BigDecimal::negate)
         .orElse(BigDecimal.ZERO);
   }
 
