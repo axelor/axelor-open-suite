@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Group Menu Assistant" name="meta-group-menu-assistant-grid"
+    model="com.axelor.meta.db.MetaGroupMenuAssistant">
+    <field name="metaFile"/>
+    <field name="importDate"/>
+    <field name="createdBy"/>
+    <field name="updatedBy"/>
+  </grid>
+
+  <form title="Group Menu Assistant" name="meta-group-menu-assistant-form"
+    model="com.axelor.meta.db.MetaGroupMenuAssistant" width="large">
+    <panel name="mainPanel">
+      <panel-related name="groupSetPanel" field="groupSet" colSpan="6"/>
+      <panel-related name="roleSetPanel" field="roleSet" colSpan="6"/>
+      <panel-related name="menuSetPanel" field="menuSet"
+        grid-view="simple-meta-menu-grid" colSpan="12"/>
+      <field name="metaFile" colSpan="6" widget="binary-link"/>
+      <field name="language" readonlyIf="metaFile"/>
+      <button name="createFileBtn" title="Create file" colSpan="3"
+        onClick="save,action-meta-method-create-group-menu-file"/>
+      <button name="importFileBtn" title="import.verb" readonlyIf="metaFile == null"
+        colSpan="3" onClick="save,action-meta-method-import-group-menu,save"/>
+      <panel name="detailsPanel" title="Details" colSpan="12">
+        <field name="importDate" colSpan="4"/>
+        <field name="createdBy" colSpan="4"/>
+        <field name="updatedBy" colSpan="4"/>
+      </panel>
+      <field name="log" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method name="action-meta-method-create-group-menu-file">
+    <call class="com.axelor.meta.web.MetaGroupMenuAssistantController"
+      method="createGroupMenuFile"/>
+  </action-method>
+
+  <action-method name="action-meta-method-import-group-menu">
+    <call class="com.axelor.meta.web.MetaGroupMenuAssistantController" method="importGroupMenu"/>
+  </action-method>
+
+</object-views>

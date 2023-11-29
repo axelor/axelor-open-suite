@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="ConfiguratorCreator" lang="java">
+  <entity name="ConfiguratorCreator">
 
     <string name="name" title="Name" required="true"/>
     <one-to-many name="attributes" ref="com.axelor.meta.db.MetaJsonField"
-      title="Attributes"/>
+      title="Attributes" orphanRemoval="true"/>
     <one-to-many name="indicators" ref="com.axelor.meta.db.MetaJsonField"
-      title="Indicators"/>
+      title="Indicators" orphanRemoval="true"/>
     <one-to-many name="configuratorProductFormulaList" mappedBy="productCreator"
       title="Configurator formula list" ref="com.axelor.apps.sale.db.ConfiguratorProductFormula"/>
     <one-to-many name="configuratorSOLineFormulaList" mappedBy="soLineCreator"

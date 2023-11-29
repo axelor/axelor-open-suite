@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingBatch" lang="java">
+  <entity name="AccountingBatch">
 
     <!-- DIRECT DEBIT -->
     <integer name="directDebitDataTypeSelect" title="Direct debit data type"
       selection="iaccount.account.batch.direct.debit.data.type.select" default="1"/>
+
+    <integer name="billOfExchangeStepBatchSelect" title="Batch step"
+      selection="bankpayment.account.batch.bill.of.exchange.step.batch.select"/>
+    <integer name="billOfExchangeDataTypeSelect" title="Bill of exchange data type"
+      selection="bankpayment.account.batch.bill.of.exchange.data.type.select"/>
+    <many-to-one ref="com.axelor.message.db.Template" name="billOfExhangeMailTemplate"
+      title="Template"/>
 
     <extra-code><![CDATA[
 		   	// ACTION TYPE
@@ -20,6 +27,16 @@
 			public static final int DIRECT_DEBIT_DATA_CUSTOMER_INVOICE = 1;
 			public static final int DIRECT_DEBIT_DATA_PAYMENT_SCHEDULE = 2;
 			public static final int DIRECT_DEBIT_DATA_MONTHLY_PAYMENT_SCHEDULE = 3;
+
+			//BILL OF EXCHANGE DATA TYPE
+			public static final int BILL_OF_EXCHANGE_DATA_CUSTOMER_INVOICE = 1;
+			public static final int BILL_OF_EXCHANGE_DATA_PAYMENT_SCHEDULE = 2;
+			public static final int BILL_OF_EXCHANGE_PAYMENT_SCHEDULE = 3;
+
+			//BILL OF EXCHANGE BATCH STATUS
+			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BOE_GENERATION = 1;
+			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_SEND_BILLING = 2;
+			public static final int BILL_OF_EXCHANGE_BATCH_STATUS_BANK_ORDER_GENERATION = 3;
 		]]></extra-code>
 
   </entity>

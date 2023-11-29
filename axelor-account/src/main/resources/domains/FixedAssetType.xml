@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAssetType" lang="java" cacheable="true">
+  <entity name="FixedAssetType" cacheable="true">
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code"/>
+    <integer name="technicalTypeSelect" title="Technical type"
+      selection="account.fixed.asset.technical.type.select" default="1"/>
+
+    <extra-code><![CDATA[
+        // Technical type select
+        public static final int FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_ONGOING_ASSET = 1;
+        public static final int FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_TANGIBLE_ASSET = 2;
+        public static final int FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_INTANGIBLE_ASSET = 3;
+        public static final int FIXED_ASSET_CATEGORY_TECHNICAL_TYPE_SELECT_FINANCIAL_ASSET = 4;
+
+  ]]></extra-code>
   </entity>
 
 </domain-models>

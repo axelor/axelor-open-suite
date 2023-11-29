@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="exception" package="com.axelor.exception.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ExceptionOrigin" lang="java">
+  <entity name="ExceptionOrigin">
 
     <extra-code>
   	  <![CDATA[
   	  public static final String IMPORT = "import";
+
+  	  public static final String PASSWORD_CHANGE = "passwordChange";
   	  ]]>
     </extra-code>
   </entity>

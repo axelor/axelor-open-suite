@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,27 +14,29 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankstatement.file.afb120;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
 import com.axelor.apps.bankpayment.service.bankstatement.file.BankStatementFileService;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.tool.file.FileTool;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.utils.file.FileTool;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Inject;
@@ -90,7 +93,6 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     findBankStatement();
 
     for (Map<String, Object> structuredContentLine : structuredContentFile) {
-
       try {
         createBankStatementLine(structuredContentLine, sequence++);
       } catch (Exception e) {
@@ -114,6 +116,9 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
       Map<String, Object> structuredContentLine, int sequence) {
 
     String description = (String) structuredContentLine.get("description");
+    LocalDate operationDate = (LocalDate) structuredContentLine.get("operationDate");
+    LocalDate valueDate = (LocalDate) structuredContentLine.get("valueDate");
+    int lineType = (int) structuredContentLine.get("lineType");
 
     if (structuredContentLine.containsKey("additionalInformation")
         && structuredContentLine.get("additionalInformation") != null) {
@@ -161,15 +166,36 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
             (BigDecimal) structuredContentLine.get("credit"),
             currency,
             description,
-            (LocalDate) structuredContentLine.get("operationDate"),
-            (LocalDate) structuredContentLine.get("valueDate"),
+            operationDate,
+            valueDate,
             operationInterbankCodeLine,
             rejectInterbankCodeLine,
             (String) structuredContentLine.get("origin"),
             (String) structuredContentLine.get("reference"),
-            (int) structuredContentLine.get("lineType"),
+            lineType,
             (String) structuredContentLine.get("unavailabilityIndexSelect"),
             (String) structuredContentLine.get("commissionExemptionIndexSelect"));
+    if (ObjectUtils.notEmpty(operationDate)) {
+
+      if (ObjectUtils.notEmpty(bankStatement.getFromDate())
+          && lineType == BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE) {
+        if (operationDate.isBefore(bankStatement.getFromDate()))
+          bankStatement.setFromDate(operationDate);
+      } else if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE) {
+        bankStatement.setFromDate(operationDate);
+      }
+
+      if (ObjectUtils.notEmpty(bankStatement.getToDate())
+          && lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
+        if (operationDate.isAfter(bankStatement.getToDate())) {
+          bankStatement.setToDate(operationDate);
+        }
+      } else {
+        if (lineType == BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE) {
+          bankStatement.setToDate(operationDate);
+        }
+      }
+    }
 
     return bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
   }
@@ -181,7 +207,6 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
     List<String> fileContent = FileTool.reader(file.getPath());
 
     for (String lineContent : fileContent) {
-
       log.info("Read line : {}", lineContent);
       String lineData = null;
       int i = 0;
@@ -902,9 +927,11 @@ public class BankStatementFileAFB120Service extends BankStatementFileService {
   }
 
   protected InterbankCodeLine getInterbankCodeLine(String code) {
-
-    //		return interbankCodeLineRepository.findByCode(code);
-    // TODO Manage reject and operation code
-    return null;
+    return interbankCodeLineRepository
+        .all()
+        .filter("self.code = :code AND self.interbankCode.typeSelect = :type")
+        .bind("code", code)
+        .bind("type", InterbankCodeRepository.TYPE_OPERATION_CODE)
+        .fetchOne();
   }
 }

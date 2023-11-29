@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -25,17 +26,20 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.service.app.AppService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.app.service.AppService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
@@ -50,28 +54,34 @@ public class ReimbursementImportService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepo;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected RejectImportService rejectImportService;
   protected AccountConfigService accountConfigService;
   protected ReimbursementRepository reimbursementRepo;
+  protected BankDetailsService bankDetailsService;
 
   @Inject
   public ReimbursementImportService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepo,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       RejectImportService rejectImportService,
       AccountConfigService accountConfigService,
-      ReimbursementRepository reimbursementRepo) {
+      ReimbursementRepository reimbursementRepo,
+      BankDetailsService bankDetailsService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.rejectImportService = rejectImportService;
     this.accountConfigService = accountConfigService;
     this.reimbursementRepo = reimbursementRepo;
+    this.bankDetailsService = bankDetailsService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -106,10 +116,11 @@ public class ReimbursementImportService {
       if (move != null) {
         // Création d'une ligne au débit
         MoveLine debitMoveLine =
-            moveLineService.createMoveLine(
+            moveLineCreateService.createMoveLine(
                 move,
                 null,
-                company.getAccountConfig().getReimbursementAccount(),
+                accountConfigService.getReimbursementAccount(
+                    accountConfigService.getAccountConfig(company)),
                 this.getTotalAmount(move),
                 true,
                 rejectDate,
@@ -140,7 +151,7 @@ public class ReimbursementImportService {
     if (reimbursement == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.REIMBURSEMENT_3),
+          I18n.get(AccountExceptionMessage.REIMBURSEMENT_3),
           refReject,
           company.getName());
     }
@@ -150,10 +161,10 @@ public class ReimbursementImportService {
 
     // Création de la ligne au crédit
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
-            company.getAccountConfig().getCustomerAccount(),
+            accountConfigService.getCustomerAccount(accountConfigService.getAccountConfig(company)),
             amount,
             false,
             rejectDate,
@@ -178,18 +189,27 @@ public class ReimbursementImportService {
 
   @Transactional(rollbackOn = {Exception.class})
   public Move createMoveReject(Company company, LocalDate date) throws AxelorException {
+    BankDetails companyBankDetails = null;
+    if (company != null) {
+      companyBankDetails =
+          bankDetailsService.getDefaultCompanyBankDetails(company, null, null, null);
+    }
     return moveRepo.save(
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                company.getAccountConfig().getRejectJournal(),
-                company,
-                null,
-                null,
-                date,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_IMPORT,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT));
+        moveCreateService.createMove(
+            company.getAccountConfig().getRejectJournal(),
+            company,
+            null,
+            null,
+            date,
+            date,
+            null,
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_IMPORT,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            null,
+            null,
+            companyBankDetails));
+    // TODO determine origin
   }
 
   public BigDecimal getTotalAmount(Move move) {
@@ -206,10 +226,11 @@ public class ReimbursementImportService {
       throws AxelorException {
     // Création d'une ligne au débit
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             null,
-            move.getCompany().getAccountConfig().getReimbursementAccount(),
+            accountConfigService.getReimbursementAccount(
+                accountConfigService.getAccountConfig(move.getCompany())),
             this.getTotalAmount(move),
             true,
             rejectDate,
@@ -223,7 +244,7 @@ public class ReimbursementImportService {
 
   @Transactional(rollbackOn = {Exception.class})
   public void validateMove(Move move) throws AxelorException {
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.accounting(move);
     moveRepo.save(move);
   }
 
@@ -240,7 +261,7 @@ public class ReimbursementImportService {
    * @throws AxelorException
    */
   public void testCompanyField(Company company) throws AxelorException {
-    log.debug("Test de la société {}", company.getName());
+    log.debug("Test of the company {}", company.getName());
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 

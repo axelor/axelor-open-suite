@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.move;
 
@@ -25,162 +26,131 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 
 public class MoveAdjustementService {
 
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
+  protected CurrencyService currencyService;
+  protected CompanyConfigService companyConfigService;
 
   @Inject
   public MoveAdjustementService(
       AppAccountService appAccountService,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       AccountConfigService accountConfigService,
+      CurrencyService currencyService,
+      CompanyConfigService companyConfigService,
       MoveRepository moveRepository) {
 
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
+    this.currencyService = currencyService;
+    this.companyConfigService = companyConfigService;
   }
 
   /**
-   * Creating move of passage in gap regulation (on debit)
+   * Creating move of passage in gap regulation
    *
-   * @param debitMoveLine
-   * @return
+   * @param moveLine, isDebit
+   * @return moveLine
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void createAdjustmentDebitMove(MoveLine debitMoveLine) throws AxelorException {
+  public MoveLine createAdjustmentMove(
+      MoveLine moveLine, Account cashPositionVariationAccount, boolean isDebit)
+      throws AxelorException {
 
-    Partner partner = debitMoveLine.getPartner();
-    Account account = debitMoveLine.getAccount();
-    Move debitMove = debitMoveLine.getMove();
-    Company company = debitMove.getCompany();
+    Partner partner = moveLine.getPartner();
+    Account account = moveLine.getAccount();
+    Move move = moveLine.getMove();
+    Company company = move.getCompany();
+    BigDecimal amountRemaining = moveLine.getAmountRemaining();
+    Currency currency = moveLine.getMove().getCurrency();
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
+    LocalDate date = appAccountService.getTodayDate(company);
 
     Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
+
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(currency, companyCurrency, date);
+
+    BigDecimal amountRemainingInSpecificMoveCurrency =
+        amountRemaining.divide(
+            currencyRate, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     Move adjustmentMove =
         moveCreateService.createMove(
             miscOperationJournal,
             company,
-            null,
+            currency,
             partner,
             null,
+            partner != null ? partner.getFiscalPosition() : null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            debitMove.getFunctionalOriginSelect());
+            0,
+            null,
+            null,
+            move.getCompanyBankDetails());
 
-    // Création de la ligne au crédit
     MoveLine creditAdjustmentMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
-            account,
-            debitAmountRemaining,
+            isDebit ? account : cashPositionVariationAccount,
+            amountRemainingInSpecificMoveCurrency,
             false,
-            appAccountService.getTodayDate(company),
+            date,
             1,
             null,
             null);
 
-    // Création de la ligne au debit
     MoveLine debitAdjustmentMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             adjustmentMove,
             partner,
-            accountConfigService.getCashPositionVariationAccount(accountConfig),
-            debitAmountRemaining,
+            isDebit ? cashPositionVariationAccount : account,
+            amountRemainingInSpecificMoveCurrency,
             true,
-            appAccountService.getTodayDate(company),
+            date,
             2,
             null,
             null);
 
     adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
     adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
-
-    moveValidateService.validate(adjustmentMove);
-    moveRepository.save(adjustmentMove);
-  }
-
-  /**
-   * Creating move of passage in gap regulation (on credit)
-   *
-   * @param debitMoveLine
-   * @return
-   * @throws AxelorException
-   */
-  public MoveLine createAdjustmentCreditMove(MoveLine debitMoveLine) throws AxelorException {
-
-    Partner partner = debitMoveLine.getPartner();
-    Account account = debitMoveLine.getAccount();
-    Move debitMove = debitMoveLine.getMove();
-    Company company = debitMove.getCompany();
-    BigDecimal debitAmountRemaining = debitMoveLine.getAmountRemaining();
-    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
-
-    Journal miscOperationJournal = accountConfigService.getAutoMiscOpeJournal(accountConfig);
-
-    Move adjustmentMove =
-        moveCreateService.createMove(
-            miscOperationJournal,
-            company,
-            null,
-            partner,
-            null,
-            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            debitMove.getFunctionalOriginSelect());
-
-    // Création de la ligne au crédit
-    MoveLine creditAdjustmentMoveLine =
-        moveLineService.createMoveLine(
-            adjustmentMove,
-            partner,
-            account,
-            debitAmountRemaining,
-            false,
-            appAccountService.getTodayDate(company),
-            1,
-            null,
-            null);
-
-    // Création de la ligne au débit
-    MoveLine debitAdjustmentMoveLine =
-        moveLineService.createMoveLine(
-            adjustmentMove,
-            partner,
-            accountConfigService.getCashPositionVariationAccount(accountConfig),
-            debitAmountRemaining,
-            true,
-            appAccountService.getTodayDate(company),
-            2,
-            null,
-            null);
-
-    adjustmentMove.addMoveLineListItem(creditAdjustmentMoveLine);
-    adjustmentMove.addMoveLineListItem(debitAdjustmentMoveLine);
-    moveValidateService.validate(adjustmentMove);
+    moveValidateService.accounting(adjustmentMove);
     moveRepository.save(adjustmentMove);
 
-    return creditAdjustmentMoveLine;
+    if (isDebit) {
+      return creditAdjustmentMoveLine;
+    } else {
+      return debitAdjustmentMoveLine;
+    }
   }
 
   /**
@@ -214,11 +184,15 @@ public class MoveAdjustementService {
             null,
             partnerDebit,
             null,
+            null,
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            debitMoveLineToReconcile.getMove().getFunctionalOriginSelect());
+            debitMoveLineToReconcile.getMove().getFunctionalOriginSelect(),
+            null,
+            null,
+            debitMoveLineToReconcile.getMove().getCompanyBankDetails());
 
     MoveLine debitMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partnerCredit,
             creditMoveLineToReconcile.getAccount(),
@@ -230,7 +204,7 @@ public class MoveAdjustementService {
             null);
 
     MoveLine creditMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partnerDebit,
             debitMoveLineToReconcile.getAccount(),
@@ -244,7 +218,7 @@ public class MoveAdjustementService {
     move.addMoveLineListItem(debitMoveLine);
     move.addMoveLineListItem(creditMoveLine);
 
-    moveValidateService.validate(move);
+    moveValidateService.accounting(move);
 
     return move;
   }

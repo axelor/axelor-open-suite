@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="fixed-asset-derogatory-line-grid" title="Fixed asset derogatory lines"
+    model="com.axelor.apps.account.db.FixedAssetDerogatoryLine" orderBy="depreciationDate">
+    <field name="depreciationDate"/>
+    <field name="depreciationAmount"/>
+    <field name="fiscalDepreciationAmount"/>
+    <field name="derogatoryAmount"/>
+    <field name="incomeDepreciationAmount"/>
+    <field name="derogatoryBalanceAmount"/>
+    <field name="statusSelect"/>
+    <field name="fixedAsset.statusSelect" hidden="true"/>
+    <button name="realizeBtn" title="Realize"
+      readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2"
+      icon="fa-check-circle" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
+  </grid>
+
+  <form name="fixed-asset-derogatory-line-form" title="Fixed asset derogatory lines"
+    model="com.axelor.apps.account.db.FixedAssetDerogatoryLine"
+    onLoad="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="false" readonly="true" colSpan="6"
+        widget="NavSelect"/>
+      <panel name="actionsPanel" hideIf="statusSelect == 2" colSpan="6">
+        <button onClick="action-attrs-account-fixed-asset-derogatory-line-simulate"
+          name="simulateBtn" title="Simulate"
+          showIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 1 || $get('fixedAsset.journal.authorizeSimulatedMove') == true"/>
+        <button name="realizeBtn" title="Realize"
+          readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2"
+          onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
+      </panel>
+      <field name="depreciationDate"/>
+      <spacer colSpan="6"/>
+      <field name="depreciationAmount"/>
+      <field name="fiscalDepreciationAmount"/>
+      <field name="derogatoryAmount"/>
+      <field name="incomeDepreciationAmount"/>
+      <field name="derogatoryBalanceAmount"/>
+      <field name="derogatoryDepreciationMove" showIf="statusSelect == 2 || isSimulated"
+        form-view="move-form" grid-view="move-grid"/>
+      <field name="isSimulated" widget="boolean" colSpan="3"
+        showIf="statusSelect == 1 ||  $get('fixedAsset.journal.authorizeSimulatedMove') == true"/>
+      <field name="fixedAsset.statusSelect" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs
+    name="action-attrs-account-fixed-asset-derogatory-line-title-derogatory-depreciation-move">
+    <attribute name="title" for="derogatoryDepreciationMove"
+      expr="eval:com.axelor.i18n.I18n.get('Derogatory Resumption Move')"
+      if="incomeDepreciationAmount != 0"/>
+    <attribute name="title" for="derogatoryDepreciationMove"
+      expr="eval:com.axelor.i18n.I18n.get('Derogatory Depreciation Move')"
+      if="derogatoryAmount != 0"/>
+  </action-attrs>
+  <action-method name="action-attrs-account-fixed-asset-derogatory-line-realize">
+    <call class="com.axelor.apps.account.web.FixedAssetDerogatoryLineController"
+      method="realize"/>
+  </action-method>
+  <action-method name="action-attrs-account-fixed-asset-derogatory-line-simulate">
+    <call class="com.axelor.apps.account.web.FixedAssetDerogatoryLineController"
+      method="simulate"/>
+  </action-method>
+
+</object-views>

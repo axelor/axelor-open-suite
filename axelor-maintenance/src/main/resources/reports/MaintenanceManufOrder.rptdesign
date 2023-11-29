@@ -768,7 +768,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	OperationOrderLine.planned_start_datet, OperationOrderLine.planned_end_datet, OperationOrderLine.real_start_datet,
     OperationOrderLine.real_end_datet, 
     (CASE WHEN TranslatedSelect.message_value = '' THEN TranslatedSelect.message_key ELSE TranslatedSelect.message_value END) as status_select,
-    Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM base_app_production) as print_planned_date_on_manuf_order
+    Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM studio_app_production) as print_planned_date_on_manuf_order
 FROM
 	production_operation_order as OperationOrderLine 
 INNER JOIN 

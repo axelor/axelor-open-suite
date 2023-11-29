@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="ConfiguratorProdProduct">
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <string name="productFormula" title="Product" large="true"/>
+    <boolean name="defProductAsFormula" title="Define with a script" default="false"/>
+
+    <decimal name="qty" title="Qty" precision="20" scale="10"/>
+    <string name="qtyFormula" title="Qty" large="true"/>
+    <boolean name="defQtyAsFormula" title="Define with a script" default="false"/>
+
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <string name="unitFormula" title="Unit" large="true"/>
+    <boolean name="defUnitAsFormula" title="Define with a script" default="false"/>
+
+    <many-to-one name="configuratorProdProcessLine" title="Configurator Phase"
+      ref="com.axelor.apps.production.db.ConfiguratorProdProcessLine"/>
+
+    <string name="useCondition" title="Condition" large="true"/>
+
+  </entity>
+
+</domain-models>

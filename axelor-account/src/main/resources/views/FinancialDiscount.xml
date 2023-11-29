@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="financial-discount-grid" title="Financial discounts"
+    model="com.axelor.apps.account.db.FinancialDiscount">
+    <field name="name"/>
+    <field name="discountDelay"/>
+    <field name="discountBaseSelect"/>
+    <field name="discountRate"/>
+  </grid>
+
+
+  <form name="financial-discount-form" title="Financial discount"
+    model="com.axelor.apps.account.db.FinancialDiscount">
+    <panel name="overviewPanel" title="Overview">
+      <field name="name"/>
+      <field name="discountDelay"/>
+      <field name="discountBaseSelect"/>
+      <field name="discountRate"/>
+      <field name="legalNotice" colSpan="12"/>
+    </panel>
+    <panel-dashlet name="viewLinkedPartnersPanel"
+      action="action-account-financial-discount-view-partners"/>
+  </form>
+
+  <action-view name="action-account-financial-discount-view-partners"
+    title="Linked Partners" model="com.axelor.apps.base.db.Partner">
+    <view type="grid" name="partner-grid"/>
+    <view type="form" name="partner-form"/>
+    <domain>self.financialDiscount.id = :id</domain>
+  </action-view>
+
+</object-views>

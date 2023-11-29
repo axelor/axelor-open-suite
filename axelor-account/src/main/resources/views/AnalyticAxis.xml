@@ -1,18 +1,147 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-  <grid name="analytic-axis-grid" title="Analytic Axis"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="analytic-axis-grid" title="analyticAxis.plurial"
     model="com.axelor.apps.account.db.AnalyticAxis">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
+    <field name="company" hidden="true"/>
   </grid>
+
   <form name="analytic-axis-form" title="Analytic Axis"
-    model="com.axelor.apps.account.db.AnalyticAxis">
+    model="com.axelor.apps.account.db.AnalyticAxis"
+    onLoad="action-attrs-analytic-axis-hide-grouping,action-method-account-analytic-axis-readonly-if-in-analytic-move-line"
+    onSave="action-method-account-analytic-axis-control-unicity,action-method-axis-check-company-on-analytic-account">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
+      <field name="nbrOfAnalyticGrouping" readonlyIf="!id"
+        onChange="action-attrs-analytic-axis-set-grouping,action-attrs-analytic-axis-hide-grouping"/>
+      <field name="manageParentAccount"/>
+      <field name="company" colSpan="12"
+        onChange="action-method-axis-change-company,action-method-axis-check-company-on-analytic-account"/>
+      <field name="analyticGrouping1"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="1 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping2"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="2 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping3"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="3 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping4"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="4 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping5"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="5 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping6"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="6 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping7"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="7 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping8"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="8 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping9"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="9 &lt;= nbrOfAnalyticGrouping"/>
+      <field name="analyticGrouping10"
+        onChange="action-method-analytic-axis-remove-same-analytic-grouping" hidden="true"
+        domain="self.analyticAxis.id = :id" requiredIf="10 &lt;= nbrOfAnalyticGrouping"/>
     </panel>
 
   </form>
+
+  <tree name="analytic-account-axis-tree" title="Analytic accounting account (with axis)">
+    <column name="name" type="string"/>
+    <column name="code" type="string"/>
+    <node model="com.axelor.apps.account.db.AnalyticAxis">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+    <node model="com.axelor.apps.account.db.AnalyticAccount" parent="analyticAxis"
+      domain="self.parent is null" onClick="action-analytic-account-view-account-onchange-view"
+      draggable="true">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+    <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
+      domain="self.parent is not null" onClick="action-analytic-account-view-account-onchange-view"
+      draggable="true">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+    <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
+      domain="self.parent is not null" onClick="action-analytic-account-view-account-onchange-view"
+      draggable="true">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+  </tree>
+
+  <action-attrs name="action-attrs-analytic-axis-hide-grouping">
+    <attribute name="hidden" for="analyticGrouping1"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 1)"/>
+    <attribute name="hidden" for="analyticGrouping2"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 2)"/>
+    <attribute name="hidden" for="analyticGrouping3"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 3)"/>
+    <attribute name="hidden" for="analyticGrouping4"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 4)"/>
+    <attribute name="hidden" for="analyticGrouping5"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 5)"/>
+    <attribute name="hidden" for="analyticGrouping6"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 6)"/>
+    <attribute name="hidden" for="analyticGrouping7"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 7)"/>
+    <attribute name="hidden" for="analyticGrouping8"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 8)"/>
+    <attribute name="hidden" for="analyticGrouping9"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 9)"/>
+    <attribute name="hidden" for="analyticGrouping10"
+      expr="eval: (nbrOfAnalyticGrouping &lt; 10)"/>
+  </action-attrs>
+
+  <action-record name="action-attrs-analytic-axis-set-grouping"
+    model="com.axelor.apps.account.db.AnalyticAxis">
+    <field name="analyticGrouping1" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 1"/>
+    <field name="analyticGrouping2" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 2"/>
+    <field name="analyticGrouping3" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 3"/>
+    <field name="analyticGrouping4" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 4"/>
+    <field name="analyticGrouping5" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 5"/>
+    <field name="analyticGrouping6" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 6"/>
+    <field name="analyticGrouping7" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 7"/>
+    <field name="analyticGrouping8" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 8"/>
+    <field name="analyticGrouping9" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 9"/>
+    <field name="analyticGrouping10" expr="eval: null" if="nbrOfAnalyticGrouping &lt; 10"/>
+  </action-record>
+
+  <action-method name="action-method-axis-change-company">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController"
+      method="checkCompanyOnMoveLine"/>
+  </action-method>
+
+  <action-method name="action-method-account-analytic-axis-control-unicity">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="controlUnicity"/>
+  </action-method>
+
+  <action-method
+    name="action-method-account-analytic-axis-readonly-if-in-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController" method="setReadOnly"/>
+  </action-method>
+
+  <action-method name="action-method-axis-check-company-on-analytic-account">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController"
+      method="checkAnalyticAccountCompany"/>
+  </action-method>
+
+  <action-method name="action-method-analytic-axis-remove-same-analytic-grouping">
+    <call class="com.axelor.apps.account.web.AnalyticAxisController"
+      method="removeSameAnalyticGrouping"/>
+  </action-method>
+
 </object-views>

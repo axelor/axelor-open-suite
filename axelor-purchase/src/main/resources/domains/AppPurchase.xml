@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppPurchase" lang="java">
+  <entity name="AppPurchase" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="managePurchaseOrderVersion" title="Manage purchase order versions"
       default="false"/>
@@ -29,6 +29,8 @@
       <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
       <field name="manageSupplierCatalog" on="UPDATE"/>
       <field name="isDisplayPurchaseOrderLineNumber" on="UPDATE"/>
+      <field name="enablePurchasesProductByTradName" on="UPDATE"/>
+      <field name="purchaseUnit" on="UPDATE"/>
     </track>
 
   </entity>

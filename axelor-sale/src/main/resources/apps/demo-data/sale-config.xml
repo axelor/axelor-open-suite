@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
+
+  <input file="studio_appSale.csv" separator=";" type="com.axelor.studio.db.AppSale"
+    search="self.app.code = :code" update="true"/>
+
+  <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
+    search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
+    <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
+    <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
+    <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
+    <bind to="resetDate"
+      eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
+  </input>
+
+  <input file="sale_cancelReason.csv" separator=";"
+    type="com.axelor.apps.base.db.CancelReason">
+    <bind to="freeText" eval="freeText == 'true' ? true : false"/>
+    <bind to="applicationType" eval="'com.axelor.apps.sale.db.SaleOrder'"/>
+  </input>
+
+  <input file="sale_saleBatch.csv" separator=";" type="com.axelor.apps.sale.db.SaleBatch"/>
+
+  <input file="sale_saleConfig.csv" separator=";" type="com.axelor.apps.sale.db.SaleConfig"
+    search="self.importId = :importId"/>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="sale_saleOrderLine.csv" separator=";"
+    type="com.axelor.apps.sale.db.SaleOrderLine" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportSaleOrderLine:importSaleOrderLine">
+    <bind to="priceDiscounted" eval="price"/>
+  </input>
+
+  <input file="sale_saleOrder.csv" separator=";" search="self.importId = :importId"
+    type="com.axelor.apps.sale.db.SaleOrder"
+    call="com.axelor.csv.script.ImportSaleOrder:importSaleOrder">
+    <bind to="creationDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(creationDate)"
+      column="creationDate"/>
+    <bind to="confirmationDateTime"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(confirmationDateTime)"
+      column="confirmationDateTime"/>
+    <bind to="shipmentDate"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(shipmentDate)"
+      column="shipmentDate"/>
+  </input>
+
+  <input file="base_template_context.csv" separator=";"
+    type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
+
+  <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
+    search="self.name = :name">
+    <bind to="language" search="self.code = :languageCode"/>
+    <bind to="templateContextList" search="self.name = :templateContext"
+      if="templateContext != null &amp;&amp; !templateContext.empty"/>
+    <bind column="birtTemplateSet_importId" to="birtTemplateSet"
+      search="self.importId in :birtTemplateSet_importId"
+      eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
+  </input>
+
+  <input file="base_mail_template_association.csv" separator=";"
+    type="com.axelor.apps.base.db.MailTemplateAssociation" search="self.model.name = :model">
+    <bind to="model" column="model" search="self.name = :model"/>
+    <bind to="emailTemplate" column="template" search="self.name = :template"/>
+  </input>
+
+  <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
+    search="self.app.code = :code">
+    <bind to="mailTemplateAssociationList" column="model" search="self.model.name = :model"
+      if="model != null &amp;&amp; !model.empty"/>
+  </input>
+
+  <input file="base_pricingRule.csv" separator=";" type="com.axelor.apps.base.db.PricingRule"
+    search="self.importId = :importId">
+    <bind column="concernedModel" to="concernedModel" search="self.name = :concernedModel"/>
+    <bind column="fieldToPopulate" to="fieldToPopulate"
+      search="(self.metaModel.name = :concernedModel) AND (self.name = :fieldToPopulate)"
+      if="fieldToPopulate"/>
+  </input>
+
+  <input file="base_pricing.csv" separator=";" type="com.axelor.apps.base.db.Pricing"
+    search="self.importId = :importId">
+    <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
+      column="startDate"/>
+  </input>
+
+  <input file="base_pricingLine.csv" separator=";" type="com.axelor.apps.base.db.PricingLine"
+    search="self.importId = :importId"/>
+
+  <input file="sale_complementaryProduct.csv" separator=";"
+    type="com.axelor.apps.sale.db.ComplementaryProduct" search="self.importId = :importId"/>
+
+  <input file="sale_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
+
+  <input file="sale_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
+    separator=";">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaField" column="metaField"
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+    <bind to="anonymizer" column="anonymizer_importId"
+      search="self.importId = :anonymizer_importId"/>
+    <bind to="useFakeData" column="useFakeData"/>
+  </input>
+
+</csv-inputs>

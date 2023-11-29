@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="crm" package="com.axelor.apps.crm.db"/>
 
-  <entity name="Event" lang="java" extends="com.axelor.apps.base.db.ICalendarEvent">
+  <entity name="Event" extends="com.axelor.apps.base.db.ICalendarEvent">
 
     <!-- Commun -->
     <datetime name="limitDateT" title="Limit Date"/>
@@ -29,10 +29,13 @@
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Contact"/>
-    <many-to-one name="lead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
+    <many-to-one name="eventLead" ref="com.axelor.apps.crm.db.Lead" title="Lead"/>
+    <many-to-one name="opportunity" ref="com.axelor.apps.crm.db.Opportunity"
+      title="Opportunity"/>
 
     <!-- Call -->
-    <integer name="callTypeSelect" title="Call type" selection="crm.event.call.type.select"/>
+    <integer name="callTypeSelect" title="Call type" default="2"
+      selection="crm.event.call.type.select"/>
 
     <!-- Task -->
     <boolean name="isRecurrent" title="Recurrent"/>
@@ -44,23 +47,25 @@
     <many-to-one name="recurrenceConfiguration"
       ref="com.axelor.apps.crm.db.RecurrenceConfiguration"/>
 
+    <finder-method name="findByPartner" using="partner" all="true"/>
+
     <extra-code>
       	<![CDATA[
       		// TYPE SELECT
-      		public static final int TYPE_EVENT = 0;
-	  		public static final int TYPE_CALL = 1;
-	  		public static final int TYPE_MEETING = 2;
-	  		public static final int TYPE_TASK = 3;
+                public static final int TYPE_EVENT = 0;
+		public static final Integer TYPE_CALL = 1;
+	 	public static final Integer TYPE_MEETING = 2;
+	  	public static final Integer TYPE_TASK = 3;
+      		public static final int TYPE_NOTE = 5;
+
+      		// CALL TYPE SELECT
+      		public static final int CALL_TYPE_INBOUND = 1;
+      		public static final int CALL_TYPE_OUTBOUND = 2;
 
 	  		// STATUS SELECT
 	  		public static final int STATUS_PLANNED = 1;
 	  		public static final int STATUS_REALIZED = 2;
 	  		public static final int STATUS_CANCELED = 3;
-	  		public static final int STATUS_NOT_STARTED = 11;
-	  		public static final int STATUS_ON_GOING = 12;
-	  		public static final int STATUS_PENDING = 13;
-	  		public static final int STATUS_FINISHED = 14;
-	  		public static final int STATUS_REPORTED = 15;
 	  ]]>
     </extra-code>
 

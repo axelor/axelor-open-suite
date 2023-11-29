@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <chart name="chart.employee.training.per.category" title="Training per category">
     <dataset type="jpql"><![CDATA[
@@ -13,7 +13,7 @@
 			TrainingRegister self
 		WHERE
 			YEAR(self.fromDate) >= (YEAR(CURRENT_DATE)-3)
-			AND self.employee =:id
+			AND self.employee.id = :id
 		GROUP BY
 			self.training.category.name,
 			YEAR(self.fromDate)
@@ -115,6 +115,65 @@
     <category key="_month" type="text" title="Month"/>
     <series key="_nbHours" type="bar" title="Nb Hours"/>
   </chart>
+
+  <custom name="my-trainings-custom-view" title="Training" css="dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.talent.web.TalentDashboardController:getConnectedEmployeeTrainingData</dataset>
+    <template><![CDATA[
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; border:2px solid #D3D3D3; padding:0.5rem;background-color:#E8E8E8; border-radius:5px; cursor:pointer;" ng-click="$root.openTabByName('training.register.all',{'mode':'edit','state':item.id})">
+	  		<span><b>{{ item.fromDate | date:'YYYY MMM ddd' }}</b></span>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b>{{ item.fromDate | date:'h:mm A' }}</b></span>
+	  		<span>{{ item.training }}</span>
+		</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-training-custom-view" title="Training" css="dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.talent.web.TalentDashboardController:getEmployeeTrainingData</dataset>
+    <template><![CDATA[
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; border:2px solid #D3D3D3; padding:2px 20x; background-color:#E8E8E8; border-radius:5px; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('training.register.all',{'mode':'edit','state':item.id})">
+	   		<div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.fromDate | date:'L'}} - {{item.toDate | date:'L'}}</p>
+			</div>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b>{{item.duration}} h</b></span>
+	  		<span>{{item.training}}</span>
+		</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-recruitment-custom-view" title="Recruitment"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">com.axelor.apps.talent.web.TalentDashboardController:getRecruitmentData</dataset>
+    <template><![CDATA[
+		<div ng-repeat="item in data">
+			<div style="display:flex; padding:2px 20px; align-items:center; margin-block:1rem; justify-content:space-around; border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8; max-height:80px; cursor:pointer;" ng-click="$root.openTabByName('recruitment.job.application.all',{'mode':'edit','state':item.id})">
+		       <div style="width:10%; align-items:center; justify-content:center; margin-left:5px;">
+		        	<img style="max-width:45px; border-radius:50%" src="{{item.picture}}" ng-if="item.picture"></img>
+		        </div>
+		        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; margin-top:10px;">
+		    		<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+		    		<p style="padding:0; margin:0; font-weight:100; color:rgba(0,0,0,0.8); font-size:12px">{{item.jobPosition}}</p>
+			        <p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.contractType}}</p>
+		        </div>
+		        <div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+		        	<p style="padding:0px; margin:0; margin-top:7px; font-size:12px; color:#1d1e22; text-alignment:left;">
+		        	<i class="fa fa-envelope" style="color:#356a94; margin-right:6px" ng-if="item.emailAddress"></i>
+		        	{{item.emailAddress}}
+		        	</p>
+		        	<p style="padding:0px; margin:0; margin-top:-14px; font-size:12px; color:#1d1e22; text-alignment:left;">
+		        	<i class="fa fa-phone" style="color:#356a94; margin-right:6px" ng-if="item.mobilePhone"></i>
+		        	{{item.mobilePhone}}
+		        	</p>
+		        </div>
+		        <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+		        	<a style="text-decoration:none; background-color:#2584fe; color:white; font-size:12px; padding:5px 20px; border-radius:4px; min-width:150px; text-align:center;" ng-if="item.hiringStage">{{item.hiringStage}}</a>
+		        </div>
+	        </div>
+        </div>
+    ]]></template>
+  </custom>
 
   <action-attrs name="action-training-chart-set-default-from-to-dates">
     <attribute name="value" for="fromDate" expr="eval:__config__.date.withDayOfMonth(1)"/>

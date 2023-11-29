@@ -1,16 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentMode" lang="java" cacheable="true">
+  <entity name="PaymentMode" cacheable="true">
 
     <one-to-many name="accountManagementList"
       ref="com.axelor.apps.account.db.AccountManagement" mappedBy="paymentMode"
       title="Accounting settings"/>
-    <boolean name="validatePaymentByDepositSlipPublication"/>
+    <boolean name="canSelectInPaymentSession" title="Select on sessions ?"/>
+    <integer name="daysMarginOnPaySession"
+      title="Default days Margin to retrieve terms on Payment Session ?" default="5"/>
+    <integer name="accountingMethodSelect" title="Accounting method for payment move"
+      selection="paymentMode.accounting.method.select" default="1"/>
+    <integer name="accountingTriggerSelect" title="Move generation trigger settings"
+      selection="payment.mode.accounting.trigger.select"/>
+    <integer name="moveAccountingDateSelect" title="Payment(s) move(s) Accounting Date"
+      selection="payment.mode.move.accounting.date.select" default="1"
+      help="Choose the option to determine the accounting date (effect date) of the accounted moves generated."/>
+
+    <extra-code><![CDATA[
+        public static final int ACCOUNTING_TRIGGER_NONE = 0;
+        public static final int ACCOUNTING_TRIGGER_IMMEDIATE = 1;
+        public static final int ACCOUNTING_TRIGGER_VALUE_FOR_COLLECTION = 5;
+
+        // MOVE ACCOUNTING DATE SELECT
+        public static final int MOVE_ACCOUNTING_DATE_PAYMENT = 1;
+        public static final int MOVE_ACCOUNTING_DATE_ORIGIN_DOCUMENT = 2;
+        public static final int MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER = 3;
+    ]]></extra-code>
 
   </entity>
 

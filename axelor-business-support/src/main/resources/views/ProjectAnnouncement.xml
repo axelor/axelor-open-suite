@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="project-announcement-grid" title="Announcement"
     model="com.axelor.apps.businesssupport.db.ProjectAnnouncement">
@@ -15,12 +15,16 @@
     model="com.axelor.apps.businesssupport.db.ProjectAnnouncement" width="large"
     onNew="action-project-record-project-announcement-onnew,action-business-support-attrs-project-default">
     <panel name="mainPanel">
-      <field name="title" colSpan="12"/>
+      <field name="title" colSpan="12" required="true"/>
       <field name="project" form-view="project-form" grid-view="project-grid"
         onSelect="action-project-attrs-project-announcement-project-domain"/>
       <field name="date"/>
       <field name="content" widget="html" colSpan="12"/>
     </panel>
+    <panel-mail name="panelMail">
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
   </form>
 
   <action-attrs name="action-project-attrs-project-announcement-project-domain">
@@ -31,6 +35,7 @@
   <action-record name="action-project-record-project-announcement-onnew"
     model="com.axelor.apps.businesssupport.db.ProjectAnnouncement">
     <field name="date" expr="eval: __config__.date"/>
+    <field name="project" expr="eval: _project"/>
   </action-record>
 
 </object-views>

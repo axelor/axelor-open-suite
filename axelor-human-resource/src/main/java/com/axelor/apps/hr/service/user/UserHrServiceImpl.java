@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,31 +14,43 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.user;
 
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.AppLeave;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.AppLeave;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class UserHrServiceImpl implements UserHrService {
 
-  @Inject UserRepository userRepo;
+  protected UserRepository userRepo;
+  protected AppHumanResourceService appHumanResourceService;
+  protected UserService userService;
 
-  @Inject private AppHumanResourceService appHumanResourceService;
+  @Inject
+  public UserHrServiceImpl(
+      UserRepository userRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserService userService) {
+    this.userRepo = userRepo;
+    this.appHumanResourceService = appHumanResourceService;
+    this.userService = userService;
+  }
 
   @Transactional
   public void createEmployee(User user) {
@@ -85,13 +98,12 @@ public class UserHrServiceImpl implements UserHrService {
   }
 
   @Override
-  public Product getTimesheetProduct(User user) {
+  public Product getTimesheetProduct(Employee employee) {
 
-    if (user == null || user.getId() == null || user.getActiveCompany() == null) {
+    User user = employee.getUser();
+    if (user == null || user.getActiveCompany() == null) {
       return null;
     }
-
-    user = userRepo.find(user.getId());
 
     Product product = null;
     HRConfig hrConfig = user.getActiveCompany().getHrConfig();
@@ -99,10 +111,58 @@ public class UserHrServiceImpl implements UserHrService {
       product = hrConfig.getUniqueTimesheetProduct();
     }
 
-    if (product == null && user.getEmployee() != null) {
-      product = user.getEmployee().getProduct();
+    if (product == null && employee != null) {
+      product = employee.getProduct();
     }
 
     return product;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void createUserFromEmployee(User user, Employee employee) {
+    User employeeUser = new User();
+    setUserInfoFromUser(employeeUser, user);
+    setUserInfoFromEmployee(employeeUser, employee);
+    employee.setUser(employeeUser);
+
+    userRepo.save(employeeUser);
+  }
+
+  protected void setUserInfoFromUser(User employeeUser, User user) {
+    employeeUser.setActivateOn(user.getActivateOn());
+    employeeUser.setExpiresOn(user.getExpiresOn());
+    employeeUser.setCode(user.getCode());
+    employeeUser.setGroup(user.getGroup());
+
+    CharSequence password = userService.generateRandomPassword();
+    employeeUser.setPassword(password.toString());
+  }
+
+  protected void setUserInfoFromEmployee(User employeeUser, Employee employee) {
+    employeeUser.setEmployee(employee);
+
+    if (employee.getContactPartner() != null) {
+      employeeUser.setPartner(employee.getContactPartner());
+      String employeeName = employee.getContactPartner().getName();
+      if (employee.getContactPartner().getFirstName() != null) {
+        employeeName += " " + employee.getContactPartner().getFirstName();
+      }
+      employeeUser.setName(employeeName);
+      if (employee.getContactPartner().getEmailAddress() != null) {
+        employeeUser.setEmail(employee.getContactPartner().getEmailAddress().getAddress());
+      }
+    }
+
+    if (employee.getMainEmploymentContract() != null) {
+      employeeUser.setActiveCompany(employee.getMainEmploymentContract().getPayCompany());
+    }
+
+    List<EmploymentContract> contractList = employee.getEmploymentContractList();
+    if (contractList != null && !contractList.isEmpty()) {
+      for (EmploymentContract employmentContract : contractList) {
+        employeeUser.addCompanySetItem(employmentContract.getPayCompany());
+      }
+    }
   }
 }

@@ -1,22 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="configurator-soline-formula-grid" title="Calculated fields on configurator"
     model="com.axelor.apps.sale.db.ConfiguratorSOLineFormula">
     <field name="metaField" title="Sale order line field"/>
+    <field name="metaJsonField" title="Custom field"/>
     <field name="formula"/>
     <field name="showOnConfigurator"/>
   </grid>
 
   <form name="configurator-soline-formula-form" title="Calculated fields on configurator"
-    model="com.axelor.apps.sale.db.ConfiguratorSOLineFormula">
+    model="com.axelor.apps.sale.db.ConfiguratorSOLineFormula"
+    onLoad="action-configurator-formula-attr-display-meta-json-field">
     <panel-tabs>
       <panel name="editorPanel" title="Editor" itemSpan="12">
         <panel name="mainPanel">
-          <field name="metaField" title="Sale order line field"
-            domain="self.metaModel.name = 'SaleOrderLine' "/>
+          <field name="metaField"
+            onChange="action-configurator-formula-attr-display-meta-json-field"
+            title="Sale order line field" domain="self.metaModel.name = 'SaleOrderLine' "/>
+          <field name="metaJsonField" hidden="true" title="Custom field"
+            onSelect="action-configurator-sale-order-line-formula-attr-on-select-meta-json-field"/>
           <field name="formula" widget="CodeEditor" colSpan="12" x-code-syntax="groovy"/>
           <field name="showOnConfigurator" readonlyIf="metaField.relationship == 'OneToMany'"/>
           <field name="updateFromSelect"/>
@@ -30,5 +35,11 @@
       <panel-include view="incl-help-configurator-formula"/>
     </panel-tabs>
   </form>
+
+  <action-attrs
+    name="action-configurator-sale-order-line-formula-attr-on-select-meta-json-field">
+    <attribute name="domain" for="metaJsonField"
+      expr="eval:&quot; self.type NOT IN ('panel', 'button', 'label', 'spacer', 'separator') AND self.model = 'com.axelor.apps.sale.db.SaleOrderLine' AND self.modelField = '${metaField?.name}' &quot;"/>
+  </action-attrs>
 
 </object-views>

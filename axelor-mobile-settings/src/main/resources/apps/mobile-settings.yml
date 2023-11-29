@@ -1,0 +1,13 @@
+---
+name: Axelor Mobile Settings
+code: mobile-settings
+typeSelect: standard
+installOrder: 2300
+description: |
+  Axelor Mobile Settings
+image: app-mobile.png
+modules:
+  axelor-mobile-settings
+dependsOn:
+  - base
+sequence: 120

@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="extra-hours-line-grid" title="Extra Hours"
     model="com.axelor.apps.hr.db.ExtraHoursLine" editable="true"
     onNew="action-extra-hours-line-record-default" orderBy="date">
     <field name="date" width="100"/>
-    <field name="qty" width="100" onChange="action-extra-hours-line-validate-qty"
-      aggregate="sum"/>
+    <field name="qty" width="100" aggregate="sum"/>
     <field name="extraHoursType" width="200"/>
     <field name="project" width="200"/>
     <field name="description" width="400"/>
-    <field name="user" hidden="true"/>
+    <field name="employee" hidden="true"/>
   </grid>
 
   <form name="extra-hours-line-form" title="Extra Hours"
-    model="com.axelor.apps.hr.db.ExtraHoursLine" cols="12" width="large"
+    model="com.axelor.apps.hr.db.ExtraHoursLine" width="large"
     onNew="action-group-extra-hours-line-onnew" onLoad="action-extra-hours-line-attrs-title-project">
 
-    <panel name="headPanel">
+    <panel name="headPanel" colSpan="12">
       <field name="date"/>
-      <field name="qty" onChange="action-extra-hours-line-validate-qty"/>
+      <field name="qty"/>
       <field name="extraHoursType"/>
       <field name="project"/>
       <field name="description" colSpan="12"/>
-      <field name="user" hidden="true" form-view="user-form" grid-view="user-grid"
+      <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
     </panel>
   </form>
@@ -33,30 +32,19 @@
 
   <action-attrs name="action-extra-hours-line-attrs-title-project">
     <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
 
   <action-record name="action-extra-hours-line-record-default"
     model="com.axelor.apps.hr.db.ExtraHoursLine">
-    <field name="user" expr="eval: __user__"/>
+    <field name="employee" expr="eval: __user__.employee"/>
   </action-record>
 
   <action-group name="action-group-extra-hours-line-onnew">
     <action name="action-extra-hours-line-record-default"/>
     <action name="action-extra-hours-line-attrs-title-project"/>
   </action-group>
-
-  <action-validate name="action-extra-hours-line-validate-qty">
-    <error message="Maximum value for hours exceeded (configure daily work hours in employee)"
-      if="user?.employee == null || user?.employee?.dailyWorkHours &lt; qty"
-      action="action-extra-hours-line-record-qty"/>
-  </action-validate>
-
-  <action-record name="action-extra-hours-line-record-qty"
-    model="com.axelor.apps.hr.db.ExtraHoursLine">
-    <field name="qty" expr="eval: user?.employee != null ? user?.employee?.dailyWorkHours : 0"/>
-  </action-record>
 
 </object-views>

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockHistoryLine" persistable="false">
+  <entity name="StockHistoryLine">
     <integer name="countIncMvtStockPeriod" readonly="true" title="Nbr of incoming moves"/>
     <decimal name="sumIncQtyPeriod" readonly="true" title="Incoming quantity" precision="20"
       scale="10"/>
@@ -15,5 +15,13 @@
       scale="10"/>
     <decimal name="priceOutStockMovePeriod" readonly="true" title="Outgoing amount"/>
     <string name="label" readonly="true"/>
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <decimal name="avgOutQtyOn12PastMonth"
+      title="Avg outgoing quantity on 12 past months (One-off sale excluded)"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
+
+    <unique-constraint columns="product,company,label"/>
   </entity>
 </domain-models>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="model-email-link-grid" title="Model email links"
+    model="com.axelor.apps.base.db.ModelEmailLink" editable="true">
+    <field name="metaModel" required="true"/>
+    <field name="emailField" required="true"/>
+    <field name="addressTypeSelect"/>
+  </grid>
+
+  <form name="model-email-link-form" title="Model email link"
+    model="com.axelor.apps.base.db.ModelEmailLink">
+    <panel name="mainPanel">
+      <field name="metaModel" required="true"/>
+      <field name="emailField" required="true"/>
+      <field name="addressTypeSelect"/>
+    </panel>
+  </form>
+
+  <action-method name="action-base-method-model-email-link-onsave">
+    <call class="com.axelor.apps.base.web.ModelEmailLinkController"
+      method="validateModelFields"/>
+  </action-method>
+
+</object-views>

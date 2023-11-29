@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
@@ -21,17 +22,18 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.service.move.MoveLineService;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -42,28 +44,34 @@ import java.util.List;
 
 public class BankReconciliationValidateService {
 
-  protected MoveService moveService;
+  protected MoveCreateService moveCreateService;
+  protected MoveValidateService moveValidateService;
   protected MoveRepository moveRepository;
   protected MoveLineRepository moveLineRepository;
-  protected MoveLineService moveLineService;
+  protected MoveLineCreateService moveLineCreateService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
+  protected BankReconciliationService bankReconciliationService;
 
   @Inject
   public BankReconciliationValidateService(
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       MoveRepository moveRepository,
       MoveLineRepository moveLineRepository,
-      MoveLineService moveLineService,
+      MoveLineCreateService moveLineCreateService,
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationLineService bankReconciliationLineService) {
+      BankReconciliationLineService bankReconciliationLineService,
+      BankReconciliationService bankReconciliationService) {
 
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.moveRepository = moveRepository;
     this.moveLineRepository = moveLineRepository;
-    this.moveLineService = moveLineService;
+    this.moveLineCreateService = moveLineCreateService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
+    this.bankReconciliationService = bankReconciliationService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -81,17 +89,20 @@ public class BankReconciliationValidateService {
             && bankReconciliationLine.getAccount() != null) {
           this.validate(bankReconciliationLine);
         } else if (bankReconciliationLine.getMoveLine() != null) {
+          bankReconciliationLine.setIsPosted(true);
           bankReconciliationLineService.checkAmount(bankReconciliationLine);
-          updateBankReconciledAmounts(bankReconciliationLine);
+          bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
         }
       }
     }
 
     bankReconciliation.setStatusSelect(BankReconciliationRepository.STATUS_VALIDATED);
     bankReconciliation.setValidatedByUser(AuthUtils.getUser());
-    bankReconciliation.setValidatedDate(
-        Beans.get(AppBaseService.class).getTodayDate(bankReconciliation.getCompany()));
-
+    bankReconciliation.setValidateDateTime(
+        Beans.get(AppBaseService.class)
+            .getTodayDateTime(bankReconciliation.getCompany())
+            .toLocalDateTime());
+    bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
 
@@ -112,9 +123,9 @@ public class BankReconciliationValidateService {
     Partner partner = bankReconciliationLine.getPartner();
 
     String reference = bankReconciliationLine.getReference();
-    String name = bankReconciliationLine.getName();
-    if (name != null && name.length() > 255) {
-      name = name.substring(0, 255);
+    String description = bankReconciliationLine.getName();
+    if (description != null && description.length() > 255) {
+      description = description.substring(0, 255);
     }
 
     BigDecimal amount = debit.add(credit);
@@ -124,20 +135,23 @@ public class BankReconciliationValidateService {
     boolean isDebit = debit.compareTo(BigDecimal.ZERO) > 0;
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                bankReconciliation.getJournal(),
-                company,
-                null,
-                partner,
-                effectDate,
-                null,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+        moveCreateService.createMove(
+            bankReconciliation.getJournal(),
+            company,
+            null,
+            partner,
+            effectDate,
+            effectDate,
+            null,
+            partner != null ? partner.getFiscalPosition() : null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            description,
+            bankReconciliation.getBankDetails());
 
     MoveLine partnerMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             bankReconciliationLine.getAccount(),
@@ -147,11 +161,11 @@ public class BankReconciliationValidateService {
             effectDate,
             1,
             origin,
-            name);
+            description);
     move.addMoveLineListItem(partnerMoveLine);
 
     MoveLine cashMoveLine =
-        moveLineService.createMoveLine(
+        moveLineCreateService.createMoveLine(
             move,
             partner,
             bankReconciliation.getCashAccount(),
@@ -161,41 +175,23 @@ public class BankReconciliationValidateService {
             effectDate,
             2,
             origin,
-            name);
+            description);
     cashMoveLine.setBankReconciledAmount(amount);
 
     move.addMoveLineListItem(cashMoveLine);
 
     moveRepository.save(move);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.accounting(move);
 
-    bankReconciliationLine.setMoveLine(cashMoveLine);
-
-    bankReconciliationLine.setIsPosted(true);
-
-    updateBankReconciledAmounts(bankReconciliationLine);
-  }
-
-  protected void updateBankReconciledAmounts(BankReconciliationLine bankReconciliationLine) {
+    bankReconciliationLineService.reconcileBRLAndMoveLine(bankReconciliationLine, cashMoveLine);
 
     bankReconciliationLine.setIsPosted(true);
 
-    BigDecimal bankReconciledAmount =
-        bankReconciliationLine.getDebit().add(bankReconciliationLine.getCredit());
-
-    BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
-    if (bankStatementLine != null) {
-      bankStatementLine.setAmountRemainToReconcile(
-          bankStatementLine.getAmountRemainToReconcile().subtract(bankReconciledAmount));
-    }
-
-    MoveLine moveLine = bankReconciliationLine.getMoveLine();
-
-    moveLine.setBankReconciledAmount(bankReconciledAmount);
+    bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public void validateMultipleBankReconciles(
       BankReconciliation bankReconciliation,
       BankReconciliationLine bankReconciliationLine,
@@ -212,6 +208,9 @@ public class BankReconciliationValidateService {
     boolean firstLine = true;
 
     if ((moveLinesToReconcileContext != null && !moveLinesToReconcileContext.isEmpty())) {
+      boolean isUnderCorrection =
+          bankReconciliation.getStatusSelect()
+              == BankReconciliationRepository.STATUS_UNDER_CORRECTION;
       for (HashMap<String, Object> moveLineToReconcile : moveLinesToReconcileContext) {
 
         if (bankStatementAmountRemaining.compareTo(BigDecimal.ZERO) != 1) {
@@ -222,6 +221,7 @@ public class BankReconciliationValidateService {
             moveLineRepository.find(((Integer) moveLineToReconcile.get("id")).longValue());
         BigDecimal debit;
         BigDecimal credit;
+
         if (isDebit) {
           debit =
               (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
@@ -237,14 +237,23 @@ public class BankReconciliationValidateService {
         if (firstLine) {
           bankReconciliationLine.setDebit(debit);
           bankReconciliationLine.setCredit(credit);
+          bankReconciliationLine.setPostedNbr(bankReconciliationLine.getId().toString());
+          moveLine =
+              bankReconciliationLineService.setMoveLinePostedNbr(
+                  moveLine, bankReconciliationLine.getPostedNbr());
           bankReconciliationLine.setMoveLine(moveLine);
           firstLine = false;
         } else {
-          bankReconciliation.addBankReconciliationLineListItem(
+          bankReconciliationLine =
               bankReconciliationLineService.createBankReconciliationLine(
-                  effectDate, debit, credit, name, reference, bankStatementLine, moveLine));
+                  effectDate, debit, credit, name, reference, bankStatementLine, moveLine);
+          bankReconciliation.addBankReconciliationLineListItem(bankReconciliationLine);
         }
-
+        if (isUnderCorrection) {
+          bankReconciliationLine.setIsPosted(true);
+          bankReconciliationLineService.checkAmount(bankReconciliationLine);
+          bankReconciliationLineService.updateBankReconciledAmounts(bankReconciliationLine);
+        }
         bankStatementAmountRemaining = bankStatementAmountRemaining.subtract(debit.add(credit));
       }
 
@@ -259,9 +268,10 @@ public class BankReconciliationValidateService {
           credit = bankStatementAmountRemaining;
         }
 
-        bankReconciliation.addBankReconciliationLineListItem(
+        bankReconciliationLine =
             bankReconciliationLineService.createBankReconciliationLine(
-                effectDate, debit, credit, name, reference, bankStatementLine, null));
+                effectDate, debit, credit, name, reference, bankStatementLine, null);
+        bankReconciliation.addBankReconciliationLineListItem(bankReconciliationLine);
       }
 
       bankReconciliationRepository.save(bankReconciliation);

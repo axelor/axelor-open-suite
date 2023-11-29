@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="import-fec-type-grid" title="Import FEC types"
+    model="com.axelor.apps.account.db.ImportFECType">
+    <field name="name"/>
+    <field name="isDefaultForValidGeneratedMove"/>
+  </grid>
+
+
+  <form model="com.axelor.apps.account.db.ImportFECType" title="Import FEC type"
+    name="import-fec-type-form">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="bindMetaFile" widget="binary-link"/>
+      <field name="functionalOriginSelect"/>
+      <field name="isDefaultForValidGeneratedMove"/>
+    </panel>
+  </form>
+
+
+</object-views>

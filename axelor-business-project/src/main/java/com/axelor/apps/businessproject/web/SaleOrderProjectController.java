@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.businessproject.exception.IExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.ProjectAnalyticMoveLineService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.project.db.Project;
@@ -27,8 +30,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -53,7 +54,8 @@ public class SaleOrderProjectController {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       if (saleOrder.getSaleOrderLineList() == null || saleOrder.getSaleOrderLineList().isEmpty()) {
-        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+        response.setAlert(
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
         return;
       }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
@@ -72,7 +74,7 @@ public class SaleOrderProjectController {
 
       response.setReload(true);
       response.setView(
-          ActionView.define("Project")
+          ActionView.define(I18n.get("Project"))
               .model(Project.class.getName())
               .add("form", "project-form")
               .param("forceEdit", "true")
@@ -92,7 +94,8 @@ public class SaleOrderProjectController {
       if (saleOrder.getSaleOrderLineList() == null
           || (saleOrder.getSaleOrderLineList() != null
               && saleOrder.getSaleOrderLineList().isEmpty())) {
-        response.setAlert(I18n.get(IExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
+        response.setAlert(
+            I18n.get(BusinessProjectExceptionMessage.SALE_ORDER_GENERATE_FILL_PROJECT_ERROR_2));
         return;
       }
       String generatorType = (String) request.getContext().get("_projectGeneratorType");
@@ -114,7 +117,6 @@ public class SaleOrderProjectController {
   public void updateLines(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
       saleOrder = Beans.get(ProjectAnalyticMoveLineService.class).updateLines(saleOrder);
       response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
@@ -122,7 +124,7 @@ public class SaleOrderProjectController {
     }
   }
 
-  private LocalDateTime getElementStartDate(Context context) {
+  protected LocalDateTime getElementStartDate(Context context) {
     LocalDateTime date;
     String stringStartDate = (String) context.get("_elementStartDate");
     if (!Strings.isNullOrEmpty(stringStartDate)) {

@@ -1,0 +1,9 @@
+"importId";"name";"code";"workCenterTypeSelect";"machine.importId";"capacityPerCycle";"maxCapacityPerCycle";"durationPerCycle";"startingDuration";"setupDuration";"endingDuration";"product.importId";"costTypeSelect";"costAmount";"costSheetGroup.importId";"hrDurationPerCycle";"hrProduct.importId";"hrCostTypeSelect";"hrCostAmount"
+10;"Poste Montage Proc";"MONT-PROC";3;10;1;1;900;60;0;60;402;1;30;3;600;412;1;40
+20;"Poste Vissage";"MONT-VISS";3;20;1;1;600;60;0;60;402;1;20;3;600;412;1;40
+30;"Poste Connectique";"MONT-CNTQ";3;30;1;1;1200;90;0;90;402;1;20;3;600;412;1;40
+40;"Contrôle Qualité";"CONT-QUAL";1;;;;;;;;;;;3;600;412;1;40
+50;"Nettoyage";"CONT-NETT";1;;;;;;;;;;;3;600;412;1;40
+60;"Emballage";"EXPE-EMBA";1;;;;;;;;;;;3;600;412;1;40
+70;"Banc de test";"CONT-TEST";3;40;2;2;3600;180;60;180;402;1;70;3;600;412;1;40
+80;"Récup Art. Stock";"EXPE-PREP";1;;;;;;;;;;;3;600;412;1;40

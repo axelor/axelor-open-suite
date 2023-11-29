@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankStatementRule">
+
+    <many-to-one ref="com.axelor.apps.account.db.AccountManagement"
+      name="accountManagement" title="Payment account management" required="true"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="counterpartAccount"
+      title="Counterpart account"/>
+    <many-to-one ref="com.axelor.apps.base.db.Partner" name="partner" title="Partner"/>
+    <many-to-one ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
+      name="bankStatementQuery" title="Query"/>
+
+    <integer name="ruleTypeSelect" title="Rule type"
+      selection="bank.payment.bank.statement.rule.rule.type.select" default="0" required="true"/>
+
+    <string name="searchLabel" title="Searched label" multiline="true" large="true"/>
+    <integer name="partnerFetchMethodSelect" title="Partner fetch's method"
+      selection="bank.payment.bank.statement.rule.partner.fetch.method.select" default="1"/>
+    <many-to-one ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
+      name="partnerBankStatementQuery" title="Partner's fetch query"/>
+    <boolean name="letterToInvoice" title="Lettering to invoice"/>
+    <many-to-one ref="com.axelor.apps.bankpayment.db.BankStatementQuery"
+      name="moveLineBankStatementQuery" title="Move line's fetch query"/>
+
+    <many-to-one name="specificTax" ref="com.axelor.apps.account.db.Tax"
+      title="Specific tax"
+      help="By filling in this field, the selected tax will be applied to the move lines for which the tax is mandatory instead of the one filled in the configuration of the account"/>
+
+    <extra-code><![CDATA[
+
+    // RULE TYPE
+    public static final int RULE_TYPE_ACCOUNTING_AUTO = 0;
+    public static final int RULE_TYPE_RECONCILIATION_AUTO = 1;
+    public static final int RULE_TYPE_PARTNER_FETCHING = 2;
+    public static final int RULE_TYPE_MOVE_LINE_FETCHING = 3;
+
+    //PARTNER FETCH METHOD
+    public static final int PARTNER_FETCH_METHOD_NONE = 0;
+    public static final int PARTNER_FETCH_METHOD_SELECT = 1;
+    public static final int PARTNER_FETCH_METHOD_QUERY = 2;
+
+
+    ]]></extra-code>
+
+  </entity>
+</domain-models>

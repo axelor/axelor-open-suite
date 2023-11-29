@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InvoiceLine" lang="java">
+  <entity name="InvoiceLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
 
@@ -26,6 +26,8 @@
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
+    <date name="cutOffStartDate" title="From date"/>
+    <date name="cutOffEndDate" title="To date"/>
 
     <decimal name="discountAmount" title="Discount amount" precision="20" scale="10"/>
     <integer name="discountTypeSelect" title="Discount type"
@@ -46,11 +48,16 @@
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
-    <one-to-many name="budgetDistributionList"
-      ref="com.axelor.apps.account.db.BudgetDistribution" title="Budget Distribution"
-      mappedBy="invoiceLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
 
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account"
       title="Accounting.Account"/>
@@ -60,7 +67,7 @@
 
     <integer name="typeSelect" title="Type" selection="line.type.select"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
     <string name="name" title="Name" search="invoice,productName">
             <![CDATA[
@@ -78,6 +85,15 @@
 	  		return name;
 	    ]]>
     </string>
+
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.companyExTaxTotal != null && this.companyExTaxTotal.signum() > 0) {
+				return this.companyExTaxTotal;
+			}
+			return BigDecimal.ZERO;
+	    ]]>
+    </decimal>
 
     <extra-code>
 		<![CDATA[

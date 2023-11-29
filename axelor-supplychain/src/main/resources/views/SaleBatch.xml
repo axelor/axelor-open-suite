@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sale-batch-grid" title="Sale batches" model="com.axelor.apps.sale.db.SaleBatch">
     <field name="actionSelect"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="createdOn"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
   </grid>
@@ -26,7 +26,7 @@
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
       <button name="invoicingBatchBtn" title="Invoicing batch"
-        onClick="save,action-sale-batch-method-action-invoicing"/>
+        onClick="save,action-sale-batch-method-run-batch"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="descriptionPanel" title="Description">
@@ -51,11 +51,12 @@
   <!-- ACTION RECORD -->
   <action-record name="action-sale-batch-record-on-new"
     model="com.axelor.apps.sale.db.SaleBatch">
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(null)"/>
-    <field name="createdOn" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
       if="__user__.activeCompany != null"/>
     <field name="createdOn"
-      expr="eval:__config__.app.getTodayDate(__repo__(Company).all().fetchOne())"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
     <field name="createdBy" expr="__user__"/>
     <field name="company" expr="eval:__user__.activeCompany"
@@ -65,8 +66,8 @@
   </action-record>
 
   <!-- ACTION METHOD -->
-  <action-method name="action-sale-batch-method-action-invoicing">
-    <call class="com.axelor.apps.supplychain.web.SaleBatchController" method="actionInvoicing"/>
+  <action-method name="action-sale-batch-method-run-batch">
+    <call class="com.axelor.apps.supplychain.web.SaleBatchController" method="runBatch"/>
   </action-method>
 
   <!-- ACTION ATTRS -->
@@ -77,7 +78,6 @@
   <search-filters name="sale-batch-filters" model="com.axelor.apps.sale.db.SaleBatch"
     title="Sale batch filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
-
 </object-views>

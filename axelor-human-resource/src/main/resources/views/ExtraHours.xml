@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="extra-hours-grid" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
-    canNew="false" orderBy="-sentDate">
+    canNew="true" orderBy="-sentDate">
     <hilite color="danger" if="statusSelect == 4"/>
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="sentDate"/>
     <field name="statusSelect"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <grid name="extra-hours-validate-grid" title="Extra Hours"
-    model="com.axelor.apps.hr.db.ExtraHours" canNew="false" orderBy="-sentDate">
+    model="com.axelor.apps.hr.db.ExtraHours" canNew="true" orderBy="-sentDate">
     <toolbar>
       <button name="showSubordinateExtraHoursToValidateBtn"
         title="Show extra hours to be validated by my subordinates"
@@ -25,17 +25,17 @@
     <hilite background="danger" if="$moment(sentDate).diff(todayDate,'days') &lt;= 0"/>
     <hilite background="warning" if="$moment(todayDate).diff(sentDate,'days') &gt;= 7"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="sentDate"/>
     <field name="statusSelect"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <form name="extra-hours-form" title="Extra Hours" model="com.axelor.apps.hr.db.ExtraHours"
-    cols="12" width="large" onNew="action-group-extra-hours-onnew"
+    width="large" onNew="action-group-extra-hours-onnew"
     onLoad="action-extra-hours-attrs-buttons,action-extra-hours-attrs-title-project" canNew="false"
     canCopy="false">
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <panel colSpan="9" name="statusPanel">
         <field name="statusSelect" colSpan="12" widget="NavSelect" showTitle="false"/>
       </panel>
@@ -59,7 +59,7 @@
       <field name="totalQty" colSpan="3"/>
       <field name="company" canEdit="false" colSpan="3" form-view="company-form"
         grid-view="company-grid"/>
-      <field name="user" colSpan="3" form-view="user-form" grid-view="user-grid"
+      <field name="employee" colSpan="3" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
     </panel>
     <panel-related name="extraHoursLineListPanel" field="extraHoursLineList"
@@ -80,16 +80,19 @@
 
   <form name="popup-extra-hours-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.ExtraHours">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-extra-hours-form" title="Select the extra hours you want to edit"
-    model="com.axelor.apps.base.db.Wizard"
-    onNew="action-extra-hours-attrs-domain-extra-hours-select">
-    <field name="$extraHoursSelect" title="Select extra hours" type="many-to-one"
-      target="com.axelor.apps.hr.db.ExtraHours" widget="SuggestBox"/>
-    <button name="editExtraHoursSelectedBtn" title="Edit extra hours selected"
-      onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
+    model="com.axelor.utils.db.Wizard" onNew="action-extra-hours-attrs-domain-extra-hours-select">
+    <panel name="mainPanel">
+      <field name="$extraHoursSelect" title="Select extra hours" type="many-to-one"
+        target="com.axelor.apps.hr.db.ExtraHours" widget="SuggestBox"/>
+      <button name="editExtraHoursSelectedBtn" title="Edit extra hours selected"
+        onClick="com.axelor.apps.hr.web.extra.hours.ExtraHoursController:editExtraHoursSelected,close"/>
+    </panel>
   </form>
 
   <action-group name="action-group-extra-hours-onnew">
@@ -121,7 +124,7 @@
 
   <action-record name="action-extra-hours-record-default"
     model="com.axelor.apps.hr.db.ExtraHours">
-    <field name="user" expr="eval:__user__"/>
+    <field name="employee" expr="eval:__user__.employee"/>
     <field name="company"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-record>
@@ -133,22 +136,22 @@
 
   <action-attrs name="action-extra-hours-attrs-buttons">
     <attribute name="hidden" for="validateBtn"
-      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
-      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="readonly" for="headPanel"
-      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
+      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
   </action-attrs>
 
   <action-attrs name="action-extra-hours-attrs-title-project">
     <attribute name="title" for="extraHoursLineList.project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
   <action-attrs name="action-extra-hours-attrs-domain-extra-hours-select">
     <attribute name="domain" for="$extraHoursSelect"
-      expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+      expr="eval: &quot; self.statusSelect = 1 AND self.employee.user.id = ${__user__.id} &quot;"/>
   </action-attrs>
 
   <action-method name="action-extra-hours-method-confirm">
@@ -185,6 +188,6 @@
   <search-filters name="extra-hours-filters" model="com.axelor.apps.hr.db.ExtraHours"
     title="Extra hours filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="subrogation-release-grid" title="Subrogation releases"
     model="com.axelor.apps.account.db.SubrogationRelease" orderBy="-sequenceNumber">
     <field name="sequenceNumber" width="120"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="company.accountConfig.factorPartner"/>
     <field name="transmissionDate"/>
     <field name="statusSelect"/>
@@ -18,8 +18,8 @@
 
     <menubar>
       <menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="fa-print">
-        <item name="printToPDFItem" action="action-subrogation-release-method-print-to-pdf"
-          title="Print to PDF" readonlyIf="statusSelect &lt; 2"/>
+        <item name="printItem" action="action-method-print-birt" title="Print"
+          readonlyIf="statusSelect &lt; 2"/>
         <item name="exportToCSVItem" action="action-subrogation-release-method-export-to-csv"
           title="Export to CSV" readonlyIf="statusSelect &lt; 2"/>
       </menu>
@@ -86,10 +86,6 @@
       method="transmitRelease"/>
   </action-method>
 
-  <action-method name="action-subrogation-release-method-print-to-pdf">
-    <call class="com.axelor.apps.account.web.SubrogationReleaseController" method="printToPDF"/>
-  </action-method>
-
   <action-method name="action-subrogation-release-method-export-to-csv">
     <call class="com.axelor.apps.account.web.SubrogationReleaseController" method="exportToCSV"/>
   </action-method>
@@ -129,7 +125,7 @@
   <search-filters name="subrogation-release-filters"
     model="com.axelor.apps.account.db.SubrogationRelease" title="Subrogation release filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

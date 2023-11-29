@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="supplychain-meta-schedule-form" name="meta-schedule-form" title="Schedule"
+    model="com.axelor.meta.db.MetaSchedule" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-meta-schedule-attrs-fill-mrp"/>
+      <attribute name="onLoad" value="action-meta-schedule-attrs-fill-mrp"/>
+    </extend>
+    <extend target="//panel[@name='batchPanel']">
+      <insert position="after">
+        <panel name="mrpPanel" title="MRP"
+          showIf="job == 'com.axelor.apps.supplychain.job.MrpJob'">
+          <field name="$mrp" title="MRP to compute" type="many-to-one"
+            target="com.axelor.apps.supplychain.db.Mrp" form-view="mrp-form" grid-view="mrp-grid"
+            onChange="action-meta-schedule-attrs-fill-mrp-seq"
+            requiredIf="job == 'com.axelor.apps.supplychain.job.MrpJob'"/>
+          <field name="mrpSeq" hidden="true"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-meta-schedule-attrs-fill-mrp-seq"
+    model="com.axelor.meta.db.MetaSchedule">
+    <attribute for="mrpSeq" name="value"
+      expr="eval: mrp ? __repo__(Mrp).find(mrp.id)?.mrpSeq : null"/>
+  </action-attrs>
+
+  <action-attrs name="action-meta-schedule-attrs-fill-mrp"
+    model="com.axelor.meta.db.MetaSchedule">
+    <attribute for="$mrp" name="value" expr="eval: __repo__(Mrp).findByMrpSeq(mrpSeq)"/>
+  </action-attrs>
+
+</object-views>

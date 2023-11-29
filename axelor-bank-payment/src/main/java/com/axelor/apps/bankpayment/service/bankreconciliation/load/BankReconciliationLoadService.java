@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,23 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation.load;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationLoadService {
 
@@ -75,32 +80,29 @@ public class BankReconciliationLoadService {
    * @return the filter.
    */
   protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements, boolean includeBankStatement) {
+      boolean includeOtherBankStatements,
+      boolean includeBankStatement,
+      boolean isLineTypeMovement) {
 
-    String filter;
+    String filter =
+        "self.bankDetails = :bankDetails"
+            + " and self.currency = :currency"
+            + " and self.bankStatement.statusSelect = :statusImported";
+
     if (!includeOtherBankStatements && includeBankStatement) {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement = :bankStatement";
+      filter += " and self.bankStatement = :bankStatement";
     } else if (includeOtherBankStatements && includeBankStatement) {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
+      filter += " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat";
     } else {
-      filter =
-          "self.bankDetails = :bankDetails"
-              + " and self.currency = :currency"
-              + " and self.amountRemainToReconcile > 0"
-              + " and self.bankStatement.statusSelect = :statusImported"
-              + " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
+      filter +=
+          " and self.bankStatement.bankStatementFileFormat = :bankStatementFileFormat"
               + " and self.bankStatement != :bankStatement";
     }
+
+    if (isLineTypeMovement) {
+      filter += " and self.amountRemainToReconcile > 0";
+    }
+
     return filter;
   }
 
@@ -108,17 +110,38 @@ public class BankReconciliationLoadService {
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-    return JPA.all(BankStatementLine.class)
-        .filter(
-            getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
-        .bind("bankDetails", bankReconciliation.getBankDetails())
-        .bind("currency", bankReconciliation.getCurrency())
-        .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
-        .bind("bankStatement", bankStatement)
-        .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
-        .order("valueDate")
-        .order("sequence")
-        .fetch();
+    String queryFilter =
+        getBankStatementLinesFilter(
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true);
+    Query<BankStatementLine> bankStatementLinesQuery =
+        JPA.all(BankStatementLine.class)
+            .bind("bankDetails", bankReconciliation.getBankDetails())
+            .bind("currency", bankReconciliation.getCurrency())
+            .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
+            .bind("bankStatement", bankStatement)
+            .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
+            .order("valueDate")
+            .order("sequence");
+    List<Long> existingBankStatementLineIds = getExistingBankStatementLines(bankReconciliation);
+    if (!CollectionUtils.isEmpty(existingBankStatementLineIds)) {
+      queryFilter += " AND self.id NOT IN (:existingBankStatementLines)";
+      bankStatementLinesQuery.bind("existingBankStatementLines", existingBankStatementLineIds);
+    }
+    return bankStatementLinesQuery.filter(queryFilter).fetch();
+  }
+
+  protected List<Long> getExistingBankStatementLines(BankReconciliation bankReconciliation) {
+    List<Long> bankStatementLineIds = Lists.newArrayList();
+    List<BankReconciliationLine> bankReconciliationLines =
+        bankReconciliation.getBankReconciliationLineList();
+    if (CollectionUtils.isEmpty(bankReconciliationLines)) {
+      return bankStatementLineIds;
+    }
+    for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
+      if (bankReconciliationLine.getBankStatementLine() != null) {
+        bankStatementLineIds.add(bankReconciliationLine.getBankStatementLine().getId());
+      }
+    }
+    return bankStatementLineIds;
   }
 }

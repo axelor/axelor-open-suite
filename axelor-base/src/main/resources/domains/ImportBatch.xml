@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ImportBatch">
+
+    <string name="code" title="Code" namecolumn="true" unique="true"/>
+    <integer name="actionSelect" title="Action" required="true"
+      selection="import.batch.action.select"/>
+    <one-to-many name="batchList" title="Batchs" ref="com.axelor.apps.base.db.Batch"
+      mappedBy="importBatch"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
+    <string name="description" title="Description" large="true"/>
+
+    <many-to-one name="importConfig" title="Import"
+      ref="com.axelor.apps.base.db.ImportConfiguration"/>
+    <many-to-one name="advancedImport" title="Advanced import"
+      ref="com.axelor.apps.base.db.AdvancedImport"/>
+    <boolean name="importFromConnector" title="Import from connector"
+      help="Check that if files should be imported from a connector"/>
+    <many-to-one name="fileSourceConnectorParameters"
+      title="File source connector parameters"
+      ref="com.axelor.apps.base.db.FileSourceConnectorParameters"/>
+    <string name="dataFileName" title="Data file name"
+      help="This field is used to enter the name of the data file used in the XML binding file.
+       This will be used to temporaly rename all the data files imported from the FTP server in order to use them with a binding file."/>
+
+
+    <extra-code><![CDATA[
+		//actionSelect
+		public static final int ACTION_SELECT_IMPORT = 0;
+		public static final int ACTION_SELECT_ADVANCE_IMPORT = 1;
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

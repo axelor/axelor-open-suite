@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentVoucher" sequential="true" lang="java">
+  <entity name="PaymentVoucher" sequential="true">
 
     <string name="ref" title="Reference" namecolumn="true" required="false"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"
       required="true"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account"
       title="Partner account"/>
+    <many-to-one name="valueForCollectionAccount"
+      ref="com.axelor.apps.account.db.Account" readonly="true"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode" required="true"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
@@ -28,12 +30,15 @@
       ref="com.axelor.apps.account.db.PayVoucherDueElement"
       title="List of invoices/schedule lines with remaining amount to pay" mappedBy="paymentVoucher"/>
     <one-to-many name="payVoucherElementToPayList"
-      ref="com.axelor.apps.account.db.PayVoucherElementToPay" title="List of invoices to pay"
+      ref="com.axelor.apps.account.db.PayVoucherElementToPay"
+      title="List of allocations by invoices/installments for the amount paid"
       mappedBy="paymentVoucher"/>
     <integer name="statusSelect" title="Status" default="1" readonly="true"
       selection="iaccount.payment.voucher.status.select"/>
     <many-to-one name="generatedMove" ref="com.axelor.apps.account.db.Move"
       title="Generated move" readonly="true"/>
+    <many-to-one name="valueForCollectionMove" ref="com.axelor.apps.account.db.Move"
+      readonly="true"/>
     <boolean name="hasAutoInput" title="Auto. input." default="false"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
@@ -47,12 +52,11 @@
       title="Currency"/>
     <decimal name="paidAmountInCurrency" title="Amount paid in currency"/>
 
-    <!-- <integer name="operationTypeSelect" title="Type de saisie paiement" required="true" selection="ipayment.operation.type.select"/> -->
     <integer name="operationTypeSelect" title="Payment type" required="true"
       selection="iinvoice.operation.type.select"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="TradingName"/>
+      title="Trading name"/>
 
     <decimal name="remainingAmount" title="Amount remaining to allocate">
 			<![CDATA[
@@ -75,8 +79,15 @@
     <string name="chequeNumber"/>
     <string name="chequeBank"/>
     <string name="chequeOwner"/>
-    <date name="chequeDate" title="Bank deposit date"/>
-    <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip"/>
+    <date name="chequeDate" title="Date of the deposit slip"/>
+    <date name="chequeDueDate"/>
+    <boolean name="bankEntryGenWithoutValEntryCollectionOk"
+      title="Generation of bank entry without value entry at collection"/>
+    <many-to-one name="depositSlip" ref="com.axelor.apps.account.db.DepositSlip"
+      copy="false"/>
+
+    <many-to-one name="depositBankDetails" ref="com.axelor.apps.base.db.BankDetails"
+      title="Deposit bank details"/>
 
     <unique-constraint columns="ref,company"/>
     <unique-constraint columns="receiptNo,company"/>
@@ -85,8 +96,8 @@
 
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
-        public static final int STATUS_WAITING_FOR_DEPOSIT_SLIP = 2;
-		public static final int STATUS_CONFIRMED = 3;
+		public static final int STATUS_CONFIRMED = 2;
+		public static final int STATUS_CANCELED = 3;
 
 	   	// OPERATION TYPE SELECT
 		public static final int OPERATION_TYPE_SUPPLIER_PURCHASE = 1;

@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="batch-grid" title="Batches" model="com.axelor.apps.base.db.Batch" orderBy="-id"
     canEdit="false" canDelete="false" canNew="false" canSave="false">
-    <field name="id"/>
+    <hilite color="red" if="_dashboard &amp;&amp; anomaly != 0"/>
+    <hilite color="green" if="_dashboard &amp;&amp; anomaly == 0 &amp;&amp; done != 0"/>
+    <hilite color="orange" if="_dashboard &amp;&amp; endDate == null"/>
+    <field name="companyCode"/>
     <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     <field name="duration" widget="duration" x-big="true"/>
     <field name="startDate"/>
     <field name="endDate"/>
+    <field name="actionLaunchOrigin"/>
+    <field name="batchTypeSelect"/>
+    <field name="actionName"/>
     <field name="done"/>
     <field name="anomaly"/>
   </grid>
@@ -18,8 +24,10 @@
     onNew="action-batch-attrs" onLoad="action-batch-attrs" canEdit="false" canDelete="false"
     canNew="false" canCopy="false" canSave="false" width="large">
     <panel name="mainPanel">
-      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+      <field name="batchTypeSelect"/>
+      <field name="actionName"/>
       <field name="duration" widget="duration" x-big="true"/>
+      <spacer/>
       <field name="startDate" required="true"/>
       <field name="endDate"/>
       <field name="done"/>
@@ -28,8 +36,17 @@
       <field name="comments" showTitle="false" colSpan="12"/>
       <button name="showTraceBackBtn" title="Anomalies" colSpan="4"
         onClick="action-batch-show-trace-back,close"/>
+      <button name="showUserBtn" title="Processed users" hidden="true" colSpan="4"
+        onClick="action-batch-show-users,close"/>
       <button name="showInvoiceBtn" title="Invoices" hidden="true" colSpan="4"
-        onClick="action-batch-show-invoice" if-module="axelor-account,close"/>
+        onClick="action-batch-show-invoice,close" if-module="axelor-account"/>
+      <button name="showImportHistoryBtn" title="Import Histories" hidden="true" colspan="4"
+        onClick="action-view-import-histories,close"/>
+      <button name="showLcrAccountedInvoiceBtn" title="Invoices" hidden="true" colspan="4"
+        onClick="action-view-accounting-batch-lcr-accounted-invoices,close"
+        if-module="axelor-account"/>
+      <button name="showNoteBillsBtn" title="Note bills" hidden="true" colspan="4"
+        onClick="action-view-accounting-batch-lcr-note-bills,close" if-module="axelor-account"/>
       <button name="showReimbursementBtn" title="Reimbursements" hidden="true" colSpan="4"
         onClick="action-batch-show-reimbursement,close" if-module="axelor-account"/>
       <button name="showPaymentScheduleLineBtn" title="Schedule lines" hidden="true"
@@ -59,10 +76,32 @@
         onClick="action-batch-create-bank-order,action-batch-show-bank-order,close"
         if-module="axelor-bank-payment"/>
       <field name="bankOrder" hidden="true" if-module="axelor-bank-payment"/>
+      <button name="showStockHistoryLinesBtn" title="Stock history line" hidden="true"
+        colSpan="4" onClick="action-batch-show-stock-history-lines,close"
+        if-module="axelor-supplychain"/>
+      <button name="showGeneratedAccountMoveBtn" title="Generated account moves"
+        hidden="true" colSpan="6" onClick="action-batch-show-generated-move,close"
+        if-module="axelor-account"/>
+      <button name="showProcessedAccountMoveBtn" title="Processed account moves"
+        hidden="true" colSpan="6" onClick="action-batch-show-processed-move,close"
+        if-module="axelor-account"/>
+      <button name="showContractBtn" title="Contracts" hidden="true" colSpan="4"
+        onClick="action-batch-show-contract,close" if-module="axelor-contract"
+        if="__config__.app.isApp('contract')"/>
+      <button name="showReconciledMoveLinesBtn" title="Reconciled move lines" hidden="true"
+        colSpan="6" onClick="action-batch-show-reconciled-move-lines,close"
+        if-module="axelor-account"/>
+    </panel>
+    <panel name="originPanel" title="Origin" sidebar="true" itemSpan="12">
+      <field name="companyCode"/>
+      <field name="actionLaunchOrigin"/>
+      <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
     </panel>
   </form>
 
   <action-attrs name="action-batch-attrs">
+    <attribute name="hidden" for="showUserBtn"
+      expr="eval: !(__parent__?._model == 'com.axelor.apps.base.db.BaseBatch' &amp;&amp; __parent__?.actionSelect == 3)"/>
     <attribute name="hidden" for="showInvoiceBtn"
       expr="eval: __parent__?.invoiceTypeSelect != 1"
       if="__parent__?._model == 'com.axelor.apps.invoice.db.InvoiceBatch'"/>
@@ -100,16 +139,45 @@
       if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
     <attribute name="hidden" for="showStockMoveBtn"
-      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
+      expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  || accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) &amp;&amp; (__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY)"/>
     <attribute name="hidden" for="showStockMoveLinesBtn"
-      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS"/>
+      expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  || accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) &amp;&amp; (__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY)"/>
     <attribute name="hidden" for="showAccountMoveBtn"
-      expr="(__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_ACCOUNTING_CUT_OFF) &amp;&amp; __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch'"/>
+      expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' &amp;&amp; accountingBatch == null) || (__parent__?.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  &amp;&amp; accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES)"/>
+    <attribute name="hidden" for="showReconciledMoveLinesBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_AUTO_MOVE_LETTERING"/>
+
+    <attribute name="hidden" for="showGeneratedAccountMoveBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingCutOffTypeSelect &lt; __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES"/>
+    <attribute name="hidden" for="showProcessedAccountMoveBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF || accountingCutOffTypeSelect &lt; __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES"/>
+
+
+    <attribute name="hidden" for="showStockHistoryLinesBtn"
+      expr="eval: __parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect != __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY"/>
+
+    <attribute name="hidden" for="showLcrAccountedInvoiceBtn"
+      expr="eval: !(__parent__?.actionSelect == 24)"
+      if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
+
+    <attribute name="hidden" for="showNoteBillsBtn"
+      expr="eval: !(__parent__?.actionSelect == 24)"
+      if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
+    <attribute name="hidden" for="showImportHistoryBtn" expr="eval: false"
+      if="__parent__?._model == 'com.axelor.apps.base.db.ImportBatch'"/>
+
+    <attribute name="hidden" for="showInvoiceBtn"
+      expr="eval: __parent__?.actionSelect != 1"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.ContractBatch'"/>
+
+    <attribute name="hidden" for="showContractBtn"
+      expr="eval: __parent__?.actionSelect != 1"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.ContractBatch'"/>
 
   </action-attrs>
 
   <action-view name="action-batch-show-trace-back" title="Anomalies"
-    model="com.axelor.exception.db.TraceBack">
+    model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id</domain>
@@ -120,6 +188,14 @@
     title="Batch">
     <view name="batch-form" type="form"/>
     <context name="_showRecord" expr="eval: batchId"/>
+  </action-view>
+
+  <action-view name="action-batch-show-users" title="Users"
+    model="com.axelor.auth.db.User">
+    <view type="grid" name="user-grid"/>
+    <view type="form" name="user-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
   </action-view>
 
   <action-view name="action-batch-show-invoice" title="Invoices"
@@ -137,6 +213,31 @@
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>
+
+  <action-view name="action-batch-show-reconciled-move-lines"
+    title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
+    <view type="grid" name="move-line-account-batch-auto-move-lettering-grid"/>
+    <view type="form" name="move-line-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-generated-move" title="Moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>:batch MEMBER OF self.batchSet AND self.functionalOriginSelect = 6</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-processed-move" title="Moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>:batch MEMBER OF self.batchSet AND self.functionalOriginSelect != 6</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
 
   <action-view name="action-batch-show-reimbursement" title="Reimbursements"
     model="com.axelor.apps.account.db.Reimbursement">
@@ -192,6 +293,39 @@
     <view type="grid" name="ebics-certificate-grid"/>
     <view type="form" name="ebics-certificate-form"/>
     <view-param name="show-toolbar" value="false"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-view-accounting-batch-lcr-accounted-invoices"
+    title="LCR accounted invoices" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.lcrAccounted = 'true' AND :batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+
+  <action-view name="action-view-accounting-batch-lcr-note-bills" title="Note Bills"
+    model="com.axelor.apps.account.db.NoteBills">
+    <view type="grid" name="note-bills-grid"/>
+    <view type="form" name="note-bills-form"/>
+    <domain>self.batch = :_batch</domain>
+    <context name="_batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-view-import-histories" title="Import histories"
+    model="com.axelor.apps.base.db.BatchImportHistory">
+    <view type="grid" name="batch-import-history-grid"/>
+    <view type="form" name="batch-import-history-form"/>
+    <domain>:batch = self.batch</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-contract" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>

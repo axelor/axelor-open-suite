@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="complementary-product-grid" title="Complementary product(s)" editable="true"
     model="com.axelor.apps.sale.db.ComplementaryProduct">
     <field name="product"/>
     <field name="qty" x-scale="2"/>
     <field name="optional"/>
+  </grid>
+
+  <grid name="complementary-product-partner-grid" title="Complementary product(s)"
+    editable="true" model="com.axelor.apps.sale.db.ComplementaryProduct">
+    <field name="product"/>
+    <field name="qty" x-scale="2"/>
+    <field name="optional" readonlyIf="generationTypeSelect == 1"/>
+    <field name="generationTypeSelect"
+      onChange="action-complementary-product-generation-type-select-reset" required="true"/>
   </grid>
 
   <form name="complementary-product-form" title="Complementary product"
@@ -20,10 +29,27 @@
     </panel>
   </form>
 
+  <form name="complementary-product-partner-form" title="Complementary product"
+    model="com.axelor.apps.sale.db.ComplementaryProduct"
+    onLoad="action-complementary-product-line-attrs-scale-and-precision">
+    <panel name="mainPanel">
+      <field name="product"/>
+      <field name="qty"/>
+      <field name="optional" readonlyIf="generationTypeSelect == 1"/>
+      <field name="generationTypeSelect"
+        onChange="action-complementary-product-generation-type-select-reset" required="true"/>
+    </panel>
+  </form>
+
   <action-attrs name="action-complementary-product-line-attrs-scale-and-precision">
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
+
+  <action-record name="action-complementary-product-generation-type-select-reset"
+    model="com.axelor.apps.sale.db.ComplementaryProduct">
+    <field name="optional" expr="eval: false"/>
+  </action-record>
 
 
 </object-views>

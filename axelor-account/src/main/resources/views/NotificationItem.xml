@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.account.db.NotificationItem" title="Notification items"
     name="notification-item-grid">
@@ -21,7 +21,7 @@
         canEdit="false"/>
       <field name="amountPaid"/>
       <field name="typeSelect"/>
-      <field name="move" readonly="true"/>
+      <field name="move" readonly="true" form-view="move-form" grid-view="move-grid"/>
     </panel>
   </form>
 
@@ -32,7 +32,10 @@
 
   <action-record name="action-account-record-notification-item-invoice-onchange"
     model="com.axelor.apps.account.db.NotificationItem">
-    <field name="amountPaid" expr="eval: invoice?.amountRemaining"/>
+    <field name="amountPaid" expr="eval: invoice?.amountRemaining"
+      if="invoice?.operationTypeSelect == 3"/>
+    <field name="amountPaid" expr="eval: -invoice?.amountRemaining"
+      if="invoice?.operationTypeSelect == 4"/>
   </action-record>
 
   <action-attrs name="action-account-attrs-notification-item-invoice-domain">

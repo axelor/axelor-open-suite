@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="product-expense-grid" title="Expense types"
     model="com.axelor.apps.base.db.Product" orderBy="name">
@@ -25,19 +25,20 @@
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
       <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-method-show-product-sheet"/>
+        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="name" required="true" showTitle="false" css="label-bold bold"
         placeholder="Name" colSpan="8"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false"
         css="label-bold bold" placeholder="Code" colSpan="4" required="true"
-        if="!__config__.app.getApp('base').getGenerateProductSequence()"/>
+        if="!__config__.app.getApp('base')?.getGenerateProductSequence()"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}" showTitle="false"
         css="label-bold bold" placeholder="Code" colSpan="4"
-        if="__config__.app.getApp('base').getGenerateProductSequence()" readonly="true"/>
+        if="__config__.app.getApp('base')?.getGenerateProductSequence()" readonly="true"/>
       <panel name="productTypologyPanel" title="Product typology" colSpan="12">
         <field name="productTypeSelect" required="true" readonly="true"/>
+        <field name="amountLimit"/>
         <field name="deductLunchVoucher" hideIf="!expense"/>
         <field name="blockExpenseTax"/>
         <field name="personalExpense"/>
@@ -116,7 +117,7 @@
       <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
         onClick="save,action-send-by-email-with-template"/>
       <button name="showProductSheetBtn" title="Product sheet" icon="fa-print"
-        onClick="save,action-product-method-show-product-sheet"/>
+        onClick="save,action-product-validate-user-active-company,action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="productTypeSelect" required="true" hidden="true"/>
@@ -237,8 +238,7 @@
     model="com.axelor.apps.base.db.Product">
     <field name="productTypeSelect" expr="storable"/>
     <field name="procurementMethodSelect" expr="buy"/>
-    <field name="startDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="startDate == null"/>
+    <field name="startDate" expr="eval:__config__.date" if="startDate == null"/>
     <field name="salePrice" expr="1"/>
     <field name="purchasePrice" expr="1"/>
     <field name="saleCurrency" expr="eval: __user__.activeCompany?.currency"/>

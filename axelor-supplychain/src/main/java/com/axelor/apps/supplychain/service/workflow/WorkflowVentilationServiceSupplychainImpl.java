@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service.workflow;
 
@@ -21,11 +22,17 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.ventilate.WorkflowVentilationServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -38,15 +45,13 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -60,35 +65,36 @@ import org.slf4j.LoggerFactory;
 
 public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilationServiceImpl {
 
-  private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  protected final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
 
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
 
-  private SaleOrderRepository saleOrderRepository;
+  protected SaleOrderRepository saleOrderRepository;
 
-  private PurchaseOrderRepository purchaseOrderRepository;
+  protected PurchaseOrderRepository purchaseOrderRepository;
 
-  private AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
-  private AppSupplychainService appSupplychainService;
+  protected AppSupplychainService appSupplychainService;
 
-  private StockMoveInvoiceService stockMoveInvoiceService;
+  protected StockMoveInvoiceService stockMoveInvoiceService;
 
-  private UnitConversionService unitConversionService;
+  protected UnitConversionService unitConversionService;
 
-  private AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
-  private SupplyChainConfigService supplyChainConfigService;
+  protected SupplyChainConfigService supplyChainConfigService;
 
-  private StockMoveLineRepository stockMoveLineRepository;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public WorkflowVentilationServiceSupplychainImpl(
       AccountConfigService accountConfigService,
       InvoicePaymentRepository invoicePaymentRepo,
       InvoicePaymentCreateService invoicePaymentCreateService,
+      InvoiceService invoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderRepository saleOrderRepository,
@@ -99,9 +105,19 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       UnitConversionService unitConversionService,
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
-      StockMoveLineRepository stockMoveLineRepository) {
+      StockMoveLineRepository stockMoveLineRepository,
+      AppAccountService appAccountService,
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService,
+      InvoiceTermService invoiceTermService) {
 
-    super(accountConfigService, invoicePaymentRepo, invoicePaymentCreateService);
+    super(
+        accountConfigService,
+        invoicePaymentRepo,
+        invoicePaymentCreateService,
+        invoiceService,
+        appAccountService,
+        invoiceFinancialDiscountService,
+        invoiceTermService);
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderRepository = saleOrderRepository;
@@ -152,7 +168,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private void saleOrderProcess(Invoice invoice) throws AxelorException {
+  protected void saleOrderProcess(Invoice invoice) throws AxelorException {
 
     // Get all different saleOrders from invoice
     Set<SaleOrder> saleOrderSet = new HashSet<>();
@@ -180,7 +196,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private SaleOrder saleOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
+  protected SaleOrder saleOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
     SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
@@ -215,7 +231,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     return saleOrder;
   }
 
-  private void purchaseOrderProcess(Invoice invoice) throws AxelorException {
+  protected void purchaseOrderProcess(Invoice invoice) throws AxelorException {
 
     // Get all different purchaseOrders from invoice
     Set<PurchaseOrder> purchaseOrderSet = new HashSet<>();
@@ -238,7 +254,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private PurchaseOrder purchaseOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
+  protected PurchaseOrder purchaseOrderLineProcess(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
 
     PurchaseOrderLine purchaseOrderLine = invoiceLine.getPurchaseOrderLine();
@@ -274,7 +290,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     return purchaseOrder;
   }
 
-  private void stockMoveProcess(Invoice invoice) throws AxelorException {
+  protected void stockMoveProcess(Invoice invoice) throws AxelorException {
     // update qty invoiced in stock move line
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
@@ -299,7 +315,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
+              I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
                   + "\n"
                   + e.getMessage());
         }
@@ -309,15 +325,33 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX));
+              String.format(
+                  I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_MAX),
+                  qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                      .toString(),
+                  stockMoveLine
+                      .getRealQty()
+                      .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
+                      .toString(),
+                  stockMoveLine.getProductName()));
         }
       } else {
         // set qty invoiced to the maximum (or emptying it if refund) for all stock move lines
         boolean invoiceIsRefund =
             stockMoveInvoiceService.isInvoiceRefundingStockMove(
                 stockMoveLine.getStockMove(), invoice);
-        stockMoveLine.setQtyInvoiced(
-            invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+
+        // This case happens if you mix into a single invoice refund and non-refund stock moves.
+        if (invoiceLine.getQty().compareTo(BigDecimal.ZERO) < 0) {
+          stockMoveLine.setQtyInvoiced(
+              invoiceIsRefund ? stockMoveLine.getRealQty() : BigDecimal.ZERO);
+        }
+        // This is the most general case
+        else {
+          stockMoveLine.setQtyInvoiced(
+              invoiceIsRefund ? BigDecimal.ZERO : stockMoveLine.getRealQty());
+        }
+
         // search in sale/purchase order lines to set split stock move lines to invoiced.
         if (stockMoveLine.getSaleOrderLine() != null) {
           stockMoveLineRepository
@@ -354,7 +388,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  private boolean isStockMoveInvoicingPartiallyActivated(
+  protected boolean isStockMoveInvoicingPartiallyActivated(
       Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="mrp-line-grid" id="mrp-line-production-grid"
+    model="com.axelor.apps.supplychain.db.MrpLine" title="Results" extension="true">
+    <extend target="//field[@name='product']">
+      <insert position="before">
+        <hilite color="info" strong="true"
+          if="[12].indexOf($get('mrpLineType.elementSelect')) != -1 &amp;&amp; $get('mrpLineType.typeSelect') == 1"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='mrpLineType.elementSelect']">
+      <insert position="after">
+        <field name="mrpLineType.typeSelect" hidden="true"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form name="mrp-line-form" id="mrp-line-production-form"
+    model="com.axelor.apps.supplychain.db.MrpLine" title="Result" extension="true">
+    <extend target="/">
+      <attribute name="readonlyIf"
+        value="proposalGenerated || [5,8,12].indexOf($get('mrpLineType.elementSelect')) == -1
+  		|| ([12].indexOf($get('mrpLineType.elementSelect')) != -1 &amp;&amp; $get('mrpLineType.typeSelect') != 1)"/>
+    </extend>
+    <extend target="//field[@name='mrpLineType.elementSelect']">
+      <insert position="after">
+        <field name="mrpLineType.typeSelect"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

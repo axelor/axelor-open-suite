@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="Forecast" lang="java">
+  <entity name="Forecast">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Bank" required="true"/>
-    <many-to-one name="forecastReason"
-      ref="com.axelor.apps.cash.management.db.ForecastReason" required="true" title="Reason"/>
+    <many-to-one name="forecastRecapLineType"
+      ref="com.axelor.apps.cash.management.db.ForecastRecapLineType" required="true" title="Reason"/>
     <decimal name="amount" title="Amount" min="0"/>
     <date name="estimatedDate" title="Estimated date"/>
     <date name="realizationDate" title="Realization date"/>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -28,7 +28,7 @@
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
     <parameters>
-        <scalar-parameter name="ForecastRecapId" id="211">
+        <scalar-parameter name="ForecastRecapId" id="5691">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -41,7 +41,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="UserName" id="3796">
+        <scalar-parameter name="UserName" id="5692">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -53,7 +53,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="DBName" id="3797">
+        <scalar-parameter name="DBName" id="5693">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -65,7 +65,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Password" id="3798">
+        <scalar-parameter name="Password" id="5694">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="dataType">string</property>
@@ -77,23 +77,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">en</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="AttachmentPath" id="3849">
+        <scalar-parameter name="Locale" id="5695">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
@@ -109,15 +93,27 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="DefaultDriver" id="3819">
+        <scalar-parameter name="AttachmentPath" id="5696">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
-            <property name="isRequired">true</property>
+            <property name="isRequired">false</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">org.postgresql.Driver</value>
+                <value type="constant"></value>
             </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="DefaultDriver" id="5697">
+            <property name="hidden">true</property>
+            <property name="valueType">static</property>
+            <property name="dataType">string</property>
+            <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -149,188 +145,6 @@
         </oda-data-source>
     </data-sources>
     <data-sets>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ForecastRecapLines" id="210">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">sum</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">sum</text-property>
-                    <text-property name="heading">sum</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">estimated_date</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">estimated_date</text-property>
-                    <text-property name="heading">estimated_date</text-property>
-                </structure>
-            </list-property>
-            <list-property name="parameters">
-                <structure>
-                    <property name="name">param_1</property>
-                    <property name="paramName">ForecastRecapId</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
-                    <property name="position">1</property>
-                    <property name="isOptional">false</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-            </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">sum</property>
-                        <property name="dataType">decimal</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">estimated_date</property>
-                        <property name="dataType">date</property>
-                    </structure>
-                </list-property>
-            </structure>
-            <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">sum</property>
-                    <property name="nativeName">sum</property>
-                    <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">estimated_date</property>
-                    <property name="nativeName">estimated_date</property>
-                    <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
-                </structure>
-            </list-property>
-            <xml-property name="queryText"><![CDATA[WITH forecastRecapLine
-AS
-(
-	SELECT ForecastRecapLine.estimated_date, SUM(ForecastRecapLine.amount) as amount
-	FROM management_forecast_recap_line as ForecastRecapLine
-	left outer join management_forecast_recap as ForecastRecap on (ForecastRecapLine.forecast_recap = ForecastRecap.id)
-	where ForecastRecap.id = ?
-	group by ForecastRecapLine.estimated_date
-), forecastRecapLineTotal AS
-(
-   SELECT amount, estimated_date, ROW_NUMBER() OVER(ORDER BY estimated_date) rownum
-   FROM forecastRecapLine
-) 
-SELECT (SELECT SUM(amount) FROM forecastRecapLineTotal c2 WHERE c2.rownum <= c1.rownum),
-  estimated_date
-FROM forecastRecapLineTotal c1]]></xml-property>
-        </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
-            <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">message_key</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">message_key</text-property>
-                    <text-property name="heading">message_key</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">translation</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">translation</text-property>
-                    <text-property name="heading">translation</text-property>
-                </structure>
-            </list-property>
-            <list-property name="parameters">
-                <structure>
-                    <property name="name">param_1</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">-1</property>
-                    <property name="position">1</property>
-                    <property name="isInput">true</property>
-                </structure>
-                <structure>
-                    <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
-                    <property name="nativeName"></property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">-1</property>
-                    <property name="position">2</property>
-                    <property name="isInput">true</property>
-                    <property name="isOutput">false</property>
-                </structure>
-            </list-property>
-            <structure name="cachedMetaData">
-                <list-property name="resultSet">
-                    <structure>
-                        <property name="position">1</property>
-                        <property name="name">message_key</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">2</property>
-                        <property name="name">translation</property>
-                        <property name="dataType">string</property>
-                    </structure>
-                </list-property>
-            </structure>
-            <property name="dataSource">Data Source</property>
-            <list-property name="resultSet">
-                <structure>
-                    <property name="position">1</property>
-                    <property name="name">message_key</property>
-                    <property name="nativeName">message_key</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-                <structure>
-                    <property name="position">2</property>
-                    <property name="name">translation</property>
-                    <property name="nativeName">translation</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
-                </structure>
-            </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
-        </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ForecastRecap" id="3906">
             <list-property name="columnHints">
                 <structure>
@@ -402,6 +216,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logopath</text-property>
                     <text-property name="heading">logopath</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">sequence</property>
+                    <property name="analysis">dimension</property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -482,66 +300,77 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">calculationdate</property>
                     <property name="nativeName">calculationdate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">opportunitiestypeselect</property>
                     <property name="nativeName">opportunitiestypeselect</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">fromdate</property>
                     <property name="nativeName">fromdate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">startingbalance</property>
                     <property name="nativeName">startingbalance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">bankdetails</property>
                     <property name="nativeName">bankdetails</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">todate</property>
                     <property name="nativeName">todate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">endingbalance</property>
                     <property name="nativeName">endingbalance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">logopath</property>
                     <property name="nativeName">logopath</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">sequence</property>
                     <property name="nativeName">sequence</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
@@ -559,7 +388,8 @@ ForecastRecap.forecast_recap_seq as sequence
 from management_forecast_recap as ForecastRecap
 left outer join base_company as Company on (ForecastRecap.company = Company.id)
 left outer join base_currency as Currency on (ForecastRecap.currency = Currency.id)
-left outer join base_bank_details as BankDetails on (ForecastRecap.bank_details = BankDetails.id)
+left outer join management_forecast_recap_bank_details_set as ForecastRecapBankDetails on (ForecastRecapBankDetails.management_forecast_recap = ForecastRecap.id)
+left outer join base_bank_details as BankDetails on (BankDetails.id = ForecastRecapBankDetails.bank_details_set)
 left outer join meta_file as MetaFile on (Company.logo = MetaFile.id)
 where ForecastRecap.id = ?;]]></xml-property>
         </oda-data-set>
@@ -862,6 +692,188 @@ where ForecastRecap.id = ?
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ForecastRecapLines" id="210">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">sum</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">sum</text-property>
+                    <text-property name="heading">sum</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">estimated_date</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">estimated_date</text-property>
+                    <text-property name="heading">estimated_date</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">ForecastRecapId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">sum</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">estimated_date</property>
+                        <property name="dataType">date</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">sum</property>
+                    <property name="nativeName">sum</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">estimated_date</property>
+                    <property name="nativeName">estimated_date</property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                </structure>
+            </list-property>
+<xml-property name="queryText"><![CDATA[WITH forecastRecapLine
+AS
+(
+	SELECT ForecastRecapLine.estimated_date, SUM(ForecastRecapLine.amount) as amount
+	FROM management_forecast_recap_line as ForecastRecapLine
+	left outer join management_forecast_recap as ForecastRecap on (ForecastRecapLine.forecast_recap = ForecastRecap.id)
+	where ForecastRecap.id = ?
+	group by ForecastRecapLine.estimated_date
+), forecastRecapLineTotal AS
+(
+   SELECT amount, estimated_date, ROW_NUMBER() OVER(ORDER BY estimated_date) rownum
+   FROM forecastRecapLine
+) 
+SELECT (SELECT SUM(amount) FROM forecastRecapLineTotal c2 WHERE c2.rownum <= c1.rownum),
+  estimated_date
+FROM forecastRecapLineTotal c1]]></xml-property>
+        </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslateDS" id="3799">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">-1</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">Locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">-1</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-1</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ChartDS" id="5435">
             <list-property name="columnHints">
                 <structure>
@@ -955,46 +967,11 @@ GROUP BY ForecastRecapLine.estimated_date, ForecastRecapLine.balance, ForecastRe
 ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
         </oda-data-set>
     </data-sets>
-    <styles>
-        <style name="report" id="4">
-            <property name="fontFamily">sans-serif</property>
-            <property name="fontSize">10pt</property>
-        </style>
-        <style name="crosstab-cell" id="5">
-            <property name="borderBottomColor">#CCCCCC</property>
-            <property name="borderBottomStyle">solid</property>
-            <property name="borderBottomWidth">1pt</property>
-            <property name="borderLeftColor">#CCCCCC</property>
-            <property name="borderLeftStyle">solid</property>
-            <property name="borderLeftWidth">1pt</property>
-            <property name="borderRightColor">#CCCCCC</property>
-            <property name="borderRightStyle">solid</property>
-            <property name="borderRightWidth">1pt</property>
-            <property name="borderTopColor">#CCCCCC</property>
-            <property name="borderTopStyle">solid</property>
-            <property name="borderTopWidth">1pt</property>
-        </style>
-        <style name="crosstab" id="6">
-            <property name="borderBottomColor">#CCCCCC</property>
-            <property name="borderBottomStyle">solid</property>
-            <property name="borderBottomWidth">1pt</property>
-            <property name="borderLeftColor">#CCCCCC</property>
-            <property name="borderLeftStyle">solid</property>
-            <property name="borderLeftWidth">1pt</property>
-            <property name="borderRightColor">#CCCCCC</property>
-            <property name="borderRightStyle">solid</property>
-            <property name="borderRightWidth">1pt</property>
-            <property name="borderTopColor">#CCCCCC</property>
-            <property name="borderTopStyle">solid</property>
-            <property name="borderTopWidth">1pt</property>
-        </style>
-    </styles>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="orientation">landscape</property>
-            <property name="footerHeight">0.75in</property>
             <page-footer>
-                <grid id="4023">
+                <grid id="5671">
                     <property name="dataSet">ForecastRecap</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -1064,41 +1041,57 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                     </list-property>
-                    <column id="4024">
+                    <method name="onPrepare"><![CDATA[if(reportContext.getOutputFormat()=="ods")
+{
+columns = reportContext.getDesignHandle().getElementByID(5671).getColumns();
+columns.get(0).setProperty("width","");
+columns.get(1).setProperty("width","");
+columns.get(2).setProperty("width","");
+columns.get(3).setProperty("width","");
+columns.get(4).setProperty("width","");
+columns.get(5).setProperty("width","");
+}]]></method>
+                    <column id="5672">
                         <property name="verticalAlign">middle</property>
                         <property name="width">30%</property>
                     </column>
-                    <column id="5377"/>
-                    <column id="4025">
+                    <column id="5673"/>
+                    <column id="5674">
                         <property name="verticalAlign">middle</property>
                         <property name="width">20%</property>
                     </column>
-                    <column id="4026">
+                    <column id="5675">
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
                         <property name="width">6%</property>
                     </column>
-                    <column id="5371">
+                    <column id="5676">
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
                         <property name="width">3%</property>
                     </column>
-                    <column id="5373">
+                    <column id="5677">
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
                         <property name="width">6%</property>
                     </column>
-                    <row id="4027">
-                        <cell id="4028">
-                            <image id="4032">
+                    <row id="5678">
+                        <cell id="5679">
+                            <image id="5680">
                                 <property name="height">0.5208333333333334in</property>
                                 <property name="width">1.4375in</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">ods</property>
+                                        <expression name="valueExpr" type="javascript">true</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="source">file</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logopath"]</expression>
                             </image>
                         </cell>
-                        <cell id="5376">
-                            <text id="5422">
+                        <cell id="5681">
+                            <text id="5682">
                                 <property name="fontSize">9pt</property>
                                 <property name="marginTop">15pt</property>
                                 <property name="textAlign">center</property>
@@ -1112,8 +1105,8 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                 <text-property name="content"><![CDATA[Seq.No: <VALUE-OF>row["sequence"]</VALUE-OF>]]></text-property>
                             </text>
                         </cell>
-                        <cell id="4029">
-                            <data id="5426">
+                        <cell id="5683">
+                            <data id="5684">
                                 <property name="fontSize">9pt</property>
                                 <structure name="dateTimeFormat">
                                     <property name="category">Short Date</property>
@@ -1122,16 +1115,16 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                 <property name="resultSetColumn">calculationdate</property>
                             </data>
                         </cell>
-                        <cell id="4030">
-                            <auto-text id="5281">
+                        <cell id="5685">
+                            <auto-text id="5686">
                                 <property name="fontSize">9pt</property>
                                 <property name="paddingTop">1pt</property>
                                 <property name="textAlign">center</property>
                                 <property name="type">page-number</property>
                             </auto-text>
                         </cell>
-                        <cell id="5370">
-                            <text id="5283">
+                        <cell id="5687">
+                            <text id="5688">
                                 <property name="fontSize">9pt</property>
                                 <property name="paddingTop">1pt</property>
                                 <property name="textAlign">center</property>
@@ -1139,8 +1132,8 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                 <text-property name="content"><![CDATA[/]]></text-property>
                             </text>
                         </cell>
-                        <cell id="5372">
-                            <auto-text id="5285">
+                        <cell id="5689">
+                            <auto-text id="5690">
                                 <property name="fontSize">9pt</property>
                                 <property name="paddingTop">1pt</property>
                                 <property name="textAlign">center</property>
@@ -1154,6 +1147,8 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
     </page-setup>
     <body>
         <grid id="3850">
+            <property name="pageBreakAfter">always</property>
+            <property name="height">9.5625in</property>
             <property name="dataSet">ForecastRecap</property>
             <list-property name="boundDataColumns">
                 <structure>
@@ -1212,11 +1207,14 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                 </structure>
             </list-property>
             <column id="3901"/>
+            <column id="5529"/>
             <column id="3894"/>
+            <column id="5537"/>
             <column id="3851"/>
+            <column id="5545"/>
             <row id="3852">
                 <cell id="3895">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
                     <text id="3865">
                         <property name="fontSize">large</property>
@@ -1253,8 +1251,23 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
             <row id="3854">
                 <property name="height">20pt</property>
                 <cell id="3896">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5523">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5518">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5531">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5519">
+                    <property name="textAlign">center</property>
+                </cell>
+                <cell id="5539">
                     <property name="textAlign">center</property>
                 </cell>
             </row>
@@ -1285,7 +1298,37 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["company"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5524">
+                    <text id="5666">
+                        <property name="textAlign">left</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ForecastRecap.company'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["company"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3890">
@@ -1314,7 +1357,36 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5532">
+                    <text id="5667">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ForecastRecap.currency'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3857">
@@ -1349,7 +1421,42 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["bankdetails"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5540">
+                    <text id="5668">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["bankdetails"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ForecastRecap.bankDetailsIban'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["bankdetails"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -1381,8 +1488,10 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;</B>]]></text-property>
                     </text>
+                </cell>
+                <cell id="5525">
                     <data id="5423">
                         <structure name="dateTimeFormat">
                             <property name="category">Short Date</property>
@@ -1419,8 +1528,10 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;</B>]]></text-property>
                     </text>
+                </cell>
+                <cell id="5533">
                     <data id="5424">
                         <structure name="dateTimeFormat">
                             <property name="category">Short Date</property>
@@ -1457,8 +1568,10 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :&amp;nbsp;</B>]]></text-property>
                     </text>
+                </cell>
+                <cell id="5541">
                     <data id="5425">
                         <structure name="dateTimeFormat">
                             <property name="category">Short Date</property>
@@ -1497,8 +1610,10 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : ]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> : </B>]]></text-property>
                     </text>
+                </cell>
+                <cell id="5526">
                     <text id="4015">
                         <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
@@ -1554,7 +1669,36 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["startingbalance"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5534">
+                    <text id="5669">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ForecastRecap.startingBalance'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["startingbalance"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
                 <cell id="3861">
@@ -1583,21 +1727,55 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["endingbalance"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF> :</B>]]></text-property>
+                    </text>
+                </cell>
+                <cell id="5542">
+                    <text id="5670">
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'ForecastRecap.endingBalance'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row._outer["endingbalance"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
             <row id="3862">
                 <property name="height">20pt</property>
                 <cell id="3900">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                 </cell>
+                <cell id="5527"/>
+                <cell id="5520"/>
+                <cell id="5535"/>
+                <cell id="5521"/>
+                <cell id="5543"/>
             </row>
             <row id="3902">
-                <property name="height">4.75in</property>
+                <property name="height">2.9375in</property>
                 <cell id="3903">
-                    <property name="colSpan">3</property>
+                    <property name="colSpan">6</property>
                     <property name="rowSpan">1</property>
                     <property name="verticalAlign">middle</property>
                     <extended-item extensionName="Chart" id="3864">
@@ -2756,18 +2934,443 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                     </extended-item>
                 </cell>
             </row>
-            <row id="3929">
-                <property name="height">20pt</property>
-                <cell id="3930">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
+            <row id="5554">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5555">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5556">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5557">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5558">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5559">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5560">
+                    <property name="verticalAlign">middle</property>
                 </cell>
             </row>
-            <row id="3933">
-                <property name="pageBreakBefore">always</property>
-                <cell id="3934">
-                    <property name="colSpan">3</property>
-                    <property name="rowSpan">1</property>
+            <row id="5561">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5562">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5563">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5564">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5565">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5566">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5567">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5568">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5569">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5570">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5571">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5572">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5573">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5574">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5575">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5576">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5577">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5578">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5579">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5580">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5581">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5582">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5583">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5584">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5585">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5586">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5587">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5588">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5589">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5590">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5591">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5592">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5593">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5594">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5595">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5596">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5597">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5598">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5599">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5600">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5601">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5602">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5603">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5604">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5605">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5606">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5607">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5608">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5609">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5610">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5611">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5612">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5613">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5614">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5615">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5616">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5617">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5618">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5619">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5620">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5621">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5622">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5623">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5624">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5625">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5626">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5627">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5628">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5629">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5630">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5631">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5632">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5633">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5634">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5635">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5636">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5637">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5638">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5639">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5640">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5641">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5642">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5643">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5644">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5645">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5646">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5647">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5648">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5649">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5650">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5651">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5652">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5653">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5654">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5655">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5656">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5657">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5658">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+            <row id="5659">
+                <property name="height">0.28125in</property>
+                <list-property name="visibility">
+                    <structure>
+                        <property name="format">pdf</property>
+                        <expression name="valueExpr" type="javascript">true</expression>
+                    </structure>
+                </list-property>
+                <cell id="5660">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5661">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5662">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5663">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5664">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+                <cell id="5665">
+                    <property name="verticalAlign">middle</property>
+                </cell>
+            </row>
+        </grid>
+        <grid id="5512">
+            <column id="5513"/>
+            <row id="5514">
+                <cell id="5515">
                     <text id="4011">
                         <property name="fontSize">medium</property>
                         <property name="fontWeight">bold</property>
@@ -2799,6 +3402,10 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                     </text>
+                </cell>
+            </row>
+            <row id="5516">
+                <cell id="5517">
                     <table id="5379">
                         <property name="marginTop">5pt</property>
                         <property name="textAlign">center</property>
@@ -2885,6 +3492,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                         <header>
                             <row id="5380">
                                 <cell id="5381">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -2922,6 +3530,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5383">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -2959,6 +3568,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5432">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -2996,6 +3606,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5385">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3033,6 +3644,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5387">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3070,6 +3682,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5389">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3111,6 +3724,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                         <detail>
                             <row id="5391">
                                 <cell id="5392">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3128,6 +3742,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </data>
                                 </cell>
                                 <cell id="5394">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3165,6 +3780,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5433">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3202,6 +3818,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </text>
                                 </cell>
                                 <cell id="5396">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3215,6 +3832,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </data>
                                 </cell>
                                 <cell id="5398">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3233,6 +3851,7 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                                     </data>
                                 </cell>
                                 <cell id="5400">
+                                    <property name="scope">col</property>
                                     <property name="borderBottomStyle">solid</property>
                                     <property name="borderBottomWidth">thin</property>
                                     <property name="borderLeftStyle">solid</property>
@@ -3254,12 +3873,24 @@ ORDER BY ForecastRecapLine.estimated_date ASC]]></xml-property>
                         </detail>
                         <footer>
                             <row id="5402">
-                                <cell id="5403"/>
-                                <cell id="5404"/>
-                                <cell id="5434"/>
-                                <cell id="5405"/>
-                                <cell id="5406"/>
-                                <cell id="5407"/>
+                                <cell id="5403">
+                                    <property name="scope">col</property>
+                                </cell>
+                                <cell id="5404">
+                                    <property name="scope">col</property>
+                                </cell>
+                                <cell id="5434">
+                                    <property name="scope">col</property>
+                                </cell>
+                                <cell id="5405">
+                                    <property name="scope">col</property>
+                                </cell>
+                                <cell id="5406">
+                                    <property name="scope">col</property>
+                                </cell>
+                                <cell id="5407">
+                                    <property name="scope">col</property>
+                                </cell>
                             </row>
                         </footer>
                     </table>

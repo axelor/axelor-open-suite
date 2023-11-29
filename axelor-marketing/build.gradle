@@ -1,4 +1,6 @@
-apply plugin: "com.axelor.app-module"
+plugins {
+	id 'com.axelor.app'
+}
 
 apply from: "../libs.gradle"
 apply from: "../version.gradle"
@@ -14,7 +16,6 @@ axelor {
 
 dependencies {
 	api project(":modules:axelor-crm")
-	api project(":modules:axelor-studio")
 
 	implementation libs.lutung
 }

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,31 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.repo.JournalRepository;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
 
 public class JournalService {
+  protected JournalRepository journalRepository;
+
+  @Inject
+  public JournalService(JournalRepository journalRepository) {
+    this.journalRepository = journalRepository;
+  }
 
   /**
    * Compute the balance of the journal, depending of the account type and balance type
@@ -45,8 +58,8 @@ public class JournalService {
     Query resultQuery = JPA.em().createQuery(query);
 
     resultQuery.setParameter("journal", journal.getId());
-    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_ACCOUNTED);
-    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_VALIDATED);
+    resultQuery.setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
+    resultQuery.setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED);
 
     Object[] resultArr = (Object[]) resultQuery.getResultList().get(0);
 
@@ -54,8 +67,41 @@ public class JournalService {
         "debit", resultArr[0] != null ? new BigDecimal(resultArr[0].toString()) : BigDecimal.ZERO);
     resultMap.put(
         "credit", resultArr[1] != null ? new BigDecimal(resultArr[1].toString()) : BigDecimal.ZERO);
-    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")));
+    resultMap.put("balance", resultMap.get("debit").subtract(resultMap.get("credit")).abs());
 
     return resultMap;
+  }
+
+  @Transactional
+  public void toggleStatusSelect(Journal journal) {
+    if (journal != null) {
+      if (journal.getStatusSelect() == JournalRepository.STATUS_INACTIVE) {
+        journal = activate(journal);
+      } else {
+        journal = desactivate(journal);
+      }
+      journalRepository.save(journal);
+    }
+  }
+
+  protected Journal activate(Journal journal) {
+    journal.setStatusSelect(JournalRepository.STATUS_ACTIVE);
+    return journal;
+  }
+
+  protected Journal desactivate(Journal journal) {
+    journal.setStatusSelect(JournalRepository.STATUS_INACTIVE);
+    return journal;
+  }
+
+  public boolean isSubrogationOk(Journal journal) {
+    List<Integer> journalTypeList =
+        Arrays.asList(
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+            JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER);
+
+    return journal != null
+        && journalTypeList.contains(journal.getJournalType().getTechnicalTypeSelect());
   }
 }

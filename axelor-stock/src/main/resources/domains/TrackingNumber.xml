@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="TrackingNumber" lang="java">
+  <entity name="TrackingNumber">
 
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <date name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
@@ -14,6 +14,11 @@
     <decimal name="counter" title="Counter" precision="20" scale="10"/>
     <string name="origin" title="Origin"/>
     <string name="note" title="Note" large="true"/>
+
+    <many-to-one name="barCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
+    <string name="serialNumber" title="Serial Nbr"/>
+    <many-to-one name="barcodeTypeConfig" title="Barcode Type"
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
     <unique-constraint columns="product,trackingNumberSeq"/>
 

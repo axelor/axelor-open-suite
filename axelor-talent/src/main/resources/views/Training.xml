@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="training-grid" title="Trainings" model="com.axelor.apps.talent.db.Training">
     <field name="name"/>
     <field name="category"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="duration"/>
     <field name="mandatoryTraining"/>
   </grid>
 
   <form name="training-form" title="Training" model="com.axelor.apps.talent.db.Training"
-    width="large" onNew="action-training-set-default" readonlyIf="$popup()">
+    width="large" onNew="action-training-set-default">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="category"/>
@@ -20,7 +20,8 @@
       <field name="duration"/>
       <field name="mandatoryTraining" colSpan="4"/>
       <field name="skillSet" colSpan="8" widget="tag-select"/>
-      <field name="requiredTrainingSet" colSpan="12" domain="self.id != :id"/>
+      <field name="requiredTrainingSet" colSpan="12" domain="self.id != :id"
+        form-view="training-form" grid-view="training-grid"/>
       <field name="description" colSpan="12"/>
       <field name="program" colSpan="12" widget="html"/>
       <field name="objectives" colSpan="12"/>
@@ -45,6 +46,6 @@
   <search-filters name="training-filters" model="com.axelor.apps.talent.db.Training"
     title="Training filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

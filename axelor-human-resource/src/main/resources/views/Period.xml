@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="period-hr-grid" title="Period" model="com.axelor.apps.base.db.Period"
     orderBy="-fromDate">
@@ -16,7 +16,7 @@
 
   <form name="period-hr-form" title="Period" model="com.axelor.apps.base.db.Period"
     width="large">
-    <panel name="mainPanel" readonlyIf="statusSelect == 2">
+    <panel name="mainPanel" readonlyIf="statusSelect == 2 || statusSelect == 5">
       <field name="name"/>
       <field name="code" x-bind="{{code|uppercase}}" colSpan="3"/>
       <field name="year.company" form-view="company-form" readonly="true" colSpan="3"/>
@@ -30,7 +30,7 @@
         <button name="closeBtn" title="Close period" colSpan="6"
           onClick="save,action-method-period-close" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
         <button name="reopenBtn" title="Reopen period" colSpan="6"
-          onClick="save,action-period-record-status-open"
+          onClick="save,action-method-period-status-open"
           showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
       </panel>
       <field name="statusSelect"/>
@@ -48,14 +48,14 @@
       <field name="toDate" colSpan="3" readonly="true"/>
       <field name="year" title="Fiscal year" form-view="year-form" grid-view="year-grid"
         readonly="true"/>
-      <field name="allowExpenseCreation" readonlyIf="statusSelect == 2"/>
+      <field name="allowExpenseCreation" readonlyIf="statusSelect == 2 || statusSelect == 5"/>
     </panel>
     <panel name="detailsPanel" readonly="true">
       <panel name="actionsPanel" colSpan="6">
         <button name="closeBtn" title="Close period" colSpan="6"
           onClick="save,action-method-period-close" showIf="statusSelect == 1 &amp;&amp; !$popup()"/>
         <button name="reopenBtn" title="Reopen period" colSpan="6"
-          onClick="save,action-period-record-status-open"
+          onClick="save,action-method-period-status-open"
           showIf="statusSelect == 2 &amp;&amp; !$popup()"/>
       </panel>
       <field name="statusSelect"/>

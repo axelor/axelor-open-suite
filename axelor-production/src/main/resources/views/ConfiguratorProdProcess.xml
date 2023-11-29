@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
   <form name="configurator-prod-process-form" title="Configurator Prod Process"
     model="com.axelor.apps.production.db.ConfiguratorProdProcess">
     <panel name="mainPanel">
-      <field name="name"/>
-      <field name="company"/>
-      <field name="statusSelect" selection-in="[2,3]"/>
-
+      <panel name="namePanel" title="Label">
+        <field name="defNameAsFormula" colSpan="6"/>
+        <field name="name" colSpan="12" showIf="!defNameAsFormula"
+          requiredIf="!defNameAsFormula"/>
+        <field name="nameFormula" colSpan="12" height="120" requiredIf="defNameAsFormula"
+          widget="CodeEditor" x-code-syntax="groovy" showTitle="false" showIf="defNameAsFormula"/>
+      </panel>
       <panel name="codePanel" title="Code">
         <field name="defCodeAsFormula" colSpan="6"/>
         <field name="code" colSpan="12" showIf="!defCodeAsFormula"/>
         <field name="codeFormula" colSpan="12" height="120" widget="CodeEditor"
           x-code-syntax="groovy" showTitle="false" showIf="defCodeAsFormula"/>
       </panel>
+      <field name="company"/>
+      <field name="statusSelect" selection-in="[2,3]"/>
       <panel name="stockLocationPanel" title="Stock Location">
         <field name="defStockLocationAsFormula" colSpan="6"/>
         <field name="stockLocation" form-view="stock-location-form"
-          grid-view="stock-location-grid" showIf="!defStockLocationAsFormula"/>
+          grid-view="stock-location-grid" showIf="!defStockLocationAsFormula"
+          requiredIf="!defStockLocationAsFormula"/>
         <field name="stockLocationFormula" colSpan="12" height="120" widget="CodeEditor"
-          x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"/>
+          x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"
+          requiredIf="defStockLocationAsFormula"/>
       </panel>
       <panel name="producedProductStockLocationPanel"
         title="Stock location for produced product">
@@ -34,16 +41,25 @@
           showIf="defProducedProductStockLocationAsFormula"/>
       </panel>
       <panel name="workshopStockLocationPanel" title="Workshop"
-        if="__config__.app.getApp('production').getManageWorkshop()">
+        if="__config__.app.getApp('production')?.getManageWorkshop()">
         <field name="defWorkshopStockLocationAsFormula" colSpan="6"/>
         <field name="workshopStockLocation" canEdit="false" colSpan="12"
           grid-view="stock-location-grid" form-view="stock-location-form"
           domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
           showIf="!defWorkshopStockLocationAsFormula"
-          if="__config__.app.getApp('production').getManageWorkshop()"/>
+          if="__config__.app.getApp('production')?.getManageWorkshop()"/>
         <field name="workshopStockLocationFormula" colSpan="12" height="120"
           widget="CodeEditor" x-code-syntax="groovy" showTitle="false"
           showIf="defWorkshopStockLocationAsFormula"/>
+      </panel>
+      <panel name="isConsProOnOperationPanel" title="Consumed products on phases">
+        <field name="defIsConsProOnOperationAsFormula" colSpan="6"
+          onChange="action-configurator-prod-process-attrs-uncheck-is-cons-pro-on-operation"/>
+        <field name="isConsProOnOperation" colSpan="12"
+          showIf="!defIsConsProOnOperationAsFormula"/>
+        <field name="isConsProOnOperationFormula" colSpan="12" height="120"
+          widget="CodeEditor" x-code-syntax="groovy" showTitle="false"
+          showIf="defIsConsProOnOperationAsFormula" requiredIf="defIsConsProOnOperationAsFormula"/>
       </panel>
       <field name="configuratorProdProcessLineList" colSpan="12"
         form-view="configurator-prod-process-line-form"
@@ -54,20 +70,26 @@
   <grid name="configurator-prod-process-grid" title="Configurator Prod Process"
     model="com.axelor.apps.production.db.ConfiguratorProdProcess">
     <field name="name"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
+
+  <action-attrs
+    name="action-configurator-prod-process-attrs-uncheck-is-cons-pro-on-operation">
+    <attribute name="value" for="isConsProOnOperation"
+      expr="eval: (defIsConsProOnOperationAsFormula ? false : isConsProOnOperation)"/>
+  </action-attrs>
 
   <search-filters name="configurator-prod-process-filters"
     model="com.axelor.apps.production.db.ConfiguratorProdProcess"
     title="Configurator Prod Process filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="defWorkshopStockLocationAsFormula" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="workshopStockLocation" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
     <field name="workshopStockLocationFormula" hidden="true"
-      if="!__config__.app.getApp('production').getManageWorkshop()"/>
+      if="!__config__.app.getApp('production')?.getManageWorkshop()"/>
   </search-filters>
 
 </object-views>

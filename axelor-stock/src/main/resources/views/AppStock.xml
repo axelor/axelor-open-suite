@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form name="app-stock-config-form" title="App stock" model="com.axelor.apps.base.db.AppStock"
+  <form name="app-stock-config-form" title="App stock" model="com.axelor.studio.db.AppStock"
     canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="isEnabledProductDescriptionCopy" widget="boolean-switch" colSpan="4"/>
@@ -11,6 +11,32 @@
       <field name="isSeparateShipmentOperations" widget="boolean-switch" colSpan="4"/>
       <field name="isRequiredShipmentSupplierDetails" widget="boolean-switch" colSpan="4"/>
       <field name="stockUnit" colSpan="4" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="isManageStockLocationOnStockMoveLine" widget="boolean-switch" colSpan="4"
+        onChange="action-app-stock-validate-config-error"/>
+    </panel>
+    <panel name="barCodePanel" title="Barcode">
+      <panel name="trackingNumberBarCodePanel" title="Tracking number" colSpan="12">
+        <field name="activateTrackingNumberBarCodeGeneration" widget="Boolean-switch"
+          colSpan="4"/>
+        <field name="editTrackingNumberBarcodeType"
+          showIf="activateTrackingNumberBarCodeGeneration == true" widget="boolean-switch"
+          colSpan="4"/>
+        <field name="trackingNumberBarcodeTypeConfig"
+          showIf="activateTrackingNumberBarCodeGeneration == true"
+          requiredIf="activateTrackingNumberBarCodeGeneration &amp;&amp; !editTrackingNumberBarcodeType"
+          colSpan="4"/>
+      </panel>
+      <panel name="stockLocationBarCodePanel" title="Stock location" colSpan="12">
+        <field name="activateStockLocationBarCodeGeneration" widget="Boolean-switch"
+          colSpan="4"/>
+        <field name="editStockLocationBarcodeType"
+          showIf="activateStockLocationBarCodeGeneration == true" widget="boolean-switch"
+          colSpan="4"/>
+        <field name="stockLocationBarcodeTypeConfig"
+          showIf="activateStockLocationBarCodeGeneration == true"
+          requiredIf="activateStockLocationBarCodeGeneration &amp;&amp; !editStockLocationBarcodeType"
+          colSpan="4"/>
+      </panel>
     </panel>
     <panel name="customsPanel" title="Customs">
       <field name="economicArea"/>
@@ -34,5 +60,18 @@
     <view type="grid" name="stock-config-grid"/>
     <view type="form" name="stock-config-form"/>
   </action-view>
+
+  <action-validate name="action-app-stock-validate-config-error">
+    <error
+      message="Stock reservation feature cannot be active when we are managing stock locations on stock move line."
+      if="isManageStockLocationOnStockMoveLine &amp;&amp; __config__.app.getApp('supplychain')?.manageStockReservation"
+      action="action-app-stock-record-set-manage-stock-location-in-line-false"/>
+  </action-validate>
+
+  <action-record
+    name="action-app-stock-record-set-manage-stock-location-in-line-false"
+    model="com.axelor.studio.db.AppStock">
+    <field name="isManageStockLocationOnStockMoveLine" expr="eval: false"/>
+  </action-record>
 
 </object-views>

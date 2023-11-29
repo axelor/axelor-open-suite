@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,29 +14,30 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
 public interface ReconcileService {
 
-  @Transactional
   public Reconcile createReconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
       BigDecimal amount,
       boolean canBeZeroBalanceOk);
 
-  @Transactional(rollbackOn = {Exception.class})
-  public Reconcile confirmReconcile(Reconcile reconcile, boolean updateInvoicePayments)
+  public Reconcile confirmReconcile(
+      Reconcile reconcile, boolean updateInvoicePayments, boolean updateInvoiceTerms)
       throws AxelorException;
 
   public void reconcilePreconditions(Reconcile reconcile) throws AxelorException;
@@ -44,6 +46,14 @@ public interface ReconcileService {
 
   public List<Partner> getPartners(Reconcile reconcile);
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments,
+      InvoicePayment invoicePayment)
+      throws AxelorException;
+
   public Reconcile reconcile(
       MoveLine debitMoveLine,
       MoveLine creditMoveLine,
@@ -51,11 +61,26 @@ public interface ReconcileService {
       boolean updateInvoicePayments)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException;
+
   public void unreconcile(Reconcile reconcile) throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
-  public void canBeZeroBalance(Reconcile reconcile) throws AxelorException;
+  /**
+   * Procédure permettant de gérer les écarts de règlement, check sur la case à cocher 'Peut être
+   * soldé' Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte
+   * transitoire si le seuil est respecté
+   *
+   * @param reconcile Une reconciliation
+   * @throws AxelorException
+   */
+  public void canBeZeroBalance(MoveLine debitMoveLine, MoveLine creditMoveLine)
+      throws AxelorException;
 
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;
 
@@ -74,4 +99,21 @@ public interface ReconcileService {
         && (acc1.getAccount().equals(acc2.getAccount())
             || acc1.getAccount().getCompatibleAccountSet().contains(acc2.getAccount()));
   }
+
+  public List<InvoiceTermPayment> updateInvoiceTerms(
+      List<InvoiceTerm> invoiceTermList,
+      InvoicePayment invoicePayment,
+      BigDecimal amount,
+      Reconcile reconcile)
+      throws AxelorException;
+
+  void checkReconcile(Reconcile reconcile) throws AxelorException;
+
+  String getStringAllowedCreditMoveLines(Reconcile reconcile);
+
+  String getStringAllowedDebitMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedCreditMoveLines(Reconcile reconcile);
+
+  List<Long> getAllowedDebitMoveLines(Reconcile reconcile);
 }

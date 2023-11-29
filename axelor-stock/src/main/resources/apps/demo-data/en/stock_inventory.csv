@@ -1,0 +1,2 @@
+"importId";"stockLocation_importId";"statusSelect";"plannedStartDateT";"description";"typeSelect";"company_importId";"plannedEndDateT";"excludeOutOfStock";"includeObsolete"
+1;1;4;"TODAY[-6M]";"Starting inventory to initialise the qty available in stock.";3;1;"TODAY[+6M]";"false";"false"

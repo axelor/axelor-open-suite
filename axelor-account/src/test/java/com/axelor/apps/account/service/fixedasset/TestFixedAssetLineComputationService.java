@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -21,26 +22,38 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.asse
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAsset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetCategoryFromIsProrataTemporis;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetLine;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.Before;
-import org.junit.Test;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestFixedAssetLineComputationService {
+class TestFixedAssetLineComputationService {
 
-  protected FixedAssetLineComputationService fixedAssetLineComputationService;
+  private static FixedAssetLineComputationService fixedAssetLineComputationService;
+  private static FixedAssetDateService fixedAssetDateService;
 
-  @Before
-  public void prepare() {
-    fixedAssetLineComputationService = new FixedAssetLineComputationServiceImpl();
+  @BeforeAll
+  static void prepare() {
+    fixedAssetDateService = mock(FixedAssetDateService.class);
+    AppBaseService appBaseService = mock(AppBaseService.class);
+    FixedAssetFailOverControlService fixedAssetFailOverControlService =
+        mock(FixedAssetFailOverControlService.class);
+    fixedAssetLineComputationService =
+        new FixedAssetLineEconomicComputationServiceImpl(
+            fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
   }
 
   @Test
-  public void testComputeInitialPlannedFixedAssetLineWithoutProrata() {
+  void testComputeInitialPlannedFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -50,20 +63,24 @@ public class TestFixedAssetLineComputationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(false),
             new BigDecimal("500.00"));
-    FixedAssetLine fixedAssetLine =
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
+        .thenReturn(LocalDate.of(2020, 12, 31));
+    Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
             new BigDecimal("100.00"),
             new BigDecimal("400.00")),
-        fixedAssetLine);
+        fixedAssetLine.get());
   }
 
   @Test
-  public void testComputeInitialPlannedFixedAssetLineWithProrata() {
+  void testComputeInitialPlannedFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -73,20 +90,24 @@ public class TestFixedAssetLineComputationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true),
             new BigDecimal("500.00"));
-    FixedAssetLine fixedAssetLine =
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
+        .thenReturn(LocalDate.of(2020, 12, 31));
+    Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("23.89"),
             new BigDecimal("23.89"),
             new BigDecimal("476.11")),
-        fixedAssetLine);
+        fixedAssetLine.get());
   }
 
   @Test
-  public void testComputePlannedFixedAssetLineWithoutProrata() {
+  void testComputePlannedFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -99,9 +120,11 @@ public class TestFixedAssetLineComputationService {
     FixedAssetLine firstFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
             new BigDecimal("100.00"),
             new BigDecimal("400.00"));
+    fixedAsset.addFixedAssetLineListItem(firstFixedAssetLine);
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
             fixedAsset, firstFixedAssetLine);
@@ -109,6 +132,7 @@ public class TestFixedAssetLineComputationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
             new BigDecimal("200.00"),
             new BigDecimal("300.00")),
@@ -116,7 +140,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputePlannedFixedAssetLineWithProrata() {
+  void testComputePlannedFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -129,9 +153,10 @@ public class TestFixedAssetLineComputationService {
     FixedAssetLine firstFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
-            new BigDecimal("23.89"),
-            new BigDecimal("23.89"),
-            new BigDecimal("476.11"));
+            new BigDecimal("500.00"),
+            new BigDecimal("25.00"),
+            new BigDecimal("25.00"),
+            new BigDecimal("475.00"));
     FixedAssetLine fixedAssetLine =
         fixedAssetLineComputationService.computePlannedFixedAssetLine(
             fixedAsset, firstFixedAssetLine);
@@ -139,14 +164,15 @@ public class TestFixedAssetLineComputationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
-            new BigDecimal("123.89"),
-            new BigDecimal("376.11")),
+            new BigDecimal("125.00"),
+            new BigDecimal("375.00")),
         fixedAssetLine);
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithoutProrata() {
+  void testComputeLastFixedAssetLineWithoutProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -159,6 +185,7 @@ public class TestFixedAssetLineComputationService {
     FixedAssetLine previousFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2023, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
             new BigDecimal("400.00"),
             new BigDecimal("100.00"));
@@ -169,6 +196,7 @@ public class TestFixedAssetLineComputationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
             new BigDecimal("500.00"),
             new BigDecimal("0.00")),
@@ -176,7 +204,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithProrata() {
+  void testComputeLastFixedAssetLineWithProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -189,6 +217,7 @@ public class TestFixedAssetLineComputationService {
     FixedAssetLine previousFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("100.00"),
             new BigDecimal("423.89"),
             new BigDecimal("76.11"));
@@ -198,7 +227,8 @@ public class TestFixedAssetLineComputationService {
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
-            LocalDate.of(2025, 10, 3),
+            LocalDate.of(2025, 12, 31),
+            new BigDecimal("500.00"),
             new BigDecimal("76.11"),
             new BigDecimal("500.00"),
             new BigDecimal("0.00")),
@@ -206,7 +236,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeLastFixedAssetLineWithUsProrata() {
+  void testComputeLastFixedAssetLineWithUsProrata() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_LINEAR,
@@ -219,6 +249,7 @@ public class TestFixedAssetLineComputationService {
     FixedAssetLine previousFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2026, 12, 31),
+            new BigDecimal("102638.35"),
             new BigDecimal("14662.62"),
             new BigDecimal("95307.03"),
             new BigDecimal("7331.32"));
@@ -228,7 +259,8 @@ public class TestFixedAssetLineComputationService {
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
-            LocalDate.of(2027, 6, 30),
+            LocalDate.of(2027, 12, 31),
+            new BigDecimal("102638.35"),
             new BigDecimal("7331.32"),
             new BigDecimal("102638.35"),
             new BigDecimal("0.00")),
@@ -236,7 +268,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeFirstDegressiveAssetLine() {
+  void testComputeFirstDegressiveAssetLine() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -247,21 +279,24 @@ public class TestFixedAssetLineComputationService {
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
             new BigDecimal("20000.00"));
-
-    FixedAssetLine fixedAssetLine =
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
+        .thenReturn(LocalDate.of(2020, 12, 31));
+    Optional<FixedAssetLine> fixedAssetLine =
         fixedAssetLineComputationService.computeInitialPlannedFixedAssetLine(fixedAsset);
 
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
-            new BigDecimal("5250.00"),
-            new BigDecimal("5250.00"),
-            new BigDecimal("14750.00")),
-        fixedAssetLine);
+            new BigDecimal("20000.00"),
+            new BigDecimal("5833.33"),
+            new BigDecimal("5833.33"),
+            new BigDecimal("14166.67")),
+        fixedAssetLine.get());
   }
 
   @Test
-  public void testComputeOngoingDegressiveAssetLine() {
+  void testComputeOngoingDegressiveAssetLine() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -275,6 +310,7 @@ public class TestFixedAssetLineComputationService {
     FixedAssetLine previousFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
+            new BigDecimal("20000.00"),
             new BigDecimal("5250.00"),
             new BigDecimal("5250.00"),
             new BigDecimal("14750.00"));
@@ -286,6 +322,7 @@ public class TestFixedAssetLineComputationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
+            new BigDecimal("20000.00"),
             new BigDecimal("5162.50"),
             new BigDecimal("10412.50"),
             new BigDecimal("9587.50")),
@@ -293,7 +330,7 @@ public class TestFixedAssetLineComputationService {
   }
 
   @Test
-  public void testComputeOngoingDegressiveAssetLineSwitchToLinear() {
+  void testComputeOngoingDegressiveAssetLineSwitchToLinear() throws AxelorException {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
@@ -308,12 +345,18 @@ public class TestFixedAssetLineComputationService {
     // fill with empty previous line, should not change the result
     for (int i = 0; i < 2; i++) {
       fixedAsset.addFixedAssetLineListItem(
-          createFixedAssetLine(LocalDate.now(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
+          createFixedAssetLine(
+              LocalDate.now(),
+              new BigDecimal("20000.00"),
+              BigDecimal.ZERO,
+              BigDecimal.ZERO,
+              BigDecimal.ZERO));
     }
 
     FixedAssetLine previousFixedAssetLine =
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
+            new BigDecimal("20000.00"),
             new BigDecimal("3356.00"),
             new BigDecimal("13769.00"),
             new BigDecimal("6231.00"));
@@ -325,6 +368,7 @@ public class TestFixedAssetLineComputationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
+            new BigDecimal("20000.00"),
             new BigDecimal("3115.50"),
             new BigDecimal("16884.50"),
             new BigDecimal("3115.50")),

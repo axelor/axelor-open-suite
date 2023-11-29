@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="HrBatch" lang="java" cacheable="true">
+  <entity name="HrBatch" cacheable="true">
 
     <!-- HEADER -->
     <string name="code" title="Code" namecolumn="true" unique="true"/>
@@ -52,8 +52,7 @@
 
     <!-- Timesheet Reminder -->
     <long name="daysBeforeReminder" title="Number of days before reminder"/>
-    <many-to-one name="template" ref="com.axelor.apps.message.db.Template"
-      title="Template"/>
+    <many-to-one name="template" ref="com.axelor.message.db.Template" title="Template"/>
 
     <extra-code><![CDATA[
 
@@ -70,6 +69,7 @@
 		public static final int EXPORT_TYPE_STANDARD = 1;
 		public static final int EXPORT_TYPE_NIBELIS = 2;
 		public static final int EXPORT_TYPE_SILAE = 3;
+		public static final int EXPORT_TYPE_SAGE = 4;
 
 		//EMPLOYMENT CONTRACT EXPORT TYPE SELECT
 		public static final int EMPLOYMENT_CONTRACT_EXPORT_TYPE_SILAE = 1;

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="tax-number-grid" title="Tax numbers" model="com.axelor.apps.account.db.TaxNumber">
+    <field name="taxNbr"/>
+    <field name="company"/>
+  </grid>
+
+  <form name="tax-number-form" title="Tax number" model="com.axelor.apps.account.db.TaxNumber">
+    <panel name="mainPanel">
+      <field name="taxNbr"/>
+      <field name="company"/>
+      <field name="includeInDEB" widget="boolean-switch"
+        help="If activated, then all eligible transactions (deliveries/arrivals) related to this tax number will be taken into account in the declaration of exchanges. If not, transactions will be ignored."/>
+      <field name="fiscalPositionSet" colSpan="12" canSelect="true" canNew="false"
+        canEdit="false"/>
+    </panel>
+  </form>
+
+
+</object-views>

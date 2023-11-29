@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="partner-campaign-grid" title="Partners" model="com.axelor.apps.base.db.Partner">
     <field name="partnerSeq"/>
     <field name="simpleFullName"/>
-    <field name="fixedPhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>

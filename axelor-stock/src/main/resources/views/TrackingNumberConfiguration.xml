@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration"
     model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
@@ -23,9 +23,18 @@
     model="com.axelor.apps.stock.db.TrackingNumberConfiguration"
     onNew="action-tracking-number-config-record-default,action-tracking-number-config-attrs-set-scale"
     onLoad="action-tracking-number-config-attrs-set-scale"
-    onSave="action-tracking-number-validate-qty" width="large">
+    onSave="action-tracking-number-validate-qty,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
+    width="large">
     <panel name="namePanel">
       <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
+    </panel>
+    <panel name="barCodePanel" title="Barcode"
+      if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
+      <field name="useTrackingNumberSeqAsSerialNbr"
+        onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"/>
+      <field name="barcodeTypeConfig"
+        onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
+        if="__config__.app.getApp('stock')?.getEditTrackingNumberBarcodeType()"/>
     </panel>
     <panel name="purchaseTrackingPanel">
       <field name="isPurchaseTrackingManaged"
@@ -34,7 +43,7 @@
         showIf="isPurchaseTrackingManaged" colSpan="12">
         <field name="generatePurchaseAutoTrackingNbr"/>
         <field name="sequence"
-          onChange="action-tracking-number-config-record-compute-fullname"
+          onChange="action-tracking-number-config-record-compute-fullname,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
           requiredIf="generatePurchaseAutoTrackingNbr"
           showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"
           domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form"
@@ -49,7 +58,7 @@
         showIf="isProductionTrackingManaged" colSpan="12">
         <field name="generateProductionAutoTrackingNbr"/>
         <field name="sequence"
-          onChange="action-tracking-number-config-record-compute-fullname"
+          onChange="action-tracking-number-config-record-compute-fullname,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
           requiredIf="generateProductionAutoTrackingNbr"
           showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"
           domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form"
@@ -69,7 +78,7 @@
         <field name="generateSaleAutoTrackingNbr"
           readonlyIf="isProductionTrackingManaged || isPurchaseTrackingManaged"/>
         <field name="sequence"
-          onChange="action-tracking-number-config-record-compute-fullname"
+          onChange="action-tracking-number-config-record-compute-fullname,action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
           requiredIf="generateSaleAutoTrackingNbr"
           showIf="generatePurchaseAutoTrackingNbr || generateProductionAutoTrackingNbr || generateSaleAutoTrackingNbr"
           domain="self.codeSelect = 'productTrackingNumber'" form-view="sequence-form"
@@ -80,6 +89,8 @@
         <field name="saleQtyByTracking" colSpan="12" readonlyIf="hasSaleAutoSelectTrackingNbr"/>
       </panel>
     </panel>
+    <panel-dashlet name="trackingNumberProductPanel" title="Product" showIf="id"
+      action="action-dashlet-tracking-number-configuration-product" canSearch="true" colSpan="12"/>
   </form>
 
   <action-record name="action-tracking-number-config-record-default"
@@ -88,6 +99,9 @@
     <field name="saleQtyByTracking" expr="0"/>
     <field name="purchaseQtyByTracking" expr="0"/>
     <field name="productionQtyByTracking" expr="0"/>
+    <field name="barcodeTypeConfig"
+      expr="eval:__config__.app.getApp('stock')?.getTrackingNumberBarcodeTypeConfig()"
+      if="eval:__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()"/>
   </action-record>
 
 
@@ -125,5 +139,19 @@
     <error message="The quantity by lot must be greater than 0"
       if="purchaseQtyByTracking+productionQtyByTracking+saleQtyByTracking &lt;= 0"/>
   </action-validate>
+
+  <action-method
+    name="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency">
+    <call class="com.axelor.apps.stock.web.TrackingNumberConfigurationController"
+      method="checkSequenceAndBarcodeTypeConfigConsistency"/>
+  </action-method>
+
+  <action-view name="action-dashlet-tracking-number-configuration-product"
+    title="Product" model="com.axelor.apps.base.db.Product">
+    <view type="grid" name="product-grid"/>
+    <view type="form" name="product-form"/>
+    <domain>self.trackingNumberConfiguration.id = :trackingNumberConfigurationId</domain>
+    <context name="trackingNumberConfigurationId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

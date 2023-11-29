@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
-  <entity name="HiringStage" lang="java" cacheable="true">
-    <string name="name" title="Name" required="true"/>
+  <entity name="HiringStage" cacheable="true">
+    <string name="name" title="Name" required="true" translatable="true"/>
     <integer name="sequence" title="Sequence"/>
   </entity>
 

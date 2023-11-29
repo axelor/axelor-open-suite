@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine" implements="com.axelor.apps.account.db.repo.AnalyticLine"
+    strategy="CLASS">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -15,11 +16,15 @@
       initParam="true"/>
     <date name="date" column="date_val" title="Date" initParam="true"/>
     <date name="dueDate" title="Due Date" initParam="true"/>
+    <date name="cutOffStartDate" title="From date"/>
+    <date name="cutOffEndDate" title="To date"/>
+    <boolean name="isCutOffGenerated" default="false"/>
     <integer name="counter" title="Line Nbr." initParam="true"/>
     <decimal name="debit" title="Debit" initParam="true"/>
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
-    <string name="origin" title="Origin" initParam="true"/>
+    <string name="origin" title="moveLine.origin" initParam="true"/>
+    <string name="externalOrigin" title="External origin"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
@@ -36,16 +41,26 @@
 
     <integer name="reimbursementStatusSelect" title="Reimbursement status" default="0"
       selection="move.line.reimbursement.status.select"/>
-    <string name="passageReason" title="Irrecoverable Shift Reason" readonly="true"/>
+    <string name="passageReason" title="Doubtful Shift Reason" readonly="true"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to Usher"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
+    <many-to-one name="taxLineBeforeReverse" ref="com.axelor.apps.account.db.TaxLine"
+      title="Tax"/>
     <many-to-one name="sourceTaxLine" ref="com.axelor.apps.account.db.TaxLine"
       title="Source Tax"/>
 
+    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+      title="Tax Equiv"/>
+
     <decimal name="currencyRate" title="Currency Rate" precision="20" scale="5"
       initParam="true"/>
-    <decimal name="currencyAmount" title="Amount in Acc. currency" initParam="true"/>
+    <decimal name="currencyAmount" title="Amount in move currency" initParam="true"/>
 
+    <string name="postedNbr" title="Posted number"/>
+    <!-- Fixed asset fields -->
+    <many-to-one name="fixedAssetCategory"
+      ref="com.axelor.apps.account.db.FixedAssetCategory" title="Fixed asset category"
+      help="If this field is filled, once the move will change from Draft to Accounted, a new fixed asset record will be generated based on this moveLine data and the selected category data"/>
     <!-- Field not displayed, used during the payment voucher input -->
     <decimal name="maxAmountToReconcile" title="Max Amount to reconcile"/>
     <many-to-one name="paymentScheduleLine"
@@ -69,6 +84,7 @@
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
+    <boolean name="isOtherCurrency" default="false"/>
 
     <string name="accountCode" readonly="true"/>
     <string name="accountName" readonly="true"/>
@@ -79,8 +95,10 @@
     <long name="partnerId"/>
     <long name="accountId"/>
 
-    <decimal name="taxRate" scale="3" precision="20" readonly="true"/>
+    <decimal name="taxRate" scale="10" precision="20" readonly="true"/>
     <string name="taxCode" readonly="true"/>
+
+    <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
 
     <decimal name="taxAmount" scale="2" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine"
@@ -90,6 +108,11 @@
       ref="com.axelor.apps.account.db.ReconcileGroup"/>
 
     <date name="originDate" title="Origin date" initParam="true"/>
+
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="moveLine" title="Invoice terms"/>
+
+    <!-- DAS2 -->
 
     <string name="name" title="Name" namecolumn="true">
     	<![CDATA[
@@ -103,16 +126,76 @@
     </string>
     <decimal name="amountRemaining" title="To pay / To use">
     	<![CDATA[
-    	if (account != null && account.getReconcileOk()){
-		    if (credit.compareTo(BigDecimal.ZERO) == 1) return credit.subtract(amountPaid);
-		    else if (debit.compareTo(BigDecimal.ZERO) == 1) return debit.subtract(amountPaid);
-		    else return BigDecimal.ZERO;
-	    }
-		else return BigDecimal.ZERO;
+        if (account != null && account.getReconcileOk()) {
+          if (credit.signum() > 0) {
+           return credit.subtract(amountPaid).negate();
+          }
+          else if (debit.signum() > 0) {
+           return debit.subtract(amountPaid);
+          }
+          else {
+           return BigDecimal.ZERO;
+          }
+        }
+        return BigDecimal.ZERO;
+	   ]]>
+    </decimal>
+    <decimal name="lineAmount" transient="true">
+    	<![CDATA[
+			if (this.credit != null && this.credit.signum() > 0) {
+				return this.credit;
+			}
+			if (this.debit != null && this.debit.signum() > 0) {
+				return this.debit;
+			}
+			return BigDecimal.ZERO;
 	    ]]>
     </decimal>
 
+    <many-to-one name="axis1AnalyticAccount" title="Cpte Ana. AXIS1"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis2AnalyticAccount" title="Cpte Ana. AXIS2"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis3AnalyticAccount" title="Cpte Ana. AXIS3"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis4AnalyticAccount" title="Cpte Ana. AXIS4"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+    <many-to-one name="axis5AnalyticAccount" title="Cpte Ana. AXIS5"
+      ref="com.axelor.apps.account.db.AnalyticAccount"/>
+
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.moveline.select" default="0"/>
+
+    <!-- Discount -->
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountRate" title="Financial discount rate"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="remainingAmountAfterFinDiscount"
+      title="Remaining amount after Fin. discount"/>
+
+    <!-- Fixed information -->
+    <string name="companyCode"/>
+    <string name="companyName"/>
+    <string name="journalCode"/>
+    <string name="journalName"/>
+    <string name="currencyCode"/>
+    <string name="companyCurrencyCode"/>
+    <string name="fiscalYearCode"/>
+    <date name="accountingDate"/>
+    <boolean name="adjustingMove"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+    <!-- CUTOFF -->
+    <decimal name="cutOffProrataAmount" title="Prorata amount" scale="2" precision="20"/>
+    <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="2"
+      precision="20"/>
+    <string name="durationCutOffProrata" title="Prorata duration"/>
+
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
+    <finder-method name="findByAccount" all="true" using="account"/>
+    <finder-method name="findByPostedNbr" all="true" using="postedNbr"/>
 
     <extra-code><![CDATA[
 
@@ -126,6 +209,11 @@
 		public static final int IRRECOVERABLE_STATUS_TO_PASS_IN_IRRECOUVRABLE = 1;
 		public static final int IRRECOVERABLE_STATUS_PASSED_IN_IRRECOUVRABLE = 2;
 
+		// VAT SYSTEM
+      	public static final int VAT_SYSTEM_DEFAULT = 0;
+      	public static final int VAT_COMMON_SYSTEM = 1;
+      	public static final int VAT_CASH_PAYMENTS = 2;
+
 	]]></extra-code>
 
     <track>
@@ -136,6 +224,7 @@
       <field name="credit"/>
       <field name="origin"/>
       <field name="description"/>
+      <field name="vatSystemSelect"/>
       <message if="true" on="CREATE">Move line created</message>
     </track>
 

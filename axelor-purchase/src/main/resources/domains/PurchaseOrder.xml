@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrder" lang="java">
+  <entity name="PurchaseOrder">
 
     <string name="fullName" namecolumn="true">
   	<![CDATA[
@@ -30,7 +30,7 @@
     <many-to-one name="buyerUser" ref="com.axelor.auth.db.User" title="Buyer"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       required="true"/>
-    <date name="deliveryDate" title="Estimated delivery Date"/>
+    <date name="estimatedReceiptDate" title="Estimated receipt date"/>
     <date name="orderDate" title="Order Date"/>
     <one-to-many name="purchaseOrderLineList" mappedBy="purchaseOrder"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Products list"/>
@@ -40,8 +40,14 @@
     <string name="internalReference" title="Internal Ref."/>
     <integer name="receiptState" title="Receipt State"
       selection="purchase.order.receipt.state" readonly="true" default="1"/>
+    <decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20"
+      readonly="true"/>
 
-
+    <!-- Tax Number and FiscalPosition -->
+    <many-to-one name="taxNumber" title="Tax number"
+      ref="com.axelor.apps.account.db.TaxNumber"/>
+    <many-to-one name="fiscalPosition" title="Fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
 
     <!-- Ligne de TVA -->
     <one-to-many name="purchaseOrderLineTaxList"
@@ -51,7 +57,7 @@
     <!-- Validation and totals -->
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Validated by"/>
-    <date name="validationDate" title="Validation date" readonly="true"/>
+    <datetime name="validationDateTime" title="Validation date" readonly="true"/>
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
@@ -64,6 +70,7 @@
     <!-- Notes -->
     <string name="notes" large="true" multiline="true" title="Description To Display"/>
     <string name="internalNote" large="true" multiline="true" title="Internal Note"/>
+    <string name="specificNotes" title="Specific notes" large="true"/>
 
     <integer name="versionNumber" title="Version Number" readonly="true" default="1"/>
 
@@ -112,6 +119,7 @@
       <field name="purchaseOrderSeq"/>
       <field name="supplierPartner"/>
       <field name="statusSelect" on="UPDATE"/>
+      <field name="estimatedReceiptDate"/>
       <message if="true" on="CREATE">Purchase order created</message>
       <message if="statusSelect == 1" tag="important">Draft</message>
       <message if="statusSelect == 2" tag="important">Requested</message>

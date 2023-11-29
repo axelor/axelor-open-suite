@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="StockLocationLineHistory">
+    <many-to-one name="stockLocationLine"
+      ref="com.axelor.apps.stock.db.StockLocationLine" readonly="true" initParam="true"
+      required="true"/>
+    <string name="typeSelect" selection="stock.stock.location.line.history.type.select"
+      readonly="true" required="true" initParam="true"/>
+    <datetime name="dateT" readonly="true" initParam="true"/>
+    <string name="origin" title="Origin" readonly="true" initParam="true"/>
+    <decimal name="wap" title="WAP" min="0" precision="20" scale="10" readonly="true"
+      initParam="true"/>
+    <decimal name="qty" title="Quantity" precision="20" scale="10" readonly="true"
+      initParam="true"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"
+      readonly="true" initParam="true"/>
+    <extra-code><![CDATA[
+      //origin
+      public static final String ORIGIN_MANUAL_CORRECTION = "Manual correction";
+      //Type select
+      public static final String TYPE_SELECT_STOCK_MOVE = "stockMove";
+      public static final String TYPE_SELECT_WAP_CORRECTION = "wapCorrection";
+      public static final String TYPE_SELECT_CANCELATION = "cancelation";
+      public static final String TYPE_SELECT_UPDATE_STOCK_LOCATION_FROM_PRODUCT = "updateStockLocationFromProduct";
+    ]]></extra-code>
+  </entity>
+
+</domain-models>

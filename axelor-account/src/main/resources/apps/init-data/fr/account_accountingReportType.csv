@@ -1,0 +1,26 @@
+"importId";"name";"type";"docType";"company"
+1;"Grand livre";1;1;1
+2;"Balance générale";2;1;1
+3;"Balance clients détaillée";3;1;1
+4;"Balance âgée";4;1;1
+5;"Bordereau de remise de chèques";5;1;1
+6;"Grand livre auxiliaire";7;1;1
+7;"Balance auxiliaire";6;1;1
+8;"Récapitulatif des reçus espèces";10;1;1
+9;"Journal";11;1;1
+10;"Etat TVA sur facturation";12;1;1
+11;"Etat TVA sur encaissement";15;1;1
+12;"Différences paiement";13;1;1
+13;"Grand livre (ancienne présentation)";14;1;1
+14;"Tableau des acquisitions";16;1;1
+15;"Synthèses des valeurs brutes et des amortissements";17;1;1
+16;"Balance analytique";2000;1;1
+17;"Grand livre analytique";2001;1;1
+18;"Export FEC -> Administration";1000;2;1
+19;"Export FEC -> Logiciel comptable";1001;2;1
+24;"Export balance générale -> Logiciel comptable";1010;2;1
+25;"Etat préparatoire DADS";19;1;1
+26;"Vérification déclaration DADS";20;1;1
+27;"Export N4DS";1011;2;1
+28;"Etat préparatoire DGI 2054";21;1;1
+29;"Etat préparatoire DGI 2055";22;1;1

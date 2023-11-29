@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.generator;
 
@@ -27,13 +28,15 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
 import com.axelor.apps.account.service.payment.PaymentModeService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -42,12 +45,13 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ContextEntity;
@@ -170,8 +174,8 @@ public abstract class InvoiceGenerator {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.INVOICE_GENERATOR_1),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+            I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_1),
+            I18n.get(BaseExceptionMessage.EXCEPTION));
     }
   }
 
@@ -188,15 +192,15 @@ public abstract class InvoiceGenerator {
     if (partner == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     if (Beans.get(BlockingService.class)
             .getBlocking(partner, company, BlockingRepository.INVOICING_BLOCKING)
         != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.INVOICE_VALIDATE_BLOCKING));
+          I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_BLOCKING));
     }
     invoice.setPartner(partner);
 
@@ -233,8 +237,8 @@ public abstract class InvoiceGenerator {
     if (currency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.INVOICE_GENERATOR_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.INVOICE_GENERATOR_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
     invoice.setCurrency(currency);
 
@@ -272,30 +276,8 @@ public abstract class InvoiceGenerator {
     } else {
       invoice.setInAti(false);
     }
-
-    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
-      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
-      companyBankDetails =
-          bankDetailsList.stream()
-              .filter(bankDetails -> bankDetails.getIsDefault())
-              .findFirst()
-              .orElse(null);
-    } else if (accountingSituation != null) {
-      if (paymentMode != null) {
-        if (paymentMode.equals(partner.getOutPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
-        } else if (paymentMode.equals(partner.getInPaymentMode())) {
-          companyBankDetails = accountingSituation.getCompanyInBankDetails();
-        }
-      }
-    }
     if (companyBankDetails == null) {
-      companyBankDetails = company.getDefaultBankDetails();
-      List<BankDetails> allowedBDs =
-          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
-      if (!allowedBDs.contains(companyBankDetails)) {
-        companyBankDetails = null;
-      }
+      fillCompanyBankDetails(accountingSituation, accountConfig);
     }
     invoice.setCompanyBankDetails(companyBankDetails);
 
@@ -313,9 +295,40 @@ public abstract class InvoiceGenerator {
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
 
+    InvoiceToolService.setPfpStatus(invoice);
+
     initCollections(invoice);
 
     return invoice;
+  }
+
+  protected void fillCompanyBankDetails(
+      AccountingSituation accountingSituation, AccountConfig accountConfig) {
+    if (partner.getFactorizedCustomer() && accountConfig.getFactorPartner() != null) {
+      List<BankDetails> bankDetailsList = accountConfig.getFactorPartner().getBankDetailsList();
+      companyBankDetails =
+          bankDetailsList.stream()
+              .filter(bankDetails -> bankDetails.getIsDefault())
+              .findFirst()
+              .orElse(null);
+    } else if (accountingSituation != null) {
+      if (paymentMode != null) {
+        if (paymentMode.equals(partner.getOutPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyOutBankDetails();
+        } else if (paymentMode.equals(partner.getInPaymentMode())) {
+          companyBankDetails = accountingSituation.getCompanyInBankDetails();
+        }
+      }
+    }
+    // If it is still null
+    if (companyBankDetails == null) {
+      companyBankDetails = company.getDefaultBankDetails();
+      List<BankDetails> allowedBDs =
+          Beans.get(PaymentModeService.class).getCompatibleBankDetailsList(paymentMode, company);
+      if (!allowedBDs.contains(companyBankDetails)) {
+        companyBankDetails = null;
+      }
+    }
   }
 
   public int getInvoiceCopy() {
@@ -339,21 +352,23 @@ public abstract class InvoiceGenerator {
    */
   public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 
-    logger.debug(
-        "Peupler une facture => lignes de factures: {} ", new Object[] {invoiceLines.size()});
+    logger.debug("Populate an invoice => invoice lines : {} ", invoiceLines.size());
 
     initCollections(invoice);
 
+    if (invoice instanceof ContextEntity) {
+      invoice.getInvoiceLineList().addAll(invoiceLines);
+    } else {
+      invoiceLines.forEach(invoice::addInvoiceLineListItem);
+    }
     // Create tax lines.
     List<InvoiceLineTax> invoiceTaxLines = (new TaxInvoiceLine(invoice, invoiceLines)).creates();
 
     // Workaround for #9759
     if (invoice instanceof ContextEntity) {
-      invoice.getInvoiceLineList().addAll(invoiceLines);
       invoice.getInvoiceLineTaxList().addAll(invoiceTaxLines);
     } else {
-      invoiceLines.stream().forEach(invoice::addInvoiceLineListItem);
-      invoiceTaxLines.stream().forEach(invoice::addInvoiceLineTaxListItem);
+      invoiceTaxLines.forEach(invoice::addInvoiceLineTaxListItem);
     }
 
     computeInvoice(invoice);
@@ -445,9 +460,16 @@ public abstract class InvoiceGenerator {
 
     // In the company accounting currency
     invoice.setCompanyInTaxTotal(invoice.getCompanyExTaxTotal().add(invoice.getCompanyTaxTotal()));
+    invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());
+
     invoice.setHasPendingPayments(false);
+
+    if (!ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+        && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
+    }
 
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -465,7 +465,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                 </structure>
             </list-property>
             <list-property name="filter"/>
-            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -1699,7 +1698,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT line.id, timesheet_user.name AS ts_user, 
+            <xml-property name="queryText"><![CDATA[SELECT line.id, 
+timesheet_emp.name AS ts_user, 
 product.name AS ts_activity, 
 line.hours_duration AS ts_duration,
 product_unit.name AS ts_product_unit, 
@@ -1707,19 +1707,19 @@ line.date_val AS ts_date,
 invproj.invoice AS invoice_id,
 (CASE WHEN project.unit_on_printing IS NULL THEN product_unit.label_to_printing
 	ELSE select_item.title END ) AS ts_project_unit,
-(CASE WHEN select_item.order_seq = 0 THEN general.unit_days 
-	 WHEN select_item.order_seq = 1 THEN general.unit_hours 
-	 WHEN select_item.order_seq = 2 THEN general.unit_minutes 
-	 WHEN project.unit_on_printing IS NULL THEN general.unit_hours END ) AS ts_project_unit_id
+(CASE WHEN select_item.order_seq = 0 THEN base.unit_days 
+	 WHEN select_item.order_seq = 1 THEN base.unit_hours 
+	 WHEN select_item.order_seq = 2 THEN base.unit_minutes 
+	 WHEN project.unit_on_printing IS NULL THEN base.unit_hours END ) AS ts_project_unit_id
 FROM hr_timesheet_line line 
+JOIN hr_employee timesheet_emp ON timesheet_emp.id = line.employee 
 JOIN businessproject_invoicing_project_log_times_set logset ON logset.log_times_set = line.id
 JOIN businessproject_invoicing_project invproj ON invproj.id = logset.businessproject_invoicing_project
-JOIN project_project_task project ON project.id = invproj.project_task
-JOIN auth_user timesheet_user ON timesheet_user.id = line.user_id
+JOIN project_project project ON project.id = invproj.project
 JOIN base_product product ON product.id = line.product
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 LEFT JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
-JOIN base_general general ON general.id = 1
+JOIN studio_app_base base ON base.id = 1
 JOIN base_unit product_unit ON product_unit.id = product.unit
 WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
         </oda-data-set>
@@ -1813,14 +1813,14 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT conv.coef, conv.start_unit, conv.end_unit, invproj.invoice
 FROM base_unit_conversion conv, businessproject_invoicing_project invproj
-JOIN base_general general ON general.id = 1
-JOIN project_project_task project ON project.id = invproj.project_task
-JOIN base_unit raw_unit ON raw_unit.id = general.unit_hours
+JOIN studio_app_base base ON base.id = 1
+JOIN project_project project ON project.id = invproj.project
+JOIN base_unit raw_unit ON raw_unit.id = base.unit_hours
 JOIN meta_select mselect ON (mselect.name = 'hr.time.logging.preference.select')
 JOIN meta_select_item select_item ON select_item.select_id = mselect.id AND select_item.value = project.unit_on_printing
-JOIN base_unit project_unit ON project_unit.id = (CASE WHEN select_item.order_seq = 0 THEN general.unit_days 
-	 WHEN select_item.order_seq = 1 THEN general.unit_hours 
-	 WHEN select_item.order_seq = 2 THEN general.unit_minutes END )
+JOIN base_unit project_unit ON project_unit.id = (CASE WHEN select_item.order_seq = 0 THEN base.unit_days 
+	 WHEN select_item.order_seq = 1 THEN base.unit_hours 
+	 WHEN select_item.order_seq = 2 THEN base.unit_minutes END )
 WHERE ((conv.start_unit = raw_unit.id AND conv.end_unit = project_unit.id ) 
 OR (conv.start_unit = project_unit.id AND conv.end_unit = raw_unit.id))
 AND (invproj.invoice IN (@INJECTID))]]></xml-property>
@@ -1859,7 +1859,6 @@ AND (invproj.invoice IN (@INJECTID))]]></xml-property>
                 </structure>
             </list-property>
             <list-property name="filter"/>
-            <list-property name="parameters"/>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -2704,23 +2703,18 @@ WHERE invproj.invoice IN (@INJECTID)]]></xml-property>
                                 <cell id="3350">
                                     <property name="colSpan">3</property>
                                     <property name="rowSpan">1</property>
-                                    <text id="4497">
-                                        <property name="fontSize">8pt</property>
+                                    <image id="5376">
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                             </structure>
                                         </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                                    </text>
+                                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                        <property name="source">file</property>
+                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                                    </image>
                                 </cell>
                                 <cell id="3352"/>
                                 <cell id="3354">

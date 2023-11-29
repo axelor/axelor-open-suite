@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
+
+  <entity name="BankStatementQuery">
+
+    <string name="name" required="true" title="Name"/>
+    <string name="query" title="Test function" required="true" large="true"
+      help="Legend for dynamic parameter manage in bank payment config : %amt+ for a tolerance of +X% on amount, %amt- for -X%, %date for a tolerance of + or - X days"/>
+    <integer name="ruleTypeSelect" title="Rule type"
+      selection="bank.payment.bank.statement.rule.rule.type.select" default="0" required="true"/>
+    <integer name="confidenceIndex" title="Confidence index"
+      selection="bank.payment.bank.statement.query.confidence.index.select" default="1"
+      help="Field indicating the confidence index for automatic reconcile. Green dot means 'Equal amount and date in range', orange dot means 'Equal amount and date out of range', red dot means 'Amount and date in range'"/>
+    <integer name="sequence" title="Sequence"/>
+
+    <finder-method name="findByRuleTypeSelect" using="ruleTypeSelect"
+      orderBy="sequence" all="true"/>
+
+    <extra-code><![CDATA[
+    // CONFIDENCE INDEX
+    public static final int CONFIDENCE_INDEX_GREEN = 1;
+    public static final int CONFIDENCE_INDEX_ORANGE = 2;
+    public static final int CONFIDENCE_INDEX_RED = 3;
+
+  ]]></extra-code>
+  </entity>
+</domain-models>

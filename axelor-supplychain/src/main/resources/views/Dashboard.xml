@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <dashboard name="supplychain.products.dashboard.view.1" title="Products DB 1">
     <dashlet action="dashlet.nbr.product.per.family" height="350"/>
@@ -29,8 +29,7 @@
   <action-view name="dashlet.product.launches.withdrawal.each.month"
     title="Product launches/withdrawal each month" model="com.axelor.apps.base.db.Product">
     <view type="chart" name="chart.product.launches.withdrawal.each.month"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.nbr.product.per.family"

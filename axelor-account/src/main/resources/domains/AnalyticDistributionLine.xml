@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticDistributionLine" lang="java">
+  <entity name="AnalyticDistributionLine">
 
     <many-to-one name="analyticDistributionTemplate"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"
@@ -15,7 +15,7 @@
       title="Axis"/>
     <many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount"
       title="Analytic Acc."/>
-    <decimal name="percentage" title="%"/>
+    <decimal name="percentage" title="%" default="100"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal"
       title="Analytic Journal" required="true"/>
 

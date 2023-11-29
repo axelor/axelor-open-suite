@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="raw-material-requirement-grid" title="Raw material requirement"
     model="com.axelor.apps.production.db.RawMaterialRequirement">
     <field name="code" width="120"/>
     <field name="name"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="duration"/>
   </grid>
 
@@ -26,7 +26,7 @@
     </panel>
     <panel name="actionsPanel" sidebar="true">
       <button name="exportBtn" title="Print" icon="fa-print"
-        onClick="save,action-product-need-report-method-print"/>
+        onClick="save,action-method-print-birt"/>
     </panel>
   </form>
 
@@ -38,16 +38,11 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
-  <action-method name="action-product-need-report-method-print">
-    <call class="com.axelor.apps.production.web.RawMaterialRequirementController"
-      method="print"/>
-  </action-method>
-
   <search-filters name="raw-material-requirement-filters"
     model="com.axelor.apps.production.db.RawMaterialRequirement"
     title="Raw material requirement filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

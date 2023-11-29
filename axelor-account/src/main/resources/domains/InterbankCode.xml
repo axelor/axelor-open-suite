@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="InterbankCode" lang="java" cacheable="true">
+  <entity name="InterbankCode" cacheable="true">
 
     <string name="code" title="Code" required="true" unique="true"/>
     <string name="name" title="Name" required="true"/>
@@ -14,6 +14,14 @@
     <integer name="typeSelect" title="Type" selection="account.interbankcode.type.select"/>
     <one-to-many name="interbankCodeLineList" ref="InterbankCodeLine"
       mappedBy="interbankCode" title="Rejects/Return Reason Code List"/>
+
+    <extra-code><![CDATA[
+
+	   // TYPE SELECT
+		public static final int TYPE_OPERATION_CODE = 1;
+		public static final int TYPE_REJECT_RETURN_CODE = 2;
+
+	]]></extra-code>
 
   </entity>
 

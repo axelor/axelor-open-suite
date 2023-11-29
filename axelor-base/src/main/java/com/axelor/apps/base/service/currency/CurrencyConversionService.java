@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.currency;
 
-import com.axelor.apps.base.db.AppBase;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
+import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -30,6 +31,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPResponse;
@@ -166,6 +168,32 @@ public abstract class CurrencyConversionService {
     ccl.setVariations(variations);
     cclRepo.save(ccl);
   }
+
+  /**
+   * Getting rate of currencyFrom in terms of currencyTo.
+   *
+   * <p>Example: 1 EUR = x USD
+   *
+   * @param currencyFrom
+   * @param currencyTo
+   * @return Pair of rate with the respective date.
+   */
+  public abstract Pair<LocalDate, BigDecimal> getRateWithDate(
+      Currency currencyFrom, Currency currencyTo)
+      throws MalformedURLException, JSONException, AxelorException;
+
+  /**
+   * Validate the response and get the rate.
+   *
+   * @param dayCount
+   * @param currencyFrom
+   * @param currencyTo
+   * @param date
+   * @return Pair of rate with the respective date.
+   */
+  public abstract Pair<LocalDate, Float> validateAndGetRateWithDate(
+      int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
+      throws AxelorException;
 
   @Transactional
   public void saveCurrencyConversionLine(CurrencyConversionLine ccl) {

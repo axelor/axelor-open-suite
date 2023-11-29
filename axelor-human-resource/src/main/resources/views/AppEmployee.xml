@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-employee-config-form" title="Employees management"
-    model="com.axelor.apps.base.db.AppEmployee" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppEmployee" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="advanceManagement" colSpan="3" widget="boolean-switch"/>
       <field name="payrollPreparation" colSpan="3" widget="boolean-switch"/>
       <field name="lunchVoucher" colSpan="3" widget="boolean-switch"/>
       <field name="employeeBonus" colSpan="3" widget="boolean-switch"/>
-      <field name="dailyWorkHours" colSpan="3"/>
+      <field name="isMyHrEnabled" colSpan="3" widget="boolean-switch"/>
+      <field name="isMedicalVisitEnabled" colSpan="3" widget="boolean-switch"/>
     </panel>
     <panel name="configPanel">
       <button name="generateHrConfigurationsBtn" colSpan="4"
