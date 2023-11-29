@@ -168,6 +168,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
             valuesMapByLine.put(lineCode, new HashMap<>());
           }
 
+          accountingReport = this.fetchAccountingReport(accountingReport);
+
           Account account = JPA.find(Account.class, accountId);
           line = JPA.find(AccountingReportConfigLine.class, line.getId());
           column = JPA.find(AccountingReportConfigLine.class, column.getId());
@@ -215,6 +217,8 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
           if (!valuesMapByLine.containsKey(lineCode)) {
             valuesMapByLine.put(lineCode, new HashMap<>());
           }
+
+          accountingReport = this.fetchAccountingReport(accountingReport);
 
           analyticAccount = JPA.find(AnalyticAccount.class, analyticAccount.getId());
           line = JPA.find(AccountingReportConfigLine.class, line.getId());
@@ -660,6 +664,11 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
     List<String> queryList =
         new ArrayList<>(Collections.singletonList("self.move.statusSelect IN :statusList"));
 
+    queryList.add(
+        String.format(
+            "(self.account.id IN %s)",
+            CollectionUtils.isEmpty(accountIdSet) ? "(0)" : ":accountIdSet"));
+
     this.addDateQueries(queryList, accountingReport);
 
     if (accountingReport.getJournal() != null) {
@@ -676,10 +685,6 @@ public class AccountingReportValueMoveLineServiceImpl extends AccountingReportVa
 
     if (accountingReport.getCompany() != null) {
       queryList.add("(self.move.company IS NULL OR self.move.company = :company)");
-    }
-
-    if (CollectionUtils.isNotEmpty(accountIdSet)) {
-      queryList.add("(self.account.id IN :accountIdSet)");
     }
 
     if (!this.areAllAnalyticAccountSetsEmpty(accountingReport, groupColumn, column, line)) {
