@@ -40,6 +40,7 @@ import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -98,6 +99,7 @@ public class PaymentVoucherConfirmService {
   protected CurrencyService currencyService;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermRepository invoiceTermRepository;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public PaymentVoucherConfirmService(
@@ -118,7 +120,8 @@ public class PaymentVoucherConfirmService {
       AccountManagementAccountService accountManagementAccountService,
       CurrencyService currencyService,
       InvoiceTermService invoiceTermService,
-      InvoiceTermRepository invoiceTermRepository) {
+      InvoiceTermRepository invoiceTermRepository,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.reconcileService = reconcileService;
     this.moveCreateService = moveCreateService;
@@ -138,6 +141,7 @@ public class PaymentVoucherConfirmService {
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermRepository = invoiceTermRepository;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -883,10 +887,10 @@ public class PaymentVoucherConfirmService {
     BigDecimal ratio =
         invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
     BigDecimal companyAmountToPay =
-        payVoucherElementToPay
-            .getAmountToPayCurrency()
-            .multiply(ratio)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        currencyScaleServiceAccount.getCompanyScaledValue(
+            payVoucherElementToPay.getPaymentVoucher(),
+            payVoucherElementToPay.getAmountToPayCurrency().multiply(ratio));
+
     BigDecimal currencyRate = invoiceTerm.getMoveLine().getCurrencyRate();
 
     companyAmountToPay =
@@ -895,7 +899,8 @@ public class PaymentVoucherConfirmService {
             moveLineToPay.getAmountRemaining(),
             companyAmountToPay,
             amountToPay,
-            moveLineToPay.getCurrencyRate());
+            moveLineToPay.getCurrencyRate(),
+            moveLineToPay.getMove().getCompany());
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
