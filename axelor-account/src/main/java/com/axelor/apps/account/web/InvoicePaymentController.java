@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
@@ -42,7 +41,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -227,7 +225,6 @@ public class InvoicePaymentController {
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
-      boolean amountError = false;
 
       if (invoiceId > 0) {
         List<InvoiceTerm> invoiceTerms =
@@ -244,7 +241,6 @@ public class InvoicePaymentController {
         if (!invoicePayment.getManualChange()
             || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
           invoicePayment.setAmount(payableAmount);
-          amountError = invoicePayment.getManualChange();
         }
 
         List<Long> invoiceTermIdList =
@@ -265,10 +261,6 @@ public class InvoicePaymentController {
               .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount, amount);
         }
         response.setValues(invoicePayment);
-
-        if (amountError) {
-          response.setInfo(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
-        }
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
