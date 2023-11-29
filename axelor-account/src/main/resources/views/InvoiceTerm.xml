@@ -197,8 +197,10 @@
     <field name="moveLine.origin"/>
     <field name="dueDate"/>
     <field name="paymentAmount"/>
-    <field name="applyFinancialDiscountOnPaymentSession"/>
-    <field name="financialDiscountAmount"/>
+    <field name="applyFinancialDiscountOnPaymentSession"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="amountPaid" aggregate="sum"/>
     <field name="moveLine.partner.name" hidden="true"/>
     <field name="isSelectedOnPaymentSession" hidden="true"/>
