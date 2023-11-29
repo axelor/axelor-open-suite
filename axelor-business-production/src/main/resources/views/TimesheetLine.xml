@@ -66,9 +66,8 @@
 
   <form name="timesheet-line-timesheet-manuf-order-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-    width="large">
+    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-record-set-time-logging-preference-select,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-title-project" width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="date" onChange="action-timesheet-line-validate-date"/>
       <field name="manufOrder" width="200"

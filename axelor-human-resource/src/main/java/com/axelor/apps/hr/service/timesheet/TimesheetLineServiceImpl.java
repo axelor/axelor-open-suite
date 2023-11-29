@@ -185,6 +185,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setProject(project);
     timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
+    timesheetLine.setTimeLoggingPreferenceSelect(timesheet.getTimeLoggingPreferenceSelect());
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
     } catch (AxelorException e) {

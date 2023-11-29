@@ -22,6 +22,8 @@
     <boolean name="invoiced" title="Invoiced" readonly="true"/>
     <string name="fullName" namecolumn="true"></string>
     <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
+    <string name="timeLoggingPreferenceSelect" title="Time logging preference"
+      selection="hr.time.logging.preference.select"/>
 
     <many-to-one name="projectPlanningTime"
       ref="com.axelor.apps.project.db.ProjectPlanningTime"/>

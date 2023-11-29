@@ -116,7 +116,8 @@
           onChange="action-timesheet-group-employee-onchange"
           onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
           canEdit="false" canView="false"/>
-        <field name="timeLoggingPreferenceSelect" readonly="true" hidden="true"/>
+        <field name="timeLoggingPreferenceSelect" readonly="true" hidden="true"
+          onChange="action-timesheet-method-update-duration-and-time-logging-preference"/>
         <field name="employee" hidden="true"/>
         <field if-module="axelor-business-production"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
@@ -592,6 +593,12 @@
   <action-method name="action-timesheet-method-remove-after-to-date-timesheetlines">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="removeAfterToDateTimesheetLines"/>
+  </action-method>
+
+  <action-method
+    name="action-timesheet-method-update-duration-and-time-logging-preference">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="updateDurationAndTimeLoggingPreference"/>
   </action-method>
 
   <action-view name="action-timesheet-view-total-hours-per-day" title="">
