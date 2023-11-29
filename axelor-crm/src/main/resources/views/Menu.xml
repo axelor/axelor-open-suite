@@ -73,7 +73,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.user.id = :_internalUserId"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
@@ -94,7 +93,6 @@
     <domain>self.isContact = false AND self.isProspect = true</domain>
     <context name="_isProspect" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isProspect = true"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -116,7 +114,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = true"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -136,7 +133,6 @@
     <context name="_isProspect" expr="true"/>
     <context name="_domain"
       expr="self.isContact = false AND self.isProspect = true AND self.partnerStatus.isOpen = false"/>
-    <context name="json-enhance" expr="eval:true"/>
     <context name="_isFromCrm" expr="eval:true"/>
   </action-view>
 
@@ -156,7 +152,6 @@
     <domain>self.isContact = false AND self.isCustomer = true</domain>
     <context name="_isCustomer" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isCustomer = true"/>
-    <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
   <menuitem name="crm-root-contacts" parent="crm-root-customer-follow-up" title="Contacts"
