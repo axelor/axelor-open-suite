@@ -87,10 +87,9 @@ public class EquipmentRepository extends JpaRepository<Equipment> {
     }
     EquipmentService equipmentService = Beans.get(EquipmentService.class);
     entity = super.save(entity);
-    if (CollectionUtils.isNotEmpty(entity.getArticleEquipmentList())) {
+    if (CollectionUtils.isNotEmpty(entity.getEquipmentLineList())) {
       try {
-        equipmentService.createAndRealizeStockMovesForArticleEquipments(
-            entity.getArticleEquipmentList());
+        equipmentService.createAndRealizeStockMovesForEquipmentLines(entity.getEquipmentLineList());
       } catch (AxelorException e) {
         throw new PersistenceException(e);
       }

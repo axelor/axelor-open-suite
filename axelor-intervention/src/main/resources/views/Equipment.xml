@@ -65,7 +65,7 @@
       widget="single-select"/>
     <column name="indicator" type="integer" selection="equipment.indicator.select"
       widget="single-select"/>
-    <column name="_inService" type="boolean"/>
+    <column name="_inService" type="string"/>
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.Equipment"
@@ -171,9 +171,9 @@
           </editor>
         </field>
       </panel>
-      <panel-related field="articleEquipmentList" canNew="true"
-        showIf="typeSelect == 'equipment'" grid-view="equipment-article-equipment-grid"
-        form-view="article-equipment-form"/>
+      <panel-related field="equipmentLineList" canNew="true"
+        showIf="typeSelect == 'equipment'" grid-view="equipment-equipment-line-grid"
+        form-view="equipment-line-form"/>
       <!--<panel-dashlet action="action-equipment-view-linked-interventions" title="Linked interventions"
         help="Display all linked interventions by the contract" hidden="true" showIf="typeSelect != 'place'"/> -->
     </panel-tabs>

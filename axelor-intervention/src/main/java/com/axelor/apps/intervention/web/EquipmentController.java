@@ -2,8 +2,8 @@ package com.axelor.apps.intervention.web;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.intervention.db.ArticleEquipment;
 import com.axelor.apps.intervention.db.Equipment;
+import com.axelor.apps.intervention.db.EquipmentLine;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.apps.intervention.service.EquipmentService;
 import com.axelor.db.JPA;
@@ -70,9 +70,9 @@ public class EquipmentController {
                   .map());
         } else if (equipment.getTypeSelect().equals(EquipmentRepository.BARKENE_TYPE_EQUIPMENT)) {
           response.setView(
-              ActionView.define("Article equipment")
-                  .model(ArticleEquipment.class.getName())
-                  .add("form", "article-equipment-form")
+              ActionView.define("Equipment line")
+                  .model(EquipmentLine.class.getName())
+                  .add("form", "equipment-line-form")
                   .param("forceEdit", "true")
                   .context("_showSingle", true)
                   .context("_xEquipmentId", equipment.getId())

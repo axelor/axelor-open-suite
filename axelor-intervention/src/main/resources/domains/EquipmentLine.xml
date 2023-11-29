@@ -5,7 +5,7 @@
 
   <module name="intervention" package="com.axelor.apps.intervention.db"/>
 
-  <entity name="ArticleEquipment">
+  <entity name="EquipmentLine">
     <string name="comments" title="Comments"/>
     <decimal name="quantity" title="Quantity"/>
 
@@ -19,20 +19,21 @@
     <many-to-one name="stockMove" title="Stock move"
       ref="com.axelor.apps.stock.db.StockMove"/>
 
-    <string name="articleEquipmentProductLabel" title="Article equipment Product label"
+    <string name="equipmentLineProductLabel" title="Equipment line Product label"
       readonly="true" search="product,trackingNumber">
       <![CDATA[
-        String articleEquipmentProductLabel = "";
+        String equipmentLineProductLabel = "";
         if (product != null) {
-          articleEquipmentProductLabel = product.getFullName();
+          equipmentLineProductLabel = product.getFullName();
         }
         if (trackingNumber != null) {
-          articleEquipmentProductLabel += " - " + trackingNumber.getTrackingNumberSeq();
+          equipmentLineProductLabel += " - " + trackingNumber.getTrackingNumberSeq();
         }
-	  	return articleEquipmentProductLabel;
+	  	return equipmentLineProductLabel;
 	  	]]>
     </string>
-    <!-- <entity-listener class="com.axelor.apps.barkene.events.BarkeneArticleEquipmentListener"/> -->
+    <entity-listener
+      class="com.axelor.apps.intervention.events.EquipmentLineListener"/>
   </entity>
 
 </domain-models>

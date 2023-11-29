@@ -4,8 +4,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.intervention.db.ArticleEquipment;
 import com.axelor.apps.intervention.db.Equipment;
+import com.axelor.apps.intervention.db.EquipmentLine;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.meta.db.MetaFile;
@@ -41,9 +41,9 @@ public class EquipmentServiceImpl implements EquipmentService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void createAndRealizeStockMovesForArticleEquipments(
-      List<ArticleEquipment> articleEquipments) throws AxelorException {
-    if (CollectionUtils.isEmpty(articleEquipments) || AuthUtils.getUser() == null) {
+  public void createAndRealizeStockMovesForEquipmentLines(List<EquipmentLine> equipmentLines)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(equipmentLines) || AuthUtils.getUser() == null) {
       return;
     }
     Company company = AuthUtils.getUser().getActiveCompany();

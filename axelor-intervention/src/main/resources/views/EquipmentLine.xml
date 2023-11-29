@@ -3,11 +3,11 @@
   xmlns="http://axelor.com/xml/ns/object-views"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid model="com.axelor.apps.intervention.db.ArticleEquipment" title="Articles equipments"
-    name="article-equipment-grid" canNew="false">
+  <grid model="com.axelor.apps.intervention.db.EquipmentLine" title="Equipments lines"
+    name="equipment-line-grid" canNew="false">
     <toolbar>
       <button name="changeEquipment" title="Change equipment"
-        onClick="action-article-equipment-change-equipment"/>
+        onClick="action-equipment-line-change-equipment"/>
     </toolbar>
     <field name="equipment"/>
     <field name="equipment.partner"/>
@@ -17,8 +17,8 @@
     <field name="comments"/>
   </grid>
 
-  <grid model="com.axelor.apps.intervention.db.ArticleEquipment" title="Articles equipments"
-    name="equipment-article-equipment-grid" canNew="false">
+  <grid model="com.axelor.apps.intervention.db.EquipmentLine" title="Equipments lines"
+    name="equipment-equipment-line-grid" canNew="false">
     <field name="product"/>
     <field name="quantity"/>
     <field name="trackingNumber"/>
@@ -26,17 +26,16 @@
     <field name="groupWarrantyExpirationDate"/>
   </grid>
 
-  <form model="com.axelor.apps.intervention.db.ArticleEquipment" title="Article equipment"
-    name="article-equipment-form" width="large"
-    onNew="action-article-equipment-attrs-show-equipment"
-    onLoad="action-article-equipment-attrs-show-equipment,action-article-equipment-method-set-tracking-number-attrs"
+  <form model="com.axelor.apps.intervention.db.EquipmentLine" title="Equipments lines"
+    name="equipment-line-form" width="large" onNew="action-equipment-line-attrs-show-equipment"
+    onLoad="action-equipment-line-attrs-show-equipment,action-equipment-line-method-set-tracking-number-attrs"
     canNew="false">
     <panel name="mainPanel" title="Overview">
       <field name="equipment" hidden="true" colSpan="6" domain="self.typeSelect = 'equipment'"
         grid-view="equipment-grid" form-view="equipment-form"/>
       <field name="equipment.partner" readonly="true"/>
       <field name="product" colSpan="12" grid-view="product-grid" form-view="product-form"
-        required="true" onChange="action-article-equipment-group-product-on-change"/>
+        required="true" onChange="action-equipment-line-group-product-on-change"/>
       <field name="quantity" validIf="quantity > 0"
         readonlyIf="product.trackingNumberConfiguration.generateSaleAutoTrackingNbr"/>
       <field name="trackingNumber" canSelect="false" canNew="true"
@@ -51,33 +50,32 @@
     </panel>
   </form>
 
-  <form title="Change equipment" name="article-equipments-change-equipment-form"
-    model="com.axelor.utils.db.Wizard"
-    onNew="action-article-equipment-change-equipment-attrs-default">
+  <form title="Change equipment" name="equipment-line-change-equipment-form"
+    model="com.axelor.utils.db.Wizard" onNew="action-equipment-line-change-equipment-attrs-default">
     <panel>
       <field name="$_xEquipment" title="Equipment" type="many-to-one"
         target="com.axelor.apps.intervention.db.Equipment" required="true"
         domain="self.typeSelect = 'equipment' AND self.partner = :_xPartner"
         grid-view="equipment-grid" form-view="equipment-form"/>
       <button name="changeEquipmentBtn" title="Change equipment"
-        onClick="action-article-equipment-change-equipment"/>
+        onClick="action-equipment-line-change-equipment"/>
     </panel>
     <panel hidden="true">
       <field name="$_xPartner" type="many-to-one" target="com.axelor.apps.base.db.Partner"/>
     </panel>
   </form>
 
-  <action-attrs name="action-article-equipment-change-equipment-attrs-default">
+  <action-attrs name="action-equipment-line-change-equipment-attrs-default">
     <attribute for="$_xPartner" name="value"
       expr="eval: _ctxPartnerId == null ? null : __repo__(Partner).find(_ctxPartnerId)"/>
   </action-attrs>
 
-  <action-method name="action-article-equipment-change-equipment">
-    <call class="com.axelor.apps.intervention.web.ArticleEquipmentController"
+  <action-method name="action-equipment-line-change-equipment">
+    <call class="com.axelor.apps.intervention.web.EquipmentLineController"
       method="changeEquipment"/>
   </action-method>
 
-  <action-attrs name="action-article-equipment-attrs-show-equipment">
+  <action-attrs name="action-equipment-line-attrs-show-equipment">
     <attribute for="equipment" name="hidden" expr="eval: false"
       if="_xEquipmentId != null || __parent__ == null || __parent__._model != 'com.axelor.apps.intervention.db.Equipment'"/>
     <attribute for="equipment" name="value" expr="eval: __parent__"
@@ -86,30 +84,30 @@
       expr="eval: __repo__(Equipment).find(_xEquipmentId)" if="_xEquipmentId != null"/>
   </action-attrs>
 
-  <action-method name="action-article-equipment-method-set-tracking-number-attrs">
-    <call class="com.axelor.apps.intervention.web.ArticleEquipmentController"
+  <action-method name="action-equipment-line-method-set-tracking-number-attrs">
+    <call class="com.axelor.apps.intervention.web.EquipmentLineController"
       method="setTrackingNumberAttrs"/>
   </action-method>
 
-  <action-group name="action-article-equipment-group-product-on-change">
-    <action name="action-article-equipment-record-set-quantity"/>
-    <action name="action-article-equipment-method-create-tracking-number"/>
-    <action name="action-article-equipment-method-set-tracking-number-attrs"/>
+  <action-group name="action-equipment-line-group-product-on-change">
+    <action name="action-equipment-line-record-set-quantity"/>
+    <action name="action-equipment-line-method-create-tracking-number"/>
+    <action name="action-equipment-line-method-set-tracking-number-attrs"/>
   </action-group>
 
-  <action-record name="action-article-equipment-record-set-quantity"
-    model="com.axelor.apps.intervention.db.ArticleEquipment">
+  <action-record name="action-equipment-line-record-set-quantity"
+    model="com.axelor.apps.intervention.db.EquipmentLine">
     <field name="quantity" expr="eval: 1"
       if="product?.trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
   </action-record>
 
-  <action-method name="action-article-equipment-method-create-tracking-number">
-    <call class="com.axelor.apps.intervention.web.ArticleEquipmentController"
+  <action-method name="action-equipment-line-method-create-tracking-number">
+    <call class="com.axelor.apps.intervention.web.EquipmentLineController"
       method="createTrackingNumber"/>
   </action-method>
 
-  <search-filters title="Article equipment filters" name="article-equipment-filters"
-    model="com.axelor.apps.intervention.db.ArticleEquipment">
+  <search-filters title="Equipment line filters" name="equipment-line-filters"
+    model="com.axelor.apps.intervention.db.EquipmentLine">
     <field name="equipment.partner"/>
   </search-filters>
 

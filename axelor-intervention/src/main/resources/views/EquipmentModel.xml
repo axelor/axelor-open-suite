@@ -56,7 +56,7 @@
     <column name="code" type="string"/>
     <column name="name" type="string"/>
     <column name="type" type="string" widget="single-select"/>
-    <column name="_inService" type="boolean"/>
+    <column name="_inService" type="string"/>
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.EquipmentModel"

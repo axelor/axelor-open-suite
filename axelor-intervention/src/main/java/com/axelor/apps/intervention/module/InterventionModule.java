@@ -3,8 +3,8 @@ package com.axelor.apps.intervention.module;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.intervention.db.repo.EquipmentModelRepository;
 import com.axelor.apps.intervention.repo.InterventionEquipmentModelRepository;
-import com.axelor.apps.intervention.service.ArticleEquipmentService;
-import com.axelor.apps.intervention.service.ArticleEquipmentServiceImpl;
+import com.axelor.apps.intervention.service.EquipmentLineService;
+import com.axelor.apps.intervention.service.EquipmentLineServiceImpl;
 import com.axelor.apps.intervention.service.EquipmentModelService;
 import com.axelor.apps.intervention.service.EquipmentModelServiceImpl;
 import com.axelor.apps.intervention.service.EquipmentService;
@@ -17,7 +17,7 @@ public class InterventionModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(EquipmentService.class).to(EquipmentServiceImpl.class);
-    bind(ArticleEquipmentService.class).to(ArticleEquipmentServiceImpl.class);
+    bind(EquipmentLineService.class).to(EquipmentLineServiceImpl.class);
     bind(ParkModelService.class).to(ParkModelServiceImpl.class);
     bind(EquipmentModelService.class).to(EquipmentModelServiceImpl.class);
     bind(EquipmentModelRepository.class).to(InterventionEquipmentModelRepository.class);
