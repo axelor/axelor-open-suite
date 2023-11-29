@@ -6,6 +6,7 @@ import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -97,7 +98,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
         .map(InvoiceTermPayment::getFinancialDiscountAmount)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .setScale(2, RoundingMode.HALF_UP);
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getFinancialDiscountTaxAmount(
@@ -120,7 +121,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
             })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .setScale(2, RoundingMode.HALF_UP);
+        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected LocalDate getFinancialDiscountDeadlineDate(
