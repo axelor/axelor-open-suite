@@ -87,6 +87,8 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
 import com.axelor.apps.base.service.DMSService;
@@ -390,6 +392,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
+    bind(CurrencyService.class).to(CurrencyServiceImpl.class);
     bind(CurrencyScaleService.class).to(CurrencyScaleServiceImpl.class);
   }
 }
