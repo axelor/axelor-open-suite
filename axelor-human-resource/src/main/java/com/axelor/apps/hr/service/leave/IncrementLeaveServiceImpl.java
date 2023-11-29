@@ -1,5 +1,6 @@
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
@@ -29,6 +30,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   protected LeaveManagementService leaveManagementService;
   protected PublicHolidayHrService publicHolidayHrService;
   protected LeaveLineService leaveLineService;
+  protected LeaveValueProrataService leaveValueProrataService;
 
   @Inject
   public IncrementLeaveServiceImpl(
@@ -39,7 +41,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
       LeaveManagementRepository leaveManagementRepository,
       LeaveManagementService leaveManagementService,
       PublicHolidayHrService publicHolidayHrService,
-      LeaveLineService leaveLineService) {
+      LeaveLineService leaveLineService,
+      LeaveValueProrataService leaveValueProrataService) {
     this.leaveReasonRepository = leaveReasonRepository;
     this.employeeRepository = employeeRepository;
     this.appBaseService = appBaseService;
@@ -48,11 +51,13 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     this.leaveManagementService = leaveManagementService;
     this.publicHolidayHrService = publicHolidayHrService;
     this.leaveLineService = leaveLineService;
+    this.leaveValueProrataService = leaveValueProrataService;
   }
 
   @Transactional
   @Override
-  public void updateEmployeeLeaveLines(LeaveReason leaveReason, Employee employee) {
+  public void updateEmployeeLeaveLines(LeaveReason leaveReason, Employee employee)
+      throws AxelorException {
     List<LeaveLine> leaveLineList = employee.getLeaveLineList();
     LocalDate todayDate = appBaseService.getTodayDate(null);
     int todayMonth = todayDate.getMonthValue();
@@ -109,7 +114,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   }
 
   protected BigDecimal getLeaveManagementValue(
-      LeaveReason leaveReason, Employee employee, LocalDate fromDate, LocalDate toDate) {
+      LeaveReason leaveReason, Employee employee, LocalDate fromDate, LocalDate toDate)
+      throws AxelorException {
     BigDecimal value = leaveReason.getDefaultDayNumberGain();
     WeeklyPlanning weeklyPlanning = employee.getWeeklyPlanning();
     Integer useWeeklyPlanningCoefficientSelect =
@@ -122,9 +128,11 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
 
     switch (useWeeklyPlanningCoefficientSelect) {
       case AppLeaveRepository.USE_WEEKLY_PLANNING_COEFFICIENT_TYPE_ALWAYS:
-        return totalDaysWithPlanningCoef;
+        return leaveValueProrataService.getProratedValue(
+            totalDaysWithPlanningCoef, leaveReason, employee, fromDate, toDate);
       case AppLeaveRepository.USE_WEEKLY_PLANNING_COEFFICIENT_TYPE_NEVER:
-        return totalDaysWithoutPlanningCoef;
+        return leaveValueProrataService.getProratedValue(
+            totalDaysWithoutPlanningCoef, leaveReason, employee, fromDate, toDate);
       default:
       case AppLeaveRepository.USE_WEEKLY_PLANNING_COEFFICIENT_TYPE_CONFIGURABLE:
         if (leaveReason.getUseWeeklyPlanningCoef()) {
@@ -134,8 +142,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
         }
         break;
     }
-
-    return value;
+    return leaveValueProrataService.getProratedValue(
+        value, leaveReason, employee, fromDate, toDate);
   }
 
   protected BigDecimal computeTotalDays(
