@@ -8,6 +8,8 @@
   <entity name="BillOfMaterialImport">
 
     <string name="name" title="Name" required="true"/>
+    <integer name="statusSelect" title="Status" default="1"
+      selection="production.bill.of.material.import.status.select"/>
     <many-to-one name="importSource" title="Import source"
       ref="com.axelor.apps.production.db.BillOfMaterialImportSource" required="true"/>
     <many-to-one name="importMetaFile" title="Import CSV"
@@ -18,6 +20,14 @@
       title="Main bill of material generated" ref="com.axelor.apps.production.db.BillOfMaterial"/>
     <one-to-many name="billOfMaterialImportLineList" title="Results"
       mappedBy="billOfMaterialImport" ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
+
+    <extra-code>
+      <![CDATA[
+	  		public static final int STATUS_DRAFT = 1;
+	  		public static final int STATUS_IMPORTED = 2;
+	  		public static final int STATUS_VALIDATED = 3;
+	  ]]>
+    </extra-code>
 
   </entity>
 </domain-models>

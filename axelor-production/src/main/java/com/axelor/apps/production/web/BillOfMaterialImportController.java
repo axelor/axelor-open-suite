@@ -21,6 +21,7 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.production.db.BillOfMaterialImport;
+import com.axelor.apps.production.db.repo.BillOfMaterialImportRepository;
 import com.axelor.apps.production.service.bomimport.BillOfMaterialImportService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -35,18 +36,39 @@ import org.apache.commons.io.FileUtils;
 @Singleton
 public class BillOfMaterialImportController {
 
-  public void run(ActionRequest request, ActionResponse response)
+  public void runImport(ActionRequest request, ActionResponse response)
       throws IOException, AxelorException {
 
     BillOfMaterialImport billOfMaterialImport =
         request.getContext().asType(BillOfMaterialImport.class);
 
-    ImportHistory importHistory =
-        Beans.get(BillOfMaterialImportService.class).processImport(billOfMaterialImport);
+    BillOfMaterialImportService billOfMaterialImportService =
+        Beans.get(BillOfMaterialImportService.class);
+
+    ImportHistory importHistory = billOfMaterialImportService.processImport(billOfMaterialImport);
 
     File readFile = MetaFiles.getPath(importHistory.getLogMetaFile()).toFile();
     response.setNotify(
         FileUtils.readFileToString(readFile, StandardCharsets.UTF_8)
             .replaceAll("(\r\n|\n\r|\r|\n)", "<br />"));
+
+    billOfMaterialImportService.setStatusToImported(billOfMaterialImport);
+    response.setReload(true);
+  }
+
+  public void createBoMFromImport(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    BillOfMaterialImportService billOfMaterialImportService =
+        Beans.get(BillOfMaterialImportService.class);
+
+    BillOfMaterialImport billOfMaterialImport =
+        Beans.get(BillOfMaterialImportRepository.class)
+            .find(request.getContext().asType(BillOfMaterialImport.class).getId());
+
+    billOfMaterialImportService.createBoMFromImport(billOfMaterialImport);
+
+    billOfMaterialImportService.setStatusToValidated(billOfMaterialImport);
+    response.setReload(true);
   }
 }

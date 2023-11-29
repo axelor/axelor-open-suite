@@ -17,6 +17,8 @@
     <string name="mark" title="Mark"/>
     <many-to-one name="parent" title="Parent"
       ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
+    <one-to-many name="billOfMaterialImportLineList" title="Content lines"
+      ref="com.axelor.apps.production.db.BillOfMaterialImportLine" mappedBy="parent"/>
     <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
     <many-to-one name="description" title="Description"
       ref="com.axelor.meta.db.MetaFile"/>

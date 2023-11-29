@@ -346,4 +346,7 @@ public final class ProductionExceptionMessage {
 
   public static final String BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY = /*$$(*/
       "Parents are not done properly in input file." /*)*/;
+
+  public static final String BOM_IMPORT_NO_MAIN_BILL_OF_MATERIAL_GENERATED = /*$$(*/
+      "Could not find main bill of material generated (BoM level 0)." /*)*/;
 }

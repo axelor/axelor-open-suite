@@ -20,10 +20,21 @@ package com.axelor.apps.production.service.bomimport;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialImport;
+import com.google.inject.persist.Transactional;
 import java.io.IOException;
 
 public interface BillOfMaterialImportService {
   ImportHistory processImport(BillOfMaterialImport billOfMaterialImport)
       throws AxelorException, IOException;
+
+  @Transactional
+  BillOfMaterialImport setStatusToImported(BillOfMaterialImport billOfMaterialImport);
+
+  BillOfMaterial createBoMFromImport(BillOfMaterialImport billOfMaterialImport)
+      throws AxelorException;
+
+  @Transactional
+  BillOfMaterialImport setStatusToValidated(BillOfMaterialImport billOfMaterialImport);
 }
