@@ -3,11 +3,11 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem name="client-park-root" title="Client Park" order="-115"
+  <menuitem name="assets-management-root" title="Assets management" order="-115"
     if="__config__.app.isApp('intervention')" icon-background="grey" icon="fa-wrench" left="true"/>
 
-  <menuitem name="client-park-root-equipment-tree" title="Equipments tree"
-    parent="client-park-root" icon-background="grey" icon="fa-sitemap" left="true"
+  <menuitem name="assets-management-root-equipment-tree" title="Equipments tree"
+    parent="assets-management-root" icon-background="grey" icon="fa-sitemap" left="true"
     action="action.equipment.view.equipment.tree" order="1"/>
 
   <action-view name="action.equipment.view.equipment.tree" title="Equipments tree"
@@ -17,9 +17,9 @@
     <context name="_showSingle" expr="true"/>
   </action-view>
 
-  <menuitem name="client-park-root-equipment" title="Equipments" parent="client-park-root"
-    icon-background="grey" icon="fa-microchip" left="true" action="action.equipment.view.equipment"
-    order="2"/>
+  <menuitem name="assets-management-root-equipment" title="Equipments"
+    parent="assets-management-root" icon-background="grey" icon="fa-microchip" left="true"
+    action="action.equipment.view.equipment" order="2"/>
 
   <action-view name="action.equipment.view.equipment" title="Equipments"
     model="com.axelor.apps.intervention.db.Equipment">
@@ -28,8 +28,8 @@
     <view-param name="search-filters" value="equipment-filters"/>
   </action-view>
 
-  <menuitem name="client-park-root-equipment-line" title="Equipment lines"
-    parent="client-park-root" icon-background="grey" icon="fa-qrcode" left="true"
+  <menuitem name="assets-management-root-equipment-line" title="Equipment lines"
+    parent="assets-management-root" icon-background="grey" icon="fa-qrcode" left="true"
     action="action.equipment.view.equipment.line" order="3"/>
 
   <action-view name="action.equipment.view.equipment.line" title="Equipment lines"
@@ -39,8 +39,8 @@
     <view-param name="search-filters" value="equipment-line-filters"/>
   </action-view>
 
-  <menuitem name="client-park-root-park-model" title="Park models"
-    parent="client-park-root" icon-background="grey" icon="fa-qrcode" left="true"
+  <menuitem name="assets-management-root-park-model" title="Park models"
+    parent="assets-management-root" icon-background="grey" icon="fa-qrcode" left="true"
     action="action.equipment.view.equipment.model" order="4"/>
 
   <action-view name="action.equipment.view.equipment.model" title="Park models"
@@ -49,11 +49,11 @@
     <view type="form" name="park-model-form"/>
   </action-view>
 
-  <menuitem name="client-park-root-conf" title="Configuration" parent="client-park-root"
-    icon-background="grey" icon="fa-cogs" order="99"/>
+  <menuitem name="assets-management-root-conf" title="Configuration"
+    parent="assets-management-root" icon-background="grey" icon="fa-cogs" order="99"/>
 
-  <menuitem name="client-park-root-equipment-families" title="Equipment families"
-    parent="client-park-root-conf" action="action.equipment.view.equipment.families"/>
+  <menuitem name="assets-management-root-equipment-families" title="Equipment families"
+    parent="assets-management-root-conf" action="action.equipment.view.equipment.families"/>
 
   <action-view name="action.equipment.view.equipment.families"
     title="Equipment families" model="com.axelor.apps.intervention.db.EquipmentFamily">
