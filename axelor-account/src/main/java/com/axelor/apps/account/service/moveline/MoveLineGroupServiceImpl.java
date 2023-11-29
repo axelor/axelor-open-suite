@@ -143,6 +143,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
     moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+    moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+    moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
 
     return attrsMap;
   }
@@ -177,6 +179,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
       moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
       moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -201,6 +205,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
       moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
       moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
     }
 
     return attrsMap;

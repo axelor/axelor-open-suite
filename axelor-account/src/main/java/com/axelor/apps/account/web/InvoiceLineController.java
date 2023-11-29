@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -247,6 +248,8 @@ public class InvoiceLineController {
     Context context = request.getContext();
 
     InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     try {
       BigDecimal exTaxPrice = invoiceLine.getPrice();
@@ -259,7 +262,7 @@ public class InvoiceLineController {
                   false,
                   taxLine,
                   exTaxPrice,
-                  Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice()));
+                  Beans.get(CurrencyScaleServiceAccount.class).getScale(invoiceLine)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -268,6 +271,9 @@ public class InvoiceLineController {
   @ErrorException
   public void convertUnitPrice(ActionRequest request, ActionResponse response) {
     InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+
+    Invoice invoice = this.getInvoice(request.getContext());
+    invoiceLine.setInvoice(invoice);
 
     response.setValue("inTaxPrice", Beans.get(InvoiceLineService.class).getInTaxPrice(invoiceLine));
   }
@@ -591,6 +597,17 @@ public class InvoiceLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setScale(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
+      Invoice invoice = this.getInvoice(request.getContext());
+
+      response.setAttrs(Beans.get(InvoiceLineService.class).setScale(invoiceLine, invoice));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

@@ -20,7 +20,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -331,15 +330,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
 
   protected MoveLine getTaxMoveLine(Move move, Account account, TaxLine taxLine, int vatSystem) {
     return move.getMoveLineList().stream()
-        .filter(
-            ml ->
-                moveLineToolService
-                    .isEqualTaxMoveLine(
-                        account,
-                        taxLine,
-                        vatSystem,
-                        null,
-                        ml))
+        .filter(ml -> moveLineToolService.isEqualTaxMoveLine(account, taxLine, vatSystem, null, ml))
         .findFirst()
         .orElse(null);
   }

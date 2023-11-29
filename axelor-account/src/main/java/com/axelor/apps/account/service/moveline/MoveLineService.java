@@ -47,6 +47,8 @@ public interface MoveLineService {
 
   boolean checkManageCutOffDates(MoveLine moveLine);
 
+  boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect);
+
   void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 

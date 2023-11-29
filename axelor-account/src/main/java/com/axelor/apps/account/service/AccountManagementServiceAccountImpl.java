@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -315,41 +314,25 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       Account account = null;
       String error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX;
       if (!isFixedAssets) {
-        if (journal != null
-            && (journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
-                || journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-                || journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER
-                || (journal.getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-                    && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
+        if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
           if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
             account = accountManagement.getSaleTaxVatSystem1Account();
             error =
                 AccountExceptionMessage
                     .ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
-          }
-          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+          } else if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
             account = accountManagement.getSaleTaxVatSystem2Account();
             error =
                 AccountExceptionMessage
                     .ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
           }
-        } else if (journal != null
-                && journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-            || (journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-                && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
+        } else if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
           if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
             account = accountManagement.getPurchaseTaxVatSystem1Account();
             error =
                 AccountExceptionMessage
                     .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
-          }
-          if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
+          } else if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
             account = accountManagement.getPurchaseTaxVatSystem2Account();
             error =
                 AccountExceptionMessage
