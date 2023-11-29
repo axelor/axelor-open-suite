@@ -315,7 +315,7 @@
 "If true, the components will be automatically requested for reservation on planning manufacturing orders.","Si coché, la réservation sera faite automatiquement pour les composants lors de la planification d'ordres de fabrication.",,
 "Image",,,
 "Import",,,
-"Import CSV",,,
+"Import CSV","CSV d'import",,
 "Import source","Source d'import",,
 "Imported","Importé",,
 "Imported bill of material tree","Arbre de la nomenclature importée",,
