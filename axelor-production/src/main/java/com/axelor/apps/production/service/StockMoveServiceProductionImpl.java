@@ -33,6 +33,7 @@ import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
@@ -65,7 +66,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      PfpService pfpService) {
+      PfpService pfpService,
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -86,7 +88,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         partnerSupplychainService,
         fixedAssetRepository,
         stockMoveLineServiceSupplychain,
-        pfpService);
+        pfpService,
+        trackingNumberConfigurationService);
   }
 
   @Override

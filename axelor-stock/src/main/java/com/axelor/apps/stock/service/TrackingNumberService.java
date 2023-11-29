@@ -40,11 +40,23 @@ import java.time.LocalDate;
 
 public class TrackingNumberService {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
+  protected TrackingNumberRepository trackingNumberRepo;
+  protected AppStockService appStockService;
 
-  @Inject private TrackingNumberRepository trackingNumberRepo;
+  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
 
-  @Inject private AppStockService appStockService;
+  @Inject
+  public TrackingNumberService(
+      SequenceService sequenceService,
+      TrackingNumberRepository trackingNumberRepo,
+      AppStockService appStockService,
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+    this.sequenceService = sequenceService;
+    this.trackingNumberRepo = trackingNumberRepo;
+    this.appStockService = appStockService;
+    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public TrackingNumber getTrackingNumber(
@@ -114,7 +126,7 @@ public class TrackingNumberService {
     trackingNumber.setCounter(BigDecimal.ZERO);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
-        product.getTrackingNumberConfiguration();
+        trackingNumberConfigurationService.getTrackingNumberConfiguration(product, company);
 
     if (trackingNumberConfiguration.getSequence() == null) {
       throw new AxelorException(

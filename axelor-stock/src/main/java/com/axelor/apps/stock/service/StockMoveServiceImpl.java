@@ -42,6 +42,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -89,6 +90,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
+  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -101,7 +103,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -112,6 +115,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
+    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
   }
 
   /**
@@ -287,7 +291,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     Product product = stockMoveLine.getProduct();
     stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
 
-    if (product.getTrackingNumberConfiguration() != null) {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        trackingNumberConfigurationService.getTrackingNumberConfiguration(
+            product, stockMove.getCompany());
+    if (trackingNumberConfiguration != null) {
       stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
 
@@ -1298,7 +1305,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  public void setAvailableStatus(StockMove stockMove) {
+  public void setAvailableStatus(StockMove stockMove) throws AxelorException {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       stockMoveLineService.setAvailableStatus(stockMoveLine);

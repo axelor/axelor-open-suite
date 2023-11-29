@@ -19,6 +19,8 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 
 public interface TrackingNumberConfigurationService {
@@ -30,5 +32,8 @@ public interface TrackingNumberConfigurationService {
    * @return true if it is consistent
    */
   public boolean checkSequenceAndBarcodeTypeConfigConsistency(TrackingNumberConfiguration config)
+      throws AxelorException;
+
+  TrackingNumberConfiguration getTrackingNumberConfiguration(Product product, Company company)
       throws AxelorException;
 }

@@ -54,6 +54,7 @@ import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -116,7 +117,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      PfpService pfpService) {
+      PfpService pfpService,
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -127,7 +129,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         productRepository,
         partnerStockSettingsService,
         stockConfigService,
-        appStockService);
+        appStockService,
+        trackingNumberConfigurationService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;

@@ -29,12 +29,15 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -43,12 +46,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ProductionProductStockLocationServiceImpl extends ProductStockLocationServiceImpl {
 
   protected AppProductionService appProductionService;
   protected ManufOrderService manufOrderService;
   protected StockMoveLineRepository stockMoveLineRepository;
+
+  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
 
   @Inject
   public ProductionProductStockLocationServiceImpl(
@@ -64,7 +70,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       AppProductionService appProductionService,
       ManufOrderService manufOrderService,
       StockMoveLineRepository stockMoveLineRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      TrackingNumberConfigurationService trackingNumberConfigurationService) {
     super(
         unitConversionService,
         appSupplychainService,
@@ -79,6 +86,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     this.appProductionService = appProductionService;
     this.manufOrderService = manufOrderService;
     this.stockMoveLineRepository = stockMoveLineRepository;
+    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
   }
 
   @Override
@@ -214,7 +222,8 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     return sumMissingManufOrderQty;
   }
 
-  protected BigDecimal getMissingQtyOfStockMoveLine(StockMoveLine stockMoveLine) {
+  protected BigDecimal getMissingQtyOfStockMoveLine(StockMoveLine stockMoveLine)
+      throws AxelorException {
     if (stockMoveLine.getProduct() != null) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
@@ -226,7 +235,15 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
         return BigDecimal.ZERO;
       } else if (availableQty.compareTo(realQty) < 0
           && availableQtyForProduct.compareTo(realQty) < 0) {
-        if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+
+        TrackingNumberConfiguration trackingNumberConfiguration =
+            trackingNumberConfigurationService.getTrackingNumberConfiguration(
+                stockMoveLine.getProduct(),
+                Optional.ofNullable(stockMoveLine.getStockMove())
+                    .map(StockMove::getCompany)
+                    .orElse(null));
+
+        if (trackingNumberConfiguration != null) {
           return availableQtyForProduct.subtract(realQty);
         } else {
           return availableQty.subtract(realQty);
