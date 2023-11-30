@@ -12,7 +12,8 @@
     <string name="configuratorCreatorName" hidden="true" namecolumn="true"/>
     <string name="attributes" title="Attributes" json="true"/>
     <string name="indicators" title="Indicators" json="true"/>
-    <one-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
+    <one-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      unique="true"/>
 
 
     <extra-code><![CDATA[

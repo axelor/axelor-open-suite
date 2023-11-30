@@ -18,158 +18,399 @@
  */
 package com.axelor.apps.account.service.move.attributes;
 
-import com.axelor.apps.account.db.AccountConfig;
-import com.axelor.apps.account.db.AnalyticAxis;
-import com.axelor.apps.account.db.AnalyticAxisByCompany;
+import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpService;
+import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.auth.db.User;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsServiceImpl implements MoveAttrsService {
 
-  protected AppBaseService appBaseService;
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected MoveInvoiceTermService moveInvoiceTermService;
-  protected MoveRepository moveRepository;
+  protected MoveViewHelperService moveViewHelperService;
+  protected MovePfpService movePfpService;
+  protected AnalyticToolService analyticToolService;
+  protected AnalyticAttrsService analyticAttrsService;
+  protected CompanyRepository companyRepository;
 
   @Inject
   public MoveAttrsServiceImpl(
-      AppBaseService appBaseService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       MoveInvoiceTermService moveInvoiceTermService,
-      MoveRepository moveRepository) {
-    this.appBaseService = appBaseService;
+      MoveViewHelperService moveViewHelperService,
+      MovePfpService movePfpService,
+      AnalyticToolService analyticToolService,
+      AnalyticAttrsService analyticAttrsService,
+      CompanyRepository companyRepository) {
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.moveInvoiceTermService = moveInvoiceTermService;
-    this.moveRepository = moveRepository;
+    this.moveViewHelperService = moveViewHelperService;
+    this.movePfpService = movePfpService;
+    this.analyticToolService = analyticToolService;
+    this.analyticAttrsService = analyticAttrsService;
+    this.companyRepository = companyRepository;
   }
 
-  @Override
-  public Map<String, Map<String, Object>> getHiddenAttributeValues(Move move) {
-    Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> mapResult = new HashMap<>();
-
-    mapResult.put("moveLineList.counter", new HashMap<>());
-    mapResult.put("moveLineList.amountRemaining", new HashMap<>());
-    mapResult.put("moveLineList.reconcileGroup", new HashMap<>());
-    mapResult.put("moveLineList.partner", new HashMap<>());
-
-    mapResult.get("moveLineList.partner").put("hidden", move.getPartner() != null);
-    mapResult
-        .get("moveLineList.counter")
-        .put(
-            "hidden",
-            move.getStatusSelect() == null || move.getStatusSelect() == MoveRepository.STATUS_NEW);
-    mapResult
-        .get("moveLineList.amountRemaining")
-        .put(
-            "hidden",
-            move.getStatusSelect() == null
-                || move.getStatusSelect() == MoveRepository.STATUS_NEW
-                || move.getStatusSelect() == MoveRepository.STATUS_CANCELED
-                || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED);
-    mapResult
-        .get("moveLineList.reconcileGroup")
-        .put(
-            "hidden",
-            move.getStatusSelect() == MoveRepository.STATUS_NEW
-                || move.getStatusSelect() == MoveRepository.STATUS_CANCELED);
-    return mapResult;
-  }
-
-  @Override
-  public boolean isHiddenMoveLineListViewer(Move move) {
-    boolean isHidden = true;
-    if (move.getMoveLineList() != null
-        && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED) {
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (moveLine.getAmountPaid().compareTo(BigDecimal.ZERO) > 0
-            || moveLine.getReconcileGroup() != null) {
-          isHidden = false;
-        }
-      }
+  protected void addAttr(
+      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
+    if (!attrsMap.containsKey(field)) {
+      attrsMap.put(field, new HashMap<>());
     }
-    return isHidden;
+
+    attrsMap.get(field).put(attr, value);
   }
 
   @Override
-  public Map<String, Map<String, Object>> getFunctionalOriginSelectDomain(Move move) {
-    Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> mapResult = new HashMap<>();
-    mapResult.put("functionalOriginSelect", new HashMap<>());
+  public void addHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("moveLineList.partner", "hidden", move.getPartner() != null, attrsMap);
 
+    this.addAttr(
+        "moveLineList.counter",
+        "hidden",
+        move.getStatusSelect() == null || move.getStatusSelect() == MoveRepository.STATUS_NEW,
+        attrsMap);
+
+    this.addAttr(
+        "moveLineList.amountRemaining",
+        "hidden",
+        move.getStatusSelect() == null
+            || move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_CANCELED
+            || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED,
+        attrsMap);
+
+    this.addAttr(
+        "moveLineList.reconcileGroup",
+        "hidden",
+        move.getStatusSelect() == MoveRepository.STATUS_NEW
+            || move.getStatusSelect() == MoveRepository.STATUS_CANCELED,
+        attrsMap);
+  }
+
+  @Override
+  public void addMoveLineListViewerHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean isNotHidden =
+        move.getMoveLineList() != null
+            && move.getStatusSelect() < MoveRepository.STATUS_ACCOUNTED
+            && move.getMoveLineList().stream()
+                .anyMatch(it -> it.getAmountPaid().signum() > 0 || it.getReconcileGroup() != null);
+
+    this.addAttr("$reconcileTags", "hidden", !isNotHidden, attrsMap);
+  }
+
+  @Override
+  public void addFunctionalOriginSelectDomain(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
     String selectionValue = null;
 
     if (move.getJournal() != null) {
       selectionValue =
           Optional.ofNullable(move.getJournal().getAuthorizedFunctionalOriginSelect()).orElse("0");
     }
-    mapResult.get("functionalOriginSelect").put("selection-in", selectionValue);
 
-    return mapResult;
+    this.addAttr("functionalOriginSelect", "selection-in", selectionValue, attrsMap);
   }
 
   @Override
-  public Map<String, Map<String, Object>> getMoveLineAnalyticAttrs(Move move)
+  public void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null) {
+      return;
+    }
+
+    String domain = moveViewHelperService.filterPartner(move.getCompany(), move.getJournal());
+
+    this.addAttr("partner", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || move.getCompany() == null) {
+      return;
+    }
+
+    String domain =
+        String.format(
+            "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
+            move.getCompany().getId());
+
+    this.addAttr("paymentMode", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addPartnerBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Partner partner = move.getPartner();
+    String domain;
+
+    if (partner == null || CollectionUtils.isEmpty(partner.getBankDetailsList())) {
+      domain = "self = NULL";
+    } else {
+      String bankDetailsIds =
+          partner.getBankDetailsList().stream()
+              .map(BankDetails::getId)
+              .map(Object::toString)
+              .collect(Collectors.joining(","));
+
+      domain = String.format("self.id IN (%s) AND self.active IS TRUE", bankDetailsIds);
+    }
+
+    this.addAttr("partnerBankDetails", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addTradingNameDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || move.getCompany() == null) {
+      return;
+    }
+
+    String tradingNameIds =
+        CollectionUtils.isEmpty(move.getCompany().getTradingNameSet())
+            ? "0"
+            : move.getCompany().getTradingNameSet().stream()
+                .map(TradingName::getId)
+                .map(Objects::toString)
+                .collect(Collectors.joining(","));
+
+    String domain = String.format("self.id IN (%s)", tradingNameIds);
+
+    this.addAttr("tradingName", "domain", domain, attrsMap);
+  }
+
+  @Override
+  public void addWizardDefault(LocalDate moveDate, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("isAutomaticReconcile", "value", true, attrsMap);
+    this.addAttr("isAutomaticAccounting", "value", true, attrsMap);
+    this.addAttr("isUnreconcileOriginalMove", "value", true, attrsMap);
+    this.addAttr("isHiddenMoveLinesInBankReconciliation", "value", true, attrsMap);
+    this.addAttr("dateOfReversion", "value", moveDate, attrsMap);
+    this.addAttr(
+        "dateOfReversionSelect",
+        "value",
+        MoveRepository.DATE_OF_REVERSION_ORIGINAL_MOVE_DATE,
+        attrsMap);
+  }
+
+  @Override
+  public void addDueDateHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("dueDate", "hidden", !moveInvoiceTermService.displayDueDate(move), attrsMap);
+  }
+
+  @Override
+  public void addDateChangeTrueValue(Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$dateChange", "value", true, attrsMap);
+  }
+
+  @Override
+  public void addDateChangeFalseValue(
+      Move move, boolean paymentConditionChange, Map<String, Map<String, Object>> attrsMap) {
+    if (moveInvoiceTermService.displayDueDate(move)
+        && (move.getDueDate() == null || paymentConditionChange)) {
+      this.addAttr("$dateChange", "value", false, attrsMap);
+    }
+  }
+
+  @Override
+  public void addPaymentConditionChangeChangeValue(
+      boolean value, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$paymentConditionChange", "value", value, attrsMap);
+  }
+
+  @Override
+  public void addHeaderChangeValue(boolean value, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr("$headerChange", "value", value, attrsMap);
+  }
+
+  @Override
+  public void getPfpAttrs(Move move, User user, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     Objects.requireNonNull(move);
-    Map<String, Map<String, Object>> resultMap = new HashMap<>();
 
-    if (move.getCompany() != null) {
-      AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
-      if (accountConfig != null
-          && appAccountService.getAppAccount().getManageAnalyticAccounting()
-          && accountConfig.getManageAnalyticAccounting()) {
-        AnalyticAxis analyticAxis = null;
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
-          resultMap.put(analyticAxisKey, new HashMap<>());
-          resultMap
-              .get(analyticAxisKey)
-              .put("hidden", !(i <= accountConfig.getNbrOfAnalyticAxisSelect()));
-          for (AnalyticAxisByCompany analyticAxisByCompany :
-              accountConfig.getAnalyticAxisByCompanyList()) {
-            if (analyticAxisByCompany.getSequence() + 1 == i) {
-              analyticAxis = analyticAxisByCompany.getAnalyticAxis();
-            }
-          }
-          if (analyticAxis != null) {
-            resultMap.get(analyticAxisKey).put("title", analyticAxis.getName());
-            analyticAxis = null;
-          }
-        }
-      } else {
-        resultMap.put("moveLineList.analyticDistributionTemplate", new HashMap<>());
-        resultMap.get("moveLineList.analyticDistributionTemplate").put("hidden", true);
-        resultMap.put("moveLineList.analyticMoveLineList", new HashMap<>());
-        resultMap.get("moveLineList.analyticMoveLineList").put("hidden", true);
-        for (int i = 1; i <= 5; i++) {
-          String analyticAxisKey = "moveLineList.axis" + i + "AnalyticAccount";
-          resultMap.put(analyticAxisKey, new HashMap<>());
-          resultMap.get(analyticAxisKey).put("hidden", true);
-        }
-      }
-    }
-    return resultMap;
+    this.addAttr(
+        "passedForPaymentValidationBtn",
+        "hidden",
+        !movePfpService.isPfpButtonVisible(move, user, true),
+        attrsMap);
+    this.addAttr(
+        "refusalToPayBtn",
+        "hidden",
+        !movePfpService.isPfpButtonVisible(move, user, false),
+        attrsMap);
+    this.addAttr(
+        "pfpValidatorUser", "hidden", !movePfpService.isValidatorUserVisible(move), attrsMap);
   }
 
   @Override
-  public boolean isHiddenDueDate(Move move) {
+  public void addMassEntryHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
 
-    return !moveInvoiceTermService.displayDueDate(move);
+    if (move.getJournal() != null) {
+      boolean technicalTypeSelectIsNotNull =
+          move.getJournal().getJournalType() != null
+              && move.getJournal().getJournalType().getTechnicalTypeSelect() != null;
+      boolean isSameCurrency =
+          move.getCompany() != null && move.getCompany().getCurrency() == move.getCurrency();
+
+      this.addAttr(
+          "moveLineMassEntryList.originDate",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                  || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
+          attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.origin",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                  || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
+          attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.movePaymentMode",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER,
+          attrsMap);
+      this.addAttr("moveLineMassEntryList.currencyRate", "hidden", isSameCurrency, attrsMap);
+      this.addAttr("moveLineMassEntryList.currencyAmount", "hidden", isSameCurrency, attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.movePfpValidatorUser",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,
+          attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.cutOffStartDate",
+          "hidden",
+          !move.getMassEntryManageCutOff(),
+          attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.cutOffEndDate",
+          "hidden",
+          !move.getMassEntryManageCutOff(),
+          attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.deliveryDate",
+          "hidden",
+          !move.getMassEntryManageCutOff()
+              && technicalTypeSelectIsNotNull
+              && (move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
+                  || move.getJournal().getJournalType().getTechnicalTypeSelect()
+                      == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
+          attrsMap);
+    }
+  }
+
+  @Override
+  public void addMassEntryPaymentConditionRequired(
+      Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+
+    this.addAttr(
+        "moveLineMassEntryList.movePaymentCondition",
+        "required",
+        move.getJournal() != null
+            && move.getJournal().getJournalType() != null
+            && move.getJournal().getJournalType().getTechnicalTypeSelect() != null
+            && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                < JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER,
+        attrsMap);
+  }
+
+  @Override
+  public void addMassEntryBtnHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+
+    this.addAttr(
+        "controlMassEntryMoves",
+        "hidden",
+        move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_VALIDATED,
+        attrsMap);
+    this.addAttr("validateMassEntryMoves", "hidden", true, attrsMap);
+  }
+
+  @Override
+  public void addPartnerRequired(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+    this.addAttr("partner", "required", isPartnerRequired(move.getJournal()), attrsMap);
+  }
+
+  @Override
+  public void addMainPanelTabHiddenValue(Move move, Map<String, Map<String, Object>> attrsMap) {
+    Objects.requireNonNull(move);
+
+    this.addAttr(
+        "$mainPanelTabHidden",
+        "value",
+        move.getJournal() == null
+            || (isPartnerRequired(move.getJournal()) && move.getPartner() == null),
+        attrsMap);
+  }
+
+  protected boolean isPartnerRequired(Journal journal) {
+    return journal != null
+        && journal.getJournalType() != null
+        && (journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+            || journal.getJournalType().getTechnicalTypeSelect()
+                == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE);
+  }
+
+  @Override
+  public void addSubrogationPartnerReadonly(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean isReadonly =
+        move.getMoveLineList().stream()
+            .map(MoveLine::getInvoiceTermList)
+            .filter(CollectionUtils::isNotEmpty)
+            .flatMap(Collection::stream)
+            .allMatch(InvoiceTerm::getIsPaid);
+
+    this.addAttr("subrogationPartner", "readonly", isReadonly, attrsMap);
+  }
+
+  @Override
+  public void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
+    String companyIds =
+        companyRepository.all().filter("self.accountConfig IS NOT NULL").fetch().stream()
+            .map(Company::getId)
+            .map(Objects::toString)
+            .collect(Collectors.joining(","));
+
+    String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
+
+    this.addAttr("company", "domain", domain, attrsMap);
   }
 }

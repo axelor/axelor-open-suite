@@ -30,12 +30,15 @@ import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.AdjustHistoryService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.db.Query;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import javax.inject.Singleton;
+import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -61,7 +64,27 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     this.moveRemoveService = moveRemoveService;
   }
 
-  public void close(Period period) throws AxelorException {
+  @Override
+  public void close(Period period) {
+    try {
+      this.processClosePeriod(period);
+    } catch (Exception e) {
+      resetStatus(period);
+      TraceBackService.trace(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void resetStatus(Period period) {
+
+    Period periodBDD = periodRepo.find(period.getId());
+    super.resetStatusSelect(periodBDD);
+    periodRepo.save(periodBDD);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void processClosePeriod(Period period) throws AxelorException {
     if (period.getYear().getTypeSelect() == YearRepository.TYPE_FISCAL) {
       moveValidateService.accountingMultiple(
           getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_DAYBOOK));
@@ -71,6 +94,7 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
         getMoveListByPeriodAndStatusQuery(period, MoveRepository.STATUS_NEW).fetch());
 
     period = periodRepo.find(period.getId());
+
     super.close(period);
   }
 
@@ -143,10 +167,12 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
 
   @Override
   public boolean isAuthorizedToAccountOnPeriod(Move move, User user) throws AxelorException {
-    if (move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
+    if (move.getCompany() == null
+        || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_OPENING
         || move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE) {
       return true;
     }
+
     return isAuthorizedToAccountOnPeriod(move.getPeriod(), user);
   }
 

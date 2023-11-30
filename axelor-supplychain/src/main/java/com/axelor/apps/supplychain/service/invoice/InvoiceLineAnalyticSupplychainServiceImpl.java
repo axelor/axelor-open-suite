@@ -19,37 +19,47 @@
 package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.utils.service.ListToolService;
 import com.google.inject.Inject;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
-public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyticServiceImpl {
+public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyticServiceImpl
+    implements InvoiceLineAnalyticSupplychainService {
+
+  protected AnalyticLineModelService analyticLineModelService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public InvoiceLineAnalyticSupplychainServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListToolService listToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticLineModelService analyticLineModelService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     super(
         analyticAccountRepository,
-        accountAnalyticRulesRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
         listToolService,
         appAccountService);
+    this.analyticLineModelService = analyticLineModelService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -61,5 +71,33 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       analyticMoveLine.setPurchaseOrderLine(invoiceLine.getPurchaseOrderLine());
     }
     return analyticMoveLineList;
+  }
+
+  @Override
+  public void setInvoiceLineAnalyticInfo(
+      InvoiceLine invoiceLine, Invoice invoice, AnalyticLineModel analyticLineModel) {
+    if (analyticLineModel.getAnalyticDistributionTemplate() != null
+        || CollectionUtils.isNotEmpty(analyticLineModel.getAnalyticMoveLineList())) {
+      analyticLineModelService.setInvoiceLineAnalyticInfo(analyticLineModel, invoiceLine);
+
+      this.copyAnalyticMoveLines(analyticLineModel.getAnalyticMoveLineList(), invoiceLine);
+      this.computeAnalyticDistribution(invoiceLine);
+    }
+  }
+
+  protected void copyAnalyticMoveLines(
+      List<AnalyticMoveLine> originalAnalyticMoveLineList, InvoiceLine invoiceLine) {
+    if (originalAnalyticMoveLineList == null) {
+      return;
+    }
+
+    for (AnalyticMoveLine originalAnalyticMoveLine : originalAnalyticMoveLineList) {
+      AnalyticMoveLine analyticMoveLine =
+          analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
+
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE);
+
+      invoiceLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
   }
 }

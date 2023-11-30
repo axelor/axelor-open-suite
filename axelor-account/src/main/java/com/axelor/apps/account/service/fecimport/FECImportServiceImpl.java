@@ -126,7 +126,7 @@ public class FECImportServiceImpl implements FECImportService {
 
       if (CollectionUtils.isNotEmpty(reconcileList)
           && reconcileGroupService.isBalanced(reconcileList)) {
-        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
+        reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_BALANCED);
       } else {
         LocalDateTime todayDateTime =
             Beans.get(AppBaseService.class)
@@ -136,7 +136,7 @@ public class FECImportServiceImpl implements FECImportService {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
           reconcileGroup.setUnletteringDateTime(todayDateTime);
         } else {
-          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+          reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_PARTIAL);
           reconcileGroup.setLetteringDateTime(todayDateTime);
         }
       }

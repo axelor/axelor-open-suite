@@ -31,8 +31,6 @@ public class InventoryLinePutRequest extends RequestStructure {
 
   private String description;
 
-  public InventoryLinePutRequest() {}
-
   public BigDecimal getRealQty() {
     return realQty;
   }

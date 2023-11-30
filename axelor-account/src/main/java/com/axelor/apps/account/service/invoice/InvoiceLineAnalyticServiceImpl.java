@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -46,7 +45,6 @@ import org.apache.commons.collections.CollectionUtils;
 public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticService {
 
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected AccountConfigService accountConfigService;
@@ -56,14 +54,12 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   @Inject
   public InvoiceLineAnalyticServiceImpl(
       AnalyticAccountRepository analyticAccountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListToolService listToolService,
       AppAccountService appAccountService) {
     this.analyticAccountRepository = analyticAccountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
@@ -86,6 +82,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
             invoice.getPartner(),
             invoiceLine.getProduct(),
             invoice.getCompany(),
+            invoice.getTradingName(),
+            invoiceLine.getAccount(),
             InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

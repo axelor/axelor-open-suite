@@ -19,7 +19,6 @@
 package com.axelor.apps.cash.management.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.cash.management.db.repo.CashManagementForecastGeneratorRepository;
 import com.axelor.apps.cash.management.db.repo.CashManagementForecastRecapRepository;
 import com.axelor.apps.cash.management.db.repo.CashManagementForecastRepository;
@@ -30,20 +29,15 @@ import com.axelor.apps.cash.management.service.CashManagementChartService;
 import com.axelor.apps.cash.management.service.CashManagementChartServiceImpl;
 import com.axelor.apps.cash.management.service.ForecastRecapService;
 import com.axelor.apps.cash.management.service.ForecastRecapServiceImpl;
-import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentService;
-import com.axelor.apps.cash.management.service.InvoiceEstimatedPaymentServiceImpl;
-import com.axelor.apps.cash.management.service.InvoiceServiceManagementImpl;
 
 public class CashManagementModule extends AxelorModule {
 
   @Override
   protected void configure() {
     bind(ForecastRecapRepository.class).to(CashManagementForecastRecapRepository.class);
-    bind(InvoiceServiceProjectImpl.class).to(InvoiceServiceManagementImpl.class);
     bind(ForecastGeneratorRepository.class).to(CashManagementForecastGeneratorRepository.class);
     bind(ForecastRepository.class).to(CashManagementForecastRepository.class);
     bind(ForecastRecapService.class).to(ForecastRecapServiceImpl.class);
-    bind(InvoiceEstimatedPaymentService.class).to(InvoiceEstimatedPaymentServiceImpl.class);
     bind(CashManagementChartService.class).to(CashManagementChartServiceImpl.class);
   }
 }

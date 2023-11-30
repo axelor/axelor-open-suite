@@ -824,7 +824,7 @@ public class IrrecoverableService {
     BigDecimal prorataRate = null;
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining())
+          (invoice.getRejectMoveLine().getAmountRemaining().abs())
               .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     } else {
       prorataRate =
@@ -874,7 +874,9 @@ public class IrrecoverableService {
             invoice.getMove().getOrigin() + ":" + irrecoverableName,
             invoice.getInvoiceId(),
             invoice.getCompanyBankDetails());
-    move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
+    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : null);
+    }
     int seq = 1;
 
     BigDecimal amount = BigDecimal.ZERO;
@@ -893,7 +895,7 @@ public class IrrecoverableService {
     }
 
     if (isInvoiceReject) {
-      creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
+      creditAmount = invoice.getRejectMoveLine().getAmountRemaining().abs();
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
     }
@@ -928,24 +930,17 @@ public class IrrecoverableService {
             invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-          if (invoiceMoveLine.getAccount().getVatSystemSelect() == null
-              || invoiceMoveLine.getAccount().getVatSystemSelect() == 0) {
+          if (invoiceMoveLine.getVatSystemSelect() == null
+              || invoiceMoveLine.getVatSystemSelect() == 0) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-                invoiceMoveLine.getAccount().getCode());
+                AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX);
           }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   payerPartner,
-                  taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(),
-                      company,
-                      move.getJournal(),
-                      invoiceMoveLine.getAccount().getVatSystemSelect(),
-                      false,
-                      move.getFunctionalOriginSelect()),
+                  invoiceMoveLine.getAccount(),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
@@ -1001,7 +996,7 @@ public class IrrecoverableService {
 
     Company company = moveLine.getMove().getCompany();
     Partner payerPartner = moveLine.getPartner();
-    BigDecimal amount = moveLine.getAmountRemaining();
+    BigDecimal amount = moveLine.getAmountRemaining().abs();
 
     AccountConfig accountConfig = company.getAccountConfig();
 
@@ -1028,8 +1023,9 @@ public class IrrecoverableService {
             originStr,
             moveLine.getDescription(),
             moveLine.getMove().getCompanyBankDetails());
-    move.setOriginDate(moveLine.getMove().getDate());
-
+    if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
+      move.setOriginDate(moveLine.getMove().getDate());
+    }
     int seq = 1;
 
     // Credit MoveLine Customer account (411, 416, ...)
@@ -1344,7 +1340,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }
@@ -1383,7 +1383,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }

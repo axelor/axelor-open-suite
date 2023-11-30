@@ -26,9 +26,12 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -43,19 +46,25 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
       AppBaseService appBaseService,
+      ProjectRepository projectRepository,
       PriceListLineRepository priceListLineRepo,
       PriceListService priceListService,
       PartnerPriceListService partnerPriceListService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      TimesheetLineRepository timesheetLineRepository,
+      AppBusinessProjectService appBusinessProjectService) {
     super(
         projectTaskRepo,
         frequencyRepo,
         frequencyService,
         appBaseService,
+        projectRepository,
         priceListLineRepo,
         priceListService,
+        partnerPriceListService,
         productCompanyService,
-        partnerPriceListService);
+        timesheetLineRepository,
+        appBusinessProjectService);
   }
 
   @Override
@@ -85,5 +94,11 @@ public class ProjectTaskBusinessSupportServiceImpl extends ProjectTaskBusinessPr
     task.setInternalDescription(template.getInternalDescription());
 
     return task;
+  }
+
+  @Override
+  public void fillSubtask(ProjectTask projectTask) {
+    super.fillSubtask(projectTask);
+    projectTask.setTargetVersion(projectTask.getParentTask().getTargetVersion());
   }
 }

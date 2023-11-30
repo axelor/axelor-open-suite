@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -31,7 +32,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
-import com.axelor.apps.stock.service.WapHistoryService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -51,7 +51,6 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
       StockRulesService stockRulesService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      WapHistoryService wapHistoryService,
       UnitConversionService unitConversionService,
       AppSupplychainService appSupplychainService,
       StockLocationLineHistoryService stockLocationLineHistoryService) {
@@ -60,29 +59,32 @@ public class StockLocationLineServiceSupplychainImpl extends StockLocationLineSe
         stockRulesService,
         stockMoveLineRepository,
         appBaseService,
-        wapHistoryService,
         unitConversionService,
         stockLocationLineHistoryService);
     this.appSupplychainService = appSupplychainService;
   }
 
   @Override
-  public void checkIfEnoughStock(StockLocation stockLocation, Product product, BigDecimal qty)
+  public void checkIfEnoughStock(
+      StockLocation stockLocation, Product product, Unit unit, BigDecimal qty)
       throws AxelorException {
-    super.checkIfEnoughStock(stockLocation, product, qty);
+    super.checkIfEnoughStock(stockLocation, product, unit, qty);
 
-    if (!appSupplychainService.isApp("supplychain")) {
-      return;
-    }
-    if (appSupplychainService.getAppSupplychain().getManageStockReservation()
+    if (appSupplychainService.isApp("supplychain")
+        && appSupplychainService.getAppSupplychain().getManageStockReservation()
         && product.getStockManaged()) {
       StockLocationLine stockLocationLine = this.getStockLocationLine(stockLocation, product);
-      if (stockLocationLine != null
-          && stockLocationLine
-                  .getCurrentQty()
-                  .subtract(stockLocationLine.getReservedQty())
-                  .compareTo(qty)
-              < 0) {
+      if (stockLocationLine == null) {
+        return;
+      }
+      BigDecimal convertedQty =
+          unitConversionService.convert(
+              unit, stockLocationLine.getUnit(), qty, qty.scale(), product);
+      if (stockLocationLine
+              .getCurrentQty()
+              .subtract(stockLocationLine.getReservedQty())
+              .compareTo(convertedQty)
+          < 0) {
         throw new AxelorException(
             stockLocationLine,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -43,8 +43,7 @@
       <field name="sequenceTypeSelect"/>
       <field name="sequenceLettersTypeSelect" showIf="sequenceTypeSelect == 'LETTERS'"
         requiredIf="sequenceTypeSelect == 'LETTERS'"/>
-      <field name="padding" onChange="action-sequence-method-compute-fullname"
-        showIf="sequenceTypeSelect == 'NUMBERS'"/>
+      <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
       <field name="toBeAdded" showIf="sequenceTypeSelect == 'NUMBERS'"/>
       <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
         onChange="action-sequence-method-compute-fullname"/>
@@ -64,16 +63,20 @@
 
   <grid editable="true" name="sequence-version-grid" title="Versions"
     model="com.axelor.apps.base.db.SequenceVersion" orderBy="-startDate">
-    <field name="startDate"/>
-    <field name="endDate" onChange="action-sequence-version-end-date-onchange-info"/>
+    <field name="startDate" validIf="(startDate &lt; endDate) || (endDate == null)"
+      onChange="action-sequence-version-start-date-onchange-validate"/>
+    <field name="endDate" validIf="(endDate &gt; startDate) || (endDate == null)"
+      onChange="action-sequence-version-form-on-change-date-group"/>
     <field name="nextNum"/>
   </grid>
 
   <form name="sequence-version-form" title="Version"
     model="com.axelor.apps.base.db.SequenceVersion">
     <panel name="mainPanel" itemSpan="4">
-      <field name="startDate"/>
-      <field name="endDate" onChange="action-sequence-version-end-date-onchange-info"/>
+      <field name="startDate" validIf="(startDate &lt; endDate) || (endDate == null)"
+        onChange="action-sequence-version-start-date-onchange-validate"/>
+      <field name="endDate" validIf="(endDate &gt; startDate) || (endDate == null)"
+        onChange="action-sequence-version-form-on-change-date-group"/>
       <field name="nextNum"/>
     </panel>
   </form>
@@ -87,6 +90,12 @@
   <action-group name="action-sequence-group-onsave">
     <action name="action-sequence-method-is-length-valid"/>
     <action name="action-sequence-validate"/>
+    <action name="action-method-sequence-validate-before-save"/>
+  </action-group>
+
+  <action-group name="action-sequence-version-form-on-change-date-group">
+    <action name="action-sequence-version-end-date-onchange-info"/>
+    <action name="action-sequence-version-end-date-onchange-validate"/>
   </action-group>
 
   <!-- ACTION RECORD -->
@@ -128,6 +137,10 @@
     <call class="com.axelor.apps.base.web.SequenceController" method="getDefaultTitle"/>
   </action-method>
 
+  <action-method name="action-method-sequence-validate-before-save">
+    <call class="com.axelor.apps.base.web.SequenceController" method="validateSequence"/>
+  </action-method>
+
   <action-method name="action-sequence-method-compute-fullname">
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
   </action-method>
@@ -159,6 +172,16 @@
     <info
       message="Changing manually the end date of a sequence which reset yearly or monthly could break the sequence system."
       if="__self__ != null &amp;&amp; (sequence.yearlyResetOk || sequence.monthlyResetOk)"/>
+  </action-validate>
+
+  <action-validate name="action-sequence-version-start-date-onchange-validate">
+    <error if="(endDate &amp;&amp; startDate) &amp;&amp; (startDate &gt; endDate)"
+      message="Start date must be lower than end date"/>
+  </action-validate>
+
+  <action-validate name="action-sequence-version-end-date-onchange-validate">
+    <error if="(startDate &amp;&amp; endDate) &amp;&amp; (endDate &lt; startDate)"
+      message="End date must be greater than start date"/>
   </action-validate>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"

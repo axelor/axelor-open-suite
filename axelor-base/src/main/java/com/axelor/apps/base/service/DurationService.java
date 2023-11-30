@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Duration;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,5 +26,7 @@ import java.time.LocalDate;
 public interface DurationService {
   LocalDate computeDuration(Duration duration, LocalDate date);
 
-  BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration);
+  BigDecimal computeRatio(LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd);
+
+  BigDecimal getFactor(int durationType) throws AxelorException;
 }

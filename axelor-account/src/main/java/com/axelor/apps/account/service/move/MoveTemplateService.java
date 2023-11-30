@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -74,6 +75,8 @@ public class MoveTemplateService {
   protected BankDetailsService bankDetailsService;
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected MoveRecordUpdateService moveRecordUpdateService;
 
   protected List<String> exceptionsList;
 
@@ -89,7 +92,9 @@ public class MoveTemplateService {
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       BankDetailsService bankDetailsService,
       MoveTemplateRepository moveTemplateRepo,
-      MoveLineTaxService moveLineTaxService) {
+      MoveLineTaxService moveLineTaxService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      MoveRecordUpdateService moveRecordUpdateService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -102,6 +107,9 @@ public class MoveTemplateService {
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.moveRecordUpdateService = moveRecordUpdateService;
+
     this.exceptionsList = Lists.newArrayList();
   }
 
@@ -202,7 +210,7 @@ public class MoveTemplateService {
                 MoveRepository.TECHNICAL_ORIGIN_TEMPLATE,
                 !ObjectUtils.isEmpty(functionalOriginTab) ? functionalOriginTab[0] : 0,
                 origin,
-                null,
+                moveTemplate.getDescription(),
                 companyBankDetails);
 
         int counter = 1;
@@ -269,11 +277,14 @@ public class MoveTemplateService {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+            moveRecordUpdateService.updateDueDate(move, false, false);
+
             counter++;
           }
         }
 
-        moveLineTaxService.autoTaxLineGenerate(move, null);
+        moveLineTaxService.autoTaxLineGenerate(move, null, true);
         manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
@@ -380,6 +391,8 @@ public class MoveTemplateService {
             moveLine.setAnalyticDistributionTemplate(
                 moveTemplateLine.getAnalyticDistributionTemplate());
 
+            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+            moveRecordUpdateService.updateDueDate(move, false, false);
             moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
 
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
@@ -401,7 +414,7 @@ public class MoveTemplateService {
         }
 
         move.setDescription(taxLineDescription);
-        moveLineTaxService.autoTaxLineGenerate(move, null);
+        moveLineTaxService.autoTaxLineGenerate(move, null, false);
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());

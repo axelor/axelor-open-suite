@@ -43,4 +43,18 @@ public interface InvoiceTermPfpService {
       BigDecimal grantedAmount,
       PfpPartialReason partialReason)
       throws AxelorException;
+
+  Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
+
+  int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm);
+
+  boolean getUserCondition(User pfpValidatorUser, User user);
+
+  boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);
+
+  void initPftPartialValidation(
+      InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason);
+
+  boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException;
 }

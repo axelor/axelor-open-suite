@@ -125,7 +125,14 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
         purchaseOrderLine.getPurchaseOrder() != null
             ? purchaseOrderLine.getPurchaseOrder().getCompany()
             : null;
-    BigDecimal price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    BigDecimal price;
+
+    if (product != null) {
+      price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    } else {
+      price = purchaseOrderLine.getPrice();
+    }
+
     BigDecimal discountAmount = price;
     int discountTypeSelect = 1;
     if (invoice.getPartner().getChargeBackPurchaseSelect()

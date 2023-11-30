@@ -21,21 +21,16 @@ package com.axelor.apps.sale.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Opportunity;
-import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.db.repo.OpportunityRepository;
-import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
-import java.util.List;
 
 @Singleton
 public class OpportunitySaleOrderController {
@@ -60,21 +55,7 @@ public class OpportunitySaleOrderController {
   public void cancelSaleOrders(ActionRequest request, ActionResponse response) {
     try {
       Opportunity opportunity = request.getContext().asType(Opportunity.class);
-      SaleOrderWorkflowService saleOrderWorkflowService = Beans.get(SaleOrderWorkflowService.class);
-      OpportunityStatus closedLostOpportunityStatus =
-          Beans.get(AppCrmService.class).getClosedLostOpportunityStatus();
-
-      if (opportunity.getOpportunityStatus().equals(closedLostOpportunityStatus)) {
-        List<SaleOrder> saleOrderList = opportunity.getSaleOrderList();
-        if (saleOrderList != null && !saleOrderList.isEmpty()) {
-          for (SaleOrder saleOrder : saleOrderList) {
-            if (saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION
-                || saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-              saleOrderWorkflowService.cancelSaleOrder(saleOrder, null, opportunity.getName());
-            }
-          }
-        }
-      }
+      Beans.get(OpportunitySaleOrderService.class).cancelSaleOrders(opportunity);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

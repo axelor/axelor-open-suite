@@ -19,12 +19,14 @@
 package com.axelor.apps.talent.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.EmployeeFileDMSService;
 import com.axelor.apps.talent.db.JobApplication;
-import com.axelor.apps.talent.db.Skill;
 import com.axelor.apps.talent.db.repo.JobApplicationRepository;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -35,8 +37,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class JobApplicationServiceImpl implements JobApplicationService {
 
@@ -47,36 +48,46 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   protected MetaFiles metaFiles;
 
   protected DMSFileRepository dmsFileRepo;
+  protected AppTalentService appTalentService;
+  protected DMSService dmsService;
+  protected EmployeeFileDMSService employeeFileDMSService;
 
   @Inject
   public JobApplicationServiceImpl(
       JobApplicationRepository jobApplicationRepo,
       AppBaseService appBaseService,
       MetaFiles metaFiles,
-      DMSFileRepository dmsFileRepo) {
+      DMSFileRepository dmsFileRepo,
+      AppTalentService appTalentService,
+      DMSService dmsService,
+      EmployeeFileDMSService employeeFileDMSService) {
     this.jobApplicationRepo = jobApplicationRepo;
     this.appBaseService = appBaseService;
     this.metaFiles = metaFiles;
     this.dmsFileRepo = dmsFileRepo;
+    this.appTalentService = appTalentService;
+    this.dmsService = dmsService;
+    this.employeeFileDMSService = employeeFileDMSService;
   }
 
   @Transactional
   @Override
-  public Employee hire(JobApplication jobApplication) {
-
+  public Employee createEmployeeFromJobApplication(JobApplication jobApplication) {
     Employee employee = createEmployee(jobApplication);
-
-    jobApplication.setStatusSelect(JobApplicationRepository.STATUS_HIRED);
     jobApplication.setEmployee(employee);
-    if (jobApplication.getJobPosition() != null) {
+    jobApplicationRepo.save(jobApplication);
+    hireCandidate(jobApplication);
+    return employee;
+  }
+
+  protected void hireCandidate(JobApplication jobApplication) {
+    if (jobApplication.getJobPosition() != null
+        && jobApplication.getHiringStage()
+            == appTalentService.getAppRecruitment().getHiringStatus()) {
       int nbPeopleHired = jobApplication.getJobPosition().getNbPeopleHired();
       nbPeopleHired += 1;
       jobApplication.getJobPosition().setNbPeopleHired(nbPeopleHired);
     }
-
-    jobApplicationRepo.save(jobApplication);
-
-    return employee;
   }
 
   protected Employee createEmployee(JobApplication jobApplication) {
@@ -84,22 +95,37 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     Employee employee = new Employee();
     employee.setHireDate(appBaseService.getTodayDate(jobApplication.getJobPosition().getCompany()));
     employee.setContactPartner(createContact(jobApplication));
-    Set<Skill> tagSkillSet = new HashSet<Skill>();
-    tagSkillSet.addAll(jobApplication.getSkillSet());
-    employee.setSkillSet(tagSkillSet);
     if (employee.getMainEmploymentContract() != null)
       employee
           .getMainEmploymentContract()
           .setCompanyDepartment(jobApplication.getJobPosition().getCompanyDepartment());
     employee.setName(employee.getContactPartner().getName());
+    convertDmsFileToEmployeeFile(jobApplication, employee);
 
     return employee;
+  }
+
+  protected void convertDmsFileToEmployeeFile(JobApplication jobApplication, Employee employee) {
+    List<DMSFile> dmsFileList =
+        dmsFileRepo
+            .all()
+            .filter(
+                "self.isDirectory = false AND self.relatedId = :relatedModelId AND self.relatedModel = :relatedModelName")
+            .bind("relatedModelId", jobApplication.getId())
+            .bind("relatedModelName", jobApplication.getClass().getName())
+            .fetch();
+
+    for (DMSFile dmsFile : dmsFileList) {
+      employee.addEmployeeFileListItem(
+          employeeFileDMSService.createEmployeeFile(dmsFile, employee));
+    }
   }
 
   protected Partner createContact(JobApplication jobApplication) {
 
     Partner contact = new Partner();
-    contact.setPartnerTypeSelect(2);
+    contact.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    contact.setTitleSelect(jobApplication.getTitleSelect());
     contact.setFirstName(jobApplication.getFirstName());
     contact.setName(jobApplication.getLastName());
     contact.setIsContact(true);
@@ -140,17 +166,12 @@ public class JobApplicationServiceImpl implements JobApplicationService {
   @Override
   @Transactional
   public void setDMSFile(JobApplication jobApplication) {
-    if (jobApplication.getResume() == null) {
-      DMSFile toDelete = dmsFileRepo.find(jobApplication.getResumeId());
-      if (toDelete != null) {
-        metaFiles.delete(toDelete);
-      }
-      jobApplication.setResumeId(null);
-    } else {
-      MetaFile resume = jobApplication.getResume();
-      DMSFile resumeFile = metaFiles.attach(resume, resume.getFileName(), jobApplication);
-      jobApplication.setResumeId(resumeFile.getId());
-    }
+    MetaFile metaFile = jobApplication.getResume();
+    dmsService.setDmsFile(metaFile, jobApplication);
     jobApplicationRepo.save(jobApplication);
+  }
+
+  public String getInlineUrl(JobApplication jobApplication) {
+    return dmsService.getInlineUrl(jobApplication.getDmsFile());
   }
 }

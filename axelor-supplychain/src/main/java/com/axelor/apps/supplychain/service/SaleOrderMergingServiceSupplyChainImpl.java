@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -27,7 +28,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
@@ -128,16 +128,16 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
   }
 
   protected AppSaleService appSaleService;
-  protected AppSupplychainService appSupplyChainService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderMergingServiceSupplyChainImpl(
       SaleOrderCreateService saleOrdreCreateService,
       AppSaleService appSaleService,
-      AppSupplychainService appSupplyChainService) {
+      AppBaseService appBaseService) {
     super(saleOrdreCreateService);
     this.appSaleService = appSaleService;
-    this.appSupplyChainService = appSupplyChainService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -169,7 +169,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     if (appSaleService.isApp("supplychain")) {
       getCommonFields(result).setCommonStockLocation(firstSaleOrder.getStockLocation());
       getCommonFields(result).setCommonIncoterm(firstSaleOrder.getIncoterm());
-      if (appSupplyChainService.getAppSupplychain().getActivatePartnerRelations()) {
+      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         getCommonFields(result).setCommonInvoicedPartner(firstSaleOrder.getInvoicedPartner());
         getCommonFields(result).setCommonDeliveredPartner(firstSaleOrder.getDeliveredPartner());
       }
@@ -194,7 +194,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
         commonFields.setCommonIncoterm(null);
         checks.setExistIncotermDiff(true);
       }
-      if (appSupplyChainService.getAppSupplychain().getActivatePartnerRelations()) {
+      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         if ((commonFields.getCommonInvoicedPartner() == null
                 ^ saleOrder.getInvoicedPartner() == null)
             || (commonFields.getCommonInvoicedPartner() != saleOrder.getInvoicedPartner()

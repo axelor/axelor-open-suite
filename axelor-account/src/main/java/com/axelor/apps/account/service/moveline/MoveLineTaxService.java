@@ -23,10 +23,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
 public interface MoveLineTaxService {
 
-  void autoTaxLineGenerate(Move move, Account account) throws AxelorException;
+  void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException;
+
+  void autoTaxLineGenerateNoSave(Move move) throws AxelorException;
 
   /**
    * Same as method 'autoTaxLineGenerate' but this method will not save the move.
@@ -34,7 +38,8 @@ public interface MoveLineTaxService {
    * @param move
    * @throws AxelorException
    */
-  void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException;
+  void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException;
 
   MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
@@ -45,7 +50,13 @@ public interface MoveLineTaxService {
       MoveLine customerPaymentMoveLine, MoveLine invoiceMoveLine, Reconcile reconcile)
       throws AxelorException;
 
+  boolean isGenerateMoveLineForAutoTax(String accountType);
+
   int getVatSystem(Move move, MoveLine moveline) throws AxelorException;
 
-  void checkTaxMoveLines(Move move) throws AxelorException;
+  void checkDuplicateTaxMoveLines(Move move) throws AxelorException;
+
+  void checkEmptyTaxLines(List<MoveLine> moveLineList) throws AxelorException;
+
+  boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);
 }

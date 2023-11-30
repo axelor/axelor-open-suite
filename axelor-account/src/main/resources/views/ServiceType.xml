@@ -17,8 +17,8 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code"/>
-      <field name="n4dsCode"/>
       <field name="isDas2Declarable"/>
+      <field name="n4dsCode" requiredIf="isDas2Declarable"/>
     </panel>
   </form>
 </object-views>

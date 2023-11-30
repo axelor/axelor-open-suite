@@ -90,6 +90,9 @@ public class AccountingBatchService extends AbstractBatchService {
       case AccountingBatchRepository.ACTION_ACCOUNTING_CUT_OFF:
         batch = accountingCutOff(accountingBatch);
         break;
+      case AccountingBatchRepository.ACTION_AUTO_MOVE_LETTERING:
+        batch = autoMoveLettering(accountingBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -193,6 +196,10 @@ public class AccountingBatchService extends AbstractBatchService {
 
   public Batch accountingCutOff(AccountingBatch accountingBatch) {
     return Beans.get(BatchAccountingCutOff.class).run(accountingBatch);
+  }
+
+  public Batch autoMoveLettering(AccountingBatch accountingBatch) {
+    return Beans.get(BatchAutoMoveLettering.class).run(accountingBatch);
   }
 
   @Transactional

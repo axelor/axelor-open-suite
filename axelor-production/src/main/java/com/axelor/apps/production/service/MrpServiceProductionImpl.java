@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
+import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
@@ -74,6 +75,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -383,7 +385,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .all()
             .filter(
                 "self.product.id in (?1) AND self.stockLocation in (?2) AND self.mrp.mrpTypeSelect = ?3 "
-                    + "AND self.mrp.statusSelect = ?4 AND self.mrpLineType.elementSelect = ?5 AND self.maturityDate >= ?6 AND (?7 is true OR self.maturityDate <= ?8)",
+                    + "AND self.mrp.statusSelect = ?4 AND self.mrpLineType.elementSelect = ?5 AND self.maturityDate >= ?6 AND (?7 is true OR self.maturityDate <= ?8) AND self.mrp.validateScenario is true",
                 this.productMap.keySet(),
                 this.stockLocationList,
                 MrpRepository.MRP_TYPE_MPS,
@@ -474,7 +476,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         return;
       }
 
-      for (BillOfMaterial billOfMaterial : defaultBillOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterial : defaultBillOfMaterial.getBillOfMaterialLineList()) {
 
         Product subProduct = billOfMaterial.getProduct();
 
@@ -514,7 +516,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       for (ProdProcessLine prodProcessLine :
           defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
         totalDuration +=
-            prodProcessLineService.computeEntireCycleDuration(prodProcessLine, reorderQty);
+            prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
       }
     }
     // If days should be rounded to a upper value
@@ -642,15 +644,14 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     this.productMap.put(product.getId(), this.getMaxLevel(product, level));
 
     level = level + 1;
-    if (billOfMaterial.getBillOfMaterialSet() != null
-        && !billOfMaterial.getBillOfMaterialSet().isEmpty()) {
+    if (!CollectionUtils.isEmpty(billOfMaterial.getBillOfMaterialLineList())) {
 
-      for (BillOfMaterial subBillOfMaterial : billOfMaterial.getBillOfMaterialSet()) {
+      for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
 
-        Product subProduct = subBillOfMaterial.getProduct();
+        Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct)) {
-          this.assignProductLevel(subBillOfMaterial, level);
+        if (this.isMrpProduct(subProduct) && billOfMaterialLine.getBillOfMaterial() != null) {
+          this.assignProductLevel(billOfMaterialLine.getBillOfMaterial(), level);
 
           Company company = mrp.getStockLocation().getCompany();
           BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(subProduct, company);

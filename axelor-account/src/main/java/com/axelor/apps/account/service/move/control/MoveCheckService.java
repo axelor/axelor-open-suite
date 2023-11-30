@@ -19,9 +19,7 @@
 package com.axelor.apps.account.service.move.control;
 
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.service.move.record.model.MoveContext;
 import com.axelor.apps.base.AxelorException;
-import java.util.Map;
 
 public interface MoveCheckService {
 
@@ -31,20 +29,7 @@ public interface MoveCheckService {
    * @param move
    * @return true if there is any, else false
    */
-  boolean checkRelatedCutoffMoves(Move move);
-
-  /**
-   * Method that check if period and status are closed of the move.
-   *
-   * <p>The result map will have two entries "$simulatedPeriodClosed" and "$periodClosed" with their
-   * respective result. It is done like this in order to exploit the result in the view form of
-   * move.
-   *
-   * @param move
-   * @return generated map
-   * @throws AxelorException
-   */
-  Map<String, Object> checkPeriodAndStatus(Move move) throws AxelorException;
+  boolean isRelatedCutoffMoves(Move move);
 
   void checkPeriodPermission(Move move) throws AxelorException;
 
@@ -54,11 +39,21 @@ public interface MoveCheckService {
 
   void checkAnalyticAccount(Move move) throws AxelorException;
 
-  void checkPartnerCompatible(Move move) throws AxelorException;
+  boolean isPartnerCompatible(Move move);
 
-  void checkDuplicatedMoveOrigin(Move move) throws AxelorException;
+  String getDuplicatedMoveOriginAlert(Move move);
 
-  void checkOrigin(Move move) throws AxelorException;
+  String getOriginAlert(Move move);
 
-  MoveContext checkTermsInPayment(Move move) throws AxelorException;
+  void checkTermsInPayment(Move move) throws AxelorException;
+
+  String getDescriptionAlert(Move move);
+
+  String getAccountingAlert(Move move);
+
+  void checkManageCutOffDates(Move move) throws AxelorException;
+
+  void checkCurrencyAmountSum(Move move) throws AxelorException;
+
+  String getPeriodAlert(Move move);
 }

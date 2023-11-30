@@ -23,9 +23,11 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PaymentConditionService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -59,19 +61,21 @@ public class MoveCreateServiceImpl implements MoveCreateService {
   protected CompanyConfigService companyConfigService;
 
   protected AppAccountService appAccountService;
+  protected PaymentConditionService paymentConditionService;
 
   @Inject
   public MoveCreateServiceImpl(
       AppAccountService appAccountService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      CompanyConfigService companyConfigService) {
+      CompanyConfigService companyConfigService,
+      PaymentConditionService paymentConditionService) {
 
     this.periodService = periodService;
     this.moveRepository = moveRepository;
     this.companyConfigService = companyConfigService;
-
     this.appAccountService = appAccountService;
+    this.paymentConditionService = paymentConditionService;
   }
 
   /**
@@ -267,6 +271,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     move.setDate(date);
     move.setOriginDate(originDate);
+
     move.setMoveLineList(new ArrayList<MoveLine>());
 
     Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
@@ -284,8 +289,12 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       move.setCurrencyCode(currency.getCodeISO());
     }
 
-    if (partner != null && partner.getPaymentCondition() != null) {
-      move.setPaymentCondition(partner.getPaymentCondition());
+    if (partner != null) {
+      PaymentCondition paymentCondition = partner.getPaymentCondition();
+      if (paymentCondition != null) {
+        paymentConditionService.checkPaymentCondition(paymentCondition);
+        move.setPaymentCondition(paymentCondition);
+      }
     }
 
     move.setOrigin(origin);
@@ -347,6 +356,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             description,
             companyBankDetails);
     move.setPaymentVoucher(paymentVoucher);
+    move.setPaymentCondition(null);
     return move;
   }
 

@@ -44,6 +44,8 @@ public class BaseBatchService extends AbstractBatchService {
     switch (baseBatch.getActionSelect()) {
       case BaseBatchRepository.ACTION_SYNCHRONIZE_CALENDARS:
         return synchronizeCalendars(baseBatch);
+      case BaseBatchRepository.ACTION_PASSWORD_CHANGE:
+        return passwordChange(baseBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -55,5 +57,9 @@ public class BaseBatchService extends AbstractBatchService {
 
   public Batch synchronizeCalendars(BaseBatch baseBatch) {
     return Beans.get(BatchCalendarSynchronization.class).run(baseBatch);
+  }
+
+  public Batch passwordChange(BaseBatch baseBatch) {
+    return Beans.get(BatchPasswordChange.class).run(baseBatch);
   }
 }

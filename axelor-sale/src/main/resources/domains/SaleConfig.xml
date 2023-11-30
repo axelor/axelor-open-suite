@@ -30,6 +30,8 @@
     <boolean name="isAnalyticDistributionRequired"
       title="Analytic distribution required on sale order line"/>
     <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
+    <many-to-one name="saleOrderBirtTemplate" title="Sale order template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
 
     <track>
       <field name="company" on="UPDATE"/>
@@ -46,6 +48,7 @@
       <field name="saleOrderClientBox" on="UPDATE"/>
       <field name="saleOrderLegalNote" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
+      <field name="saleOrderBirtTemplate" on="UPDATE"/>
     </track>
   </entity>
 

@@ -21,9 +21,47 @@
       title="Customer referral"/>
     <many-to-one name="saleOrderLine" title="Related sale order line"
       ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <one-to-many name="purchaseOrderList" title="Related purchase orders"
+      ref="com.axelor.apps.purchase.db.PurchaseOrder" mappedBy="projectTask"/>
+    <one-to-many name="purchaseOrderLineList" title="Related purchase order lines"
+      ref="com.axelor.apps.purchase.db.PurchaseOrderLine" mappedBy="projectTask"/>
     <many-to-one name="invoiceLine" title="Related Invoice line"
       ref="com.axelor.apps.account.db.InvoiceLine"/>
     <boolean name="isTaskRefused" title="Refused"/>
+
+    <!-- planification fields -->
+    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
+    <decimal name="soldTime" title="Sold time"/>
+    <decimal name="updatedTime" title="Updated time"/>
+    <decimal name="plannedTime" title="Planned time"/>
+    <decimal name="spentTime" title="Spent time"/>
+    <decimal name="percentageOfProgress" title="% of progress" readonly="true" precision="5"
+      scale="2"
+      help="% progress is the ratio of spent time on updated time on the task and all of it's sub tasks."/>
+    <decimal name="percentageOfConsumption" title="% of consumption" readonly="true"
+      precision="5" scale="2"
+      help="% consumption is the ratio of spent time on sold time on the task and all of it's sub tasks."/>
+    <decimal name="remainingAmountToDo" title="Remaining amount to do" readonly="true"
+      precision="6" scale="2"
+      help="Remaining amount is the subtraction of the spent time from the updated time on the task and all of it's sub tasks."/>
+
+    <decimal name="turnover" title="ProjectTask.Turnover"/>
+    <decimal name="initialCosts" title="ProjectTask.Costs"/>
+    <decimal name="initialMargin" title="ProjectTask.Margin"/>
+    <decimal name="initialMarkup" title="ProjectTask.Markup"/>
+    <decimal name="realTurnover" title="Real turnover"/>
+    <decimal name="realCosts" title="ProjectTask.Costs"/>
+    <decimal name="realMargin" title="ProjectTask.Margin"/>
+    <decimal name="realMarkup" title="ProjectTask.Markup"/>
+    <decimal name="forecastCosts" title="ProjectTask.Costs"/>
+    <decimal name="forecastMargin" title="ProjectTask.Margin"/>
+    <decimal name="forecastMarkup" title="ProjectTask.Markup"/>
+    <decimal name="landingCosts" title="ProjectTask.Costs"/>
+    <decimal name="landingMargin" title="ProjectTask.Margin"/>
+    <decimal name="landingMarkup" title="ProjectTask.Markup"/>
+
+    <decimal name="unitCost" title="Unit cost"/>
+    <decimal name="totalCosts" title="Total cost" readonly="true"/>
 
     <extra-code>
 			<![CDATA[

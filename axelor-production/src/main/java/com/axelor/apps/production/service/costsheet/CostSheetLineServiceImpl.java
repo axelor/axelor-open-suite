@@ -36,7 +36,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
@@ -116,8 +115,14 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       int typeSelectIcon,
       Unit unit,
       WorkCenter workCenter,
-      CostSheetLine parentCostSheetLine) {
+      CostSheetLine parentCostSheetLine)
+      throws AxelorException {
 
+    if (bomLevel > 50) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.LOOP_IN_BILL_OF_MATERIALS));
+    }
     logger.debug(
         "Add a new line of cost sheet ({} - {} - BOM level {} - cost price : {})",
         code,
@@ -156,7 +161,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   public CostSheetLine createProducedProductCostSheetLine(
-      Product product, Unit unit, BigDecimal consumptionQty) {
+      Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException {
 
     return this.createCostSheetLine(
         product.getName(),
@@ -482,13 +487,13 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
       WorkCenter workCenter,
-      ProdHumanResource prodHumanResource,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
       BigDecimal costPrice,
-      Unit unit) {
+      Unit unit)
+      throws AxelorException {
 
     return this.createWorkCenterCostSheetLine(
         workCenter,
@@ -509,7 +514,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
       BigDecimal costPrice,
-      Unit unit) {
+      Unit unit)
+      throws AxelorException {
 
     return this.createWorkCenterCostSheetLine(
         workCenter,
@@ -532,7 +538,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
       BigDecimal costPrice,
       Unit unit,
       CostSheetGroup costSheetGroup,
-      int typeSelectIcon) {
+      int typeSelectIcon)
+      throws AxelorException {
 
     return this.createCostSheetLine(
         workCenter.getName(),
@@ -565,7 +572,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   protected void createIndirectCostSheetGroups(
-      CostSheetGroup costSheetGroup, CostSheetLine parentCostSheetLine, BigDecimal costPrice) {
+      CostSheetGroup costSheetGroup, CostSheetLine parentCostSheetLine, BigDecimal costPrice)
+      throws AxelorException {
 
     if (costSheetGroup == null) {
       return;
@@ -578,7 +586,8 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
   }
 
   protected CostSheetLine createIndirectCostSheetLine(
-      CostSheetLine parentCostSheetLine, CostSheetGroup costSheetGroup, BigDecimal costPrice) {
+      CostSheetLine parentCostSheetLine, CostSheetGroup costSheetGroup, BigDecimal costPrice)
+      throws AxelorException {
 
     CostSheetLine indirectCostSheetLine =
         this.getCostSheetLine(costSheetGroup, parentCostSheetLine);

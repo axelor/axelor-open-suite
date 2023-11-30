@@ -37,6 +37,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -48,7 +49,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -135,7 +135,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       throws AxelorException {
 
     TaxLine taxLine = invoiceMoveLine.getTaxLine();
-    BigDecimal vatRate = taxLine.getValue();
+    BigDecimal vatRate = taxLine != null ? taxLine.getValue() : BigDecimal.ZERO;
 
     BigDecimal baseAmount = BigDecimal.ZERO;
     if (BigDecimal.ZERO.compareTo(vatRate) != 0) {
@@ -159,7 +159,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
             reconcile,
             vatRate,
             detailPaymentAmount,
-            appBaseService.getTodayDate(reconcile.getCompany()));
+            reconcile.getEffectiveDate());
 
     taxPaymentMoveLine.setFiscalPosition(invoiceMove.getFiscalPosition());
 
@@ -208,14 +208,26 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void autoTaxLineGenerate(Move move, Account account) throws AxelorException {
+  public void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException {
 
-    autoTaxLineGenerateNoSave(move, account);
+    autoTaxLineGenerateNoSave(move, account, percentMoveTemplate);
     moveRepository.save(move);
   }
 
   @Override
-  public void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException {
+  public void autoTaxLineGenerateNoSave(Move move) throws AxelorException {
+    if (CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)
+            || move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK))) {
+      this.autoTaxLineGenerateNoSave(move, null, false);
+    }
+  }
+
+  @Override
+  public void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException {
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
@@ -257,7 +269,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         if (this.isGenerateMoveLineForAutoTax(accountType)) {
 
           moveLineCreateService.createMoveLineForAutoTax(
-              move, map, newMap, moveLine, taxLine, accountType, account);
+              move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
         }
       }
     }
@@ -265,7 +277,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     moveLineList.addAll(newMap.values());
   }
 
-  protected boolean isGenerateMoveLineForAutoTax(String accountType) {
+  @Override
+  public boolean isGenerateMoveLineForAutoTax(String accountType) {
     return accountType.equals(AccountTypeRepository.TYPE_DEBT)
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
         || accountType.equals(AccountTypeRepository.TYPE_INCOME)
@@ -286,30 +299,74 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public void checkTaxMoveLines(Move move) throws AxelorException {
+  public void checkDuplicateTaxMoveLines(Move move) throws AxelorException {
     if (CollectionUtils.isEmpty(move.getMoveLineList()) || move.getMoveLineList().size() < 2) {
       return;
     }
-    for (MoveLine moveline : move.getMoveLineList()) {
-      if (moveline.getAccount() != null
-          && moveline.getAccount().getAccountType() != null
-          && AccountTypeRepository.TYPE_TAX.equals(
-              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
-          && !move.getMoveLineList().stream()
-              .filter(
-                  ml ->
-                      moveLineToolService.isEqualTaxMoveLine(
-                          moveline.getAccount(),
-                          moveline.getTaxLine(),
-                          moveline.getVatSystemSelect(),
-                          moveline.getId(),
-                          ml))
-              .collect(Collectors.<MoveLine>toList())
-              .isEmpty()) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (this.isMoveLineTaxAccount(moveLine) && this.isDuplicateTaxMoveLine(move, moveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get(AccountExceptionMessage.SAME_TAX_MOVE_LINES));
       }
     }
+  }
+
+  protected boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return moveLine.getAccount() != null
+        && moveLine.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
+  }
+
+  protected boolean isDuplicateTaxMoveLine(Move move, MoveLine moveLine) {
+    return move.getMoveLineList().stream()
+        .anyMatch(
+            ml ->
+                moveLineToolService.isEqualTaxMoveLine(
+                    moveLine.getAccount(),
+                    moveLine.getTaxLine(),
+                    moveLine.getVatSystemSelect(),
+                    moveLine.getId(),
+                    ml));
+  }
+
+  @Override
+  public void checkEmptyTaxLines(List<MoveLine> moveLineList) throws AxelorException {
+    List<Long> moveLineWithoutTaxList = this.getMoveLinesWithoutTax(moveLineList);
+
+    if (ObjectUtils.notEmpty(moveLineWithoutTaxList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(AccountExceptionMessage.MOVE_LINE_TAX_LINE_MISSING),
+              moveLineWithoutTaxList));
+    }
+  }
+
+  protected List<Long> getMoveLinesWithoutTax(List<MoveLine> moveLineList) {
+    List<Long> moveLineWithoutTaxList = new ArrayList<>();
+
+    if (CollectionUtils.isEmpty(moveLineList)) {
+      return null;
+    }
+
+    for (MoveLine moveLine : moveLineList) {
+      if (moveLine.getMove() != null
+          && this.isMoveLineTaxAccountRequired(
+              moveLine, moveLine.getMove().getFunctionalOriginSelect())
+          && moveLine.getTaxLine() == null) {
+        moveLineWithoutTaxList.add(moveLine.getId());
+      }
+    }
+    return moveLineWithoutTaxList;
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect) {
+    return this.isMoveLineTaxAccount(moveLine)
+        && Lists.newArrayList(
+                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+            .contains(functionalOriginSelect);
   }
 }

@@ -289,15 +289,23 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   protected BigDecimal getBalance(String query, boolean isCredit) {
     String sumQuery;
+    String debitCreditConstraint;
+
     if (isCredit) {
       sumQuery = "SUM(self.inTaxProratedAmount)";
+      debitCreditConstraint = "self.moveLine.credit != 0 AND ";
     } else {
       sumQuery = "SUM(self.exTaxProratedAmount) + SUM(self.taxProratedAmount)";
+      debitCreditConstraint = "self.moveLine.debit != 0 AND ";
     }
     Query q =
         JPA.em()
             .createQuery(
-                "select " + sumQuery + " FROM PaymentMoveLineDistribution as self WHERE " + query,
+                "select "
+                    + sumQuery
+                    + " FROM PaymentMoveLineDistribution as self WHERE "
+                    + debitCreditConstraint
+                    + query,
                 BigDecimal.class);
 
     return getNullSafeBalance(q);

@@ -24,21 +24,21 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPriority;
-import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectPriorityRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +48,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   protected FrequencyRepository frequencyRepo;
   protected FrequencyService frequencyService;
   protected AppBaseService appBaseService;
+  protected ProjectRepository projectRepository;
 
   private static final String TASK_LINK = "<a href=\"#/ds/all.open.project.tasks/edit/%s\">@%s</a>";
 
@@ -56,11 +57,13 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       ProjectTaskRepository projectTaskRepo,
       FrequencyRepository frequencyRepo,
       FrequencyService frequencyService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      ProjectRepository projectRepository) {
     this.projectTaskRepo = projectTaskRepo;
     this.frequencyRepo = frequencyRepo;
     this.frequencyService = frequencyService;
     this.appBaseService = appBaseService;
+    this.projectRepository = projectRepository;
   }
 
   @Override
@@ -118,7 +121,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     nextProjectTask.setParentTask(projectTask.getParentTask());
     nextProjectTask.setProduct(projectTask.getProduct());
-    nextProjectTask.setUnit(projectTask.getUnit());
+    nextProjectTask.setInvoicingUnit(projectTask.getInvoicingUnit());
     nextProjectTask.setQuantity(projectTask.getQuantity());
     nextProjectTask.setUnitPrice(projectTask.getUnitPrice());
     nextProjectTask.setTaskEndDate(projectTask.getTaskEndDate());
@@ -187,21 +190,28 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Override
-  public ProjectStatus getDefaultCompletedStatus(Project project) {
+  public TaskStatus getDefaultCompletedStatus(Project project) {
     return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
         ? null
         : project.getProjectTaskStatusSet().stream()
-            .filter(ProjectStatus::getIsDefaultCompleted)
+            .filter(TaskStatus::getIsDefaultCompleted)
             .findAny()
             .orElse(null);
   }
 
   @Override
-  public ProjectStatus getStatus(Project project) {
-    return project == null || ObjectUtils.isEmpty(project.getProjectTaskStatusSet())
+  public TaskStatus getStatus(Project project) {
+    if (project == null) {
+      return null;
+    }
+
+    project = projectRepository.find(project.getId());
+    Set<TaskStatus> projectStatusSet = project.getProjectTaskStatusSet();
+
+    return ObjectUtils.isEmpty(projectStatusSet)
         ? null
-        : project.getProjectTaskStatusSet().stream()
-            .min(Comparator.comparingInt(ProjectStatus::getSequence))
+        : projectStatusSet.stream()
+            .min(Comparator.comparingInt(TaskStatus::getSequence))
             .orElse(null);
   }
 
@@ -211,7 +221,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
       return null;
     }
 
-    project = Beans.get(ProjectRepository.class).find(project.getId());
+    project = projectRepository.find(project.getId());
 
     return ObjectUtils.isEmpty(project.getProjectTaskPrioritySet())
         ? null
@@ -252,5 +262,16 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     String result = buffer.toString();
     return StringUtils.isEmpty(result) ? value : result;
+  }
+
+  @Override
+  public void fillSubtask(ProjectTask projectTask) {
+    ProjectTask parentTask = projectTaskRepo.find(projectTask.getParentTask().getId());
+    projectTask.setParentTask(parentTask);
+    projectTask.setProjectTaskCategory(parentTask.getProjectTaskCategory());
+    projectTask.setProjectTaskSection(parentTask.getProjectTaskSection());
+    projectTask.setPriority(parentTask.getPriority());
+    projectTask.setProjectTaskTagSet(parentTask.getProjectTaskTagSet());
+    projectTask.setAssignedTo(parentTask.getAssignedTo());
   }
 }

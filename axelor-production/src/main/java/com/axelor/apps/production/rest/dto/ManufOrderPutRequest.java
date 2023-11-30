@@ -24,8 +24,6 @@ public class ManufOrderPutRequest extends RequestStructure {
 
   private int status;
 
-  public ManufOrderPutRequest() {}
-
   public int getStatus() {
     return status;
   }

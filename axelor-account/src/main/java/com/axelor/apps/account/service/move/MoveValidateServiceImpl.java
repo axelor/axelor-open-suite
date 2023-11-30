@@ -19,13 +19,17 @@
 package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PayVoucherElementToPay;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -39,6 +43,7 @@ import com.axelor.apps.account.service.PeriodServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -63,8 +68,10 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -95,6 +102,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodServiceAccount periodServiceAccount;
   protected MoveControlService moveControlService;
+  protected MoveCutOffService moveCutOffService;
+  protected MoveLineCheckService moveLineCheckService;
 
   @Inject
   public MoveValidateServiceImpl(
@@ -113,8 +122,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       FixedAssetGenerationService fixedAssetGenerationService,
       MoveLineTaxService moveLineTaxService,
       PeriodServiceAccount periodServiceAccount,
-      MoveControlService moveControlService) {
-
+      MoveControlService moveControlService,
+      MoveCutOffService moveCutOffService,
+      MoveLineCheckService moveLineCheckService) {
     this.moveLineControlService = moveLineControlService;
     this.moveLineToolService = moveLineToolService;
     this.accountConfigService = accountConfigService;
@@ -131,6 +141,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodServiceAccount = periodServiceAccount;
     this.moveControlService = moveControlService;
+    this.moveCutOffService = moveCutOffService;
+    this.moveLineCheckService = moveLineCheckService;
   }
 
   /**
@@ -158,7 +170,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       if (moveLine.getOriginDate() == null) {
         if (ObjectUtils.notEmpty(move.getOriginDate())) {
           moveLine.setOriginDate(move.getOriginDate());
-        } else {
+        } else if (move.getJournal() != null && move.getJournal().getIsFillOriginDate()) {
           moveLine.setOriginDate(date);
         }
       }
@@ -169,7 +181,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   @Override
   public void checkPreconditions(Move move) throws AxelorException {
+    checkPeriodPreconditions(move);
+    checkConsistencyPreconditions(move);
+  }
 
+  @Override
+  public void checkConsistencyPreconditions(Move move) throws AxelorException {
     Journal journal = move.getJournal();
     Company company = move.getCompany();
 
@@ -187,22 +204,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           move.getReference());
     }
 
-    if (move.getPeriod() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.MOVE_4),
-          move.getReference());
-    }
-    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
-        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          String.format(
-              I18n.get(AccountExceptionMessage.MOVE_13),
-              move.getJournal().getCode(),
-              move.getPeriod().getCode()));
-    }
-
     if (move.getMoveLineList() == null || move.getMoveLineList().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -218,11 +219,18 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     if (appAccountService.getAppAccount().getManageCutOffPeriod()
-        && move.getFunctionalOriginSelect() != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF
-        && !moveToolService.checkMoveLinesCutOffDates(move)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+                MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+            .contains(move.getFunctionalOriginSelect())) {
+      moveCutOffService.autoApplyCutOffDates(move);
+
+      if (!moveToolService.checkMoveLinesCutOffDates(move)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(AccountExceptionMessage.MOVE_MISSING_CUT_OFF_DATE));
+      }
     }
 
     if (move.getPaymentCondition() != null
@@ -246,7 +254,6 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           move.getReference());
     }
 
-    checkClosurePeriod(move);
     checkInactiveAnalyticJournal(move);
     checkInactiveAccount(move);
     checkInactiveAnalyticAccount(move);
@@ -262,7 +269,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         Account account = moveLine.getAccount();
         if (account.getIsTaxAuthorizedOnMoveLine()
             && account.getIsTaxRequiredOnMoveLine()
-            && moveLine.getTaxLine() == null) {
+            && moveLine.getTaxLine() == null
+            && functionalOriginSelect != MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_MISSING_FIELD,
               I18n.get(AccountExceptionMessage.MOVE_9),
@@ -270,30 +278,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               account.getName(),
               moveLine.getName());
         }
-
-        if (moveLine.getAnalyticDistributionTemplate() == null
-            && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-            && account.getAnalyticDistributionAuthorized()
-            && account.getAnalyticDistributionRequiredOnMoveLines()) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(AccountExceptionMessage.MOVE_10),
-              account.getName(),
-              moveLine.getName());
-        }
-
-        if (account != null
-            && !account.getAnalyticDistributionAuthorized()
-            && (moveLine.getAnalyticDistributionTemplate() != null
-                || (moveLine.getAnalyticMoveLineList() != null
-                    && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_11),
-              moveLine.getName());
-        }
-
+        moveLineControlService.checkAccountAnalytic(move, moveLine, account);
+        moveLineCheckService.checkAnalyticMoveLinesPercentage(moveLine);
         moveLineControlService.validateMoveLine(moveLine);
         moveLineControlService.checkAccountCompany(moveLine);
         moveLineControlService.checkJournalCompany(moveLine);
@@ -301,32 +287,43 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLineToolService.checkDateInPeriod(move, moveLine);
       }
 
-      moveLineTaxService.checkTaxMoveLines(move);
-
+      moveLineTaxService.checkDuplicateTaxMoveLines(move);
+      moveLineTaxService.checkEmptyTaxLines(move.getMoveLineList());
+      this.checkTaxAmount(move);
       this.validateWellBalancedMove(move);
       this.checkMoveLineInvoiceTermBalance(move);
+      this.checkMoveLineDescription(move);
 
-      if (move.getJournal() != null
-          && move.getPartner() != null
-          && move.getJournal().getHasDuplicateDetectionOnOrigin()) {
-        List<Move> moveList = moveToolService.getMovesWithDuplicatedOrigin(move);
-        if (ObjectUtils.notEmpty(moveList)) {
-          throw new AxelorException(
-              move,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(AccountExceptionMessage.MOVE_DUPLICATE_ORIGIN_BLOCKING_MESSAGE),
-              moveList.stream().map(Move::getReference).collect(Collectors.joining(",")),
-              move.getPartner().getFullName(),
-              move.getPeriod().getYear().getName());
-        }
-      }
+      moveControlService.checkDuplicateOrigin(move);
     }
+  }
+
+  @Override
+  public void checkPeriodPreconditions(Move move) throws AxelorException {
+    if (move.getPeriod() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_4),
+          move.getReference());
+    }
+    if (!CollectionUtils.isEmpty(move.getPeriod().getClosedJournalSet())
+        && move.getPeriod().getClosedJournalSet().contains(move.getJournal())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(AccountExceptionMessage.MOVE_13),
+              move.getJournal().getCode(),
+              move.getPeriod().getCode()));
+    }
+
+    checkClosurePeriod(move);
   }
 
   protected void checkMoveLineInvoiceTermBalance(Move move) throws AxelorException {
 
     log.debug(
         "Well-balanced move line invoice terms validation on account move {}", move.getReference());
+    BigDecimal financialDiscount = this.getInvoiceTermFinancialDiscount(move);
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
@@ -338,7 +335,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .map(InvoiceTerm::getCompanyAmount)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-      if (totalMoveLineInvoiceTerm.compareTo(moveLine.getDebit().max(moveLine.getCredit())) != 0) {
+      if (totalMoveLineInvoiceTerm.compareTo(
+              moveLine.getDebit().max(moveLine.getCredit()).add(financialDiscount))
+          != 0) {
         throw new AxelorException(
             move,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -346,6 +345,21 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             moveLine.getName());
       }
     }
+  }
+
+  protected BigDecimal getInvoiceTermFinancialDiscount(Move move) {
+    // Only on paymentVoucher process
+    BigDecimal financialDiscount = BigDecimal.ZERO;
+
+    if (move.getPaymentVoucher() != null) {
+      financialDiscount =
+          move.getPaymentVoucher().getPayVoucherElementToPayList().stream()
+              .filter(PayVoucherElementToPay::getApplyFinancialDiscount)
+              .map(PayVoucherElementToPay::getFinancialDiscountAmount)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    return financialDiscount;
   }
 
   protected void checkFunctionalOriginSelect(Move move) throws AxelorException {
@@ -830,6 +844,96 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLineControlService.checkPartner(moveLine);
+    }
+  }
+
+  @Override
+  public void checkTaxAmount(Move move) throws AxelorException {
+    if (this.isReverseCharge(move)) {
+      return;
+    }
+
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(move.getCompany());
+    List<MoveLine> moveLineList = move.getMoveLineList();
+
+    BigDecimal linesTaxAmount =
+        moveLineList.stream()
+            .filter(
+                moveLine ->
+                    moveLineTaxService.isGenerateMoveLineForAutoTax(
+                        moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
+            .map(this::getTaxAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    BigDecimal taxLinesAmount =
+        moveLineList.stream()
+            .filter(
+                moveLine ->
+                    moveLine
+                        .getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))
+            .map(this::getMoveLineSignedValue)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    if (linesTaxAmount.compareTo(taxLinesAmount) != 0
+        && accountConfig.getAllowedTaxGap().compareTo(linesTaxAmount.subtract(taxLinesAmount).abs())
+            < 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.MOVE_TAX_NOT_EQUALS));
+    }
+  }
+
+  protected BigDecimal getTaxAmount(MoveLine moveLine) {
+    if (moveLine.getTaxLine() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
+
+    return lineTotal
+        .multiply(moveLine.getTaxLine().getValue())
+        .divide(
+            BigDecimal.valueOf(100),
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            RoundingMode.HALF_UP);
+  }
+
+  protected BigDecimal getMoveLineSignedValue(MoveLine moveLine) {
+    if (moveLine.getCredit().signum() != 0) {
+      return moveLine.getCredit();
+    } else {
+      return moveLine.getDebit().negate();
+    }
+  }
+
+  protected boolean isReverseCharge(Move move) {
+    if (move.getInvoice() != null) {
+      return move.getInvoice().getInvoiceLineList().stream()
+          .map(InvoiceLine::getTaxEquiv)
+          .filter(Objects::nonNull)
+          .anyMatch(TaxEquiv::getReverseCharge);
+    } else {
+      return move.getMoveLineList().stream()
+          .map(MoveLine::getTaxEquiv)
+          .filter(Objects::nonNull)
+          .anyMatch(TaxEquiv::getReverseCharge);
+    }
+  }
+
+  protected void checkMoveLineDescription(Move move) throws AxelorException {
+    if (ObjectUtils.notEmpty(move.getMoveLineList())
+        && accountConfigService.getAccountConfig(move.getCompany()).getIsDescriptionRequired()
+        && move.getMoveLineList().stream()
+            .map(MoveLine::getDescription)
+            .anyMatch(ObjectUtils::isEmpty)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_LINE_DESCRIPTION_MISSING));
     }
   }
 }

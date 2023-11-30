@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -34,15 +35,18 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
   protected AppAccountService appAccountService;
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticToolService analyticToolService;
 
   @Inject
   public MoveLineDefaultServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticToolService analyticToolService) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticToolService = analyticToolService;
   }
 
   @Override
@@ -70,10 +74,6 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
 
     if (accountingAccount != null) {
       moveLine.setAccount(accountingAccount);
-
-      if (!accountingAccount.getUseForPartnerBalance()) {
-        moveLine.setPartner(null);
-      }
 
       AnalyticDistributionTemplate analyticDistributionTemplate =
           accountingAccount.getAnalyticDistributionTemplate();
@@ -135,8 +135,14 @@ public class MoveLineDefaultServiceImpl implements MoveLineDefaultService {
 
   @Override
   public void setDefaultDistributionTemplate(MoveLine moveLine, Move move) throws AxelorException {
-    if (move != null && moveLineComputeAnalyticService.checkManageAnalytic(move.getCompany())) {
-      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine);
+    if (move == null) {
+      return;
+    }
+
+    if (analyticToolService.isManageAnalytic(move.getCompany())) {
+      moveLineComputeAnalyticService.selectDefaultDistributionTemplate(moveLine, move);
+    } else {
+      moveLine.setAnalyticDistributionTemplate(null);
     }
   }
 }

@@ -24,43 +24,13 @@ import java.util.Map;
 
 public interface MoveRecordSetService {
 
-  /**
-   * Set the payment mode of move.
-   *
-   * <p>Note: This method can set paymentMode to null even if it was not before.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setPaymentMode(Move move);
+  void setPaymentMode(Move move);
 
-  /**
-   * Set the paymentCondition of move.
-   *
-   * <p>Note: This method can set paymentCondition to null even if it was not before.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setPaymentCondition(Move move);
+  void setPaymentCondition(Move move) throws AxelorException;
 
-  /**
-   * Set the partnerBankDetails of move.
-   *
-   * <p>Note: This method can set partnerBankDetails to null even if it was not before.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setPartnerBankDetails(Move move);
+  void setPartnerBankDetails(Move move);
 
-  /**
-   * Set the currency of move by using the move.partner.
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setCurrencyByPartner(Move move);
+  void setCurrencyByPartner(Move move);
 
   /**
    * Set the currencyCode of the move by using current currency
@@ -76,23 +46,21 @@ public interface MoveRecordSetService {
    * @param move
    * @return a map of modified fields
    */
-  Map<String, Object> setJournal(Move move);
+  void setJournal(Move move);
 
-  /**
-   * Set the functionOriginSelect of the move
-   *
-   * @param move
-   * @return a map of modified fields
-   */
-  Map<String, Object> setFunctionalOriginSelect(Move move);
+  void setFunctionalOriginSelect(Move move);
 
-  Map<String, Object> setPeriod(Move move) throws AxelorException;
+  void setPeriod(Move move);
 
-  Map<String, Object> setMoveLineDates(Move move) throws AxelorException;
+  void setCompanyBankDetails(Move move) throws AxelorException;
 
-  Map<String, Object> setCompanyBankDetails(Move move) throws AxelorException;
+  void setOriginDate(Move move);
 
-  Map<String, Object> setMoveLineOriginDates(Move move) throws AxelorException;
+  void setPfpStatus(Move move) throws AxelorException;
 
-  Map<String, Object> setOriginOnMoveLineList(Move move) throws AxelorException;
+  void setPfpValidatorUser(Move move);
+
+  Map<String, Object> computeTotals(Move move);
+
+  void setSubrogationPartner(Move move);
 }

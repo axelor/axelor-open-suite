@@ -21,23 +21,28 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.Opportunity;
+import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
 public class OpportunitySaleOrderSupplychainServiceImpl extends OpportunitySaleOrderServiceImpl {
+  protected AppBaseService appBaseService;
 
   @Inject
   public OpportunitySaleOrderSupplychainServiceImpl(
       SaleOrderCreateService saleOrderCreateService,
       SaleOrderRepository saleOrderRepo,
+      SaleOrderWorkflowService saleOrderWorkflowService,
+      AppCrmService appCrmService,
       AppBaseService appBaseService) {
-    super(saleOrderCreateService, saleOrderRepo, appBaseService);
+    super(saleOrderCreateService, saleOrderRepo, saleOrderWorkflowService, appCrmService);
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -47,7 +52,7 @@ public class OpportunitySaleOrderSupplychainServiceImpl extends OpportunitySaleO
 
     // Adding supplychain behaviour
     // Set default invoiced and delivered partners and address in case of partner delegations
-    if (Beans.get(AppSupplychainService.class).getAppSupplychain().getActivatePartnerRelations()) {
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
       Beans.get(SaleOrderSupplychainService.class)
           .setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
     }

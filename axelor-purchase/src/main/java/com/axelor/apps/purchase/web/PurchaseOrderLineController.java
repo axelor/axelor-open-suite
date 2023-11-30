@@ -318,12 +318,12 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       if (purchaseOrderLine.getIsTitleLine()) {
-        PurchaseOrderLine newPurchaseOrderLine = new PurchaseOrderLine();
-        newPurchaseOrderLine.setIsTitleLine(true);
-        newPurchaseOrderLine.setQty(BigDecimal.ZERO);
-        newPurchaseOrderLine.setId(purchaseOrderLine.getId());
-        newPurchaseOrderLine.setVersion(purchaseOrderLine.getVersion());
-        response.setValues(Mapper.toMap(purchaseOrderLine));
+        Map<String, Object> newPurchaseOrderLine = Mapper.toMap(new PurchaseOrderLine());
+        newPurchaseOrderLine.put("qty", BigDecimal.ZERO);
+        newPurchaseOrderLine.put("id", purchaseOrderLine.getId());
+        newPurchaseOrderLine.put("version", purchaseOrderLine.getVersion());
+        newPurchaseOrderLine.put("isTitleLine", true);
+        response.setValues(newPurchaseOrderLine);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -335,16 +335,19 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      Company company = purchaseOrder.getCompany();
+      Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
       Beans.get(SupplierCatalogService.class)
           .checkMinQty(
               purchaseOrderLine.getProduct(),
-              purchaseOrder.getSupplierPartner(),
-              purchaseOrder.getCompany(),
+              supplierPartner,
+              company,
               purchaseOrderLine.getQty(),
               request,
               response);
-      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(PurchaseOrderLineService.class)
+          .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

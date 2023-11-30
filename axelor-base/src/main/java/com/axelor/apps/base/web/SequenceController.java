@@ -18,11 +18,13 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -39,6 +41,17 @@ public class SequenceController {
     if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
       String defautlTitle = Beans.get(SequenceService.class).getDefaultTitle(sequence);
       response.setValue("name", I18n.get(defautlTitle));
+    }
+  }
+
+  public void validateSequence(ActionRequest request, ActionResponse response) {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    if (!Strings.isNullOrEmpty(sequence.getCodeSelect())) {
+      try {
+        Beans.get(SequenceService.class).validateSequence(sequence);
+      } catch (AxelorException e) {
+        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+      }
     }
   }
 
@@ -84,6 +97,7 @@ public class SequenceController {
 
     try {
       Sequence sequence = request.getContext().asType(Sequence.class);
+      sequence = EntityHelper.getEntity(sequence);
       Beans.get(SequenceService.class).checkSequenceLengthValidity(sequence);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

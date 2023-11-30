@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.production.db.CostSheetGroup;
 import com.axelor.apps.production.db.CostSheetLine;
-import com.axelor.apps.production.db.ProdHumanResource;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.WorkCenter;
 import java.math.BigDecimal;
@@ -43,10 +42,11 @@ public interface CostSheetLineService {
       int typeSelectIcon,
       Unit unit,
       WorkCenter workCenter,
-      CostSheetLine parentCostSheetLine);
+      CostSheetLine parentCostSheetLine)
+      throws AxelorException;
 
   public CostSheetLine createProducedProductCostSheetLine(
-      Product product, Unit unit, BigDecimal consumptionQty);
+      Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException;
 
   public CostSheetLine createResidualProductCostSheetLine(
       Product product, Unit unit, BigDecimal consumptionQty, Company company)
@@ -77,13 +77,13 @@ public interface CostSheetLineService {
 
   public CostSheetLine createWorkCenterHRCostSheetLine(
       WorkCenter workCenter,
-      ProdHumanResource prodHumanResource,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
       BigDecimal costPrice,
-      Unit unit);
+      Unit unit)
+      throws AxelorException;
 
   public CostSheetLine createWorkCenterMachineCostSheetLine(
       WorkCenter workCenter,
@@ -92,5 +92,6 @@ public interface CostSheetLineService {
       CostSheetLine parentCostSheetLine,
       BigDecimal consumptionQty,
       BigDecimal costPrice,
-      Unit unit);
+      Unit unit)
+      throws AxelorException;
 }

@@ -75,8 +75,8 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
         invoicePayment.setMove(null);
       }
       moveCancelService.cancel(paymentMove);
-      updateCancelStatus(invoicePayment);
     }
+    updateCancelStatus(invoicePayment);
   }
 
   @Transactional(rollbackOn = {Exception.class})

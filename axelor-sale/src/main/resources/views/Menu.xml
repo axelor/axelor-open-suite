@@ -60,15 +60,15 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false AND self.sellable = true AND self.isShippingCostsProduct = false
       AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromSale" expr="eval:true"/>
   </action-view>
 
   <menuitem name="sc-root-sale-quotations" parent="sc-root-sale" order="500"
     title="Sale quotations" action="sc.root.sale.quotations"/>
 
-  <menuitem name="sc-crm-root-sale-quotations" parent="crm-root" order="800"
-    title="Sale quotations" action="sc.root.sale.quotations" if="__config__.app.isApp('sale')"/>
+  <menuitem name="sc-crm-root-sale-quotations" parent="crm-root-customer-follow-up"
+    order="300" title="Sale quotations" action="sc.root.sale.quotations"
+    if="__config__.app.isApp('sale')"/>
 
   <action-view name="sc.root.sale.quotations" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -129,8 +129,8 @@
 
   <action-view name="sc.hist.sale.orders" title="Historical"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-cards"/>
     <view type="grid" name="sale-order-grid"/>
+    <view type="cards" name="sale-order-cards"/>
     <view type="calendar" name="sale-order-calendar"/>
     <view type="form" name="sale-order-form"/>
     <view-param name="search-filters" value="sale-order-filters"/>

@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -45,7 +46,6 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -56,6 +56,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -731,28 +732,6 @@ public class InvoiceController {
   }
 
   /**
-   * Called on printing settings select. Set the domain for {@link Invoice#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-
-    List<PrintingSettings> printingSettingsList =
-        Beans.get(TradingNameService.class)
-            .getPrintingSettingsList(invoice.getTradingName(), invoice.getCompany());
-    String domain =
-        String.format(
-            "self.id IN (%s)",
-            !printingSettingsList.isEmpty()
-                ? StringTool.getIdListString(printingSettingsList)
-                : "0");
-
-    response.setAttr("printingSettings", "domain", domain);
-  }
-
-  /**
    * Called on trading name change. Set the default value for {@link Invoice#printingSettings}
    *
    * @param request
@@ -861,30 +840,42 @@ public class InvoiceController {
   }
 
   public void refusalToPay(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    Beans.get(InvoiceService.class)
-        .refusalToPay(
-            Beans.get(InvoiceRepository.class).find(invoice.getId()),
-            invoice.getReasonOfRefusalToPay(),
-            invoice.getReasonOfRefusalToPayStr());
-    response.setCanClose(true);
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      Beans.get(InvoiceService.class)
+          .refusalToPay(
+              Beans.get(InvoiceRepository.class).find(invoice.getId()),
+              invoice.getReasonOfRefusalToPay(),
+              invoice.getReasonOfRefusalToPayStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setPfpValidatorUser(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    response.setValue(
-        "pfpValidatorUser",
-        Beans.get(InvoiceTermService.class)
-            .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      response.setValue(
+          "pfpValidatorUser",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUser(invoice.getPartner(), invoice.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void setPfpValidatorUserDomain(ActionRequest request, ActionResponse response) {
-    Invoice invoice = request.getContext().asType(Invoice.class);
-    response.setAttr(
-        "pfpValidatorUser",
-        "domain",
-        Beans.get(InvoiceTermService.class)
-            .getPfpValidatorUserDomain(invoice.getPartner(), invoice.getCompany()));
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      response.setAttr(
+          "pfpValidatorUser",
+          "domain",
+          Beans.get(InvoiceTermService.class)
+              .getPfpValidatorUserDomain(invoice.getPartner(), invoice.getCompany()));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
   }
 
   public void hideSendEmailPfpBtn(ActionRequest request, ActionResponse response) {
@@ -1226,10 +1217,68 @@ public class InvoiceController {
       response.setValue(
           "remainingAmountAfterFinDiscount", invoice.getRemainingAmountAfterFinDiscount());
       response.setValue(
-          "financialDiscountDeadLineDate", invoice.getFinancialDiscountDeadlineDate());
+          "financialDiscountDeadlineDate", invoice.getFinancialDiscountDeadlineDate());
 
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+
+      if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        if (Beans.get(InvoiceTermPfpService.class)
+            .generateInvoiceTermsAfterPfpPartial(invoice.getInvoiceTermList())) {
+          response.setReload(true);
+        }
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice.getDueDate() == null) {
+        return;
+      }
+      invoice = Beans.get(InvoiceService.class).computeEstimatedPaymentDate(invoice);
+      response.setValues(invoice);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void managePfpStatusOnInvoiceTerm(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        return;
+      }
+      Integer pfpStatus =
+          Beans.get(InvoiceTermPfpService.class)
+              .checkOtherInvoiceTerms(invoice.getInvoiceTermList());
+      if (pfpStatus != null) {
+        response.setValue("pfpValidateStatusSelect", pfpStatus);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void updateSubrogationPartner(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }
 }

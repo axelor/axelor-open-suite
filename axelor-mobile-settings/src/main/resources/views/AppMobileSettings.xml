@@ -7,13 +7,17 @@
     model="com.axelor.studio.db.AppMobileSettings" width="large"
     onLoad="action-app-mobile-settings-config-group-on-load" canNew="false" canDelete="false">
     <panel name="mainPanel">
-      <panel name="applicationsPanel" title="Mobile apps" colSpan="10">
-        <field name="isStockAppEnabled" colSpan="3" widget="boolean-switch"
+      <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="2">
+        <field name="isStockAppEnabled" widget="boolean-switch"
           readonlyIf="isProductionAppEnabled"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
-        <field name="isProductionAppEnabled" colSpan="3" widget="boolean-switch"
+        <field name="isProductionAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-production-boolean-group-on-change"/>
-        <field name="isCrmAppEnabled" colSpan="3" widget="boolean-switch"
+        <field name="isCrmAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isHelpdeskAppEnabled" widget="boolean-switch"
+          onChange="action-app-mobile-settings-boolean-group-on-change"/>
+        <field name="isHRAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
       </panel>
       <panel name="qrCodePanel" colSpan="2">
@@ -44,6 +48,10 @@
           hideIf="!isProductionAppEnabled" onClick="action.production.config.view"/>
         <button name="crmAppBtn" title="Config CRM" hidden="true" hideIf="!isCrmAppEnabled"
           onClick="action.crm.config.view"/>
+        <button name="helpdeskAppBtn" title="Config Helpdesk" hidden="true"
+          hideIf="!isHelpdeskAppEnabled" onClick="action.helpdesk.config.view"/>
+        <button name="hrAppBtn" title="Config HR" hidden="true" showIf="isHRAppEnabled"
+          onClick="action.hr.config.view"/>
       </panel>
     </panel>
     <panel-tabs name="appConfigPanelTab">
@@ -76,6 +84,11 @@
         <field name="manageCarrierOption" widget="boolean-switch" colSpan="12" hidden="true"/>
         <!-- This field manageCarrierOption will be used later when carrier mode is implemented in AOS
           and App mobile -->
+      </panel>
+      <panel name="hrConfigPanel" title="HR" showIf="isHRAppEnabled">
+        <field name="isMultiCurrencyEnabled" widget="boolean-switch"/>
+        <field name="isProjectInvoicingEnabled" widget="boolean-switch"/>
+        <field name="isKilometricExpenseLineAllowed" widget="boolean-switch"/>
       </panel>
     </panel-tabs>
 
@@ -129,12 +142,36 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-crm').fetchOne()?.id"/>
   </action-view>
 
+  <action-view name="action.helpdesk.config.view" title="Helpdesk config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-helpdesk').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.hr.config.view" title="HR config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <view type="form" name="mobile-config-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord"
+      expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-hr').fetchOne()?.id"/>
+  </action-view>
+
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">
     <attribute for="isStockAppEnabled" name="readonly"
       expr="!__config__.app.isApp('stock')"/>
     <attribute for="isProductionAppEnabled" name="readonly"
       expr="!__config__.app.isApp('production')"/>
     <attribute for="isCrmAppEnabled" name="readonly" expr="!__config__.app.isApp('crm')"/>
+    <attribute for="isHelpdeskAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('helpdesk')"/>
+    <attribute for="isHRAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('expense')"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">

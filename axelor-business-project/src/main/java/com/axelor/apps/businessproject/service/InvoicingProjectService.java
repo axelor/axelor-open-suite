@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
@@ -29,26 +28,28 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.util.InvoiceLineComparator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.report.IReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -85,7 +86,7 @@ public class InvoicingProjectService {
 
   @Inject protected TimesheetService timesheetService;
 
-  @Inject protected ExpenseService expenseService;
+  @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
 
   @Inject protected PartnerService partnerService;
 
@@ -208,7 +209,7 @@ public class InvoicingProjectService {
         timesheetService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
-        expenseService.createInvoiceLines(
+        expenseInvoiceLineService.createInvoiceLines(
             invoice, expenseLineList, folder.getExpenseLineSetPrioritySelect()));
     invoiceLineList.addAll(
         projectTaskBusinessProjectService.createInvoiceLines(
@@ -498,6 +499,14 @@ public class InvoicingProjectService {
   }
 
   public void generateAnnex(InvoicingProject invoicingProject) throws AxelorException, IOException {
+    BirtTemplate invoicingProjectAnnexBirtTemplate =
+        appBusinessProjectService.getAppBusinessProject().getInvoicingProjectAnnexBirtTemplate();
+    if (invoicingProjectAnnexBirtTemplate == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+    }
+
     String title =
         I18n.get("InvoicingProjectAnnex")
             + "-"
@@ -506,10 +515,14 @@ public class InvoicingProjectService {
                 .format(DateTimeFormatter.ofPattern(DATE_FORMAT_YYYYMMDDHHMM));
 
     ReportSettings reportSettings =
-        ReportFactory.createReport(IReport.INVOICING_PROJECT_ANNEX, title)
-            .addParam("InvProjectId", invoicingProject.getId())
-            .addParam("Timezone", getTimezone(invoicingProject))
-            .addParam("Locale", ReportSettings.getPrintingLocale(null));
+        Beans.get(BirtTemplateService.class)
+            .generate(
+                invoicingProjectAnnexBirtTemplate,
+                invoicingProject,
+                null,
+                title,
+                false,
+                ReportSettings.FORMAT_PDF);
 
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();
@@ -547,16 +560,17 @@ public class InvoicingProjectService {
     invoicingProject.setProject(project);
 
     if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_CONSOLIDATE_ALL) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(true);
     } else if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DONT_CONSOLIDATE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(false);
     } else if (consolidatePhaseSelect
-        == ProjectInvoicingAssistantBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
+        == BusinessProjectBatchRepository.CONSOLIDATE_PHASE_DEFAULT_VALUE) {
       invoicingProject.setConsolidatePhaseWhenInvoicing(
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
+    invoicingProject = invoicingProjectRepo.save(invoicingProject);
 
     clearLines(invoicingProject);
     setLines(invoicingProject, project, 0);

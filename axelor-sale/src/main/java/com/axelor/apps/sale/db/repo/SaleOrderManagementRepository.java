@@ -55,7 +55,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setTotalCostPrice(null);
     copy.setTotalGrossMargin(null);
     copy.setMarginRate(null);
-    copy.setEndOfValidityDate(null);
     copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
@@ -71,6 +70,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrderLine.setDiscountDerogation(null);
       }
     }
+    Beans.get(SaleOrderService.class).computeEndOfValidityDate(copy);
 
     return copy;
   }

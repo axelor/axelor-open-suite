@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="FakerApiFieldParameters">
+    <many-to-one name="fakerApiField" ref="com.axelor.apps.base.db.FakerApiField"/>
+    <string name="paramType" title="Type" selection="base.faker.api.field.param.type.select"/>
+    <string name="paramValue" title="Value"/>
+    <extra-code><![CDATA[
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_INT = "int";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_LONG = "long";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_DOUBLE = "double";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_BOOLEAN = "boolean";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_STRING = "java.lang.String";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_DATE = "java.util.Date";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_TIMESTAMP = "java.sql.Timestamp";
+		  public static final String FAKER_API_FIELD_PARAM_TYPE_TIMEUNIT = "java.util.concurrent.TimeUnit";
+	    ]]>
+    </extra-code>
+
+  </entity>
+</domain-models>

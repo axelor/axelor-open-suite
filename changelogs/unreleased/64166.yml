@@ -1,3 +1,0 @@
----
-title: "Stock move: modifying a real quantity or creating an internal stock move from the mobile application will correctly indicate that the real quantity has been modified by an user"
-type: fix

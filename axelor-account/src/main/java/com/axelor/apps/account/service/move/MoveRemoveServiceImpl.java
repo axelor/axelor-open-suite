@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -97,10 +98,14 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   protected void cleanMoveToArchived(Move move) throws Exception {
     for (MoveLine moveLine : move.getMoveLineList()) {
       for (Reconcile reconcile : moveLine.getDebitReconcileList()) {
-        reconcileService.unreconcile(reconcile);
+        if (reconcile.getStatusSelect() != ReconcileRepository.STATUS_CANCELED) {
+          reconcileService.unreconcile(reconcile);
+        }
       }
       for (Reconcile reconcile : moveLine.getCreditReconcileList()) {
-        reconcileService.unreconcile(reconcile);
+        if (reconcile.getStatusSelect() != ReconcileRepository.STATUS_CANCELED) {
+          reconcileService.unreconcile(reconcile);
+        }
       }
     }
   }
@@ -211,6 +216,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
+          JPA.flush();
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {

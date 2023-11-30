@@ -20,7 +20,6 @@ package com.axelor.apps.stock.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.PrintingSettings;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -39,7 +38,6 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.service.stockmove.print.ConformityCertificatePrintService;
 import com.axelor.apps.stock.service.stockmove.print.PickingStockMovePrintService;
-import com.axelor.apps.stock.service.stockmove.print.StockMovePrintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -50,7 +48,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -199,48 +196,6 @@ public class StockMoveController {
    * @param response
    */
   @SuppressWarnings("unchecked")
-  public void printStockMove(ActionRequest request, ActionResponse response) {
-    try {
-      Context context = request.getContext();
-      String fileLink;
-      String title;
-
-      StockMovePrintService stockMovePrintService = Beans.get(StockMovePrintService.class);
-
-      if (!ObjectUtils.isEmpty(request.getContext().get("_ids"))) {
-        List<Long> ids =
-            (List)
-                (((List) context.get("_ids"))
-                    .stream()
-                        .filter(ObjectUtils::notEmpty)
-                        .map(input -> Long.parseLong(input.toString()))
-                        .collect(Collectors.toList()));
-        fileLink = stockMovePrintService.printStockMoves(ids);
-        title = I18n.get("Stock Moves");
-      } else if (context.get("id") != null) {
-        StockMove stockMove =
-            Beans.get(StockMoveRepository.class).find(Long.parseLong(context.get("id").toString()));
-        title = stockMovePrintService.getFileName(stockMove);
-        fileLink = stockMovePrintService.printStockMove(stockMove, ReportSettings.FORMAT_PDF);
-        logger.debug("Printing " + title);
-      } else {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(StockExceptionMessage.STOCK_MOVE_PRINT));
-      }
-      response.setView(ActionView.define(title).add("html", fileLink).map());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Method called from stock move form and grid view. Print one or more stock move as PDF
-   *
-   * @param request
-   * @param response
-   */
-  @SuppressWarnings("unchecked")
   public void printPickingStockMove(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
@@ -310,6 +265,7 @@ public class StockMoveController {
       } else if (context.get("id") != null) {
 
         StockMove stockMove = context.asType(StockMove.class);
+        stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
         title = conformityCertificatePrintService.getFileName(stockMove);
         fileLink =
             conformityCertificatePrintService.printConformityCertificate(
@@ -568,32 +524,6 @@ public class StockMoveController {
   }
 
   /**
-   * Called on printing settings select. Set the the domain for {@link StockMove#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      StockMove stockMove = request.getContext().asType(StockMove.class);
-
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(stockMove.getTradingName(), stockMove.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-
-      response.setAttr("printingSettings", "domain", domain);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
    * Called on trading name change. Set the default value for {@link StockMove#printingSettings}
    *
    * @param request
@@ -698,7 +628,7 @@ public class StockMoveController {
 
       Integer percentToleranceForWapChange =
           Beans.get(StockConfigService.class)
-              .getStockConfig(stockMove.getToStockLocation().getCompany())
+              .getStockConfig(stockMove.getCompany())
               .getPercentToleranceForWapChange();
       response.setView(
           ActionView.define(I18n.get("Stock move"))
@@ -717,5 +647,19 @@ public class StockMoveController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void changeLinesFromStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation fromStockLocation = stockMove.getFromStockLocation();
+    Beans.get(StockMoveService.class).changeLinesFromStockLocation(stockMove, fromStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void changeLinesToStockLocation(ActionRequest request, ActionResponse response) {
+    StockMove stockMove = request.getContext().asType(StockMove.class);
+    StockLocation toStockLocation = stockMove.getToStockLocation();
+    Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
+    response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
   }
 }

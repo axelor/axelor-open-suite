@@ -32,9 +32,6 @@ public final class SupplychainExceptionMessage {
   public static final String PURCHASE_ORDER_1 = /*$$(*/
       "%s please configure a virtual supplier stock location for the company %s" /*)*/;
 
-  public static final String PURCHASE_ORDER_2 = /*$$(*/
-      "Error : you have exceeded the budget %s for this period" /*)*/;
-
   public static final String PO_INVOICE_TOO_MUCH_INVOICED = /*$$(*/
       "The purchase order %s invoiced amount cannot be greater than its total amount." /*)*/;
   public static final String PURCHASE_ORDER_RETURN_TO_VALIDATE_WRONG_STATUS = /*$$(*/
@@ -111,6 +108,10 @@ public final class SupplychainExceptionMessage {
       "An invoice not canceled already exists for the incoming stock move %s" /*)*/;
   public static final String STOCK_MOVE_AVAILABILITY_REQUEST_NOT_UPDATABLE = /*$$(*/
       "Please uncheck picking order edited box from this stock move from Cust. Shipment to prepare menu entry." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_STATUS_ERROR = /*$$(*/
+      "Can't cancel a stock move that is partially or totally invoiced." /*)*/;
+  public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
+      "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
 
   /** Stock move line service */
   public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
@@ -313,7 +314,7 @@ public final class SupplychainExceptionMessage {
       "Stock move %s has already been invoiced." /*)*/;
 
   public static final String STOCK_MOVE_INVOICE_QTY_MAX = /*$$(*/
-      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Pls check the invoice line with this product %s." /*)*/;
+      "It is not allowed to invoice a greater quantity %s than the delivered quantity %s. Please check the invoice line with this product %s." /*)*/;
 
   public static final String SALE_ORDER_COMPLETE_MANUALLY = /*$$(*/
       "There is at least one draft or planned stock move for this sale order." /*)*/;
@@ -360,11 +361,6 @@ public final class SupplychainExceptionMessage {
   public static final String MRP_STOCK_HISTORY_FIELD_SELECT_MISSING = /*$$(*/
       "Field fieldSelect is null for %s" /*)*/;
 
-  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
-      "You must select at least one line to validate" /*)*/;
-
-  public static final String CUT_OFF_BATCH_NO_PARTNER_ACCOUNT = /*$$(*/
-      "No partner account was found for company %s." /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_INVOICED_PARTNER = /*$$(*/
       "The invoiced partner must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER = /*$$(*/
@@ -376,7 +372,6 @@ public final class SupplychainExceptionMessage {
       "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
   public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
-
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
 }

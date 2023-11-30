@@ -28,11 +28,10 @@ import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
-import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -59,32 +58,31 @@ public class PaymentVoucherLoadService {
 
   protected CurrencyService currencyService;
   protected PaymentVoucherToolService paymentVoucherToolService;
-  protected PayVoucherDueElementRepository payVoucherDueElementRepo;
   protected PaymentVoucherRepository paymentVoucherRepository;
   protected PayVoucherDueElementService payVoucherDueElementService;
   protected PayVoucherElementToPayService payVoucherElementToPayService;
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected InvoiceTermService invoiceTermService;
+  protected PfpService pfpService;
 
   @Inject
   public PaymentVoucherLoadService(
       CurrencyService currencyService,
       PaymentVoucherToolService paymentVoucherToolService,
-      PayVoucherDueElementRepository payVoucherDueElementRepo,
       PaymentVoucherRepository paymentVoucherRepository,
       PayVoucherDueElementService payVoucherDueElementService,
       PayVoucherElementToPayService payVoucherElementToPayService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
-      InvoiceTermService invoiceTermService) {
-
+      InvoiceTermService invoiceTermService,
+      PfpService pfpService) {
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
-    this.payVoucherDueElementRepo = payVoucherDueElementRepo;
     this.paymentVoucherRepository = paymentVoucherRepository;
     this.payVoucherDueElementService = payVoucherDueElementService;
     this.payVoucherElementToPayService = payVoucherElementToPayService;
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.invoiceTermService = invoiceTermService;
+    this.pfpService = pfpService;
   }
 
   /**
@@ -100,18 +98,16 @@ public class PaymentVoucherLoadService {
 
     String query =
         "(self.moveLine.partner = :partner OR self.invoice.partner = :partner) "
-            + "and (self.isPaid = FALSE OR self.amountRemaining > 0) "
+            + "and (self.isPaid = FALSE OR self.amountRemaining != 0) "
             + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
             + "and self.moveLine.account.useForPartnerBalance = 't' "
             + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
-            + "and (self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName OR (self.moveLine.move.tradingName = NULL AND self.invoice.tradingName = NULL)) "
+            + "and (:tradingName = NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
             + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
             + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
 
-    if (Beans.get(AccountConfigService.class)
-                .getAccountConfig(paymentVoucher.getCompany())
-                .getIsManagePassedForPayment()
+    if (pfpService.isManagePassedForPayment(paymentVoucher.getCompany())
             && paymentVoucher.getOperationTypeSelect()
                 == PaymentVoucherRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
         || paymentVoucher.getOperationTypeSelect()
@@ -387,7 +383,7 @@ public class PaymentVoucherLoadService {
       BigDecimal maxAmountToPayRemaining = amountToPay;
       for (MoveLine moveLine : moveLineInvoiceToPay) {
         if (maxAmountToPayRemaining.compareTo(BigDecimal.ZERO) > 0) {
-          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining());
+          BigDecimal amountPay = maxAmountToPayRemaining.min(moveLine.getAmountRemaining().abs());
           moveLine.setMaxAmountToReconcile(amountPay);
           debitMoveLines.add(moveLine);
           maxAmountToPayRemaining = maxAmountToPayRemaining.subtract(amountPay);

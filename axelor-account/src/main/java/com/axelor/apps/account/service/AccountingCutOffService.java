@@ -20,16 +20,18 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.Query;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface AccountingCutOffService {
 
   Query<Move> getMoves(
-      Company company, Journal researchJournal, LocalDate moveDate, int accountingCutOffTypeSelect);
+      Company company, Set<Journal> journalSet, LocalDate moveDate, int accountingCutOffTypeSelect);
 
   List<Move> generateCutOffMovesFromMove(
       Move move,
@@ -56,4 +58,7 @@ public interface AccountingCutOffService {
       boolean isReverse,
       String prefixOrigin)
       throws AxelorException;
+
+  Query<MoveLine> getMoveLines(
+      Company company, Set<Journal> journalSet, LocalDate moveDate, int accountingCutOffTypeSelect);
 }
