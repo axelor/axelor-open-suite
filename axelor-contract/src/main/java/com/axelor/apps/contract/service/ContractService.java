@@ -169,5 +169,7 @@ public interface ContractService {
 
   void setInitialPriceOnContractLines(Contract contract);
 
-  boolean controlDate(Contract contract);
+  Contract controlDate(
+      Contract contract, LocalDate invoicePeriodEndDate, LocalDate invoicePeriodStartDate)
+      throws AxelorException;
 }

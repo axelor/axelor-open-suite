@@ -302,10 +302,21 @@ public class ContractController {
   public void checkDate(ActionRequest request, ActionResponse response) {
     Contract contract = request.getContext().asType(Contract.class);
     try {
-      if (Beans.get(ContractService.class).controlDate(contract))
-        response.setError(
+
+      if (contract.getInvoicePeriodStartDate().isAfter(contract.getInvoicePeriodEndDate())) {
+        contract =
+            Beans.get(ContractService.class)
+                .controlDate(
+                    contract,
+                    contract.getInvoicePeriodEndDate(),
+                    contract.getInvoicePeriodStartDate());
+        response.setValues(contract);
+
+        response.setInfo(
             I18n.get(
-                "End of next invoicing period should be after Start of next invoicing period."));
+                "End of next invoicing period should be after Start of next invoicing period."),
+            "Error");
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

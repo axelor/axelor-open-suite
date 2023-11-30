@@ -895,9 +895,14 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Override
-  public boolean controlDate(Contract contract) {
-    if (contract.getInvoicePeriodStartDate() == null || contract.getInvoicePeriodEndDate() == null)
-      return false;
-    return contract.getInvoicePeriodStartDate().isAfter(contract.getInvoicePeriodEndDate());
+  public Contract controlDate(
+      Contract contract, LocalDate invoicePeriodEndDate, LocalDate invoicePeriodStartDate) {
+    Contract contract1 = contractRepository.find(contract.getId());
+    if (invoicePeriodStartDate != contract1.getInvoicePeriodStartDate())
+      contract.setInvoicePeriodStartDate(contract1.getInvoicePeriodStartDate());
+    if (invoicePeriodEndDate != contract1.getInvoicePeriodEndDate())
+      contract.setInvoicePeriodEndDate(contract1.getInvoicePeriodEndDate());
+
+    return contract;
   }
 }
