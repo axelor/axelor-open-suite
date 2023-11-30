@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-              xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-    <grid name="import-export-translation-grid" title="Import/Export translation"
-          model="com.axelor.apps.base.db.ImportExportTranslation">
-        <field name="name" title="Name"/>
-        <field name="languageSet" title="Languages" widget="tagSelect"/>
-        <field name="uploadFile" title="Uploaded File"/>
+  <grid name="import-export-translation-grid" title="Import/Export translation"
+    model="com.axelor.apps.base.db.ImportExportTranslation">
+    <field name="name" title="Name"/>
+    <field name="languageSet" title="Languages" widget="tagSelect"/>
+    <field name="uploadFile" title="Uploaded File"/>
 
-    </grid>
+  </grid>
 
-    <form name="import-export-translation-form" title="Import/Export translation"
-          model="com.axelor.apps.base.db.ImportExportTranslation">
-        <panel name="infoPanel" title="info" showTitle="false" colSpan="12">
-            <field name="name" title="Name" required="true"/>
-            <field name="languageSet" title="Languages" widget="tagSelect" required="true"
-                   onSelect="action-import-export-translation-method-language-set-domain"/>
-        </panel>
-        <panel name="importExportPanel" title="Import/Export" showTitle="false" colSpan="12">
-            <button name="export" title="Export" colSpan="4"
-                    onClick="save,action-import-export-translation-method-export"/>
-            <field name="uploadFile" title="Uploaded File" colSpan="4" widget="binary-link"/>
-            <button name="import" title="Import" colSpan="4"
-                    onClick="save,action-import-export-translation-method-import"
-                    readonlyIf="uploadFile == null"/>
-        </panel>
-        <panel name="importExportHistoryPanel" title="Import/Export Histoty" showTitle="false"
-               colSpan="12">
-            <field name="importExportTranslationHistoryList"
-                   grid-view="import-export-translation-history-grid"
-                   form-view="import-export-translation-history-form" colSpan="12"/>
-        </panel>
-    </form>
+  <form name="import-export-translation-form" title="Import/Export translation"
+    model="com.axelor.apps.base.db.ImportExportTranslation">
+    <panel name="infoPanel" title="info" showTitle="false" colSpan="12">
+      <field name="name" title="Name" required="true"/>
+      <field name="languageSet" title="Languages" widget="tagSelect" required="true"
+        onSelect="action-import-export-translation-method-language-set-domain"/>
+    </panel>
+    <panel name="importExportPanel" title="Import/Export" showTitle="false" colSpan="12">
+      <button name="export" title="Export" colSpan="4"
+        onClick="save,action-import-export-translation-method-export"/>
+      <field name="uploadFile" title="Uploaded File" colSpan="4" widget="binary-link"/>
+      <button name="import" title="Import" colSpan="4"
+        onClick="save,action-import-export-translation-method-import"
+        readonlyIf="uploadFile == null"/>
+    </panel>
+    <panel name="importExportHistoryPanel" title="Import/Export Histoty" showTitle="false"
+      colSpan="12">
+      <field name="importExportTranslationHistoryList"
+        grid-view="import-export-translation-history-grid"
+        form-view="import-export-translation-history-form" colSpan="12"/>
+    </panel>
+  </form>
 
-    <action-method name="action-import-export-translation-method-export">
-        <call class="com.axelor.apps.base.web.ImportExportTranslationController"
-              method="exportTranslation"/>
-    </action-method>
+  <action-method name="action-import-export-translation-method-export">
+    <call class="com.axelor.apps.base.web.ImportExportTranslationController"
+      method="exportTranslation"/>
+  </action-method>
 
-    <action-method name="action-import-export-translation-method-import">
-        <call class="com.axelor.apps.base.web.ImportExportTranslationController"
-              method="importTranslation"/>
-    </action-method>
+  <action-method name="action-import-export-translation-method-import">
+    <call class="com.axelor.apps.base.web.ImportExportTranslationController"
+      method="importTranslation"/>
+  </action-method>
 
-    <action-method name="action-import-export-translation-method-language-set-domain">
-        <call class="com.axelor.apps.base.web.ImportExportTranslationController"
-              method="languageSetDomain"/>
-    </action-method>
+  <action-method name="action-import-export-translation-method-language-set-domain">
+    <call class="com.axelor.apps.base.web.ImportExportTranslationController"
+      method="languageSetDomain"/>
+  </action-method>
 
 </object-views>

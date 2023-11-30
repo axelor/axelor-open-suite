@@ -7,8 +7,8 @@
 
   <entity name="ImportExportTranslationHistory">
     <string name="actionType" title="Action Type"/>
-    <long name="recordNumber" title="Number of records imported/exported"/>
-    <long name="errorNumber" title="Number of errors occurred"/>
+    <integer name="recordNumber" title="Number of records imported/exported"/>
+    <integer name="errorNumber" title="Number of errors occurred"/>
     <many-to-one name="importExportTranslation" title="ImportExportTranslation"
       ref="com.axelor.apps.base.db.ImportExportTranslation"/>
   </entity>

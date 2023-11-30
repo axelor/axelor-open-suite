@@ -32,7 +32,7 @@ public class ImportExportTranslationController {
         Beans.get(ImportExportTranslationService.class);
     Path path = importExportTranslationService.importTranslations(importExportTranslation);
     if (path == null) {
-      response.setInfo("The import file is empty.");
+      response.setInfo("The import file is empty or it has error format.");
       response.setReload(true);
     } else {
       response.setInfo("File successfully imported.");
