@@ -237,7 +237,7 @@ public class ReconcileGroupServiceImpl implements ReconcileGroupService {
     addToReconcileGroup(reconcileGroup, reconcile);
     if (isBalanced(reconcileList)) {
       validate(reconcileGroup, reconcileList);
-    } else if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_TEMPORARY) {
+    } else if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_PARTIAL) {
       reconcileGroup.setLetteringDateTime(
           appBaseService.getTodayDateTime(reconcileGroup.getCompany()).toLocalDateTime());
     }
