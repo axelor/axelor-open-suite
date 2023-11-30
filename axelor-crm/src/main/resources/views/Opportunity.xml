@@ -546,13 +546,14 @@
     <field name="bankDetails" hidden="true"
       if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
-    <filter title="My opportunities">
+    <filter name="opportunity-filters-my-opportunities" title="My opportunities">
       <domain>self.user.id = :_internalUserId</domain>
     </filter>
-    <filter title="Unassigned opportunities">
+    <filter name="opportunity-filters-unassigned-opportunities"
+      title="Unassigned opportunities">
       <domain>self.user IS NULL</domain>
     </filter>
-    <filter title="My team opportunities">
+    <filter name="opportunity-filters-my-team-opportunities" title="My team opportunities">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>

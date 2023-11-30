@@ -1297,16 +1297,18 @@
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="Deliveries to prepare">
+    <filter name="customer-deliveries-filters-deliveries-to-prepare"
+      title="Deliveries to prepare">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Late Deliveries">
+    <filter name="customer-deliveries-filters-late-deliveries" title="Late Deliveries">
       <domain>self.estimatedDate &lt; CURRENT_DATE</domain>
     </filter>
-    <filter title="Deliveries History">
+    <filter name="customer-deliveries-filters-deliveries-history" title="Deliveries History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Deliveries Cancelled">
+    <filter name="customer-deliveries-filters-deliveries-cancelled"
+      title="Deliveries Cancelled">
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>
@@ -1327,16 +1329,16 @@
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="Today Arrivals">
+    <filter name="supplier-arrivals-filters-today-arrivals" title="Today Arrivals">
       <domain>self.estimatedDate = CURRENT_DATE</domain>
     </filter>
-    <filter title="Upcoming arrivals">
+    <filter name="supplier-arrivals-filters-upcoming-arrivals" title="Upcoming arrivals">
       <domain>self.estimatedDate &lt; :_newDate</domain>
     </filter>
-    <filter title="Arrivals History">
+    <filter name="supplier-arrivals-filters-arrivals-history" title="Arrivals History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Cancelled Arrivals">
+    <filter name="supplier-arrivals-filters-cancelled-arrivals" title="Cancelled Arrivals">
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>
@@ -1357,13 +1359,13 @@
       if="!__config__.app.isApp('supplychain')"/>
     <field name="invoiceSet" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="backorderId" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="Moves To Prepare">
+    <filter name="internal-stock-move-filters-moves-to-prepare" title="Moves To Prepare">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Moves History">
+    <filter name="internal-stock-move-filters-moves-history" title="Moves History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Moves Cancelled">
+    <filter name="internal-stock-move-filters-moves-cancelled" title="Moves Cancelled">
       <domain>self.statusSelect = 4</domain>
     </filter>
   </search-filters>

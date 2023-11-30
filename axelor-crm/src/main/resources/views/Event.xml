@@ -676,18 +676,18 @@
   <search-filters name="crm-tasks-filters" model="com.axelor.apps.crm.db.Event"
     title="Tasks filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Tasks">
+    <filter name="crm-tasks-filters-my-tasks" title="My Tasks">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="My Today Tasks">
+    <filter name="crm-tasks-filters-my-today-tasks" title="My Today Tasks">
       <domain>self.user = :__user__ and self.startDateTime &lt;= :_todayDateTime</domain>
     </filter>
-    <filter title="My Upcoming Tasks">
+    <filter name="crm-tasks-filters-my-upcoming-tasks" title="My Upcoming Tasks">
       <domain>self.user = :__user__ and self.startDateTime &lt; :_newDate and (self.statusSelect =
         1
         or self.statusSelect = 2)</domain>
     </filter>
-    <filter title="My Project Tasks">
+    <filter name="crm-tasks-filters-my-project-tasks" title="My Project Tasks">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
@@ -695,13 +695,13 @@
   <search-filters name="meeting-filters" model="com.axelor.apps.crm.db.Event"
     title="Meeting filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Meetings">
+    <filter name="meeting-filters-my-meetings" title="My Meetings">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="My Upcoming Meetings">
+    <filter name="meeting-filters-my-upcoming-meetings" title="My Upcoming Meetings">
       <domain>self.user = :__user__ and self.startDateTime &lt; :_newDate</domain>
     </filter>
-    <filter title="My Team Meetings">
+    <filter name="meeting-filters-my-team-meetings" title="My Team Meetings">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
@@ -709,13 +709,13 @@
   <search-filters name="call-filters" model="com.axelor.apps.crm.db.Event"
     title="Call filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Calls">
+    <filter name="call-filters-my-calls" title="My Calls">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="My Today Calls">
+    <filter name="call-filters-my-today-calls" title="My Today Calls">
       <domain>self.user = :__user__ and self.startDateTime &lt;= :_todayDateTime</domain>
     </filter>
-    <filter title="My Team Calls">
+    <filter name="call-filters-my-team-calls" title="My Team Calls">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
@@ -723,16 +723,16 @@
   <search-filters name="event-filters" model="com.axelor.apps.crm.db.Event"
     title="Event filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My upcoming events">
+    <filter name="event-filters-my-upcoming-events" title="My upcoming events">
       <domain>self.user = :__user__ AND self.startDateTime &gt;= :_currentDate</domain>
     </filter>
-    <filter title="My past events">
+    <filter name="event-filters-my-past-events" title="My past events">
       <domain>self.user = :__user__ AND self.startDateTime &lt;= :_currentDate</domain>
     </filter>
-    <filter title="All upcoming events">
+    <filter name="event-filters-all-upcoming-events" title="All upcoming events">
       <domain>self.startDateTime &gt;= :_currentDate</domain>
     </filter>
-    <filter title="All past events">
+    <filter name="event-filters-all-past-events" title="All past events">
       <domain>self.startDateTime &lt;= :_currentDate</domain>
     </filter>
   </search-filters>

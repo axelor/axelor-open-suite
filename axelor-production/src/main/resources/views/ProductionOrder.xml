@@ -174,7 +174,8 @@
     model="com.axelor.apps.production.db.ProductionOrder" title="Production order filters">
     <field name="project" hidden="true"
       if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <filter title="Production orders closed">
+    <filter name="production-order-filters-production-orders-closed"
+      title="Production orders closed">
       <domain>self.isClosed = true</domain>
     </filter>
   </search-filters>

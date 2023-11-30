@@ -1059,45 +1059,48 @@
       if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <field name="analyticDistributionTemplate" hidden="true"
       if="!__config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-    <filter title="Sale Entries">
+    <filter name="move-line-filters-sale-entries" title="Sale Entries">
       <domain>self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect = 4</domain>
     </filter>
-    <filter title="Due Sale Entries">
+    <filter name="move-line-filters-due-sale-entries" title="Due Sale Entries">
       <domain>(self.move.invoice.operationTypeSelect = 3 OR self.move.invoice.operationTypeSelect =
         4) AND self.dueDate &lt; CURRENT_DATE AND self.amountRemaining &gt; 0</domain>
     </filter>
-    <filter title="Purchase Entries">
+    <filter name="move-line-filters-purchase-entries" title="Purchase Entries">
       <domain>self.move.invoice.operationTypeSelect = 1 OR self.move.invoice.operationTypeSelect = 2</domain>
     </filter>
-    <filter title="Simulated Move Lines">
+    <filter name="move-line-filters-simulated-move-lines" title="Simulated Move Lines">
       <domain>self.move.statusSelect = 5</domain>
     </filter>
-    <filter title="Payment Entries">
+    <filter name="move-line-filters-payment-entries" title="Payment Entries">
       <domain>self.move.functionalOriginSelect = 5</domain>
     </filter>
-    <filter title="Depreciation Entries">
+    <filter name="move-line-filters-depreciation-entries" title="Depreciation Entries">
       <domain>self.move.functionalOriginSelect = 7</domain>
     </filter>
-    <filter title="Cut off Entries">
+    <filter name="move-line-filters-cut-off-entries" title="Cut off Entries">
       <domain>self.move.functionalOriginSelect = 6</domain>
     </filter>
-    <filter title="Entries to reconcile">
+    <filter name="move-line-filters-entries-to-reconcile" title="Entries to reconcile">
       <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
         self.amountRemaining != 0 AND (self.reconcileGroup = null OR
         self.reconcileGroup.statusSelect = 3) AND (self.move.statusSelect = 2 OR
         self.move.statusSelect = 3)</domain>
     </filter>
-    <filter title="Partially reconciled entries">
+    <filter name="move-line-filters-partially-reconciled-entries"
+      title="Partially reconciled entries">
       <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
         self.amountRemaining != 0 AND self.reconcileGroup != null AND
         (self.reconcileGroup.statusSelect = 1 OR self.reconcileGroup.statusSelect = 2) AND
         (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
     </filter>
-    <filter title="Unreconcilied and partially reconciled entries">
+    <filter name="move-line-filters-unreconcilied-and-partially-reconciled-entries"
+      title="Unreconcilied and partially reconciled entries">
       <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
         self.amountRemaining != 0 AND (self.move.statusSelect = 2 OR self.move.statusSelect = 3)</domain>
     </filter>
-    <filter title="Fully reconcilied entries">
+    <filter name="move-line-filters-fully-reconcilied-entries"
+      title="Fully reconcilied entries">
       <domain>self.account.reconcileOk = TRUE AND self.account.statusSelect = 1 AND
         self.amountRemaining = 0 AND (self.reconcileGroup != null AND
         (self.reconcileGroup.statusSelect = 1 OR self.reconcileGroup.statusSelect = 2)) AND

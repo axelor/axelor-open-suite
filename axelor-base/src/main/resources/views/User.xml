@@ -591,7 +591,7 @@
       if="!(__config__.app.isApp('sale') || __config__.app.isApp('purchase'))"/>
     <field name="useSignatureForStock" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="projectSet" hidden="true" if="!__config__.app.isApp('project')"/>
-    <filter title="Active users">
+    <filter name="user-filters-active-users" title="Active users">
       <domain>self.blocked = false AND (self.activateOn IS NULL OR self.activateOn &lt;= :_today)
         AND (self.expiresOn IS NULL OR self.expiresOn &gt;= :_today)</domain>
     </filter>

@@ -127,10 +127,10 @@
     model="com.axelor.apps.account.db.ChequeRejection" title="Cheque rejection filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Recent rejects">
+    <filter name="cheque-rejection-filters-recent-rejects" title="Recent rejects">
       <domain>self.rejectionDate &gt;= :_newDate1</domain>
     </filter>
-    <filter title="Rejects over past 30 days">
+    <filter name="cheque-rejection-filters-past-rejects" title="Rejects over past 30 days">
       <domain>self.rejectionDate &gt;= :_newDate2</domain>
     </filter>
   </search-filters>

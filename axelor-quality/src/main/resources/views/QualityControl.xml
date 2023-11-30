@@ -244,10 +244,11 @@
 
   <search-filters name="quality-control-filters"
     model="com.axelor.apps.quality.db.QualityControl" title="Quality control filters">
-    <filter title="My quality controls">
+    <filter name="quality-control-filters-my-quality-controls" title="My quality controls">
       <domain>self.responsible.user.id = :_userId</domain>
     </filter>
-    <filter title="My team quality controls">
+    <filter name="quality-control-filters-my-team-quality-controls"
+      title="My team quality controls">
       <domain>self.team.id = :_myActiveTeamId</domain>
     </filter>
   </search-filters>
