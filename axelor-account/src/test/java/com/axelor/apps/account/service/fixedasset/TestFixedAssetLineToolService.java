@@ -28,28 +28,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
-public class TestFixedAssetLineToolService {
+class TestFixedAssetLineToolService {
 
-  private FixedAssetLineToolService fixedAssetLineToolService;
+  private static FixedAssetLineToolService fixedAssetLineToolService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  static void prepare() {
     fixedAssetLineToolService = new FixedAssetLineToolServiceImpl();
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineEmpty() {
+  void groupAndSortByDateFixedAssetLineEmpty() {
     FixedAsset fixedAsset = createFixedAsset(12, new ArrayList<>(), new ArrayList<>());
-    Assert.assertTrue(
+    Assertions.assertTrue(
         fixedAssetLineToolService.groupAndSortByDateFixedAssetLine(fixedAsset).isEmpty());
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineSimpleCasePeriodicityMonth() {
+  void groupAndSortByDateFixedAssetLineSimpleCasePeriodicityMonth() {
     List<LocalDate> fiscalDateList =
         Lists.newArrayList(
             LocalDate.of(2022, 3, 31),
@@ -71,11 +71,11 @@ public class TestFixedAssetLineToolService {
             LocalDate.of(2022, 4, 30),
             LocalDate.of(2022, 5, 31),
             LocalDate.of(2022, 6, 30));
-    Assert.assertEquals(expectedSet, localDateResults);
+    Assertions.assertEquals(expectedSet, localDateResults);
   }
 
   @Test
-  public void groupAndSortByDateFixedAssetLineRealCasePeriodicityYear() {
+  void groupAndSortByDateFixedAssetLineRealCasePeriodicityYear() {
     List<LocalDate> fiscalDateList =
         Lists.newArrayList(
             LocalDate.of(2023, 1, 31),
@@ -99,7 +99,7 @@ public class TestFixedAssetLineToolService {
             LocalDate.of(2025, 1, 31),
             LocalDate.of(2026, 1, 31),
             LocalDate.of(2026, 9, 20));
-    Assert.assertEquals(expectedSet, localDateResults);
+    Assertions.assertEquals(expectedSet, localDateResults);
   }
 
   protected FixedAsset createFixedAsset(

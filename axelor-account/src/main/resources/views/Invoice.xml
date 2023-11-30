@@ -2421,6 +2421,7 @@ InvoiceSet.length > 0))"
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <context name="_invoice" expr="eval: __this__"/>
+    <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
   </action-view>
 
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"

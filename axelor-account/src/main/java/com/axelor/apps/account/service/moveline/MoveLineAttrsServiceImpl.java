@@ -51,6 +51,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected PeriodServiceAccount periodServiceAccount;
   protected JournalService journalService;
   protected MoveLineTaxService moveLineTaxService;
+  protected MoveLineService moveLineService;
   protected AnalyticToolService analyticToolService;
 
   @Inject
@@ -61,6 +62,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       PeriodServiceAccount periodServiceAccount,
       JournalService journalService,
       MoveLineTaxService moveLineTaxService,
+      MoveLineService moveLineService,
       AnalyticToolService analyticToolService) {
     this.accountConfigService = accountConfigService;
     this.moveLineControlService = moveLineControlService;
@@ -68,6 +70,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.periodServiceAccount = periodServiceAccount;
     this.journalService = journalService;
     this.moveLineTaxService = moveLineTaxService;
+    this.moveLineService = moveLineService;
     this.analyticToolService = analyticToolService;
   }
 
@@ -291,5 +294,33 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             || (moveLine.getAccount() != null
                 && moveLine.getAccount().getIsTaxRequiredOnMoveLine()),
         attrsMap);
+  }
+
+  @Override
+  public void addCutOffPanelHidden(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || moveLine == null || moveLine.getAccount() == null) {
+      return;
+    }
+
+    this.addAttr(
+        "cutOffPanel",
+        "hidden",
+        !moveLineService.checkManageCutOffDates(moveLine, move.getFunctionalOriginSelect()),
+        attrsMap);
+  }
+
+  @Override
+  public void addCutOffDatesRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null || moveLine == null || moveLine.getAccount() == null) {
+      return;
+    }
+
+    boolean cutOffDatesRequired =
+        moveLineService.checkManageCutOffDates(moveLine, move.getFunctionalOriginSelect());
+
+    this.addAttr("cutOffStartDate", "required", cutOffDatesRequired, attrsMap);
+    this.addAttr("cutOffEndDate", "required", cutOffDatesRequired, attrsMap);
   }
 }
