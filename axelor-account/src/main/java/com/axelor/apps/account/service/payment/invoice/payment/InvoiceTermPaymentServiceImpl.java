@@ -301,18 +301,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     BigDecimal ratio =
         invoiceTerm.getCompanyAmount().divide(invoiceTerm.getAmount(), 10, RoundingMode.HALF_UP);
 
-    return paidAmount
-        .multiply(ratio)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        invoiceTerm, paidAmount.multiply(ratio));
   }
 
   protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
     BigDecimal ratio =
         invoiceTerm.getAmount().divide(invoiceTerm.getCompanyAmount(), 10, RoundingMode.HALF_UP);
 
-    return companyPaidAmount
-        .multiply(ratio)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return currencyScaleServiceAccount.getScaledValue(
+        invoiceTerm, companyPaidAmount.multiply(ratio));
   }
 
   @Override
