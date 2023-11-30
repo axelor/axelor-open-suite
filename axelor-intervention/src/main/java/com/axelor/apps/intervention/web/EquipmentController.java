@@ -8,9 +8,11 @@ import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.apps.intervention.service.EquipmentService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.MapHelper;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -58,7 +60,7 @@ public class EquipmentController {
                 .map());
       } else if (request.getContext().getContextClass().equals(Equipment.class)) {
         Equipment equipment = request.getContext().asType(Equipment.class);
-        if (equipment.getTypeSelect().equals(EquipmentRepository.BARKENE_TYPE_PLACE)) {
+        if (equipment.getTypeSelect().equals(EquipmentRepository.INTERVENTION_TYPE_PLACE)) {
           response.setView(
               ActionView.define("Equipment")
                   .model(Equipment.class.getName())
@@ -68,7 +70,9 @@ public class EquipmentController {
                   .context("_xPartnerId", equipment.getPartner().getId())
                   .context("_xParentEquipmentId", equipment.getId())
                   .map());
-        } else if (equipment.getTypeSelect().equals(EquipmentRepository.BARKENE_TYPE_EQUIPMENT)) {
+        } else if (equipment
+            .getTypeSelect()
+            .equals(EquipmentRepository.INTERVENTION_TYPE_EQUIPMENT)) {
           response.setView(
               ActionView.define("Equipment line")
                   .model(EquipmentLine.class.getName())
@@ -98,6 +102,18 @@ public class EquipmentController {
                 equipmentRepository.find(Long.valueOf(request.getContext().get("id").toString())));
       }
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void importEquipments(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = MapHelper.get(request.getContext(), Partner.class, "_xPartner");
+      MetaFile metaFile = MapHelper.get(request.getContext(), MetaFile.class, "_xFile");
+      response.setExportFile(
+          Beans.get(EquipmentService.class).importEquipments(partner.getId(), metaFile).toString());
+      response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

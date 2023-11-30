@@ -1,6 +1,5 @@
 package com.axelor.apps.intervention.repo;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.exception.IExceptionMessage;
@@ -13,8 +12,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.PersistenceException;
-import org.apache.commons.collections.CollectionUtils;
 
 public class EquipmentRepository extends JpaRepository<Equipment> {
 
@@ -26,7 +23,7 @@ public class EquipmentRepository extends JpaRepository<Equipment> {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (json != null && json.get("id") != null) {
       final Equipment entity = find((Long) json.get("id"));
-      if (entity != null && entity.getTypeSelect().equals(BARKENE_TYPE_EQUIPMENT)) {
+      if (entity != null && entity.getTypeSelect().equals(INTERVENTION_TYPE_EQUIPMENT)) {
         json.put(
             "_inService",
             Boolean.TRUE.equals(entity.getInService())
@@ -74,44 +71,27 @@ public class EquipmentRepository extends JpaRepository<Equipment> {
             .getStatusSelect()
             .equals(AbstractContractRepository.ACTIVE_CONTRACT)) {
       if (Boolean.TRUE.equals(entity.getInService())) {
-        entity.setIndicatorSelect(BARKENE_INDICATOR_UC_OP);
+        entity.setIndicatorSelect(INTERVENTION_INDICATOR_UC_OP);
       } else {
-        entity.setIndicatorSelect(BARKENE_INDICATOR_UC_NOP);
+        entity.setIndicatorSelect(INTERVENTION_INDICATOR_UC_NOP);
       }
     } else {
       if (Boolean.TRUE.equals(entity.getInService())) {
-        entity.setIndicatorSelect(BARKENE_INDICATOR_OC_OP);
+        entity.setIndicatorSelect(INTERVENTION_INDICATOR_OC_OP);
       } else {
-        entity.setIndicatorSelect(BARKENE_INDICATOR_OC_NOP);
+        entity.setIndicatorSelect(INTERVENTION_INDICATOR_OC_NOP);
       }
     }
-    EquipmentService equipmentService = Beans.get(EquipmentService.class);
-    entity = super.save(entity);
-    if (CollectionUtils.isNotEmpty(entity.getEquipmentLineList())) {
-      try {
-        equipmentService.createAndRealizeStockMovesForEquipmentLines(entity.getEquipmentLineList());
-      } catch (AxelorException e) {
-        throw new PersistenceException(e);
-      }
-    }
-    return entity;
+    return super.save(entity);
   }
 
   // TYPE SELECT
-  public static final String BARKENE_TYPE_PLACE = "place";
-  public static final String BARKENE_TYPE_EQUIPMENT = "equipment";
-
-  // AUTHORISATION SELECT
-  public static final int BARKENE_SECURITY_CLASSIFICATION_TO_BE_ANNOUNCED = 1;
-
-  // VISIT FREQUENCY SELECT
-  public static final String BARKENE_VISIT_FREQUENCY_AT_EVERY_VISIT = "every";
-  public static final String BARKENE_VISIT_FREQUENCY_VISIT_1 = "first";
-  public static final String BARKENE_VISIT_FREQUENCY_VISIT_2 = "second";
+  public static final String INTERVENTION_TYPE_PLACE = "place";
+  public static final String INTERVENTION_TYPE_EQUIPMENT = "equipment";
 
   // INDICATOR SELECT
-  public static final int BARKENE_INDICATOR_UC_OP = 1;
-  public static final int BARKENE_INDICATOR_UC_NOP = 2;
-  public static final int BARKENE_INDICATOR_OC_OP = 3;
-  public static final int BARKENE_INDICATOR_OC_NOP = 4;
+  public static final int INTERVENTION_INDICATOR_UC_OP = 1;
+  public static final int INTERVENTION_INDICATOR_UC_NOP = 2;
+  public static final int INTERVENTION_INDICATOR_OC_OP = 3;
+  public static final int INTERVENTION_INDICATOR_OC_NOP = 4;
 }

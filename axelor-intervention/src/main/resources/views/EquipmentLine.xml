@@ -23,7 +23,6 @@
     <field name="quantity"/>
     <field name="trackingNumber"/>
     <field name="comments"/>
-    <field name="groupWarrantyExpirationDate"/>
   </grid>
 
   <form model="com.axelor.apps.intervention.db.EquipmentLine" title="Equipments lines"

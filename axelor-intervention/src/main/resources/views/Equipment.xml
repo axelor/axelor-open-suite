@@ -183,7 +183,7 @@
     </panel-mail>
   </form>
 
-  <action-view name="action-equipment-view-import-wizard" title="Import equipment"
+  <action-view name="action-equipment-view-import-wizard" title="Import equipments"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="import-equipments-form"/>
     <view-param name="popup" value="reload"/>
@@ -267,7 +267,13 @@
   </action-view>
 
   <action-method name="action-equipment-method-new-item-on-tree">
-    <call class="com.axelor.apps.barkene.web.EquipmentController" method="openNewItemOnTree"/>
+    <call class="com.axelor.apps.intervention.web.EquipmentController"
+      method="openNewItemOnTree"/>
+  </action-method>
+
+  <action-method name="action-equipment-method-import">
+    <call class="com.axelor.apps.intervention.web.EquipmentController"
+      method="importEquipments"/>
   </action-method>
 
   <search-filters name="equipment-filters"

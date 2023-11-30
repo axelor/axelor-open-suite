@@ -14,7 +14,7 @@ public class InterventionEquipmentModelRepository extends EquipmentModelReposito
     if (json != null && json.get("id") != null) {
       final EquipmentModel entity = find((Long) json.get("id"));
       if (entity != null
-          && entity.getTypeSelect().equals(EquipmentRepository.BARKENE_TYPE_EQUIPMENT)) {
+          && entity.getTypeSelect().equals(EquipmentRepository.INTERVENTION_TYPE_EQUIPMENT)) {
         json.put(
             "_inService",
             Boolean.TRUE.equals(entity.getInService())

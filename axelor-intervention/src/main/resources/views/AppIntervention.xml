@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="app-intervention-config-form" title="App Intervention"
+    model="com.axelor.studio.db.AppIntervention" width="large"
+    onLoad="action-app-intervention-method-get-processed-fields">
+
+    <panel name="assetsManagementPanel" title="Assets management">
+      <field name="$_xProcessedFields" title="Fields processed by the import" type="text"
+        colSpan="12" readonly="true"/>
+      <field name="assetsImportFormat" widget="BinaryLink"/>
+    </panel>
+  </form>
+
+  <action-method name="action-app-intervention-method-get-processed-fields">
+    <call class="com.axelor.apps.intervention.web.AppInterventionController"
+      method="getProcessedFields"/>
+  </action-method>
+
+</object-views>

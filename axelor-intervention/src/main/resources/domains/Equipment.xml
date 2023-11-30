@@ -31,7 +31,7 @@
 
     <one-to-many name="pictureList" title="Pictures"
       ref="com.axelor.apps.intervention.db.Picture" mappedBy="equipment" copy="false"/>
-    <one-to-many name="equipmentLineList" title="Equipment Lines" orphanRemoval="false"
+    <one-to-many name="equipmentLineList" title="Equipment lines" orphanRemoval="false"
       ref="com.axelor.apps.intervention.db.EquipmentLine" mappedBy="equipment" copy="false"/>
     <many-to-one name="equipmentFamily" title="Equipment family"
       ref="com.axelor.apps.intervention.db.EquipmentFamily" massUpdate="true"/>
