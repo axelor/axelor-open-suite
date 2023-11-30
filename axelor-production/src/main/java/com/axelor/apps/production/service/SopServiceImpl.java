@@ -22,11 +22,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.Sop;
 import com.axelor.apps.production.db.SopLine;
@@ -35,18 +38,23 @@ import com.axelor.apps.production.db.repo.SopRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.db.MrpForecast;
+import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.TreeSet;
 
 public class SopServiceImpl implements SopService {
 
@@ -59,16 +67,22 @@ public class SopServiceImpl implements SopService {
   protected CurrencyService currencyService;
   protected CurrencyRepository currencyRepo;
   protected LocalDate today;
+  protected ProductCompanyService productCompanyService;
+  protected ProductRepository productRepository;
+  protected MrpForecastRepository mrpForecastRepository;
 
   @Inject
-  SopServiceImpl(
+  public SopServiceImpl(
       SopRepository sopRepo,
       PeriodRepository periodRepo,
       SaleOrderLineRepository saleOrderLineRepo,
       SopLineRepository sopLineRepo,
       CurrencyService currencyService,
       AppBaseService appBaseService,
-      CurrencyRepository currencyRepo) {
+      CurrencyRepository currencyRepo,
+      ProductCompanyService productCompanyService,
+      ProductRepository productRepository,
+      MrpForecastRepository mrpForecastRepository) {
     this.sopRepo = sopRepo;
     this.periodRepo = periodRepo;
     this.saleOrderLineRepo = saleOrderLineRepo;
@@ -76,6 +90,9 @@ public class SopServiceImpl implements SopService {
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.currencyRepo = currencyRepo;
+    this.productCompanyService = productCompanyService;
+    this.productRepository = productRepository;
+    this.mrpForecastRepository = mrpForecastRepository;
   }
 
   @Override
@@ -85,7 +102,7 @@ public class SopServiceImpl implements SopService {
         periodRepo
             .all()
             .filter("self.year = :year AND self.statusSelect = :status")
-            .bind("year", sop.getYear())
+            .bind("year", sop.getPeriodYear())
             .bind("status", PeriodRepository.STATUS_OPENED)
             .fetch();
     List<SopLine> sopLineList = new ArrayList<SopLine>();
@@ -120,24 +137,19 @@ public class SopServiceImpl implements SopService {
     for (SopLine sopLine : sop.getSopLineList()) {
       sop = sopRepo.find(sop.getId());
       if (sop.getIsForecastOnHistoric()) {
-        this.setSalesForecast(
-            sopLine, sop.getProductCategory(), sop.getStockLocationSet(), sop.getCompany());
+        this.setSalesForecast(sopLine, sop.getProductCategory(), sop.getCompany());
       }
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  protected void setSalesForecast(
-      SopLine sopLine,
-      ProductCategory category,
-      Set<StockLocation> stockLocationSet,
-      Company company)
+  protected void setSalesForecast(SopLine sopLine, ProductCategory category, Company company)
       throws AxelorException {
 
     sopLine = sopLineRepo.find(sopLine.getId());
     LocalDate fromDate = sopLine.getPeriod().getFromDate();
     LocalDate toDate = sopLine.getPeriod().getToDate();
-    Year year = sopLine.getSop().getYearbasedHistoric();
+    Year year = sopLine.getSop().getHistoricPeriodYear();
     if (year != null) {
       fromDate = fromDate.withYear(year.getFromDate().getYear());
       toDate = toDate.withYear(year.getToDate().getYear());
@@ -147,11 +159,6 @@ public class SopServiceImpl implements SopService {
     statusList.add(SaleOrderRepository.STATUS_ORDER_COMPLETED);
     statusList.add(SaleOrderRepository.STATUS_ORDER_CONFIRMED);
 
-    List<Long> stockLocationIds =
-        stockLocationSet.stream()
-            .map(stockLocation -> stockLocation.getId())
-            .collect(Collectors.toList());
-
     BigDecimal exTaxSum = BigDecimal.ZERO;
     Query<SaleOrderLine> query =
         saleOrderLineRepo
@@ -159,12 +166,10 @@ public class SopServiceImpl implements SopService {
             .filter(
                 "self.saleOrder.company = ?1 "
                     + "AND self.saleOrder.statusSelect in (?2) "
-                    + "AND self.product.productCategory = ?3 "
-                    + "AND self.saleOrder.stockLocation.id in (?4)",
+                    + "AND self.product.productCategory = ?3",
                 company,
                 statusList,
-                category,
-                stockLocationIds)
+                category)
             .order("id");
     int offset = 0;
     List<SaleOrderLine> saleOrderLineList;
@@ -206,5 +211,52 @@ public class SopServiceImpl implements SopService {
     sopLine = sopLineRepo.find(sopLine.getId());
     sopLine.setSopSalesForecast(exTaxSum);
     sopLineRepo.save(sopLine);
+  }
+
+  @Override
+  public Set<Map<String, Object>> fillMrpForecast(
+      ProductCategory productCategory, Company company, Period period) throws AxelorException {
+    Set<Map<String, Object>> mrpForecastSet =
+        new TreeSet<>(Comparator.comparing(m -> (String) m.get("code")));
+    List<Product> productList =
+        productRepository
+            .all()
+            .filter("self.productCategory.id = ?1 ", productCategory.getId())
+            .fetch();
+    if (productList == null) {
+      return mrpForecastSet;
+    }
+
+    for (Product product : productList) {
+      Map<String, Object> map = new HashMap<>();
+      MrpForecast mrpForecast =
+          mrpForecastRepository
+              .all()
+              .filter(
+                  "self.product.id = ?1 AND self.technicalOrigin = ?2 AND self.forecastDate >= ?3 AND self.forecastDate <= ?4",
+                  product.getId(),
+                  MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP,
+                  period.getFromDate(),
+                  period.getToDate())
+              .fetchOne();
+      BigDecimal salePrice = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+      if (mrpForecast != null) {
+        map = Mapper.toMap(mrpForecast);
+        BigDecimal totalPrice = mrpForecast.getQty().multiply(salePrice);
+        map.put("$totalPrice", totalPrice);
+        map.put("$unitPrice", salePrice);
+        map.put("code", product.getCode());
+        mrpForecastSet.add(map);
+        continue;
+      }
+      map.put("product", product);
+      map.put("qty", BigDecimal.ZERO);
+      map.put("$totalPrice", BigDecimal.ZERO);
+      map.put("$unitPrice", salePrice);
+      map.put("code", product.getCode());
+      map.put("forecastDate", period.getToDate());
+      mrpForecastSet.add(map);
+    }
+    return mrpForecastSet;
   }
 }

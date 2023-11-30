@@ -18,90 +18,57 @@
  */
 package com.axelor.apps.production.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.ProductCategoryRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.supplychain.db.MrpForecast;
-import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
+import com.axelor.apps.production.db.Sop;
+import com.axelor.apps.production.db.SopLine;
+import com.axelor.apps.production.service.SopService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Set;
 
 @Singleton
 public class SopLineController {
 
-  @Inject MrpForecastRepository mrpForecastRepo;
-  @Inject CurrencyRepository currencyRepo;
-
-  public void fillMrpForecast(ActionRequest request, ActionResponse response) {
-
+  @SuppressWarnings("unchecked")
+  public void fillMrpForecast(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Context context = request.getContext();
+    SopLine sopLine = Mapper.toBean(SopLine.class, (Map<String, Object>) context.get("_sopLine"));
+    Sop sop = Mapper.toBean(Sop.class, (Map<String, Object>) context.get("_sop"));
 
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> productCategoryMap =
-        (LinkedHashMap<String, Object>) context.get("_productCategory");
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> sopLineMap =
-        (LinkedHashMap<String, Object>) context.get("_sopLine");
-    @SuppressWarnings("unchecked")
-    LinkedHashMap<String, Object> currencyMap =
-        (LinkedHashMap<String, Object>) sopLineMap.get("currency");
+    BigDecimal sopSalesForecast = sopLine.getSopSalesForecast();
 
-    BigDecimal sopSalesForecast = new BigDecimal(sopLineMap.get("sopSalesForecast").toString());
-    Long productCategoryId = Long.parseLong(productCategoryMap.get("id").toString());
-    Currency currency = currencyRepo.find(Long.parseLong(currencyMap.get("id").toString()));
-    BigDecimal totalForecast = BigDecimal.ZERO;
-    SortedSet<Map<String, Object>> mrpForecastSet =
-        new TreeSet<Map<String, Object>>(Comparator.comparing(m -> (String) m.get("code")));
-    List<Product> productList =
-        Beans.get(ProductRepository.class)
-            .all()
-            .filter("self.productCategory.id = ?1 ", productCategoryId)
-            .fetch();
-    if (productList != null) {
-      for (Product product : productList) {
-        Map<String, Object> map = new HashMap<String, Object>();
-        MrpForecast mrpForecast =
-            mrpForecastRepo
-                .all()
-                .filter(
-                    "self.product.id = ?1 AND self.technicalOrigin = ?2",
-                    product.getId(),
-                    MrpForecastRepository.TECHNICAL_ORIGIN_CREATED_FROM_SOP)
-                .fetchOne();
-        if (mrpForecast != null) {
-          map = Mapper.toMap(mrpForecast);
-          BigDecimal totalPrice = mrpForecast.getQty().multiply(product.getSalePrice());
-          map.put("$totalPrice", totalPrice);
-          map.put("$unitPrice", product.getSalePrice());
-          map.put("code", product.getCode());
-          totalForecast = totalForecast.add(totalPrice);
-          mrpForecastSet.add(map);
-          continue;
-        }
-        map.put("product", product);
-        map.put("qty", BigDecimal.ZERO);
-        map.put("$totalPrice", BigDecimal.ZERO);
-        map.put("$unitPrice", product.getSalePrice());
-        map.put("code", product.getCode());
-        mrpForecastSet.add(map);
-      }
-    }
-    response.setValue("$mrpForecasts", mrpForecastSet);
+    Company company = Beans.get(CompanyRepository.class).find(sop.getCompany().getId());
+    Period period = Beans.get(PeriodRepository.class).find(sopLine.getPeriod().getId());
+    Currency currency = Beans.get(CurrencyRepository.class).find(sopLine.getCurrency().getId());
+    ProductCategory productCategory =
+        Beans.get(ProductCategoryRepository.class).find(sop.getProductCategory().getId());
+
+    Set<Map<String, Object>> mrpForecasts =
+        Beans.get(SopService.class).fillMrpForecast(productCategory, company, period);
+    BigDecimal totalForecast =
+        mrpForecasts.stream()
+            .map(map -> map.get("$totalPrice"))
+            .map(val -> new BigDecimal(val.toString()))
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
+    response.setValue("$mrpForecasts", mrpForecasts);
     response.setValue("$sopSalesForecast", sopSalesForecast);
     response.setValue("$totalForecast", totalForecast);
     response.setValue(

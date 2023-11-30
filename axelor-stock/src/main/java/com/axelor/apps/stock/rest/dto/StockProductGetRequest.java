@@ -33,8 +33,6 @@ public class StockProductGetRequest extends RequestStructure {
   @Min(0)
   private Long stockLocationId;
 
-  public StockProductGetRequest() {}
-
   public Long getCompanyId() {
     return companyId;
   }

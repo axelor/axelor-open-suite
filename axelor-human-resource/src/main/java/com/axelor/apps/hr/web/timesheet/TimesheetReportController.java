@@ -18,14 +18,11 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetReport;
-import com.axelor.apps.hr.report.IReport;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
 import com.axelor.apps.hr.translation.ITranslation;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -34,7 +31,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.lang.invoke.MethodHandles;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -44,29 +40,6 @@ import org.slf4j.LoggerFactory;
 public class TimesheetReportController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
-  public void printEmployeeTimesheetReport(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);
-    String name = I18n.get(ITranslation.TS_REPORT_TITLE);
-
-    String fileLink =
-        ReportFactory.createReport(IReport.EMPLOYEE_TIMESHEET, name)
-            .addParam("TimesheetReportId", timesheetReport.getId().toString())
-            .addParam("Timezone", null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .addParam(
-                "FromDate",
-                timesheetReport.getFromDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy")))
-            .addParam(
-                "ToDate",
-                timesheetReport.getToDate().format(DateTimeFormatter.ofPattern("dd-MM-yyy")))
-            .toAttach(timesheetReport)
-            .generate()
-            .getFileLink();
-    logger.debug("Printing {}", name);
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
 
   public void fillTimesheetReportReminderEmployees(ActionRequest request, ActionResponse response) {
     TimesheetReport timesheetReport = request.getContext().asType(TimesheetReport.class);

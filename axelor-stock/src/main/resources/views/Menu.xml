@@ -124,7 +124,6 @@
     <view type="cards" name="product-cards"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false and self.productTypeSelect = 'storable' and self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromStock" expr="eval:true"/>
   </action-view>
 
@@ -167,7 +166,7 @@
 
   <!-- STOCK REPORTING -->
 
-  <menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="1000"
+  <menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="1100"
     icon="fa-bar-chart"/>
 
   <menuitem name="menu-stock-dashboard-1" parent="stock-root-report" title="General"
@@ -187,7 +186,7 @@
 
   <!-- STOCK CONFIGURATION -->
 
-  <menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="1100"
+  <menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="1200"
     icon="fa-cog"/>
 
   <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"

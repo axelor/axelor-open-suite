@@ -71,6 +71,7 @@
       <field name="gdprResponse.sendingDateT" widget="date-time"
         showIf="gdprResponse.sendingDateT"/>
       <field name="gdprResponse.responseMessage" showIf="gdprResponse.responseMessage"/>
+      <field name="gdprResponse.anonymizationResult" colSpan="12"/>
       <field name="gdprResponse.responseErasureLogList" colSpan="12"
         showIf="gdprResponse.responseErasureLogList.length > 0"/>
     </panel>
@@ -100,8 +101,7 @@
 
   <!-- Search results -->
   <grid model="com.axelor.utils.db.Wizard" title="result" name="search-result-grid"
-    canEdit="false" edit-icon="false">
-    <field name="selected" widget="RadioSelect"/>
+    canEdit="false" edit-icon="false" x-selector="checkbox">
     <field name="type"/>
     <field name="typeClass" hidden="true"/>
     <field name="lastName"/>

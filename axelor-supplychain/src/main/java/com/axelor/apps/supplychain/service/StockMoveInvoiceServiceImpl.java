@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.account.db.Budget;
-import com.axelor.apps.account.db.BudgetDistribution;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
@@ -32,6 +30,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -44,7 +43,6 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
@@ -56,16 +54,13 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -80,7 +75,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   protected StockMoveLineRepository stockMoveLineRepository;
   protected InvoiceLineRepository invoiceLineRepository;
   protected SupplyChainConfigService supplyChainConfigService;
-  protected AppSupplychainService appSupplychainService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -93,7 +88,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService) {
+      AppBaseService appBaseService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -103,7 +98,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
-    this.appSupplychainService = appSupplychainService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -134,14 +129,19 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       qtyToInvoiceMap = null;
     }
 
-    Long origin = stockMove.getOriginId();
+    invoice = createInvoiceFromStockMove(stockMove, qtyToInvoiceMap);
+    return invoice;
+  }
 
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      invoice = createInvoiceFromSaleOrder(stockMove, saleOrderRepo.find(origin), qtyToInvoiceMap);
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+  @Override
+  public Invoice createInvoiceFromStockMove(
+      StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
+    Invoice invoice;
+    if (stockMove.getSaleOrder() != null) {
+      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
+    } else if (stockMove.getPurchaseOrder() != null) {
       invoice =
-          createInvoiceFromPurchaseOrder(
-              stockMove, purchaseOrderRepo.find(origin), qtyToInvoiceMap);
+          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -317,7 +317,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
     // do not use invoiced partner if the option is disabled
-    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       stockMove.setInvoicedPartner(null);
     }
 
@@ -384,11 +384,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
+    if ((stockMove.getPurchaseOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        || (stockMove.getSaleOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {
@@ -416,8 +416,6 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoiceLineList.add(invoiceLineCreated);
       }
     }
-
-    setComputedBudgetLinesAmount(invoiceLineList);
 
     return invoiceLineList;
   }
@@ -679,50 +677,5 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     boolean isRefundInvoice = InvoiceToolService.isRefund(invoice);
     boolean isReversionStockMove = stockMove.getIsReversion();
     return isRefundInvoice != isReversionStockMove;
-  }
-
-  protected void setComputedBudgetLinesAmount(List<InvoiceLine> invoiceLineList) {
-    invoiceLineList.forEach(invoiceLine -> computeBudgetLineAmount(invoiceLineList, invoiceLine));
-  }
-
-  protected void computeBudgetLineAmount(
-      List<InvoiceLine> invoiceLineList, InvoiceLine invoiceLine) {
-
-    Product product = invoiceLine.getProduct();
-    Optional.ofNullable(invoiceLine.getBudgetDistributionList())
-        .orElse(Collections.emptyList())
-        .forEach(
-            budgetDistribution ->
-                budgetDistribution.setAmount(
-                    divideBudgetDistributionAmount(budgetDistribution, product, invoiceLineList)));
-  }
-
-  protected BigDecimal divideBudgetDistributionAmount(
-      BudgetDistribution budgetDistribution, Product product, List<InvoiceLine> invoiceLineList) {
-    return budgetDistribution
-        .getAmount()
-        .divide(
-            new BigDecimal(
-                countInvoiceLineWithSameProductAndBudget(
-                    product, invoiceLineList, budgetDistribution.getBudget())),
-            RoundingMode.HALF_UP);
-  }
-
-  protected long countInvoiceLineWithSameProductAndBudget(
-      Product product, List<InvoiceLine> invoiceLineList, Budget budget) {
-    return invoiceLineList.stream()
-        .filter(
-            invoiceLine ->
-                product.equals(invoiceLine.getProduct()) && useSameBudget(budget, invoiceLine))
-        .count();
-  }
-
-  protected boolean useSameBudget(Budget budget, InvoiceLine invoiceLine) {
-    List<BudgetDistribution> budgetDistributionList = invoiceLine.getBudgetDistributionList();
-    if (budgetDistributionList == null) {
-      return false;
-    }
-    return budgetDistributionList.stream()
-        .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
   }
 }

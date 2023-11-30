@@ -27,6 +27,10 @@ import com.axelor.apps.gdpr.service.GdprSearchEngineService;
 import com.axelor.apps.gdpr.service.GdprSearchEngineServiceImpl;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.apps.gdpr.service.app.AppGdprServiceImpl;
+import com.axelor.apps.gdpr.service.response.GdprDataToExcludeService;
+import com.axelor.apps.gdpr.service.response.GdprDataToExcludeServiceImpl;
+import com.axelor.apps.gdpr.service.response.GdprGenerateFilesService;
+import com.axelor.apps.gdpr.service.response.GdprGenerateFilesServiceImpl;
 import com.axelor.apps.gdpr.service.response.GdprResponseAccessService;
 import com.axelor.apps.gdpr.service.response.GdprResponseAccessServiceImpl;
 import com.axelor.apps.gdpr.service.response.GdprResponseErasureService;
@@ -44,5 +48,7 @@ public class GdprModule extends AxelorModule {
     bind(AppGdprService.class).to(AppGdprServiceImpl.class);
     bind(GdprAnonymizeService.class).to(GdprAnonymizeServiceImpl.class);
     bind(GdprSearchEngineService.class).to(GdprSearchEngineServiceImpl.class);
+    bind(GdprGenerateFilesService.class).to(GdprGenerateFilesServiceImpl.class);
+    bind(GdprDataToExcludeService.class).to(GdprDataToExcludeServiceImpl.class);
   }
 }

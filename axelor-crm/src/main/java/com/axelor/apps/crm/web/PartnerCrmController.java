@@ -18,15 +18,35 @@
  */
 package com.axelor.apps.crm.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.exception.CrmExceptionMessage;
+import com.axelor.apps.crm.service.CrmActivityService;
+import com.axelor.apps.crm.service.EmailDomainToolService;
+import com.axelor.apps.crm.service.PartnerCrmService;
+import com.axelor.apps.crm.service.PartnerEmailDomainToolService;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class PartnerCrmController {
+
+  // using provider for the injection of a parameterized service
+  @Inject private Provider<EmailDomainToolService<Partner>> emailDomainToolServiceProvider;
 
   public void getSubsidiaryPartnersCount(ActionRequest request, ActionResponse response) {
 
@@ -43,5 +63,85 @@ public class PartnerCrmController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void losePartner(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      Beans.get(PartnerCrmService.class)
+          .losePartner(
+              Beans.get(PartnerRepository.class).find(partner.getId()),
+              partner.getLostReason(),
+              partner.getLostReasonStr());
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  /** Called from partner contact form view, when loading related contact panel. */
+  public void viewRelatedContacts(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    String domain;
+    Map<String, Object> params;
+    if (partner == null || partner.getId() == null) {
+      domain = "";
+      params = new HashMap<>();
+    } else {
+      domain = Beans.get(PartnerEmailDomainToolService.class).computeFilterEmailOnDomain(partner);
+      params =
+          emailDomainToolServiceProvider
+              .get()
+              .computeParameterForFilter(partner.getId(), partner.getEmailAddress());
+    }
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Contacts"));
+    actionViewBuilder.model(Partner.class.getName());
+    actionViewBuilder.add("grid", "partner-related-contact-grid");
+    actionViewBuilder.add("form", "partner-contact-form");
+    actionViewBuilder.domain(domain);
+    for (Map.Entry<String, Object> entry : params.entrySet()) {
+      actionViewBuilder.context(entry.getKey(), entry.getValue());
+    }
+    response.setView(actionViewBuilder.map());
+  }
+
+  public void kanbanPartnerOnMove(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    try {
+      Beans.get(PartnerCrmService.class).kanbanPartnerOnMove(partner);
+    } catch (Exception e) {
+      if (e.getMessage().equals(I18n.get(CrmExceptionMessage.PROSPECT_CLOSE_WIN_KANBAN))) {
+        TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+        response.setReload(true);
+        return;
+      }
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void getRecentPartnerActivityData(ActionRequest request, ActionResponse response)
+      throws JsonProcessingException, AxelorException {
+    List<Map<String, Object>> dataList;
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.CRM_PROSPECT_NOT_FOUND));
+    }
+    dataList = Beans.get(CrmActivityService.class).getRecentPartnerActivityData(Long.valueOf(id));
+    response.setData(dataList);
+  }
+
+  public void getPastPartnerActivityData(ActionRequest request, ActionResponse response)
+      throws JsonProcessingException, AxelorException {
+    List<Map<String, Object>> dataList;
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.CRM_PROSPECT_NOT_FOUND));
+    }
+    dataList = Beans.get(CrmActivityService.class).getPastPartnerActivityData(Long.valueOf(id));
+    response.setData(dataList);
   }
 }

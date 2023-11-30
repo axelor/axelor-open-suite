@@ -177,11 +177,6 @@
 
       <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
         if-module="axelor-human-resource" showIf="project.isShowPlanning">
-        <field name="totalPlannedHrs" readonly="true" colSpan="4">
-          <viewer><![CDATA[
-                   	<span>{{$fmt('totalPlannedHrs')}} </span><span x-translate>hours</span>
-       			]]></viewer>
-        </field>
         <field name="budgetedTime" colSpan="4">
           <viewer><![CDATA[
                    	<span>{{$fmt('budgetedTime')}} </span><span x-translate>hours</span>
@@ -219,67 +214,6 @@
           <field name="name"/>
         </panel-related>
       </panel>
-      <panel name="financialDataPanel" title="Financial Data" colSpan="12"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
-        <field name="invoicingType" colspan="6" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project"
-          onChange="action-project-task-attrs-onchange-invoice-type"/>
-        <field name="toInvoice" colSpan="2" readonly="true"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"
-          if-module="axelor-business-project"/>
-        <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
-          if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
-          if-module="axelor-business-project"/>
-        <field name="isPaid" showIf="project.invoicingSequenceSelect == 1"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          colSpan="1"/>
-        <field name="isTaskRefused" if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" colSpan="1"/>
-        <field if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" name="invoiced" showIf="id &amp;&amp; !($readonly())"
-          colSpan="1"/>
-        <field if="__config__.app.isApp('business-project')"
-          if-module="axelor-business-project" name="invoiced" showIf="id &amp;&amp; $readonly()"
-          showTitle="false" colSpan="1">
-          <viewer><![CDATA[
-                     <h4 class="text-right">
-                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                     </h4>
-					]]></viewer>
-        </field>
-        <field name="project.invoicingSequenceSelect" hidden="true"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
-          form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
-        <field name="invoiceLine" readonly="true" showIf="invoiceLine"
-          form-view="invoice-line-form" grid-view="invoice-line-grid"/>
-        <panel name="packagePanel" title="ProjectTask.Package" colSpan="12"
-          showIf="invoicingType == 2">
-          <field name="product" colSpan="6" canEdit="false"
-            onChange="action-project-task-group-product-onchange"
-            domain="self.unit.unitTypeSelect=3 AND self.dtype = 'Product'" form-view="product-form"
-            grid-view="product-grid"/>
-          <field name="quantity" colSpan="3" onChange="action-project-task-group-qty-onchange"/>
-          <field name="unit" colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form"
-            grid-view="unit-grid" canEdit="false"/>
-          <field name="unitPrice" colSpan="3"
-            onChange="action-project-task-group-unit-price-onchange"/>
-          <field name="currency" colSpan="3" grid-view="currency-grid"
-            form-view="currency-form" canEdit="false"/>
-          <panel name="discountPanel" readonly="true" colSpan="12"
-            hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-            <field name="discountTypeSelect" colSpan="3"
-              onChange="action-sale-order-line-attrs-discountamount-title"/>
-            <field name="discountAmount" colSpan="3"/>
-            <field name="priceDiscounted" colSpan="3"/>
-          </panel>
-          <field name="exTaxTotal" readonly="true" colSpan="3"/>
-        </panel>
-        <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
-          width="120" widget="Image"/>
-      </panel>
 
       <panel name="frequencyPanel" title="Frequency" showIf="project.isShowFrequency">
         <field name="frequency"
@@ -294,11 +228,6 @@
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')" showIf="project.isShowTimeSpent">
-        <field name="totalRealHrs" readonly="true" colSpan="4">
-          <viewer><![CDATA[
-                   	 <span>{{$fmt('totalRealHrs')}} </span><span x-translate>hours</span>
-       			]]></viewer>
-        </field>
         <panel-dashlet name="validatedTimesheetLinesPanel"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true"
@@ -503,6 +432,7 @@
     <action name="action-project-task-attrs-project-filter-status"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
+    <action name="test" if="parentTask != null"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -570,6 +500,8 @@
     <context name="_timePlannedPopup" expr="eval: true"/>
     <context name="_projectTask" expr="eval:__self__"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
+    <context name="_timeUnit" expr="eval:__self__.timeUnit"
+      if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_employee" expr="eval:assignedTo.employee"
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__self__.project"
@@ -616,6 +548,7 @@
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
+    <field name="parentTask" expr="eval:_parentTask"/>
     <field name="customerReferral" expr="eval: __user__"
       if="__user__?.roles.contains(__repo__(Role).all().filter('self.name=?','role.customer').fetchOne())"/>
     <field name="assignment" expr="eval:2"/>
@@ -710,12 +643,14 @@
   <action-record name="action-project-task-record-product-selected"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="quantity" expr="1"/>
-    <field name="unit"
+    <field name="invoicingUnit"
       expr="eval: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'salesUnit', project?.company) ?: (Unit) com.axelor.inject.Beans.get(com.axelor.apps.base.service.ProductCompanyService.class).get(product, 'unit', project?.company)"/>
     <field name="unitPrice"
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'salePrice', project.company)"/>
     <field name="currency"
       expr="call: com.axelor.apps.base.service.ProductCompanyServiceImpl:get(product, 'saleCurrency', project.company)"/>
+    <field name="unitCost" expr="eval: product?.costPrice"/>
+    <field name="totalCosts" expr="eval: product?.costPrice"/>
   </action-record>
 
   <action-method name="action-project-task-method-manage-timer-buttons">
@@ -725,6 +660,10 @@
   <action-method name="action-project-task-method-compute-total-timer-duration">
     <call class="com.axelor.apps.project.web.ProjectTaskController"
       method="computeTotalTimerDuration"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-defaults-from-parent-task">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="fillSubtask"/>
   </action-method>
 
   <action-group name="action-project-task-group-project-category-onchange">
@@ -755,10 +694,8 @@
 
   <action-group name="action-project-task-group-timer-process">
     <action name="action-project-task-attrs-project-filter-status" if="project?.isShowStatus"/>
-    <action name="action-project-task-method-manage-timer-buttons"
-      if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
-    <action name="action-project-task-method-compute-total-timer-duration"
-      if="timerList != null &amp;&amp; !timerList.isEmpty()"/>
+    <action name="action-project-task-method-manage-timer-buttons"/>
+    <action name="action-project-task-method-compute-total-timer-duration"/>
     <action name="action-project-task-attrs-scale-and-precision"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-business-support-provider"
@@ -916,7 +853,7 @@
     <field name="invoiceLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="unit" hidden="true" if="!__config__.app.isApp('business-project')"/>
+    <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="unitPrice" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="discountTypeSelect" hidden="true"
@@ -926,7 +863,6 @@
     <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="metaFile" hidden="true"
       if="!__config__.app.getApp('project')?.isEnableSignature"/>
-    <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 
 </object-views>

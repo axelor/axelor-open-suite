@@ -97,7 +97,7 @@ public interface TimesheetService {
       Product product)
       throws AxelorException;
 
-  public Timesheet getCurrentTimesheet();
+  public Timesheet getCurrentTimesheet() throws AxelorException;
 
   public Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
 
@@ -120,8 +120,6 @@ public interface TimesheetService {
   public void computeTimeSpent(Timesheet timesheet);
 
   public BigDecimal computeSubTimeSpent(Project project);
-
-  public void computeParentTimeSpent(Project project);
 
   public BigDecimal computeTimeSpent(Project project);
 
@@ -149,10 +147,12 @@ public interface TimesheetService {
 
   public void prefillLines(Timesheet timesheet) throws AxelorException;
 
-  public void setProjectTaskTotalRealHrs(List<TimesheetLine> timesheetLines, boolean isAdd);
-
   public void removeAfterToDateTimesheetLines(Timesheet timesheet);
 
   @CallMethod
   public Set<Long> getContextProjectIds();
+
+  Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate date) throws AxelorException;
+
+  Timesheet getDraftTimesheet(Employee employee, LocalDate date);
 }

@@ -59,11 +59,6 @@ public final class CrmExceptionMessage {
   public static final String EVENT_SAVED = /*$$(*/
       "Please save the event before setting the recurrence" /*)*/;
 
-  /** Lead controller */
-  public static final String LEAD_1 = /*$$(*/ "Please select the Lead(s) to print." /*)*/;
-
-  public static final String LEAD_4 = /*$$(*/ "No lead import configuration found" /*)*/;
-  public static final String LEAD_5 = /*$$(*/ "Import lead" /*)*/;
   public static final String LEAD_START_WRONG_STATUS = /*$$(*/
       "Can only start new or assigned lead." /*)*/;
   public static final String LEAD_RECYCLE_WRONG_STATUS = /*$$(*/
@@ -74,9 +69,22 @@ public final class CrmExceptionMessage {
       "Can only assign to yourself new, assigned or in process lead." /*)*/;
   public static final String LEAD_LOSE_WRONG_STATUS = /*$$(*/
       "Can not mark as lost an already lost lead." /*)*/;
+  public static final String LEAD_CONVERT_KANBAN = /*$$(*/
+      "Can only convert leads in form view." /*)*/;
+  public static final String LEAD_LOSE_KANBAN = /*$$(*/ "Can only lose leads in form view." /*)*/;
 
   /** Opportunity */
   public static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;
+
+  public static final String OPPORTUNITY_CLOSE_LOST_KANBAN = /*$$(*/
+      "Can only close lost opportunities in form view." /*)*/;
+
+  /** Partner */
+  public static final String PROSPECT_CLOSE_WIN_KANBAN = /*$$(*/
+      "Prospect won and became client." /*)*/;
+
+  public static final String PROSPECT_CLOSE_LOST_KANBAN = /*$$(*/
+      "Can only close lost prospects in form view." /*)*/;
 
   /** Configuration */
   public static final String CRM_CONFIG_1 = /*$$(*/
@@ -124,4 +132,29 @@ public final class CrmExceptionMessage {
 
   public static final String CRM_SALES_PROPOSITION_STATUS_MISSING = /*$$(*/
       "Please fill sales proposition status in App CRM configuration." /*)*/;
+
+  public static final String CRM_CLOSED_LOST_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill closed lost partner status in App CRM configuration." /*)*/;
+
+  public static final String CRM_CLOSED_WIN_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill closed win partner status in App CRM configuration." /*)*/;
+
+  public static final String PARTNER_LOSE_WRONG_STATUS = /*$$(*/
+      "Can not mark as lost an already lost partner." /*)*/;
+
+  public static final String CRM_DEFAULT_LEAD_STATUS_MISSING = /*$$(*/
+      "Please fill default lead status in App CRM configuration." /*)*/;
+
+  public static final String CRM_DEFAULT_OPPORTUNITY_STATUS_MISSING = /*$$(*/
+      "Please fill default opportunity status in App CRM configuration." /*)*/;
+
+  public static final String CRM_DEFAULT_PARTNER_STATUS_MISSING = /*$$(*/
+      "Please fill default partner status in App CRM configuration." /*)*/;
+
+  public static final String CRM_LEAD_NOT_FOUND = /*$$(*/ "Lead not found." /*)*/;
+
+  public static final String CRM_PROSPECT_NOT_FOUND = /*$$(*/ "Prospect not found." /*)*/;
+
+  public static final String CRM_EMAIL_DOMAIN_ALREADY_EXISTS = /*$$(*/
+      "We found the following similar leads/contacts/partners in the system, do you still want to create this lead ?" /*)*/;
 }

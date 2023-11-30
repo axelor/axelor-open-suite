@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ResearchRequest">
+
+
+    <string name="models" title="Models to search" selection="research.model.selection"/>
+    <string name="name" title="Name"/>
+    <date name="searchDate" title="Date"/>
+    <many-to-one name="research1" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
+      title="Research 1"/>
+    <many-to-one name="research2" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
+      title="Research 2"/>
+    <many-to-one name="research3" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
+      title="Research 3"/>
+    <many-to-one name="research4" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
+      title="Research 4"/>
+    <many-to-one name="dateResearch1" ref="com.axelor.apps.base.db.ResearchPrimaryKey"
+      title="Date research 1"/>
+    <string name="research1Value" title="Value 1"/>
+    <string name="research2Value" title="Value 2"/>
+    <string name="research3Value" title="Value 3"/>
+    <string name="research4Value" title="Value 4"/>
+    <date name="dateResearch1Value" title="Date 1"/>
+    <one-to-many name="researchResultLineList"
+      ref="com.axelor.apps.base.db.ResearchResultLine" title="Research result lines"
+      mappedBy="researchRequest"/>
+
+
+  </entity>
+
+
+</domain-models>

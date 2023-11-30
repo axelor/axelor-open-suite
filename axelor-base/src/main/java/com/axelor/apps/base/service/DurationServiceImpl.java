@@ -18,13 +18,17 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -47,30 +51,33 @@ public class DurationServiceImpl implements DurationService {
   }
 
   @Override
-  public BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration) {
+  public BigDecimal computeRatio(
+      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd) {
     Preconditions.checkNotNull(
         start, I18n.get("You can't compute a" + " duration ratio without start date."));
     Preconditions.checkNotNull(
         end, I18n.get("You can't compute a" + " duration ratio without end date."));
-    if (duration == null) {
-      return BigDecimal.ONE;
-    }
-    end = end.plus(1, ChronoUnit.DAYS);
+    totalEnd = totalEnd.plus(1, ChronoUnit.DAYS);
 
-    if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
-      long months = ChronoUnit.MONTHS.between(start, end);
-      LocalDate theoryEnd = start.plusMonths(months);
-      long restDays = ChronoUnit.DAYS.between(theoryEnd, end);
-      long daysInMonth = ChronoUnit.DAYS.between(theoryEnd, theoryEnd.plusMonths(1));
-      return BigDecimal.valueOf(months)
-          .add(
-              BigDecimal.valueOf(restDays)
-                  .divide(BigDecimal.valueOf(daysInMonth), MathContext.DECIMAL32))
-          .divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+    long totalDays = ChronoUnit.DAYS.between(totalStart, totalEnd);
+    long totalComputedDays = ChronoUnit.DAYS.between(start, end) + 1;
+    return BigDecimal.valueOf(totalComputedDays)
+        .divide(
+            BigDecimal.valueOf(totalDays),
+            AppBaseService.COMPUTATION_SCALING,
+            RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public BigDecimal getFactor(int durationType) throws AxelorException {
+    if (durationType == DurationRepository.TYPE_MONTH) {
+      return BigDecimal.valueOf(12);
+    } else if (durationType == DurationRepository.TYPE_DAY) {
+      return BigDecimal.valueOf(365);
     } else {
-      long restDays = ChronoUnit.DAYS.between(start, end);
-      return BigDecimal.valueOf(restDays)
-          .divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(I18n.get(BaseExceptionMessage.UNKNOWN_DURATION), durationType));
     }
   }
 }

@@ -33,6 +33,8 @@
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
     <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
     <many-to-one name="partner" title="Partner" ref="com.axelor.apps.base.db.Partner"/>
+    <many-to-one name="subrogationPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Subrogation"/>
     <many-to-one name="currency" title="Currency" ref="com.axelor.apps.base.db.Currency"/>
     <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
     <decimal name="remainingAmountAfterFinDiscount"
@@ -100,6 +102,9 @@
 	      id]]>
     </integer>
 
+    <boolean name="pfpfPartialValidationOk"/>
+    <decimal name="pfpPartialValidationAmount"/>
+
     <finder-method name="findByPaymentSession" using="paymentSession" all="true"/>
 
     <extra-code><![CDATA[
@@ -133,6 +138,8 @@
       <field name="pfpValidatorUser"/>
       <field name="reasonOfRefusalToPayStr" on="UPDATE"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.account.db.repo.InvoiceTermListener"/>
 
   </entity>
 

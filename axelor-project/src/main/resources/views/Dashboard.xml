@@ -197,7 +197,8 @@
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date = :__date__ AND self.employee.id = :_empId</domain>
+    <domain>self.startDateTime &lt; :__date__ AND self.endDateTime &gt; :__date__ AND
+      self.employee.id = :_empId</domain>
     <context name="_empId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
@@ -205,7 +206,7 @@
     title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date &gt; :__date__ AND self.employee.id = :_empId</domain>
+    <domain>self.startDateTime &gt; :__date__ AND self.employee.id = :_empId</domain>
     <context name="_empId" expr="eval: __user__.employee?.id"/>
 
   </action-view>

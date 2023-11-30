@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -546,10 +546,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">base_column</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_year</property>
+                    <property name="columnName">other_year</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">previous_year</text-property>
-                    <text-property name="heading">previous_year</text-property>
+                    <text-property name="displayName">other_year</text-property>
+                    <text-property name="heading">other_year</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">other_period</property>
@@ -662,7 +662,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">16</property>
-                        <property name="name">previous_year</property>
+                        <property name="name">other_year</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
@@ -791,8 +791,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">16</property>
-                    <property name="name">previous_year</property>
-                    <property name="nativeName">previous_year</property>
+                    <property name="name">other_year</property>
+                    <property name="nativeName">other_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
@@ -834,7 +834,7 @@ ReportConfigLine.account_code as account_code,
 ReportConfigLine.analytic_account_code as analytic_account_code,
 ReportConfigLine.percentage_total_line as total_line,
 ReportConfigLine.percentage_base_column as base_column,
-ReportConfigLine.compute_previous_year as previous_year,
+ReportConfigLine.compute_previous_year as other_year,
 ReportConfigLine.compute_other_period as other_period,
 ReportConfigLine.groups_without_column as groups_without_column,
 ReportConfigLine.report_type is null as is_column
@@ -1198,14 +1198,14 @@ where ReportType.id = ?]]></xml-property>
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
@@ -1239,23 +1239,18 @@ where ReportType.id = ?]]></xml-property>
                     <row id="3120">
                         <property name="height">55px</property>
                         <cell id="4157">
-                            <text id="4310">
-                                <property name="fontSize">8pt</property>
+                            <image id="5451">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3121">
                             <property name="verticalAlign">top</property>
@@ -2016,9 +2011,9 @@ where ReportType.id = ?]]></xml-property>
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">previous_year</property>
-                                <text-property name="displayName">previous_year</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["previous_year"]</expression>
+                                <property name="name">other_year</property>
+                                <text-property name="displayName">other_year</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["other_year"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>
@@ -2357,7 +2352,7 @@ row["code"] +' - '+ row["label"]
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
-                                                    <expression name="valueExpr" type="javascript">!row["previous_year"]</expression>
+                                                    <expression name="valueExpr" type="javascript">!row["other_year"]</expression>
                                                 </structure>
                                             </list-property>
                                             <cell id="5447">
@@ -2370,7 +2365,7 @@ row["code"] +' - '+ row["label"]
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'AccountingReportTypeConfigLine.previousYear'</value>
+                                                                <value type="javascript">'AccountingReportTypeConfigLine.otherYear'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -3109,9 +3104,9 @@ row["code"] +' - '+ row["label"]
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">previous_year</property>
-                                <text-property name="displayName">previous_year</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["previous_year"]</expression>
+                                <property name="name">other_year</property>
+                                <text-property name="displayName">other_year</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["other_year"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
                             <structure>

@@ -3,8 +3,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <form id="business-operation-order-form" name="operation-order-form" title="Operation"
+    model="com.axelor.apps.production.db.OperationOrder" extension="true">
+    <extend target="//field[@name='machineTool']">
+      <insert position="after">
+        <field name="employeeSet" canSelect="true" canNew="false" canEdit="false"
+          widget="TagSelect" colSpan="12"
+          onSelect="action-operation-order-attrs-employee-domain-filter"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs name="action-operation-order-attrs-employee-domain-filter">
+    <attribute name="domain" for="employeeSet"
+      expr="eval: &quot; self.mainEmploymentContract.payCompany.id = ${manufOrder?.company?.id} &quot;"/>
+  </action-attrs>
+
   <action-group name="action-operation-order-group-finish"
     id="action-business-production-operation-order-group-finish">
+    <action name="action-business-production-operation-order-group-checks"/>
     <action name="action-operation-order-business-production-method-alert-timesheet"/>
     <action name="action-operation-order-method-finish"/>
     <action name="action-operation-order-method-compute-duration"/>
@@ -15,5 +32,27 @@
     <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
       method="alertNonValidatedTimesheet"/>
   </action-method>
+
+  <action-group id="action-business-production-operation-order-group-pause"
+    name="action-operation-order-group-pause">
+    <action name="action-business-production-operation-order-group-checks"/>
+    <action name="action-operation-order-method-pause"/>
+  </action-group>
+
+
+  <action-method name="action-business-production-operation-order-check">
+    <call class="com.axelor.apps.businessproduction.web.OperationOrderBusinessController"
+      method="checkOperationOrder"/>
+  </action-method>
+
+  <action-group name="action-business-production-operation-order-group-checks">
+    <action name="action-business-production-operation-order-check"/>
+  </action-group>
+
+  <action-group id="action-business-production-operation-order-group-cancel"
+    name="action-operation-order-group-cancel">
+    <action name="action-business-production-operation-order-group-checks"/>
+    <action name="action-operation-order-method-cancel"/>
+  </action-group>
 
 </object-views>

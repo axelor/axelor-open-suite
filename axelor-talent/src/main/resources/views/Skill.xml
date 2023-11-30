@@ -13,7 +13,7 @@
     width="large">
     <panel name="namePanel">
       <field name="name"/>
-      <field name="validityDuration" canNew="true" required="true"/>
+      <field name="validityDuration" canNew="true"/>
       <field name="typeSelect"/>
     </panel>
   </form>

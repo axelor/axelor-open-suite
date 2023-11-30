@@ -18,17 +18,22 @@
  */
 package com.axelor.apps.businessproject.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.businessproject.model.AnalyticLineProjectModel;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
-import com.axelor.apps.project.db.Project;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.google.inject.Inject;
-import java.util.List;
 
 public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
 
@@ -37,23 +42,30 @@ public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
-    super(appBaseService, accountManagementService, currencyService, productCompanyService);
+      ProductCompanyService productCompanyService,
+      PriceListService priceListService,
+      ContractVersionRepository contractVersionRepo,
+      DurationService durationService,
+      AnalyticLineModelService analyticLineModelService,
+      AppAccountService appAccountService) {
+    super(
+        appBaseService,
+        accountManagementService,
+        currencyService,
+        productCompanyService,
+        priceListService,
+        contractVersionRepo,
+        durationService,
+        analyticLineModelService,
+        appAccountService);
   }
 
   @Override
-  public ContractLine createAnalyticDistributionWithTemplate(
-      ContractLine contractLine, Contract contract) {
-    contractLine = super.createAnalyticDistributionWithTemplate(contractLine, contract);
-
-    Project project = contract.getProject();
-
-    if (project != null) {
-      List<AnalyticMoveLine> analyticMoveLineList = contractLine.getAnalyticMoveLineList();
-
-      analyticMoveLineList.forEach(analyticMoveLine -> analyticMoveLine.setProject(project));
-      contractLine.setAnalyticMoveLineList(analyticMoveLineList);
+  public void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException {
+    if (appAccountService.isApp("business-project")) {
+      AnalyticLineModel analyticLineModel =
+          new AnalyticLineProjectModel(contractLine, null, contract);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
     }
-    return contractLine;
   }
 }

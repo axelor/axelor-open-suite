@@ -82,6 +82,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
             invoice.getPartner(),
             invoiceLine.getProduct(),
             invoice.getCompany(),
+            invoice.getTradingName(),
+            invoiceLine.getAccount(),
             InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 

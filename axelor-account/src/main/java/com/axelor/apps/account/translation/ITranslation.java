@@ -22,7 +22,6 @@ public interface ITranslation {
 
   public static final String ACCOUNTING_APP_NAME = /*$$(*/ "value:Accounting"; /*)*/
   public static final String INVOICING_APP_NAME = /*$$(*/ "value:Invoicing"; /*)*/
-  public static final String BUDGET_APP_NAME = /*$$(*/ "value:Budget"; /*)*/
   public static final String ACCOUNT_DEBIT_BALANCE = /*$$(*/ "Debit balance" /*)*/;
   public static final String ACCOUNT_CREDIT_BALANCE = /*$$(*/ "Credit balance" /*)*/;
   public static final String INVOICE_LINE_END_OF_PACK = /*$$(*/ "InvoiceLine.endOfPack" /*)*/;
@@ -34,4 +33,6 @@ public interface ITranslation {
   public static final String PAYMENT_SESSION_COMPUTE_NAME_ON_THE = /*$$(*/ "on the" /*)*/;
   public static final String PAYMENT_SESSION_COMPUTE_NAME_BY = /*$$(*/ "by" /*)*/;
   public static final String FIXED_ASSET_SPLIT_AMOUNT = /*$$(*/ "fixedAsset.amount" /*)*/;
+
+  public static final String FISCAL_YEAR_CODE = /*$$(*/ "fiscalYear.code" /*)*/;
 }

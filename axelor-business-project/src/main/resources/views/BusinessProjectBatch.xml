@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="business-project-batch-grid" title="Business project batches"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch">
+    <field name="actionSelect"/>
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="createdOn"/>
+    <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
+  </grid>
+
+  <form name="business-project-batch-form" title="Business project batch"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch"
+    onNew="action-business-project-batch-record-on-new">
+    <panel name="mainPanel">
+      <field name="actionSelect"
+        onChange="action-business-project-batch-record-action-select-on-change"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"
+        onChange="action-base-batch-condition-check-unique-code"/>
+      <field name="company" widget="SuggestBox" form-view="company-form"
+        grid-view="company-grid"/>
+      <field name="consolidatePhaseSelect" showIf="actionSelect == 2"
+        validIf="actionSelect != 2 || consolidatePhaseSelect"/>
+      <field name="deadlineDate" showIf="actionSelect == 2"/>
+    </panel>
+    <panel name="informationPanel" title="Information">
+      <field name="createdOn" title="Created on"/>
+      <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
+      <field name="description" showTitle="false" colSpan="12"/>
+      <panel-related name="batchListPanel" field="batchList" colSpan="12"
+        form-view="batch-form" grid-view="batch-grid"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button name="updateTaskBtn" title="Update tasks"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 1"/>
+      <button name="generateInvoicingProjectBtn" title="Generate invoicing projects"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 2"/>
+      <button name="computeProjectTotalsBtn" title="Compute project totals"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 3"/>
+      <button name="backupToProjectHistoryBtn" title="Backup project data to project history"
+        onClick="save,action-business-project-batch-method-run-batch" showIf="actionSelect == 4"/>
+    </panel>
+  </form>
+
+  <action-record name="action-business-project-batch-record-on-new"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch">
+    <field name="createdOn" expr="eval:__config__.app.getTodayDateTime(null)"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="createdOn"
+      expr="eval:__config__.app.getTodayDateTime(__repo__(Company).all().fetchOne())"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="createdBy" expr="eval:__user__"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+  </action-record>
+
+  <action-record name="action-business-project-batch-record-action-select-on-change"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch">
+    <field name="deadlineDate" expr="eval: null" if="actionSelect == 1"/>
+  </action-record>
+
+  <action-method name="action-business-project-batch-method-run-batch">
+    <call class="com.axelor.apps.businessproject.web.BusinessProjectBatchController"
+      method="runBatch"/>
+  </action-method>
+
+  <action-method name="action-business-project-batch-method-show-task">
+    <call class="com.axelor.apps.businessproject.web.BusinessProjectBatchController"
+      method="showUpdatedTask"/>
+  </action-method>
+
+  <action-method name="action-business-project-batch-method-show-timesheet-line">
+    <call class="com.axelor.apps.businessproject.web.BusinessProjectBatchController"
+      method="showUpdatedTimesheetLine"/>
+  </action-method>
+
+  <action-method name="action-business-project-batch-method-show-inv-project">
+    <call class="com.axelor.apps.businessproject.web.BusinessProjectBatchController"
+      method="showGeneratedInvoicingProject"/>
+  </action-method>
+
+  <search-filters name="business-project-batch-filters"
+    model="com.axelor.apps.businessproject.db.BusinessProjectBatch"
+    title="Business project batch filters">
+    <field name="company" hidden="true"
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+  </search-filters>
+</object-views>

@@ -1,0 +1,7 @@
+"importId";"qi.importId";"customerPartner.importId";"supplierPartner.importId";"detectedByInternal.importId";"contact.importId";"customerSaleOrder.importId";"customerSaleOrderLine.importId";"supplierPurchaseOrder.importId";"supplierPurchaseOrderLine.importId";"stockMove.importId";"stockMoveLine.importId";"documentReference";"manufOrder.importId";"operationOrder.importId";"toConsumeProdProduct.importId";"consumedProdProduct.importId";"product.importId";"quantity";"nonConformingQuantity";"qualityControl.importId";"project.importId";"sourceQIList.importId";"writtenBy.importId";"writtenOn"
+"1";"1";"132";"";"23";"";"";"";"";"";"";"";"";"";"";"";"";"200";"20.00";"2.00";"";"";"";"1";"TODAY[-13d]"
+"2";"2";"70";"";"23";"";"";"";"";"";"";"";"";"";"";"";"";"210";"50.00";"5.00";"";"";"";"";"TODAY[-24d]"
+"3";"3";"90000";"";"46";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"";"2";"2";"TODAY[-9d]"
+"4";"4";"";"152";"23";"153";"";"";"6";"8";"";"";"";"";"";"";"";"241";"40.00";"2.00";"";"";"";"1";"TODAY[+3d]"
+"5";"5";"44";"";"46";"45";"3";"5";"";"";"3";"";"";"";"";"";"";"120";"1.00";"1.00";"";"";"";"";"TODAY[-18d]"
+"6";"6";"";"152";"22";"153";"";"";"4";"8";"";"";"";"";"";"";"";"241";"10.00";"2.00";"";"";"";"";"TODAY[-6d]"

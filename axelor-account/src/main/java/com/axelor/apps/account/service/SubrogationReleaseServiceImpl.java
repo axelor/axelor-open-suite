@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.account.service;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -30,7 +29,6 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.report.IReport;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -42,7 +40,6 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -180,23 +177,6 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
               AccountExceptionMessage.SUBROGATION_RELEASE_SUBROGATION_ALREADY_EXIST_FOR_INVOICES),
           invoicesIDList);
     }
-  }
-
-  @Override
-  public String printToPDF(SubrogationRelease subrogationRelease, String name)
-      throws AxelorException {
-    ReportSettings reportSettings = ReportFactory.createReport(IReport.SUBROGATION_RELEASE, name);
-    reportSettings.addParam("SubrogationReleaseId", subrogationRelease.getId());
-    reportSettings.addParam("Locale", ReportSettings.getPrintingLocale(null));
-    reportSettings.addParam(
-        "Timezone",
-        subrogationRelease.getCompany() != null
-            ? subrogationRelease.getCompany().getTimezone()
-            : null);
-    reportSettings.addFormat("pdf");
-    reportSettings.toAttach(subrogationRelease);
-    reportSettings.generate();
-    return reportSettings.getFileLink();
   }
 
   @Override

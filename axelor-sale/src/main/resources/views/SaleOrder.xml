@@ -229,7 +229,8 @@
 
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
-    onNew="action-group-sale-saleorder-onnew">
+    onNew="action-group-sale-saleorder-onnew"
+    onSave="action-sale-order-line-tree-method-update-hasTree">
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print"
         hideIf="clientPartner == null" readonlyIf="!id"
@@ -319,15 +320,16 @@
 	          </div>
 	        ]]></viewer>
         </field>
-        <field name="$invoicingState" showTitle="false" readonly="true"
-          showIf="statusSelect >= 3" css="label-bold bold" colSpan="3">
-          <viewer depends="$invoicingState"><![CDATA[
+        <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
+          name="invoicingState" showTitle="false" readonly="true" showIf="statusSelect >= 3"
+          css="label-bold bold" colSpan="3">
+          <viewer depends="invoicingState"><![CDATA[
 	        <div>
 	        <div class="span7">
 	          <h5>
-	          <span class="label label-important" ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
-	          <span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-	          <span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
+	          <span class="label label-important" ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
+	          <span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+	          <span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
 	        </h5>
 	        </div>
 	      </div>
@@ -408,13 +410,13 @@
           canEdit="false" form-view="partner-contact-form" grid-view="partner-contact-grid"/>
 
         <field name="invoicedPartner"
-          if="__config__.app.getApp('supplychain')?.activatePartnerRelations" required="true"
+          if="__config__.app.getApp('base')?.activatePartnerRelations" required="true"
           hideIf="company == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-main-invoicing-address"
           onSelect="action-sale-order-supplychain-method-set-invoiced-partner-domain"
           form-view="partner-form" grid-view="partner-grid" colSpan="3"/>
         <field name="deliveredPartner"
-          if="__config__.app.getApp('supplychain')?.activatePartnerRelations" requiredIf="true"
+          if="__config__.app.getApp('base')?.activatePartnerRelations" requiredIf="true"
           hideIf="company == null" readonlyIf="statusSelect > 1"
           onChange="action-group-sale-order-supplychain-set-delivery-address"
           onSelect="action-sale-order-supplychain-method-set-delivered-partner-domain"
@@ -425,11 +427,11 @@
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-attrs-compute-tax-number-domain"
-          onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
+          onChange="action-sale-order-method-empty-fiscal-position-if-not-compatible,action-sale-order-method-fiscal-position-on-change,action-sale-order-method-on-line-change"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited"
           onSelect="action-sale-order-supplychain-attrs-fiscal-position-domain"
-          onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-line-change-group"/>
+          onChange="action-sale-order-method-fiscal-position-on-change,action-sale-order-method-on-line-change"/>
         <panel name="otherInfoPanel" colSpan="3">
           <field name="inAti" hidden="true"
             readonlyIf="(saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect &gt;= 2"
@@ -468,17 +470,33 @@
       <field name="clientPartner.saleOrderInformation" showTitle="false"
         hideIf="clientPartner == null || clientPartner.saleOrderInformation == null" colSpan="12"
         css="bold red"/>
+
     </panel>
+
     <panel-tabs name="mainPanelTab"
       hideIf="clientPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0 &amp;&amp; tradingName == null)">
+
       <panel name="contentPanel" title="Content">
-        <panel-related name="detailLinesPanel"
+
+        <panel-related name="detailLinesPanel" title="Details Lines"
+          readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
+          form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence"
+          onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
+          canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
+          canMove="true" if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+
+        <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
+          height="30" widget="MasterDetail" form-view="sale-order-line-form"
+          tree-view="sale-order-line-tree" grid-view="sale-order-line-grid"
+          summary-view="sale-order-master-details-form" field="saleOrderLineList"
+          target="com.axelor.apps.sale.db.SaleOrderLine"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" readonlyIf="clientPartner == null" colSpan="12"
-          field="saleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-grid" orderBy="sequence"
-          onChange="action-sale-order-line-change-group" canMove="true" height="30"/>
+          title="Details Lines" orderBy="sequence"
+          onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
+          onClick="action-orderSaleLine-tree" canMove="true"
+          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -556,29 +574,31 @@
       <panel name="businessProjectPanel" title="Business project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         if-module="axelor-business-project">
-        <field name="$_projectGeneratorType" title="Type of project's elements generated"
-          x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"/>
-        <field name="$_elementStartDate" title="Start date" widget="date-time" type="datetime"/>
         <field name="project" canEdit="false" domain="self.clientPartner = :clientPartner"
-          form-view="project-form" grid-view="project-grid"/>
-        <field name="toInvoiceViaTask" hidden="true"
-          showIf="$_projectGeneratorType == 'TASK_BY_LINE' || $_projectGeneratorType == 'TASK_TEMPLATE'"/>
-        <panel name="projectDetailsPanel" colSpan="12">
-          <button name="updateLinesBtn" title="Update lines with selected project"
-            onClick="save,action-business-project-sale-order-method-update-lines,save"
-            readonlyIf="!project"/>
+          form-view="project-form" grid-view="project-grid" edit-window="blank"
+          onChange="action-business-project-sale-order-method-update-lines"/>
+
+        <panel name="projectAndTaskGenerationPanel" title="Project and task generation"
+          colSpan="12">
+          <field name="$_projectGeneratorType" title="Project generation method"
+            x-enum-type="com.axelor.apps.project.db.ProjectGeneratorType"
+            help="You can either generate an empty project, a project with sub-projects or a project with tasks. When generating sub-projects or tasks, one element will be created for each sale order line with a service-type product that has &quot;Produce&quot; as its supply method (Configuration tab). Subtasks models are filled in the Product form when the corresponding configuration is active in Business Project module configuration."/>
           <panel name="fillOrGenerateProjectPanel" stacked="true">
-            <button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType"
-              title="Fill project"
-              if="__config__.app.getApp('business-project').projectSaleOrderLines"
-              showIf="project != null" hidden="true"
-              onClick="save,action-business-project-method-fill-project"/>
             <button name="generateProjectBtn" readonlyIf="!$_projectGeneratorType"
               title="Generate Project/Business"
               if="!__config__.app.getApp('business-project').automaticProject"
               showIf="project == null" hidden="true"
               onClick="save,action-business-project-method-generate-project"/>
+            <button name="fillProjectBtn" readonlyIf="!$_projectGeneratorType"
+              title="Fill project"
+              if="__config__.app.getApp('business-project').projectSaleOrderLines"
+              showIf="project != null" hidden="true"
+              onClick="save,action-business-project-method-fill-project"/>
           </panel>
+          <field name="$_elementStartDate" title="Start date" widget="date-time"
+            type="datetime" colSpan="3"/>
+          <field name="toInvoiceViaTask" hidden="true"
+            showIf="$_projectGeneratorType == 'TASK_BY_LINE'" colSpan="3"/>
         </panel>
       </panel>
 
@@ -597,15 +617,18 @@
           colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid"
           onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
       </panel>
-      <panel-related name="advancePaymentListPanel"
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
-        if-module="axelor-supplychain" readonly="true" colSpan="12" field="advancePaymentList"
-        form-view="advance-payment-form" grid-view="advance-payment-grid"/>
-      <panel name="advancePaymentNeededPanel" title="Advance payments"
-        if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions">
-        <field name="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
-        <field name="advancePaymentAmountNeeded" showIf="advancePaymentNeeded"
-          readonlyIf="statusSelect &gt; 1"/>
+      <panel name="advancePaymentPanel" title="Advance payments"
+        if="__config__.app.isApp('supplychain') &amp;&amp; (__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions ||  !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice())">
+        <panel name="advancePaymentNeededPanel"
+          if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions">
+          <field name="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
+          <field name="advancePaymentAmountNeeded" showIf="advancePaymentNeeded"
+            readonlyIf="statusSelect &gt; 1"/>
+        </panel>
+        <field name="advancePaymentList"
+          if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
+          if-module="axelor-supplychain" readonly="true" colSpan="12"
+          form-view="advance-payment-form" grid-view="advance-payment-grid"/>
       </panel>
       <panel if="__config__.app.getApp('sale')?.getPrintingConfigPerSaleOrder()"
         name="printingPanel" title="Printing">
@@ -621,6 +644,29 @@
       <panel-dashlet if="__config__.app.isApp('supplychain')"
         name="generatedPurchaseOrderPanel" title="Generated purchase orders"
         action="action-sale-order-view-show-generated-po" hideIf="statusSelect &lt;= 2"/>
+      <panel if="__config__.app.getApp('sale')?.manageSaleOrderVersion"
+        showIf="versionNumber > 1" name="pastVersionRecoveryPanel" title="Past versions">
+        <field name="$previousVersionNumber" title="Version number" type="integer" colSpan="2"
+          onChange="action-sale-order-method-get-previous-version-number-on-change"/>
+        <field name="$versionDateTime" type="datetime" title="Version date" colSpan="6"
+          readonly="true"/>
+        <field name="$saveActualVersion" type="boolean" title="Save actual version"
+          colSpan="4" widget="boolean-switch"
+          if="__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+        <spacer colSpan="4" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+        <button name="lastVersionBtn" title="Go to last version" icon="fa-arrow-right"
+          css="btn-custom text-left" onClick="action-sale-order-method-get-last-version" colSpan="4"
+          showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; $previousVersionNumber != versionNumber - 1"/>
+        <spacer colSpan="4"/>
+        <button name="versionRecoveryBtn" title="Recover from this version" icon="fa-upload"
+          css="btn-custom text-left" onClick="action-sale-order-group-version-recovery-btn"
+          colSpan="4" if="__config__.app.getApp('sale')?.isPastVersionRecovery"
+          showIf="(statusSelect == 1 || statusSelect == 2) "/>
+        <spacer colSpan="6" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
+
+        <panel-dashlet name="pastVersionsPanel"
+          action="action-sale-order-view-previous-versions" colSpan="12" readonly="true"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -639,8 +685,9 @@
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
         colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
       <button if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
-        name="newVersionBtn" title="New version" showIf="statusSelect == 2" colSpan="12"
-        onClick="save,action-sale-record-newVersion,save"/>
+        name="newVersionBtn" title="New version"
+        showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; id" colSpan="12"
+        onClick="action-sale-order-group-new-version-btn"/>
       <button if="__config__.app.getApp('sale')?.allowPendingOrderModification"
         name="editOrderBtn" title="Edit order"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
@@ -741,7 +788,7 @@
           domain="self.inOutSelect = 1" form-view="payment-mode-form" grid-view="payment-mode-grid"/>
         <field name="paymentCondition" readonlyIf="statusSelect > 2" canEdit="false"
           form-view="payment-condition-form" grid-view="payment-condition-grid"
-          onChange="action-sale-order-record-set-advance-payment"
+          onChange="action-sale-order-method-set-advance-payment"
           onSelect="action-sale-order-attrs-payment-condition-set-domain"/>
       </panel>
       <field name="companyBankDetails" canEdit="false" hidden="true" widget="SuggestBox"
@@ -942,8 +989,7 @@
       <panel name="projectPanel"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
         title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" domain="self.typeSelect = 'project'" form-view="project-form"
-          grid-view="project-grid" colSpan="12"/>
+        <field name="project" form-view="project-form" grid-view="project-grid" colSpan="12"/>
       </panel>
 
     </panel-tabs>
@@ -1205,7 +1251,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="$invoicingState"/>
+    <field name="invoicingState"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale order</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1229,9 +1275,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
+						<span class="label label-important"  ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1283,7 +1329,7 @@
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
-    <field name="$invoicingState"/>
+    <field name="invoicingState"/>
     <template><![CDATA[
 		    <div class="span12">
 		    	<strong><span x-translate>Sale quotation</span> {{ saleOrderSeq }}</strong> <span ng-show="record.externalReference">( {{ externalReference }} )</span>
@@ -1307,9 +1353,9 @@
 			  <div>
 				  <div class="span6">
 				  	<h5>
-						<span class="label label-important"  ng-show="record.$invoicingState == 1"  x-translate>Not invoiced</span>
-						<span class="label label-warning" ng-show="record.$invoicingState == 2" x-translate>Partially invoiced</span>
-						<span class="label label-success" ng-show="record.$invoicingState == 3" x-translate>Invoiced</span>
+						<span class="label label-important"  ng-show="record.invoicingState == 1"  x-translate>Not invoiced</span>
+						<span class="label label-warning" ng-show="record.invoicingState == 2" x-translate>Partially invoiced</span>
+						<span class="label label-success" ng-show="record.invoicingState == 3" x-translate>Invoiced</span>
 					</h5>
 					<h5>
 						<span class="label label-important" ng-show="record.deliveryState > 0 && record.deliveryState == 1" x-translate>Not delivered</span>
@@ -1358,7 +1404,7 @@
     <action name="action-sale-order-record-from-partner"/>
     <action name="action-sale-order-record-partner"/>
 
-    <action name="action-sale-order-record-set-advance-payment"
+    <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-method-address-str"/>
@@ -1367,7 +1413,7 @@
     <action name="action-sale-order-method-fill-company-bank-details"/>
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <action name="action-sale-order-method-empty-fiscal-position-if-not-compatible"
       if="__config__.app.isApp('supplychain')"/>
   </action-group>
@@ -1390,7 +1436,7 @@
 
   <action-group name="action-sale-group-onchange-client-partner">
     <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-record-set-advance-payment"
+    <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
     <action name="action-sale-order-method-fill-company-bank-details"/>
@@ -1412,6 +1458,8 @@
       if="__parent__ != null &amp;&amp; __parent__?._model=='com.axelor.apps.crm.db.Opportunity'"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-record-set-group-product-on-printing"/>
+    <action name="action-sale-order-method-get-last-version"/>
+    <action name="action-sale-order-attrs-set-save-actual-version"/>
   </action-group>
 
   <action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -1449,7 +1497,10 @@
     <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
-    <action name="action-sale-order-attrs-incoterm-required"/>
+    <action name="action-sale-order-method-is-incoterm-required"/>
+    <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
+    <action name="action-sale-order-method-get-last-version"/>
+    <action name="action-sale-order-attrs-set-save-actual-version"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -1462,25 +1513,9 @@
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
-  <action-group name="action-sale-order-line-change-group">
-    <action name="action-sale-order-method-complementary-products"/>
-    <action name="action-sale-order-method-update-product-qty-with-pack-header-qty"
-      if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
-    <action name="action-sale-order-method-compute"/>
-    <action name="action-sale-order-method-compute-margin"/>
-    <action name="action-sale-order-record-set-advance-payment"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <action name="action-sale-order-record-update-timetable-amounts"
-      if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
-    <action name="action-sale-order-method-update-amount-to-be-spread-over-the-timetable"
-      if="__config__.app.isApp('supplychain') &amp;&amp; timetableList != null"/>
-    <action name="save" if="saleOrderLineList.find{it->it.typeSelect == 2} != null"/>
-    <action name="action-sale-order-attrs-incoterm-required"/>
-  </action-group>
-
   <action-group name="action-sale-order-group-client-partner-change">
     <action name="action-sale-order-record-partner"/>
-    <action name="action-sale-order-record-set-advance-payment"
+    <action name="action-sale-order-method-set-advance-payment"
       if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
     <action name="action-sale-order-method-address-str"/>
     <action name="action-sale-order-method-fill-price-list"
@@ -1502,7 +1537,7 @@
     <action name="action-sale-order-record-set-group-product-on-printing"/>
     <action
       name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"/>
+      if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <action name="action-sale-order-method-fiscal-position-on-change"/>
     <action name="action-sale-order-method-compute"/>
   </action-group>
@@ -1515,6 +1550,16 @@
     <action name="save"/>
     <action name="action-sale-order-validate-quotation"/>
     <action name="action-sale-order-method-finalize-quotation"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-new-version-btn">
+    <action name="save"/>
+    <action name="action-sale-order-method-new-version"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-version-recovery-btn">
+    <action name="save"/>
+    <action name="action-sale-order-method-version-recovery-btn"/>
   </action-group>
 
   <action-validate name="action-sale-order-validate-quotation">
@@ -1568,16 +1613,6 @@
     <field name="inAti"
       expr="eval: __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 2
     									|| __repo__(SaleConfig).all().filter('self.company = ?',company).fetchOne()?.saleOrderInAtiSelect == 4"/>
-  </action-record>
-
-  <action-record name="action-sale-order-record-set-advance-payment"
-    model="com.axelor.apps.sale.db.SaleOrder" if-module="axelor-supplychain">
-    <field name="advancePaymentNeeded"
-      expr="eval: paymentCondition?.advancePaymentNeeded > 0 ? true : false"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
-    <field name="advancePaymentAmountNeeded"
-      expr="eval: inTaxTotal * ((paymentCondition?.advancePaymentNeeded == null) ? 0 : paymentCondition?.advancePaymentNeeded / 100.0)"
-      if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions"/>
   </action-record>
 
   <action-method
@@ -1657,12 +1692,26 @@
       method="updateLinesAfterFiscalPositionChange"/>
   </action-method>
 
-  <action-record name="action-sale-record-newVersion"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="statusSelect" expr="eval: 1"/>
-    <field name="deliveryState" expr="eval: 1"/>
-    <field name="versionNumber" expr="eval: versionNumber + 1"/>
-  </action-record>
+  <action-method name="action-sale-order-method-on-line-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="onLineChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-new-version">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="createNewVersion"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-get-last-version">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="getLastVersion"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-get-previous-version-number-on-change">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="getPreviousVersionNumberOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-version-recovery-btn">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="recoverVersion"/>
+  </action-method>
 
   <action-view name="action-open-sale-order-merge-form" title="Merge sale orders"
     model="com.axelor.utils.db.Wizard">
@@ -1825,7 +1874,7 @@
     <attribute name="domain" for="mainInvoicingAddress"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
     <attribute name="domain" for="mainInvoicingAddress"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')}) OR self.id IN (${(invoicedPartner?.partnerAddressList?.findAll{it.isInvoicingAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
@@ -1833,7 +1882,7 @@
     <attribute name="domain" for="deliveryAddress"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
     <attribute name="domain" for="deliveryAddress"
-      if="__config__.app.getApp('supplychain')?.activatePartnerRelations"
+      if="__config__.app.getApp('base')?.activatePartnerRelations"
       expr="eval: &quot;self.id IN (${(clientPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')}) OR self.id IN (${(deliveredPartner?.partnerAddressList?.findAll{it.isDeliveryAddr}.collect{it.address.id}+[null]).join(',')})&quot;"/>
   </action-attrs>
 
@@ -1852,6 +1901,10 @@
     <attribute name="domain" for="paymentCondition"
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-set-save-actual-version">
+    <attribute for="$saveActualVersion" name="value" expr="eval: true"/>
   </action-attrs>
 
   <action-record name="action-sale-order-record-set-default-tax-number"
@@ -1929,6 +1982,7 @@
     <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="shipmentDate" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="standardDelay" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="invoicingState" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="saleOrderLineList.product.name" title="Product Name"/>
     <field name="companyExTaxTotal" title="Total W.T. in company currency"/>
     <field name="cancelReason" hidden="true"/>
@@ -1964,8 +2018,7 @@
     model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-sale-order-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
-    <domain>self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND
-      self.stockMove.originId = :saleOrder</domain>
+    <domain>self.stockMove.saleOrder.id = :saleOrder</domain>
     <context name="saleOrder" expr="eval: __self__.id"/>
   </action-view>
 
@@ -1973,8 +2026,7 @@
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-sale-order-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.originId =
-      :saleOrder</domain>
+    <domain>self.saleOrder.id = :saleOrder</domain>
     <context name="saleOrder" expr="eval: __this__.id"/>
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
@@ -2028,6 +2080,18 @@
     <view-param name="popup-save" value="false"/>
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-sale-order-view-previous-versions" title="Lines to recover"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <view type="grid" name="sale-order-line-grid"/>
+    <view type="form" name="sale-order-line-form"/>
+    <view-param name="showArchived" value="true"/>
+    <view-param name="popup" value="reload"/>
+    <domain>self.oldVersionSaleOrder.id = :_parentId AND self.versionNumber =
+      :_previousVersionNumber</domain>
+    <context name="_parentId" expr="eval: __this__.id"/>
+    <context name="_previousVersionNumber" expr="eval: previousVersionNumber"/>
   </action-view>
 
   <action-validate name="action-validate-sale-order-check-selection">
@@ -2124,7 +2188,7 @@
   <action-attrs name="action-sale-order-attrs-availability">
     <attribute name="hidden" for="availabilityRequestLabel"
       if="__config__.app.isApp('stock')"
-      expr="eval: !(__repo__(StockMove).all().filter('self.originTypeSelect LIKE ? AND self.originId = ? AND self.availabilityRequest = ? AND self.statusSelect = ?','com.axelor.apps.sale.db.SaleOrder',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
+      expr="eval: !(__repo__(StockMove).all().filter('self.saleOrder.id = ? AND self.availabilityRequest = ? AND self.statusSelect = ?',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
     <attribute name="hidden" expr="eval: statusSelect != 3"
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
   </action-attrs>
@@ -2189,6 +2253,13 @@
       expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
   </action-attrs>
 
+  <action-attrs
+    name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product">
+    <attribute name="selection-in" for="$_projectGeneratorType"
+      if="!__config__.app.getApp('business-project')?.getEnableTaskTemplatesByProduct()"
+      expr="['PROJECT_ALONE', 'SUB_PROJECT_BY_LINE', 'TASK_BY_LINE']"/>
+  </action-attrs>
+
   <action-method name="action-sale-order-method-generate-advance-payment">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="generateAdvancePaymentInvoice"/>
@@ -2203,6 +2274,10 @@
     name="action-sale-order-method-update-product-qty-with-pack-header-qty">
     <call method="updateProductQtyWithPackHeaderQty"
       class="com.axelor.apps.sale.web.SaleOrderController"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-is-incoterm-required">
+    <call method="isIncotermRequired" class="com.axelor.apps.sale.web.SaleOrderController"/>
   </action-method>
 
   <action-attrs name="action-sale-order-attrs-readonly-timetable">
@@ -2232,5 +2307,7 @@
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
           || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
   </action-attrs>
+
+
 
 </object-views>

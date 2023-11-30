@@ -14,6 +14,8 @@
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="statusSelect"/>
+    <field name="currentContractVersion.initialExTaxTotalPerYear"/>
+    <field name="currentContractVersion.yearlyExTaxTotalRevalued"/>
   </grid>
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
@@ -44,8 +46,10 @@
         <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
         <field name="partner" colSpan="4" onSelect="action-contract-attrs-domains-partner"
           showIf="targetTypeSelect" readonlyIf="statusSelect >= 2" canEdit="false"
-          onChange="action-contract-attrs-partner-payment-config" required="true"
-          form-view="partner-form"/>
+          onChange="action-contract-group-partner-onchange" required="true" form-view="partner-form"/>
+        <field name="invoicedPartner" showIf="targetTypeSelect == 1 &amp;&amp; partner"
+          canEdit="false" form-view="partner-form" readonlyIf="statusSelect >= 2" required="true"
+          colSpan="4" onSelect="action-contract-method-set-invoiced-partner-domain"/>
         <field if="__config__.app.getApp('contract')?.getIsInvoicingManagement()" colSpan="4"
           name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
         <field name="name" colSpan="12" css="highlight"
@@ -64,7 +68,8 @@
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
               <panel colSpan="6">
                 <panel hideIf="statusSelect >= 3" colSpan="12">
-                  <field name="supposedActivationDate"/>
+                  <field name="supposedActivationDate"
+                    onChange="action-method-contract-version-check-supposed-activation-date,save,action-method-contract-version-update-contract-lines"/>
                   <field name="supposedEndDate"/>
                 </panel>
                 <panel hidden="true" readonly="true" showIf="statusSelect >= 3" colSpan="12">
@@ -128,6 +133,23 @@
         </panel>
         <panel title="Notes" stacked="true" name="notesPanel">
           <field name="note" showTitle="false"/>
+        </panel>
+        <panel name="pricesPerYearPanel" title="Prices per year"
+          showIf="currentContractVersion.isPeriodicInvoicing">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false" readonly="true">
+            <viewer
+              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol">
+              <![CDATA[
+              <div style="text-align: left;">
+              <div style="padding-top: 2%; font-weight: 600" x-translate>Initial ex tax total per year</div>
+              <div style="padding: 2% 0 5% 0; font-size: 22px; font-weight: 600; border-bottom: 1px solid #eee;">{{$fmt('initialExTaxTotalPerYear') | currency: record.contract.currency.symbol}}</div>
+              <div style="padding-top: 4%; font-weight: 600;" x-translate>Yearly ex tax total revalued</div>
+              <div style="padding: 2% 0; font-size: 22px; font-weight: 600;">{{$fmt('yearlyExTaxTotalRevalued') | currency: record.contract.currency.symbol}}</div>
+              </div>
+              ]]>
+            </viewer>
+          </field>
         </panel>
       </panel>
     </panel>
@@ -243,7 +265,8 @@
             colSpan="12">
             <field name="isAdditionaBenefitManagement"
               if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
-              widget="boolean-switch" colSpan="12"/>
+              widget="boolean-switch" colSpan="3"/>
+            <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="9"/>
             <field name="isConsumptionManagement"
               if="__config__.app.getApp('contract')?.isConsumptionManagement"
               onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
@@ -326,6 +349,25 @@
           </editor>
         </field>
       </panel>
+
+      <panel name="commercialConditionPanel" title="Commercial condition" hidden="true"
+        showIf="targetTypeSelect == 1 &amp;&amp; currentContractVersion.isPeriodicInvoicing">
+        <field name="isToRevaluate" widget="boolean-switch" colSpan="12"
+          onChange="action-contract-method-hide-fields-list"/>
+        <field name="revaluationPeriod"
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"
+          domain="self.applicationTypeSelect = 2"/>
+        <field name="revaluationFormula"
+          requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index1" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index1Date" requiredIf="targetTypeSelect == 1 &amp;&amp; isToRevaluate"/>
+        <field name="index2"/>
+        <field name="index2Date"/>
+        <field name="endOfApplicationDate"/>
+        <field name="lastRevaluationDate" readonly="true"/>
+        <field name="nextRevaluationDate"/>
+      </panel>
+
       <panel-related name="versionHistoryPanel" hidden="true" readonly="true"
         showIf="versionHistory &amp;&amp; versionHistory.length > 0" field="versionHistory"
         form-view="contract-archived-version-form">
@@ -359,6 +401,7 @@
     <action name="action-contract-attrs-require-payment-config"/>
     <action name="action-contract-attrs-readonly-by-config"/>
     <action name="action-contract-readonly-if-unchangable"/>
+    <action name="action-contract-method-hide-fields-list"/>
   </action-group>
 
   <action-attrs name="action-contract-attrs-readonly-by-config">
@@ -465,8 +508,7 @@
     model="com.axelor.apps.account.db.Invoice" title="Invoices">
     <view type="grid" name="invoice-lite-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.id = :contractId</domain>
-    <context name="contractId" expr="eval: id"/>
+    <domain>:id MEMBER OF self.contractSet</domain>
   </action-view>
 
   <action-attrs name="action-contract-attrs-domains-template">
@@ -510,6 +552,15 @@
 
   <action-method name="action-contract-method-is-valid">
     <call class="com.axelor.apps.contract.web.ContractController" method="isValid"/>
+  </action-method>
+
+  <action-method name="action-contract-method-set-invoiced-partner-domain">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="setInvoicedPartnerDomain"/>
+  </action-method>
+
+  <action-method name="action-contract-method-fill-invoiced-partner-if-only-one">
+    <call class="com.axelor.apps.contract.web.ContractController" method="fillInvoicedPartner"/>
   </action-method>
 
   <action-validate name="action-contract-validate-on-going">
@@ -559,6 +610,15 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
+
+  <action-method name="action-contract-method-hide-fields-list">
+    <call class="com.axelor.apps.contract.web.ContractController" method="hideFields"/>
+  </action-method>
+
+  <action-group name="action-contract-group-partner-onchange">
+    <action name="action-contract-attrs-partner-payment-config"/>
+    <action name="action-contract-method-fill-invoiced-partner-if-only-one"/>
+  </action-group>
 
   <search-filters name="contract-filters"
     model="com.axelor.apps.contract.db.Contract" title="Contract filters">

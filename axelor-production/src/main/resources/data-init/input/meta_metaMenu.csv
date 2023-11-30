@@ -41,7 +41,7 @@
 "manufacturing-mps-conf";"Admin"
 "manufacturing-mps-conf-mrp-line-type";"Admin"
 "manufacturing-mps-conf-manufacturing-periods";"Admin"
-"manufacturing-root-sop";"Admin"
+"manufacturing-mps-sop";"Admin"
 "manufacturing-root-mps-charge";"Admin"
 "manufacturing-conf-machine-tool";"Admin"
 "manufacturing-conf-machine-type";"Admin"

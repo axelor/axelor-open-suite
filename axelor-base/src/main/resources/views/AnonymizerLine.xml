@@ -28,9 +28,15 @@
       <field name="useFakeData" widget="boolean-switch"
         onChange="action-anonymizer-line-attrs-clear-faker-api-field"/>
       <field name="fakerApiField" grid-view="faker-api-field-grid"
-        form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"/>
+        form-view="faker-api-field-form" hidden="true" showIf="useFakeData" requiredIf="useFakeData"
+        onSelect="action-anonymizer-line-method-filter-faker-field"/>
     </panel>
   </form>
+
+  <action-method name="action-anonymizer-line-method-filter-faker-field">
+    <call class="com.axelor.apps.base.web.AnonymizerLineController"
+      method="getFakerApiFieldDomain"/>
+  </action-method>
 
   <action-attrs name="action-anonymizer-line-attrs-clear-faker-api-field">
     <attribute for="fakerApiField" name="value" expr="eval: null" if="!useFakeData"/>

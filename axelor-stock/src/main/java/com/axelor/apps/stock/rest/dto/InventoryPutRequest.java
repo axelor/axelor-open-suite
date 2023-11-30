@@ -35,8 +35,6 @@ public class InventoryPutRequest extends RequestStructure {
 
   private Long userId;
 
-  public InventoryPutRequest() {}
-
   public int getStatus() {
     return status;
   }

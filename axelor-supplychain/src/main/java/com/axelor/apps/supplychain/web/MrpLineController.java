@@ -25,7 +25,7 @@ import com.axelor.apps.supplychain.db.MrpLine;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.service.MrpLineService;
-import com.axelor.apps.supplychain.service.MrpService;
+import com.axelor.apps.supplychain.service.MrpProposalService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -94,7 +94,7 @@ public class MrpLineController {
       Mrp mrp = request.getContext().getParent().asType(Mrp.class);
       mrp = Beans.get(MrpRepository.class).find(mrp.getId());
 
-      Beans.get(MrpService.class).massUpdateProposalToProcess(mrp, true);
+      Beans.get(MrpProposalService.class).massUpdateProposalToProcess(mrp, true);
 
       response.setAttr("mrpLinePanel", "refresh", true);
     } catch (Exception e) {

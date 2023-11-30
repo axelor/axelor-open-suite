@@ -9,9 +9,15 @@
 
     <string name="name" title="Name" required="true"/>
     <string name="templateLink" title="Template file name"/>
-    <string name="format" title="Format"/>
+    <string name="format" title="Format" selection="iadministration.export.type.select"/>
     <one-to-many name="birtTemplateParameterList"
       ref="com.axelor.apps.base.db.BirtTemplateParameter" mappedBy="birtTemplate" title="Parameters"/>
+    <many-to-one name="templateMetaFile" ref="com.axelor.meta.db.MetaFile"
+      title="BIRT template file"/>
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
+    <integer name="templateEngineSelect" title="Template engine"
+      selection="template.engine.select" default="1"/>
+    <boolean name="attach" title="Attach"/>
 
   </entity>
 

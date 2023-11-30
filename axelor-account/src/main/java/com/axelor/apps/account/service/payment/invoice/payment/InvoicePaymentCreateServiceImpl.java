@@ -49,7 +49,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +105,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
       Currency currency,
       PaymentMode paymentMode,
       int typeSelect) {
-
     return new InvoicePayment(
         amount,
         paymentDate,
@@ -213,23 +211,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         InvoicePayment advancePayment = advanceInvoice.getInvoicePaymentList().get(0);
         advancePayment.setImputedBy(invoicePayment);
         invoicePaymentRepository.save(advancePayment);
-
-        // set the imputed payment currency
-        invoicePayment.setCurrency(advancePayment.getCurrency());
-
-        BigDecimal currentImputedAmount = invoicePayment.getAmount();
-
-        // we force the payment amount to be equal to the advance
-        // invoice amount, so we get the right amount in the
-        // right currency.
-        BigDecimal totalAmountInAdvanceInvoice = advancePayment.getInvoice().getCompanyInTaxTotal();
-
-        BigDecimal convertedImputedAmount =
-            currentImputedAmount
-                .multiply(advancePayment.getAmount())
-                .divide(totalAmountInAdvanceInvoice, 2, RoundingMode.HALF_UP);
-
-        invoicePayment.setAmount(convertedImputedAmount);
       }
     }
   }
@@ -318,9 +299,13 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public InvoicePayment createInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
+  public InvoicePayment createAndAddInvoicePayment(Invoice invoice, BankDetails companyBankDetails)
       throws AxelorException {
-    return this.createInvoicePayment(invoice, companyBankDetails, null);
+    InvoicePayment invoicePayment = this.createInvoicePayment(invoice, companyBankDetails, null);
+
+    invoice.addInvoicePaymentListItem(invoicePayment);
+
+    return invoicePayment;
   }
 
   @Override
@@ -336,10 +321,16 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
+    invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    return invoicePaymentRepository.save(invoicePayment);
+    invoicePayment = invoicePaymentRepository.save(invoicePayment);
+
+    if (invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_PENDING) {
+      invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    }
+
+    return invoicePayment;
   }
 
   @Transactional

@@ -19,12 +19,11 @@
 package com.axelor.apps.businessproject.service.batch;
 
 import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.db.repo.ProjectInvoicingAssistantBatchRepository;
+import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.project.db.Project;
@@ -54,7 +53,7 @@ public class BatchInvoicingProjectService extends AbstractBatch {
 
     Map<String, Object> contextValues = null;
     try {
-      contextValues = ProjectInvoicingAssistantBatchService.createJsonContext(batch);
+      contextValues = BusinessProjectBatchService.createJsonContext(batch);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -74,14 +73,13 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       try {
         InvoicingProject invoicingProject =
             invoicingProjectService.generateInvoicingProject(
-                project, batch.getProjectInvoicingAssistantBatch().getConsolidatePhaseSelect());
+                project, batch.getBusinessProjectBatch().getConsolidatePhaseSelect());
 
         if (invoicingProject != null && invoicingProject.getId() != null) {
           incrementDone();
-          if (batch.getProjectInvoicingAssistantBatch().getActionSelect()
-              == ProjectInvoicingAssistantBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
-            invoicingProject.setDeadlineDate(
-                batch.getProjectInvoicingAssistantBatch().getDeadlineDate());
+          if (batch.getBusinessProjectBatch().getActionSelect()
+              == BusinessProjectBatchRepository.ACTION_GENERATE_INVOICING_PROJECT) {
+            invoicingProject.setDeadlineDate(batch.getBusinessProjectBatch().getDeadlineDate());
           }
 
           Map<String, Object> map = new HashMap<String, Object>();
@@ -91,16 +89,14 @@ public class BatchInvoicingProjectService extends AbstractBatch {
       } catch (Exception e) {
         incrementAnomaly();
         TraceBackService.trace(
-            new Exception(
-                String.format(
-                    I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
-                    project.getId()),
-                e),
-            ExceptionOriginRepository.INVOICE_ORIGIN,
+            e,
+            String.format(
+                I18n.get(BusinessProjectExceptionMessage.BATCH_INVOICING_PROJECT_1),
+                project.getId()),
             batch.getId());
       }
     }
-    ProjectInvoicingAssistantBatchService.updateJsonObject(
+    BusinessProjectBatchService.updateJsonObject(
         batch, generatedInvoicingProjectList, "generatedInvoicingProjectSet", contextValues);
   }
 
@@ -113,14 +109,13 @@ public class BatchInvoicingProjectService extends AbstractBatch {
             batch.getDone());
 
     comment +=
-        String.format(
-            "\t" + I18n.get(BaseExceptionMessage.ALARM_ENGINE_BATCH_4), batch.getAnomaly());
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     addComment(comment);
     super.stop();
   }
 
   protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PROJECT_INVOICING_ASSISTANT_BATCH);
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BUSINESS_PROJECT_BATCH);
   }
 }

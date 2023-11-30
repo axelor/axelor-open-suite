@@ -31,20 +31,23 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.db.Query;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MessageService;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,8 +122,8 @@ public class DebtRecoveryActionService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
-          partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          partner.getName(),
           debtRecoveryMethodLine.getSequence());
 
     } else {
@@ -159,14 +162,24 @@ public class DebtRecoveryActionService {
     return messages;
   }
 
-  public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery detDebtRecovery) {
-    if (detDebtRecovery.getDebtRecoveryHistoryList() == null
-        || detDebtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
+  public DebtRecoveryHistory getDebtRecoveryHistory(DebtRecovery debtRecovery) {
+    if (debtRecovery.getDebtRecoveryHistoryList() == null
+        || debtRecovery.getDebtRecoveryHistoryList().isEmpty()) {
       return null;
     }
+    LocalDate debtRecoveryDate =
+        Collections.max(
+                debtRecovery.getDebtRecoveryHistoryList(),
+                Comparator.comparing(DebtRecoveryHistory::getDebtRecoveryDate))
+            .getDebtRecoveryDate();
+
+    List<DebtRecoveryHistory> debtRecoveryHistoryList =
+        debtRecovery.getDebtRecoveryHistoryList().stream()
+            .filter(history -> history.getDebtRecoveryDate().isEqual(debtRecoveryDate))
+            .collect(Collectors.toList());
+
     return Collections.max(
-        detDebtRecovery.getDebtRecoveryHistoryList(),
-        Comparator.comparing(DebtRecoveryHistory::getDebtRecoveryDate));
+        debtRecoveryHistoryList, Comparator.comparing(DebtRecoveryHistory::getCreatedOn));
   }
 
   /**
@@ -215,8 +228,8 @@ public class DebtRecoveryActionService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(AccountExceptionMessage.DEBT_RECOVERY_ACTION_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
-          partner.getName(),
           debtRecoveryMethodLine.getDebtRecoveryMethod().getName(),
+          partner.getName(),
           debtRecoveryMethodLine.getSequence());
 
     } else {
@@ -254,7 +267,8 @@ public class DebtRecoveryActionService {
     for (Message message : messageSet) {
       message = Beans.get(MessageRepository.class).save(message);
 
-      if (!debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
+      if (message.getMediaTypeSelect() != MessageRepository.MEDIA_TYPE_MAIL
+          && !debtRecovery.getDebtRecoveryMethodLine().getManualValidationOk()
           && message.getMailAccount() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -270,6 +284,8 @@ public class DebtRecoveryActionService {
       }
 
       Beans.get(MessageService.class).sendMessage(message);
+
+      linkMetaFile(message, debtRecovery);
     }
   }
 
@@ -329,5 +345,31 @@ public class DebtRecoveryActionService {
     debtRecoveryHistory.setUserDebtRecovery(userService.getUser());
     debtRecovery.addDebtRecoveryHistoryListItem(debtRecoveryHistory);
     debtRecoveryHistoryRepository.save(debtRecoveryHistory);
+  }
+
+  public void linkMetaFile(Message message, DebtRecovery debtRecovery) {
+    DMSFile dmsFile =
+        Query.of(DMSFile.class)
+            .filter(
+                "self.relatedId = :id AND self.relatedModel = :model and self.isDirectory = false")
+            .bind("id", message.getId())
+            .bind("model", message.getClass().getName())
+            .fetchOne();
+
+    if (dmsFile != null && dmsFile.getMetaFile() != null) {
+
+      MetaFile metaFile = dmsFile.getMetaFile();
+
+      MetaFiles metaFiles = Beans.get(MetaFiles.class);
+
+      metaFiles.attach(metaFile, metaFile.getFileName(), debtRecovery);
+
+      if (!CollectionUtils.isEmpty(debtRecovery.getDebtRecoveryHistoryList())) {
+
+        DebtRecoveryHistory debtRecoveryHistory = getDebtRecoveryHistory(debtRecovery);
+
+        metaFiles.attach(metaFile, metaFile.getFileName(), debtRecoveryHistory);
+      }
+    }
   }
 }

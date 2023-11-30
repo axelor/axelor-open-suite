@@ -76,9 +76,9 @@
       <field name="product" readonly="true" canEdit="false"/>
       <field name="mrpLineType" readonly="true"/>
       <field name="qty" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="maturityDate" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="cumulativeQty" css="bold" readonly="true"/>
       <field name="product.unit" readonly="true"/>
       <field name="minQty" readonly="true"/>
@@ -86,7 +86,7 @@
       <field name="reOrderQty" readonly="true"/>
       <field name="stockLocation" readonly="true"/>
       <field name="maxLevel" readonly="true"/>
-      <field name="partner" showIf="partner"/>
+      <field name="partner" showIf="partner" form-view="partner-form" grid-view="partner-grid"/>
       <field name="estimatedDeliveryMrpLine" readonly="true" showIf="estimatedDeliveryMrpLine"
         form-view="mrp-line-form"/>
       <field name="deliveryDelayDate" showIf="deliveryDelayDate"/>
@@ -106,13 +106,13 @@
       <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true"
         showIf="proposalGenerated"/>
       <field name="isEditedByUser"
-        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="mrp.mrpTypeSelect" hidden="true"/>
       <field name="warnDelayFromSupplier" hidden="true"/>
     </panel>
 
     <panel name="supplierPanel" showIf="mrpLineType.elementSelect == 5">
-      <field name="supplierPartner"
+      <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-validate-supplier-catalog, action-mrp-line-attrs-domain-supplier-partner"/>
     </panel>
   </form>

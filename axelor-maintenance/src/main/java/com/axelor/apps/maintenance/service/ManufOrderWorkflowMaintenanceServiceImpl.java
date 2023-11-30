@@ -21,27 +21,26 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
+import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
-import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflowServiceImpl {
@@ -54,7 +53,12 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
-      PurchaseOrderService purchaseOrderService) {
+      PurchaseOrderService purchaseOrderService,
+      AppBaseService appBaseService,
+      OperationOrderService operationOrderService,
+      AppProductionService appProductionService,
+      ProductionConfigService productionConfigService,
+      OperationOrderPlanningService operationOrderPlanningService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -62,7 +66,12 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         manufOrderRepo,
         productCompanyService,
         productionConfigRepo,
-        purchaseOrderService);
+        purchaseOrderService,
+        appBaseService,
+        operationOrderService,
+        appProductionService,
+        productionConfigService,
+        operationOrderPlanningService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -96,9 +105,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
 
-    for (OperationOrder operationOrder : getSortedOperationOrderList(manufOrder)) {
-      operationOrderWorkflowService.plan(operationOrder, null);
-    }
+    operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 
@@ -111,29 +118,6 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
     manufOrder.setCancelReasonStr(null);
 
     return manufOrderRepo.save(manufOrder);
-  }
-
-  /**
-   * Get a list of operation orders sorted by priority and id from the specified manufacturing
-   * order.
-   *
-   * @param manufOrder
-   * @return
-   */
-  @Override
-  protected List<OperationOrder> getSortedOperationOrderList(ManufOrder manufOrder) {
-    List<OperationOrder> operationOrderList =
-        MoreObjects.firstNonNull(manufOrder.getOperationOrderList(), Collections.emptyList());
-    Comparator<OperationOrder> byPriority =
-        Comparator.comparing(
-            OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
-    Comparator<OperationOrder> byId =
-        Comparator.comparing(
-            OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
-
-    return operationOrderList.stream()
-        .sorted(byPriority.thenComparing(byId))
-        .collect(Collectors.toList());
   }
 
   @Override

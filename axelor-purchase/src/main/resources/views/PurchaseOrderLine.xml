@@ -82,6 +82,23 @@
     <field name="estimatedReceiptDate"/>
   </grid>
 
+  <grid name="purchase-order-line-history-grid" title="Order history"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" edit-icon="false" canNew="false"
+    canDelete="false" canEdit="false" orderBy="-purchaseOrder.orderDate">
+    <field name="purchaseOrder.purchaseOrderSeq"/>
+    <field name="purchaseOrder.company"/>
+    <field name="purchaseOrder.orderDate"/>
+    <field name="purchaseOrder.buyerUser"/>
+    <field name="purchaseOrder.supplierPartner"/>
+    <field name="qty" x-scale="2"/>
+    <field name="unit"/>
+    <field name="price" x-scale="2"/>
+    <field name="discountAmount" x-scale="2"/>
+    <field name="purchaseOrder.currency"/>
+    <field name="exTaxTotal" x-scale="2"/>
+    <field name="estimatedReceiptDate"/>
+  </grid>
+
   <form name="purchase-order-line-project-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine"
     onLoad="action-group-purchase-purchase-orderline-onload" readonlyIf="true" canEdit="false">
@@ -141,11 +158,11 @@
             grid-view="unit-grid" requiredIf="!isTitleLine"/>
           <panel name="pricePanel" colSpan="3">
             <field name="price" hidden="true" colSpan="12"
-              onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
+              onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
               <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
             </field>
             <field name="inTaxPrice" hidden="true" colSpan="12"
-              onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount">
+              onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution">
               <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
             </field>
           </panel>
@@ -156,9 +173,9 @@
         </panel>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
-            onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"/>
+            onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
           <field name="discountAmount" colSpan="3"
-            onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution,action-budget-validate-exceed-line-amount"
+            onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
             hideIf="discountTypeSelect == 3"/>
           <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"/>
         </panel>
@@ -187,28 +204,8 @@
           form-view="purchase-order-supplier-line-form"
           grid-view="purchase-order-supplier-line-grid"/>
       </panel>
-      <panel name="budgetDistributionPanel" title="Budget" if="__config__.app.isApp('budget')"
-        if-module="axelor-supplychain">
-        <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-          hidden="false">
-          <viewer depends="companyExTaxTotal,$currencySymbol">
-						<![CDATA[
-							<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
-						]]>
-          </viewer>
-        </field>
-        <field name="budgetDistributionSumAmount" colSpan="6"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
-        <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
-          domain="self.statusSelect = 2 and self.budgetLineList IS NOT EMPTY"/>
-        <panel-related name="budgetDistributionListPanel"
-          field="budgetDistributionList" form-view="purchase-order-budget-distribution-form"
-          grid-view="purchase-order-budget-distribution-grid" editable="true" colSpan="12"
-          if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-          onChange="action-budget-validate-exceed-line-amount,action-purchase-order-method-compute-budget-distribution-sum-amount"/>
-        <field name="$currencySymbol" hidden="true"/>
-      </panel>
+      <panel-dashlet name="orderHistoryPanel" title="Order history"
+        action="action-purchase-order-line-view-show-order-line-history" colSpan="12"/>
       <panel name="deliveryPanel" title="Delivery" hidden="true" colSpan="12">
         <panel name="deliveryDatePanel" colSpan="12">
           <field name="desiredReceiptDate"/>
@@ -245,19 +242,8 @@
                     </h4>
 				]]></viewer>
         </field>
-      </panel>
-      <panel name="analyticDistributionPanel" title="Analytics" if-module="axelor-supplychain"
-        onTabSelect="action-purchase-order-line-attrs-read-only-distribution-lines">
-        <field name="analyticDistributionTemplate"
-          grid-view="analytic-distribution-template-grid"
-          form-view="analytic-distribution-template-form" canEdit="false"
-          onChange="action-purchase-order-line-method-create-distribution"
-          onSelect="action-purchase-order-line-attrs-set-domain-analytic-distribution-template"/>
-        <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
-          grid-view="analytic-move-line-distribution-grid"
-          form-view="analytic-move-line-distribution-form" colSpan="12"
-          onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
-        <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+        <field name="projectTask" title="Project Task" domain="self.project = :project"
+          form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -296,32 +282,7 @@
     <panel-include view="purchase-order-line-form"/>
   </form>
 
-  <action-method name="action-purchase-order-line-method-empty-line">
-    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="emptyLine"/>
-  </action-method>
-
-  <action-method name="action-purchase-order-line-method-create-distribution">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
-      method="createAnalyticDistributionWithTemplate"/>
-  </action-method>
-
-  <action-method
-    name="action-purchase-order-line-method-compute-analytic-distribution"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
-      method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
-  </action-method>
-
-  <action-attrs name="action-purchase-order-line-attrs-read-only-distribution-lines">
-    <attribute name="readonly" for="analyticMoveLineList"
-      expr="eval: !__config__.app.isApp('supplychain') || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-set-domain-analytic-distribution-template">
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
-  </action-attrs>
+  <!-- ACTION VIEW -->
 
   <action-view name="action-purchase-order-line-view-show-invoice-lines"
     title="Invoice Lines" model="com.axelor.apps.account.db.InvoiceLine">
@@ -330,6 +291,24 @@
     <domain>self.purchaseOrderLine.id = :purchaseOrderLineId</domain>
     <context name="purchaseOrderLineId" expr="eval: id"/>
   </action-view>
+
+  <action-view name="action-purchase-order-line-view-stock-move-line" title=""
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-all-grid"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.purchaseOrderLine.id = :id</domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-purchase-order-line-view-show-order-line-history"
+    title="Order history" model="com.axelor.apps.purchase.db.PurchaseOrderLine">
+    <view type="grid" name="purchase-order-line-history-grid"/>
+    <view type="form" name="purchase-order-line-form"/>
+    <domain>self.product = :product AND self.purchaseOrder.orderDate &lt; :__date__ AND
+      self.purchaseOrder.statusSelect IN (3,4) AND (:purchaseOrder is null OR self.purchaseOrder !=
+      :purchaseOrder)</domain>
+  </action-view>
+
   <!-- ACTION GROUPs -->
 
   <action-group name="action-group-purchase-purchase-orderline-onnew">
@@ -342,7 +321,6 @@
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
     <action name="action-purchase-order-line-attrs-hide-different-supplier-warning-label"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-onload">
@@ -353,11 +331,8 @@
     <action name="action-purchase-order-attrs-hide-ati"/>
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
     <action name="action-purchase-order-line-attrs-delivery-panel"/>
-    <action name="action-budget-distribution-attrs-budget-amount-available"
-      if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
-    <action name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
@@ -365,9 +340,9 @@
     <action name="action-purchase-order-line-method-get-product-information"/>
     <action name="action-purchase-order-line-method-compute" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
-    <action name="action-budget-validate-exceed-line-amount"/>
     <action name="action-purchase-order-line-method-check-different-supplier"/>
     <action name="action-purchase-order-line-method-translate-product-description-and-name"/>
+    <action name="action-purchase-order-line-attrs-refresh-order-history-dashlet"/>
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-qty-onchange">
@@ -376,7 +351,6 @@
     <action name="action-purchase-order-line-method-compute-analytic-distribution"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <action name="action-purchase-order-line-method-check-qty"/>
-    <action name="action-budget-validate-exceed-line-amount"/>
   </action-group>
 
   <action-group
@@ -392,8 +366,9 @@
     <action name="action-purchase-order-line-method-compute"/>
     <action name="action-purchase-order-line-method-compute-analytic-distribution"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-    <action name="action-budget-validate-exceed-line-amount"/>
   </action-group>
+
+  <!-- ACTION ATTRS -->
 
   <action-attrs name="action-purchase-order-line-attrs-delivery-panel">
     <attribute name="hidden" for="deliveryPanel"
@@ -409,7 +384,6 @@
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
     <attribute name="hidden" for="inTaxPrice" expr="eval:!__parent__?.inAti"
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
-
     <attribute name="hidden" for="exTaxTotal" expr="eval: purchaseOrder?.inAti"
       if="purchaseOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
     <attribute name="hidden" for="inTaxTotal" expr="eval: !purchaseOrder?.inAti"
@@ -449,6 +423,85 @@
     <attribute name="hidden" for="qtyValid" expr="true"/>
   </action-attrs>
 
+  <action-attrs name="action-purchase-order-line-attrs-product-domain">
+    <attribute name="domain" for="product"
+      if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"
+      expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
+			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
+      + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)
+			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-line-attrs-discountamount-title">
+    <attribute name="title" for="discountAmount"
+      expr="eval: com.axelor.i18n.I18n.get('Discount rate')" if="discountTypeSelect == 1"/>
+    <attribute name="title" for="discountAmount"
+      expr="eval: com.axelor.i18n.I18n.get('Discount amount')" if="discountTypeSelect == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-line-attrs-scale-and-precision">
+    <attribute name="scale" for="price"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="inTaxPrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="priceDiscounted"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="discountAmount"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="maxPurchasePrice"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute name="scale" for="qty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="receivedQty"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-line-attrs-readonly-form">
+    <attribute name="readonly" for="informationsPanel"
+      expr="eval: __parent__?.statusSelect &gt; 2"/>
+    <attribute name="readonly" for="supplierRequestsPanel"
+      expr="eval: __parent__?.statusSelect &gt; 2"/>
+    <attribute name="readonly" for="projectPanel"
+      expr="eval: __parent__?.statusSelect &gt; 3"/>
+    <attribute name="readonly" for="deliveryInformationPanel"
+      expr="eval: __parent__?.statusSelect &gt; 3"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-line-attrs-set-isFilterOnSupplier">
+    <attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-hide-different-supplier-warning-label">
+    <attribute name="hidden" for="differentSupplierLabel" expr="true"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-display-different-language-message">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: __parent__?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
+      if="__parent__"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: __parent__?.supplierPartner?.language?.code?.toUpperCase()" if="__parent__"/>
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
+      if="purchaseOrder"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()" if="purchaseOrder"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank">
+    <attribute for="$differentLanguageMessage" name="hidden"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"/>
+    <attribute for="$partnerLanguage" name="value"
+      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-line-attrs-refresh-order-history-dashlet">
+    <attribute for="orderHistoryPanel" name="refresh" expr="true"/>
+  </action-attrs>
+
   <!-- ACTION RECORD -->
 
   <action-record name="action-purchase-order-line-record-new"
@@ -465,6 +518,8 @@
     <field name="project" expr="eval: __parent__?.project"
       if="__config__.app.isApp('business-project')"/>
     <field name="toInvoice" expr="eval: __parent__?.project?.isInvoicingPurchases"
+      if="__config__.app.isApp('business-project')"/>
+    <field name="projectTask" expr="eval: __parent__?.projectTask"
       if="__config__.app.isApp('business-project')"/>
   </action-record>
 
@@ -516,12 +571,6 @@
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="updatePrice"/>
   </action-method>
 
-  <action-method
-    name="action-purchase-order-method-compute-budget-distribution-sum-amount">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
-      method="computeBudgetDistributionSumAmount"/>
-  </action-method>
-
   <action-method name="action-purchase-order-line-method-check-different-supplier">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
       method="checkDifferentSupplier"/>
@@ -533,102 +582,15 @@
       method="translateProductDescriptionAndName"/>
   </action-method>
 
-  <!-- ACTION ATTRS -->
+  <action-method name="action-purchase-order-line-method-empty-line">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController" method="emptyLine"/>
+  </action-method>
 
-  <action-attrs name="action-purchase-order-line-attrs-product-domain">
-    <attribute name="domain" for="product"
-      if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameSet == null || _parent?.company?.tradingNameSet.isEmpty()"
-      expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
-			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
-      + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)
-			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameSet != null &amp;&amp; !_parent?.company?.tradingNameSet.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>
-  </action-attrs>
-
-  <action-attrs name="action-purchase-order-line-attrs-discountamount-title">
-    <attribute name="title" for="discountAmount"
-      expr="eval: com.axelor.i18n.I18n.get('Discount rate')" if="discountTypeSelect == 1"/>
-    <attribute name="title" for="discountAmount"
-      expr="eval: com.axelor.i18n.I18n.get('Discount amount')" if="discountTypeSelect == 2"/>
-  </action-attrs>
-
-  <action-attrs name="action-purchase-order-line-attrs-scale-and-precision">
-    <attribute name="scale" for="price"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="inTaxPrice"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="priceDiscounted"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="discountAmount"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-    <attribute name="scale" for="maxPurchasePrice"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-
-    <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="receivedQty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-  </action-attrs>
-
-  <action-attrs name="action-purchase-order-line-attrs-readonly-form">
-    <attribute name="readonly" for="informationsPanel"
-      expr="eval: __parent__?.statusSelect &gt; 2"/>
-    <attribute name="readonly" for="supplierRequestsPanel"
-      expr="eval: __parent__?.statusSelect &gt; 2"/>
-    <attribute name="readonly" for="budgetDistributionPanel"
-      expr="eval: __parent__?.statusSelect &gt; 2"/>
-    <attribute name="readonly" for="projectPanel"
-      expr="eval: __parent__?.statusSelect &gt; 3"/>
-    <attribute name="readonly" for="budgetPanel"
-      expr="eval: __parent__?.statusSelect &gt; 2"/>
-    <attribute name="readonly" for="deliveryInformationPanel"
-      expr="eval: __parent__?.statusSelect &gt; 3"/>
-  </action-attrs>
-
-  <action-attrs name="action-purchase-order-line-attrs-set-isFilterOnSupplier">
-    <attribute name="value" for="$isFilterOnSupplier" expr="eval: true"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-hide-different-supplier-warning-label">
-    <attribute name="hidden" for="differentSupplierLabel" expr="true"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-display-different-language-message">
-    <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
-      if="__parent__"/>
-    <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.supplierPartner?.language?.code?.toUpperCase()" if="__parent__"/>
-
-    <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
-      if="purchaseOrder"/>
-    <attribute for="$partnerLanguage" name="value"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()" if="purchaseOrder"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank">
-    <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"/>
-    <attribute for="$partnerLanguage" name="value"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-purchase-order-line-attrs-hidden-analytic-distribution-panel">
-    <attribute name="hidden" for="analyticDistributionPanel"
-      expr="eval: !__config__.app.isApp('supplychain') || !__config__.app.getApp('account')?.getManageAnalyticAccounting() || !__parent__?.company?.accountConfig?.getManageAnalyticAccounting()"/>
-  </action-attrs>
-
-  <!-- ACTION VIEW -->
-  <action-view name="action-purchase-order-line-view-stock-move-line" title=""
-    model="com.axelor.apps.stock.db.StockMoveLine">
-    <view type="grid" name="stock-move-line-all-grid"/>
-    <view type="form" name="stock-move-line-all-form"/>
-    <domain>self.purchaseOrderLine.id = :id</domain>
-    <context name="id" expr="eval: id"/>
-  </action-view>
+  <action-method
+    name="action-purchase-order-line-method-compute-analytic-distribution"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="computeAnalyticDistribution" if="__config__.app.isApp('supplychain')"/>
+  </action-method>
 
 </object-views>

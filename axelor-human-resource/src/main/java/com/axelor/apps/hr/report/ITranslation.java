@@ -33,7 +33,6 @@ public class ITranslation {
       "Expense.personalExpenseAmount"; /*)*/
   public static final String EXPENSE_COMPANY_CB_SELECT = /*$$(*/ "Expense.companyCbSelect"; /*)*/
   public static final String EXPENSE_ADVANCE_AMOUNT = /*$$(*/ "Expense.advanceAmount"; /*)*/
-  public static final String EXPENSE_MULTIPLE_USERS = /*$$(*/ "Expense.multipleUsers"; /*)*/
   public static final String EXPENSE_TOTAL_LABEL = /*$$(*/ "Expense.total"; /*)*/
   public static final String EXPENSE_CURRENCY = /*$$(*/ "Expense.currency"; /*)*/
   public static final String EXPENSE_GENERAL_EXPENSES = /*$$(*/ "General Expenses"; /*)*/
@@ -75,6 +74,7 @@ public class ITranslation {
   public static final String LUNCH_VOUCHER_TO = /*$$(*/ "LunchVoucher.to"; /*)*/
   public static final String LUNCH_VOUCHER_NAMES = /*$$(*/ "LunchVoucher.names"; /*)*/
   public static final String LUNCH_VOUCHER_QTY = /*$$(*/ "LunchVoucher.qty"; /*)*/
+  public static final String LUNCH_VOUCHER_PAPER_NUMBER = /*$$(*/ "LunchVoucher.paperNumber"; /*)*/
   public static final String LUNCH_VOUCHER_AMOUNT = /*$$(*/ "LunchVoucher.amount"; /*)*/
   public static final String LUNCH_VOUCHER_COMMENT = /*$$(*/ "LunchVoucher.comment"; /*)*/
   public static final String LUNCH_VOUCHER_EMPLOYER_SHARE = /*$$(*/

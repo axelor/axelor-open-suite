@@ -24,6 +24,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineHistoryRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class StockLocationLineHistoryServiceImpl implements StockLocationLineHistoryService {
 
@@ -52,5 +53,16 @@ public class StockLocationLineHistoryServiceImpl implements StockLocationLineHis
             stockLocationLine.getAvgPrice(),
             stockLocationLine.getCurrentQty(),
             stockLocationLine.getUnit()));
+  }
+
+  @Override
+  public List<StockLocationLineHistory> getStockLineHistoryLines(
+      StockLocationLine stockLocationLine) {
+
+    return stockLocationLineHistoryRepo
+        .all()
+        .filter("self.stockLocationLine = :stockLocationLine")
+        .bind("stockLocationLine", stockLocationLine)
+        .fetch();
   }
 }

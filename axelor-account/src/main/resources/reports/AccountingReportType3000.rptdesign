@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.6.0.v201606072122</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">ReportValues.ValuesDS.x</property>
@@ -209,13 +209,6 @@
                     <text-property name="heading">date_to</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="alias">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">report_title</property>
                     <property name="alias">report_title</property>
                     <property name="analysis">dimension</property>
@@ -339,76 +332,71 @@
                     </structure>
                     <structure>
                         <property name="position">5</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">6</property>
                         <property name="name">report_title</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">6</property>
                         <property name="name">comparison</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">7</property>
                         <property name="name">no_of_periods</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">8</property>
                         <property name="name">company_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">9</property>
                         <property name="name">currency</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">10</property>
                         <property name="name">journal</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">11</property>
                         <property name="name">payment_mode</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">12</property>
                         <property name="name">period</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">13</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">14</property>
                         <property name="name">display_delta_year</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">15</property>
                         <property name="name">display_delta_year_percentage</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">16</property>
                         <property name="name">reportyear</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">17</property>
                         <property name="name">reportn1year</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">18</property>
                         <property name="name">reportn2year</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -446,104 +434,97 @@
                 </structure>
                 <structure>
                     <property name="position">5</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">6</property>
                     <property name="name">report_title</property>
                     <property name="nativeName">report_title</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">6</property>
                     <property name="name">comparison</property>
                     <property name="nativeName">comparison</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">7</property>
                     <property name="name">no_of_periods</property>
                     <property name="nativeName">no_of_periods</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">8</property>
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">9</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">10</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
+                    <property name="position">11</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">12</property>
                     <property name="name">period</property>
                     <property name="nativeName">period</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">13</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">14</property>
                     <property name="name">display_delta_year</property>
                     <property name="nativeName">display_delta_year</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">15</property>
                     <property name="name">display_delta_year_percentage</property>
                     <property name="nativeName">display_delta_year_percentage</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">16</property>
                     <property name="name">reportyear</property>
                     <property name="nativeName">reportyear</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">17</property>
                     <property name="name">reportn1year</property>
                     <property name="nativeName">reportn1year</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">18</property>
                     <property name="name">reportn2year</property>
                     <property name="nativeName">reportn2year</property>
                     <property name="dataType">string</property>
@@ -555,7 +536,6 @@
 	Report.publication_date_time as report_date,
 	Report.date_from as date_from,
 	Report.date_to as date_to,
-	Report.display_simulated_move as display_simulated_move,
 	ReportType.report_title as report_title,
 	ReportType.comparison as comparison,
 	ReportType.no_of_periods as no_of_periods,
@@ -756,6 +736,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">period</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">periodNb</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">periodNb</text-property>
+                    <text-property name="heading">periodNb</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">groupNb</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">groupNb</text-property>
@@ -792,10 +778,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">columnNotCompute</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previousYear</property>
+                    <property name="columnName">otherYear</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">previousYear</text-property>
-                    <text-property name="heading">previousYear</text-property>
+                    <text-property name="displayName">otherYear</text-property>
+                    <text-property name="heading">otherYear</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">lineName</property>
@@ -900,86 +886,91 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">groupNb</property>
+                        <property name="name">periodNb</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
+                        <property name="name">groupNb</property>
+                        <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">8</property>
                         <property name="name">columnName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">columnNb</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">columnRuleType</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">columnHidden</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">columnNotCompute</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
-                        <property name="name">previousYear</property>
+                        <property name="position">13</property>
+                        <property name="name">otherYear</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">lineName</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">lineNb</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">lineHidden</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">lineNotCompute</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">lineRuleType</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">analyticAccount</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">19</property>
+                        <property name="position">20</property>
                         <property name="name">style</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">20</property>
+                        <property name="position">21</property>
                         <property name="name">groupStyle</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">21</property>
+                        <property name="position">22</property>
                         <property name="name">columnStyle</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">22</property>
+                        <property name="position">23</property>
                         <property name="name">lineStyle</property>
                         <property name="dataType">integer</property>
                     </structure>
@@ -1024,118 +1015,125 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">6</property>
+                    <property name="name">periodNb</property>
+                    <property name="nativeName">periodNb</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
+                </structure>
+                <structure>
+                    <property name="position">7</property>
                     <property name="name">groupNb</property>
                     <property name="nativeName">groupNb</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">7</property>
+                    <property name="position">8</property>
                     <property name="name">columnName</property>
                     <property name="nativeName">columnName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">8</property>
+                    <property name="position">9</property>
                     <property name="name">columnNb</property>
                     <property name="nativeName">columnNb</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">9</property>
+                    <property name="position">10</property>
                     <property name="name">columnRuleType</property>
                     <property name="nativeName">columnRuleType</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">10</property>
+                    <property name="position">11</property>
                     <property name="name">columnHidden</property>
                     <property name="nativeName">columnHidden</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">11</property>
+                    <property name="position">12</property>
                     <property name="name">columnNotCompute</property>
                     <property name="nativeName">columnNotCompute</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">12</property>
-                    <property name="name">previousYear</property>
-                    <property name="nativeName">previousYear</property>
+                    <property name="position">13</property>
+                    <property name="name">otherYear</property>
+                    <property name="nativeName">otherYear</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">13</property>
+                    <property name="position">14</property>
                     <property name="name">lineName</property>
                     <property name="nativeName">lineName</property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
+                    <property name="position">15</property>
                     <property name="name">lineNb</property>
                     <property name="nativeName">lineNb</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">15</property>
+                    <property name="position">16</property>
                     <property name="name">lineHidden</property>
                     <property name="nativeName">lineHidden</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">16</property>
+                    <property name="position">17</property>
                     <property name="name">lineNotCompute</property>
                     <property name="nativeName">lineNotCompute</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
-                    <property name="position">17</property>
+                    <property name="position">18</property>
                     <property name="name">lineRuleType</property>
                     <property name="nativeName">lineRuleType</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">18</property>
+                    <property name="position">19</property>
                     <property name="name">analyticAccount</property>
                     <property name="nativeName">analyticAccount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
-                    <property name="position">19</property>
+                    <property name="position">20</property>
                     <property name="name">style</property>
                     <property name="nativeName">style</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">20</property>
+                    <property name="position">21</property>
                     <property name="name">groupStyle</property>
                     <property name="nativeName">groupStyle</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">21</property>
+                    <property name="position">22</property>
                     <property name="name">columnStyle</property>
                     <property name="nativeName">columnStyle</property>
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
-                    <property name="position">22</property>
+                    <property name="position">23</property>
                     <property name="name">lineStyle</property>
                     <property name="nativeName">lineStyle</property>
                     <property name="dataType">integer</property>
@@ -1148,13 +1146,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	ReportValue.accounting_report_config_line AS "line",
 	ReportValue.parent_title AS "group",
 	ReportValue.period,
+	ReportValue.period_number AS "periodNb",
 	ReportValue.group_number AS "groupNb",
 	ConfigColumn.label AS "columnName",
 	ReportValue.column_number AS "columnNb",
 	ConfigColumn.rule_type_select AS "columnRuleType",
 	(ConfigColumn.hidden OR ConfigGroupColumn.hidden) AS "columnHidden",
 	ConfigColumn.not_computed_if_intersect AS "columnNotCompute",
-	ConfigColumn.compute_previous_year AS "previousYear",
+	ConfigColumn.compute_previous_year AS "otherYear",
 	ReportValue.line_title AS "lineName",
 	ReportValue.line_number AS "lineNb",
 	ConfigLine.hidden AS "lineHidden",
@@ -1272,7 +1271,7 @@ ORDER BY ReportValue.column_number, ReportValue.line_number]]></xml-property>
 		WHEN ReportValue.analytic_account IS NULL THEN 0
 		ELSE AnalyticAccount.id
 	END ) AS "id",
-	AnalyticAccount.name AS "accountName",
+	SUBSTRING(REGEXP_REPLACE(AnalyticAccount.name, '[?:*[\]\\\/]|^''|''$', '', 'g'), 0, 31) AS "accountName",
 	ReportValue.analytic_order AS "analyticOrder"
 
 FROM account_accounting_report_value AS ReportValue
@@ -1383,7 +1382,15 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                             <property name="levels">
                                 <tabular-level name="period" id="5987">
                                     <property name="dataType">string</property>
-                                    <property name="columnName">period</property>
+                                    <property name="levelType">dynamic</property>
+                                    <list-property name="attributes">
+                                        <structure>
+                                            <property name="name">period</property>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="columnName">periodNb</property>
+                                    <expression name="displayColumnName" type="javascript">dataSetRow["period"]</expression>
                                 </tabular-level>
                             </property>
                         </tabular-hierarchy>
@@ -1426,8 +1433,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                             <expression name="measureExpression" type="javascript">dataSetRow["lineRuleType"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
-                        <tabular-measure name="previousYear" id="5975">
-                            <expression name="measureExpression" type="javascript">dataSetRow["previousYear"]</expression>
+                        <tabular-measure name="otherYear" id="5975">
+                            <expression name="measureExpression" type="javascript">dataSetRow["otherYear"]</expression>
                             <property name="dataType">integer</property>
                         </tabular-measure>
                         <tabular-measure name="style" id="6055">
@@ -1486,9 +1493,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="textAlign">center</property>
                     <property name="verticalAlign">middle</property>
                     <property name="canShrink">true</property>
-                    <column id="5523">
-                        <property name="width">10%</property>
-                    </column>
                     <column id="5488"/>
                     <column id="12">
                         <property name="width">1.448in</property>
@@ -1497,34 +1501,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         <property name="width">1.448in</property>
                     </column>
                     <row id="14">
-                        <cell id="5522">
-                            <text id="5524">
-                                <property name="fontSize">8pt</property>
-                                <property name="dataSet">ReportDS</property>
-                                <list-property name="visibility">
-                                    <structure>
-                                        <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                                    </structure>
-                                </list-property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='" + params["AttachmentPath"].value + row["logo_path"] + "' alt='' height='25' width='50'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
-                        </cell>
+                        <property name="verticalAlign">middle</property>
                         <cell id="5487">
                             <text id="5499">
                                 <property name="dataSet">ReportDS</property>
@@ -1664,19 +1641,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move_1</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
                     <property name="name">comparison</property>
                     <text-property name="displayName">comparison</text-property>
                     <expression name="expression" type="javascript">dataSetRow["comparison"]</expression>
@@ -1776,32 +1740,17 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                 <cell id="5510">
                     <property name="fontSize">24pt</property>
                     <property name="textAlign">center</property>
-                    <text id="4220">
-                        <property name="fontSize">8pt</property>
-                        <property name="dataSet">ReportDS</property>
+                    <image id="6056">
+                        <property name="width">100px</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='" + params["AttachmentPath"].value + row["logo_path"] + "' alt='' height='50' width='100'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="5511">
                     <property name="colSpan">5</property>
@@ -2465,6 +2414,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <property name="dataType">integer</property>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[this.name = row["accountName"]]]></method>
+                        <method name="onPageBreak"><![CDATA[this.name = row["accountName"]]]></method>
+                        <property name="pageBreakInterval">1</property>
                         <list-property name="sort">
                             <structure>
                                 <expression name="key" type="javascript">row["analyticOrder"]</expression>
@@ -2480,6 +2432,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                         </header>
                         <detail>
                             <row id="5999">
+                                <property name="pageBreakBefore">auto</property>
                                 <cell id="6006">
                                     <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="5838">
                                         <property name="cube">ReportValues</property>
@@ -2494,8 +2447,9 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                             <data id="5853">
                                                                 <structure name="numberFormat">
                                                                     <property name="category">Custom</property>
-                                                                    <property name="pattern">#0.00</property>
+                                                                    <property name="pattern">#,##0.00</property>
                                                                 </structure>
+                                                                <property name="textAlign">right</property>
                                                                 <list-property name="highlightRules">
                                                                     <structure>
                                                                         <property name="operator">eq</property>
@@ -2683,8 +2637,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                                 <property name="level">Period/period</property>
                                                                 <property name="sort">
                                                                     <sort-element>
-                                                                        <expression name="key" type="javascript">dimension["Period"]["period"]</expression>
-                                                                        <property name="direction">desc</property>
+                                                                        <expression name="key" type="javascript">dimension["Period"]["period"]["periodNb"]</expression>
+                                                                        <property name="direction">asc</property>
                                                                         <property name="strength">-1</property>
                                                                         <property name="member">
                                                                             <member-value>
@@ -3014,7 +2968,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 </simple-property-list>
                                             </filter-condition-element>
                                         </property>
-                                        <property name="pageBreakAfter">always</property>
+                                        <property name="pageBreakAfter">auto</property>
                                         <list-property name="boundDataColumns">
                                             <structure>
                                                 <property name="name">line</property>
@@ -3057,8 +3011,8 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                                 <property name="dataType">integer</property>
                                             </structure>
                                             <structure>
-                                                <property name="name">previousYear</property>
-                                                <expression name="expression" type="javascript">measure["previousYear"]</expression>
+                                                <property name="name">otherYear</property>
+                                                <expression name="expression" type="javascript">measure["otherYear"]</expression>
                                                 <property name="dataType">boolean</property>
                                             </structure>
                                             <structure>
@@ -3068,7 +3022,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                             </structure>
                                             <structure>
                                                 <property name="name">period</property>
-                                                <expression name="expression">dimension["Period"]["period"]</expression>
+                                                <expression name="expression" type="javascript">dimension["Period"]["period"]["period"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
                                             <structure>

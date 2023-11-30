@@ -271,6 +271,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
 
     move.setDate(date);
     move.setOriginDate(originDate);
+
     move.setMoveLineList(new ArrayList<MoveLine>());
 
     Currency companyCurrency = companyConfigService.getCompanyCurrency(company);
@@ -355,6 +356,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
             description,
             companyBankDetails);
     move.setPaymentVoucher(paymentVoucher);
+    move.setPaymentCondition(null);
     return move;
   }
 

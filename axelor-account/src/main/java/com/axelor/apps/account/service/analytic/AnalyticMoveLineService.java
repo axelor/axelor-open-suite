@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionLine;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
@@ -30,6 +31,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -48,7 +50,13 @@ public interface AnalyticMoveLineService {
       LocalDate date);
 
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
-      Partner partner, Product product, Company company, boolean isPurchase) throws AxelorException;
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Account account,
+      boolean isPurchase)
+      throws AxelorException;
 
   public void updateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, BigDecimal total, LocalDate date);
@@ -65,6 +73,9 @@ public interface AnalyticMoveLineService {
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException;
 
+  AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
+      throws AxelorException;
+
   AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
   AnalyticMoveLine reverseAndPersist(
@@ -73,5 +84,5 @@ public interface AnalyticMoveLineService {
   AnalyticMoveLine generateAnalyticMoveLine(
       AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount);
 
-  String getAnalyticAxisDomain(AnalyticMoveLine analyticMoveLine, Company company);
+  String getAnalyticAxisDomain(Company company) throws AxelorException;
 }

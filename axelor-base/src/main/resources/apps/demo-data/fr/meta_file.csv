@@ -13,8 +13,6 @@
 "import-data-group.csv";"import-data-group.csv";"text/csv";71;"71 Bytes";"File containing the group data to import using the import-config-group.xml config file as import settings."
 "import-config-keyword.xml";"import-config-keyword.xml";"text/xml";418;"418 Bytes";"Configuration file to import Keywords based on import-data-keyword.csv datasource."
 "import-data-keyword.csv";"import-data-keyword.csv";"text/csv";34;"34 Bytes";"File containing the keyword data to import using the import-config-keyword.xml config file as import settings."
-"import-config-lead.xml";"import-config-lead.xml";"text/xml";1000;"1000 Bytes";"Configuration file to import Leads based on import-data-lead.csv datasource."
-"import-data-lead.csv";"import-data-lead.csv";"text/csv";409;"409 Bytes";"File containing the lead data to import using the import-config-lead.xml config file as import settings."
 "import-config-location.xml";"import-config-location.xml";"text/xml";420;"420 Bytes";"Configuration file to import Locations based on import-data-location.csv datasource."
 "import-data-location.csv";"import-data-location.csv";"text/csv";126;"126 Bytes";"File containing the location data to import using the import-config-location.xml config file as import settings."
 "import-config-machine.xml";"import-config-machine.xml";"text/xml";385;"385 Bytes";"Configuration file to import Machines based on import-data-machine.csv datasource."
