@@ -11,7 +11,7 @@ public class CurrencyScaleServiceImpl implements CurrencyScaleService {
 
   @Override
   public BigDecimal getScaledValue(BigDecimal value) {
-    return value.setScale(DEFAULT_SCALE, DEFAULT_ROUNDING_MODE);
+    return value == null ? null : value.setScale(DEFAULT_SCALE, DEFAULT_ROUNDING_MODE);
   }
 
   @Override
@@ -22,7 +22,7 @@ public class CurrencyScaleServiceImpl implements CurrencyScaleService {
       scale = customizedScale;
     }
 
-    return value.setScale(scale, DEFAULT_ROUNDING_MODE);
+    return value == null ? null : value.setScale(scale, DEFAULT_ROUNDING_MODE);
   }
 
   @Override
