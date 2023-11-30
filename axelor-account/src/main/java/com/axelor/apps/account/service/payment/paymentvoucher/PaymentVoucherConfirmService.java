@@ -60,7 +60,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -534,11 +533,12 @@ public class PaymentVoucherConfirmService {
       // in the else case we create a classical balance on the bank account of the
       // payment mode
       BigDecimal companyPaidAmount =
-          move.getMoveLineList().stream()
-              .map(ml -> ml.getCredit().add(ml.getDebit()))
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              paymentVoucher,
+              move.getMoveLineList().stream()
+                  .map(ml -> ml.getCredit().add(ml.getDebit()))
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO));
 
       if (paymentVoucher.getRemainingAmount().signum() > 0) {
         companyPaidAmount =
