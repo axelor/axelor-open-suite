@@ -14,8 +14,8 @@
     <panel name="mainPanel">
       <field name="sequence" colSpan="8"/>
       <field name="isCustomizeMenuEnabled" widget="BooleanSwitch" colSpan="4"/>
-      <field name="authorizedRoles" placeholder="all" colSpan="6" canNew="false" canEdit="false"
-        widget="TagSelect"/>
+      <field name="authorizedRoles" placeholder="all" colSpan="6" canNew="false"
+        canEdit="false" widget="TagSelect"/>
     </panel>
     <panel-tabs hidden="true" hideIf="!isCustomizeMenuEnabled">
       <panel name="menusConfig" title="Menus config" hidden="true"
