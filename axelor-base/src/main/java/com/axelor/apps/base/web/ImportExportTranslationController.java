@@ -8,6 +8,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class ImportExportTranslationController {
   public void exportTranslation(ActionRequest request, ActionResponse response)
@@ -29,8 +30,18 @@ public class ImportExportTranslationController {
         Beans.get(ImportExportTranslationRepository.class).find(importExportTranslation.getId());
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
-    importExportTranslationService.importTranslations(importExportTranslation);
-    response.setInfo("File successfully imported.");
-    response.setReload(true);
+    Path path = importExportTranslationService.importTranslations(importExportTranslation);
+    if (path == null) {
+      response.setInfo("The import file is empty.");
+      response.setReload(true);
+    } else {
+      response.setInfo("File successfully imported.");
+      response.setReload(true);
+    }
+  }
+
+  public void languageSetDomain(ActionRequest request, ActionResponse response) {
+    String domain = " self.isNative = false ";
+    response.setAttr("languageSet", "domain", domain);
   }
 }

@@ -1,7 +1,9 @@
 ---
-title: "Synchronize languages selection and languages object"
+title: "TRANSLATIONS : Export/import translations"
 type: feature
 description: |
-  Where is a Language object in AOS, when a Language obj is modified, 
-  like adding a new language, alter a language code or remove a language option, 
-  then the modification should be also made in select.language.
+  Create a process to export and import translations in different languages.
+  A new field called isNative is added to each language obj.
+  The native ones are English and French, which cannot be exported or imported.
+  Other available languages can be exported into a csv file, and can be modified by user after downloading.
+  After modifying a translation csv file, users can import the file to make changes of translations in the system.

@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportExportTranslationServiceImpl implements ImportExportTranslationService {
 
@@ -53,6 +55,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   @Override
   public void exportTranslations(ImportExportTranslation importExportTranslation)
       throws IOException {
+    long errorNumber = 0L;
     Long id = importExportTranslation.getId();
     List<String> languageHeaders = getLanguageHeaders(id);
     int languageNumber = languageHeaders.size();
@@ -78,20 +81,24 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         break;
       } else {
         for (int i = 0; i < messageQueryResultList.size(); i++) {
-          messageRecord = messageQueryResultList.get(i);
-          languageCode = (String) messageRecord[0];
-          messageKey = (String) messageRecord[1];
-          messageValue = (String) messageRecord[2];
-          if (!map.containsKey(messageKey)) {
-            messageValueArray = new String[languageNumber];
-            int position = findPosition(languageCode, headers) - 1;
-            messageValueArray[position] = messageValue;
-            map.put(messageKey, messageValueArray);
-          } else {
-            messageValueArray = map.get(messageKey);
-            int position = findPosition(languageCode, headers) - 1;
-            messageValueArray[position] = messageValue;
-            map.put(messageKey, messageValueArray);
+          try {
+            messageRecord = messageQueryResultList.get(i);
+            languageCode = (String) messageRecord[0];
+            messageKey = (String) messageRecord[1];
+            messageValue = (String) messageRecord[2];
+            if (!map.containsKey(messageKey)) {
+              messageValueArray = new String[languageNumber];
+              int position = findPosition(languageCode, headers) - 1;
+              messageValueArray[position] = messageValue;
+              map.put(messageKey, messageValueArray);
+            } else {
+              messageValueArray = map.get(messageKey);
+              int position = findPosition(languageCode, headers) - 1;
+              messageValueArray[position] = messageValue;
+              map.put(messageKey, messageValueArray);
+            }
+          } catch (Exception e) {
+            errorNumber++;
           }
         }
         offset += LIMIT;
@@ -99,28 +106,35 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     } while (true);
     long countRecords = 0L;
     for (Map.Entry entry : map.entrySet()) {
-      String key = (String) entry.getKey();
-      Object[] value = (Object[]) entry.getValue();
-      row = new String[languageNumber + 1];
-      row[0] = key;
-      for (int j = 0; j < value.length; j++) {
-        row[j + 1] = (String) value[j];
+      try {
+        String key = (String) entry.getKey();
+        Object[] value = (Object[]) entry.getValue();
+        row = new String[languageNumber + 1];
+        row[0] = key;
+        for (int j = 0; j < value.length; j++) {
+          row[j + 1] = (String) value[j];
+        }
+        translationList.add(row);
+        countRecords++;
+      } catch (Exception e) {
+        errorNumber++;
       }
-      translationList.add(row);
-      countRecords++;
     }
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
     CsvHelper.csvWriter(file.getParent(), file.getName(), ';', '\"', headers, translationList);
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), importExportTranslation);
+    } catch (IOException e) {
+      Logger logger = LoggerFactory.getLogger(getClass());
+      logger.error("FileInputStream error", e);
     }
     importExportTranslation = importExportTranslationRepository.find(id);
     ImportExportTranslationHistory importExportTranslationHistory =
         new ImportExportTranslationHistory();
     importExportTranslationHistory.setActionType("Export");
     importExportTranslationHistory.setRecordNumber(countRecords);
-    importExportTranslationHistory.setErrorNumber(0L);
+    importExportTranslationHistory.setErrorNumber(errorNumber);
     importExportTranslation.addImportExportTranslationHistoryListItem(
         importExportTranslationHistory);
     importExportTranslationRepository.save(importExportTranslation);
@@ -206,19 +220,28 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   @Transactional
   @Override
   public Path importTranslations(ImportExportTranslation importExportTranslation) {
+    long errorNumber = 0L;
     Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
     char separator = ';';
     List<String[]> data = null;
     try {
       data = CsvHelper.cSVFileReader(filePath.toString(), separator);
     } catch (Exception e) {
-
+      Logger logger = LoggerFactory.getLogger(getClass());
+      logger.error("Read CSV file failed.", e);
     }
+    if (data.isEmpty()) return null;
     List<String> headers = Arrays.asList(data.get(0));
     long dataLineNumber = 0L;
     for (int i = 1; i < data.size(); i++) {
       List<String> dataLine = Arrays.asList(data.get(i));
-      dataLineNumber += insertOrUpdateTranslation(dataLine, headers);
+      try {
+        dataLineNumber += insertOrUpdateTranslation(dataLine, headers);
+      } catch (Exception e) {
+        Logger logger = LoggerFactory.getLogger(getClass());
+        logger.error("Error processing data line: " + dataLine, e);
+        errorNumber++;
+      }
     }
     ImportExportTranslationHistory importExportTranslationHistory =
         new ImportExportTranslationHistory();
@@ -226,7 +249,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         importExportTranslationRepository.find(importExportTranslation.getId());
     importExportTranslationHistory.setActionType("Import");
     importExportTranslationHistory.setRecordNumber(dataLineNumber);
-    importExportTranslationHistory.setErrorNumber(0L);
+    importExportTranslationHistory.setErrorNumber(errorNumber);
     importExportTranslationHistory.setImportExportTranslation(importExportTranslation);
     importExportTranslation.addImportExportTranslationHistoryListItem(
         importExportTranslationHistory);
@@ -242,12 +265,13 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @return total records imported or updated for the dataLine.
    */
   @Transactional
-  protected long insertOrUpdateTranslation(List<String> dataLine, List<String> headers) {
+  protected long insertOrUpdateTranslation(List<String> dataLine, List<String> headers)
+      throws Exception {
     long importNumber = 0L;
     String key = dataLine.get(0);
 
     if (dataLine.size() != headers.size()) {
-      // error
+      throw new Exception("CSV file line has different number of columns against headers");
     }
 
     for (int i = 1; i < dataLine.size(); i++) {
