@@ -18,29 +18,23 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
-import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
-import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
@@ -48,9 +42,7 @@ import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -59,17 +51,11 @@ import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,12 +71,9 @@ public class BatchBillOfExchange extends AbstractBatch {
   protected MoveRepository moveRepository;
   protected JournalRepository journalRepository;
   protected AccountRepository accountRepository;
-  protected ReconcileService reconcileService;
-  protected MoveLineService moveLineService;
   protected MoveValidateService moveValidateService;
   protected AccountingBatchRepository accountingBatchRepository;
-  protected InvoiceTermRepository invoiceTermRepo;
-  protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermReplaceService invoiceTermReplaceService;
 
   @Inject
   public BatchBillOfExchange(
@@ -102,12 +85,9 @@ public class BatchBillOfExchange extends AbstractBatch {
       JournalRepository journalRepository,
       MoveRepository moveRepository,
       AccountRepository accountRepository,
-      ReconcileService reconcileService,
-      MoveLineService moveLineService,
       MoveValidateService moveValidateService,
       AccountingBatchRepository accountingBatchRepository,
-      InvoiceTermRepository invoiceTermRepo,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermReplaceService invoiceTermReplaceService) {
     super();
     this.invoiceRepository = invoiceRepository;
     this.appAccountService = appAccountService;
@@ -117,12 +97,9 @@ public class BatchBillOfExchange extends AbstractBatch {
     this.journalRepository = journalRepository;
     this.moveRepository = moveRepository;
     this.accountRepository = accountRepository;
-    this.reconcileService = reconcileService;
-    this.moveLineService = moveLineService;
     this.moveValidateService = moveValidateService;
     this.accountingBatchRepository = accountingBatchRepository;
-    this.invoiceTermRepo = invoiceTermRepo;
-    this.invoiceTermService = invoiceTermService;
+    this.invoiceTermReplaceService = invoiceTermReplaceService;
   }
 
   @Override
@@ -188,56 +165,9 @@ public class BatchBillOfExchange extends AbstractBatch {
         accountConfigService.getAccountConfig(accountingBatch.getCompany());
     Move placementMove = createLCRAccountMove(invoice, accountConfig, accountingBatch);
     moveValidateService.accounting(placementMove);
-    List<InvoiceTerm> newInvoiceTermList = new ArrayList<>();
-    List<InvoiceTerm> invoiceTermListToRemove = new ArrayList<>();
-    copyInvoiceTerms(invoice, placementMove, newInvoiceTermList, invoiceTermListToRemove);
-    reconcilesMoves(placementMove, invoice.getMove(), invoice);
+
+    invoiceTermReplaceService.replaceInvoiceTerms(invoice, placementMove);
     updateInvoice(invoice, placementMove, accountConfig);
-    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove);
-  }
-
-  /**
-   * Reconcile moves on account partnerAccount move line
-   *
-   * @param move
-   * @param invoiceMove
-   * @throws AxelorException
-   */
-  @Transactional(rollbackOn = {Exception.class})
-  protected void reconcilesMoves(Move move, Move invoiceMove, Invoice invoice)
-      throws AxelorException {
-    Objects.requireNonNull(move);
-    Objects.requireNonNull(invoiceMove);
-    log.debug("Reconcile move {} with {}", move, invoiceMove);
-    Account partnerAccount = invoice.getPartnerAccount();
-
-    MoveLine creditMoveLine =
-        move.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(partnerAccount))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        "Missing move line with account %s",
-                        partnerAccount.getName()));
-    MoveLine debitMoveLine =
-        invoiceMove.getMoveLineList().stream()
-            .filter(ml -> ml.getAccount().equals(partnerAccount))
-            .findFirst()
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        "Missing move line with account %s",
-                        partnerAccount.getName()));
-
-    Reconcile reconcile =
-        reconcileService.createReconcile(
-            debitMoveLine, creditMoveLine, creditMoveLine.getCredit(), false);
-    reconcileService.confirmReconcile(reconcile, false, false);
-
-    updateInvoiceTerms(creditMoveLine, debitMoveLine);
   }
 
   /**
@@ -391,114 +321,5 @@ public class BatchBillOfExchange extends AbstractBatch {
 
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
-  }
-
-  protected List<InvoiceTerm> splitInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return new ArrayList<>();
-    }
-
-    List<InvoiceTerm> invoiceTermToRemove = new ArrayList<>();
-
-    for (InvoiceTerm invoiceTerm : invoiceTermList) {
-      BigDecimal newAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
-      if (newAmount.signum() > 0) {
-        BigDecimal amountRemaining = invoiceTerm.getAmountRemaining();
-        BigDecimal newPercentage =
-            amountRemaining
-                .multiply(invoiceTerm.getPercentage())
-                .divide(
-                    invoiceTerm.getAmount(),
-                    AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                    RoundingMode.HALF_UP);
-        InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
-        invoiceTerm.setAmount(newAmount);
-        invoiceTerm.setCompanyAmount(newAmount);
-        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
-        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
-        invoiceTerm.setPercentage(new BigDecimal(100).subtract(newPercentage));
-        invoiceTerm.setIsPaid(true);
-        newInvoiceTerm.setAmount(amountRemaining);
-        newInvoiceTerm.setCompanyAmount(amountRemaining);
-        newInvoiceTerm.setAmountRemaining(amountRemaining);
-        newInvoiceTerm.setCompanyAmountRemaining(amountRemaining);
-        newInvoiceTerm.setAmountPaid(BigDecimal.ZERO);
-        newInvoiceTerm.setPercentage(newPercentage);
-        MoveLine moveLine = invoiceTerm.getMoveLine();
-
-        moveLine.addInvoiceTermListItem(newInvoiceTerm);
-        invoiceTermToRemove.add(newInvoiceTerm);
-      }
-    }
-    return invoiceTermToRemove;
-  }
-
-  protected void copyInvoiceTerms(
-      Invoice invoice,
-      Move move,
-      List<InvoiceTerm> newInvoiceTermList,
-      List<InvoiceTerm> invoiceTermListToRemove) {
-    if (ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
-      return;
-    }
-
-    MoveLine newDebitMoveLine =
-        move.getMoveLineList().stream()
-            .filter(dml -> dml.getDebit().signum() != 0)
-            .findFirst()
-            .orElse(null);
-    if (!ObjectUtils.isEmpty(newDebitMoveLine.getInvoiceTermList())) {
-      newInvoiceTermList.addAll(newDebitMoveLine.getInvoiceTermList());
-    }
-
-    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
-    invoiceTermListToRemove.addAll(splitInvoiceTerms(invoiceTermList));
-
-    invoiceTermList =
-        invoiceTermList.stream()
-            .filter(it -> !it.getIsPaid() && it.getAmountRemaining().signum() > 0)
-            .collect(Collectors.toList());
-    if (!ObjectUtils.isEmpty(invoiceTermList)) {
-      invoiceTermListToRemove.addAll(invoiceTermList);
-    }
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void replaceInvoiceTerms(
-      Invoice invoice,
-      List<InvoiceTerm> newInvoiceTermList,
-      List<InvoiceTerm> invoiceTermListToRemove) {
-    if (ObjectUtils.isEmpty(newInvoiceTermList) || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
-      return;
-    }
-
-    for (InvoiceTerm invoiceTerm : newInvoiceTermList) {
-      invoice.addInvoiceTermListItem(invoiceTerm);
-    }
-
-    for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
-      invoice.removeInvoiceTermListItem(invoiceTerm);
-      invoiceTerm.setInvoice(null);
-    }
-
-    invoiceRepository.save(invoice);
-  }
-
-  protected void updateInvoiceTerms(MoveLine creditMoveLine, MoveLine debitMoveLine) {
-    updateAmounts(creditMoveLine.getInvoiceTermList());
-    updateAmounts(debitMoveLine.getInvoiceTermList());
-  }
-
-  protected void updateAmounts(List<InvoiceTerm> invoiceTermList) {
-    if (!ObjectUtils.isEmpty(invoiceTermList)) {
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        MoveLine moveLine = invoiceTerm.getMoveLine();
-        moveLine.setAmountRemaining(
-            moveLine.getAmountRemaining().subtract(invoiceTerm.getAmountRemaining()));
-        invoiceTerm.setAmountRemaining(BigDecimal.ZERO);
-        invoiceTerm.setCompanyAmountRemaining(BigDecimal.ZERO);
-        invoiceTerm.setIsPaid(true);
-      }
-    }
   }
 }

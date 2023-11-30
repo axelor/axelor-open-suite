@@ -32,6 +32,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -223,14 +224,16 @@ public class DoubtfulCustomerService {
             debtPassReason);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
-        invoice,
-        newMove,
-        invoicePartnerMoveLines,
-        creditMoveLines,
-        debitMoveLine,
-        todayDate,
-        amountRemaining);
+    /*doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
+    invoice,
+    newMove,
+    invoicePartnerMoveLines,
+    creditMoveLines,
+    debitMoveLine,
+    todayDate,
+    amountRemaining);*/
+
+    Beans.get(InvoiceTermReplaceService.class).replaceInvoiceTerms(invoice, newMove);
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
   }
