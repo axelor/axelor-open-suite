@@ -33,11 +33,9 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.service.TemplateContextService;
 import com.axelor.rpc.Context;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
-import com.axelor.text.Template;
 import com.axelor.text.Templates;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -53,8 +51,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -361,7 +357,6 @@ public class AddressServiceImpl implements AddressService {
     } else {
       templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
     }
-
 
     Map<String, Object> templatesContext = Maps.newHashMap();
 

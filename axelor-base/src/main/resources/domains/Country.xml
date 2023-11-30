@@ -21,7 +21,7 @@
 
 
     <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"
-      required="true"/>
+      massUpdate="true" required="true"/>
 
   </entity>
 

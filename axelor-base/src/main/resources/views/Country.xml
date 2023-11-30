@@ -4,16 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
-    <toolbar>
-      <button name="computeAllAddressBtn" title="Compute All Addresses"
-        onClick="action-country-group-compute-all-address"/>
-      <button name="massUpdateBtn" title="Mass update status"
-        onClick="action-mass-update-status-wizard"/>
-    </toolbar>
     <field name="name"/>
     <field name="alpha3Code"/>
     <field name="alpha2Code"/>
     <field name="numericCode"/>
+    <field name="addressTemplate"/>
   </grid>
 
   <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country">
@@ -41,16 +36,5 @@
     title="Country filters">
     <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
   </search-filters>
-
-
-
-  <action-group name="action-country-group-compute-all-address">
-    <action name="action-country-method-compute-all-address"/>
-  </action-group>
-
-  <action-method name="action-country-group-compute-all-address">
-    <call class="com.axelor.apps.base.web.CountryController" method="recomputeAllAddress"/>
-  </action-method>
-
 </object-views>
 
