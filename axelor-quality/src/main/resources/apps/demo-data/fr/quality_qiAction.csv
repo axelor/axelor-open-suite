@@ -1,0 +1,7 @@
+"code";"name";"importId";"company.importId";"isProductAction";"isSystemAction"
+"AUF";"Audit fournisseur";"1";"1";"true";"true"
+"AUI";"Audit interne";"2";"1";"false";"true"
+"BE";"Avis BE";"3";"1";"true";"false"
+"QUA";"Avis qualité";"4";"1";"true";"false"
+"TEC";"Avis technique";"5";"1";"true";"false"
+"PROC";"Demande de revue des procédures";"6";"1";"true";"false"

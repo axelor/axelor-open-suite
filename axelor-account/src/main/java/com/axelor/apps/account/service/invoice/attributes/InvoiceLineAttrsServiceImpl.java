@@ -24,42 +24,55 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
     attrsMap.get(field).put(attr, value);
   }
 
-  @Override
-  public void setInTaxPriceScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("inTaxPrice", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
+  protected String computeField(String field, String prefix) {
+    return String.format("%s%s", prefix, field);
   }
 
   @Override
-  public void setDiscountAmountScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+  public void addInTaxPriceScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        "discountAmount", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
+        this.computeField("inTaxPrice", prefix),
+        "scale",
+        currencyScaleServiceAccount.getScale(invoice),
+        attrsMap);
   }
 
   @Override
-  public void setExTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("exTaxTotal", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
-  }
-
-  @Override
-  public void setInTaxTotalScale(Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("inTaxTotal", "scale", currencyScaleServiceAccount.getScale(invoice), attrsMap);
-  }
-
-  @Override
-  public void setCompanyExTaxTotalScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+  public void addExTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        "companyExTaxTotal",
+        this.computeField("exTaxTotal", prefix),
+        "scale",
+        currencyScaleServiceAccount.getScale(invoice),
+        attrsMap);
+  }
+
+  @Override
+  public void addInTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("inTaxTotal", prefix),
+        "scale",
+        currencyScaleServiceAccount.getScale(invoice),
+        attrsMap);
+  }
+
+  @Override
+  public void addCompanyExTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("companyExTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getCompanyScale(invoice),
         attrsMap);
   }
 
   @Override
-  public void setCompanyInTaxTotalScale(
-      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+  public void addCompanyInTaxTotalScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
     this.addAttr(
-        "companyInTaxTotal",
+        this.computeField("companyInTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getCompanyScale(invoice),
         attrsMap);

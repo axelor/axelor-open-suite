@@ -87,6 +87,8 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
+import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
 import com.axelor.apps.base.service.DMSService;
@@ -189,6 +191,8 @@ import com.axelor.apps.base.service.pdf.PdfService;
 import com.axelor.apps.base.service.pdf.PdfServiceImpl;
 import com.axelor.apps.base.service.pdf.PdfSignatureService;
 import com.axelor.apps.base.service.pdf.PdfSignatureServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingGroupService;
+import com.axelor.apps.base.service.pricing.PricingGroupServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.base.service.pricing.PricingServiceImpl;
 import com.axelor.apps.base.service.print.PrintHtmlGenerationService;
@@ -353,6 +357,7 @@ public class BaseModule extends AxelorModule {
         .to(ProductCategoryDomainCreatorServiceImpl.class);
     bind(FileSourceConnectorService.class).to(FileSourceConnectorServiceImpl.class);
     bind(PricingService.class).to(PricingServiceImpl.class);
+    bind(PricingGroupService.class).to(PricingGroupServiceImpl.class);
     bind(PricedOrderDomainService.class).to(PricedOrderDomainServiceImpl.class);
     bind(InternationalService.class).to(InternationalServiceImpl.class);
     bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
@@ -387,6 +392,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
+    bind(CurrencyService.class).to(CurrencyServiceImpl.class);
     bind(CurrencyScaleService.class).to(CurrencyScaleServiceImpl.class);
   }
 }

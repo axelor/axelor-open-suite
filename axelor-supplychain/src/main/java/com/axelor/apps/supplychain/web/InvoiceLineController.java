@@ -80,7 +80,7 @@ public class InvoiceLineController {
                 inTaxTotal.divide(
                     taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
                     currencyScale,
-                    BigDecimal.ROUND_HALF_UP);
+                    RoundingMode.HALF_UP);
           }
 
           companyExTaxTotal = invoiceLineService.getCompanyExTaxTotal(exTaxTotal, invoice);
