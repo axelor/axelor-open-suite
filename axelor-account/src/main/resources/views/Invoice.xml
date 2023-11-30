@@ -1529,8 +1529,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-change-create-refund-title"/>
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-check-partner-bank-details-list"/>
-    <action name="action-invoice-record-set-pfp-status"
-      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; pfpValidateStatusSelect == 0"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"/>
@@ -1861,7 +1859,7 @@ InvoiceSet.length > 0))"
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
-      if="eval: invoiceLineList?.isEmpty()"/>
+      if="eval: invoiceLineList?.isEmpty() &amp;&amp; partner"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
@@ -2423,6 +2421,7 @@ InvoiceSet.length > 0))"
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <context name="_invoice" expr="eval: __this__"/>
+    <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
   </action-view>
 
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"

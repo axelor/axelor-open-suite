@@ -56,7 +56,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(Move move, MoveLine moveLine) {
+  public String computeBudgetDistribution(Move move, MoveLine moveLine) throws AxelorException {
     if (move == null || moveLine == null) {
       return "";
     }

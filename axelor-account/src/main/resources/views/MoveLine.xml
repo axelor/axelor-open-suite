@@ -529,17 +529,14 @@
           form-view="tax-equiv-form"/>
         <field name="taxLineBeforeReverse" hidden="true"/>
       </panel>
-      <panel name="cutOffPanel" title="Cut off period"
-        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(functionalOriginSelect)"
-        if="__config__.app.getApp('account').manageCutOffPeriod">
-        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+      <panel name="cutOffPanel" title="Cut off period">
+        <field name="cutOffStartDate"
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
-        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+        <field name="cutOffEndDate"
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
-        <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
       <panel-dashlet name="bankReconciliationLinePanel"
         title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"
@@ -776,17 +773,14 @@
           form-view="tax-equiv-form"/>
         <field name="taxLineBeforeReverse" hidden="true"/>
       </panel>
-      <panel name="cutOffPanel" title="Cut off period"
-        showIf="account.manageCutOffPeriod &amp;&amp; ![1,2,6].includes(functionalOriginSelect)"
-        if="__config__.app.getApp('account').manageCutOffPeriod">
-        <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+      <panel name="cutOffPanel" title="Cut off period">
+        <field name="cutOffStartDate"
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
-        <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
-          validIf="[1,2,6].includes(functionalOriginSelect) || !cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+        <field name="cutOffEndDate"
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
           onChange="action-move-line-method-set-is-cut-off-generated-false"/>
         <field name="move.statusSelect" hidden="true"/>
-        <field name="move.technicalOriginSelect" hidden="true"/>
       </panel>
       <panel-dashlet name="bankReconciliationLinePanel"
         title="Bank reconciliation lines" action="action-move-line-view-bank-reconciliation-lines"

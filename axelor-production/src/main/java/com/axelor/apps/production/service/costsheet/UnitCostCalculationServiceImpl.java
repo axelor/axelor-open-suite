@@ -486,6 +486,12 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected void assignProductLevel(BillOfMaterial billOfMaterial, int level, Company company)
       throws AxelorException {
 
+    if (level > 50) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.LOOP_IN_BILL_OF_MATERIALS));
+    }
+
     Product product = billOfMaterial.getProduct();
 
     log.debug("Add of the sub product : {} for the level : {} ", product.getFullName(), level);
@@ -559,8 +565,11 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
-    String domain = null;
+    String domain;
     String bomsProductsList = createBomProductList(unitCostCalculation, company);
+    if (bomsProductsList.isEmpty()) {
+      bomsProductsList = "0";
+    }
     if (this.hasDefaultBOMSelected()) {
       if (company != null) {
         domain =
@@ -622,7 +631,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
 
     return billOfMaterialService.getBillOfMaterialProductsId(companySet).stream()
-        .map(id -> id.toString())
+        .map(Object::toString)
         .collect(Collectors.joining(","));
   }
 

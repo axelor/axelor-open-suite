@@ -66,5 +66,11 @@ public interface MoveLineAttrsService {
 
   void addTaxLineRequired(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
+  void addCutOffPanelHidden(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addCutOffDatesRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
   void addVatSystemSelectReadonly(MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }
