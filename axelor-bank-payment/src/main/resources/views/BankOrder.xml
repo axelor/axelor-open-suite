@@ -252,8 +252,12 @@
     <panel name="bankOrderLinesPanel" title="Bank Order Lines"
       readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1"
       showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
+      <panel-related name="bankOrderLineListPanel" showTitle="false" colSpan="12"
+        canNew="true" field="bankOrderLineList"
+        if="!__config__.app.getApp('bank-payment')?.useEditorInBankOrderForm"/>
       <field name="bankOrderLineList" showTitle="false" colSpan="12"
-        canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10">
+        canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10"
+        if="__config__.app.getApp('bank-payment')?.useEditorInBankOrderForm">
         <editor x-layout="table" x-show-on-new="false" x-viewer="true"
           onNew="action-bank-order-line-onnew">
           <field name="sequence" css="label-bold bold" readonly="true"
