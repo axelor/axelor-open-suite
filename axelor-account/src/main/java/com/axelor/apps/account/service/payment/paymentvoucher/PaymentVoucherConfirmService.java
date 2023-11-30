@@ -544,14 +544,14 @@ public class PaymentVoucherConfirmService {
         companyPaidAmount =
             companyPaidAmount.add(
                 currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                    paymentVoucher.getRemainingAmount(), currencyRate));
+                    paymentVoucher.getRemainingAmount(), currencyRate, company.getCurrency()));
       }
 
       if (hasFinancialDiscount) {
         companyPaidAmount =
             companyPaidAmount.subtract(
                 currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                    financialDiscountAmount, currencyRate));
+                    financialDiscountAmount, currencyRate, company.getCurrency()));
       }
 
       if (paymentVoucher.getMoveLine() != null) {
