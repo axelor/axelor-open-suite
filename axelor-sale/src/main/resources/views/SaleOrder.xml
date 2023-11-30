@@ -1988,17 +1988,17 @@
     <field name="cancelReason" hidden="true"/>
     <field name="deliveryAddress" hidden="true"/>
     <field name="mainInvoicingAddress" hidden="true"/>
-    <filter title="My Proposals">
+    <filter name="sale-order-filters-my-proposals" title="My Proposals">
       <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.salespersonUser.id =
         :_internalUser</domain>
     </filter>
-    <filter title="My Sales">
+    <filter name="sale-order-filters-my-sales" title="My Sales">
       <domain>self.statusSelect = 3 and self.salespersonUser.id = :_internalUser</domain>
     </filter>
-    <filter title="My Team Proposals">
+    <filter name="sale-order-filters-my-team-proposals" title="My Team Proposals">
       <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.team = :_myActiveTeam</domain>
     </filter>
-    <filter title="My Team Sales">
+    <filter name="sale-order-filters-my-team-sales" title="My Team Sales">
       <domain>self.statusSelect = 3 and self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>

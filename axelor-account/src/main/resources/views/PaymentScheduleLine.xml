@@ -154,10 +154,12 @@
       if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
     <field name="advanceMoveLine" hidden="true"
       if="!(__config__.app.isApp('bank-payment') &amp;&amp; __config__.app.getApp('bank-payment')?.manageDirectDebitPayment)"/>
-    <filter title="Rejected schedule lines">
+    <filter name="payment-schedule-line-filters-rejected-schedule-lines"
+      title="Rejected schedule lines">
       <domain>self.rejectDate IS NOT NULL</domain>
     </filter>
-    <filter title="Schedule lines created from reject">
+    <filter name="payment-schedule-line-filters-schedule-lines-created-from-reject"
+      title="Schedule lines created from reject">
       <domain>self.fromReject = true</domain>
     </filter>
   </search-filters>

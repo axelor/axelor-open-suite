@@ -198,10 +198,10 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="companyBankDetails" hidden="true"
       if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
-    <filter title="Ongoing Schedules">
+    <filter name="payment-schedule-filters-ongoing-schedules" title="Ongoing Schedules">
       <domain>self.startDate &lt; CURRENT_DATE</domain>
     </filter>
-    <filter title="Old Schedules">
+    <filter name="payment-schedule-filters-old-schedules" title="Old Schedules">
       <domain>self.startDate &gt; CURRENT_DATE</domain>
     </filter>
   </search-filters>

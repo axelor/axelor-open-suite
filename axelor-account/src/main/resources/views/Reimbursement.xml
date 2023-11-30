@@ -61,10 +61,12 @@
 
   <search-filters name="reimbursement-filters"
     model="com.axelor.apps.account.db.Reimbursement" title="Reimbursement filters">
-    <filter title="Reimbursements to validate">
+    <filter name="reimbursement-filters-reimbursements-to-validate"
+      title="Reimbursements to validate">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Rejected reimbursements">
+    <filter name="reimbursement-filters-rejected-reimbursements"
+      title="Rejected reimbursements">
       <domain>self.rejectedOk = true</domain>
     </filter>
   </search-filters>

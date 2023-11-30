@@ -137,18 +137,23 @@
       method="updateOldRating"/>
   </action-method>
 
-  <search-filters name="my-training-register-fitlers"
-    model="com.axelor.apps.talent.db.Appraisal" title="My traning filters">
-    <filter title="My upcoming trainings">
+  <search-filters name="my-training-register-filters"
+    model="com.axelor.apps.talent.db.Appraisal-my-traning-filters" title="My traning filters">
+    <filter name="my-training-register-filters-my-upcoming-trainings"
+      title="My upcoming trainings">
       <domain>self.employee.id = :_employeeId and self.statusSelect = 1</domain>
     </filter>
-    <filter title="My completed trainings">
+    <filter name="my-training-register-filters-my-completed-trainings"
+      title="My completed trainings">
       <domain>self.employee.id = :_employeeId and self.statusSelect = 2</domain>
     </filter>
-    <filter title="Upcoming trainings of all employees of a team">
+    <filter name="my-training-register-filters-upcoming-trainings-of-all-employees-of-a-team"
+      title="Upcoming trainings of all employees of a team">
       <domain>self.employee.id in :_employeeList and self.statusSelect = 1</domain>
     </filter>
-    <filter title="Completed trainings of all employees of a team">
+    <filter
+      name="my-training-register-filters-completed-trainings-of-all-employees-of-a-team"
+      title="Completed trainings of all employees of a team">
       <domain>self.employee.id in :_employeeList and self.statusSelect = 2</domain>
     </filter>
   </search-filters>

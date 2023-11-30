@@ -122,10 +122,10 @@
   <search-filters name="bank-statement-line-afb-120-filters"
     model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120"
     title="Bank statement line AFK120 filters">
-    <filter title="Balance" name="initial-final-balance-bank-statement-line-afb-120">
+    <filter title="Balance" name="bank-statement-line-afb-120-filters-balance">
       <domain>self.lineTypeSelect = 1 OR self.lineTypeSelect = 3</domain>
     </filter>
-    <filter title="Movement" name="movement-bank-statement-line-afb-120">
+    <filter title="Movement" name="bank-statement-line-afb-120-filters-movement">
       <domain>self.lineTypeSelect = 2</domain>
     </filter>
   </search-filters>

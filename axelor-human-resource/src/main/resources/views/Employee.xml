@@ -847,10 +847,10 @@
       title="Main employment contract status"/>
     <field name="socialSecurityNumber" title="Social security number" hidden="true"/>
     <field name="contactPartner.firstName" title="First name"/>
-    <filter title="New employees">
+    <filter name="employee-filters-new-employees" title="New employees">
       <domain>self.leavingDate IS NULL AND self.hireDate &gt; CURRENT_DATE - 30</domain>
     </filter>
-    <filter title="Active employees">
+    <filter name="employee-filters-active-employees" title="Active employees">
       <domain>(self.hireDate IS NULL AND self.leavingDate &gt;= CURRENT_DATE)
         OR (self.leavingDate IS
         NULL AND (self.hireDate + 30) &lt;= CURRENT_DATE)
@@ -859,7 +859,7 @@
         AND (self.hireDate + 30) &lt;= CURRENT_DATE AND self.leavingDate
         &gt;= CURRENT_DATE)</domain>
     </filter>
-    <filter title="Former employees">
+    <filter name="employee-filters-former-employees" title="Former employees">
       <domain>self.leavingDate &lt; CURRENT_DATE</domain>
     </filter>
   </search-filters>

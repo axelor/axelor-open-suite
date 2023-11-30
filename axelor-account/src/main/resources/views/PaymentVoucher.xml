@@ -299,35 +299,41 @@
 
   <search-filters name="payment-voucher-filters"
     model="com.axelor.apps.account.db.PaymentVoucher" title="Payment voucher filters">
-    <filter title="Customer payments">
+    <filter name="payment-voucher-filters-customer-payments" title="Customer payments">
       <domain>self.operationTypeSelect = 3</domain>
     </filter>
-    <filter title="Draft Customer payments">
+    <filter name="payment-voucher-filters-draft-customer-payments"
+      title="Draft Customer payments">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 1</domain>
     </filter>
-    <filter title="Customer payments waiting for deposit slip"
+    <filter name="payment-voucher-filters-customer-payments-waiting-for-deposit-slip"
+      title="Customer payments waiting for deposit slip"
       if="__config__.app.getApp('account').paymentVouchersOnCustomerInvoice">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 2</domain>
     </filter>
-    <filter title="Confirmed Customer payments">
+    <filter name="payment-voucher-filters-confirmed-customer-payments"
+      title="Confirmed Customer payments">
       <domain>self.operationTypeSelect = 3 AND self.statusSelect = 3</domain>
     </filter>
-    <filter title="Customer payments with remaining">
+    <filter name="payment-voucher-filters-customer-payments-with-remaining"
+      title="Customer payments with remaining">
       <domain>self.operationTypeSelect = 3 AND self.remainingAllocatedAmount &gt; 0</domain>
     </filter>
-    <filter title="Customer refunds">
+    <filter name="payment-voucher-filters-customer-refunds" title="Customer refunds">
       <domain>self.operationTypeSelect = 4</domain>
     </filter>
-    <filter title="Supplier payments">
+    <filter name="payment-voucher-filters-supplier-payments" title="Supplier payments">
       <domain>self.operationTypeSelect = 1</domain>
     </filter>
-    <filter title="Draft Supplier payments">
+    <filter name="payment-voucher-filters-draft-supplier-payments"
+      title="Draft Supplier payments">
       <domain>self.operationTypeSelect = 1 AND self.statusSelect = 1</domain>
     </filter>
-    <filter title="Confirmed Supplier payments">
+    <filter name="payment-voucher-filters-confirmed-supplier-payments"
+      title="Confirmed Supplier payments">
       <domain>self.operationTypeSelect = 1 AND self.statusSelect = 3</domain>
     </filter>
-    <filter title="Supplier refunds">
+    <filter name="payment-voucher-filters-supplier-refunds" title="Supplier refunds">
       <domain>self.operationTypeSelect = 2</domain>
     </filter>
   </search-filters>

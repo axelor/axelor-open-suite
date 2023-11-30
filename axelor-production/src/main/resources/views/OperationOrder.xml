@@ -370,34 +370,40 @@
       if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <field name="timesheetLineList" hidden="true"
       if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
-    <filter title="Draft Operations">
+    <filter name="operation-order-filters-draft-operations" title="Draft Operations">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Planned Operations">
+    <filter name="operation-order-filters-planned-operations" title="Planned Operations">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Operations In Progress">
+    <filter name="operation-order-filters-operations-in-progress"
+      title="Operations In Progress">
       <domain>self.statusSelect = 4</domain>
     </filter>
-    <filter title="Operations In Standby">
+    <filter name="operation-order-filters-operations-in-standby"
+      title="Operations In Standby">
       <domain>self.statusSelect = 5</domain>
     </filter>
-    <filter title="Finished Operations">
+    <filter name="operation-order-filters-finished-operations" title="Finished Operations">
       <domain>self.statusSelect = 6</domain>
     </filter>
-    <filter title="Cancelled Operations">
+    <filter name="operation-order-filters-cancelled-operations" title="Cancelled Operations">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Operations to invoice">
+    <filter name="operation-order-filters-operations-to-invoice"
+      title="Operations to invoice">
       <domain>self.isToInvoice = true</domain>
     </filter>
-    <filter title="Late Planned Operations">
+    <filter name="operation-order-filters-late-planned-operations"
+      title="Late Planned Operations">
       <domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>
     </filter>
-    <filter title="Operations Finished late">
+    <filter name="operation-order-filters-operations-finished-late"
+      title="Operations Finished late">
       <domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
     </filter>
-    <filter title="Operations with difference">
+    <filter name="operation-order-filters-operations-with-difference"
+      title="Operations with difference">
       <domain>self.isWithDifference = true</domain>
     </filter>
   </search-filters>

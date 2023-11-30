@@ -129,13 +129,13 @@
     model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Draft">
+    <filter name="reconcile-filters-draft" title="Draft">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Confirmed">
+    <filter name="reconcile-filters-confirmed" title="Confirmed">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Canceled">
+    <filter name="reconcile-filters-canceled" title="Canceled">
       <domain>self.statusSelect = 3</domain>
     </filter>
   </search-filters>
