@@ -165,7 +165,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         availableAmount = availableAmount.subtract(invoiceTermAmount);
       }
 
-      currencyScaleServiceAccount.getCompanyScaledValue(invoiceTermToPay, availableAmount);
       invoiceTermPaymentList.add(invoiceTermPayment);
 
       if (invoicePayment != null) {
