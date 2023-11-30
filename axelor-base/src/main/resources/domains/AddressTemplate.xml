@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="AddressTemplate">
+    <string name="name" title="Name" required="true"/>
+    <integer name="engineSelect" title="Template engine" selection="template.engine.select"
+      required="true"/>
+    <string name="templateStr" title="Template Content" required="true"/>
+
+    <extra-code>
+      <![CDATA[
+
+	   	// ACTION TYPE
+		public static final int STRING_TEMPLATE = 1;
+		public static final int GROOVY_TEMPLATE = 2;
+	  ]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

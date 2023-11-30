@@ -19,6 +19,10 @@
     <many-to-one name="citizenship" title="Citizenship"
       ref="com.axelor.apps.base.db.Citizenship"/>
 
+
+    <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"
+      required="true"/>
+
   </entity>
 
 </domain-models>

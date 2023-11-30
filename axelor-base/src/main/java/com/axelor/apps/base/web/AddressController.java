@@ -367,4 +367,10 @@ public class AddressController {
     Beans.get(AddressService.class).autocompleteAddress(address);
     response.setValues(address);
   }
+
+  public void setFormattedFullName(ActionRequest request, ActionResponse response) {
+    Address address = request.getContext().asType(Address.class);
+    Beans.get(AddressService.class).setFormattedFullName(address);
+    response.setValues(address);
+  }
 }

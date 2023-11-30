@@ -19,24 +19,29 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.City;
-import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.PickListEntry;
-import com.axelor.apps.base.db.Street;
+import com.axelor.apps.base.db.*;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.AddressTemplateRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.message.service.TemplateContextService;
+import com.axelor.rpc.Context;
+import com.axelor.text.GroovyTemplates;
+import com.axelor.text.StringTemplates;
+import com.axelor.text.Template;
+import com.axelor.text.Templates;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -44,15 +49,12 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -68,6 +70,7 @@ public class AddressServiceImpl implements AddressService {
   @Inject protected CityRepository cityRepository;
   @Inject protected StreetRepository streetRepository;
   @Inject protected AppBaseService appBaseService;
+  private static final char TEMPLATE_DELIMITER = '$';
 
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
@@ -339,5 +342,35 @@ public class AddressServiceImpl implements AddressService {
       return matcher.group();
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setFormattedFullName(Address address) {
+    computeStringAddressTemplate(address);
+  }
+
+  private void computeStringAddressTemplate(Address address) {
+
+    AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
+    String content = address.getAddressL7Country().getAddressTemplate().getTemplateStr();
+
+    Templates templates;
+    if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
+      templates = Beans.get(GroovyTemplates.class);
+    } else {
+      templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+    }
+
+
+    Map<String, Object> templatesContext = Maps.newHashMap();
+
+    Class<?> klass = EntityHelper.getEntityClass(address);
+    Context context = new Context(Mapper.toMap(address), klass);
+
+    templatesContext.put(klass.getSimpleName(), context.asType(klass));
+
+    String fullFormattedString = templates.fromText(content).make(templatesContext).render();
+    address.setFormattedFullName(fullFormattedString);
   }
 }

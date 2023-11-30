@@ -31,6 +31,9 @@
     <string name="fullName" namecolumn="true"
       search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
 
+    <string name="formattedFullName"
+      search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
+
   </entity>
 
 </domain-models>

@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.analysis.function.Add;
 import wslite.json.JSONException;
 
 public interface AddressService {
@@ -105,4 +106,11 @@ public interface AddressService {
   public void autocompleteAddress(Address address);
 
   public String getZipCode(Address address);
+
+  /**
+   * Set formatted full name for the address from address template
+   *
+   * @param address
+   */
+  public void setFormattedFullName(Address address);
 }
