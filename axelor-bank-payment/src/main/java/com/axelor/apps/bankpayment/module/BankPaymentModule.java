@@ -61,6 +61,8 @@ import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
+import com.axelor.apps.bankpayment.service.InvoiceBankPaymentService;
+import com.axelor.apps.bankpayment.service.InvoiceBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService;
@@ -215,5 +217,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementValidateService.class).to(BankStatementValidateServiceImpl.class);
     bind(BankStatementLineDeleteService.class).to(BankStatementLineDeleteServiceImpl.class);
     bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
+    bind(InvoiceBankPaymentService.class).to(InvoiceBankPaymentServiceImpl.class);
   }
 }

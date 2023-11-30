@@ -44,6 +44,7 @@ import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.exception.UtilsExceptionMessage;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
@@ -224,6 +225,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @throws AxelorException
    */
   @Override
+  @Transactional
   public Move createMove(
       Journal journal,
       Company company,

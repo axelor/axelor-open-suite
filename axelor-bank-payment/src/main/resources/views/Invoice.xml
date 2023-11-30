@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+
+  <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
+    id="invoice-bank-payment-form" extension="true">
+    <extend target="//field[@name='oldMove']">
+      <insert position="after">
+        <button name="cancelLcr" title="Cancel LCR" colSpan="3"
+          onClick="save, action-method-invoice-cancel-lcr" showIf="lcrAccounted &amp;&amp; oldMove"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-method-invoice-cancel-lcr">
+    <call class="com.axelor.apps.bankpayment.web.InvoiceController" method="cancelLcr"/>
+  </action-method>
+
+</object-views>
