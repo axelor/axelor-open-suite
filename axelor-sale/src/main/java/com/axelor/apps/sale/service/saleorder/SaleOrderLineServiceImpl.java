@@ -168,7 +168,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   protected Optional<Pricing> getRootPricing(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     // It is supposed that only one pricing match those criteria (because of the configuration)
     // Having more than one pricing matched may result on a unexpected result
-    if (appSaleService.getAppSale().getIsPricingComputingOrder()) {
+    if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
       return pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
     } else {
       return pricingService.getRootPricingForNextPricings(saleOrder.getCompany(), saleOrderLine);
@@ -194,7 +194,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   public void fillPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder) throws AxelorException {
 
     // Populate fields from pricing scale before starting process of fillPrice
-    if (appSaleService.getAppSale().getEnablePricingScale()) {
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
       computePricingScale(saleOrderLine, saleOrder);
     }
 
