@@ -30,6 +30,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -59,7 +60,7 @@ import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService {
-
+  public static final int FETCH_LIMIT = 50;
   @Inject protected AddressRepository addressRepo;
   @Inject protected com.axelor.utils.address.AddressTool ads;
   @Inject protected MapService mapService;
@@ -344,6 +345,34 @@ public class AddressServiceImpl implements AddressService {
   @Transactional(rollbackOn = {Exception.class})
   public void setFormattedFullName(Address address) {
     computeStringAddressTemplate(address);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public int computeFormattedAddressForCountries(List<Long> countryIds) {
+    int totalAddressFormatted = 0;
+    AddressRepository addressRepository = Beans.get(AddressRepository.class);
+    int offset = 0;
+    Query<Address> query =
+        addressRepository.all().filter("self.addressL7Country.id in ?1", countryIds);
+
+    List<Address> addressList = query.fetch(FETCH_LIMIT, offset);
+
+    while (!addressList.isEmpty()) {
+      totalAddressFormatted = totalAddressFormatted + addressList.size();
+      generateFormattedAddressForAddress(addressList);
+
+      JPA.clear();
+
+      offset += addressList.size();
+      addressList = query.fetch(FETCH_LIMIT, offset);
+    }
+
+    return totalAddressFormatted;
+  }
+
+  private void generateFormattedAddressForAddress(List<Address> addressList) {
+    addressList.forEach(this::setFormattedFullName);
   }
 
   private void computeStringAddressTemplate(Address address) {
