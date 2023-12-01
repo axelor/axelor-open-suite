@@ -1,6 +1,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -52,7 +53,7 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       }
     }
 
-    computeAndAddTaxToList(map, saleOrderLineTaxList);
+    computeAndAddTaxToList(map, saleOrderLineTaxList, saleOrder.getCurrency());
     orderLineTaxService.setSpecificNotes(
         customerSpecificNote,
         saleOrder,
@@ -102,10 +103,12 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
   }
 
   protected void computeAndAddTaxToList(
-      Map<TaxLine, SaleOrderLineTax> map, List<SaleOrderLineTax> saleOrderLineTaxList) {
+      Map<TaxLine, SaleOrderLineTax> map,
+      List<SaleOrderLineTax> saleOrderLineTaxList,
+      Currency currency) {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       // Dans la devise de la facture
-      orderLineTaxService.computeTax(saleOrderLineTax);
+      orderLineTaxService.computeTax(saleOrderLineTax, currency);
       saleOrderLineTaxList.add(saleOrderLineTax);
       LOG.debug(
           "VAT line : VAT total => {}, W.T. total => {}",
