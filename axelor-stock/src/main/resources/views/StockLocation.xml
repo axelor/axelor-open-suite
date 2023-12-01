@@ -136,6 +136,8 @@
         selection="stock.stock.location.printing.type"/>
       <field name="$exportTypeSelect" title="Export Type"
         selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
+      <field name="$withoutDetailsByStockLocation" type="boolean"
+        title="Without details by stock location"/>
       <button name="printBtn" title="Print" onClick="action-stock-location-method-print"
         readonlyIf="$exportTypeSelect == null" colSpan="3"/>
     </panel>
