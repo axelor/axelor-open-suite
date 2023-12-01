@@ -253,7 +253,8 @@
       readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1"
       showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
       <panel-related name="bankOrderLineListPanel" showTitle="false" colSpan="12"
-        canNew="true" field="bankOrderLineList"
+        canNew="true" field="bankOrderLineList" form-view="bank-order-line-form"
+        grid-view="bank-order-line-grid"
         if="!__config__.app.getApp('bank-payment')?.useEditorInBankOrderForm"/>
       <field name="bankOrderLineList" showTitle="false" colSpan="12"
         canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10"
