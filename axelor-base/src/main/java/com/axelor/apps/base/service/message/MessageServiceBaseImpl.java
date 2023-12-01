@@ -53,7 +53,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -304,10 +303,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   public String getFullEmailAddress(EmailAddress emailAddress) {
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
-      partnerName =
-          new String(
-              emailAddress.getPartner().getSimpleFullName().getBytes(),
-              StandardCharsets.ISO_8859_1);
+      partnerName = emailAddress.getPartner().getSimpleFullName();
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";
