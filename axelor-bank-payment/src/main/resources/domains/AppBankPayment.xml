@@ -27,6 +27,7 @@
       <field name="manageBankToBankTransferPayment" on="UPDATE"/>
       <field name="enableEbicsModule" on="UPDATE"/>
       <field name="manageBillOfExchange" on="UPDATE"/>
+      <field name="useEditorInBankOrderForm" on="UPDATE"/>
     </track>
   </entity>
 
