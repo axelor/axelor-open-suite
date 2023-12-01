@@ -1,3 +1,2 @@
 "importId";"name";"engineSelect";"templateStr"
-"1";"FRANCE";"1";"$Address.addressL2$, $Address.addressL3$, $Address.addressL4$"
-"2";"DEFAULT";"2";"${Address.addressL2} ${Address.addressL3}  ${Address.addressL4}  ${Address.addressL5} ${Address.addressL6}  ${Address.addressL7Country.name}"
+"2";"DEFAULT";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2} ${(Address.addressL3 == null) ? '' : Address.addressL3} ${(Address.addressL4 == null) ? '' : Address.addressL4} ${(Address.addressL5 == null) ? '' : Address.addressL5} ${(Address.addressL6 == null) ? '' : Address.addressL6} ${(Address.addressL7Country == null) ? '' : Address.addressL7Country.name}"
