@@ -22,12 +22,14 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class ParkModelController {
 
+  public static final String FIELD_EQUIPMENT_MODEL_LIST = "_xEquipmentModelList";
+
   protected static boolean setParkAndModels(ActionResponse response, Context context) {
     Long parkModelId = null;
     if (context.get("_parkModelId") != null) {
       parkModelId = MapHelper.get(context, Long.class, "_parkModelId");
     } else {
-      ParkModel parkModel = MapHelper.get(context, ParkModel.class, "$_xParkModel");
+      ParkModel parkModel = MapHelper.get(context, ParkModel.class, "_xParkModel");
       if (parkModel != null) {
         parkModelId = parkModel.getId();
       }
@@ -85,8 +87,9 @@ public class ParkModelController {
   @SuppressWarnings("unchecked")
   public void generateEquipments(ActionRequest request, ActionResponse response) {
     try {
-      if (!(request.getContext().get("_xEquipmentModelList") instanceof List<?>)
-          || CollectionUtils.isEmpty((List<?>) request.getContext().get("_xEquipmentModelList"))) {
+      if (!(request.getContext().get(FIELD_EQUIPMENT_MODEL_LIST) instanceof List<?>)
+          || CollectionUtils.isEmpty(
+              (List<?>) request.getContext().get(FIELD_EQUIPMENT_MODEL_LIST))) {
         return;
       }
 
@@ -101,14 +104,14 @@ public class ParkModelController {
           MapHelper.get(request.getContext(), LocalDate.class, "_xCustomerMoWarrantyEndDate");
 
       List<Map<String, Object>> equipmentModels =
-          (List<Map<String, Object>>) request.getContext().get("_xEquipmentModelList");
+          (List<Map<String, Object>>) request.getContext().get(FIELD_EQUIPMENT_MODEL_LIST);
 
       Map<Long, Integer> quantitiesMap = new HashMap<>();
 
       for (Map<String, Object> equipmentModel : equipmentModels) {
         quantitiesMap.put(
             MapHelper.get(equipmentModel, Long.class, "id"),
-            MapHelper.get(equipmentModel, Integer.class, "$qtyToGenerate"));
+            MapHelper.get(equipmentModel, Integer.class, "qtyToGenerate"));
       }
 
       List<Long> ids =

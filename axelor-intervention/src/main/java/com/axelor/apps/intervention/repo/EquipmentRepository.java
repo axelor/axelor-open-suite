@@ -3,13 +3,11 @@ package com.axelor.apps.intervention.repo;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.exception.IExceptionMessage;
-import com.axelor.apps.intervention.service.EquipmentService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.JpaSequence;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import java.util.List;
 import java.util.Map;
 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="intervention-sale-order-form" title="Sale order" name="sale-order-form"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+    <extend target="//menu[@name='saleOrderToolsMenu']">
+      <insert position="inside">
+        <item name="generateEquipmentsBtn" title="Generate equipments"
+          action="action-park-model-show-confirmation-from-sale-order"
+          if="__config__.app.isApp('intervention')"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view model="com.axelor.utils.db.Wizard"
+    name="action-park-model-show-confirmation-from-sale-order" title="Confirm">
+    <view name="park-model-confirmation-wizard-form" type="form"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <context expr="eval: clientPartner?.id" name="_partnerId"/>
+  </action-view>
+</object-views>

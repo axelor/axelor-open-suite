@@ -5,10 +5,6 @@
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
     name="equipment-grid">
-    <toolbar>
-      <button name="importLinesBtn" title="Import lines"
-        onClick="action-equipment-view-import-wizard"/>
-    </toolbar>
     <field name="sequence"/>
     <field name="partner"/>
     <field name="code"/>
@@ -96,22 +92,6 @@
     </node>
   </tree>
 
-  <form title="Import equipments" name="import-equipments-form"
-    model="com.axelor.utils.db.Wizard" onLoad="action-import-equipment-method-load-format-file"
-    onNew="action-import-equipment-method-load-format-file">
-    <panel name="mainPanel">
-      <field type="many-to-one" name="$_xPartner" title="Partner"
-        target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact != true AND (self.isCustomer = true OR self.isProspect = true)"/>
-      <field type="many-to-one" name="$_xFile" title="CSV File to import" widget="binary-link"
-        target="com.axelor.meta.db.MetaFile"/>
-      <field type="many-to-one" name="$_xEmptyImportFormat" title="Empty import format"
-        widget="binary-link" target="com.axelor.meta.db.MetaFile" readonly="true"/>
-      <button name="importBtn" title="Import" onClick="action-equipment-method-import"
-        css="btn-success" readonlyIf="$_xPartner == null || $_xFile == null"/>
-    </panel>
-  </form>
-
   <form model="com.axelor.apps.intervention.db.Equipment" title="Equipment" width="large"
     name="equipment-form" onNew="action-equipment-group-form-on-new">
     <toolbar>
@@ -182,21 +162,6 @@
       <mail-followers/>
     </panel-mail>
   </form>
-
-  <action-view name="action-equipment-view-import-wizard" title="Import equipments"
-    model="com.axelor.utils.db.Wizard">
-    <view type="form" name="import-equipments-form"/>
-    <view-param name="popup" value="reload"/>
-    <view-param name="forceEdit" value="true"/>
-    <view-param name="show-toolbar" value="false"/>
-    <view-param name="show-confirm" value="false"/>
-    <view-param name="popup-save" value="false"/>
-    <context name="_xPriceListId" expr="eval: id"/>
-  </action-view>
-
-  <action-method name="action-import-equipment-method-load-format-file">
-    <call class="com.axelor.apps.intervention.web.EquipmentController" method="loadFormatFile"/>
-  </action-method>
 
   <action-group name="action-equipment-group-form-on-new">
     <action name="action-equipment-method-fill-default-records"/>
@@ -269,11 +234,6 @@
   <action-method name="action-equipment-method-new-item-on-tree">
     <call class="com.axelor.apps.intervention.web.EquipmentController"
       method="openNewItemOnTree"/>
-  </action-method>
-
-  <action-method name="action-equipment-method-import">
-    <call class="com.axelor.apps.intervention.web.EquipmentController"
-      method="importEquipments"/>
   </action-method>
 
   <search-filters name="equipment-filters"

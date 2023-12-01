@@ -7,7 +7,5 @@
 
   <entity name="AppIntervention" cacheable="true">
     <one-to-one name="app" ref="com.axelor.studio.db.App" unique="true"/>
-    <many-to-one name="assetsImportFormat" title="Assets import format"
-      ref="com.axelor.meta.db.MetaFile"/>
   </entity>
 </domain-models>

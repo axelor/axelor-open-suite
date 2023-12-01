@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="intervention-contract-form" name="contract-form" title="Contract"
+    model="com.axelor.apps.contract.db.Contract" extension="true">
+    <extend target="//toolbar">
+      <insert position="inside">
+        <button name="generateEquipmentsBtn" title="Generate equipments"
+          onClick="action-park-model-show-confirmation-from-contract"
+          if="__config__.app.isApp('intervention')"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-view model="com.axelor.utils.db.Wizard"
+    name="action-park-model-show-confirmation-from-contract" title="Confirm">
+    <view name="park-model-confirmation-wizard-form" type="form"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <context expr="eval: id" name="_contractId"/>
+    <context expr="eval: partner?.id" name="_partnerId"/>
+  </action-view>
+</object-views>

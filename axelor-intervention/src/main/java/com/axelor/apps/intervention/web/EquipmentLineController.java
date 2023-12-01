@@ -19,6 +19,8 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class EquipmentLineController {
 
+  public static final String FIELD_TRACKING_NUMBER = "trackingNumber";
+
   public void createTrackingNumber(ActionRequest request, ActionResponse response) {
     try {
       EquipmentLine equipmentLine = request.getContext().asType(EquipmentLine.class);
@@ -30,12 +32,12 @@ public class EquipmentLineController {
           || product.getTrackingNumberConfiguration() == null
           || !Boolean.TRUE.equals(
               product.getTrackingNumberConfiguration().getGenerateSaleAutoTrackingNbr())) {
-        response.setValue("trackingNumber", null);
+        response.setValue(FIELD_TRACKING_NUMBER, null);
         return;
       }
       TrackingNumber trackingNumber =
           Beans.get(EquipmentLineService.class).createTrackingNumber(equipmentLine);
-      response.setValue("trackingNumber", trackingNumber);
+      response.setValue(FIELD_TRACKING_NUMBER, trackingNumber);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -46,25 +48,25 @@ public class EquipmentLineController {
       EquipmentLine equipmentLine = request.getContext().asType(EquipmentLine.class);
       Product product = equipmentLine.getProduct();
       if (product == null || product.getTrackingNumberConfiguration() == null) {
-        response.setAttr("hidden", "trackingNumber", true);
+        response.setAttr("hidden", FIELD_TRACKING_NUMBER, true);
         return;
       }
       if (product.getTrackingNumberConfiguration() != null
           && Boolean.TRUE.equals(
               product.getTrackingNumberConfiguration().getGenerateSaleAutoTrackingNbr())) {
-        response.setAttr("trackingNumber", "readonly", true);
-        response.setAttr("trackingNumber", "hidden", false);
+        response.setAttr(FIELD_TRACKING_NUMBER, "readonly", true);
+        response.setAttr(FIELD_TRACKING_NUMBER, "hidden", false);
         return;
       }
       if (product.getTrackingNumberConfiguration() != null
           && Boolean.TRUE.equals(
               product.getTrackingNumberConfiguration().getIsPurchaseTrackingManaged())) {
-        response.setAttr("trackingNumber", "required", true);
-        response.setAttr("trackingNumber", "hidden", false);
-        response.setAttr("trackingNumber", "readonly", false);
+        response.setAttr(FIELD_TRACKING_NUMBER, "required", true);
+        response.setAttr(FIELD_TRACKING_NUMBER, "hidden", false);
+        response.setAttr(FIELD_TRACKING_NUMBER, "readonly", false);
         return;
       }
-      response.setAttr("trackingNumber", "hidden", true);
+      response.setAttr(FIELD_TRACKING_NUMBER, "hidden", true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

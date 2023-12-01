@@ -19,23 +19,8 @@ package com.axelor.apps.intervention.exception;
 
 public interface IExceptionMessage {
 
-  String CSV_IMPORT_ERROR = /*$$(*/
-      "There was an error when importing the CSV file %s. Please check your file." /*)*/;
-  String EQUIP_IMPORT_1 = /*$$(*/
-      "There is no existing equipment with the sequence %s. Skip." /*)*/;
-  String EQUIP_IMPORT_2 = /*$$(*/ "Missing required code. Skip." /*)*/;
-  String EQUIP_IMPORT_3 = /*$$(*/ "Missing required name. Skip." /*)*/;
-  String EQUIP_IMPORT_4 = /*$$(*/ "Missing required type select. Skip." /*)*/;
-  String EQUIP_IMPORT_7 = /*$$(*/
-      "No existing contract found for the contract id %s. Null value passed." /*)*/;
-  String EQUIP_IMPORT_8 = /*$$(*/
-      "No existing equipment found for the sequence %s. Null value passed." /*)*/;
-  String EQUIP_IMPORT_9 = /*$$(*/
-      "No existing equipment family found for the code %s. Null value passed." /*)*/;
-
   String EQUIPMENT_MODEL_REMOVE_NOT_ALLOWED = /*$$(*/
       "Impossible to remove equipment model that has children's equipment models" /*)*/;
   String EQUIPMENT_REMOVE_NO_ALLOWED = /*$$(*/
       "Impossible to remove equipment that has children's equipment" /*)*/;
-
 }
