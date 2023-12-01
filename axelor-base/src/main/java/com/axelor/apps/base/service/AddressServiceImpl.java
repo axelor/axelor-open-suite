@@ -269,31 +269,36 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
-    StringBuilder addressString = new StringBuilder();
-    if (address == null) {
-      return "";
+    if(address == null || address.getAddressL7Country() == null) {
+      StringBuilder addressString = new StringBuilder();
+      if (address == null) {
+        return "";
+      }
+
+      if (StringUtils.notBlank(address.getAddressL2())) {
+        addressString.append(address.getAddressL2()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL3())) {
+        addressString.append(address.getAddressL3()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL4())) {
+        addressString.append(address.getAddressL4()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL5())) {
+        addressString.append(address.getAddressL5()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL6())) {
+        addressString.append(address.getAddressL6());
+      }
+      if (address.getAddressL7Country() != null) {
+        addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
+      }
+
+      return addressString.toString();
     }
 
-    if (StringUtils.notBlank(address.getAddressL2())) {
-      addressString.append(address.getAddressL2()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL3())) {
-      addressString.append(address.getAddressL3()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL4())) {
-      addressString.append(address.getAddressL4()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL5())) {
-      addressString.append(address.getAddressL5()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL6())) {
-      addressString.append(address.getAddressL6());
-    }
-    if (address.getAddressL7Country() != null) {
-      addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
-    }
-
-    return addressString.toString();
+    setFormattedFullName(address);
+    return  address.getFormattedFullName();
   }
 
   @Override
@@ -376,7 +381,6 @@ public class AddressServiceImpl implements AddressService {
   }
 
   private void computeStringAddressTemplate(Address address) {
-
     AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
     String content = address.getAddressL7Country().getAddressTemplate().getTemplateStr();
 

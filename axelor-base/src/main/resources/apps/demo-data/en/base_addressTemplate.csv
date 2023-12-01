@@ -1,0 +1,3 @@
+"importId";"name";"engineSelect";"templateStr"
+"1";"FRANCE";"1";"$Address.addressL2$, $Address.addressL3$, $Address.addressL4$"
+"2";"DEFAULT";"2";"${Address.addressL2} ${Address.addressL3}  ${Address.addressL4}  ${Address.addressL5} ${Address.addressL6}  ${Address.addressL7Country.name}"

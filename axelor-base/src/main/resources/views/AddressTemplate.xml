@@ -14,7 +14,7 @@
     <panel name="mainPanel" title="Address Template">
       <field name="name" required="true"/>
       <field name="engineSelect" required="true"/>
-      <field name="templateStr" required="true"/>
+      <field name="templateStr" colSpan="12" required="true"/>
     </panel>
   </form>
 

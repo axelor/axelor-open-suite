@@ -9,7 +9,8 @@
     <string name="name" title="Name" required="true"/>
     <integer name="engineSelect" title="Template engine" selection="template.engine.select"
       required="true"/>
-    <string name="templateStr" title="Template Content" required="true"/>
+    <string name="templateStr" title="Template Content" large="true" multiline="true"
+      required="true"/>
 
     <extra-code>
       <![CDATA[
