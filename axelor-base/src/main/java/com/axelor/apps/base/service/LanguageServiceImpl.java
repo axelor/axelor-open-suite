@@ -27,7 +27,9 @@ public class LanguageServiceImpl implements LanguageService {
   }
 
   /**
-   * This method saves the modifications of an existing Language obj into the related MetaSelectItem obj.
+   * This method saves the modifications of an existing Language obj into the related MetaSelectItem
+   * obj.
+   *
    * @param language
    * @param oldName
    * @param oldCode
@@ -46,13 +48,12 @@ public class LanguageServiceImpl implements LanguageService {
 
   /**
    * This method saves a Language obj into a new MetaSelectItem obj.
+   *
    * @param language
-   * @param oldName
-   * @param oldCode
    */
   @Transactional
   @Override
-  public void saveNewLanguageToMetaSelect(Language language, String oldName, String oldCode) {
+  public void saveNewLanguageToMetaSelect(Language language) {
     MetaSelect metaSelect;
     MetaSelectItem metaSelectItem;
     Query<MetaSelect> metaSelectQuery =
@@ -123,8 +124,9 @@ public class LanguageServiceImpl implements LanguageService {
   }
 
   /**
-   * Before remove an MetaSelectItem, we have to update other records' order field.
-   * For records whose order is greater than param:orderNumber, those records order = order - 1.
+   * Before remove an MetaSelectItem, we have to update other records' order field. For records
+   * whose order is greater than param:orderNumber, those records order = order - 1.
+   *
    * @param orderNumber
    */
   protected void updateOrderNumber(int orderNumber) {
