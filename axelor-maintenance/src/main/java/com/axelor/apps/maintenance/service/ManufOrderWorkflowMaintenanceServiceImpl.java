@@ -35,6 +35,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceIm
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -58,7 +59,10 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService) {
+      OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderService manufOrderService,
+      SequenceService sequenceService,
+      ProductionOrderService productionOrderService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -71,7 +75,10 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         operationOrderService,
         appProductionService,
         productionConfigService,
-        operationOrderPlanningService);
+        operationOrderPlanningService,
+        manufOrderService,
+        sequenceService,
+        productionOrderService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
