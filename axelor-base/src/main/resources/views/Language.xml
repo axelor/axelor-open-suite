@@ -6,18 +6,13 @@
   <grid name="language-grid" title="Languages" model="com.axelor.apps.base.db.Language"
     editable="true">
     <field name="name"/>
-    <field name="code" onChange="action-language-method-convert-to-lowercase"/>
+    <field name="code" x-bind="{{code|lowercase}}"/>
   </grid>
 
   <form name="language-form" title="Language" model="com.axelor.apps.base.db.Language">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="code" onChange="action-language-method-convert-to-lowercase"/>
+      <field name="code" x-bind="{{code|lowercase}}"/>
     </panel>
   </form>
-
-  <action-method name="action-language-method-convert-to-lowercase">
-    <call class="com.axelor.apps.base.web.LanguageController" method="convertToLowercase"/>
-  </action-method>
-
 </object-views>
