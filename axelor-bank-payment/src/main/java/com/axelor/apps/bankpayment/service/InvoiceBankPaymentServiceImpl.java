@@ -45,25 +45,9 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
     Move lcrMove = invoice.getMove();
     Move oldMove = invoice.getOldMove();
 
-    MoveLine lcrCreditMoveLine =
-        lcrMove.getMoveLineList().stream()
-            .filter(ml -> ml.getCredit().signum() > 0)
-            .findFirst()
-            .orElse(null);
-
-    // Déréconcilier les deux écritures sur la ligne qu'on retrouve du lcrMove
-    /*if (lcrCreditMoveLine != null && ObjectUtils.isEmpty(lcrCreditMoveLine.getCreditReconcileList()) && lcrCreditMoveLine.getCreditReconcileList().size() == 1){
-        Reconcile reconcile = lcrCreditMoveLine.getCreditReconcileList().get(0);
-        reconcileService.unreconcile(reconcile);
-    }*/
     resetInvoiceBeforeLcrCancellation(invoice, oldMove, lcrMove);
-    Move reverseMove =
-        moveReverseService.generateReverse(lcrMove, true, true, true, lcrMove.getDate());
-    // Faire une nouvelle écriture qui va compenser le lcrMove sur les deux comptes (regarder
-    // l'extourne)
 
-    // Remettre lcrAccounted a false, remettre oldMove a move et vérifier les montants
-
+    moveReverseService.generateReverse(lcrMove, true, true, true, lcrMove.getDate());
   }
 
   protected void resetInvoiceBeforeLcrCancellation(Invoice invoice, Move oldMove, Move lcrMove) {
@@ -97,6 +81,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
     invoice.setLcrAccounted(false);
     invoice.setOldMove(null);
     invoice.setMove(oldMove);
+    invoice.setPartnerAccount(debitMoveLine.getAccount());
 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
     replaceInvoiceTerms(invoice, oldInvoiceTermList, lcrInvoiceTermList);
@@ -106,7 +91,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
     for (InvoiceTerm invoiceTerm : oldInvoiceTermList) {
       if (!invoice.getInvoiceTermList().contains(invoiceTerm)) {
         invoiceTerm.setAmountRemaining(invoiceTerm.getAmount());
-        invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmountRemaining());
+        invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getCompanyAmount());
         invoiceTerm.setIsPaid(false);
       }
     }

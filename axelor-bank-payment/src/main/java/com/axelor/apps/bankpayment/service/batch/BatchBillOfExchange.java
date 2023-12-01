@@ -402,7 +402,7 @@ public class BatchBillOfExchange extends AbstractBatch {
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       BigDecimal newAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
-      if (newAmount.signum() > 0) {
+      if (!invoiceTerm.getIsPaid() && newAmount.signum() > 0) {
         BigDecimal amountRemaining = invoiceTerm.getAmountRemaining();
         BigDecimal newPercentage =
             amountRemaining

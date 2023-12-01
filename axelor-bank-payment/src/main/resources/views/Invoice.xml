@@ -9,7 +9,8 @@
     <extend target="//field[@name='oldMove']">
       <insert position="after">
         <button name="cancelLcr" title="Cancel LCR" colSpan="3"
-          onClick="save, action-method-invoice-cancel-lcr" showIf="lcrAccounted &amp;&amp; oldMove"/>
+          onClick="save, action-method-invoice-cancel-lcr"
+          showIf="lcrAccounted &amp;&amp; oldMove &amp;&amp; amountRemaining &gt; 0"/>
       </insert>
     </extend>
   </form>
