@@ -43,7 +43,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
@@ -496,11 +495,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       stockMove = stockMoveOpt.get();
     } else {
       stockMove =
-          Beans.get(ManufOrderStockMoveService.class)
-              ._createToConsumeStockMove(
-                  manufOrder, company, fromStockLocation, virtualStockLocation);
-      operationOrder.addInStockMoveListItem(stockMove);
-      Beans.get(StockMoveService.class).plan(stockMove);
+          manufOrderStockMoveService
+              .createAndPlanToConsumeStockMove(manufOrder)
+              .map(
+                  sm -> {
+                    operationOrder.addInStockMoveListItem(sm);
+                    return sm;
+                  })
+              .orElse(null);
     }
 
     Beans.get(ManufOrderService.class)

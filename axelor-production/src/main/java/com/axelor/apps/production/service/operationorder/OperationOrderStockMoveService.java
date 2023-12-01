@@ -227,9 +227,7 @@ public class OperationOrderStockMoveService {
     List<StockMove> stockMoveList;
 
     stockMoveList = operationOrder.getInStockMoveList();
-    fromStockLocation =
-        manufOrderStockMoveService.getDefaultStockLocation(
-            manufOrder, company, ManufOrderStockMoveService.STOCK_LOCATION_IN);
+    fromStockLocation = manufOrderStockMoveService.getDefaultInStockLocation(manufOrder, company);
     toStockLocation =
         stockConfigService.getProductionVirtualStockLocation(
             stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());

@@ -683,23 +683,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
-    Company company = manufOrder.getCompany();
 
-    StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
-    StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
-      stockMove = stockMoveOpt.get();
+      return stockMoveOpt.get();
     } else {
-      stockMove =
-          manufOrderStockMoveService._createToConsumeStockMove(
-              manufOrder, company, fromStockLocation, virtualStockLocation);
-      manufOrder.addInStockMoveListItem(stockMove);
-      Beans.get(StockMoveService.class).plan(stockMove);
+      return manufOrderStockMoveService
+          .createAndPlanToConsumeStockMove(manufOrder)
+          .map(
+              sm -> {
+                manufOrder.addInStockMoveListItem(sm);
+                return sm;
+              })
+          .orElse(null);
     }
-    return stockMove;
   }
 
   @Override
@@ -721,25 +717,20 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
 
     Company company = manufOrder.getCompany();
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForProducedStockMove(manufOrder, company);
-    StockLocation producedProductStockLocation =
-        manufOrderStockMoveService.getProducedProductStockLocation(manufOrder, company);
 
     StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
-      stockMove = stockMoveOpt.get();
+      return stockMoveOpt.get();
     } else {
-      stockMove =
-          manufOrderStockMoveService._createToProduceStockMove(
-              manufOrder,
-              manufOrder.getCompany(),
-              virtualStockLocation,
-              producedProductStockLocation);
-      manufOrder.addOutStockMoveListItem(stockMove);
-      Beans.get(StockMoveService.class).plan(stockMove);
+      return manufOrderStockMoveService
+          .createAndPlanToProduceStockMove(manufOrder)
+          .map(
+              sm -> {
+                manufOrder.addOutStockMoveListItem(sm);
+                return sm;
+              })
+          .orElse(null);
     }
-    return stockMove;
   }
 
   @Override

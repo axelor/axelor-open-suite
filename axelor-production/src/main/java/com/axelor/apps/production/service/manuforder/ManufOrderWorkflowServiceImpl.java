@@ -61,6 +61,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -166,7 +167,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
     }
 
-    planStockMove(manufOrder);
+    planStockMoves(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
     manufOrder.setCancelReason(null);
     manufOrder.setCancelReasonStr(null);
@@ -193,12 +194,42 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     planRealDateT(manufOrder);
   }
 
-  protected void planStockMove(ManufOrder manufOrder) throws AxelorException {
+  protected void planStockMoves(ManufOrder manufOrder) throws AxelorException {
     if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderStockMoveService.createToConsumeStockMove(manufOrder);
+      manufOrderStockMoveService
+          .createAndPlanToConsumeStockMoveWithLines(manufOrder)
+          .ifPresent(
+              stockMove -> {
+                manufOrder.addInStockMoveListItem(stockMove);
+                // fill here the consumed stock move line list item to manage the
+                // case where we had to split tracked stock move lines
+                addToConsumedStockMoveLineList(manufOrder, stockMove);
+              });
     }
 
-    manufOrderStockMoveService.createToProduceStockMove(manufOrder);
+    manufOrderStockMoveService
+        .createAndPlanToProduceStockMoveWithLines(manufOrder)
+        .ifPresent(
+            sm -> {
+              manufOrder.addOutStockMoveListItem(sm);
+              addToProducedStockMoveLineList(manufOrder, sm);
+            });
+  }
+
+  protected void addToProducedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      }
+    }
+  }
+
+  protected void addToConsumedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {
+    if (stockMove.getStockMoveLineList() != null) {
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        manufOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+      }
+    }
   }
 
   protected void planPlannedEndDateT(ManufOrder manufOrder) {
