@@ -52,7 +52,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-import-bill-of-material"
-    parent="manufacturing-root-bill-of-material-root" title="Import"
+    parent="manufacturing-root-bill-of-material-root" title="Bill of material import"
     action="manufacturing.root.import.bill.of.material" order="300"/>
 
   <action-view name="manufacturing.root.import.bill.of.material"

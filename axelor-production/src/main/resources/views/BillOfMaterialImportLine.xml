@@ -59,7 +59,7 @@
     model="com.axelor.apps.production.db.BillOfMaterialImportLine">
     <view type="tree" name="bill-of-material-import-line-tree"/>
     <view type="form" name="bill-of-material-import-line-form"/>
-    <domain>self.billOfMaterialImport.id = :_id</domain>
+    <domain>self.billOfMaterialImport.id = :_id AND self.bomLevel = 0</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
