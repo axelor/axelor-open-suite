@@ -66,7 +66,13 @@
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"/>
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true">
+            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
+              <![CDATA[
+							<dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
+						]]>
+            </viewer>
+          </field>
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
