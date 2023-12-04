@@ -1,0 +1,3 @@
+---
+title: "MRPLINE : fix invalid type error when selecting a product from (sale/purchase) order line"
+type: fix
