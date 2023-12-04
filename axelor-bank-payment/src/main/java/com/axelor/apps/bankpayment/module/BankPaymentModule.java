@@ -48,18 +48,8 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsBankAccountRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsBankRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsCertificateAccountRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsCertificateRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserManagementRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.db.repo.PaymentSessionBankPaymentRepository;
-import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
-import com.axelor.apps.bankpayment.ebics.service.EbicsBankServiceImpl;
-import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
-import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerServiceImpl;
 import com.axelor.apps.bankpayment.service.AccountingReportPrintServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentService;
 import com.axelor.apps.bankpayment.service.InvoiceTermBankPaymentServiceImpl;
@@ -133,14 +123,6 @@ public class BankPaymentModule extends AxelorModule {
 
     bind(BankOrderLineRepository.class).to(BankOrderLineManagementRepository.class);
 
-    bind(EbicsBankRepository.class).to(EbicsBankAccountRepository.class);
-
-    bind(EbicsBankService.class).to(EbicsBankServiceImpl.class);
-
-    bind(EbicsPartnerService.class).to(EbicsPartnerServiceImpl.class);
-
-    bind(EbicsCertificateRepository.class).to(EbicsCertificateAccountRepository.class);
-
     bind(BankOrderService.class).to(BankOrderServiceImpl.class);
 
     bind(BankOrderMergeService.class).to(BankOrderMergeServiceImpl.class);
@@ -179,8 +161,6 @@ public class BankPaymentModule extends AxelorModule {
     bind(ExtractContextMoveServiceImpl.class).to(ExtractContextMoveServiceBankPaymentImpl.class);
 
     bind(MoveRemoveServiceImpl.class).to(MoveRemoveServiceBankPaymentImpl.class);
-
-    bind(EbicsUserRepository.class).to(EbicsUserManagementRepository.class);
 
     bind(AccountingReportPrintServiceImpl.class)
         .to(AccountingReportPrintServiceBankPaymentImpl.class);
