@@ -1,13 +1,15 @@
 package com.axelor.apps.base.service;
 
+import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
+
 import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.ImportExportTranslationHistory;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.ImportExportTranslationHistoryRepository;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
@@ -22,17 +24,19 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Stream;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImportExportTranslationServiceImpl implements ImportExportTranslationService {
 
+  public static final char separator = ';';
   protected MetaTranslationRepository metaTranslationRepository;
   protected ImportExportTranslationRepository importExportTranslationRepository;
   protected ImportExportTranslationHistoryRepository importExportTranslationHistoryRepository;
-
-  public static final int LIMIT = 50;
 
   protected int errorNumber = 0;
   protected int countRecords = 0;
@@ -54,31 +58,40 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @param importExportTranslation
    * @throws IOException
    */
-  @Transactional
   @Override
   public void exportTranslations(ImportExportTranslation importExportTranslation)
       throws IOException {
     errorNumber = 0;
-    Long id = importExportTranslation.getId();
-    List<String> languageHeaders = getLanguageHeaders(id);
+    List<String> languageHeaders = getLanguageHeaders(importExportTranslation);
     int languageNumber = languageHeaders.size();
     String[] headers = computeCsvFileHeaders(languageHeaders);
-    Map<String, String[]> map;
-    map = saveRecordsIntoMap(importExportTranslation, languageNumber, headers);
+    Map<String, String[]> map =
+        saveRecordsIntoMap(importExportTranslation, languageNumber, headers);
     List<String[]> translationList = addRecordRowIntoList(map, languageNumber);
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
-    CsvHelper.csvWriter(file.getParent(), file.getName(), ';', '\"', headers, translationList);
+    CsvHelper.csvWriter(
+        file.getParent(), file.getName(), separator, '\"', headers, translationList);
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), importExportTranslation);
     } catch (IOException e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("FileInputStream error", e);
     }
-    importExportTranslation = importExportTranslationRepository.find(id);
+    saveHistory(importExportTranslation, "Export");
+  }
+
+  /**
+   * This method saves an ImportExportTranslationHistory object.
+   *
+   * @param importExportTranslation
+   * @param actionType "Export" or "Import"
+   */
+  @Transactional
+  protected void saveHistory(ImportExportTranslation importExportTranslation, String actionType) {
     ImportExportTranslationHistory importExportTranslationHistory =
         new ImportExportTranslationHistory();
-    importExportTranslationHistory.setActionType("Export");
+    importExportTranslationHistory.setActionType(actionType);
     importExportTranslationHistory.setRecordNumber(countRecords);
     importExportTranslationHistory.setErrorNumber(errorNumber);
     importExportTranslation.addImportExportTranslationHistoryListItem(
@@ -87,8 +100,9 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   }
 
   /**
-   * This method add each record from map into a list.
-   * The map entry contains the key, Language1 message_value, Language2 message_value, ....
+   * This method add each record from map into a list. The map entry contains the key, Language1
+   * message_value, Language2 message_value, ....
+   *
    * @param map
    * @param languageNumber
    * @return List containing each row of records.
@@ -97,14 +111,13 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     String[] row;
     List<String[]> translationList = new ArrayList<>();
     countRecords = 0;
-    for (Map.Entry entry : map.entrySet()) {
+    for (Map.Entry<String, String[]> entry : map.entrySet()) {
       try {
-        String key = (String) entry.getKey();
-        Object[] value = (Object[]) entry.getValue();
+        String[] value = entry.getValue();
         row = new String[languageNumber + 1];
-        row[0] = key;
+        row[0] = entry.getKey();
         for (int j = 0; j < value.length; j++) {
-          row[j + 1] = (String) value[j];
+          row[j + 1] = value[j];
           countRecords++;
         }
         translationList.add(row);
@@ -116,8 +129,9 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   }
 
   /**
-   * This method query translation records from database and save them in a map.
-   * All language codes are saved in the value of the map: String[].
+   * This method query translation records from database and save them in a map. All language codes
+   * are saved in the value of the map: String[].
+   *
    * @param importExportTranslation
    * @param languageNumber
    * @param headers
@@ -134,85 +148,73 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     List<Object[]> messageQueryResultList;
     String[] messageValueArray;
     do {
-      JPA.clear();
       messageQueryResultList = getResultListByLimitAndOffset(offset, importExportTranslation);
       if (messageQueryResultList.isEmpty()) {
         break;
-      } else {
-        for (int i = 0; i < messageQueryResultList.size(); i++) {
-          try {
-            messageRecord = messageQueryResultList.get(i);
-            languageCode = (String) messageRecord[0];
-            messageKey = (String) messageRecord[1];
-            messageValue = (String) messageRecord[2];
-            if (!map.containsKey(messageKey)) {
-              messageValueArray = new String[languageNumber];
-              int position = findPosition(languageCode, headers) - 1;
-              messageValueArray[position] = messageValue;
-              map.put(messageKey, messageValueArray);
-            } else {
-              messageValueArray = map.get(messageKey);
-              int position = findPosition(languageCode, headers) - 1;
-              messageValueArray[position] = messageValue;
-              map.put(messageKey, messageValueArray);
-            }
-          } catch (Exception e) {
-            errorNumber++;
-          }
-        }
-        offset += LIMIT;
       }
-    } while (true);
+      for (Object[] objects : messageQueryResultList) {
+        try {
+          messageRecord = objects;
+          languageCode = (String) messageRecord[0];
+          messageKey = (String) messageRecord[1];
+          messageValue = (String) messageRecord[2];
+          if (!map.containsKey(messageKey)) {
+            messageValueArray = new String[languageNumber];
+          } else {
+            messageValueArray = map.get(messageKey);
+          }
+          int position = findPosition(languageCode, headers);
+          messageValueArray[position] = messageValue;
+          map.put(messageKey, messageValueArray);
+        } catch (Exception e) {
+          errorNumber++;
+        }
+      }
+      offset += FETCH_LIMIT;
+    } while (!messageQueryResultList.isEmpty());
     return map;
   }
 
   /**
    * This method compute the csv file headers from all language codes.
-   * @param languageHeaders
+   *
+   * @param languageHeaders all language codes, e.g. en, fr, etc.
    * @return Headers String array.
    */
   protected String[] computeCsvFileHeaders(List<String> languageHeaders) {
-    int languageNumber = languageHeaders.size();
-    String[] headers = new String[languageNumber + 1];
-    headers[0] = "key";
-    for (int i = 1; i < headers.length; i++) {
-      headers[i] = languageHeaders.get(i - 1);
-    }
-    return headers;
+    return Stream.concat(Stream.of("key"), languageHeaders.stream()).toArray(String[]::new);
   }
 
   /**
    * This method creates a query in database of translation records with a limit and an offset.
    *
-   * @param offset
-   * @param importExportTranslation
+   * @param offset the offset of the sql statement
+   * @param importExportTranslation from which importExportTranslation obj those languageHeaders are
+   *     obtained
    * @return Queried result list with the limit and the offset.
    */
   protected List<Object[]> getResultListByLimitAndOffset(
       int offset, ImportExportTranslation importExportTranslation) {
-    Query messageQuery =
+    Query translationRecordsQuery =
         JPA.em()
-            .createNativeQuery(
-                "select language, message_key, message_value "
-                    + "from META_TRANSLATION "
-                    + "where meta_translation.language = ANY ( "
-                    + "select base_language.code "
-                    + "from base_import_export_translation "
-                    + "left join base_import_export_translation_language_set "
-                    + "on base_import_export_translation_language_set.base_import_export_translation = base_import_export_translation.id "
-                    + "left join base_language "
-                    + "on base_import_export_translation_language_set.language_set = base_language.id "
-                    + "where base_import_export_translation.id = :curId ) "
-                    + "limit :limit "
-                    + "offset :offset ")
-            .setParameter("curId", importExportTranslation.getId())
-            .setParameter("limit", LIMIT)
-            .setParameter("offset", offset);
-    return messageQuery.getResultList();
+            .createQuery(
+                "select mt.language, mt.key, mt.message "
+                    + "from MetaTranslation mt "
+                    + "where mt.language = ANY ( "
+                    + "Select ls.code "
+                    + "from ImportExportTranslation iet "
+                    + "left join iet.languageSet ls "
+                    + "where iet.id = :curId"
+                    + ") ")
+            .setParameter("curId", importExportTranslation.getId());
+    translationRecordsQuery.setFirstResult(offset);
+    translationRecordsQuery.setMaxResults(FETCH_LIMIT);
+    return translationRecordsQuery.getResultList();
   }
 
   /**
-   * This method find the location in headers[] of a specific languageCode. Note that this headers
+   * This method find the location in headers[] of a specific languageCode and return the correct
+   * position where the messageValue should be put in the messageValueArray. Note that this headers
    * array is for the csv file headers.
    *
    * @param languageCode
@@ -222,48 +224,41 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   protected int findPosition(String languageCode, String[] headers) {
     for (int i = 1; i < headers.length; i++) {
       if (languageCode.equals(headers[i])) {
-        return i;
+        return i - 1;
       }
     }
     return 0;
   }
 
   /**
-   * This method queries the languageCode corresponding to the id of the importExportTranslation
+   * This method queries the languageCode corresponding to the id of the ImportExportTranslation
    * object.
    *
-   * @param importExportTranslationId
+   * @param importExportTranslation The current ImportExportTranslation obj
    * @return A List&lt;String&gt; type list containing all the language codes corresponding to the
    *     importExportTranslation object.
    */
-  protected List<String> getLanguageHeaders(long importExportTranslationId) {
-    Query languageQuery =
-        JPA.em()
-            .createNativeQuery(
-                "select base_language.code "
-                    + "from base_import_export_translation "
-                    + "left join base_import_export_translation_language_set "
-                    + "on base_import_export_translation_language_set.base_import_export_translation = base_import_export_translation.id "
-                    + "left join base_language "
-                    + "on base_import_export_translation_language_set.language_set = base_language.id "
-                    + "where base_import_export_translation.id = :curId ")
-            .setParameter("curId", importExportTranslationId);
-    return (List<String>) languageQuery.getResultList();
+  protected List<String> getLanguageHeaders(ImportExportTranslation importExportTranslation) {
+    Set<Language> languageSet = importExportTranslation.getLanguageSet();
+    List<String> languageHeaders = new ArrayList<>();
+    for (Language language : languageSet) {
+      languageHeaders.add(language.getCode());
+    }
+    return languageHeaders;
   }
 
   /**
    * This method imports the translation file and saves each record into ImportExportTranslation
    * obj.
    *
-   * @param importExportTranslation
-   * @return
+   * @param importExportTranslation The current ImportExportTranslation obj
+   * @return File path
    */
-  @Transactional
   @Override
   public Path importTranslations(ImportExportTranslation importExportTranslation) {
+    countRecords = 0;
     errorNumber = 0;
     Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
-    char separator = ';';
     List<String[]> data = null;
     try {
       data = CsvHelper.cSVFileReader(filePath.toString(), separator);
@@ -271,30 +266,26 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("Read CSV file failed.", e);
     }
-    if (data == null) return null;
+    if (data == null) {
+      return null;
+    }
     List<String> headers = Arrays.asList(data.get(0));
-    int dataLineNumber = 0;
     for (int i = 1; i < data.size(); i++) {
+      if (i % FETCH_LIMIT == 0) {
+        JPA.clear();
+      }
       List<String> dataLine = Arrays.asList(data.get(i));
       try {
-        dataLineNumber += insertOrUpdateTranslation(dataLine, headers);
+        countRecords += insertOrUpdateTranslation(dataLine, headers);
       } catch (Exception e) {
         Logger logger = LoggerFactory.getLogger(getClass());
         logger.error("Error processing data line: " + dataLine, e);
         errorNumber++;
       }
     }
-    ImportExportTranslationHistory importExportTranslationHistory =
-        new ImportExportTranslationHistory();
     importExportTranslation =
         importExportTranslationRepository.find(importExportTranslation.getId());
-    importExportTranslationHistory.setActionType("Import");
-    importExportTranslationHistory.setRecordNumber(dataLineNumber);
-    importExportTranslationHistory.setErrorNumber(errorNumber);
-    importExportTranslationHistory.setImportExportTranslation(importExportTranslation);
-    importExportTranslation.addImportExportTranslationHistoryListItem(
-        importExportTranslationHistory);
-    importExportTranslationRepository.save(importExportTranslation);
+    saveHistory(importExportTranslation, "Import");
     return filePath;
   }
 
@@ -310,47 +301,38 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       throws Exception {
     int importNumber = 0;
     String key = dataLine.get(0);
-
     if (dataLine.size() != headers.size()) {
       throw new Exception("CSV file line has different number of columns against headers");
     }
-
     for (int i = 1; i < dataLine.size(); i++) {
       // dataLine: messageKey, en_value, fr_value, L3_value, ...
       String messageValue = dataLine.get(i);
       String languageCode = headers.get(i);
-      Query existenceQuery =
+      TypedQuery<String> existenceQuery =
           JPA.em()
-              .createNativeQuery(
-                  "select message_value "
-                      + "from meta_translation "
-                      + "where meta_translation.language = :languageCode "
-                      + "and message_key = :key ")
+              .createQuery(
+                  "select mt.message "
+                      + "from MetaTranslation mt "
+                      + "where mt.language = :languageCode "
+                      + "and mt.key = :key",
+                  String.class)
               .setParameter("languageCode", languageCode)
               .setParameter("key", key);
-      List existenceQueryResultList = existenceQuery.getResultList();
-      if (existenceQueryResultList.isEmpty()) {
-        // insert
-        MetaTranslation metaTranslation = new MetaTranslation();
-        metaTranslation.setKey(key);
-        metaTranslation.setLanguage(languageCode);
-        metaTranslation.setMessage(messageValue);
-        metaTranslationRepository.save(metaTranslation);
-      } else {
-        // update
+      List<String> existenceQueryResultList = existenceQuery.getResultList();
+      if (!existenceQueryResultList.isEmpty()) {
         Query updateQuery =
             JPA.em()
-                .createNativeQuery(
-                    "update meta_translation "
-                        + "set message_value = :messageValue "
-                        + "where message_key = :key "
-                        + "and meta_translation.language = :languageCode ")
+                .createQuery(
+                    "update MetaTranslation mt "
+                        + "set mt.message = :messageValue "
+                        + "where mt.key = :key "
+                        + "and mt.language = :languageCode ")
                 .setParameter("messageValue", messageValue)
                 .setParameter("key", key)
                 .setParameter("languageCode", languageCode);
         updateQuery.executeUpdate();
+        importNumber++;
       }
-      importNumber++;
     }
     return importNumber;
   }

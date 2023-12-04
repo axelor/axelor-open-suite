@@ -9,7 +9,7 @@
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
-    <boolean name="isNative" required="true" default="false"/>
+    <boolean name="isNative"/>
 
   </entity>
 

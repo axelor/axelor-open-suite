@@ -39,9 +39,4 @@ public class ImportExportTranslationController {
       response.setReload(true);
     }
   }
-
-  public void languageSetDomain(ActionRequest request, ActionResponse response) {
-    String domain = " self.isNative = false ";
-    response.setAttr("languageSet", "domain", domain);
-  }
 }

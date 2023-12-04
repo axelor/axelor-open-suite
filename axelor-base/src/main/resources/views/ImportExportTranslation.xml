@@ -16,7 +16,7 @@
     <panel name="infoPanel" title="info" showTitle="false" colSpan="12">
       <field name="name" title="Name" required="true"/>
       <field name="languageSet" title="Languages" widget="tagSelect" required="true"
-        onSelect="action-import-export-translation-method-language-set-domain"/>
+        domain="self.isNative = false"/>
     </panel>
     <panel name="importExportPanel" title="Import/Export" showTitle="false" colSpan="12">
       <button name="export" title="Export" colSpan="4"
@@ -42,11 +42,6 @@
   <action-method name="action-import-export-translation-method-import">
     <call class="com.axelor.apps.base.web.ImportExportTranslationController"
       method="importTranslation"/>
-  </action-method>
-
-  <action-method name="action-import-export-translation-method-language-set-domain">
-    <call class="com.axelor.apps.base.web.ImportExportTranslationController"
-      method="languageSetDomain"/>
   </action-method>
 
 </object-views>
