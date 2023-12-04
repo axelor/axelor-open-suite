@@ -40,6 +40,7 @@
       <field name="zip" onChange="action-address-method-autocomplete-address"/>
       <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>
       <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.]]></static>
+      <field name="formattedFullName" readonly="true" colSpan="12"/>
       <button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()" readonlyIf="!id">
         <button name="mapBtn" title="View map" icon="fa-map-marker"
           onClick="action-base-address-method-view-map"/>
@@ -116,6 +117,7 @@
         <button name="directionsBtn" title="Get direction" icon="near_me"
           onClick="action-base-address-method-view-direction,close"/>
       </button-group>
+      <field name="formattedFullName" readonly="true" colSpan="12"/>
       <field name="isUsed" hidden="true" type="boolean"/>
       <field name="isValidLatLong" hidden="true"/>
     </panel>
@@ -136,7 +138,13 @@
   <action-group name="action-group-base-address-onsave">
     <action name="action-base-address-set-address-used"/>
     <action name="action-base-address-check-address-used"/>
+    <!-- <action name="action-base-address-set-formatted-address-used"/> -->
   </action-group>
+
+  <!-- <action-method name="action-base-address-set-formatted-address-used" -->
+  <!-- model="com.axelor.apps.base.db.Address"> -->
+  <!-- <call class="com.axelor.apps.base.web.AddressController" method="setFormattedFullName"/> -->
+  <!-- </action-method> -->
 
   <action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
     <field name="addressL7Country"
