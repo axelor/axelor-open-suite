@@ -17,7 +17,8 @@
       <insert position="after">
         <field name="hrEmployeeSet" widget="TagSelect" colSpan="6"
           showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3"
-          onSelect="action-work-center-attrs-employee-set-domain"/>
+          onSelect="action-work-center-attrs-employee-set-domain"
+          if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
       </insert>
     </extend>
   </form>

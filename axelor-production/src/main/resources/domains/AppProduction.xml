@@ -61,6 +61,7 @@
       help="When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00)."/>
 
     <boolean name="isCostPerProcessLine" title="Cost per process line"/>
+    <boolean name="employeeScheduling" title="Employee scheduling" default="false"/>
 
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
