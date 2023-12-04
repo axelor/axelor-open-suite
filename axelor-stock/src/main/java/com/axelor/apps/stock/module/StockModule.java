@@ -72,6 +72,8 @@ import com.axelor.apps.stock.service.StockMoveCheckWapService;
 import com.axelor.apps.stock.service.StockMoveCheckWapServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveMergingService;
+import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -131,5 +133,6 @@ public class StockModule extends AxelorModule {
     bind(StockHistoryLineRepository.class).to(StockHistoryLineManagementRepository.class);
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
+    bind(StockMoveMergingService.class).to(StockMoveMergingServiceImpl.class);
   }
 }
