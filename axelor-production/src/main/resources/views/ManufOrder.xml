@@ -107,12 +107,12 @@
           if="__config__.app.getApp('production')?.getManageWorkshop()"
           domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
-          showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
+          showIf="$readonly()" colSpan="2" depends="outsourcing">
           <viewer>
 					<![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
-								{prodProcess.outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
 							</Box>
 						</>
 					]]>
@@ -137,6 +137,9 @@
           edit-window="blank"/>
         <field name="outsourcing" colSpan="3"
           onChange="action-production-attrs-hide-purchaseOrder"/>
+        <field name="outsourcingPartner" colSpan="3"
+          showIf="outsourcing &amp;&amp; !prodProcess.outsourcing"
+          domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
           readonly="true" hideIf="statusSelect != 1"/>
         <field name="product" canEdit="false" required="true"
@@ -170,6 +173,7 @@
           onClick="save,action-manuf-order-method-pre-fill-operations"/>
         <field name="product.isModel" hidden="true"/>
         <field name="typeSelect" hidden="true"/>
+        <field name="prodProcess.outsourcing" hidden="true"/>
       </panel>
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12"

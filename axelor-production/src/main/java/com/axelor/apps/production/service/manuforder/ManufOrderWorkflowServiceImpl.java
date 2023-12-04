@@ -96,6 +96,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ProductionOrderService productionOrderService;
+  protected ManufOrderOutsourceService manufOrderOutsourceService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -113,7 +114,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       OperationOrderPlanningService operationOrderPlanningService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      ProductionOrderService productionOrderService) {
+      ProductionOrderService productionOrderService,
+      ManufOrderOutsourceService manufOrderOutsourceService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -129,6 +131,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.productionOrderService = productionOrderService;
+    this.manufOrderOutsourceService = manufOrderOutsourceService;
   }
 
   @Override
@@ -823,7 +826,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             null,
             null,
             null,
-            manufOrder.getProdProcess().getSubcontractor(),
+            manufOrderOutsourceService.getOutsourcePartner(manufOrder).orElse(null),
             null);
 
     purchaseOrder.setOutsourcingOrder(true);

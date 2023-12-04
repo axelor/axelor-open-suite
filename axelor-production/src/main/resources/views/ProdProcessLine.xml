@@ -34,6 +34,9 @@
         onChange="action-prod-process-line-group-work-center-onchange"
         onSelect="action-prod-process-line-attrs-set-work-center-domain"/>
       <field name="outsourcing"/>
+      <field name="outsourcingPartner"
+        showIf="outsourcing &amp;&amp; !prodProcess.outsourcing" colSpan="4"
+        domain="self.isSubcontractor = true"/>
       <field name="optional"/>
       <field name="useLineInGeneratedPurchaseOrder"/>
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
@@ -50,6 +53,8 @@
           if="__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
         <field name="humanDurationDecimal" colSpan="6"
           if="__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
+
+        <field name="prodProcess.outsourcing" hidden="true"/>
       </panel>
 
       <panel name="costSettingPanel" colSpan="12" itemSpan="12"
@@ -161,8 +166,6 @@
       expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
     <attribute name="hidden" for="stockLocation"
       expr="eval: !__parent__.isConsProOnOperation"/>
-    <attribute name="hidden" for="outsourcing" expr="eval: !__parent__.outsourcing"
-      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.production.db.ProdProcess'"/>
     <attribute name="hidden" for="useLineInGeneratedPurchaseOrder"
       expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)"
       if="__parent__ != null"/>

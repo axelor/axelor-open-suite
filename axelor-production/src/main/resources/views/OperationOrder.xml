@@ -114,6 +114,9 @@
       <field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
       <field name="manufOrder" colSpan="3" hidden="true" readonly="true"/>
       <field name="outsourcing" colSpan="3"/>
+      <field name="outsourcingPartner"
+        showIf="outsourcing &amp;&amp; (!prodProcessLine.outsourcing &amp;&amp; !manufOrder.outsourcing)"
+        domain="self.isSubcontractor = true"/>
       <field name="isToInvoice" colSpan="3"/>
       <field name="prodProcessLine" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
@@ -123,6 +126,8 @@
       </field>
       <field name="manufOrder.statusSelect" hidden="true"/>
       <field name="useLineInGeneratedPurchaseOrder"/>
+      <field name="prodProcessLine.outsourcing" hidden="true"/>
+      <field name="manufOrder.outsourcing" hidden="true"/>
     </panel>
     <panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
       <panel name="plannedDates" title="Planned dates" colSpan="6">

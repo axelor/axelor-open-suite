@@ -112,6 +112,18 @@ public class StockConfigService {
     return stockConfig.getPickupDefaultStockLocation();
   }
 
+  public StockLocation getVirtualOutsourcingStockLocation(StockConfig stockConfig)
+      throws AxelorException {
+    if (stockConfig.getVirtualOutsourcingStockLocation() == null) {
+      throw new AxelorException(
+          stockConfig,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.STOCK_CONFIG_VIRTUAL_OUTSOURCE_STOCK_LOCATION),
+          stockConfig.getCompany().getName());
+    }
+    return stockConfig.getVirtualOutsourcingStockLocation();
+  }
+
   public StockLocation getQualityControlDefaultStockLocation(StockConfig stockConfig)
       throws AxelorException {
     if (stockConfig.getQualityControlDefaultStockLocation() == null) {

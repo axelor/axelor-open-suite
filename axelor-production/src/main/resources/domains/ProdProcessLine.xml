@@ -21,6 +21,8 @@
     <decimal name="durationPerCycleDecimal" title="Duration / cycle (in hours)"/>
     <decimal name="humanDurationDecimal" title="Human Duration (in hours)"/>
     <boolean name="outsourcing" title="Outsourcing"/>
+    <many-to-one name="outsourcingPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Subcontractor"/>
     <boolean name="optional" title="Optional"/>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>

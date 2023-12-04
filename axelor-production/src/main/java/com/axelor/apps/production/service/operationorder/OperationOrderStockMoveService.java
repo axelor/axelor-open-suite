@@ -26,6 +26,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -51,6 +52,7 @@ public class OperationOrderStockMoveService {
   protected StockLocationRepository stockLocationRepo;
   protected ProductCompanyService productCompanyService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ManufOrderOutsourceService manufOrderOutsourceService;
 
   @Inject
   public OperationOrderStockMoveService(
@@ -58,12 +60,14 @@ public class OperationOrderStockMoveService {
       StockMoveLineService stockMoveLineService,
       StockLocationRepository stockLocationRepo,
       ProductCompanyService productCompanyService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ManufOrderOutsourceService manufOrderOutsourceService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockLocationRepo = stockLocationRepo;
     this.productCompanyService = productCompanyService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.manufOrderOutsourceService = manufOrderOutsourceService;
   }
 
   public void createToConsumeStockMove(OperationOrder operationOrder) throws AxelorException {
@@ -82,7 +86,7 @@ public class OperationOrderStockMoveService {
       ManufOrder manufOrder = operationOrder.getManufOrder();
       StockLocation virtualStockLocation =
           stockConfigService.getProductionVirtualStockLocation(
-              stockConfig, manufOrder.getProdProcess().getOutsourcing());
+              stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
 
       StockLocation fromStockLocation;
 
@@ -132,7 +136,7 @@ public class OperationOrderStockMoveService {
     ManufOrder manufOrder = operationOrder.getManufOrder();
     StockLocation virtualStockLocation =
         stockConfigService.getProductionVirtualStockLocation(
-            stockConfig, manufOrder.getProdProcess().getOutsourcing());
+            stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
 
     StockLocation fromStockLocation;
 
@@ -230,7 +234,7 @@ public class OperationOrderStockMoveService {
     fromStockLocation = manufOrderStockMoveService.getDefaultInStockLocation(manufOrder, company);
     toStockLocation =
         stockConfigService.getProductionVirtualStockLocation(
-            stockConfig, operationOrder.getManufOrder().getProdProcess().getOutsourcing());
+            stockConfig, manufOrderOutsourceService.isOutsource(operationOrder.getManufOrder()));
 
     // realize current stock move
     Optional<StockMove> stockMoveToRealize =

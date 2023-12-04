@@ -29,6 +29,7 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
@@ -62,7 +63,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       OperationOrderPlanningService operationOrderPlanningService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      ProductionOrderService productionOrderService) {
+      ProductionOrderService productionOrderService,
+      ManufOrderOutsourceService manufOrderOutsourceService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -78,7 +80,8 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         operationOrderPlanningService,
         manufOrderService,
         sequenceService,
-        productionOrderService);
+        productionOrderService,
+        manufOrderOutsourceService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
