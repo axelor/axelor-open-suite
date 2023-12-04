@@ -6,8 +6,11 @@
   <grid name="purchase-order-line-tax-grid" title="PO Tax lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLineTax">
     <field name="taxLine" width="400%" form-view="tax-line-form" grid-view="tax-line-grid"/>
-    <field name="exTaxBase"/>
-    <field name="taxTotal"/>
+    <field name="purchaseOrder" hidden="true"/>
+    <field name="purchaseOrder.currency" hidden="true"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxBase" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="taxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
   </grid>
 
   <form name="purchase-order-line-tax-form" title="PO Tax line"
@@ -18,9 +21,12 @@
         form-view="tax-line-form"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
-      <field name="exTaxBase"/>
-      <field name="taxTotal"/>
-      <field name="inTaxTotal"/>
+      <field name="exTaxBase" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+      <field name="taxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+      <field name="inTaxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+      <field name="purchaseOrder" hidden="true"/>
+      <field name="purchaseOrder.currency" hidden="true"/>
+      <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
