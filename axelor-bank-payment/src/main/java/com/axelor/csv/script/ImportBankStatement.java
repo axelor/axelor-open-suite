@@ -26,10 +26,14 @@ import javax.inject.Inject;
 public class ImportBankStatement {
 
   protected BankStatementCreateService bankStatementCreateService;
+  protected BankStatementService bankStatementService;
 
   @Inject
-  public ImportBankStatement(BankStatementCreateService bankStatementCreateService) {
+  public ImportBankStatement(
+      BankStatementCreateService bankStatementCreateService,
+      BankStatementService bankStatementService) {
     this.bankStatementCreateService = bankStatementCreateService;
+    this.bankStatementService = bankStatementService;
   }
 
   public Object importBankStatement(Object bean, Map<String, Object> values) {
@@ -39,6 +43,7 @@ public class ImportBankStatement {
     if (bankStatement.getName() == null) {
       bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
     }
+    bankStatementService.updateStatus(bankStatement);
     return bankStatement;
   }
 }
