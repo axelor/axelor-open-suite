@@ -24,7 +24,9 @@
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
@@ -51,7 +53,9 @@
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
@@ -65,7 +69,9 @@
     <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
@@ -327,11 +333,17 @@
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
-      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="exTaxTotal,taxTotal,amountInvoiced,advanceTotal">
                     <![CDATA[
 	                  <>
@@ -423,12 +435,13 @@
     <field name="externalReference"/>
     <field name="supplierPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal" x-currency="currency.symbol"/>
-    <field name="inTaxTotal" x-currency="currency.symbol"/>
+    <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="receiptState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="company"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <template><![CDATA[
@@ -488,12 +501,13 @@
     <field name="externalReference"/>
     <field name="supplierPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal" x-currency="currency.symbol"/>
-    <field name="inTaxTotal" x-currency="currency.symbol"/>
+    <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="receiptState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="company"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <template><![CDATA[
