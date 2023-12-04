@@ -66,11 +66,12 @@
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true">
-            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
+            x-currency="$currencySymbol">
+            <viewer depends="budgetDistributionSumAmount">
               <![CDATA[
-							<dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
-						]]>
+				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+              ]]>
             </viewer>
           </field>
           <field name="account"
