@@ -113,8 +113,6 @@ import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.account.service.custom.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryServiceImpl;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
@@ -585,8 +583,6 @@ public class AccountModule extends AxelorModule {
     bind(ClosureAssistantService.class).to(ClosureAssistantServiceImpl.class);
 
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
-
-    bind(DoubtfulCustomerInvoiceTermService.class).to(DoubtfulCustomerInvoiceTermServiceImpl.class);
 
     bind(FixedAssetDateService.class).to(FixedAssetDateServiceImpl.class);
 

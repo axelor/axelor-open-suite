@@ -70,6 +70,7 @@ public class DoubtfulCustomerService {
   protected DoubtfulCustomerInvoiceTermService doubtfulCustomerInvoiceTermService;
   protected AppBaseService appBaseService;
   protected InvoiceTermRepository invoiceTermRepo;
+  protected InvoiceTermReplaceService invoiceTermReplaceService;
 
   @Inject
   public DoubtfulCustomerService(
@@ -83,7 +84,8 @@ public class DoubtfulCustomerService {
       AccountConfigService accountConfigService,
       DoubtfulCustomerInvoiceTermService doubtfulCustomerInvoiceTermService,
       AppBaseService appBaseService,
-      InvoiceTermRepository invoiceTermRepo) {
+      InvoiceTermRepository invoiceTermRepo,
+      InvoiceTermReplaceService invoiceTermReplaceService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -96,6 +98,7 @@ public class DoubtfulCustomerService {
     this.doubtfulCustomerInvoiceTermService = doubtfulCustomerInvoiceTermService;
     this.appBaseService = appBaseService;
     this.invoiceTermRepo = invoiceTermRepo;
+    this.invoiceTermReplaceService = invoiceTermReplaceService;
   }
 
   /**
@@ -225,22 +228,12 @@ public class DoubtfulCustomerService {
             debtPassReason);
     debitMoveLine.setPassageReason(debtPassReason);
 
-    /*doubtfulCustomerInvoiceTermService.createOrUpdateInvoiceTerms(
-    invoice,
-    newMove,
-    invoicePartnerMoveLines,
-    creditMoveLines,
-    debitMoveLine,
-    todayDate,
-    amountRemaining);*/
-
     newMove.addMoveLineListItem(debitMoveLine);
     creditMoveLines.forEach(newMove::addMoveLineListItem);
 
     for (MoveLine moveLine : invoicePartnerMoveLines) {
-      Beans.get(InvoiceTermReplaceService.class)
-          .replaceInvoiceTerms(
-              invoice, newMove, Collections.singletonList(moveLine), moveLine.getAccount());
+      invoiceTermReplaceService.replaceInvoiceTerms(
+          invoice, newMove, Collections.singletonList(moveLine), moveLine.getAccount());
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
