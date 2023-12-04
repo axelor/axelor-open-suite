@@ -44,7 +44,13 @@ public class SaleOrderLineController {
   public void setProductAccount(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+
+      if (SaleOrder.class.equals(request.getContext().getParent().getContextClass())) {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      } else {
+        saleOrder = saleOrderLine.getSaleOrder();
+      }
 
       if (saleOrderLine.getProduct() == null) {
         response.setValue("account", null);
@@ -151,7 +157,20 @@ public class SaleOrderLineController {
 
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+
+      if (request.getContext().getParent() == null) {
+        saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.valueOf((Integer) request.getContext().get("_parentId")));
+      } else {
+        if (SaleOrder.class.equals(request.getContext().getParent().getContextClass())) {
+          saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+        } else {
+          saleOrder = request.getContext().asType(SaleOrderLine.class).getSaleOrder();
+        }
+      }
+
       if (saleOrder != null && saleOrder.getCompany() != null) {
 
         response.setAttr(
