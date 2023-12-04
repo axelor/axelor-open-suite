@@ -38,10 +38,11 @@
         <panel if="__config__.app.isApp('budget')" if-module="axelor-supplychain"
           name="budgetDistributionPanel" title="Budget" showIf="product" colSpan="12">
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-            name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true" colSpan="6">
-            <viewer depends="companyExTaxTotal,$currencySymbol"><![CDATA[
+            name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true" colSpan="6"
+            x-currency="$currencySymbol">
+            <viewer depends="companyExTaxTotal"><![CDATA[
 
-				<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+				<dd>{{$fmt('companyExTaxTotal')}}</dd>
 
 	      ]]></viewer>
           </field>
@@ -85,11 +86,15 @@
     <action name="supplychain-action-sale-order-line-group-onnew"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-distribution-attrs-currency-symbol"
+      if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-group name="action-budget-sale-order-line-group-onload">
     <action name="supplychain-action-sale-order-line-group-onload"/>
     <action name="action-method-sale-order-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 

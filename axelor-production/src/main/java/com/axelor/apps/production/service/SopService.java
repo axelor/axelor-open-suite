@@ -19,8 +19,16 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Period;
+import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.apps.production.db.Sop;
+import java.util.Map;
+import java.util.Set;
 
 public interface SopService {
   public void generateSOPLines(Sop sop) throws AxelorException;
+
+  public Set<Map<String, Object>> fillMrpForecast(
+      ProductCategory productCategory, Company company, Period period) throws AxelorException;
 }

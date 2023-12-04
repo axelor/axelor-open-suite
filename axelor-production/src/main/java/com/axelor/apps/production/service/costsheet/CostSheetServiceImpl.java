@@ -875,7 +875,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       Unit pieceUnit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate) {
+      LocalDate previousCostSheetDate)
+      throws AxelorException {
     int costType =
         appProductionService.getIsCostPerProcessLine()
             ? operationOrder.getProdProcessLine().getCostTypeSelect()
