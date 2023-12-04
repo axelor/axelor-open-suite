@@ -1,18 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="JournalType" lang="java" cacheable="true">
+  <entity name="JournalType" cacheable="true">
 
     <string name="name" title="Name" required="true" unique="true"/>
     <string name="code" title="Code" min="2" required="true" unique="true"/>
     <boolean name="isDisplayBalances" title="Display the balances"/>
     <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType"
       title="Balance computations on the following accounts"/>
+    <integer name="technicalTypeSelect" title="Technical type"
+      selection="account.journal.type.technical.type.select" min="1" required="true"/>
 
+    <extra-code><![CDATA[
+
+		// TECHNICAL TYPE SELECT
+		public static final int TECHNICAL_TYPE_SELECT_EMPTY = 0;
+		public static final int TECHNICAL_TYPE_SELECT_EXPENSE = 1;
+		public static final int TECHNICAL_TYPE_SELECT_SALE = 2;
+		public static final int TECHNICAL_TYPE_SELECT_CREDIT_NOTE = 3;
+		public static final int TECHNICAL_TYPE_SELECT_TREASURY = 4;
+		public static final int TECHNICAL_TYPE_SELECT_OTHER = 5;
+
+  ]]></extra-code>
   </entity>
 
 </domain-models>

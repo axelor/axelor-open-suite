@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results"
     groupBy="product" sortable="false"
@@ -17,16 +17,28 @@
     <hilite color="warning" strong="true"
       if="$get('mrpLineType.elementSelect') == 5 &amp;&amp; $get('product.defaultSupplierPartner.id') != $get('supplierPartner.id')"/>
     <hilite color="info" strong="true"
-      if="[5,8,9].indexOf($get('mrpLineType.elementSelect')) != -1"/>
+      if="[5,8,9,11].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="product" hidden="true"/>
     <button name="alertIconButton" showIf="$get('isOutDayNbBetweenPurchaseAndProposal')"
       onClick="refresh" readonlyIf="true" icon="fa-exclamation-triangle"/>
     <button name="toggleBtn" icon="fa-exchange" onClick="action-mrp-line-method-toggle"
       showIf="!proposalGenerated &amp;&amp; [5,8].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="proposalToProcess" showIf="!proposalGenerated"/>
+    <button name="errorIconButton" showIf="warnDelayFromSupplier" onClick="refresh"
+      readonlyIf="true" icon="fa-exclamation-triangle"/>
     <field name="mrpLineType" width="300"/>
     <field name="qty" x-scale="2"/>
-    <field name="maturityDate" width="100"/>
+    <field name="maturityDate" width="100">
+      <hilite if="warnDelayFromSupplier &amp;&amp; !estimatedDeliveryDate" color="danger"/>
+    </field>
+    <field name="respectDeliveryDelayDate" title="Date to respect delays" type="date"
+      readonly="true">
+      <hilite if="warnDelayFromSupplier &amp;&amp; estimatedDeliveryDate" color="danger"/>
+    </field>
+
+    <field name="deliveryDelayDate" hidden="true"/>
+    <field name="estimatedDeliveryDate" hidden="true"/>
+
     <field name="cumulativeQty" css="bold" x-scale="2"/>
     <field name="product.unit"/>
     <field name="minQty" x-scale="2"/>
@@ -40,8 +52,6 @@
     <button name="generateProposalBtn" icon="fa-calendar"
       onClick="action-mrp-line-method-generate-proposal"
       readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
-    <button name="errorIconButton" showIf="warnDelayFromSupplier" onClick="refresh"
-      readonlyIf="true" icon="fa-exclamation-triangle"/>
     <field name="mrpLineType.elementSelect" hidden="true"/>
     <field name="isEditedByUser" hidden="true"/>
     <field name="product.defaultSupplierPartner.id" hidden="true"/>
@@ -66,9 +76,9 @@
       <field name="product" readonly="true" canEdit="false"/>
       <field name="mrpLineType" readonly="true"/>
       <field name="qty" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="maturityDate" onChange="action-temp-complete-is-edited-by-user"
-        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        readonlyIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5  &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="cumulativeQty" css="bold" readonly="true"/>
       <field name="product.unit" readonly="true"/>
       <field name="minQty" readonly="true"/>
@@ -76,7 +86,11 @@
       <field name="reOrderQty" readonly="true"/>
       <field name="stockLocation" readonly="true"/>
       <field name="maxLevel" readonly="true"/>
-      <field name="partner" showIf="partner"/>
+      <field name="partner" showIf="partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="estimatedDeliveryMrpLine" readonly="true" showIf="estimatedDeliveryMrpLine"
+        form-view="mrp-line-form"/>
+      <field name="deliveryDelayDate" showIf="deliveryDelayDate"/>
+      <field name="estimatedDeliveryDate" showIf="estimatedDeliveryDate"/>
       <button name="generateProposalBtn" title="Generate proposal"
         onClick="action-mrp-line-method-generate-proposal"
         showIf="!proposalGenerated &amp;&amp; [5,8].indexOf(mrpLineType.elementSelect) != -1"/>
@@ -92,13 +106,13 @@
       <field name="proposalSelect" title="Proposal" widget="RefSelect" readonly="true"
         showIf="proposalGenerated"/>
       <field name="isEditedByUser"
-        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect = 1))"/>
+        hideIf="mrpLineType.elementSelect != 8 &amp;&amp; mrpLineType.elementSelect != 5 &amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
       <field name="mrp.mrpTypeSelect" hidden="true"/>
       <field name="warnDelayFromSupplier" hidden="true"/>
     </panel>
 
     <panel name="supplierPanel" showIf="mrpLineType.elementSelect == 5">
-      <field name="supplierPartner"
+      <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"
         onSelect="action-validate-supplier-catalog, action-mrp-line-attrs-domain-supplier-partner"/>
     </panel>
   </form>

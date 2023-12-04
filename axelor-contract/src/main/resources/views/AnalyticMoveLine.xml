@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="analytic-move-line-form" title="Analytic Move Line"
     model="com.axelor.apps.account.db.AnalyticMoveLine" extension="true"
@@ -16,5 +16,26 @@
     </extend>
 
   </form>
+
+  <form name="analytic-move-line-move-line-form" title="Analytic move line"
+    id="contract-analytic-move-line-move-line-form"
+    model="com.axelor.apps.account.db.AnalyticMoveLine" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-contract-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
+    </extend>
+  </form>
+
+  <action-group
+    name="action-contract-analytic-move-line-group-analytic-move-line-distribution-on-new">
+    <action
+      name="action-supplychain-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
+    <action name="action-method-analytic-move-line-invoice-line-contract-onnew"/>
+  </action-group>
+
+  <action-method name="action-method-analytic-move-line-invoice-line-contract-onnew">
+    <call class="com.axelor.apps.contract.web.AnalyticDistributionLineController"
+      method="linkWithContract"/>
+  </action-method>
 
 </object-views>

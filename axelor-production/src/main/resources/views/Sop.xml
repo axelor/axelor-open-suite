@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="sop-grid" title="Sales and Operations Planning"
     model="com.axelor.apps.production.db.Sop">
@@ -15,9 +15,9 @@
       <field name="company" canEdit="false"/>
       <panel name="generationPanel" showIf="productCategory &amp;&amp; company"
         canCollapse="true" title="Sales and Operations Planning Lines generation" colSpan="12">
-        <field name="year" domain="self.typeSelect = 3"/>
+        <field name="periodYear" domain="self.typeSelect = 3"/>
         <field name="isForecastOnHistoric" widget="boolean-switch"/>
-        <field name="yearbasedHistoric" domain="self.typeSelect = 3"
+        <field name="historicPeriodYear" domain="self.typeSelect = 3"
           showIf="isForecastOnHistoric == true"/>
         <field name="growthCoef" showIf="isForecastOnHistoric == true"/>
         <button name="generateSOPLines" title="Generate Sales and Operations Planning Lines"

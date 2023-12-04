@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,29 +14,29 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.ical;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.ICalendarEvent;
 import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.db.repo.ICalendarUserRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.message.db.EmailAddress;
-import com.axelor.apps.message.db.repo.EmailAddressRepository;
-import com.axelor.apps.message.service.MailAccountService;
-import com.axelor.apps.tool.QueryBuilder;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.EmailAddress;
+import com.axelor.message.db.repo.EmailAddressRepository;
+import com.axelor.message.service.MailAccountService;
+import com.axelor.utils.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
@@ -361,15 +362,17 @@ public class ICalendarService {
       return null;
     }
 
-    ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
     ICalendarUser icalUser = null;
     icalUser =
-        repo.all().filter("self.email = ?1 AND self.user.id = ?2", email, user.getId()).fetchOne();
+        iCalendarUserRepository
+            .all()
+            .filter("self.email = ?1 AND self.user.id = ?2", email, user.getId())
+            .fetchOne();
     if (icalUser == null) {
-      icalUser = repo.all().filter("self.user.id = ?1", user.getId()).fetchOne();
+      icalUser = iCalendarUserRepository.all().filter("self.user.id = ?1", user.getId()).fetchOne();
     }
     if (icalUser == null) {
-      icalUser = repo.all().filter("self.email = ?1", email).fetchOne();
+      icalUser = iCalendarUserRepository.all().filter("self.email = ?1", email).fetchOne();
     }
     if (icalUser == null) {
       icalUser = new ICalendarUser();
@@ -399,13 +402,13 @@ public class ICalendarService {
     }
 
     String email = mailto(addr.toString(), true);
-    ICalendarUserRepository repo = Beans.get(ICalendarUserRepository.class);
     ICalendarUser user = null;
     if (source instanceof Organizer) {
-      user = repo.all().filter("self.email = ?1", email).fetchOne();
+      user = iCalendarUserRepository.all().filter("self.email = ?1", email).fetchOne();
     } else {
       user =
-          repo.all()
+          iCalendarUserRepository
+              .all()
               .filter("self.email = ?1 AND self.event.id = ?2", email, event.getId())
               .fetchOne();
     }
@@ -516,7 +519,7 @@ public class ICalendarService {
       items.add(new Location(event.getLocation()));
     }
     if (StringUtils.notEmpty(event.getGeo()) && event.getGeo().contains(";")) {
-      // new Geo() object seperate the longitude and latitude using ; char
+      // new Geo() object separate the longitude and latitude using ; char
       items.add(new Geo(event.getGeo()));
     }
     if (event.getUid() == null) {
@@ -645,7 +648,7 @@ public class ICalendarService {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+            I18n.get(BaseExceptionMessage.CALENDAR_NOT_VALID));
       }
     } catch (Exception e) {
       throw new ICalendarException(e);
@@ -691,7 +694,7 @@ public class ICalendarService {
     if (CollectionUtils.isEmpty(events) && CollectionUtils.isEmpty(modifiedLocalEvents)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CALENDAR_NO_EVENTS_FOR_SYNC_ERROR));
+          I18n.get(BaseExceptionMessage.CALENDAR_NO_EVENTS_FOR_SYNC_ERROR));
     }
 
     if (events != null) {
@@ -768,18 +771,16 @@ public class ICalendarService {
           .bind("end", endDate);
     }
 
-    ICalendarEventRepository repo = Beans.get(ICalendarEventRepository.class);
-
     for (ICalendarEvent event : queryBuilder.build().fetch()) {
       if (ICalendarRepository.ICAL_ONLY.equals(calendar.getSynchronizationSelect())) {
-        repo.remove(event);
+        iEventRepo.remove(event);
       } else {
         event.setArchived(true);
       }
     }
   }
 
-  private VEvent updateEvent(VEvent source, VEvent target, boolean keepRemote)
+  protected VEvent updateEvent(VEvent source, VEvent target, boolean keepRemote)
       throws IOException, URISyntaxException, ParseException {
 
     final String[] names = {
@@ -921,7 +922,7 @@ public class ICalendarService {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+            I18n.get(BaseExceptionMessage.CALENDAR_NOT_VALID));
       }
     } catch (Exception e) {
       throw new ICalendarException(e);
@@ -957,7 +958,7 @@ public class ICalendarService {
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.CALENDAR_NOT_VALID));
+              I18n.get(BaseExceptionMessage.CALENDAR_NOT_VALID));
         }
       } catch (Exception e) {
         throw new ICalendarException(e);

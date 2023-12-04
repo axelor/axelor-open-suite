@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMove" lang="java">
+  <entity name="StockMove">
 
     <!-- Onglet Configuration -->
     <many-to-many name="invoiceSet" ref="com.axelor.apps.account.db.Invoice"
@@ -17,7 +17,7 @@
       multiline="true"/>
 
     <integer name="pfpValidateStatusSelect" title="PFP Status"
-      selection="invoice.pfp.validate.status.select" readonly="true" default="1"/>
+      selection="invoice.pfp.validate.status.select" readonly="true" default="0"/>
     <integer name="invoicingStatusSelect" title="Invoicing status"
       selection="supplychain.stock.move.invoicing.status.select" readonly="true" default="0"/>
 
@@ -31,14 +31,16 @@
     <many-to-one name="invoicedPartner" title="Invoiced partner"
       ref="com.axelor.apps.base.db.Partner"/>
 
-    <finder-method name="findAllBySaleOrderAndStatus"
-      using="originTypeSelect,originId,statusSelect" all="true"/>
+    <many-to-one name="saleOrder" title="Sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder" copy="false"/>
+    <many-to-one name="purchaseOrder" title="Purchase order"
+      ref="com.axelor.apps.purchase.db.PurchaseOrder" copy="false"/>
+
+    <finder-method name="findAllBySaleOrderAndStatus" using="saleOrder,statusSelect"
+      all="true"/>
 
     <extra-code>
     <![CDATA[
-		public static final String ORIGIN_SALE_ORDER = "com.axelor.apps.sale.db.SaleOrder";
-		public static final String ORIGIN_PURCHASE_ORDER = "com.axelor.apps.purchase.db.PurchaseOrder";
-
 		// INVOICE
 	    public static final int INVOICE_ALL = 1;
 	    public static final int INVOICE_PARTIALLY = 2;

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 /*
 < * Axelor Business Solutions
@@ -34,13 +35,16 @@
  */
 package com.axelor.apps.hr.web.expense;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
@@ -48,38 +52,48 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
-import com.axelor.apps.hr.report.IReport;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
+import com.axelor.apps.hr.service.expense.ExpenseCancellationService;
+import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
+import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
+import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpensePaymentService;
+import com.axelor.apps.hr.service.expense.ExpensePrintService;
+import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
+import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.db.Message;
-import com.axelor.apps.message.db.repo.MessageRepository;
-import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -98,7 +112,7 @@ public class ExpenseController {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
 
     expenseLine =
-        Beans.get(ExpenseService.class).createAnalyticDistributionWithTemplate(expenseLine);
+        Beans.get(ExpenseAnalyticService.class).createAnalyticDistributionWithTemplate(expenseLine);
     response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
   }
 
@@ -110,7 +124,8 @@ public class ExpenseController {
       setExpense(request, expenseLine);
     }
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
-      expenseLine = Beans.get(ExpenseService.class).computeAnalyticDistribution(expenseLine);
+      expenseLine =
+          Beans.get(ExpenseAnalyticService.class).computeAnalyticDistribution(expenseLine);
       response.setValue("analyticMoveLineList", expenseLine.getAnalyticMoveLineList());
     }
   }
@@ -124,8 +139,8 @@ public class ExpenseController {
         Beans.get(ExpenseRepository.class)
             .all()
             .filter(
-                "self.user = ?1 AND self.company = ?2 AND self.statusSelect = 1 AND (self.multipleUsers is false OR self.multipleUsers is null)",
-                user,
+                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
+                user.getId(),
                 activeCompany)
             .fetch();
     if (expenseList.isEmpty()) {
@@ -164,7 +179,7 @@ public class ExpenseController {
         (Map<String, Object>) request.getContext().get("expenseSelect");
 
     if (expenseMap == null) {
-      response.setError(I18n.get(IExceptionMessage.EXPENSE_NOT_SELECTED));
+      response.setError(I18n.get(HumanResourceExceptionMessage.EXPENSE_NOT_SELECTED));
       return;
     }
     Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
@@ -215,7 +230,7 @@ public class ExpenseController {
 
     if (employee == null || !employee.getHrManager()) {
       actionView
-          .domain(actionView.get().getDomain() + " AND self.user.employee.managerUser = :_user")
+          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
           .context("_user", user);
     }
 
@@ -227,6 +242,11 @@ public class ExpenseController {
     User user = AuthUtils.getUser();
     Company activeCompany = user.getActiveCompany();
 
+    if (activeCompany == null) {
+      response.setError(I18n.get(BaseExceptionMessage.NO_ACTIVE_COMPANY));
+      return;
+    }
+
     ActionViewBuilder actionView =
         ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
             .model(Expense.class.getName())
@@ -235,7 +255,7 @@ public class ExpenseController {
             .param("search-filters", "expense-filters");
 
     String domain =
-        "self.user.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
+        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
 
     long nbExpenses =
         Query.of(Expense.class)
@@ -257,20 +277,21 @@ public class ExpenseController {
   }
 
   /**
-   * Called from expense form, on expense lines change. Call {@link ExpenseService#compute(Expense)}
+   * Called from expense form, on expense lines change. Call {@link
+   * ExpenseComputationService#compute(Expense)}
    *
    * @param request
    * @param response
    */
   public void compute(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
-    expense = Beans.get(ExpenseService.class).compute(expense);
+    expense = Beans.get(ExpenseComputationService.class).compute(expense);
     response.setValues(expense);
   }
 
   public void updateMoveDateAndPeriod(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
-    expense = Beans.get(ExpenseService.class).updateMoveDateAndPeriod(expense);
+    expense = Beans.get(ExpenseToolService.class).updateMoveDateAndPeriod(expense);
     response.setValue("moveDate", expense.getMoveDate());
     response.setValue("period", expense.getPeriod());
   }
@@ -279,7 +300,7 @@ public class ExpenseController {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      Move move = Beans.get(ExpenseService.class).ventilate(expense);
+      Move move = Beans.get(ExpenseVentilateService.class).ventilate(expense);
       response.setReload(true);
       if (move != null) {
         response.setView(
@@ -296,26 +317,22 @@ public class ExpenseController {
     }
   }
 
-  public void printExpense(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void printReportAndProofFiles(ActionRequest request, ActionResponse response)
+      throws IOException, AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
-
-    String name = I18n.get("Expense") + " " + expense.getFullName().replace("/", "-");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.EXPENSE, name)
-            .addParam("ExpenseId", expense.getId())
-            .addParam(
-                "Timezone",
-                expense.getCompany() != null ? expense.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(expense)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing {}", name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    response.setView(
+        ActionView.define(I18n.get("Expense"))
+            .model(DMSFile.class.getName())
+            .add("form", "dms-file-form")
+            .context(
+                "_showRecord",
+                Beans.get(ExpensePrintService.class)
+                    .uploadExpenseReport(expense)
+                    .getId()
+                    .toString())
+            .map());
   }
 
   /* Count Tags displayed on the menu items */
@@ -333,17 +350,18 @@ public class ExpenseController {
     return String.format("%s", total);
   }
 
-  public void cancel(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void cancel(ActionRequest request, ActionResponse response) {
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseCancellationService expenseCancellationService =
+          Beans.get(ExpenseCancellationService.class);
 
-      expenseService.cancel(expense);
+      expenseCancellationService.cancel(expense);
 
-      Message message = expenseService.sendCancellationEmail(expense);
+      Message message = expenseCancellationService.sendCancellationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -359,7 +377,7 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
     try {
-      Beans.get(ExpenseService.class).addPayment(expense);
+      Beans.get(ExpensePaymentService.class).addPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -367,7 +385,8 @@ public class ExpenseController {
   }
 
   /**
-   * Called on clicking cancelPaymentButton, call {@link ExpenseService#cancelPayment(Expense)}.
+   * Called on clicking cancelPaymentButton, call {@link
+   * ExpensePaymentService#cancelPayment(Expense)}.
    *
    * @param request
    * @param response
@@ -376,7 +395,7 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
     try {
-      Beans.get(ExpenseService.class).cancelPayment(expense);
+      Beans.get(ExpensePaymentService.class).cancelPayment(expense);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -384,18 +403,19 @@ public class ExpenseController {
   }
 
   // sending expense and sending mail to manager
-  public void send(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void send(ActionRequest request, ActionResponse response) {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseConfirmationService expenseConfirmationService =
+          Beans.get(ExpenseConfirmationService.class);
 
-      expenseService.confirm(expense);
+      expenseConfirmationService.confirm(expense);
 
-      Message message = expenseService.sendConfirmationEmail(expense);
+      Message message = expenseConfirmationService.sendConfirmationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -405,6 +425,14 @@ public class ExpenseController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
+    }
+  }
+
+  public void checkLineFile(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    if (Beans.get(ExpenseConfirmationService.class).checkAllLineHaveFile(expense)) {
+      response.setAlert(I18n.get(HumanResourceExceptionMessage.EXPENSE_JUSTIFICATION_FILE_MISSING));
     }
   }
 
@@ -420,18 +448,18 @@ public class ExpenseController {
   }
 
   // validating expense and sending mail to applicant
-  public void valid(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void valid(ActionRequest request, ActionResponse response) {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseValidateService expenseValidateService = Beans.get(ExpenseValidateService.class);
 
-      expenseService.validate(expense);
+      expenseValidateService.validate(expense);
 
-      Message message = expenseService.sendValidationEmail(expense);
+      Message message = expenseValidateService.sendValidationEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -445,18 +473,18 @@ public class ExpenseController {
   }
 
   // refusing expense and sending mail to applicant
-  public void refuse(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void refuse(ActionRequest request, ActionResponse response) {
 
     try {
       Expense expense = request.getContext().asType(Expense.class);
       expense = Beans.get(ExpenseRepository.class).find(expense.getId());
-      ExpenseService expenseService = Beans.get(ExpenseService.class);
+      ExpenseRefusalService expenseRefusalService = Beans.get(ExpenseRefusalService.class);
 
-      expenseService.refuse(expense);
+      expenseRefusalService.refuse(expense);
 
-      Message message = expenseService.sendRefusalEmail(expense);
+      Message message = expenseRefusalService.sendRefusalEmail(expense);
       if (message != null && message.getStatusSelect() == MessageRepository.STATUS_SENT) {
-        response.setFlash(
+        response.setInfo(
             String.format(
                 I18n.get("Email sent to %s"),
                 Beans.get(MessageServiceBaseImpl.class).getToRecipients(message)));
@@ -474,7 +502,8 @@ public class ExpenseController {
 
     try {
       Expense expense = request.getContext().getParent().asType(Expense.class);
-      Product expenseProduct = Beans.get(ExpenseService.class).getKilometricExpenseProduct(expense);
+      Product expenseProduct =
+          Beans.get(ExpenseKilometricService.class).getKilometricExpenseProduct(expense);
       logger.debug("Get Kilometric expense product : {}", expenseProduct);
       response.setValue("expenseProduct", expenseProduct);
     } catch (Exception e) {
@@ -485,15 +514,16 @@ public class ExpenseController {
   public void validateAndCompute(ActionRequest request, ActionResponse response) {
 
     Expense expense = request.getContext().asType(Expense.class);
-    ExpenseService expenseService = Beans.get(ExpenseService.class);
+    ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
+    ExpenseComputationService expenseComputationService =
+        Beans.get(ExpenseComputationService.class);
 
     List<Integer> expenseLineListId = new ArrayList<>();
     int compt = 0;
-    for (ExpenseLine expenseLine : expenseService.getExpenseLineList(expense)) {
+    LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(expense.getCompany());
+    for (ExpenseLine expenseLine : expenseLineService.getExpenseLineList(expense)) {
       compt++;
-      if (expenseLine
-          .getExpenseDate()
-          .isAfter(Beans.get(AppBaseService.class).getTodayDate(expense.getCompany()))) {
+      if (expenseLine.getExpenseDate() != null && expenseLine.getExpenseDate().isAfter(todayDate)) {
         expenseLineListId.add(compt);
       }
     }
@@ -512,8 +542,8 @@ public class ExpenseController {
     }
 
     response.setValue(
-        "personalExpenseAmount", expenseService.computePersonalExpenseAmount(expense));
-    response.setValue("advanceAmount", expenseService.computeAdvanceAmount(expense));
+        "personalExpenseAmount", expenseComputationService.computePersonalExpenseAmount(expense));
+    response.setValue("advanceAmount", expenseComputationService.computeAdvanceAmount(expense));
 
     if (expense.getKilometricExpenseLineList() != null
         && !expense.getKilometricExpenseLineList().isEmpty()) {
@@ -533,29 +563,18 @@ public class ExpenseController {
       return;
     }
 
-    String userId;
-    String userName;
+    Long empId;
     if (expenseLine.getExpense() != null) {
       setExpense(request, expenseLine);
     }
     Expense expense = expenseLine.getExpense();
 
-    if (expense != null && expenseLine.getUser() != null) {
-      userId = expense.getUser().getId().toString();
-      userName = expense.getUser().getFullName();
+    if (expense != null && expenseLine.getEmployee() != null) {
+      empId = expense.getEmployee().getId();
     } else {
-      userId = request.getContext().getParent().asType(Expense.class).getUser().getId().toString();
-      userName = request.getContext().getParent().asType(Expense.class).getUser().getFullName();
+      empId = request.getContext().getParent().asType(Expense.class).getEmployee().getId();
     }
-    Employee employee =
-        Beans.get(EmployeeRepository.class).all().filter("self.user.id = ?1", userId).fetchOne();
-
-    if (employee == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-          userName);
-    }
+    Employee employee = Beans.get(EmployeeRepository.class).find(empId);
 
     BigDecimal amount = BigDecimal.ZERO;
     try {
@@ -578,7 +597,8 @@ public class ExpenseController {
 
     try {
       List<KilometricAllowParam> kilometricAllowParamList =
-          Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
+          Beans.get(ExpenseKilometricService.class)
+              .getListOfKilometricAllowParamVehicleFilter(expenseLine);
       if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
         response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
       } else {
@@ -614,7 +634,7 @@ public class ExpenseController {
     }
   }
 
-  private void setExpense(ActionRequest request, ExpenseLine expenseLine) {
+  protected void setExpense(ActionRequest request, ExpenseLine expenseLine) {
 
     Context parent = request.getContext().getParent();
 
@@ -634,7 +654,8 @@ public class ExpenseController {
 
     try {
       List<KilometricAllowParam> kilometricAllowParamList =
-          Beans.get(ExpenseService.class).getListOfKilometricAllowParamVehicleFilter(expenseLine);
+          Beans.get(ExpenseKilometricService.class)
+              .getListOfKilometricAllowParamVehicleFilter(expenseLine);
       response.setAttr(
           "kilometricAllowParam",
           "domain",
@@ -683,13 +704,13 @@ public class ExpenseController {
         expense = context.getParent().asType(Expense.class);
       }
 
-      Employee employee = expense.getUser().getEmployee();
+      Employee employee = expense.getEmployee();
 
       if (employee == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.LEAVE_USER_EMPLOYEE),
-            expense.getUser().getName());
+            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+            AuthUtils.getUser().getName());
       }
 
       BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
@@ -698,6 +719,34 @@ public class ExpenseController {
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkTotalAmount(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setAttr(
+        "overAmountLimitText",
+        "hidden",
+        !Beans.get(ExpenseLineService.class).isThereOverAmountLimit(expense));
+  }
+
+  public void updateGeneralAndKilometricExpenseLineEmployee(
+      ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    Employee employee = expense.getEmployee();
+    if (ObjectUtils.notEmpty(employee)) {
+
+      List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
+      if (ObjectUtils.notEmpty(generalExpenseLineList)) {
+        generalExpenseLineList.forEach(genexpLine -> genexpLine.setEmployee(employee));
+      }
+      List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
+      if (ObjectUtils.notEmpty(kilometricExpenseLineList)) {
+        kilometricExpenseLineList.forEach(kilexpLine -> kilexpLine.setEmployee(employee));
+      }
+
+      response.setValue("generalExpenseLineList", generalExpenseLineList);
+      response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
     }
   }
 }

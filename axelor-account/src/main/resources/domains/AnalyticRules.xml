@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AnalyticRules">
+    <string name="name" title="Name" required="true" unique="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="fromAccount" ref="com.axelor.apps.account.db.Account"
+      title="From Account"/>
+    <many-to-one name="toAccount" ref="com.axelor.apps.account.db.Account"
+      title="To Account"/>
+    <many-to-many name="analyticAccountSet"
+      ref="com.axelor.apps.account.db.AnalyticAccount" title="Authorized Analytic Accounts"/>
+  </entity>
+
+</domain-models>

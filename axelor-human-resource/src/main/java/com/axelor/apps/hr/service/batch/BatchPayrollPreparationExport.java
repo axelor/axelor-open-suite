@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,34 +14,36 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.HrBatch;
+import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
+import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.tool.file.CsvTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.file.CsvTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,10 +62,15 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
   @Inject HRConfigService hrConfigService;
 
+  protected LeaveRequestRepository leaveRequestRepo;
+
   @Inject
-  public BatchPayrollPreparationExport(PayrollPreparationService payrollPreparationService) {
+  public BatchPayrollPreparationExport(
+      PayrollPreparationService payrollPreparationService,
+      LeaveRequestRepository leaveRequestRepo) {
     super();
     this.payrollPreparationService = payrollPreparationService;
+    this.leaveRequestRepo = leaveRequestRepo;
   }
 
   @Override
@@ -118,6 +126,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
           TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
         }
         break;
+      case HrBatchRepository.EXPORT_TYPE_SAGE:
+        try {
+          batch.setMetaFile(sageExport(payrollPreparationList));
+        } catch (Exception e) {
+          incrementAnomaly();
+          TraceBackService.trace(e, ExceptionOriginRepository.LEAVE_MANAGEMENT, batch.getId());
+        }
+        break;
       default:
         break;
     }
@@ -128,7 +144,8 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       throws IOException {
 
     List<String[]> list = new ArrayList<>();
-    LocalDate today = Beans.get(AppBaseService.class).getTodayDate(hrBatch.getCompany());
+    LocalDateTime today =
+        Beans.get(AppBaseService.class).getTodayDateTime(hrBatch.getCompany()).toLocalDateTime();
 
     for (PayrollPreparation payrollPreparation : payrollPreparationList) {
       String[] item = new String[5];
@@ -140,7 +157,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       list.add(item);
 
       payrollPreparation.setExported(true);
-      payrollPreparation.setExportDate(today);
+      payrollPreparation.setExportDateTime(today);
       payrollPreparation.setExportTypeSelect(HrBatchRepository.EXPORT_TYPE_STANDARD);
       payrollPreparation.addBatchListItem(batch);
       payrollPreparationRepository.save(payrollPreparation);
@@ -148,14 +165,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       incrementDone();
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class).getPayrollPreparationExportHeader(),
+        payrollPreparationService.getPayrollPreparationExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -177,15 +194,14 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
       total++;
     }
 
-    String fileName = Beans.get(PayrollPreparationService.class).getPayrollPreparationExportName();
+    String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvTool.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
-        Beans.get(PayrollPreparationService.class)
-            .getPayrollPreparationMeilleurGestionExportHeader(),
+        payrollPreparationService.getPayrollPreparationMeilleurGestionExportHeader(),
         list);
 
     FileInputStream inStream = new FileInputStream(file);
@@ -199,7 +215,8 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
 
     String comment =
         String.format(
-            I18n.get(IExceptionMessage.BATCH_PAYROLL_PREPARATION_EXPORT_RECAP) + '\n', total);
+            I18n.get(HumanResourceExceptionMessage.BATCH_PAYROLL_PREPARATION_EXPORT_RECAP) + '\n',
+            total);
 
     addComment(comment);
     super.stop();
@@ -231,5 +248,22 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     FileInputStream inStream = new FileInputStream(file);
     MetaFile metaFile = Beans.get(MetaFiles.class).upload(inStream, file.getName());
     return metaFile;
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public MetaFile sageExport(List<PayrollPreparation> payrollPreparationList)
+      throws IOException, AxelorException {
+    MetaFile file = standardExport(payrollPreparationList);
+
+    for (PayrollPreparation payrollPreparation : payrollPreparationList) {
+      payrollPreparationService.fillInLeaves(payrollPreparation).stream()
+          .map(PayrollLeave::getLeaveRequest)
+          .forEach(
+              leaveReq -> {
+                leaveReq.setIsPayrollInput(true);
+                leaveRequestRepo.save(leaveReq);
+              });
+    }
+    return file;
   }
 }

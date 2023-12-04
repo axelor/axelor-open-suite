@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="ImportFECType">
+
+    <string name="name" namecolumn="true" required="true"/>
+    <many-to-one name="bindMetaFile" ref="com.axelor.meta.db.MetaFile"
+      title="Binding file" required="true"/>
+    <integer name="functionalOriginSelect" title="Functional origin"
+      selection="iaccount.move.functional.origin.select"/>
+    <boolean name="isDefaultForValidGeneratedMove"
+      title="Default value for generated move validation"/>
+
+  </entity>
+
+</domain-models>

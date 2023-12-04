@@ -1,0 +1,38 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Envoi Devis Client";"SaleOrder";2;;;;"true";;"Votre Devis N° $SaleOrder.saleOrderSeq$";"<p>Bonjour,</p> 
+
+<p>Suite à nos précédents échanges, je vous prie de bien vouloir trouver ci-joint le devis $SaleOrder.saleOrderSeq$.</p>
+
+<p>Voici la liste des articles que vous avez commandés :</p>
+<ul>
+$SaleOrder.saleOrderLineList:{ line | <li>$line.productName$ x$line.qty$ $line.unit.labelToPrinting$ pour $line.exTaxTotal$ $SaleOrder.currency.symbol$ </li>}$
+</ul>
+
+<p>Je reste à votre disposition pour des informations complémentaires sur ce devis.</p>
+";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+"Sale order";"SaleOrder";1;;;;"true";;"Quote N° $SaleOrder.saleOrderSeq$";"<p>Good morning,</p> 
+
+<p>Following our conversations, please find attached our quote $SaleOrder.saleOrderSeq$.</p>
+
+<p>Here is the list of items you ordered:</p>
+<ul>
+$SaleOrder.saleOrderLineList:{ line | <li>$line.productName$ x$line.qty$ $line.unit.labelToPrinting$ for $line.exTaxTotal$ $SaleOrder.currency.symbol$ </li>}$
+</ul>
+
+<p>Please do not hesitate to contact me for any further explanation regarding the quote.</p>
+
+<p>Best regards<br/>
+$SaleOrder.user.partner.firstName$ $SaleOrder.user.partner.name$</p>
+";"$SaleOrder.clientPartner.emailAddress.address$";;;2
+"Sale order update template";"SaleOrder";2;;;;"true";"companyLogo";"$SaleOrder.company.name$ - $SaleOrder.saleOrderSeq$ a été actualisé";"
+<table width=""100%""><tbody><tr><td width=""60%"">$if(companyLogo)$<img src=""data:image/png;base64,$companyLogo$"" height=""67px"" width=""215px"">$endif$</td>
+<td width=""40%""><b><font size=""5"">$SaleOrder.company.name$<br></font></b>$SaleOrder.company.address.fullName$</td></tr></tbody></table>
+<p>Bonjour $username$,</p> 
+<p>$SaleOrder.saleOrderSeq$ a été récemment actualisé, veuillez trouver ci-dessous les modifications effectuées.</p>
+$if(tracks)$<p>Status : </p>
+<ul>
+$tracks:{ line | <li> <strong>$line.title$</strong> : $if(line.displayValue)$ <span>$line.oldDisplayValue$</span> &raquo; <span>$line.displayValue$</span> 
+$else$ <span>$line.oldValue$</span> &raquo; <span>$line.value$</span> $endif$ </li>}$
+</ul>$endif$
+<p>$if(comment)$Commentaire : $comment$ $endif$</p>
+";;;;2

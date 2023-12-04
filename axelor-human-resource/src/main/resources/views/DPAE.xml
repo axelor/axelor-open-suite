@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="dpae-grid" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
     <field name="employee"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="contractType"/>
   </grid>
 
@@ -15,7 +15,7 @@
       <field name="mainActivityCode" colSpan="3"/>
       <field name="company"/>
       <field name="companyAddress"/>
-      <field name="companyFixedPhone"/>
+      <field name="companyFixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
       <field name="healthService"/>
       <field name="healthServiceAddress"/>
     </panel>
@@ -43,6 +43,6 @@
   <search-filters name="dpae-filters" model="com.axelor.apps.hr.db.DPAE"
     title="DPAE filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 </object-views>

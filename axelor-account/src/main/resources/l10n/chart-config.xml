@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
   <input file="account_accountType.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountType" search="self.name = :name"/>
+    type="com.axelor.apps.account.db.AccountType"
+    search="self.name = :name AND self.importId = :importId"/>
 
   <input file="account_fiscalPosition.csv" separator=";"
-    type="com.axelor.apps.account.db.FiscalPosition" search="self.code = :code"/>
+    type="com.axelor.apps.account.db.FiscalPosition"
+    search="self.code = :code AND self.importId = :importId"/>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account">
     <bind to="company" search="self.id = :_companyId" update="true"/>
@@ -15,32 +17,106 @@
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"
-    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromAccount.code = :fromAccount_code AND self.toAccount.code = :toAccount_code"/>
+    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromAccount.code = :fromAccount_code AND self.toAccount.code = :toAccount_code AND self.fromAccount.company.id = :_companyId AND self.toAccount.company.id = :_companyId">
+    <bind to="fiscalPosition" search="self.code = :fiscalPosition_code" update="true"/>
+    <bind to="fromAccount"
+      search="self.code = :fromAccount_code and self.company.id = :_companyId" update="true"/>
+    <bind to="toAccount" search="self.code = :toAccount_code and self.company.id = :_companyId"
+      update="true"/>
+  </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.code = :code AND self.company.id = :_companyId " update="true">
+    search="self.code = :code AND self.company.id = :_companyId " update="true"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
     <bind to="parentAccount"
       search="self.code = :parent_code AND self.company.id = :_companyId" update="true"/>
   </input>
 
-  <!-- TO DO Remplir le M2O activeTaxLine par un update en utilisant le code Tax -->
   <input file="account_tax.csv" separator=";" type="com.axelor.apps.account.db.Tax"
-    search="self.code = :code"/>
+    search="self.code = :code AND self.importId = :importId"/>
 
   <input file="account_taxLine.csv" separator=";" type="com.axelor.apps.account.db.TaxLine"
-    search="self.importId = :importId and self.tax.code = :tax_code">
-    <bind to="tax" search="self.code = :tax_code"/>
+    search="self.tax.code = :tax_code AND self.importId = :importId">
+    <bind to="tax" search="self.code = :tax_code" update="true"/>
+    <bind to="startDate" column="startDate"/>
+    <bind to="endDate" column="endDate"/>
+    <bind to="value" column="value"/>
+    <bind to="importId" column="importId" update="true"/>
   </input>
 
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
-    search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
+    search="self.importId = :importId AND self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
 
-  <input file="account_taxAccount.csv" separator=";"
-    type="com.axelor.apps.account.db.TaxAccount">
+  <input file="account_accountManagement.csv" separator=";"
+    type="com.axelor.apps.account.db.AccountManagement">
     <bind to="company" search="self.id = :_companyId" update="true"/>
     <bind to="tax" search="self.code = :tax_code" update="true"/>
-    <bind to="account" search="self.code = :account_code and self.company.id = :_companyId"
-      update="true"/>
+    <bind search="self.code = :cashAccount_code and self.company.id = :_companyId"
+      to="cashAccount" update="true" if="cashAccount_code"/>
+    <bind search="self.code = :saleTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
+    <bind search="self.code = :saleAccount_code and self.company.id = :_companyId"
+      to="saleAccount" update="true" if="saleAccount_code"/>
+    <bind search="self.code = :saleTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
+    <bind search="self.code = :purchaseAccount_code and self.company.id = :_companyId"
+      to="purchaseAccount" update="true" if="purchaseAccount_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchVatRegulationAccount_code AND self.company.id = :_companyId"
+      to="purchVatRegulationAccount" update="true" if="purchVatRegulationAccount_code"/>
+    <bind search="self.code = :saleVatRegulationAccount_code and self.company.id = :_companyId"
+      to="saleVatRegulationAccount" update="true" if="saleVatRegulationAccount_code"/>
+    <bind search="self.importId = :sequence_importId" to="sequence" update="true"
+      if="sequence_importId"/>
+    <bind search="self.importId = :journal_importId and self.company.id = :_companyId"
+      to="journal" update="true" if="journal_importId"/>
+    <bind search="self.importId = :bankDetails_importId" to="bankDetails" update="true"
+      if="bankDetails_importId"/>
+    <bind
+      search="self.code = :globalAccountingCashAccount_code and self.company.id = :_companyId"
+      to="globalAccountingCashAccount" update="true" if="globalAccountingCashAccount_code"/>
+    <bind search="self.code = :chequeDepositJournal_code and self.company.id = :_companyId"
+      to="chequeDepositJournal" update="true" if="chequeDepositJournal_code"/>
+    <bind
+      search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="allowedFinDiscountTaxVatSystem1Account" update="true"
+      if="allowedFinDiscountTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :allowedFinDiscountTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="allowedFinDiscountTaxVatSystem2Account" update="true"
+      if="allowedFinDiscountTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :obtainedFinDiscountTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="obtainedFinDiscountTaxVatSystem1Account" update="true"
+      if="obtainedFinDiscountTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :obtainedFinDiscountTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="obtainedFinDiscountTaxVatSystem2Account" update="true"
+      if="obtainedFinDiscountTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchFixedAssetsTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="purchFixedAssetsTaxVatSystem1Account" update="true"
+      if="purchFixedAssetsTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchFixedAssetsTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="purchFixedAssetsTaxVatSystem2Account" update="true"
+      if="purchFixedAssetsTaxVatSystem2Account_code"/>
+    <bind search="self.code = :saleTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="saleTaxVatSystem2Account" update="true" if="saleTaxVatSystem2Account_code"/>
+    <bind search="self.code = :saleTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="saleTaxVatSystem1Account" update="true" if="saleTaxVatSystem1Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem2Account_code and self.company.id = :_companyId"
+      to="purchaseTaxVatSystem2Account" update="true" if="purchaseTaxVatSystem2Account_code"/>
+    <bind
+      search="self.code = :purchaseTaxVatSystem1Account_code and self.company.id = :_companyId"
+      to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
   </input>
 
   <input file="account_tax.csv" separator=";" update="true" search="self.code = :code"

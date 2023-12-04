@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="user-form-project" name="user-form" title="User" model="com.axelor.auth.db.User"
+    extension="true">
+
+    <extend
+      target="//panel[@name='stepUserPanel']/panel[@name='stepOverviewPanel']/field[@name='noHelp']">
+      <insert position="after">
+        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
+        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+      </insert>
+    </extend>
+
+    <extend
+      target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']/field[@name='noHelp']">
+      <insert position="after">
+        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
+        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+      </insert>
+    </extend>
+
+  </form>
+
+  <form id="project-user-preferences-form" name="user-preferences-form" title="Preferences"
+    model="com.axelor.auth.db.User" extension="true">
+
+    <extend target="//field[@name='change']">
+      <insert position="after">
+        <field name="contextProject" domain=":__self__ member of self.membersUserSet"/>
+        <field name="isIncludeSubContextProjects" showIf="contextProject"/>
+      </insert>
+    </extend>
+
+  </form>
+
+</object-views>

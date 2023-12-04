@@ -1,0 +1,2 @@
+"active";"name";"job";"cron"
+"false";"Calculation of MRP once a day";"com.axelor.apps.supplychain.job.MrpJob";"0 0 0 1/1 * ?"

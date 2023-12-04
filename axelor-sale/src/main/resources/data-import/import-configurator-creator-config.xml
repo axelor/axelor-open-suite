@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xml-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
 
   <input file="configurator-creator.xml" root="configurator-creators">
@@ -34,16 +34,25 @@
       </bind>
       <bind node="unitFormula" to="unitFormula"/>
       <bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+      <bind node="workshopStockLocation" to="workshopStockLocation"
+        search="self.id = :workshopStockLocationId" if="workshopStockLocationId">
+        <bind node="text()" to="id" alias="workshopStockLocationId"/>
+      </bind>
+      <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
+      <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
       <bind node="prodProcessCode" to="prodProcess" search="self.code = :prodProcessCode"
         if="prodProcessCode">
         <bind node="text()" to="code" alias="prodProcessCode"/>
       </bind>
 
       <bind node="configuratorProdProcess" to="configuratorProdProcess" update="true"
-        search="self.importId = :importId" if="configProdProcessName">
+        search="self.importId = :importId"
+        if="configProdProcessName || configProdProcessNameFormula">
         <bind node="importId" to="importId"/>
         <bind node="statusSelect" to="statusSelect"/>
         <bind node="name" to="name" alias="configProdProcessName"/>
+        <bind node="nameFormula" to="nameFormula" alias="configProdProcessNameFormula"/>
+        <bind node="defNameAsFormula" to="defNameAsFormula"/>
         <bind node="code" to="code"/>
         <bind node="codeFormula" to="codeFormula"/>
         <bind node="defCodeAsFormula" to="defCodeAsFormula"/>
@@ -71,20 +80,33 @@
         </bind>
         <bind node="workshopStockLocationFormula" to="workshopStockLocationFormula"/>
         <bind node="defWorkshopStockLocationAsFormula" to="defWorkshopStockLocationAsFormula"/>
+        <bind node="isConsProOnOperation" to="isConsProOnOperation"/>
+        <bind node="isConsProOnOperationFormula" to="isConsProOnOperationFormula"/>
+        <bind node="defIsConsProOnOperationAsFormula" to="defIsConsProOnOperationAsFormula"/>
         <bind node="configuratorProdProcessLineList/configuratorProdProcessLine"
           to="configuratorProdProcessLineList">
           <bind node="name" to="name"/>
+          <bind node="nameFormula" to="nameFormula"/>
+          <bind node="defNameAsFormula" to="defNameAsFormula"/>
           <bind node="priority" to="priority"/>
+          <bind node="priorityFormula" to="priorityFormula"/>
+          <bind node="defPriorityAsFormula" to="defPriorityAsFormula"/>
           <bind node="workCenter" to="workCenter" search="self.id = :workCenterId"
             if="workCenterId">
             <bind node="text()" to="id" alias="workCenterId"/>
           </bind>
+          <bind node="workCenterFormula" to="workCenterFormula"/>
+          <bind node="defWorkCenterAsFormula" to="defWorkCenterAsFormula"/>
           <bind node="stockLocation" to="stockLocation" search="self.id = :stockLocationId"
             if="stockLocationId">
             <bind node="text()" to="id" alias="stockLocationId"/>
           </bind>
+          <bind node="stockLocationFormula" to="stockLocationFormula"/>
+          <bind node="defStockLocationAsFormula" to="defStockLocationAsFormula"/>
           <bind node="outsourcing" to="outsourcing"/>
           <bind node="description" to="description"/>
+          <bind node="descriptionFormula" to="descriptionFormula"/>
+          <bind node="defDescriptionAsFormula" to="defDescriptionAsFormula"/>
           <bind node="minCapacityPerCycle" to="minCapacityPerCycle"/>
           <bind node="minCapacityPerCycleFormula" to="minCapacityPerCycleFormula"/>
           <bind node="defMinCapacityFormula" to="defMinCapacityFormula"/>
@@ -94,6 +116,23 @@
           <bind node="durationPerCycle" to="durationPerCycle"/>
           <bind node="durationPerCycleFormula" to="durationPerCycleFormula"/>
           <bind node="defDurationFormula" to="defDurationFormula"/>
+          <bind node="useCondition" to="useCondition"/>
+          <bind node="configuratorProdProductList/configuratorProdProduct"
+            to="configuratorProdProductList">
+            <bind node="product" to="product" search="self.id = :productId" if="productId">
+              <bind node="text()" to="id" alias="productId"/>
+            </bind>
+            <bind node="productFormula" to="productFormula"/>
+            <bind node="defProductAsFormula" to="defProductAsFormula"/>
+            <bind node="qty" to="qty"/>
+            <bind node="qtyFormula" to="qtyFormula"/>
+            <bind node="defQtyAsFormula" to="defQtyAsFormula"/>
+            <bind node="unit" to="unit" search="self.id = :unitId" if="unitId">
+              <bind node="text()" to="id" alias="unitId"/>
+            </bind>
+            <bind node="unitFormula" to="unitFormula"/>
+            <bind node="defUnitAsFormula" to="defUnitAsFormula"/>
+          </bind>
         </bind>
       </bind>
 
@@ -107,7 +146,6 @@
       </bind>
 
       <bind node="useCondition" to="useCondition"/>
-      <bind node="billOfMaterialId" to="billOfMaterialId"/>
 
     </bind>
 
@@ -124,7 +162,9 @@
       <bind node="isActive" to="isActive"/>
 
       <bind node="attributes/attribute" to="attributes">
-        <bind node="name" to="name"/>
+        <!-- $AXELORTMP is a quick fix for a constraint issue, if you intend to remove or change it dont
+          forget to search for any occurence of $AXELORTMP -->
+        <bind node="name" to="name" eval="name != null ? name + '$AXELORTMP' : name"/>
         <bind node="title" to="title"/>
         <bind node="type" to="type"/>
         <bind node="defaultValue" to="defaultValue"/>
@@ -164,6 +204,8 @@
         to="configuratorProductFormulaList">
         <bind node="metaField" to="metaField"
           search="self.name = :metaField and self.metaModel.name = 'Product'"/>
+        <bind node="metaJsonField" to="metaJsonField"
+          search="self.name = :metaJsonField and self.modelField = :metaField"/>
         <bind node="formula" to="formula"/>
         <bind node="showOnConfigurator" to="showOnConfigurator"/>
         <bind node="configuratorCreatorImportId" to="productCreator"
@@ -176,6 +218,8 @@
         to="configuratorSOLineFormulaList">
         <bind node="metaField" to="metaField"
           search="self.name = :metaField and self.metaModel.name = 'SaleOrderLine'"/>
+        <bind node="metaJsonField" to="metaJsonField"
+          search="self.name = :metaJsonField and self.modelField = :metaField"/>
         <bind node="formula" to="formula"/>
         <bind node="showOnConfigurator" to="showOnConfigurator"/>
         <bind node="updateFromSelect" to="updateFromSelect"/>

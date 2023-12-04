@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AnalyticGroupingValue">
+    <string name="name" title="Name" required="true" unique="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="fullName" title="Full name" required="true" namecolumn="true"
+      search="code,name">
+			<![CDATA[
+			return code+"_"+ name;
+			]]>
+    </string>
+
+    <many-to-one name="analyticGrouping"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping" massUpdate="true"/>
+  </entity>
+
+</domain-models>

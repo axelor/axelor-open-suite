@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Period" cacheable="true">
+
+    <boolean name="closeJournalsOnPeriod" title="Close journals on the period"/>
+    <boolean name="keepJournalsOpenOnPeriod" title="Keep some journals open on the period"/>
+    <many-to-many ref="com.axelor.apps.account.db.Journal" name="closedJournalSet"
+      title="Journals to close"/>
+    <many-to-many ref="com.axelor.apps.account.db.Journal" name="openedJournalSet"
+      title="Journals to keep opened"/>
+  </entity>
+
+</domain-models>

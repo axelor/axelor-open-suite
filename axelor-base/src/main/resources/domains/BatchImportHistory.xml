@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="BatchImportHistory">
+
+    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" initParam="true"
+      column="user_id"/>
+    <many-to-one name="dataMetaFile" ref="com.axelor.meta.db.MetaFile" title="Data(s)"
+      required="true"/>
+    <many-to-one name="logMetaFile" title="Log" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="batch"/>
+
+  </entity>
+
+</domain-models>

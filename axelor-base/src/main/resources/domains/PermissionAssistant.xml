@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="auth" package="com.axelor.auth.db"/>
+
+  <entity name="PermissionAssistant" cacheable="true">
+    <![CDATA[
+    This object stores the permission assistant.
+    ]]>
+    <datetime name="importDate" title="Import date" readonly="true"/>
+    <integer name="typeSelect" title="Type" required="true"/>
+    <many-to-one name="metaField" title="User field" ref="com.axelor.meta.db.MetaField"/>
+    <many-to-one name="metaFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
+    <many-to-many name="roleSet" ref="Role" title="Roles"/>
+    <many-to-many name="groupSet" ref="Group" title="Groups"/>
+    <many-to-many name="objectSet" ref="com.axelor.meta.db.MetaModel" title="Objects"/>
+    <string name="language" title="Language" selection="select.language" default="en"/>
+    <string name="log" large="true" title="Log"/>
+    <boolean name="fieldPermission" title="Field permission"/>
+
+    <extra-code>
+    <![CDATA[
+      public static final int TYPE_GROUPS = 1;
+      public static final int TYPE_ROLES = 2;
+    ]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

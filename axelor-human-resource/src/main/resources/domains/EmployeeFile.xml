@@ -1,17 +1,32 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
-  <entity name="EmployeeFile" cacheable="true">
+  <entity name="EmployeeFile" cacheable="true"
+    implements="com.axelor.apps.base.interfaces.PdfViewer">
     <many-to-one name="fileType" title="File type"
       ref="com.axelor.apps.base.db.FileType"/>
     <many-to-one name="metaFile" title="File" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
     <date name="recordDate" title="Record date"/>
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"/>
     <date name="expirationDate" title="Expiration date"/>
+    <string name="fullName" namecolumn="true" search="fileType,metaFile" title="Full name">
+    	<![CDATA[
+    		String fullName = "";
+    		if(fileType != null && fileType.getName() != null){
+    			fullName = fileType.getName();
+    		}
+    		if(metaFile != null && metaFile.getFileName() != null){
+    			fullName += (fullName.isEmpty() ? "" : " - " )+ metaFile.getFileName();
+    		}
+    		return fullName;
+    		 ]]>
+    </string>
+    <string name="fileDescription" title="Description" large="true"/>
   </entity>
 
 </domain-models>

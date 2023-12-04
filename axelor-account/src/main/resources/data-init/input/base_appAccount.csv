@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Accounting";"account";8;"Accounting configuration ";"app-account.png";"axelor-account";"base";6

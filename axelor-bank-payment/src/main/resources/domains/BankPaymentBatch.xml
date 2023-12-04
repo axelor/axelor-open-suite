@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankPaymentBatch" lang="java">
+  <entity name="BankPaymentBatch">
 
     <!-- HEADER -->
     <string name="code" title="Code" namecolumn="true" unique="true"/>
@@ -18,8 +18,7 @@
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="bankPaymentBatch" title="Batchs"/>
 
-    <many-to-one name="template" ref="com.axelor.apps.message.db.Template"
-      title="Template"/>
+    <many-to-one name="template" ref="com.axelor.message.db.Template" title="Template"/>
     <integer name="daysNbr" title="Number of days to take into account to alert"/>
 
     <!-- BANK STATEMENT -->

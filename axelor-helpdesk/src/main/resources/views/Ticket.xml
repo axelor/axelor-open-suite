@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -71,7 +71,7 @@
       <field name="project" if-module="axelor-project"
         onChange="action-ticket-record-value-on-customer-and-contact"
         form-view="helpdesk-project-form" grid-view="helpdesk-project-grid"/>
-      <field name="customer" domain="self.isCustomer = true" form-view="partner-form"
+      <field name="customerPartner" domain="self.isCustomer = true" form-view="partner-form"
         grid-view="partner-grid"/>
       <field name="contactPartner" onSelect="action-ticket-domain-on-contact-partner"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
@@ -83,7 +83,7 @@
       </panel>
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true" sidebar="true"
-        if="__config__.app.getApp('helpdesk').getManageTimer()">
+        if="__config__.app.getApp('helpdesk')?.getManageTimer()">
         <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="4" hidden="true"
           onClick="action-ticket-method-start-timer"/>
         <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="4" hidden="true"
@@ -118,7 +118,7 @@
     <panel name="followupPanel" title="Follow-up" sidebar="true" canCollapse="true">
       <field name="assignedToUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
       <field name="responsibleUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
-      <field name="lead" colSpan="6" form-view="lead-form" grid-view="lead-grid"
+      <field name="ticketLead" colSpan="6" form-view="lead-form" grid-view="lead-grid"
         if-module="axelor-crm" if="__config__.app.isApp('crm')"/>
     </panel>
     <panel name="datesPanel" title="Dates" sidebar="true" canCollapse="true">
@@ -184,7 +184,7 @@
 
   <action-record name="action-ticket-record-value-on-customer-and-contact"
     model="com.axelor.apps.helpdesk.db.Ticket">
-    <field name="customer" expr="eval: project.clientPartner"/>
+    <field name="customerPartner" expr="eval: project.clientPartner"/>
     <field name="contactPartner" expr="eval: project.contactPartner"/>
   </action-record>
 
@@ -221,7 +221,8 @@
 
   <action-record name="action-ticket-record-set-customer"
     model="com.axelor.apps.helpdesk.db.Ticket">
-    <field name="customer" expr="eval: __user__?.partner" if="__user__?.partner?.isCustomer"/>
+    <field name="customerPartner" expr="eval: __user__?.partner"
+      if="__user__?.partner?.isCustomer"/>
   </action-record>
 
   <action-group name="action-ticket-group-on-new">
@@ -288,12 +289,12 @@
 
   <action-attrs name="action-ticket-domain-on-contact-partner">
     <attribute for="contactPartner"
-      if="customer != null &amp;&amp; !customer.contactPartnerSet.empty" name="domain"
-      expr="eval: &quot;self.id IN (${customer.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
+      if="customerPartner != null &amp;&amp; !customerPartner.contactPartnerSet.empty" name="domain"
+      expr="eval: &quot;self.id IN (${customerPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"/>
     <attribute for="contactPartner"
-      if="customer != null &amp;&amp; customer.contactPartnerSet.empty" name="domain"
+      if="customerPartner != null &amp;&amp; customerPartner.contactPartnerSet.empty" name="domain"
       expr="eval: &quot;self.id IN (0)&quot;"/>
-    <attribute for="contactPartner" if="customer == null" name="domain"
+    <attribute for="contactPartner" if="customerPartner == null" name="domain"
       expr="eval: &quot;self.isContact = true&quot;"/>
   </action-attrs>
 
@@ -308,9 +309,9 @@
 
   <action-group name="action-ticket-group-timer-process">
     <action name="action-ticket-method-manage-timer-buttons"
-      if="__config__.app.getApp('helpdesk').manageTimer"/>
+      if="__config__.app.getApp('helpdesk')?.manageTimer"/>
     <action name="action-ticket-method-compute-total-timer-duration"
-      if="__config__.app.getApp('helpdesk').manageTimer"/>
+      if="__config__.app.getApp('helpdesk')?.manageTimer"/>
   </action-group>
 
   <action-method name="action-ticket-method-start-timer">
@@ -332,9 +333,9 @@
   <search-filters name="ticket-filters" model="com.axelor.apps.helpdesk.db.Ticket"
     title="Ticket filters">
     <field name="realTotalDuration" hidden="true"
-      if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
+      if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <field name="timerState" hidden="true"
-      if="!__config__.app.getApp('helpdesk').getManageTimer()"/>
-    <field name="lead" hidden="true" if="!__config__.app.isApp('crm')"/>
+      if="!__config__.app.getApp('helpdesk')?.getManageTimer()"/>
+    <field name="ticketLead" hidden="true" if="!__config__.app.isApp('crm')"/>
   </search-filters>
 </object-views>

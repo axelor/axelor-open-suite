@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AccountingBatch">
+
+    <many-to-one name="forecastedInvCustAccount"
+      title="Forecasted invoice customer account" ref="com.axelor.apps.account.db.Account"/>
+    <many-to-one name="forecastedInvSuppAccount"
+      title="Forecasted invoice supplier account" ref="com.axelor.apps.account.db.Account"/>
+
+    <extra-code><![CDATA[
+
+		// ACCOUNTING CUT OFF
+		public static final int ACCOUNTING_CUT_OFF_TYPE_SUPPLIER_INVOICES = 1;
+		public static final int ACCOUNTING_CUT_OFF_TYPE_CUSTOMER_INVOICES = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

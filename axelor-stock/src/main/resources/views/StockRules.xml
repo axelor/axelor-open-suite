@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="stock-rules-grid" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
     orderBy="stockLocation.name,product.code,useCaseSelect">
@@ -50,17 +50,17 @@
       <field name="useCaseSelect" colSpan="3"
         onChange="action-stock-rules-record-useCaseSelect-change"/>
       <field name="typeSelect" showIf="useCaseSelect == 2" colSpan="3"
-        requiredIf="useCaseSelect == 2"/>
+        requiredIf="useCaseSelect == 2" hidden="true"/>
       <field name="orderAlertSelect"
         selection-in="[1 * (useCaseSelect != 1), 2 * (product.procurementMethodSelect != 'produce'), 3 * (product.procurementMethodSelect != 'buy')]"
         colSpan="3"/>
       <field name="stockRuleMessageTemplate" colSpan="3"
         showIf="(useCaseSelect == 2 &amp;&amp; orderAlertSelect == 1) || alert"
-        domain="self.metaModel.name = 'StockRules'"/>
+        domain="self.metaModel.name = 'StockRules'" hidden="true"/>
       <field name="user" canNew="false" canView="false" canEdit="false" form-view="user-form"
-        grid-view="user-grid" showIf="orderAlertSelect == 1" colSpan="3"/>
+        grid-view="user-grid" showIf="orderAlertSelect == 1 || alert" colSpan="3" hidden="true"/>
       <field name="team" canEdit="false" form-view="team-form" grid-view="team-grid"
-        showIf="orderAlertSelect == 1" colSpan="3"/>
+        showIf="orderAlertSelect == 1 || alert" colSpan="3" hidden="true"/>
       <panel name="quantitiesPanel" title="Quantities" colSpan="6">
         <field name="minQty" colSpan="6" onChange="action-stock-rules-minqty-change"
           validIf="$number(minQty) >= 0"/>
@@ -68,14 +68,17 @@
         <field name="useIdealQty" colSpan="6"/>
         <field name="idealQty" showIf="useIdealQty" colSpan="6"
           onChange="action-stock-rules-idealqty-change"
-          validIf="!useIdealQty &amp;&amp; $number(idealQty) == 0 || $number(idealQty) >= $number(minQty) &amp;&amp; (!useMaxQty || $number(idealQty) &lt;= $number(maxQty))"/>
+          validIf="!useIdealQty &amp;&amp; $number(idealQty) == 0 || $number(idealQty) >= $number(minQty) &amp;&amp; (!useMaxQty || $number(idealQty) &lt;= $number(maxQty))"
+          hidden="true"/>
         <field name="useMaxQty" colSpan="6"/>
         <field name="maxQty" showIf="useMaxQty" colSpan="6"
           onChange="action-stock-rules-maxqty-change"
-          validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)"/>
+          validIf="!useMaxQty &amp;&amp; $number(maxQty) == 0 || $number(maxQty) >= $number(minQty)"
+          hidden="true"/>
       </panel>
       <field name="product.procurementMethodSelect" hidden="true"/>
-      <field name="alert" showIf="orderAlertSelect != 1" colSpan="3"/>
+      <field name="alert" showIf="orderAlertSelect != 1 &amp;&amp; useCaseSelect != 1"
+        colSpan="3" hidden="true"/>
       <panel name="commentPanel" title="Comments" colSpan="12">
         <field name="comments" showTitle="false" colSpan="12"/>
       </panel>

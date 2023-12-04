@@ -1,0 +1,63 @@
+"importId";"budgetLevel.importId";"globalBudget.importId";"code";"name";"totalAmountExpected";"availableAmount";"availableAmountWithSimulated";"fromDate";"toDate";"typeSelect";"statusSelect";"companyImportId";"accountSet";"analyticAxis.importId";"analyticAccount.importId";"category"
+11;14;11;"WEBSITE";"SITE WEB";400;400;400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602110;1;1;1
+12;14;11;"RADIO";"RADIO";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602120;1;1;1
+13;15;11;"OFFICE";"OFFICE";1600;1600;1600;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602110;1;2;1
+14;15;11;"COMPUTER";"COMPUTER";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602200;1;1;1
+31;34;31;"WEBSITE";"WEBSITE";400;400;400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;203000;1;1;1
+32;34;31;"RADIO";"RADIO";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;206000;1;1;1
+33;35;31;"OFFICE";"OFFICE";1600;1600;1600;"TODAY[1d]";"TODAY[30d]";"budget";1;1;203000;1;2;1
+34;35;31;"COMPUTER";"COMPUTER";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;207000;1;1;1
+200;204;21;"Signed";"Signed";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;701000;1;1;6
+201;204;21;"Completed";"Completed";49900;49900;49900;"TODAY[1d]";"TODAY[30d]";"budget";1;1;701200;1;1;6
+202;205;21;"Room 1";"Room 1";9000;9000;9000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;702000;1;1;6
+203;205;21;"Room 2";"Room 2";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;703000;1;1;6
+204;206;21;"Cash";"Cash";5000;5000;5000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;704000;1;1;6
+205;206;21;"Credit cards";"Credit cards";8000;8000;8000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;704100;1;1;6
+206;206;21;"Cheques";"Cheques";2700;2700;2700;"TODAY[1d]";"TODAY[30d]";"budget";1;1;704200;1;1;6
+207;207;21;"URSSAF";"URSSAF";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;705000;1;1;7
+208;208;21;"Employment bonus";"Employment bonus";1200;1200;1200;"TODAY[1d]";"TODAY[30d]";"budget";1;1;706000;1;1;7
+209;209;21;"HSBC";"HSBC";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707000;1;1;7
+210;210;21;"Barclays";"Barclays";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707100;1;1;7
+211;211;21;"Personal contributions";"Personal contributions";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707200;1;1;7
+400;412;41;"Materials 1";"Materials 1";13000;13000;13000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201000;1;1;6
+401;412;41;"Materials 2";"Materials 2";9000;9000;9000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201100;1;1;6
+402;413;41;"Products for sale 1";"Products for sale 1";15000;15000;15000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201200;1;1;6
+403;413;41;"Products for sale 2";"Products for sale 2";6500;6500;6500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201210;1;1;6
+404;414;41;"Fixed assets";"Fixed assets";2000;2000;2000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201300;1;1;8
+405;415;41;"Interim";"Interim";3500;3500;3500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;203000;1;1;6
+406;416;41;"Employees";"Employees";3400;3400;3400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;205000;1;1;6
+407;417;41;"Managing Director";"Managing Director";2800;2800;2800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;206000;1;1;6
+408;418;41;"Social security contributions";"Social security contributions";3300;3300;3300;"TODAY[1d]";"TODAY[30d]";"budget";1;1;207000;1;1;6
+409;418;41;"URSSAF";"URSSAF";1400;1400;1400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;208000;1;1;6
+410;418;41;"Mutual insurance";"Mutual insurance";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;211000;1;1;6
+411;419;41;"Internet";"Internet";79;79;79;"TODAY[1d]";"TODAY[30d]";"budget";1;1;211100;1;1;6
+412;420;41;"Software 1";"Software 1";48;48;48;"TODAY[1d]";"TODAY[30d]";"budget";1;1;211200;1;1;8
+413;420;41;"Software 2";"Software 2";69;69;69;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601000;1;1;8
+414;421;41;"Telephone fleet";"Telephone fleet";220;220;220;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601100;1;1;6
+415;422;41;"Electricity for premises";"Electricity for premises";890;890;890;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601200;1;1;6
+416;423;41;"Water";"Water";190;190;190;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601700;1;1;6
+417;424;41;"Search engines";"Search engines";380;380;380;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602000;1;1;6
+418;425;41;"Social networks";"Social networks";630;630;630;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602100;1;1;6
+419;426;41;"Exhibitions";"Exhibitions";1300;1300;1300;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603000;1;1;6
+420;427;41;"Chartered accountant";"Chartered accountant";450;450;450;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603100;1;1;6
+421;428;41;"Legal";"Legal";900;900;900;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603200;1;1;6
+422;429;41;"Subcontracting";"Subcontracting";4500;4500;4500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603700;1;1;6
+423;430;41;"Transport/Payments/Fuel";"Transport/Payments/Fuel";900;900;900;"TODAY[1d]";"TODAY[30d]";"budget";1;1;604000;1;1;6
+424;431;41;"Hotels";"Hotels";2000;2000;2000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;605000;1;1;6
+425;432;41;"Restaurants";"Restaurants";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606000;1;1;6
+426;433;41;"Company premises";"Company premises";2200;2200;2200;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606100;1;1;6
+427;434;41;"Premises & Rooms";"Premises & Rooms";550;550;550;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606300;1;1;6
+428;435;41;"Vehicles";"Vehicles";710;710;710;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606400;1;1;6
+429;436;41;"Managing Director";"Managing Director";79;79;79;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606800;1;1;6
+430;437;41;"Insurance linked to the exercise of the activity";"Insurance linked to the exercise of the activity";1100;1100;1100;"TODAY[1d]";"TODAY[30d]";"budget";1;1;607000;1;1;6
+431;438;41;"HSBC";"HSBC";2300;2300;2300;"TODAY[1d]";"TODAY[30d]";"budget";1;1;607100;1;1;7
+432;438;41;"Barclays";"Barclays";800;800;800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;607200;1;1;7
+433;439;41;"Interest rates";"Interest rates";149;149;149;"TODAY[1d]";"TODAY[30d]";"budget";1;1;608000;1;1;6
+434;439;41;"Account management fees";"Account management fees";119;119;119;"TODAY[1d]";"TODAY[30d]";"budget";1;1;609000;1;1;6
+435;440;41;"Property tax";"Property tax";800;800;800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;609100;1;1;6
+436;441;41;"Apprenticeship tax";"Apprenticeship tax";490;490;490;"TODAY[1d]";"TODAY[30d]";"budget";1;1;611000;1;1;6
+437;442;41;"Corporation tax (IS)";"Corporation tax (IS)";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;612000;1;1;9
+438;443;41;"VAT";"VAT";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;612200;1;1;9
+439;444;41;"Customer gifts and supplies";"Customer gifts and supplies";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;612500;1;1;6
+440;445;41;"Customer refunds";"Customer refunds";3400;3400;3400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;613000;1;1;6
+441;446;41;"Various shopping";"Various shopping";430;430;430;"TODAY[1d]";"TODAY[30d]";"budget";1;1;613200;1;1;6

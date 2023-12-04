@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,24 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.tool.service.TranslationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.service.TranslationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
@@ -47,6 +48,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/map")
+@Deprecated
 public class MapRest {
 
   @Inject private MapRestService mapRestService;
@@ -62,6 +64,7 @@ public class MapRest {
   @Path("/partner")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getPartners() {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -122,6 +125,7 @@ public class MapRest {
   @Path("/partner/{id}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getPartner(@PathParam("id") long id) {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -132,7 +136,7 @@ public class MapRest {
         throw new AxelorException(
             Partner.class,
             TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(IExceptionMessage.PARTNER_NOT_FOUND));
+            I18n.get(BaseExceptionMessage.PARTNER_NOT_FOUND));
       }
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
@@ -189,6 +193,7 @@ public class MapRest {
   @Path("/customer")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getCustomers() {
 
     ObjectNode mainNode = nodeFactory.objectNode();
@@ -237,6 +242,7 @@ public class MapRest {
   @Path("/prospect")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getProspects() {
 
     ObjectNode mainNode = nodeFactory.objectNode();
@@ -285,6 +291,7 @@ public class MapRest {
   @Path("/supplier")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getSuppliers() {
     ObjectNode mainNode = nodeFactory.objectNode();
 
@@ -332,6 +339,7 @@ public class MapRest {
   @Path("translation/{key}")
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Deprecated
   public JsonNode getTranslation(@PathParam("key") String key) {
 
     ObjectNode mainNode = nodeFactory.objectNode();

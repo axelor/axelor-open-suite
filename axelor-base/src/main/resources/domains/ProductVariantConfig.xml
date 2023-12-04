@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ProductVariantConfig" lang="java">
+  <entity name="ProductVariantConfig">
 
     <many-to-one name="productVariantAttr1"
       ref="com.axelor.apps.base.db.ProductVariantAttr"/>
@@ -15,6 +15,8 @@
       ref="com.axelor.apps.base.db.ProductVariantAttr"/>
     <many-to-one name="productVariantAttr4"
       ref="com.axelor.apps.base.db.ProductVariantAttr"/>
+    <many-to-one name="productVariantAttr5"
+      ref="com.axelor.apps.base.db.ProductVariantAttr"/>
     <many-to-many name="productVariantValue1Set"
       ref="com.axelor.apps.base.db.ProductVariantValue"/>
     <many-to-many name="productVariantValue2Set"
@@ -22,6 +24,8 @@
     <many-to-many name="productVariantValue3Set"
       ref="com.axelor.apps.base.db.ProductVariantValue"/>
     <many-to-many name="productVariantValue4Set"
+      ref="com.axelor.apps.base.db.ProductVariantValue"/>
+    <many-to-many name="productVariantValue5Set"
       ref="com.axelor.apps.base.db.ProductVariantValue"/>
 
     <string name="name" title="Name">
@@ -39,6 +43,10 @@
 		if(productVariantAttr4 != null)  {
 			if(!name.equals(""))  {  name += ", ";  }
 		 	name += productVariantAttr4.getName();
+		}
+		if(productVariantAttr5 != null) {
+		    if(!name.equals(""))  {  name += ", ";  }
+		    name += productVariantAttr5.getName();
 		}
 		return name;
 	    ]]>

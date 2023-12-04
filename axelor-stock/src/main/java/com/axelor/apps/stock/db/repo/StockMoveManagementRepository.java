@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -79,9 +80,11 @@ public class StockMoveManagementRepository extends StockMoveRepository {
   @Override
   public void remove(StockMove entity) {
     if (entity.getStatusSelect() == STATUS_PLANNED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
+      throw new PersistenceException(
+          I18n.get(StockExceptionMessage.STOCK_MOVE_PLANNED_NOT_DELETED));
     } else if (entity.getStatusSelect() == STATUS_REALIZED) {
-      throw new PersistenceException(I18n.get(IExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
+      throw new PersistenceException(
+          I18n.get(StockExceptionMessage.STOCK_MOVE_REALIZED_NOT_DELETED));
     } else {
       if (entity.getStockMoveOrigin() != null) {
         entity.getStockMoveOrigin().setBackorderId(null);
@@ -95,11 +98,7 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     Long stockMoveId = (Long) json.get("id");
     StockMove stockMove = find(stockMoveId);
 
-    if (stockMove.getStatusSelect() > STATUS_PLANNED
-        || stockMove.getStockMoveLineList() == null
-        || (stockMove.getFromStockLocation() != null
-            && stockMove.getFromStockLocation().getTypeSelect()
-                == StockLocationRepository.TYPE_VIRTUAL)) {
+    if (stockMove.getStatusSelect() > STATUS_PLANNED || stockMove.getStockMoveLineList() == null) {
       return super.populate(json, context);
     }
 
@@ -107,16 +106,19 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
       if (stockMoveLine != null
-          && stockMoveLine.getProduct() != null
-          && stockMoveLine.getProduct().getProductTypeSelect() != null
-          && stockMoveLine
-              .getProduct()
-              .getProductTypeSelect()
-              .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
+              && stockMoveLine.getProduct() != null
+              && stockMoveLine.getProduct().getProductTypeSelect() != null
+              && stockMoveLine
+                  .getProduct()
+                  .getProductTypeSelect()
+                  .equals(ProductRepository.PRODUCT_TYPE_SERVICE)
+          || (stockMoveLine.getFromStockLocation() != null
+              && stockMoveLine.getFromStockLocation().getTypeSelect()
+                  == StockLocationRepository.TYPE_VIRTUAL)) {
         continue;
       }
       Beans.get(StockMoveLineService.class)
-          .updateAvailableQty(stockMoveLine, stockMove.getFromStockLocation());
+          .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
       Product product = stockMoveLine.getProduct();
       if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
           || product != null && !product.getStockManaged()) {

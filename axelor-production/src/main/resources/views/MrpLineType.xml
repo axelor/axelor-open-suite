@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="mrp-line-type-grid" id="mrp-line-type-production-grid"
+    model="com.axelor.apps.supplychain.db.MrpLineType" title="MRP Types" extension="true">
+    <extend target="//field[@name='name']">
+      <insert position="before">
+        <hilite if="[12].indexOf(elementSelect) != -1 &amp;&amp; typeSelect == 1"
+          strong="true" color="info"/>
+      </insert>
+    </extend>
+  </grid>
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- Partner Dashboard -->
 
@@ -11,13 +11,19 @@
     <dashlet action="dashlet.partner.by.saleman" height="350" canSearch="true" colSpan="12"/>
     <dashlet height="350" action="dashlet.prospects.by.country" canSearch="true"/>
     <dashlet height="350" action="dashlet.prospects.by.industrySector" canSearch="true"/>
-    <dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"/>
+    <dashlet action="dashlet.customers.with.first.sale.order" height="350" canSearch="true"
+      if-module="axelor-sale" if="__config__.app.isApp('sale')"/>
   </dashboard>
 
   <dashboard title="Contact Dashboard" name="base.contact.dashboard">
     <dashlet action="dashlet.my.recent.contacts" height="350" colSpan="12" canSearch="true"/>
     <dashlet action="dashlet.base.recent.contacts" height="350" colSpan="12"
       canSearch="true"/>
+  </dashboard>
+
+  <dashboard title="Batches dashboard" name="base.batch.dashboard">
+    <dashlet action="dashlet.batch.batch.history" colSpan="12" canSearch="true"
+      readonly="true"/>
   </dashboard>
 
 
@@ -90,8 +96,14 @@
   <action-view name="dashlet.customers.with.first.sale.order"
     model="com.axelor.apps.base.db.Partner" title="New customers with first sale order">
     <view type="chart" name="chart.customers.with.first.sale.order"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <action-view name="dashlet.batch.batch.history" title="Batches"
+    model="com.axelor.apps.base.db.Batch">
+    <view type="grid" name="batch-grid"/>
+    <view type="form" name="batch-form"/>
+    <context name="_dashboard" expr="eval: true"/>
   </action-view>
 
 </object-views>

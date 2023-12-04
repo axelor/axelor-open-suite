@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticAxis" lang="java">
+  <entity name="AnalyticAxis">
 
-    <string name="code" title="Code" required="true" unique="true"/>
+    <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true" unique="true"/>
-
+    <integer name="nbrOfAnalyticGrouping" title="Nbr. of Analytic Grouping" default="0"
+      required="true" selection="account.general.analytic.grouping.value.grouping"
+      help="This field is used to define whether on the analytical accounts associated with this axis, the management of parent accounts is possible."/>
+    <boolean name="manageParentAccount" title="Manage Parent Account" massUpdate="true"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="analyticGrouping1"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 1"
+      help="This field is used to define grouping 1 associated with this axis. Only the grouping values ​​associated with this grouping on this axis will be selectable at analytical accounts level."/>
+    <many-to-one name="analyticGrouping2"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 2"
+      help="This field is used to define grouping 2 associated with this axis. Only the grouping values ​​associated with this grouping on this axis will be selectable at analytical accounts level."/>
+    <many-to-one name="analyticGrouping3"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 3"/>
+    <many-to-one name="analyticGrouping4"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 4"/>
+    <many-to-one name="analyticGrouping5"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 5"/>
+    <many-to-one name="analyticGrouping6"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 6"/>
+    <many-to-one name="analyticGrouping7"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 7"/>
+    <many-to-one name="analyticGrouping8"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 8"/>
+    <many-to-one name="analyticGrouping9"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 9"/>
+    <many-to-one name="analyticGrouping10"
+      ref="com.axelor.apps.account.db.AnalyticGrouping" title="Analytic grouping 10"/>
   </entity>
 
 </domain-models>

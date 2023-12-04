@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.batch;
 
@@ -22,14 +23,15 @@ import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -99,15 +101,11 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
       // FACTURES
       List<Move> moveList = doubtfulCustomerService.getMove(0, doubtfulCustomerAccount, company);
-      log.debug(
-          "Nombre d'écritures de facture concernées (Créance de + 6 mois) au 411 : {} ",
-          moveList.size());
+      log.debug("Number of move lines (Debt more than 6 months) in 411 : {}", moveList.size());
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, sixMonthDebtPassReason);
 
       moveList = doubtfulCustomerService.getMove(1, doubtfulCustomerAccount, company);
-      log.debug(
-          "Nombre d'écritures de facture concernées (Créance de + 3 mois) au 411 : {} ",
-          moveList.size());
+      log.debug("Number of move lines (Debt more than 3 months) in 411 : {}", moveList.size());
       this.createDoubtFulCustomerMove(moveList, doubtfulCustomerAccount, threeMonthDebtPassReason);
 
       // FACTURES REJETES
@@ -115,7 +113,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           (List<MoveLine>)
               doubtfulCustomerService.getRejectMoveLine(0, doubtfulCustomerAccount, company);
       log.debug(
-          "Nombre de lignes d'écriture de rejet concernées (Créance de + 6 mois) au 411 : {} ",
+          "Number of rejected move lines (Debt more than 6 months) in 411 : {}",
           moveLineList.size());
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, sixMonthDebtPassReason);
@@ -124,7 +122,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
           (List<MoveLine>)
               doubtfulCustomerService.getRejectMoveLine(1, doubtfulCustomerAccount, company);
       log.debug(
-          "Nombre de lignes d'écriture de rejet concernées (Créance de + 3 mois) au 411 : {} ",
+          "Number of rejected move lines (Debt more than 3 months) in 411 : {}",
           moveLineList.size());
       this.createDoubtFulCustomerRejectMove(
           moveLineList, doubtfulCustomerAccount, threeMonthDebtPassReason);
@@ -145,43 +143,42 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
    */
   public void createDoubtFulCustomerMove(
       List<Move> moveList, Account doubtfulCustomerAccount, String debtPassReason) {
+    for (int i = 0; i < moveList.size(); i++) {
+      Move move = moveList.get(i);
 
-    int i = 0;
-
-    for (Move move : moveList) {
       try {
-
         doubtfulCustomerService.createDoubtFulCustomerMove(
             moveRepo.find(move.getId()),
             accountRepo.find(doubtfulCustomerAccount.getId()),
             debtPassReason);
-        updateInvoice(moveRepo.find(move.getId()).getInvoice());
+
+        Move myMove = moveRepo.find(move.getId());
+
+        if (myMove.getInvoice() != null) {
+          updateInvoice(myMove.getInvoice());
+        } else {
+          updateAccountMove(myMove, true);
+        }
 
       } catch (AxelorException e) {
-
         TraceBackService.trace(
-            new AxelorException(
-                e, e.getCategory(), I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()),
+            new AxelorException(e, e.getCategory(), I18n.get("Invoice") + " %s", move.getOrigin()),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
+
         incrementAnomaly();
-
       } catch (Exception e) {
-
         TraceBackService.trace(
-            new Exception(
-                String.format(I18n.get("Invoice") + " %s", move.getInvoice().getInvoiceId()), e),
+            new Exception(String.format(I18n.get("Invoice") + " %s", move.getOrigin()), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour la facture {}",
+            "Anomaly generated for the invoice {}",
             moveRepo.find(move.getId()).getInvoice().getInvoiceId());
-
       } finally {
-
         if (i % 10 == 0) {
           JPA.clear();
         }
@@ -239,7 +236,7 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour la facture {}",
+            "Anomaly generated for the invoice {}",
             moveLineRepo.find(moveLine.getId()).getInvoiceReject().getInvoiceId());
 
       } finally {
@@ -260,13 +257,12 @@ public class BatchDoubtfulCustomer extends BatchStrategy {
 
     AccountingService.setUpdateCustomerAccount(true);
 
-    String comment = I18n.get(IExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
-    comment +=
-        String.format("\t" + I18n.get(IExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+    String comment = I18n.get(AccountExceptionMessage.BATCH_DOUBTFUL_1) + " :\n";
     comment +=
         String.format(
-            "\t" + I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_4),
-            batch.getAnomaly());
+            "\t" + I18n.get(AccountExceptionMessage.BATCH_DOUBTFUL_2) + "\n", batch.getDone());
+    comment +=
+        String.format("\t" + I18n.get(BaseExceptionMessage.BASE_BATCH_3), batch.getAnomaly());
 
     comment += String.format("\t* ------------------------------- \n");
     comment += String.format("\t* %s ", updateCustomerAccountLog);

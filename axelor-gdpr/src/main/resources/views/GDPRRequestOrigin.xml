@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="gdpr-request-origin-grid" title="Requests origin"
+    model="com.axelor.apps.gdpr.db.GDPRRequestOrigin">
+    <field name="name"/>
+    <field name="code"/>
+  </grid>
+
+  <form name="gdpr-request-origin-form" title="Request origin"
+    model="com.axelor.apps.gdpr.db.GDPRRequestOrigin">
+    <panel name="requestOriginPanel">
+      <field name="name"/>
+      <field name="code"/>
+    </panel>
+  </form>
+
+
+
+
+</object-views>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProcess;
+import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -43,12 +51,14 @@ import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderSupplychainService;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
@@ -56,6 +66,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   protected ManufOrderService manufOrderService;
   protected ManufOrderRepository manufOrderRepository;
   protected OperationOrderRepository operationOrderRepository;
+  protected BillOfMaterialService billOfMaterialService;
+  protected ProdProcessLineService prodProcessLineService;
+  protected ProductionConfigService productionConfigService;
 
   @Inject
   public MrpLineServiceProductionImpl(
@@ -71,7 +84,10 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       ManufOrderService manufOrderService,
       ManufOrderRepository manufOrderRepository,
       OperationOrderRepository operationOrderRepository,
-      MrpLineRepository mrpLineRepo) {
+      MrpLineRepository mrpLineRepo,
+      BillOfMaterialService billOfMaterialService,
+      ProdProcessLineService prodProcessLineService,
+      ProductionConfigService productionConfigService) {
     super(
         appBaseService,
         purchaseOrderSupplychainService,
@@ -86,6 +102,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     this.manufOrderService = manufOrderService;
     this.manufOrderRepository = manufOrderRepository;
     this.operationOrderRepository = operationOrderRepository;
+    this.billOfMaterialService = billOfMaterialService;
+    this.prodProcessLineService = prodProcessLineService;
+    this.productionConfigService = productionConfigService;
   }
 
   @Override
@@ -111,6 +130,29 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
   protected void generateManufacturingProposal(MrpLine mrpLine) throws AxelorException {
 
     Product product = mrpLine.getProduct();
+    Company company = mrpLine.getStockLocation().getCompany();
+
+    ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+
+    boolean isAsapScheduling =
+        productionConfig.getScheduling()
+            == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING;
+
+    LocalDate maturityDate = mrpLine.getMaturityDate();
+    BigDecimal qty = mrpLine.getQty();
+
+    LocalDateTime plannedStartDateT = null;
+    LocalDateTime plannedEndDateT = null;
+    if (isAsapScheduling) {
+      plannedStartDateT = maturityDate.atStartOfDay();
+    } else {
+      BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
+
+      plannedEndDateT =
+          maturityDate
+              .plusDays(getTotalDurationInDays(defaultBillOfMaterial.getProdProcess(), qty) + 1)
+              .atStartOfDay();
+    }
 
     ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
@@ -119,13 +161,22 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             ManufOrderService.DEFAULT_PRIORITY,
             ManufOrderService.IS_TO_INVOICE,
             null,
-            mrpLine.getMaturityDate().atStartOfDay(),
-            null,
-            ManufOrderServiceImpl
+            plannedStartDateT,
+            plannedEndDateT,
+            ManufOrderOriginTypeProduction
                 .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day
 
     linkToOrder(mrpLine, manufOrder);
+  }
+
+  protected long getTotalDurationInDays(ProdProcess prodProcess, BigDecimal qty)
+      throws AxelorException {
+    long totalDuration = 0;
+    if (prodProcess != null) {
+      totalDuration = prodProcessLineService.computeEntireDuration(prodProcess, qty);
+    }
+    return TimeUnit.SECONDS.toDays(totalDuration);
   }
 
   @Override

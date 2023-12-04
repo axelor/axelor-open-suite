@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Helpdesk";"helpdesk";29;"Helpdesk Management";"app-helpdesk.png";"axelor-helpdesk";"base";28

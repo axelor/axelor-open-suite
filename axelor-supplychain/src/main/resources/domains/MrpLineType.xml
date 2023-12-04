@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="MrpLineType" lang="java">
+  <entity name="MrpLineType">
 
     <string name="code" title="Code"/>
     <string name="label" title="Label"/>
@@ -17,7 +17,6 @@
     <integer name="sequence" title="Sequence to order MRP results"/>
 
     <string name="statusSelect" title="Statuses to take into account"/>
-
     <boolean name="includeElementWithoutDate" title="Include element without date"
       help="Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)"/>
     <boolean name="ignoreEndDate" title="Ignore end date"
@@ -25,6 +24,19 @@
 
     <string name="applicationFieldSelect" title="Field of application"
       selection="supplychain.mrp.line.type.application.field.select"/>
+    <integer name="includeOneOffSalesSelect"
+      selection="supplychain.mrp.line.off.of.sales.select" title="One-off sales"/>
+    <integer name="lateSalesSelect" title="Late sales"
+      selection="supplychain.mrp.line.type.late.sales.select"
+      help="Include sales with a planned delivery date in the past but which have not yet been delivered."/>
+
+    <many-to-one ref="com.axelor.meta.db.MetaField" name="metaField"
+      title="Field to select"/>
+    <decimal name="growthCoef" title="Growth coefficient" default="1"/>
+    <integer name="offsetInMonths" title="Offset in months"/>
+    <boolean name="isProjectedForNextMonths"
+      title="Project identically over the next few months"/>
+    <integer name="nbrOfMonthProjection" title="Projection' s number of month" default="1"/>
 
     <extra-code><![CDATA[
 
@@ -42,7 +54,8 @@
 
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL = 8;  // Manufacturing proposal
 		public static final int ELEMENT_MANUFACTURING_PROPOSAL_NEED = 9;  // Need manufacturing proposal
-
+		public static final int ELEMENT_STOCK_HISTORY = 10; //Stock history
+		public static final int ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY = 11;
 
 		// TYPE SELECT
 		public static final int TYPE_IN = 1;  // Entry of stock
@@ -51,6 +64,16 @@
 		// APPLICATION FIELD SELECT
 		public static final int APPLICATION_FIELD_MRP = 1;
 		public static final int APPLICATION_FIELD_MPS = 2;
+
+		//ONE-OFF SALES
+		public static final int ONE_OFF_SALES_INCLUDED = 0;
+		public static final int ONE_OFF_SALES_EXCLUDED = 1;
+		public static final int ONE_OFF_SALES_ONLY = 2;
+
+		//LATE SALES
+		public static final int LATE_SALES_INCLUDED = 0;
+		public static final int LATE_SALES_EXCLUDED = 1;
+		public static final int LATE_SALES_ONLY = 2;
 
 
 	]]></extra-code>

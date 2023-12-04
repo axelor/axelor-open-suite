@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <chart name="chart.total.hours.per.day" title="" stacked="true">
     <dataset type="jpql"><![CDATA[
@@ -12,7 +12,7 @@
 		FROM
 			TimesheetLine self
 		WHERE
-			self.timesheet.id= :timesheet_id
+			self.timesheet.id= :id
 		GROUP BY
 			self.date,
 			self.project.fullName
@@ -54,22 +54,567 @@
     </search-fields>
     <dataset type="jpql"><![CDATA[
 		SELECT
-			self.user.name as _employee,
+			self.employee.name as _employee,
 			SUM(self.inTaxTotal) as _amount
 		FROM
 			Expense self
 		WHERE
-			self.user.employee.managerUser = :__user__
+			self.employee.managerUser = :__user__
 		AND
 			self.period = :period
 		GROUP BY
-			self.user.name
+			self.employee.name
 		ORDER BY
-			self.user.name
+			self.employee.name
 		]]></dataset>
     <category key="_employee" type="text" title="Employee"/>
     <series key="_amount" aggregate="sum" type="bar" title="amount"/>
   </chart>
+
+  <chart title="Leave requests left by type" name="chart.leave.request.by.status">
+    <dataset type="jpql">
+      <![CDATA[
+        SELECT
+          self.quantity AS quantity,
+          self.leaveReason.name AS leaveReason
+        FROM
+          LeaveLine AS self
+        WHERE
+          self.employee.user = :__user__
+    ]]>
+    </dataset>
+    <category key="leaveReason" title="Type" type="text"/>
+    <series key="quantity" type="donut" title="Left"/>
+  </chart>
+
+  <chart title="Timesheet by project" name="chart.timesheet.by.project">
+    <search-fields>
+      <field name="fromDate" type="date" title="From date" x-required="true"/>
+      <field name="toDate" type="date" title="To date" x-required="true"/>
+    </search-fields>
+    <dataset type="jpql">
+      <![CDATA[
+        SELECT
+          SUM(self.duration) AS duration,
+          self.project.fullName AS projectName
+        FROM
+          TimesheetLine AS self
+        WHERE
+          self.employee.user.id = :userId
+          AND self.date >= :fromDate
+          AND self.date <= :toDate
+        GROUP BY
+          self.project.fullName
+    ]]>
+    </dataset>
+    <category key="projectName" title="Type" type="text"/>
+    <series key="duration" type="donut" title="Left"/>
+  </chart>
+
+  <custom name="my-leave-request-custom-view" title="Leave Requests"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeLeaveData
+    </dataset>
+    <template><![CDATA[
+    	<style>
+      		#emp-dashboard-leave-request-custom-view{
+	      		overflow:hidden;
+		        display: flex;
+		        position: relative;
+		        flex-wrap: wrap;
+		        justify-content: space-around;
+		        padding-top:20px;
+	      	}
+		      @media (max-width: 1000px) {
+		      #emp-dashboard-leave-request-custom-view {
+		        max-height:auto;
+		      	}
+	   		  }
+    		#emp-dashboard-leave-request-custom-view .container2{
+			  display:flex;
+			  flex-direction:column;
+			  border: 2px solid grey;
+			  margin-top: 35px;
+			  border-radius:5px;
+			  background-color:#ecebf3;
+			  width:300px;
+			}
+			#emp-dashboard-leave-request-custom-view .header{
+			  border-bottom: 2px solid grey;
+			  display:flex;
+			  flex-direction:column;
+			  align-items:center;
+			  padding: 1rem;
+			  gap:.5rem;
+			}
+			#emp-dashboard-leave-request-custom-view .item{
+			  display:flex;
+			  flex-direction:column;
+			  text-align:center;
+			  padding: 1rem;
+			  gap: .5rem;
+			}
+			#emp-dashboard-leave-request-custom-view .legend {
+			  list-style-type: none;
+			  padding: 0;
+			  margin-top: 30px;
+			  padding: 15px;
+			  font-size: 13px;
+			}
+			#emp-dashboard-leave-request-custom-view .legend li {
+			  width: 110px;
+			  height: 1.25em;
+			  margin-bottom: 0.7em;
+			  padding-left: 0.5em;
+			  border-left: 1.25em solid black;
+			}
+			#emp-dashboard-leave-request-custom-view .innerCircle{
+				width:80%;
+				height:80%;
+				background-color:white;
+				position:absolute;
+				top:50%;
+				left:50%;
+				border-radius:50%;
+				transform: translate(-50%, -50%);
+			}
+			#emp-dashboard-leave-request-custom-view .x-box{
+				--sum-of-all-status: {{first.statusCount["1"]+first.statusCount["2"]+first.statusCount["3"]+first.statusCount["4"]}};
+				--p2-status: {{first.statusCount["1"]+first.statusCount["2"]}};
+				--p3-status: {{first.statusCount["1"]+first.statusCount["2"]+first.statusCount["3"]}};
+				width: 200px;
+				height: 200px;
+				border-radius: 50%;
+				background:repeating-conic-gradient(
+				from 0deg,
+				#FFDF00 0deg calc(3.6deg *  calc(({{first.statusCount["1"]}}*100)/var(--sum-of-all-status))),
+				orange calc(3.6deg *  calc(({{first.statusCount["1"]}}*100)/var(--sum-of-all-status))) calc(3.6deg *calc((var(--p2-status)*100)/var(--sum-of-all-status))),
+				green calc(3.6deg * calc((var(--p2-status)*100)/var(--sum-of-all-status))) calc(3.6deg * calc((var(--p3-status)*100)/var(--sum-of-all-status))),
+				red calc(3.6deg * calc((var(--p3-status)*100)/var(--sum-of-all-status))) calc(3.6deg * 100)
+				);
+			}
+    </style>
+    	<div id="emp-dashboard-leave-request-custom-view">
+		    <section style="margin-top: 10px; display: flex; flex-wrap: wrap; justify-content: center;">
+		        <div style="position: relative;">
+		            <div class="x-box" style=""></div>
+		            <div class="innerCircle"></div>
+		        </div>
+		        <ul class="pieID legend">
+		            <li style="border-left: 1.25em solid #ffdf00;">
+		                <em style="font-style: normal;"  x-translate>Draft</em>
+		                <span style="float: right;">{{first.statusCount["1"]}}</span>
+		            </li>
+		            <li style="border-left: 1.25em solid orange;">
+		                <em style="font-style: normal;"  x-translate>Waiting</em>
+		                <span style="float: right;">{{first.statusCount["2"]}}</span>
+		            </li>
+		            <li style="border-left: 1.25em solid green;">
+		                <em style="font-style: normal;"  x-translate>Validated</em>
+		                <span style="float: right;">{{first.statusCount["3"]}}</span>
+		            </li>
+		            <li style="border-left: 1.25em solid red;">
+		                <em style="font-style: normal;"  x-translate>Refused</em>
+		                <span style="float: right;">{{first.statusCount["4"]}}</span>
+		            </li>
+		        </ul>
+		    </section>
+		    <div>
+		        <div class="container2">
+		            <div class="header">
+		                <h4 class="title" style="margin:0" x-translate>Vacation pay</h4>
+		                <a href="#/ds/leave.all/edit/" class="btn btn-primary" style="border-radius:4px !important;" x-translate>Create Leave Request</a>
+		            </div>
+		            <div style="display: flex; justify-content: space-around;">
+		                <div class="item">
+		                    <div style="font-size: 1.2rem;">{{first.leaveCount.valid}}</div>
+		                    <div class="label" style="font-size: 0.8rem; text-transform: uppercase;" x-translate>Valid</div>
+		                </div>
+		                <div class="item">
+		                    <div style="font-size: 1.2rem;">{{first.leaveCount.balance}}</div>
+		                    <div class="label" style="font-size: 0.8rem; text-transform: uppercase;" x-translate>Balance</div>
+		                </div>
+		                <div class="item">
+		                    <div style="font-size: 1.2rem;">{{first.leaveCount.taken}}</div>
+		                    <div class="label" style="font-size: 0.8rem; text-transform: uppercase;" x-translate>Taken</div>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+    ]]></template>
+  </custom>
+
+  <custom name="my-expenses-custom-view" title="Expenses" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeExpenseData
+    </dataset>
+    <template><![CDATA[
+    <style>
+	    #emp-dashboard-expense-line-custom-view  .circle-container {
+	      display: flex;
+	      justify-content: flex-start;
+	      position: absolute;
+	      top: -5px;
+	      width: 100%;
+	      height: 10px;
+	    }
+	    #emp-dashboard-expense-line-custom-view  .circle {
+		  position:relative;
+	      aspect-ratio:1;
+	      height: 15px;
+	      border-radius: 50%;
+	      background-color: #abc5ec; /* Faint blue circle */
+	    }
+	    #emp-dashboard-expense-line-custom-view .ts-label{
+	    	position:absolute;
+	    	top:50%;
+	    	left:50%;
+	    	transform: translate(-50%, 65%);
+	    	width:max-content;
+	    	margin:0;
+	    	font-weight:600;
+		    font-size: 9px;
+		    color: black;
+	    }
+	    #emp-dashboard-expense-line-custom-view  .circle.blue {
+	      background-color: #1a5cbd; /* Blue circle */
+	    }
+	    #emp-dashboard-expense-line-custom-view .line {
+	      width:25%;
+	      height: 2px;
+	      background-color: #abc5ec;
+	      margin-top: 6px;
+	    }
+	    #emp-dashboard-expense-line-custom-view .line.blue {
+	      background-color: blue; /* Blue line */
+	    }
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="1"] .circle:nth-child(1),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="2"] .circle:nth-child(-n + 4),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="3"] .circle:nth-child(-n + 6),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="4"] .circle:nth-child(-n + 8),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="5"] .circle:nth-child(-n + 10),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="6"] .circle:nth-child(-n + 12){
+	      background-color: #1a5cbd; /* Blue circles */
+	    }
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="2"] .line:nth-child(2),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="3"] .line:nth-child(-n + 4),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="4"] .line:nth-child(-n + 6),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="5"] .line:nth-child(-n + 8),
+	    #emp-dashboard-expense-line-custom-view .circle-container[data-a="6"] .line:nth-child(-n + 10)  {
+	    	background-color: #1a5cbd; /* Blue lines */
+	    }
+    </style>
+    <div  id="emp-dashboard-expense-line-custom-view" ng-repeat = "item in data" style="margin:10px; padding:0 0 10px 0px;border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8;cursor:pointer;" ng-click="$root.openTabByName('expense.all',{'mode':'edit','state':item.expenseId})">
+	   <div style="display:flex;max-height:30px; align-items:center; justify-content:space-around; padding:0.5rem;">
+	  		<span><b>{{ item.date | date:'YYYY MMM ddd' }}</b></span>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b> {{ item.inTaxTotal }} €</b></span>
+	  		<span>{{ item.description }}</span>
+	  		<span<{{item.status}}</span>
+		</div>
+		  <div style="position: relative; height: 10px; margin:5px 20px; padding: 5px">
+		    <div class="circle-container" data-a={{item.status}}>
+		      <div class="circle"><p class="ts-label" x-translate>Draft</p></div>
+		      <div class="line"></div>
+		      <div class="circle"><p class="ts-label" x-translate>Waiting</p></div>
+		      <div class="line"></div>
+		      <div class="circle"><p class="ts-label" x-translate>Validated</p></div>
+		      <div class="line"></div>
+		      <div class="circle"><p class="ts-label" x-translate>Reimbursed</p></div>
+		      <div class="line"></div>
+		      <div class="circle"><p class="ts-label" x-translate>Refused</p></div>
+		      <div class="line"></div>
+		      <div class="circle"><p class="ts-label" x-translate>Canceled</p></div>
+		    </div>
+  		</div>
+  	</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="my-timesheets-custom-view" title="Time Sheet" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeTimesheetData
+    </dataset>
+    <template><![CDATA[
+    	<style>
+    	   #emp-dashboard-timesheet-custom-card{
+	        max-width: 80%;
+	        max-height: 80%;
+	        position: relative;
+	        padding:30px;
+	        flex-direction: column;
+	      }
+	      #emp-dashboard-timesheet-custom-card .inner-circle {
+	        position: absolute;
+	        width: 140px;
+	        height: 140px;
+	        border-radius: 50%;
+	        display:flex;
+	        flex-wrap:wrap;
+	      }
+	      #emp-dashboard-timesheet-custom-card .innter_holder{
+	        display:flex;
+	        width: 100%;
+	        align-items:center;
+	        justify-content: space-around;
+	        display:flex;
+	        flex-wrap:wrap;
+	      }
+	      #emp-dashboard-timesheet-custom-card .tagcolor{
+		      margin: auto 5px;
+		      max-height: 5px;
+		      display: inline-block;
+		      padding:5px;
+	      }
+	      #emp-dashboard-timesheet-custom-card .tag1{
+	      	background-color: green
+	      }
+	      #emp-dashboard-timesheet-custom-card .tag2{
+	      	background-color:red
+	      }
+	      #emp-dashboard-timesheet-custom-card .tag{
+	        display:flex;
+			align-items: center;
+	      }
+	      #emp-dashboard-timesheet-custom-card .tag p{
+	        font-size: 14px;
+	        margin:0;
+	      }
+		  #emp-dashboard-timesheet-custom-card .x-box2{
+		    --total-present : {{first.atWork+first.notAtWork}};
+			border-radius: 50%;
+			background:repeating-conic-gradient(
+			from 0deg,
+			green 0deg calc(3.6deg *  calc(({{first.atWork}}*100)/var(--total-present))),
+			red calc(3.6deg * calc(({{first.atWork}}*100)/var(--total-present))) calc(3.6deg * 100)
+			);
+		  }
+		  #emp-dashboard-timesheet-custom-card .innerCircle{
+				width:80%;
+				height:80%;
+				background-color: white;
+				position:absolute;
+				top:50%;
+				left:50%;
+				border-radius:50%;
+				transform: translate(-50%, -50%);
+			}
+    </style>
+    <div id="emp-dashboard-timesheet-custom-card">
+    	<div class="innter_holder">
+        	<div style="position:relative;">
+            	<div class="x-box2" style="width: 160px; height: 160px;"></div>
+            		<div class="innerCircle"></div>
+        		</div>
+	        <div>
+	            <div class="tag">
+	                <div class="tag1 tagcolor"></div>
+	                <p x-translate>Present</p><span style="padding-left:10px">({{first.atWork}})</span>
+	            </div>
+	            <div class="tag">
+	                <div class="tag2 tagcolor"></div>
+	                <p>Absent</p><span style="padding-left:10px"> ({{first.notAtWork}})</span>
+	            </div>
+	            <a style="color: white; display: inline-block; margin-top: 20px; background-color: #159983; padding: 8px 10px; border-radius: 20px; color: white; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer;"
+	                ng-click="$root.openTabByName('edit.timesheet')" x-translate>I am at work</a>
+	        </div>
+	    </div>
+	</div>
+    ]]></template>
+  </custom>
+
+  <custom name="my-extra-hours-custom-view" title="Extra Hours" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getConnectedEmployeeExtraHrsData
+    </dataset>
+    <template><![CDATA[
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; padding:0.5rem;border:2px solid #D3D3D3;border-radius:5px;background-color:#E8E8E8;cursor:pointer;"  ng-click="$root.openTabByName('extra.hours.all',{'mode':'edit','state':item.extraHrId})">
+	  		<span><b>{{ item.date | date:'YYYY MMM ddd' }}</b></span>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b>+ {{ item.duration }} h</b></span>
+	  		<span>{{ item.description }}</span>
+		</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-leave-requests-custom-view" title="Leave Requests"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeLeaveData
+    </dataset>
+    <template><![CDATA[
+	<div ng-repeat="item in data">
+		<div style="display:flex; width:95%; margin:8px; padding:2px 20px; border-radius:5px; border:2px solid #cecfce; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('leave.all',{'mode':'edit','state':item.leaveRequestId})">
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.fromDate | date:'L'}} - {{item.toDate | date:'L'}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.leaveReason}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<a style="text-decoration:none; background-color:#2584fe; color:white; font-size:12px; padding:5px 20px; border-radius:4px; min-width:150px; text-align:center;">{{item.statusSelect}}</a>
+			</div>
+		</div>
+	</div>
+    ]]></template>
+  </custom>
+
+  <custom name="hr-manager-expenses-custom-view" title="Expenses" css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeExpenseData
+    </dataset>
+    <template><![CDATA[
+	<div ng-repeat="item in data" style="max-height:100px;">
+		<div style="display:flex; width:95%; margin:8px; padding:2px 20px; border-radius:5px; border:2px solid #cecfce; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('expense.all',{'mode':'edit','state':item.expenseId})">
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.date | date:'L'}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.expenseType}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<a style="text-decoration:none; background-color:#2584fe; color:white; font-size:12px; padding:5px 20px; border-radius:4px; min-width:150px; text-align:center;">{{item.statusSelect}}</a>
+			</div>
+		</div>
+	</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-timesheets-custom-view" title="Timesheets"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeTimesheetData
+    </dataset>
+    <template><![CDATA[
+    	<style>
+    	   #manager-dashboard-timesheet-custom-card{
+	        max-width: 80%;
+	        max-height: 80%;
+	        position: relative;
+	        padding:30px;
+	        flex-direction: column;
+	      }
+	      #manager-dashboard-timesheet-custom-card .inner-circle {
+	        position: absolute;
+	        width: 140px;
+	        height: 140px;
+	        border-radius: 50%;
+	        display:flex;
+	        flex-wrap:wrap;
+	      }
+	      #manager-dashboard-timesheet-custom-card .innter_holder{
+	        display:flex;
+	        width: 100%;
+	        align-items:center;
+	        justify-content: space-around;
+	        display:flex;
+	        flex-wrap:wrap;
+	      }
+	      #manager-dashboard-timesheet-custom-card .tagcolor{
+		      margin: auto 5px;
+		      max-height: 5px;
+		      display: inline-block;
+		      padding:5px;
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag1{
+	      	background-color: green
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag2{
+	      	background-color:red
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag{
+	        display:flex;
+			align-items: center;
+	      }
+	      #manager-dashboard-timesheet-custom-card .tag p{
+	        font-size: 14px;
+	        margin:0;
+	      }
+		  #manager-dashboard-timesheet-custom-card .x-box2{
+		    --total-present : {{first.atWork+first.notAtWork}};
+			border-radius: 50%;
+			background:repeating-conic-gradient(
+			from 0deg,
+			green 0deg calc(3.6deg *  calc(({{first.atWork}}*100)/var(--total-present))),
+			red calc(3.6deg * calc(({{first.atWork}}*100)/var(--total-present))) calc(3.6deg * 100)
+			);
+		  }
+		  #manager-dashboard-timesheet-custom-card .innerCircle{
+				width:80%;
+				height:80%;
+				background-color: white;
+				position:absolute;
+				top:50%;
+				left:50%;
+				border-radius:50%;
+				transform: translate(-50%, -50%);
+			}
+    </style>
+    <div id="manager-dashboard-timesheet-custom-card" ng-show="first">
+    	<div class="innter_holder">
+        	<div style="position:relative;">
+            	<div class="x-box2" style="width: 160px; height: 160px;"></div>
+            		<div class="innerCircle"></div>
+        		</div>
+	        <div>
+	            <div class="tag">
+	                <div class="tag1 tagcolor"></div>
+	                <p x-translate>Present</p><span style="padding-left:10px">({{first.atWork}})</span>
+	            </div>
+	            <div class="tag">
+	                <div class="tag2 tagcolor"></div>
+	                <p>Absent</p><span style="padding-left:10px"> ({{first.notAtWork}})</span>
+	            </div>
+	            <a style="color: white; display: inline-block; margin-top: 20px; background-color: #159983; padding: 8px 10px; border-radius: 20px; color: white; font-size: 14px; font-weight: 600; text-decoration: none; cursor: pointer;" x-translate>I am at work</a>
+	        </div>
+	    </div>
+	</div>
+    ]]></template>
+  </custom>
+
+  <custom name="hr-manager-extra-hours-custom-view" title="Extra Hours"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeExtraHrsData
+    </dataset>
+    <template><![CDATA[
+	   <div ng-repeat = "item in data" style="display:flex; align-items:center; margin-block:1rem; justify-content:space-around; padding:2px 20px; border:2px solid #D3D3D3; border-radius:5px; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('extra.hours.all',{'mode':'edit','state':item.extraHrId})">
+	  		<div style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+				<p style="padding:0; margin:0; font-weight:600; font-size:14px">{{item.fullName}}</p>
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.date | date:'L'}}</p>
+			</div>
+	  		<hr style="border-top: 1px solid black; flex-grow: 0.2;">
+	  		<span><b>+ {{item.duration}} h</b></span>
+	  		<span>{{item.description}}</span>
+		</div>
+	  ]]></template>
+  </custom>
+
+  <custom name="hr-manager-medical-visits-custom-view" title="Medical visits"
+    css="dashlet-no-dropdown">
+    <dataset type="rpc">
+      com.axelor.apps.hr.web.HRDashboardController:getEmployeeMedicalVisitData
+    </dataset>
+    <template><![CDATA[
+	<div ng-repeat="item in data">
+		<div style="display:flex; width:95%; margin:8px; padding:2px 20px; border-radius:5px; border:2px solid #cecfce; background-color:#E8E8E8; min-height:80px; cursor:pointer;" ng-click="$root.openTabByName('medical.visit.all',{'mode':'edit','state':item.medicalVisitId})">
+			<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">
+				<p style="padding:0; margin:0; font-weight:100; color:#1d1e22; font-size:14px">{{item.fromDate | date:'YYYY-MM-DD-hh:mm'}} - {{item.toDate | date:'YYYY-MM-DD-hh:mm'}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.visitReason}}</p>
+			</div>
+			<div style="flex:1; display:flex; flex-direction:column; justify-content:center; font-weight: bold">
+				<p style="padding:2px; margin:0; font-size:12px; color:#1d1e22">{{item.employeeName}}</p>
+			</div>
+		</div>
+	</div>
+    ]]></template>
+  </custom>
 
   <action-record model="com.axelor.apps.hr.db.Expense"
     name="action.hr.chart.set.period.last.month">

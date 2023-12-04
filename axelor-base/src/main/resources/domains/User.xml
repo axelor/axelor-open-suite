@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="auth" package="com.axelor.auth.db"/>
 
-  <entity name="User" sequential="true" lang="java">
+  <entity name="User" sequential="true">
 
     <many-to-many name="companySet" ref="com.axelor.apps.base.db.Company"
       title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company"
       title="Active company" massUpdate="true"/>
-    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <datetime name="today" title="Today date" tz="true"/>
+    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      unique="true"/>
+    <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-many name="teamSet" ref="com.axelor.team.db.Team" title="Teams"
       mappedBy="members"/>
     <many-to-one name="activeTeam" ref="com.axelor.team.db.Team" title="Active Team"
@@ -41,8 +42,7 @@
       title="Use signature for sales quotations"/>
     <boolean name="useSignatureForPurchaseQuotations"
       title="Use signature for purchase quotations"/>
-    <many-to-one name="group" ref="com.axelor.auth.db.Group" column="group_id"
-      massUpdate="true"/>
+    <many-to-one name="group" ref="Group" column="group_id" massUpdate="true"/>
     <string name="language" selection="select.language" massUpdate="true"/>
     <boolean name="singleTab" help="Whether to use tabbed ui." massUpdate="true"/>
     <boolean name="noHelp" help="Whether to show help messages." massUpdate="true"/>
@@ -54,8 +54,8 @@
       help="Allow notifications to be sent by email" default="true"/>
     <many-to-many name="followedMetaModelSet"
       title="Entities you wish to follow by email" ref="com.axelor.meta.db.MetaModel"/>
-    <one-to-many name="emailAccountList" ref="com.axelor.apps.message.db.EmailAccount"
-      title="Email accounts"/>
+    <one-to-many name="emailAccountList" ref="com.axelor.message.db.EmailAccount"
+      title="Email accounts" mappedBy="user"/>
 
     <string name="transientPassword" transient="true"/>
 
@@ -66,33 +66,40 @@
     <string name="emailSignature" title="Email signature" large="true"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Trading name"></many-to-one>
+      title="Trading name"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>
 
     <track>
-      <field name="name"/>
-      <field name="code"/>
-      <field name="email"/>
-      <field name="theme"/>
-      <field name="activateOn"/>
-      <field name="expiresOn"/>
-      <field name="activeCompany"/>
-      <field name="partner"/>
-      <field name="today"/>
-      <field name="activeTeam"/>
-      <field name="fullName"/>
-      <field name="iCalendar"/>
-      <field name="electronicSignature"/>
-      <field name="group"/>
-      <field name="language"/>
-      <field name="singleTab"/>
-      <field name="noHelp"/>
-      <field name="blocked"/>
-      <field name="sendEmailUponPasswordChange"/>
-      <field name="homeAction"/>
-      <field name="receiveEmails"/>
+      <field name="name" on="UPDATE"/>
+      <field name="code" on="UPDATE"/>
+      <field name="email" on="UPDATE"/>
+      <field name="theme" on="UPDATE"/>
+      <field name="activateOn" on="UPDATE"/>
+      <field name="expiresOn" on="UPDATE"/>
+      <field name="activeCompany" on="UPDATE"/>
+      <field name="partner" on="UPDATE"/>
+      <field name="todayDateT" on="UPDATE"/>
+      <field name="activeTeam" on="UPDATE"/>
+      <field name="fullName" on="UPDATE"/>
+      <field name="iCalendar" on="UPDATE"/>
+      <field name="electronicSignature" on="UPDATE"/>
+      <field name="group" on="UPDATE"/>
+      <field name="language" on="UPDATE"/>
+      <field name="singleTab" on="UPDATE"/>
+      <field name="noHelp" on="UPDATE"/>
+      <field name="blocked" on="UPDATE"/>
+      <field name="sendEmailUponPasswordChange" on="UPDATE"/>
+      <field name="homeAction" on="UPDATE"/>
+      <field name="receiveEmails" on="UPDATE"/>
+      <field name="useSignatureForSalesQuotations" on="UPDATE"/>
+      <field name="useSignatureForPurchaseQuotations" on="UPDATE"/>
+      <field name="stepStatusSelect" on="UPDATE"/>
+      <field name="emailSignature" on="UPDATE"/>
+      <field name="tradingName" on="UPDATE"/>
     </track>
 
   </entity>

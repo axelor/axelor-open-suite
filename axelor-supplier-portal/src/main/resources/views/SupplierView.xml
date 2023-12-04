@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <action-view name="wizard-supplier-view" title="My space"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-supplier-form"/>
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <form name="wizard-supplier-form" title="My space" model="com.axelor.apps.base.db.Wizard"
+  <form name="wizard-supplier-form" title="My space" model="com.axelor.utils.db.Wizard"
     onNew="action-group-supplier-view-onnew" width="large" editable="false" canDelete="false"
     canEdit="false" canNew="false" canSave="false" canCopy="false" canArchive="false"
     canAttach="false">
@@ -37,8 +37,8 @@
     </panel>
     <panel name="indicatorsPanel" colSpan="12">
       <panel name="mainDashboardPanel" colSpan="10" itemSpan="2" colOffset="2">
-        <panel name="purchaseOrderPanel" title="SupplierView.order"
-          if-module="axelor-purchase" itemSpan="12">
+        <panel name="purchaseOrderPanel" title="Purchase order" if-module="axelor-purchase"
+          itemSpan="12">
           <button name="$orders" title="SupplierView.orders" width="190px"
             widget="info-button" onClick="action-method-supplier-view-get-purchase-order"/>
           <button name="$quotationInProgress" title="Quotation in progress" width="190px"
@@ -75,7 +75,7 @@
   </action-group>
 
   <action-method name="action-method-complete-supplier-view-indicators"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <call class="com.axelor.apps.supplierportal.web.SupplierViewController"
       method="completeSupplierViewIndicators"/>
   </action-method>

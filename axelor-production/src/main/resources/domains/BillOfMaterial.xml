@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="BillOfMaterial" lang="java">
+  <entity name="BillOfMaterial">
 
     <string name="name" title="Label"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
     <decimal name="qty" title="Qty" precision="20" scale="10"/>
-    <integer name="priority" title="Priority"/>
     <boolean name="defineSubBillOfMaterial" title="Define sub bill of materials"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
     <many-to-one name="prodProcess" ref="com.axelor.apps.production.db.ProdProcess"
       title="Production process"/>
-    <many-to-many name="billOfMaterialSet"
-      ref="com.axelor.apps.production.db.BillOfMaterial" title="BOMs" orderBy="priority"/>
+    <one-to-many ref="com.axelor.apps.production.db.BillOfMaterialLine"
+      name="billOfMaterialLineList" mappedBy="billOfMaterialParent"/>
     <one-to-many name="prodResidualProductList"
       ref="com.axelor.apps.production.db.ProdResidualProduct" title="Residual products"
       mappedBy="billOfMaterial"/>
@@ -57,7 +56,6 @@
       <field name="name"/>
       <field name="product"/>
       <field name="qty"/>
-      <field name="priority"/>
       <field name="defineSubBillOfMaterial"/>
       <field name="unit"/>
       <field name="prodProcess"/>

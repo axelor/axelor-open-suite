@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.fixedasset;
 
@@ -21,18 +22,19 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.FixedAssetType;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-public class FixedAssetTestTool {
+class FixedAssetTestTool {
 
-  public static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
+  static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
       boolean isProrataTemporis) {
     return createFixedAssetCategoryFromIsProrataTemporis(isProrataTemporis, false);
   }
 
-  public static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
+  static FixedAssetCategory createFixedAssetCategoryFromIsProrataTemporis(
       boolean isProrataTemporis, boolean usProrataTemporis) {
     FixedAssetType fixedAssetType = new FixedAssetType();
     FixedAssetCategory fixedAssetCategory = new FixedAssetCategory();
@@ -42,20 +44,22 @@ public class FixedAssetTestTool {
     return fixedAssetCategory;
   }
 
-  public static FixedAssetLine createFixedAssetLine(
+  static FixedAssetLine createFixedAssetLine(
       LocalDate depreciationDate,
+      BigDecimal depreciationBase,
       BigDecimal depreciation,
       BigDecimal cumulativeDepreciation,
-      BigDecimal residualValue) {
+      BigDecimal accountingValue) {
     FixedAssetLine fixedAssetLine = new FixedAssetLine();
+    fixedAssetLine.setDepreciationBase(depreciationBase);
     fixedAssetLine.setDepreciationDate(depreciationDate);
     fixedAssetLine.setDepreciation(depreciation);
     fixedAssetLine.setCumulativeDepreciation(cumulativeDepreciation);
-    fixedAssetLine.setResidualValue(residualValue);
+    fixedAssetLine.setAccountingValue(accountingValue);
     return fixedAssetLine;
   }
 
-  public static FixedAsset createFixedAsset(
+  static FixedAsset createFixedAsset(
       String computationMethodSelect,
       LocalDate acquisitionDate,
       LocalDate firstDepreciationDate,
@@ -75,7 +79,7 @@ public class FixedAssetTestTool {
         grossValue);
   }
 
-  public static FixedAsset createFixedAsset(
+  static FixedAsset createFixedAsset(
       String computationMethodSelect,
       BigDecimal degressiveCoef,
       LocalDate acquisitionDate,
@@ -89,30 +93,32 @@ public class FixedAssetTestTool {
     fixedAsset.setDegressiveCoef(degressiveCoef);
     fixedAsset.setFirstDepreciationDate(firstDepreciationDate);
     fixedAsset.setAcquisitionDate(acquisitionDate);
+    fixedAsset.setFirstServiceDate(acquisitionDate);
     fixedAsset.setNumberOfDepreciation(numberOfDepreciation);
     fixedAsset.setPeriodicityInMonth(periodicityInMonth);
     fixedAsset.setDurationInMonth(numberOfDepreciation * periodicityInMonth);
     fixedAsset.setFixedAssetCategory(fixedAssetCategory);
     fixedAsset.setGrossValue(grossValue);
+    fixedAsset.setResidualValue(BigDecimal.ZERO);
+    fixedAsset.setDepreciationPlanSelect(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC);
 
     return fixedAsset;
   }
 
   // Compare fields only if fields in expected fixed asset line are not null
-  public static void assertFixedAssetLineEquals(
-      FixedAssetLine expectedLine, FixedAssetLine actualLine) {
+  static void assertFixedAssetLineEquals(FixedAssetLine expectedLine, FixedAssetLine actualLine) {
     if (expectedLine.getDepreciationDate() != null) {
-      Assert.assertEquals(expectedLine.getDepreciationDate(), actualLine.getDepreciationDate());
+      Assertions.assertEquals(expectedLine.getDepreciationDate(), actualLine.getDepreciationDate());
     }
     if (expectedLine.getDepreciation() != null) {
-      Assert.assertEquals(expectedLine.getDepreciation(), actualLine.getDepreciation());
+      Assertions.assertEquals(expectedLine.getDepreciation(), actualLine.getDepreciation());
     }
     if (expectedLine.getCumulativeDepreciation() != null) {
-      Assert.assertEquals(
+      Assertions.assertEquals(
           expectedLine.getCumulativeDepreciation(), actualLine.getCumulativeDepreciation());
     }
-    if (expectedLine.getResidualValue() != null) {
-      Assert.assertEquals(expectedLine.getResidualValue(), actualLine.getResidualValue());
+    if (expectedLine.getAccountingValue() != null) {
+      Assertions.assertEquals(expectedLine.getAccountingValue(), actualLine.getAccountingValue());
     }
   }
 }

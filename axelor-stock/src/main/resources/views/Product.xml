@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <action-record name="action-product-set-stock"
     model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
     <field name="$realQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null,null)"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('stock')"/>
     <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null,null)"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('stock')"/>
     <field name="$reservedQtyBtn"
-      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null,null)"
+      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('supplychain')"/>
   </action-record>
 
@@ -80,7 +80,7 @@
       <panel colSpan="2" name="imagePanel">
         <field name="picture" showTitle="false" colSpan="12" widget="Image"/>
         <field name="barCode" showTitle="false" colSpan="12" widget="Image"
-          if="__config__.app.getApp('base').getActivateBarCodeGeneration()" readonly="true"
+          if="__config__.app.getApp('base')?.getActivateBarCodeGeneration()" readonly="true"
           x-height="50"/>
       </panel>
       <panel name="namePanel" colSpan="10">
@@ -95,19 +95,19 @@
       </panel>
       <panel name="stockPerDayPanel" colSpan="12">
         <field name="$stockPerDayList" title="Stock per day" type="one-to-many"
-          target="com.axelor.apps.base.db.Wizard" grid-view="wizard-stock-perday-grid"
+          target="com.axelor.utils.db.Wizard" grid-view="wizard-stock-perday-grid"
           form-view="wizard-stock-perday-form" readonly="true" colSpan="12"/>
       </panel>
     </panel>
   </form>
 
-  <grid model="com.axelor.apps.base.db.Wizard" title="Stock per day"
+  <grid model="com.axelor.utils.db.Wizard" title="Stock per day"
     name="wizard-stock-perday-grid" orderBy="$date">
     <field name="$date" title="Date" type="date"/>
     <field name="$qty" title="Qty" type="decimal"/>
   </grid>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Stock per day"
+  <form model="com.axelor.utils.db.Wizard" title="Stock per day"
     name="wizard-stock-perday-form" canEdit="false" onNew="action-wizard-stock-per-day-attrs-scale">
     <panel name="mainPanel">
       <field name="$date" title="Date" type="date"/>
@@ -115,6 +115,31 @@
       <button name="showStockMoveLinesBtn" title="Show stock move lines"
         onClick="action-stock-product-method-display-stock-move-line"/>
     </panel>
+  </form>
+
+  <form id="stock-product-form" name="product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//panel[@name='productionInformationsPanel']">
+      <insert position="after">
+        <panel name="trackingNumberPanel" title="Tracking number" showTitle="false"
+          showIf="productTypeSelect == 'storable'" if="__config__.app.isApp('stock')">
+          <panel colSpan="12" name="trackingDetailsPanel">
+            <field name="hasWarranty"/>
+            <field name="warrantyNbrOfMonths" showIf="hasWarranty"/>
+            <field name="isPerishable"/>
+            <field name="perishableNbrOfMonths" showIf="isPerishable"/>
+            <field name="checkExpirationDateAtStockMoveRealization"
+              showIf="hasWarranty || isPerishable"/>
+          </panel>
+          <panel colSpan="12" name="trackingConfigPanel">
+            <field name="trackingNumberConfiguration"
+              requiredIf="checkExpirationDateAtStockMoveRealization" canNew="true"
+              form-view="tracking-number-configuration-form"
+              grid-view="tracking-number-configuration-grid"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-method name="action-stock-product-method-set-stock-per-day">
@@ -144,6 +169,14 @@
     model="com.axelor.apps.stock.db.StockRules">
     <view type="grid" name="stock-rule-product-grid"/>
     <view type="form" name="stock-rules-form"/>
+    <domain>self.product.id = :_id</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-stock-view-stock-history-line" title="Stock history line"
+    model="com.axelor.apps.stock.db.StockHistoryLine">
+    <view type="grid" name="stock-history-line-all-grid"/>
+    <view type="form" name="stock-history-line-all-form"/>
     <domain>self.product.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>

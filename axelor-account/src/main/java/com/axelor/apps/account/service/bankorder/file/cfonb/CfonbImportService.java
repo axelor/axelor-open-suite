@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,20 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.bankorder.file.cfonb;
 
 import com.axelor.apps.account.db.CfonbConfig;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.CfonbConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.tool.file.FileTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.file.FileTool;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -54,12 +56,12 @@ public class CfonbImportService {
     this.appAccountService = appAccountService;
   }
 
-  private void init(CfonbConfig cfonbConfig) {
+  protected void init(CfonbConfig cfonbConfig) {
 
     this.cfonbConfig = cfonbConfig;
   }
 
-  private void init(Company company) throws AxelorException {
+  protected void init(Company company) throws AxelorException {
 
     this.init(cfonbConfigService.getCfonbConfig(company));
   }
@@ -130,8 +132,8 @@ public class CfonbImportService {
     if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.CFONB_IMPORT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     String headerCFONB = null;
@@ -147,8 +149,8 @@ public class CfonbImportService {
       if (headerCFONB == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.CFONB_IMPORT_2),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(headerCFONB);
@@ -157,8 +159,8 @@ public class CfonbImportService {
       if (multiDetailsCFONB.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.CFONB_IMPORT_3),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             fileName);
       }
       for (String detail : multiDetailsCFONB) {
@@ -169,8 +171,8 @@ public class CfonbImportService {
       if (endingCFONB == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.CFONB_IMPORT_4),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(endingCFONB);
@@ -214,8 +216,8 @@ public class CfonbImportService {
     if (appAccountService.getAppAccount().getTransferAndDirectDebitInterbankCode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_IMPORT_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.CFONB_IMPORT_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     String headerCFONB = null;
@@ -231,8 +233,8 @@ public class CfonbImportService {
       if (headerCFONB == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CFONB_IMPORT_2),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.CFONB_IMPORT_2),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(headerCFONB);
@@ -241,8 +243,8 @@ public class CfonbImportService {
       if (multiDetailsCFONB.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CFONB_IMPORT_3),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.CFONB_IMPORT_3),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             fileName);
       }
       for (String detail : multiDetailsCFONB) {
@@ -253,8 +255,8 @@ public class CfonbImportService {
       if (endingCFONB == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CFONB_IMPORT_4),
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+            I18n.get(AccountExceptionMessage.CFONB_IMPORT_4),
+            I18n.get(BaseExceptionMessage.EXCEPTION),
             fileName);
       }
       this.importFile.remove(endingCFONB);
@@ -296,7 +298,7 @@ public class CfonbImportService {
     return importDataList;
   }
 
-  private void checkTotalAmount(
+  protected void checkTotalAmount(
       List<String> multiDetailsCFONB,
       String endingCFONB,
       String fileName,
@@ -311,20 +313,20 @@ public class CfonbImportService {
     int totalRecord = Integer.parseInt(endingCFONB.substring(amountPosStart, amountPosEnd));
 
     log.debug(
-        "Controle du montant total des enregistrement détail ({}) et du montant de l'enregistrement total ({})",
+        "Control of record detail total amount ({}) and record total amount ({})",
         new Object[] {totalAmount, totalRecord});
 
     if (totalAmount != totalRecord) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_IMPORT_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_IMPORT_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           fileName,
           endingCFONB);
     }
   }
 
-  private void testLength(
+  protected void testLength(
       String headerCFONB, List<String> multiDetailsCFONB, String endingCFONB, Company company)
       throws AxelorException {
     //		cfonbToolService.testLength(headerCFONB, 240);
@@ -354,7 +356,7 @@ public class CfonbImportService {
     detailData[3] = detailCFONB.substring(226, 228); // Motif du rejet
 
     log.debug(
-        "Obtention des données d'un enregistrement détail CFONB: Date de rejet = {}, Ref prélèvement = {}, Montant rejeté = {}, Motif du rejet = {}",
+        "Data of CFONB record detail : Rejection date = {}, Direct debit ref = {}, Amount rejected = {}, Rejection reason = {} ",
         new Object[] {detailData[0], detailData[1], detailData[2], detailData[3]});
 
     return detailData;
@@ -367,7 +369,7 @@ public class CfonbImportService {
    * @param detailCFONB Un enregistrement 'détail' d'un rejet de prélèvement au format CFONB
    * @return Les infos de rejet d'un prélèvement ou virement
    */
-  private String getHeaderDate(String headerCFONB) {
+  protected String getHeaderDate(String headerCFONB) {
     return headerCFONB.substring(10, 16);
   }
 
@@ -400,14 +402,14 @@ public class CfonbImportService {
    *
    * @return
    */
-  private String getHeaderCFONB(List<String> file, int operation, int optionalOperation) {
+  protected String getHeaderCFONB(List<String> file, int operation, int optionalOperation) {
     String recordCode = this.getHeaderRecordCode(operation);
     String optionalRecordCode = this.getHeaderRecordCode(optionalOperation);
     String operationCode = this.getImportOperationCode(operation);
     String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
     log.debug(
-        "Obtention enregistrement en-tête CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+        "CFONB record header: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
 
     for (String s : file) {
@@ -440,7 +442,7 @@ public class CfonbImportService {
    *
    * @return 999 si operation non correct
    */
-  private String getHeaderRecordCode(int operation) {
+  protected String getHeaderRecordCode(int operation) {
     if (operation == 0 || operation == 1 || operation == 2) {
       return this.cfonbConfig.getHeaderRecordCodeImportCFONB();
     } else if (operation == 3 || operation == 4) {
@@ -469,7 +471,7 @@ public class CfonbImportService {
     String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
     log.debug(
-        "Obtention enregistrement détails CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+        "CFONB record details: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
 
     for (String s : file) {
@@ -499,7 +501,7 @@ public class CfonbImportService {
    *
    * @return 999 si operation non correct
    */
-  private String getDetailRecordCode(int operation) {
+  protected String getDetailRecordCode(int operation) {
     if (operation == 0 || operation == 1 || operation == 2) {
       return this.cfonbConfig.getDetailRecordCodeImportCFONB();
     } else if (operation == 3 || operation == 4) {
@@ -519,14 +521,14 @@ public class CfonbImportService {
    *
    * @return
    */
-  private String getEndingCFONB(List<String> file, int operation, int optionalOperation) {
+  protected String getEndingCFONB(List<String> file, int operation, int optionalOperation) {
     String operationCode = this.getImportOperationCode(operation);
     String recordCode = this.getEndingRecordCode(operation);
     String optionalRecordCode = this.getEndingRecordCode(optionalOperation);
     String optionalOperationCode = this.getImportOperationCode(optionalOperation);
 
     log.debug(
-        "Obtention enregistrement fin CFONB: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
+        "CFONB record end: recordCode = {}, operationCode = {}, optionalRecordCode = {}, optionalOperationCode = {}",
         new Object[] {recordCode, operationCode, optionalRecordCode, optionalOperationCode});
     for (String s : file) {
       if (s.substring(0, 2).equals(recordCode) || s.substring(0, 2).equals(optionalRecordCode)) {
@@ -554,7 +556,7 @@ public class CfonbImportService {
    *
    * @return 999 si operation non correct
    */
-  private String getEndingRecordCode(int operation) {
+  protected String getEndingRecordCode(int operation) {
     if (operation == 0 || operation == 1 || operation == 2) {
       return this.cfonbConfig.getEndingRecordCodeImportCFONB();
     } else if (operation == 3 || operation == 4) {
@@ -576,7 +578,7 @@ public class CfonbImportService {
    *
    * @return Le code opération
    */
-  private String getImportOperationCode(int operation) {
+  protected String getImportOperationCode(int operation) {
     String operationCode = "";
     switch (operation) {
       case 0:

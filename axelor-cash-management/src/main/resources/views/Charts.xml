@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <chart name="chart.forecast.report.sales" title="Previsional Sales">
     <dataset type="jpql">
@@ -43,5 +43,45 @@
     <category key="date" type="date"/>
     <series key="amount" type="bar"/>
   </chart>
+
+  <chart name="chart.forecast.in.out.total" title="Forecasts in out total"
+    onInit="action-chart-attrs-show-search-fields">
+    <dataset type="jpql"><![CDATA[
+
+		SELECT self.amount as amount,
+		MONTH(self.estimatedDate) as month
+		FROM
+			ForecastRecapLine AS self
+		INNER JOIN self.forecastRecap AS recap ON recap.isReport = true
+		WHERE self.estimatedDate is not null
+		AND (:bankDetails is null OR :bankDetails MEMBER OF recap.bankDetailsSet)
+		AND (recap.userRecap = :_user OR :_user is null)
+		AND self.estimatedDate BETWEEN :fromDate AND :toDate
+
+	   ]]></dataset>
+    <category key="month" type="month" title="Month"/>
+    <series key="amount" type="bar" title="Amount" aggregate="sum"/>
+  </chart>
+
+  <custom name="action-forecast-recap-view-balance-by-bank-details-dashlet-custom"
+    title="Custom">
+    <dataset type="jpql"><![CDATA[
+	   SELECT
+	     ROUND(SUM(self.amount), 2) AS amount,
+	     CASE
+	       WHEN self.relatedToSelectBankDetails IS NULL OR self.relatedToSelectBankDetails = ''
+	       THEN ''
+	       ELSE self.relatedToSelectBankDetails
+	     END AS bankDetails
+	   FROM ForecastRecapLine AS self
+	   WHERE self.forecastRecap.id = :_forecastRecapId
+	   GROUP BY self.relatedToSelectBankDetails
+	   ORDER BY self.relatedToSelectBankDetails
+	 ]]></dataset>
+
+    <template><![CDATA[
+	   <report-table data='data' columns='bankDetails,amount'/>
+	 ]]></template>
+  </custom>
 
 </object-views>

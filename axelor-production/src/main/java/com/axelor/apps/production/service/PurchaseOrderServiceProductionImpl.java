@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,13 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -32,17 +34,20 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
+import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupplychainImpl {
+
+  protected ManufOrderRepository manufOrderRepo;
+  protected AppProductionService appProductionService;
 
   @Inject
   public PurchaseOrderServiceProductionImpl(
@@ -51,22 +56,28 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
-      PurchaseOrderLineService purchaseOrderLineService) {
+      PurchaseOrderLineService purchaseOrderLineService,
+      ManufOrderRepository manufOrderRepo,
+      AppProductionService appProductionService,
+      PartnerStockSettingsService partnerStockSettingsService,
+      StockConfigService stockConfigService) {
     super(
         appSupplychainService,
         accountConfigService,
         appAccountService,
         appBaseService,
         purchaseOrderStockService,
-        budgetSupplychainService,
         purchaseOrderLineRepository,
-        purchaseOrderLineService);
+        purchaseOrderLineService,
+        partnerStockSettingsService,
+        stockConfigService);
+    this.manufOrderRepo = manufOrderRepo;
+    this.appProductionService = appProductionService;
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
       Currency currency,
@@ -76,6 +87,10 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       PriceList priceList,
       TradingName tradingName)
       throws AxelorException {
+
+    List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
+
+    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -87,10 +102,11 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    this.setMergedPurchaseOrderForManufOrder(mergedPurchaseOrder, purchaseOrderList);
+    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
     return mergedPurchaseOrder;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public PurchaseOrder mergePurchaseOrders(
       List<PurchaseOrder> purchaseOrderList,
@@ -103,6 +119,10 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       TradingName tradingName)
       throws AxelorException {
 
+    List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
+
+    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
             purchaseOrderList,
@@ -114,33 +134,17 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    this.setMergedPurchaseOrderForManufOrder(mergedPurchaseOrder, purchaseOrderList);
+    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+
     return mergedPurchaseOrder;
   }
 
-  @SuppressWarnings("unchecked")
-  private void setMergedPurchaseOrderForManufOrder(
-      PurchaseOrder mergedPurchaseOrder, List<PurchaseOrder> purchaseOrderList) {
-
-    AppProductionService appProductionService = Beans.get(AppProductionService.class);
-
-    if (appProductionService.isApp("production")
-        && appProductionService.getAppProduction().getManageOutsourcing()) {
-
-      ManufOrderRepository manufOrderRepository = Beans.get(ManufOrderRepository.class);
-      for (PurchaseOrder purchaseOrder : purchaseOrderList) {
-
-        List<ManufOrder> manufOrderList =
-            (List<ManufOrder>)
-                manufOrderRepository
-                    .all()
-                    .filter("self.purchaseOrder.id = ?1", purchaseOrder.getId());
-
-        for (ManufOrder manufOrder : manufOrderList) {
-          manufOrder.setPurchaseOrder(mergedPurchaseOrder);
-          manufOrderRepository.save(manufOrder);
-        }
-      }
+  protected List<ManufOrder> getManufOrdersOfPurchaseOrders(List<PurchaseOrder> purchaseOrderList) {
+    List<ManufOrder> manufOrderList = new ArrayList<>();
+    for (PurchaseOrder purchaseOrder : purchaseOrderList) {
+      manufOrderList.addAll(
+          manufOrderRepo.all().filter("self.purchaseOrder.id = ?1", purchaseOrder.getId()).fetch());
     }
+    return manufOrderList;
   }
 }

@@ -1,27 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
-  <grid name="wiki-grid" title="Wiki" model="com.axelor.apps.project.db.Wiki">
+  <grid name="wiki-grid" title="Wiki" model="com.axelor.apps.project.db.Wiki"
+    orderBy="folder, sequence" groupBy="folder">
     <field name="title"/>
-    <field name="content"/>
-    <field name="project"/>
+    <field name="folder" hidden="true"/>
   </grid>
 
   <grid title="Wiki" name="wiki-grid-incl-project" model="com.axelor.apps.project.db.Wiki">
     <field name="title"/>
-    <field name="content"/>
+    <field name="folder"/>
   </grid>
 
   <form name="wiki-form" title="Wiki" model="com.axelor.apps.project.db.Wiki" width="large"
-    onNew="action-business-support-attrs-project-default">
+    onNew="action-business-support-attrs-project-default,action-wiki-record-on-new">
     <panel name="mainPanel">
-      <field name="title" colSpan="6"/>
+      <field name="title" colSpan="6" required="true"/>
       <field name="project" colSpan="6" canEdit="false"/>
       <field name="content" widget="HTML" colSpan="12"/>
+      <field name="folder" form-view="wiki-folder-form" grid-view="wiki-folder-grid"
+        canNew="true"/>
+      <field name="sequence"/>
     </panel>
+    <panel-mail name="panelMail">
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
   </form>
+
+  <action-record name="action-wiki-record-on-new"
+    model="com.axelor.apps.project.db.Wiki">
+    <field name="project" expr="eval: _project" if="_project"/>
+  </action-record>
 
 </object-views>

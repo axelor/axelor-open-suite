@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="cost-calculations-grid" title="Cost price calculation"
     model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
     <field name="unitCostCalcSeq"/>
     <field name="name"/>
-    <field name="calculationDate"/>
-    <field name="updateCostDate"/>
+    <field name="calculationDateTime"/>
+    <field name="updateCostDateTime"/>
     <field name="allBomLevels"/>
     <field name="statusSelect"/>
   </grid>
 
   <form name="cost-calculations-form" title="Cost price calculation"
     model="com.axelor.apps.production.db.UnitCostCalculation" width="large"
-    onNew="action-unit-cost-calculation-record-default">
+    onNew="action-unit-cost-calculation-record-default,action-unit-cost-calculation-attrs-set-company-required"
+    onLoad="action-unit-cost-calculation-method-fill-company"
+    onSave="save,action-unit-cost-calculation-method-fill-company-set">
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"
         colSpan="12"/>
@@ -23,12 +25,16 @@
       <field name="name" colSpan="8" required="true"/>
     </panel>
     <panel name="startFilterPanel" colSpan="12" showIf="statusSelect == 1">
-      <field name="companySet" widget="TagSelect" required="true"/>
+      <field name="companySet" widget="TagSelect" required="true"
+        if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+      <field name="$company" title="Company" required="true" type="many-to-one"
+        target="com.axelor.apps.base.db.Company"
+        if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
       <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
         required="true"/>
       <field name="allBomLevels"/>
       <field name="productSet" widget="TagSelect"
-        onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
+        onSelect="action-unit-cost-calculation-method-create-product-domain" colSpan="12"/>
       <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
       <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
     </panel>
@@ -38,12 +44,16 @@
       </panel>
       <panel name="filtersPanel" title="Filters" showIf="statusSelect != 1"
         readonlyIf="statusSelect == 3">
-        <field name="companySet" widget="TagSelect" required="true"/>
+        <field name="companySet" widget="TagSelect" required="true"
+          if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+        <field name="$company" title="Company" required="true" type="many-to-one"
+          target="com.axelor.apps.base.db.Company"
+          if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
         <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
           required="true"/>
         <field name="allBomLevels"/>
         <field name="productSet" widget="TagSelect"
-          onSelect="action-unit-cost-calculation-attrs-domain-on-product" colSpan="12"/>
+          onSelect="action-unit-cost-calculation-method-create-product-domain" colSpan="12"/>
         <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
         <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
       </panel>
@@ -53,19 +63,19 @@
     </panel-tabs>
     <panel name="actionPanel" sidebar="true">
       <button name="runCalculationBtn" title="Run calculation"
-        onClick="save,action-unit-cost-calculation-method-run-calculation"
+        onClick="save,action-unit-cost-calculation-method-fill-company-set,action-unit-cost-calculation-method-run-calculation"
         hideIf="statusSelect == 3"/>
       <button name="updateUnitCostBtn" title="Update costs"
         onClick="save,action-unit-cost-calculation-method-update-unit-costs"
         showIf="statusSelect == 2"/>
       <button name="exportBtn" title="Export"
         onClick="save,action-unit-cost-calculation-method-export-csv" hideIf="statusSelect == 1"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         onClick="save,action-unit-cost-calculation-view-import-csv" showIf="statusSelect == 2"/>
     </panel>
     <panel name="datePanel" sidebar="true" showIf="statusSelect != 1">
-      <field name="calculationDate" readonly="true"/>
-      <field name="updateCostDate" readonly="true"/>
+      <field name="calculationDateTime" readonly="true"/>
+      <field name="updateCostDateTime" readonly="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -74,11 +84,11 @@
   </form>
 
   <form name="wizard-unit-cost-calc-import-form" title="Import CSV"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <panel name="wizardPanel">
       <field name="metaFile" title="Input file" type="many-to-one"
         target="com.axelor.meta.db.MetaFile" widget="binary-link"/>
-      <button name="importBtn" colSpan="4" title="Import" readonlyIf="metaFile == null"
+      <button name="importBtn" colSpan="4" title="import.verb" readonlyIf="metaFile == null"
         onClick="action-unit-cost-calculation-method-import-csv"/>
     </panel>
   </form>
@@ -87,14 +97,6 @@
     model="com.axelor.apps.production.db.UnitCostCalculation">
     <field name="statusSelect" expr="eval:1"/>
   </action-record>
-
-  <action-attrs name="action-unit-cost-calculation-attrs-domain-on-product">
-    <attribute name="domain" for="productSet"
-      expr="eval: &quot;self.productTypeSelect = 'storable' and self.productSubTypeSelect in (&quot;+productSubTypeSelect+&quot;)
-	  and self.defaultBillOfMaterial.company in (&quot;+com.axelor.apps.tool.StringTool.getIdListString(companySet)+&quot;)
-	  and self.procurementMethodSelect in ('produce', 'buyAndProduce')
-	  and self.dtype = 'Product'&quot;"/>
-  </action-attrs>
 
   <action-method name="action-unit-cost-calculation-method-run-calculation">
     <call class="com.axelor.apps.production.web.UnitCostCalculationController"
@@ -116,8 +118,8 @@
       method="importUnitCostCalc"/>
   </action-method>
 
-  <action-view name="action-unit-cost-calculation-view-import-csv" title="Import"
-    model="com.axelor.apps.base.db.Wizard">
+  <action-view name="action-unit-cost-calculation-view-import-csv" title="import.name"
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-unit-cost-calc-import-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>
@@ -127,4 +129,23 @@
     <view-param name="popup" value="reload"/>
   </action-view>
 
+  <action-method name="action-unit-cost-calculation-method-create-product-domain">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="fillProductSetDomain"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-fill-company-set">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="fillCompanySet"/>
+  </action-method>
+
+  <action-method name="action-unit-cost-calculation-method-fill-company">
+    <call class="com.axelor.apps.production.web.UnitCostCalculationController"
+      method="fillCompany"/>
+  </action-method>
+
+  <action-attrs name="action-unit-cost-calculation-attrs-set-company-required">
+    <attribute name="required" for="companySet" expr="false"
+      if="__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
+  </action-attrs>
 </object-views>

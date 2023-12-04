@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="talent" package="com.axelor.apps.talent.db"/>
+
+  <entity name="TrainingSkill">
+    <many-to-one name="employee" title="Employee" ref="com.axelor.apps.hr.db.Employee"/>
+    <many-to-one name="employeeFile" title="Competence certificate"
+      ref="com.axelor.apps.hr.db.EmployeeFile"/>
+    <many-to-one name="skill" title="Skill" ref="com.axelor.apps.talent.db.Skill"/>
+    <date name="graduationDate" title="Graduation date"/>
+    <date name="endOfValidityDate" title="End of validity date"/>
+  </entity>
+
+</domain-models>

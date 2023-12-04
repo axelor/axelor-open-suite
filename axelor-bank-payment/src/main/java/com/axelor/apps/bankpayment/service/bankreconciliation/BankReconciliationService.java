@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,267 +14,107 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.AccountManagement;
-import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.repo.AccountManagementRepository;
-import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.JournalRepository;
-import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
-import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
-import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120.BankReconciliationLoadAFB120Service;
-import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.inject.Beans;
-import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
+import com.axelor.apps.bankpayment.db.BankStatementRule;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.auth.db.User;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
+import java.util.Map;
 
-public class BankReconciliationService {
+public interface BankReconciliationService {
 
-  protected BankReconciliationRepository bankReconciliationRepository;
-  protected AccountService accountService;
-  protected AccountManagementRepository accountManagementRepository;
+  void generateMovesAutoAccounting(BankReconciliation bankReconciliation) throws AxelorException;
 
-  @Inject
-  public BankReconciliationService(
-      BankReconciliationRepository bankReconciliationRepository,
-      AccountService accountService,
-      AccountManagementRepository accountManagementRepository) {
+  Move generateMove(
+      BankReconciliationLine bankReconciliationLine, BankStatementRule bankStatementRule)
+      throws AxelorException;
 
-    this.bankReconciliationRepository = bankReconciliationRepository;
-    this.accountService = accountService;
-    this.accountManagementRepository = accountManagementRepository;
-  }
+  BankReconciliation computeBalances(BankReconciliation bankReconciliation) throws AxelorException;
 
-  @Transactional
-  public void compute(BankReconciliation bankReconciliation) {
+  void compute(BankReconciliation bankReconciliation);
 
-    BigDecimal totalPaid = BigDecimal.ZERO;
-    BigDecimal totalCashed = BigDecimal.ZERO;
+  BankReconciliation saveBR(BankReconciliation bankReconciliation);
 
-    for (BankReconciliationLine bankReconciliationLine :
-        bankReconciliation.getBankReconciliationLineList()) {
-      totalPaid = totalPaid.add(bankReconciliationLine.getDebit());
-      totalCashed = totalCashed.add(bankReconciliationLine.getCredit());
-    }
+  String createDomainForBankDetails(BankReconciliation bankReconciliation);
 
-    bankReconciliation.setTotalPaid(totalPaid);
-    bankReconciliation.setTotalCashed(totalCashed);
-    Account cashAccount = bankReconciliation.getCashAccount();
-    if (cashAccount != null) {
-      bankReconciliation.setAccountBalance(
-          accountService.computeBalance(cashAccount, AccountService.BALANCE_TYPE_DEBIT_BALANCE));
-    }
-    bankReconciliation.setComputedBalance(
-        bankReconciliation.getAccountBalance().add(totalCashed).subtract(totalPaid));
-  }
+  void loadBankStatement(BankReconciliation bankReconciliation);
 
-  public String createDomainForBankDetails(BankReconciliation bankReconciliation) {
+  void loadBankStatement(BankReconciliation bankReconciliation, boolean includeBankStatement);
 
-    return Beans.get(BankDetailsService.class)
-        .getActiveCompanyBankDetails(
-            bankReconciliation.getCompany(), bankReconciliation.getCurrency());
-  }
+  String getJournalDomain(BankReconciliation bankReconciliation);
 
-  @Transactional
-  public void loadBankStatement(BankReconciliation bankReconciliation) {
-    loadBankStatement(bankReconciliation, true);
-  }
+  String getCashAccountDomain(BankReconciliation bankReconciliation);
 
-  @Transactional
-  public void loadBankStatement(
-      BankReconciliation bankReconciliation, boolean includeBankStatement) {
+  Journal getJournal(BankReconciliation bankReconciliation);
 
-    BankStatement bankStatement = bankReconciliation.getBankStatement();
+  Account getCashAccount(BankReconciliation bankReconciliation);
 
-    BankStatementFileFormat bankStatementFileFormat = bankStatement.getBankStatementFileFormat();
+  String getAccountDomain(BankReconciliation bankReconciliation);
 
-    switch (bankStatementFileFormat.getStatementFileFormatSelect()) {
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
-      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
-        Beans.get(BankReconciliationLoadAFB120Service.class)
-            .loadBankStatement(bankReconciliation, includeBankStatement);
-        break;
+  String getRequestMoveLines(BankReconciliation bankReconciliation);
 
-      default:
-        Beans.get(BankReconciliationLoadService.class)
-            .loadBankStatement(bankReconciliation, includeBankStatement);
-    }
+  Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
-    compute(bankReconciliation);
+  BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
-    bankReconciliationRepository.save(bankReconciliation);
-  }
+  void unreconcileLines(List<BankReconciliationLine> bankReconciliationLines);
 
-  public String getJournalDomain(BankReconciliation bankReconciliation) {
+  void unreconcileLine(BankReconciliationLine bankReconciliationLine);
 
-    String journalIds = null;
-    Set<String> journalIdSet = new HashSet<String>();
+  BankReconciliation computeInitialBalance(BankReconciliation bankReconciliation);
 
-    journalIdSet.addAll(getAccountManagementJournals(bankReconciliation));
+  BankReconciliation computeEndingBalance(BankReconciliation bankReconciliation);
 
-    if (bankReconciliation.getBankDetails().getJournal() != null) {
-      journalIdSet.add(bankReconciliation.getBankDetails().getJournal().getId().toString());
-    }
+  BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext);
 
-    journalIds = String.join(",", journalIdSet);
+  String createDomainForMoveLine(BankReconciliation bankReconciliation) throws AxelorException;
 
-    return journalIds;
-  }
+  BankReconciliation onChangeBankStatement(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
-  protected Set<String> getAccountManagementJournals(BankReconciliation bankReconciliation) {
-    Set<String> journalIdSet = new HashSet<String>();
-    Account cashAccount = bankReconciliation.getCashAccount();
-    List<AccountManagement> accountManagementList = new ArrayList<>();
+  void checkReconciliation(List<MoveLine> moveLines, BankReconciliation br) throws AxelorException;
 
-    if (cashAccount != null) {
-      accountManagementList =
-          accountManagementRepository
-              .all()
-              .filter(
-                  "self.bankDetails = ?1 and self.cashAccount = ?2",
-                  bankReconciliation.getBankDetails(),
-                  cashAccount)
-              .fetch();
-    } else {
-      accountManagementList =
-          accountManagementRepository
-              .all()
-              .filter("self.bankDetails = ?1", bankReconciliation.getBankDetails())
-              .fetch();
-    }
+  BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
-    for (AccountManagement accountManagement : accountManagementList) {
-      if (accountManagement.getJournal() != null) {
-        journalIdSet.add(accountManagement.getJournal().getId().toString());
-      }
-    }
-    return journalIdSet;
-  }
+  String getDomainForWizard(
+      BankReconciliation bankReconciliation,
+      BigDecimal bankStatementCredit,
+      BigDecimal bankStatementDebit);
 
-  public Journal getJournal(BankReconciliation bankReconciliation) {
+  BigDecimal getSelectedMoveLineTotal(
+      BankReconciliation bankReconciliation, List<LinkedHashMap> toReconcileMoveLineSet);
 
-    Journal journal = null;
-    String journalIds = String.join(",", getAccountManagementJournals(bankReconciliation));
-    if (bankReconciliation.getBankDetails().getJournal() != null) {
-      journal = bankReconciliation.getBankDetails().getJournal();
-    } else if (!Strings.isNullOrEmpty(journalIds) && (journalIds.split(",").length) == 1) {
-      journal = Beans.get(JournalRepository.class).find(Long.parseLong(journalIds));
-    }
-    return journal;
-  }
+  void mergeSplitedReconciliationLines(BankReconciliation bankReconciliation);
 
-  public String getCashAccountDomain(BankReconciliation bankReconciliation) {
+  boolean getIsCorrectButtonHidden(BankReconciliation bankReconciliation) throws AxelorException;
 
-    String cashAccountIds = null;
-    Set<String> cashAccountIdSet = new HashSet<String>();
+  String getCorrectedLabel(LocalDateTime correctedDateTime, User correctedUser)
+      throws AxelorException;
 
-    cashAccountIdSet.addAll(getAccountManagementCashAccounts(bankReconciliation));
+  void correct(BankReconciliation bankReconciliation, User user);
 
-    if (bankReconciliation.getBankDetails().getBankAccount() != null) {
-      cashAccountIdSet.add(bankReconciliation.getBankDetails().getBankAccount().getId().toString());
-    }
+  BigDecimal computeBankReconciliationLinesSelection(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
-    cashAccountIds = String.join(",", cashAccountIdSet);
+  BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
+      throws AxelorException;
 
-    return cashAccountIds;
-  }
-
-  protected Set<String> getAccountManagementCashAccounts(BankReconciliation bankReconciliation) {
-    List<AccountManagement> accountManagementList;
-    Journal journal = bankReconciliation.getJournal();
-    Set<String> cashAccountIdSet = new HashSet<String>();
-    BankDetails bankDetails = bankReconciliation.getBankDetails();
-
-    if (journal != null) {
-      accountManagementList =
-          accountManagementRepository
-              .all()
-              .filter("self.bankDetails = ?1 AND self.journal = ?2", bankDetails, journal)
-              .fetch();
-    } else {
-      accountManagementList =
-          accountManagementRepository.all().filter("self.bankDetails = ?1", bankDetails).fetch();
-    }
-
-    for (AccountManagement accountManagement : accountManagementList) {
-      if (accountManagement.getCashAccount() != null) {
-        cashAccountIdSet.add(accountManagement.getCashAccount().getId().toString());
-      }
-    }
-    return cashAccountIdSet;
-  }
-
-  public Account getCashAccount(BankReconciliation bankReconciliation) {
-
-    Account cashAccount = null;
-    String cashAccountIds = String.join(",", getAccountManagementCashAccounts(bankReconciliation));
-    if (bankReconciliation.getBankDetails().getBankAccount() != null) {
-      cashAccount = bankReconciliation.getBankDetails().getBankAccount();
-
-    } else if (!Strings.isNullOrEmpty(cashAccountIds) && (cashAccountIds.split(",").length) == 1) {
-      cashAccount = Beans.get(AccountRepository.class).find(Long.parseLong(cashAccountIds));
-    }
-    return cashAccount;
-  }
-
-  public String getAccountDomain(BankReconciliation bankReconciliation) {
-    if (bankReconciliation != null) {
-      String domain = "self.id != 0";
-      if (bankReconciliation.getCompany() != null) {
-        domain = domain.concat(" AND self.company.id = " + bankReconciliation.getCompany().getId());
-      }
-      if (bankReconciliation.getCashAccount() != null) {
-        domain = domain.concat(" AND self.id != " + bankReconciliation.getCashAccount().getId());
-      }
-      if (bankReconciliation.getJournal() != null
-          && !CollectionUtils.isEmpty(bankReconciliation.getJournal().getValidAccountTypeSet())) {
-        domain =
-            domain.concat(
-                " AND (self.accountType.id IN "
-                    + bankReconciliation.getJournal().getValidAccountTypeSet().stream()
-                        .map(AccountType::getId)
-                        .map(id -> id.toString())
-                        .collect(Collectors.joining("','", "('", "')"))
-                        .toString());
-      } else {
-        domain = domain.concat(" AND (self.accountType.id = 0");
-      }
-      if (bankReconciliation.getJournal() != null
-          && !CollectionUtils.isEmpty(bankReconciliation.getJournal().getValidAccountSet())) {
-        domain =
-            domain.concat(
-                " OR self.id IN "
-                    + bankReconciliation.getJournal().getValidAccountSet().stream()
-                        .map(Account::getId)
-                        .map(id -> id.toString())
-                        .collect(Collectors.joining("','", "('", "')"))
-                        .toString()
-                    + ")");
-      } else {
-        domain = domain.concat(" OR self.id = 0)");
-      }
-      return domain;
-    }
-    return "self.id = 0";
-  }
+  void checkAccountBeforeAutoAccounting(
+      BankStatementRule bankStatementRule, BankReconciliation bankReconciliation)
+      throws AxelorException;
 }

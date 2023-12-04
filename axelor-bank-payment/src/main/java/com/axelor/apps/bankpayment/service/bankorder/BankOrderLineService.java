@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
@@ -24,7 +25,8 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
@@ -32,15 +34,15 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.tool.StringTool;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.utils.StringTool;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -176,7 +178,8 @@ public class BankOrderLineService {
     }
 
     if (bankOrderFileFormat.getIsMultiDate()) {
-      bankOrderLine.setBankOrderDate(bankOrderDate);
+      LocalDate todayDate = Beans.get(AppBaseService.class).getTodayDate(receiverCompany);
+      bankOrderLine.setBankOrderDate(bankOrderDate.isBefore(todayDate) ? todayDate : bankOrderDate);
     }
 
     bankOrderLine.setReceiverReference(receiverReference);
@@ -202,7 +205,7 @@ public class BankOrderLineService {
         throw new AxelorException(
             bankOrderLine,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
       }
 
       bankOrderLine.setPaymentModeSelect(bankOrderFileFormat.getPaymentModeSelect());
@@ -228,26 +231,26 @@ public class BankOrderLineService {
         throw new AxelorException(
             bankOrderLine,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_COMPANY_MISSING));
       }
     }
     if (bankOrderLine.getPartner() == null) {
       throw new AxelorException(
           bankOrderLine,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_LINE_PARTNER_MISSING));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_PARTNER_MISSING));
     }
     if (bankOrderLine.getReceiverBankDetails() == null) {
       throw new AxelorException(
           bankOrderLine,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
     }
     if (bankOrderLine.getBankOrderAmount().compareTo(BigDecimal.ZERO) <= 0) {
       throw new AxelorException(
           bankOrderLine,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE));
     }
   }
 
@@ -359,7 +362,7 @@ public class BankOrderLineService {
     }
 
     try {
-      checkBankDetails(candidateBankDetails, bankOrder);
+      checkBankDetails(candidateBankDetails, bankOrder, bankOrderLine);
     } catch (AxelorException e) {
       candidateBankDetails = null;
     }
@@ -367,19 +370,21 @@ public class BankOrderLineService {
     return candidateBankDetails;
   }
 
-  public void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder)
+  public void checkBankDetails(
+      BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException {
     if (bankDetails == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_MISSING));
     }
 
     // check if the bank details is active
     if (!bankDetails.getActive()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE));
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE),
+          bankOrderLine.getSequence());
     }
 
     // filter on the result from bankPartner if the option is active.
@@ -394,7 +399,7 @@ public class BankOrderLineService {
       if (!ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));
       }
     }
 
@@ -404,7 +409,7 @@ public class BankOrderLineService {
           .checkBankDetailsTypeCompatible(bankDetails, bankOrder.getBankOrderFileFormat())) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
+            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE));
       }
     }
 
@@ -417,12 +422,13 @@ public class BankOrderLineService {
           .checkBankDetailsCurrencyCompatible(bankDetails, bankOrder)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(IExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
+            I18n.get(
+                BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
       }
     }
   }
 
-  private boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
+  protected boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
     return (ebicsPartner != null)
         && (ebicsPartner.getFilterReceiverBD())
         && (ebicsPartner.getReceiverBankDetailsSet() != null)

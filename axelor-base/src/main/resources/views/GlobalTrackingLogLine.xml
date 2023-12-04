@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="global-tracking-log-line-grid" title="Global tracking log lines"
     model="com.axelor.apps.base.db.GlobalTrackingLogLine">
@@ -25,8 +25,10 @@
   <form name="global-tracking-log-line-form" title="Global tracking log line"
     model="com.axelor.apps.base.db.GlobalTrackingLogLine">
     <panel colSpan="12">
-      <field name="globalTrackingLog.metaModel" colSpan="3"/>
-      <field name="globalTrackingLog.relatedId" colSpan="2"/>
+      <field name="globalTrackingLog.metaModel" colSpan="4"/>
+      <field name="globalTrackingLog.relatedId" colSpan="3"/>
+      <button name="showReferenceBtn" title="Show the reference" css="btn-primary"
+        icon="fa-share" onClick="action-method-show-global-tracking-line-reference" colSpan="5"/>
       <field name="globalTrackingLog.user" colSpan="4"/>
       <field name="globalTrackingLog.dateT" colSpan="3"/>
       <field name="globalTrackingLog.typeSelect" hidden="true"/>
@@ -40,6 +42,11 @@
       <field name="newValue" colSpan="6"/>
     </panel>
   </form>
+
+  <action-method name="action-method-show-global-tracking-line-reference">
+    <call class="com.axelor.apps.base.tracking.GlobalTrackingLogLineController"
+      method="showGlobalTrackingLogLineReference"/>
+  </action-method>
 
 
 </object-views>

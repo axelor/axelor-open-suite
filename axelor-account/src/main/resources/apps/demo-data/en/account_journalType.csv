@@ -1,0 +1,6 @@
+"importId";"code";"name";"isDisplayBalances";"accountTypeSet";"technicalTypeSelect"
+1;"SAL";"Sale";;;2
+2;"REF";"Refund";;;4
+3;"CSH";"Cash";"true";"cash";3
+4;"PCH";"Purchase";;;1
+5;"OTH";"Other";;;5

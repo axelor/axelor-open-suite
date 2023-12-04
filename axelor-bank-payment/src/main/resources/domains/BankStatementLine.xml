@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatementLine" lang="java" persistable="true" strategy="CLASS">
+  <entity name="BankStatementLine" persistable="true" strategy="CLASS">
 
     <date name="operationDate" title="Operation date"/>
     <date name="valueDate" title="Value date"/>
@@ -19,10 +19,10 @@
       title="Bank details" index="false"/>
 
     <many-to-one name="operationInterbankCodeLine"
+      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code" index="false"/>
+    <many-to-one name="rejectInterbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejects/Return Reason Code"
       index="false"/>
-    <many-to-one name="rejectInterbankCodeLine"
-      ref="com.axelor.apps.account.db.InterbankCodeLine" title="Operation Code" index="false"/>
 
     <string name="description" title="Description" large="true" multiline="true"/>
     <string name="reference" title="Reference"/>
@@ -30,12 +30,18 @@
 
     <many-to-one name="bankStatement" ref="com.axelor.apps.bankpayment.db.BankStatement"
       title="Bank statement" index="false"/>
+    <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
+      title="Move line"/>
 
+    <!-- Used in BankStatementQueries -->
+    <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+      title="Payment Mode"/>
     <integer name="sequence" title="Sequence"/>
 
     <!-- Used for Bank reconcile process -->
     <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
 
+    <finder-method name="findByBankStatement" using="bankStatement" all="true"/>
   </entity>
 
 </domain-models>

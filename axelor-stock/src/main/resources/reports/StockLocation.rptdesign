@@ -319,8 +319,6 @@ LEFT JOIN
 LEFT JOIN 
 	meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 WHERE
-	Location.type_select in (1,2)
-AND
 	Location.id in (@INJECTID)]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -906,7 +904,7 @@ LEFT OUTER JOIN
 	stock_stock_config AS StockConfig ON (StockConfig.company = Company.id) 
 LEFT JOIN 
 	base_currency AS Currency ON (Currency.id = Company.currency)
-where StockLocationLine.current_qty != 0	and Location.type_select in (1,2) and Location.id in (@INJECTID)
+where StockLocationLine.current_qty != 0	and Location.id in (@INJECTID)
 order by Product.code
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -1104,23 +1102,12 @@ order by Product.code
                 <cell id="3350">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
-                    <text id="5359">
-                        <list-property name="visibility">
-                            <structure>
-                                <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
-                            </structure>
-                        </list-property>
-                        <structure name="toc"/>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                    <image id="5395">
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="4400">
                     <property name="colSpan">1</property>
@@ -2749,7 +2736,7 @@ if(params["PrintType"].value.equals('2'))
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row["is_display_accounting_value_in_printing"] &amp;&amp; !row["is_display_sale_value_in_printing"] &amp;&amp; !row["is_display_ag_price_in_printing"]</expression>
+                                <expression name="valueExpr" type="javascript">(params["PrintType"].value.equals('2')) || (!row["is_display_accounting_value_in_printing"] &amp;&amp; !row["is_display_sale_value_in_printing"] &amp;&amp; !row["is_display_ag_price_in_printing"])</expression>
                             </structure>
                         </list-property>
                         <cell id="4572"/>

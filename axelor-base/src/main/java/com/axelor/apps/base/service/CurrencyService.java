@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,21 +14,22 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
+import com.axelor.utils.date.DateTool;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -46,20 +48,24 @@ public class CurrencyService {
 
   protected AppBaseService appBaseService;
 
+  protected CurrencyConversionLineRepository currencyConversionLineRepo;
+
   private LocalDate today;
 
   @Inject
-  public CurrencyService(AppBaseService appBaseService) {
+  public CurrencyService(
+      AppBaseService appBaseService, CurrencyConversionLineRepository currencyConversionLineRepo) {
 
     this.appBaseService = appBaseService;
     this.today =
         appBaseService.getTodayDate(
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+    this.currencyConversionLineRepo = currencyConversionLineRepo;
   }
 
-  public CurrencyService(LocalDate today) {
+  public CurrencyService(AppBaseService appBaseService, LocalDate today) {
 
-    this.appBaseService = Beans.get(AppBaseService.class);
+    this.appBaseService = appBaseService;
     this.today = today;
   }
 
@@ -93,7 +99,7 @@ public class CurrencyService {
         if (currencyConversionLine == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.CURRENCY_1),
+              I18n.get(BaseExceptionMessage.CURRENCY_1),
               startCurrency.getName(),
               endCurrency.getName(),
               dateToConvert);
@@ -104,7 +110,7 @@ public class CurrencyService {
       if (exchangeRate == null || exchangeRate.compareTo(BigDecimal.ZERO) == 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CURRENCY_2),
+            I18n.get(BaseExceptionMessage.CURRENCY_2),
             startCurrency.getName(),
             endCurrency.getName(),
             dateToConvert);
@@ -118,7 +124,7 @@ public class CurrencyService {
     return BigDecimal.ONE;
   }
 
-  private CurrencyConversionLine getCurrencyConversionLine(
+  protected CurrencyConversionLine getCurrencyConversionLine(
       Currency startCurrency, Currency endCurrency, LocalDate localDate) {
 
     List<CurrencyConversionLine> currencyConversionLineList =
@@ -133,10 +139,10 @@ public class CurrencyService {
 
     for (CurrencyConversionLine ccl : currencyConversionLineList) {
 
-      String cclStartCode = ccl.getStartCurrency().getCode();
-      String cclEndCode = ccl.getEndCurrency().getCode();
-      String startCode = startCurrency.getCode();
-      String endCode = endCurrency.getCode();
+      String cclStartCode = ccl.getStartCurrency().getCodeISO();
+      String cclEndCode = ccl.getEndCurrency().getCodeISO();
+      String startCode = startCurrency.getCodeISO();
+      String endCode = endCurrency.getCodeISO();
       LocalDate fromDate = ccl.getFromDate();
       LocalDate toDate = ccl.getToDate();
 
@@ -193,7 +199,9 @@ public class CurrencyService {
     // So we convert the amount
     if (exchangeRate.compareTo(BigDecimal.ONE) != 0) {
 
-      return amount.multiply(exchangeRate).setScale(2, RoundingMode.HALF_UP);
+      return amount
+          .multiply(exchangeRate)
+          .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     }
 
     return amount;
@@ -206,5 +214,47 @@ public class CurrencyService {
     }
 
     return date;
+  }
+
+  public void checkOverLappingPeriod(
+      CurrencyConversionLine currentCcl, List<CurrencyConversionLine> currencyConversionLines)
+      throws AxelorException {
+
+    LocalDate fromDate = currentCcl.getFromDate();
+    LocalDate toDate = currentCcl.getToDate();
+    Currency startCurrency = currentCcl.getStartCurrency();
+    Currency endCurrency = currentCcl.getEndCurrency();
+
+    if (fromDate != null && toDate != null && fromDate.isAfter(toDate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.CURRENCY_4));
+    }
+
+    for (CurrencyConversionLine existingCcl : currencyConversionLines) {
+      if (existingCcl.equals(currentCcl)
+          || !(existingCcl.getStartCurrency().equals(startCurrency)
+              && existingCcl.getEndCurrency().equals(endCurrency))) {
+        continue;
+      }
+
+      LocalDate existingFromDate = existingCcl.getFromDate();
+      LocalDate existingToDate = existingCcl.getToDate();
+
+      if (existingToDate == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.CURRENCY_3),
+            startCurrency.getCodeISO(),
+            endCurrency.getCodeISO(),
+            existingFromDate);
+      } else if (DateTool.isBetween(existingFromDate, existingToDate, fromDate)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.CURRENCY_11),
+            startCurrency.getCodeISO(),
+            endCurrency.getCodeISO());
+      }
+    }
   }
 }

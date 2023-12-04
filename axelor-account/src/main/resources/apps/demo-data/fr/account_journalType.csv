@@ -1,0 +1,6 @@
+"importId";"code";"name";"isDisplayBalances";"accountTypeSet";"technicalTypeSelect"
+1;"VTE";"Vente";;;2
+2;"AVR";"Avoir";;;3
+3;"TRS";"Trésorerie";"true";"cash";4
+4;"ACH";"Achat";;;1
+5;"OTH";"Autres";;;5

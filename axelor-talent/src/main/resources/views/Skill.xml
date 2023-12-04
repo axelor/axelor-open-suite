@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="tag-skill-grid" title="Tag skills" model="com.axelor.apps.talent.db.Skill">
     <field name="name"/>
+    <field name="validityDuration"/>
+    <field name="typeSelect"/>
   </grid>
 
   <form name="tag-skill-form" title="Tag skill" model="com.axelor.apps.talent.db.Skill"
     width="large">
     <panel name="namePanel">
       <field name="name"/>
+      <field name="validityDuration" canNew="true"/>
+      <field name="typeSelect"/>
     </panel>
   </form>
 

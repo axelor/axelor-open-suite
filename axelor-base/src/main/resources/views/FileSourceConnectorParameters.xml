@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="file-source-connector-parameters-grid" title="File source connectors parameters"
+    model="com.axelor.apps.base.db.FileSourceConnectorParameters">
+    <field name="name"/>
+    <field name="fileSourceConnector"/>
+  </grid>
+
+  <form name="file-source-connector-parameters-form" title="File source connector parameters"
+    model="com.axelor.apps.base.db.FileSourceConnectorParameters">
+    <panel name="mainPanel">
+      <field name="name" colSpan="6"/>
+      <field name="fileSourceConnector" colSpan="3"/>
+      <field name="fileSourceConnector.connectionType" colSpan="3"/>
+    </panel>
+    <panel-tabs>
+      <panel
+        showIf="fileSourceConnector != null &amp;&amp; fileSourceConnector.connectionType == 1"
+        name="FTPPanel" title="FTP information">
+        <field name="sourceFolder" colSpan="6"/>
+        <field name="destinationFolder" colSpan="6"/>
+        <field name="fileNamingRule" colSpan="6"/>
+
+      </panel>
+    </panel-tabs>
+
+  </form>
+
+</object-views>

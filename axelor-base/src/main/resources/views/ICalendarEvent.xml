@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent"
     title="Events" orderBy="-startDateTime">
@@ -66,7 +66,7 @@
     <panel name="addGuestsPanel" title="Add Guests" sidebar="true">
       <field name="$guestEmail" title="Email address" colSpan="12" type="many-to-one"
         canNew="true" onChange="action-icalendar-event-method-add-email-guest"
-        target="com.axelor.apps.message.db.EmailAddress"/>
+        target="com.axelor.message.db.EmailAddress"/>
     </panel>
     <panel name="guestsPanel" title="Guests" showIf="attendees.length != 0" colSpan="12"
       sidebar="true">
@@ -81,12 +81,6 @@
 
   <calendar name="calendar-event-all" model="com.axelor.apps.base.db.ICalendarEvent"
     title="Calendar" eventStart="startDateTime" eventStop="endDateTime" colorBy="calendar">
-    <field name="subject"/>
-  </calendar>
-
-  <calendar name="calendar-event-leave-request"
-    model="com.axelor.apps.base.db.ICalendarEvent" title="Calendar" eventStart="startDateTime"
-    eventStop="endDateTime" colorBy="user" editable="false">
     <field name="subject"/>
   </calendar>
 

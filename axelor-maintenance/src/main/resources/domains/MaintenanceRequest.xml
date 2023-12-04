@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="maintenance" package="com.axelor.apps.maintenance.db"/>
 
-  <entity name="MaintenanceRequest" lang="java">
+  <entity name="MaintenanceRequest">
     <many-to-one name="equipementMaintenance" ref="EquipementMaintenance"/>
     <integer name="statusSelect" title="State"
       selection="maintenance.maintenance.request.status.select"/>
     <date name="requestDate" title="Request date" required="true"/>
     <many-to-one name="requestBy" ref="com.axelor.auth.db.User" title="Request By"/>
     <date name="expectedDate" title="Expected date" required="true"/>
-    <integer name="durationHours" title="Duration (Hours)"/>
+    <decimal name="durationHours" title="Duration (Hours)"/>
     <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
     <string name="mtnTask" title="Maintenance task" large="true"/>
     <integer name="actionSelect" title="Action"

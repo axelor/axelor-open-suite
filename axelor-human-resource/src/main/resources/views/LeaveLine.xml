@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="leave-line-grid" title="Leave line" model="com.axelor.apps.hr.db.LeaveLine"
     orderBy="leaveReason">
@@ -24,7 +24,7 @@
     width="large">
     <panel name="mainPanel">
       <field name="leaveReason" grid-view="leave-reason-grid" form-view="leave-reason-form"
-        onChange="action-leave-line-record-set-name"/>
+        domain="self.manageAccumulation = true" onChange="action-leave-line-record-set-name"/>
       <field name="quantity" readonly="true"/>
       <field name="daysToValidate" readonly="true" colSpan="4"/>
       <field name="daysValidated" readonly="true" colSpan="4"/>

@@ -1,0 +1,13 @@
+---
+name: Stock
+code: stock
+typeSelect: standard
+installOrder: 2030
+description: |
+   Stock configuration
+image: app-stock.png
+modules: 
+   axelor-stock
+dependsOn:
+   - base
+sequence: 14

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,17 +14,21 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.repo.DurationRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -46,30 +51,33 @@ public class DurationServiceImpl implements DurationService {
   }
 
   @Override
-  public BigDecimal computeRatio(LocalDate start, LocalDate end, Duration duration) {
+  public BigDecimal computeRatio(
+      LocalDate start, LocalDate end, LocalDate totalStart, LocalDate totalEnd) {
     Preconditions.checkNotNull(
         start, I18n.get("You can't compute a" + " duration ratio without start date."));
     Preconditions.checkNotNull(
         end, I18n.get("You can't compute a" + " duration ratio without end date."));
-    if (duration == null) {
-      return BigDecimal.ONE;
-    }
-    end = end.plus(1, ChronoUnit.DAYS);
+    totalEnd = totalEnd.plus(1, ChronoUnit.DAYS);
 
-    if (duration.getTypeSelect() == DurationRepository.TYPE_MONTH) {
-      long months = ChronoUnit.MONTHS.between(start, end);
-      LocalDate theoryEnd = start.plusMonths(months);
-      long restDays = ChronoUnit.DAYS.between(theoryEnd, end);
-      long daysInMonth = ChronoUnit.DAYS.between(theoryEnd, theoryEnd.plusMonths(1));
-      return BigDecimal.valueOf(months)
-          .add(
-              BigDecimal.valueOf(restDays)
-                  .divide(BigDecimal.valueOf(daysInMonth), MathContext.DECIMAL32))
-          .divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+    long totalDays = ChronoUnit.DAYS.between(totalStart, totalEnd);
+    long totalComputedDays = ChronoUnit.DAYS.between(start, end) + 1;
+    return BigDecimal.valueOf(totalComputedDays)
+        .divide(
+            BigDecimal.valueOf(totalDays),
+            AppBaseService.COMPUTATION_SCALING,
+            RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public BigDecimal getFactor(int durationType) throws AxelorException {
+    if (durationType == DurationRepository.TYPE_MONTH) {
+      return BigDecimal.valueOf(12);
+    } else if (durationType == DurationRepository.TYPE_DAY) {
+      return BigDecimal.valueOf(365);
     } else {
-      long restDays = ChronoUnit.DAYS.between(start, end);
-      return BigDecimal.valueOf(restDays)
-          .divide(BigDecimal.valueOf(duration.getValue()), MathContext.DECIMAL32);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(I18n.get(BaseExceptionMessage.UNKNOWN_DURATION), durationType));
     }
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate"
     title="Project template">
@@ -58,7 +58,6 @@
         if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
         <field name="isInvoicingExpenses" colSpan="4"/>
         <field name="isInvoicingPurchases" colSpan="4"/>
-        <field name="invoicingTypeSelect" colSpan="6"/>
         <field name="invoicingComment" colSpan="12"/>
       </panel>
 
@@ -73,10 +72,10 @@
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect"/>
-        <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
+        <field name="projectFolderSet" colSpan="12" widget="TagSelect"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
         <field name="imputable" colSpan="4" widget="boolean-switch"
           if="__config__.app.isApp('employee')" if-module="axelor-human-resource"/>
-        <field name="excludePlanning" if-module="axelor-business-project"/>
       </panel>
     </panel-tabs>
 
@@ -89,14 +88,14 @@
 
     <panel name="followUpPanel" colSpan="12" title="Follow-up" sidebar="true"
       canCollapse="true">
-      <field name="assignedTo" title="Person In Charge" canNew="false" canView="false"
+      <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
         canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
         grid-view="user-grid"/>
     </panel>
   </form>
 
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Create project from this template"
+  <form model="com.axelor.utils.db.Wizard" title="Create project from this template"
     name="project-template-wizard-form" onNew="action-attrs-project-template-set-wizard-hidden"
     onLoad="action-attrs-project-template-set-wizard-hidden">
     <panel name="mainPanel" colSpan="12">

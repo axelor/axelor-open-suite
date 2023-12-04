@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,25 +14,26 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.web;
 
-import com.axelor.apps.ReportFactory;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
-import com.axelor.apps.businessproject.report.IReport;
+import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
+import com.axelor.apps.businessproject.service.ProjectHistoryService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -39,7 +41,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +72,7 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     if (project.getId() != null) {
       response.setView(
-          ActionView.define("Purchase Order")
+          ActionView.define(I18n.get("Purchase Order"))
               .model(PurchaseOrder.class.getName())
               .add("form", "purchase-order-form")
               .add("grid", "purchase-order-quotation-grid")
@@ -76,49 +80,6 @@ public class ProjectController {
               .context("_project", Beans.get(ProjectRepository.class).find(project.getId()))
               .map());
     }
-  }
-
-  public void printProject(ActionRequest request, ActionResponse response) throws AxelorException {
-    Project project = request.getContext().asType(Project.class);
-
-    String name = I18n.get("Project") + " " + (project.getCode() != null ? project.getCode() : "");
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PROJECT, name + "-${date}")
-            .addParam("ProjectId", project.getId())
-            .addParam(
-                "Timezone",
-                project.getCompany() != null ? project.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(project)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
-  }
-
-  // TODO: Duration is removed. Have to change calcuation
-  public void computeProgress(ActionRequest request, ActionResponse response) {
-
-    //    Project project = request.getContext().asType(Project.class);
-
-    BigDecimal duration = BigDecimal.ZERO;
-    //    if (BigDecimal.ZERO.compareTo(project.getDuration()) != 0) {
-    //      duration =
-    //          project
-    //              .getTimeSpent()
-    //              .add(project.getLeadDelay())
-    //              .divide(project.getDuration(), 2, java.math.RoundingMode.HALF_UP)
-    //              .multiply(new BigDecimal(100));
-    //    }
-
-    if (duration.compareTo(BigDecimal.ZERO) == -1 || duration.compareTo(new BigDecimal(100)) == 1) {
-      duration = BigDecimal.ZERO;
-    }
-
-    response.setValue("progress", duration);
   }
 
   public void countToInvoice(ActionRequest request, ActionResponse response) {
@@ -139,38 +100,13 @@ public class ProjectController {
     project = Beans.get(ProjectRepository.class).find(project.getId());
 
     response.setView(
-        ActionView.define("Invoice Buisness Project")
+        ActionView.define(I18n.get("Invoice Business Project"))
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
             .param("forceEdit", "true")
             .param("show-toolbar", "false")
             .context("_project", project)
             .map());
-  }
-
-  public void printPlannifAndCost(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    Project project = request.getContext().asType(Project.class);
-
-    String name = I18n.get("Planification and costs");
-
-    if (project.getCode() != null) {
-      name += " (" + project.getCode() + ")";
-    }
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PLANNIF_AND_COST, name)
-            .addParam("ProjectId", project.getId())
-            .addParam(
-                "Timezone",
-                project.getCompany() != null ? project.getCompany().getTimezone() : null)
-            .addParam("Locale", ReportSettings.getPrintingLocale(null))
-            .toAttach(project)
-            .generate()
-            .getFileLink();
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   public void getPartnerData(ActionRequest request, ActionResponse response) {
@@ -188,5 +124,60 @@ public class ProjectController {
                   .getDefaultPriceList(project.getClientPartner(), PriceListRepository.TYPE_SALE)
               : null);
     }
+  }
+
+  public void computeProjectTotals(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Project project = request.getContext().asType(Project.class);
+
+    Beans.get(ProjectBusinessService.class).computeProjectTotals(project);
+    response.setNotify(I18n.get(BusinessProjectExceptionMessage.PROJECT_UPDATE_TOTALS_SUCCESS));
+    response.setReload(true);
+  }
+
+  public void getProjectTimeFollowUpData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_REPORT_NO_ID_FOUND);
+    }
+    Map<String, Object> data =
+        Beans.get(ProjectBusinessService.class)
+            .processRequestToDisplayTimeReporting(Long.valueOf(id));
+    response.setData(List.of(data));
+  }
+
+  public void getProjectFinancialFollowUpData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_REPORT_NO_ID_FOUND);
+    }
+
+    Map<String, Object> data =
+        Beans.get(ProjectBusinessService.class)
+            .processRequestToDisplayFinancialReporting(Long.valueOf(id));
+    response.setData(List.of(data));
+  }
+
+  public void getProjectHistoryData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String id = Optional.ofNullable(request.getData().get("id")).map(Object::toString).orElse("");
+
+    if (StringUtils.isBlank(id)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          BusinessProjectExceptionMessage.PROJECT_REPORT_NO_ID_FOUND);
+    }
+    Map<String, Object> data =
+        Beans.get(ProjectHistoryService.class)
+            .processRequestToDisplayProjectHistory(Long.valueOf(id));
+    response.setData(List.of(data));
   }
 }

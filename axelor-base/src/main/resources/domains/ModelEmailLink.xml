@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ModelEmailLink">
+
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"/>
+    <string name="emailField"/>
+    <integer name="addressTypeSelect" selection="message.address.type.select"
+      title="Address type"/>
+
+    <extra-code>
+       	<![CDATA[
+       		public static final int ADDRESS_TYPE_FROM = 1;
+       		public static final int ADDRESS_TYPE_TO = 2;
+       	]]>
+    </extra-code>
+
+  </entity>
+
+</domain-models>

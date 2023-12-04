@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.module;
 
@@ -25,6 +26,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
+import com.axelor.apps.purchase.service.PurchaseOrderDomainServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLinePurchaseRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -36,6 +39,8 @@ import com.axelor.apps.purchase.service.PurchaseProductService;
 import com.axelor.apps.purchase.service.PurchaseProductServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
+import com.axelor.apps.purchase.service.PurchaseRequestWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.SupplierCatalogServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
@@ -59,5 +64,7 @@ public class PurchaseModule extends AxelorModule {
     bind(SupplierCatalogService.class).to(SupplierCatalogServiceImpl.class);
     bind(PurchaseOrderLineRepository.class).to(PurchaseOrderLinePurchaseRepository.class);
     bind(PurchaseOrderWorkflowService.class).to(PurchaseOrderWorkflowServiceImpl.class);
+    bind(PurchaseRequestWorkflowService.class).to(PurchaseRequestWorkflowServiceImpl.class);
+    bind(PurchaseOrderDomainService.class).to(PurchaseOrderDomainServiceImpl.class);
   }
 }

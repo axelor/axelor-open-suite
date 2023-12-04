@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockCorrection" lang="java">
+  <entity name="StockCorrection">
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock Location" required="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
       required="true"/>
     <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
-      title="Tracking Number"/>
+      title="Tracking number"/>
+    <decimal name="baseQty" title="Quantity in database" precision="20" scale="10"
+      readonly="true"/>
     <decimal name="realQty" title="Real Qty" precision="20" scale="10"/>
-    <decimal name="futureQty" title="Future Qty" precision="20" scale="10"/>
-    <decimal name="reservedQty" title="Reserved Qty" precision="20" scale="10"/>
     <many-to-one name="stockCorrectionReason"
       ref="com.axelor.apps.stock.db.StockCorrectionReason" title="Reason"/>
     <integer name="statusSelect" title="Status" selection="stock.correction.status.select"
       readonly="true"/>
     <datetime name="validationDateT" title="Validation Date" readonly="true"/>
+    <string name="comments" large="true" multiline="true" title="Comments"/>
 
     <extra-code><![CDATA[
 

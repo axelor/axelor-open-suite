@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="analytic-grouping-grid" title="Analytic Groupings"
+    model="com.axelor.apps.account.db.AnalyticGrouping">
+    <field name="code"/>
+    <field name="name"/>
+  </grid>
+
+  <form name="analytic-grouping-form" title="Analytic Grouping"
+    model="com.axelor.apps.account.db.AnalyticGrouping"
+    onSave="save,action-method-analytic-grouping-compute-full-name">
+    <panel name="mainPanel">
+      <field name="code" onChange="action-method-analytic-grouping-compute-full-name"/>
+      <field name="name" onChange="action-method-analytic-grouping-compute-full-name"/>
+      <field name="analyticAxis" required="true"/>
+      <field name="analyticGroupingValueList"
+        grid-view="analytic-grouping-value-grouping-grid"
+        form-view="analytic-grouping-value-grouping-form" colSpan="12" canNew="true"
+        canSelect="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-method-analytic-grouping-compute-full-name">
+    <call class="com.axelor.apps.account.service.analytic.AnalyticGroupingService"
+      method="calculateFullName(__self__)" if="__id__"/>
+  </action-method>
+
+</object-views>

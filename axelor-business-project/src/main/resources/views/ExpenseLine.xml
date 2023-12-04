@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="expense-line-project-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine">
@@ -11,7 +11,7 @@
     <hilite if="invoiced" color="success"/>
     <field name="project"/>
     <field name="expense.expenseSeq" title="Expense" width="120"/>
-    <field name="user"/>
+    <field name="employee"/>
     <field name="expenseProduct" canView="false" readonly="true"/>
     <field name="expenseDate" readonly="true"/>
     <field name="totalAmount" aggregate="sum" readonly="true"/>
@@ -30,7 +30,7 @@
     <field name="expenseProduct" form-view="product-expense-form"
       grid-view="product-expense-grid" width="200"/>
     <field name="expenseDate" width="120"/>
-    <field name="user" hidden="true" form-view="user-form" grid-view="user-grid"/>
+    <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"/>
     <field name="totalAmount" aggregate="sum" width="170"/>
     <field name="totalTax" aggregate="sum" width="80"/>
     <field name="toInvoice"/>

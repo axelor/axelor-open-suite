@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="account-management-bank-statement-rule-grid" title="Account management list"
+    model="com.axelor.apps.account.db.AccountManagement" edit-icon="true">
+    <field name="bankDetails"/>
+    <field if="__config__.app.getApp('base')?.getEnableMultiCompany()" name="company"
+      form-view="company-form" grid-view="company-grid"/>
+    <field name="paymentMode"/>
+    <field name="interbankCodeLine"/>
+    <field name="journal"/>
+    <field if="__config__.app.isApp('account')" if-module="axelor-account" name="cashAccount"
+      canEdit="false" form-view="account-form" grid-view="account-grid"/>
+  </grid>
+
+
+</object-views>

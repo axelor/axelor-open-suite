@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.batch;
 
@@ -23,15 +24,17 @@ import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
-import com.axelor.apps.bankpayment.exception.IExceptionMessage;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.repo.BatchRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -100,7 +103,7 @@ public class BatchBankStatement extends AbstractBatch {
             cause,
             ebicsPartner,
             category,
-            IExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
+            BankPaymentExceptionMessage.BANK_STATEMENT_EBICS_PARTNER,
             ebicsPartner.getPartnerId(),
             cause.getMessage());
     TraceBackService.trace(exception, ExceptionOriginRepository.BANK_STATEMENT, batch.getId());
@@ -109,34 +112,35 @@ public class BatchBankStatement extends AbstractBatch {
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_REPORT));
+    sb.append(I18n.get(BaseExceptionMessage.ABSTRACT_BATCH_REPORT));
     sb.append(" ");
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_DONE_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_DONE_PLURAL,
                 batch.getDone()),
             batch.getDone()));
     sb.append(" ");
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     sb.append("\n");
     sb.append(
         String.format(
-            I18n.get(IExceptionMessage.BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT),
+            I18n.get(
+                BankPaymentExceptionMessage.BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT),
             bankStatementCount));
     addComment(sb.toString());
     super.stop();
   }
 
   private Collection<EbicsPartner> getAllActiveEbicsPartners() {
-    return Beans.get(EbicsPartnerRepository.class)
+    return ebicsPartnerRepository
         .all()
         .filter("self.transportEbicsUser.statusSelect = :statusSelect")
         .bind("statusSelect", EbicsUserRepository.STATUS_ACTIVE_CONNECTION)
@@ -145,5 +149,9 @@ public class BatchBankStatement extends AbstractBatch {
 
   public Batch bankStatement(BankPaymentBatch bankPaymentBatch) {
     return Beans.get(BatchBankStatement.class).run(bankPaymentBatch);
+  }
+
+  protected void setBatchTypeSelect() {
+    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }
 }

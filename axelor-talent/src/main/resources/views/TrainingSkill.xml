@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="training-skill-grid" title="Training skills"
+    model="com.axelor.apps.talent.db.TrainingSkill">
+    <field name="skill"/>
+    <field name="skill.typeSelect"/>
+    <field name="employeeFile"/>
+    <field name="graduationDate"/>
+    <field name="endOfValidityDate"/>
+  </grid>
+
+  <form name="training-skill-form" title="Training skill"
+    model="com.axelor.apps.talent.db.TrainingSkill" width="large">
+    <panel name="mainPanel">
+      <field name="skill"/>
+      <field name="skill.typeSelect"/>
+      <field name="employeeFile" onSelect="action-training-skill-attrs-employee-files-domain"
+        colSpan="12">
+        <editor colSpan="12" x-viewer="true" x-show-on-new="true" x-layout="table"
+          onNew="action-employee-file-attrs-set-employee">
+          <field name="fileType" colSpan="3" onChange="action-record-set-expiration-date"/>
+          <field name="metaFile" widget="binary-link" colSpan="3"
+            onChange="action-record-set-record-date"/>
+          <field name="recordDate" colSpan="3" readonly="true"/>
+          <field name="expirationDate" showIf="fileType.hasExpirationDate" colSpan="3"/>
+          <field name="fileType.hasExpirationDate" hidden="true"/>
+          <field name="employee" hidden="true"/>
+        </editor>
+      </field>
+      <field name="graduationDate"
+        onChange="action-training-skills-record-set-end-of-validity-date"/>
+      <field name="endOfValidityDate"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-employee-file-attrs-set-employee">
+    <attribute name="value" for="employee" expr="eval: __this__?.employee"
+      if="__this__?.employee != null"/>
+    <attribute name="value" for="employee" expr="eval: __parent__?._parent"
+      if="__this__?.employee == null &amp;&amp;  __parent__?.getContextClass() ==  TrainingSkill.class &amp;&amp; __parent__?.getParent()?.getContextClass() == Employee.class"/>
+  </action-attrs>
+
+  <action-record name="action-training-skills-record-set-end-of-validity-date"
+    model="com.axelor.apps.talent.db.TrainingSkill">
+    <field name="endOfValidityDate"
+      if="skill?.validityDuration?.typeSelect == __repo__(Duration).TYPE_MONTH"
+      expr="eval: graduationDate?.plusMonths(skill?.validityDuration?.value)"/>
+    <field name="endOfValidityDate"
+      if="skill?.validityDuration?.typeSelect == __repo__(Duration).TYPE_DAY"
+      expr="eval: graduationDate?.plusDays(skill?.validityDuration?.value)"/>
+  </action-record>
+
+  <action-attrs name="action-training-skill-attrs-employee-files-domain">
+    <attribute name="domain" for="employeeFile"
+      expr="eval: &quot; self.employee.id = ${__parent__?.id} &quot;"/>
+  </action-attrs>
+
+</object-views>

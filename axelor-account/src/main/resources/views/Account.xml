@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="account-grid" title="Accounting.Accounts"
     model="com.axelor.apps.account.db.Account">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="accountType" form-view="account-type-form" grid-view="account-type-grid"/>
+    <field name="commonPosition"/>
     <field name="reconcileOk"/>
     <field name="parentAccount" form-view="account-form" grid-view="account-grid"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="defaultTax" hidden="true"/>
+    <field name="statusSelect"/>
   </grid>
 
   <grid name="account-simple-grid" title="Accounting.Accounts"
@@ -40,46 +47,132 @@
   </tree>
 
   <form name="account-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large" onNew="action-account-record-new"
-    onLoad="action-account-method-compute-balance"
-    onSave="action-account-method-check-if-code-already-exist-for-company">
+    model="com.axelor.apps.account.db.Account" width="large" onNew="action-group-account-onnew"
+    onLoad="action-group-account-account-onload" onSave="action-account-group-onsave"
+    canDelete="!isRegulatoryAccount">
+    <panel name="statusPanel">
+      <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
+        colSpan="8"/>
+      <button name="activeStatusBtn" title="Set Active"
+        onClick="save,account-account-method-toggle-status-active,action-attrs-account-account-status-show-title"
+        colSpan="3"
+        readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+    </panel>
     <panel name="mainPanel">
-      <panel name="accountDetailsPanel" colSpan="8">
-        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
+      <panel name="accountDetailsPanel" colSpan="8"
+        readonlyIf="$isReadOnly || (accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount)">
+        <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"
+          onChange="action-group-code-on-change"/>
         <field name="name" colSpan="9" css="bold"/>
+        <field name="accountType.technicalTypeSelect" hidden="true"/>
+        <field name="$isReadOnly" hidden="true" readonly="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
         <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
           onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
       </panel>
-      <panel name="settingsPanel" title="Settings" colSpan="12">
+    </panel>
+    <panel-tabs name="mainPaneltab">
+      <panel name="generalPanel" title="General" hideIf="$popup()">
+        <button name="exportMoveLinesBtn" title="Export Move lines" onClick="" colSpan="12"/>
+        <panel-dashlet name="viewMoveLinePanel" colSpan="12" title="General"
+          hideIf="$popup() || reconcileOk" height="450" action="action-account-view-show-move-lines"
+          canSearch="true"/>
+        <panel-dashlet name="viewMoveLineReconcileGroupPanel" colSpan="12"
+          title="General" hideIf="$popup() || !reconcileOk" height="450"
+          action="action-account-view-show-move-lines" canSearch="true"/>
+      </panel>
+      <panel name="settingsPanel" title="Account.settings">
         <field name="accountType" required="true" form-view="account-type-form"
-          grid-view="account-type-grid"/>
+          grid-view="account-type-grid" colSpan="3"
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
+          onChange="action-group-account-type-on-change"/>
+        <field name="isRegulatoryAccount" colSpan="3"/>
+        <field name="commonPosition"
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="company" required="true" canEdit="false" widget="SuggestBox"
-          onChange="action-account-validate" readonlyIf="parentAccount != null"
+          onChange="action-account-group-company-onChange"
+          readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
-          domain="self.company = :company" form-view="account-form" grid-view="account-grid"/>
-        <spacer name="parentAccountSpacer" colSpan="6"/>
-        <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"/>
-        <field name="reconcileOk" widget="boolean-switch" colSpan="3"/>
-        <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
-        <field name="analyticDistributionAuthorized" widget="boolean-switch" colSpan="4"
-          onChange="action-account-record-uncheck-analytic-distribution-required"/>
-        <field name="analyticDistributionRequiredOnInvoiceLines" widget="boolean-switch"
-          colSpan="4" showIf="analyticDistributionAuthorized"/>
-        <field name="analyticDistributionRequiredOnMoveLines" widget="boolean-switch"
-          colSpan="4" showIf="analyticDistributionAuthorized"/>
-        <field name="isTaxAuthorizedOnMoveLine" widget="boolean-switch" colSpan="4"
-          onChange="action-account-record-uncheck-tax-required"/>
-        <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine"
-          widget="boolean-switch" colSpan="4"/>
+          domain="self.company = :company" form-view="account-form" grid-view="account-grid"
+          readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
+        <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
+          onChange="action-attrs-account-set-is-retrieved-on-payment-session"/>
+        <field name="reconcileOk" widget="boolean-switch" colSpan="3"
+          hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
+          onChange="action-account-group-reconcile-onChange"/>
+        <field name="accountType.technicalTypeSelect" hidden="true"/>
+        <field name="compatibleAccountSet" widget="TagSelect"
+          showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
+          domain="self.company = :company"/>
+        <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
+          hideIf="accountType.technicalTypeSelect == 'view'">
+          <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
+            onChange="action-group-account-is-tax-authorized-onchange"/>
+          <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
+            widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
+          <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
+          <field name="vatSystemSelect" colSpan="4"
+            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
+        </panel>
+        <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
+          <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
+            onChange="action-account-group-on-change-analytic-distribution-authorized"/>
+          <field name="analyticDistributionRequiredOnInvoiceLines"
+            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"/>
+          <field name="analyticDistributionRequiredOnMoveLines"
+            showIf="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
+            onChange="action-account-validate-check-move-analytic-required"/>
+          <field name="analyticDistributionTemplate" showIf="analyticDistributionAuthorized"
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+            canEdit="false" canNew="false"
+            onChange="action-account-group-analytic-distribution-onChange"
+            domain="self.company = :company AND self.isSpecific = false"/>
+          <button name="personalizeBtn" title="Create personalized analytic template"
+            colSpan="3"
+            showIf="analyticDistributionAuthorized &amp;&amp; !analyticDistributionTemplate.isSpecific"
+            onClick="action-account-account-method-new-analytic-dist-template"/>
+          <field name="analyticDistributionTemplate"
+            showIf="analyticDistributionAuthorized &amp;&amp; analyticDistributionTemplate &amp;&amp; !$readonly()"
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
+            colSpan="12" canNew="false" canSelect="false" showTitle="false">
+            <editor>
+              <field name="analyticDistributionLineList" colSpan="12" editable="true"
+                showTitle="false" grid-view="analytic-distribution-line-editable-grid"
+                form-view="analytic-distribution-line-form"/>
+            </editor>
+          </field>
+          <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
+        </panel>
+        <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
+          if="__config__.app.getApp('account').manageCutOffPeriod">
+          <field name="manageCutOffPeriod" widget="boolean-switch"
+            onChange="action-account-record-manage-cut-off-onChange"/>
+          <field name="hasAutomaticApplicationAccountingDate" widget="boolean-switch"
+            showIf="manageCutOffPeriod"/>
+        </panel>
+        <panel name="paymentSessionPanel" title="Payment session" colSpan="12"
+          if-module="axelor-account" if="__config__.app.isApp('account')"
+          showIf="useForPartnerBalance">
+          <field name="isRetrievedOnPaymentSession" widget="boolean-switch"/>
+        </panel>
       </panel>
-      <panel name="showMoveLinesPanel" colSpan="12" showIf="id">
+
+      <panel name="reportExportSettingsPanel" title="Accounting reports/exports settings"
+        hideIf="accountType.technicalTypeSelect == 'view'">
+        <field name="serviceType" form-view="service-type-form" grid-view="service-type-grid"/>
         <button name="showMoveLineBtn" title="Show move lines" colSpan="3"
-          onClick="action-account-view-show-move-lines"/>
+          onClick="action-account-view-show-move-lines" showIf="id"/>
       </panel>
-    </panel>
+      <panel name="viewAccountingReportConfigLinePanel" title="Report Config. Line (rules)"
+        hideIf="$popup()">
+        <panel-dashlet name="viewAccountingReportConfigLineDashlet" colSpan="12"
+          title="" height="450" action="action-account-view-accounting-report-config-line"
+          canSearch="true"/>
+      </panel>
+    </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
     </panel-mail>
@@ -101,7 +194,8 @@
   </form>
 
   <form name="account-info-form" title="Accounting.Account"
-    model="com.axelor.apps.account.db.Account" width="large">
+    model="com.axelor.apps.account.db.Account" width="large"
+    onLoad="action-attrs-account-account-readonly-if-account-in-move-line">
     <panel name="mainPanel" title="Account details" readonly="true">
       <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3" css="bold"/>
       <field name="name" colSpan="9" css="bold"/>
@@ -118,6 +212,37 @@
     </panel>
   </form>
 
+  <form name="mass-update-status-wizard-form" title="Mass update status"
+    model="com.axelor.utils.db.Wizard" width="large">
+    <panel name="mainPanel">
+      <field name="statusSelect" type="integer" title="Status"
+        selection="iaccount.status.select.selection"
+        showIf="_metaModel == 'com.axelor.apps.account.db.Account'" required="true"/>
+      <field name="statusSelect" type="integer" title="Status"
+        selection="ianalytic.account.status.select"
+        showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticAccount'" required="true"/>
+      <field name="statusSelect" type="integer" title="Status"
+        selection="account.journal.status.select"
+        showIf="_metaModel == 'com.axelor.apps.account.db.Journal'" required="true"/>
+      <field name="statusSelect" type="integer" title="Status"
+        selection="ianalytic.journal.status.select"
+        showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticJournal'" required="true"/>
+      <button name="massUpdateSelectedBtn" title="Mass update selected"
+        onClick="action-method-wizard-mass-update-selected"/>
+      <button name="massUpdateAllBtn" title="Mass update all"
+        onClick="action-method-wizard-mass-update-all"/>
+    </panel>
+  </form>
+
+  <form title="" name="reconcile-wizard-form" model="com.axelor.apps.account.db.Account">
+    <panel name="mainPanel" title="Make entries letterable">
+      <field name="startDate" widget="date" title="Start date of entries to be lettered"
+        type="date"/>
+      <button name="reconcileMovesBtn" title="Make entries letterable"
+        onClick="action-account-method-wizard-reconcile-line"/>
+    </panel>
+  </form>
+
   <action-view name="action-account-view-account-onchange-view"
     title="Financial Accounts" model="com.axelor.apps.account.db.Account">
     <view type="form" name="account-info-form"/>
@@ -127,6 +252,49 @@
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+
+  <action-group name="action-group-account-onnew">
+    <action name="action-account-record-new"/>
+    <action name="action-method-account-hide-analytic"/>
+    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
+  </action-group>
+
+  <action-group name="action-account-group-onsave">
+    <action name="action-account-method-check-if-code-already-exist-for-company"/>
+    <action name="action-on-change-distribution-template-account"/>
+    <action name="action-account-method-verify-template-value"
+      if="__this__.analyticDistributionTemplate != null"/>
+  </action-group>
+
+  <action-group name="action-group-code-on-change">
+    <action name="action-method-account-fill-account-code"
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
+  </action-group>
+
+  <action-group name="action-group-account-type-on-change">
+    <action name="action-method-account-fill-account-code"
+      if="company?.accountConfig?.hasAccountCodeFixedNbrChar"/>
+    <action name="action-method-account-hide-analytic"/>
+  </action-group>
+
+  <action-view name="action-mass-update-status-wizard" title="Mass update status"
+    model="com.axelor.utils.db.Wizard">
+    <view type="form" name="mass-update-status-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="width" value="800"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_metaModel" expr="eval: _model"/>
+    <context name="_selectedIds" expr="eval: _ids"/>
+  </action-view>
+
+  <action-group name="action-group-account-account-onload">
+    <action name="action-account-method-compute-balance"/>
+    <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
+    <action name="action-method-account-hide-analytic"/>
+    <action name="action-attrs-account-account-status-show-title"/>
+  </action-group>
 
   <action-group name="action-account-group-new-customer-account">
     <action name="action-account-record-new-from-partner"/>
@@ -143,18 +311,73 @@
     <action name="action-account-record-new-employee-account"/>
   </action-group>
 
+  <action-group name="action-account-group-on-change-analytic-distribution-authorized">
+    <action name="action-account-record-uncheck-analytic-distribution-required"/>
+    <action name="action-account-validate-uncheck-analytic-distribution-authorized"/>
+  </action-group>
+
+  <action-group name="action-group-account-is-tax-authorized-onchange">
+    <action name="action-account-record-uncheck-tax-required"/>
+    <action name="action-record-account-tax-system-value"/>
+    <action name="action-account-validate-uncheck-tax-authorized"/>
+  </action-group>
+
+  <action-group name="action-account-group-company-onChange">
+    <action name="action-account-record-clean-analytic"/>
+    <action name="action-account-validate"/>
+  </action-group>
+
+  <action-group name="action-account-group-analytic-distribution-onChange">
+    <action name="action-account-method-personalize-template"/>
+    <action name="action-on-change-distribution-template-account"/>
+  </action-group>
+
+  <action-group name="action-account-group-reconcile-onChange">
+    <action name="action-account-validate-check-reconcile"/>
+    <action name="save"/>
+    <action name="action-account-view-reconcile-wizard-form" if="reconcileOk"/>
+  </action-group>
+
   <action-record name="action-account-record-new"
     model="com.axelor.apps.account.db.Account">
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="serviceType"
+      expr="eval:__config__.app.getApp('account')?.defaultServiceTypeTypology"/>
   </action-record>
 
   <action-validate name="action-account-validate">
     <error
       message="The parent is associated to another company. Please make sure to select the right parent in the company chart before changing the company."
       if="parentAccount != null &amp;&amp; company != null &amp;&amp; parentAccount?.company?.id != company?.id"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-move-tax-required">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="isTaxRequiredOnMoveLine &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-move-analytic-required">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="analyticDistributionRequiredOnMoveLines &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate
+    name="action-account-validate-uncheck-analytic-distribution-authorized">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="!analyticDistributionAuthorized &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+
+  <action-validate name="action-account-validate-uncheck-tax-authorized">
+    <info message="Accounted moves exist for the current year and they cannot be modified."
+      if="!isTaxAuthorizedOnMoveLine &amp;&amp; __this__.id != null &amp;&amp; __repo__(MoveLine).all().filter('self.account = ?1 AND YEAR(self.date) = ?2 AND self.move.statusSelect = ?3', __this__, __date__.getYear(), 3).count() > 0"/>
+  </action-validate>
+
+  <action-validate name="action-account-validate-check-reconcile">
+    <alert message="Do you want to make existing accounted moves letterable?" if="reconcileOk"/>
   </action-validate>
 
   <!-- action-record shared among customer/supplier/employee account -->
@@ -197,11 +420,30 @@
       if="!analyticDistributionAuthorized"/>
     <field name="analyticDistributionRequiredOnMoveLines" expr="eval: false"
       if="!analyticDistributionAuthorized"/>
+    <field name="analyticDistributionTemplate" expr="eval: null"
+      if="!analyticDistributionAuthorized"/>
   </action-record>
 
   <action-record name="action-account-record-uncheck-tax-required"
     model="com.axelor.apps.account.db.Account">
     <field name="isTaxRequiredOnMoveLine" expr="eval: false" if="!isTaxAuthorizedOnMoveLine"/>
+  </action-record>
+
+  <action-record name="action-account-record-clean-analytic"
+    model="com.axelor.apps.account.db.Account">
+    <field name="analyticDistributionTemplate" expr="eval:null"/>
+  </action-record>
+
+  <action-record name="action-record-account-tax-system-value"
+    model="com.axelor.apps.account.db.Account">
+    <field name="vatSystemSelect" expr="eval: 0" if="!isTaxAuthorizedOnMoveLine"/>
+    <field name="vatSystemSelect" expr="eval: 1"
+      if="isTaxAuthorizedOnMoveLine &amp;&amp; vatSystemSelect == 0"/>
+  </action-record>
+
+  <action-record name="action-account-record-manage-cut-off-onChange"
+    model="com.axelor.apps.account.db.Account">
+    <field name="hasAutomaticApplicationAccountingDate" expr="eval: false"/>
   </action-record>
 
   <action-method name="action-account-method-compute-balance">
@@ -213,10 +455,87 @@
       method="checkIfCodeAccountAlreadyExistForCompany"/>
   </action-method>
 
+  <action-method name="action-account-account-method-new-analytic-dist-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="createAnalyticDistTemplate"/>
+  </action-method>
+
+  <action-method name="action-account-method-personalize-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="personalizeAnalyticDistTemplate"/>
+  </action-method>
+
   <search-filters name="account-filters" model="com.axelor.apps.account.db.Account"
     title="Account filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-method name="action-on-change-distribution-template-account">
+    <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
+  </action-method>
+
+  <action-method name="account-account-method-toggle-status-active">
+    <call class="com.axelor.apps.account.web.AccountController" method="toggleStatus"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-account-account-status-show-title">
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="__this__.statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="__this__.statusSelect == 1"/>
+  </action-attrs>
+
+  <action-method name="action-method-account-hide-analytic">
+    <call class="com.axelor.apps.account.web.AccountController" method="manageAnalytic"/>
+  </action-method>
+
+  <action-method name="action-method-wizard-mass-update-selected">
+    <call class="com.axelor.apps.account.web.AccountController" method="massUpdateSelected"/>
+  </action-method>
+
+  <action-method name="action-method-wizard-mass-update-all">
+    <call class="com.axelor.apps.account.web.AccountController" method="massUpdateAll"/>
+  </action-method>
+
+  <action-method name="action-method-account-fill-account-code">
+    <call class="com.axelor.apps.account.web.AccountController" method="fillAccountCode"/>
+  </action-method>
+
+  <action-method name="action-account-method-verify-template-value">
+    <call class="com.axelor.apps.account.web.AccountController" method="verifyTemplateValues"/>
+  </action-method>
+
+  <action-method name="action-account-method-wizard-reconcile-line">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="setAmountRemainingReconciliableMoveLines"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">
+    <attribute name="value" for="$isReadOnly"
+      expr="eval: __repo__(MoveLine).all().filter('self.account = ?', __this__).count() > 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-account-set-is-retrieved-on-payment-session">
+    <attribute name="value" for="isRetrievedOnPaymentSession"
+      expr="eval: useForPartnerBalance"/>
+  </action-attrs>
+
+  <action-view name="action-account-view-accounting-report-config-line" title=""
+    model="com.axelor.apps.account.db.AccountingReportConfigLine">
+    <view type="grid" name="accounting-report-config-line-account-grid"/>
+    <view type="form" name="accounting-report-config-line-form"/>
+    <domain>:id MEMBER OF self.accountSet</domain>
+  </action-view>
+
+  <action-view name="action-account-view-reconcile-wizard-form" title=""
+    model="com.axelor.apps.account.db.Account">
+    <view type="form" name="reconcile-wizard-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup" value="true"/>
+    <context name="_accountId" expr="eval: __id__"/>
+  </action-view>
 
 </object-views>

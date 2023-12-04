@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -820,8 +820,8 @@ left outer join base_country as Country on (DeliveryAddress.addressl7country = C
 left join auth_user as AuthUser on (StockMove.updated_by = AuthUser.id)
 left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.id)
 left join base_printing_settings as PrintingSetting on (StockMove.printing_settings = PrintingSetting.id)
-left join sale_sale_order as SaleOrder on (StockMove.origin_type_select LIKE 'com.axelor.apps.sale.db.SaleOrder' AND StockMove.origin_id = SaleOrder.id)
-left join purchase_purchase_order as PurchaseOrder on (StockMove.origin_type_select LIKE 'com.axelor.apps.purchase.db.PurchaseOrder' AND StockMove.origin_id = PurchaseOrder.id)
+left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
+left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
 left join meta_file as SignatureFile on StockMove.electronic_signature = SignatureFile.id
 left join auth_user as SignatoryUser on StockMove.signatory_user = SignatoryUser.id
 left join hr_employee as SignatoryEmployee on SignatoryEmployee.id = SignatoryUser.employee
@@ -1330,8 +1330,8 @@ return query
 select 
 SaleOrder.external_reference, SaleOrder.creation_date
 from stock_stock_move as StockMove
-inner join sale_sale_order as SaleOrder on (StockMove.origin_id = SaleOrder.id)
-where StockMove.id = stockMoveId AND origin_type_select LIKE 'com.axelor.apps.sale.db.SaleOrder';
+inner join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
+where StockMove.id = stockMoveId;
 end if;
 END;
 $func$ LANGUAGE plpgsql;]]></xml-property>
@@ -1974,23 +1974,18 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                 <cell id="3350">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <text id="4288">
-                        <property name="fontSize">8pt</property>
+                    <image id="5377">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="3352">
                     <property name="colSpan">4</property>

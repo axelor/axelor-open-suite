@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="ebics-user-grid" title="Ebics user"
     model="com.axelor.apps.bankpayment.db.EbicsUser">
     <toolbar>
       <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
-      <button name="importUsersBtn" title="Import"
+      <button name="importUsersBtn" title="import.verb"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
     <hilite if="statusSelect &lt; 3" color="primary"/>
@@ -27,7 +27,7 @@
     orderBy="ebicsPartner.ebicsBank,ebicsPartner,userId">
     <toolbar>
       <button name="exportUsersBtn" title="Export" onClick="action-export-ebics-user"/>
-      <button name="importUsersBtn" title="Import"
+      <button name="importUsersBtn" title="import.verb"
         onClick="action-ebics-open-import-ebics-users"/>
     </toolbar>
     <hilite if="statusSelect &lt; 3" color="primary"/>
@@ -149,6 +149,9 @@
       <button name="adminBtn" title="Administration mode"
         onClick="action-ebics-user-attrs-administration-mode"/>
     </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
 
   </form>
 

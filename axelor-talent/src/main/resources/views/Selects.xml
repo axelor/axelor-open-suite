@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name="training.register.rating.select">
     <option value="0">0 %</option>
@@ -45,13 +45,6 @@
     <option value="4">Cancel</option>
   </selection>
 
-  <selection name="job.application.status.select">
-    <option value="0">Opened</option>
-    <option value="1">Hired</option>
-    <option value="2">Rejected</option>
-    <option value="3">Cancelled</option>
-  </selection>
-
   <selection name="crm.event.related.to.select" id="talent.crm.event.related.to.select">
     <option value="com.axelor.apps.talent.db.JobApplication">Job Application</option>
     <option value="com.axelor.apps.talent.db.TrainingRegister">Training Register</option>
@@ -67,6 +60,12 @@
   <selection name="job.position.position.status">
     <option value="0">Cadre</option>
     <option value="1">Technicien</option>
+  </selection>
+
+  <selection name="skill.talent.type.select">
+    <option value="training">Training</option>
+    <option value="clearance">Clearance</option>
+    <option value="license">License</option>
   </selection>
 
 </object-views>

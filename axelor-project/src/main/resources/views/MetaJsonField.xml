@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="project-meta-json-field-grid" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField" orderBy="sequence" canMove="true">
+    <field name="sequence"/>
+    <field name="title"/>
+  </grid>
+
+  <form name="project-meta-json-field-form" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField">
+
+    <panel name="overViewPanel" title="Overview">
+      <field name="title" x-pattern="^[a-zA-Z_$].*$" title="Name"
+        onChange="action-method-project-json-field-compute-fields"/>
+      <field name="$typeSelect" selection="project.json.field.type" title="Type"
+        onChange="action-record-project-json-field-set-type,action-method-project-json-field-compute-fields"/>
+      <field name="required"/>
+      <field name="scale" showIf="$typeSelect == 'decimal'"/>
+      <field name="selectionRef" showIf="['select','multiselect'].includes($typeSelect)"/>
+      <panel-related readonly="false" field="selectionRef.items"
+        showIf="['select','multiselect'].includes($typeSelect)"
+        form-view="project-meta-select-item-form" colSpan="12">
+        <field name="title"/>
+        <field name="color"/>
+      </panel-related>
+    </panel>
+  </form>
+
+  <form name="project-project-meta-json-field-form" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField"
+    onLoad="action-attrs-project-json-field-set-type-select"
+    onNew="action-method-project-json-field-on-new-project">
+    <panel-include view="project-meta-json-field-form"/>
+  </form>
+
+  <form name="project-task-meta-json-field-form" title="Custom fields"
+    model="com.axelor.meta.db.MetaJsonField"
+    onLoad="action-attrs-project-json-field-set-type-select"
+    onNew="action-method-project-json-field-on-new-task">
+    <panel-include view="project-meta-json-field-form"/>
+  </form>
+
+  <form id="project-json-field-form-base" name="json-field-form-base" title="Custom field"
+    model="com.axelor.meta.db.MetaJsonField" extension="true">
+    <extend target="//field[@name='selection']">
+      <attribute name="onChange"
+        value="action-record-project-json-field-set-selection-ref"/>
+    </extend>
+  </form>
+
+  <form name="project-meta-select-item-form" title="Select values"
+    model="com.axelor.meta.db.MetaSelectItem"
+    onNew="action-method-project-json-field-select-set-selection">
+    <panel title="Overview">
+      <field name="title"/>
+      <field name="value" x-bind="{{title}}" hidden="true"/>
+      <field name="color"/>
+    </panel>
+  </form>
+
+  <action-record name="action-record-project-json-field-set-type"
+    model="com.axelor.meta.db.MetaJsonField">
+    <field name="type"
+      expr="eval:['select','multiselect'].contains(typeSelect)?'string':typeSelect"/>
+  </action-record>
+
+  <action-record name="action-record-project-json-field-set-selection-ref"
+    model="com.axelor.meta.db.MetaJsonField">
+    <field name="selectionRef" expr="eval:__repo__(MetaSelect).findByName(selection)"/>
+  </action-record>
+
+  <action-attrs name="action-attrs-project-json-field-set-type-select">
+    <attribute name="value" for="$typeSelect"
+      expr="eval:selection?(widget=='MultiSelect'?'multiselect':'select'):type"/>
+  </action-attrs>
+
+  <action-method name="action-method-project-json-field-on-new-task">
+    <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-method-project-json-field-on-new-project">
+    <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-method-project-json-field-select-set-selection">
+    <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController"
+      method="setSelection"/>
+  </action-method>
+
+  <action-method name="action-method-project-json-field-compute-fields">
+    <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController"
+      method="computeFields"/>
+  </action-method>
+
+</object-views>
