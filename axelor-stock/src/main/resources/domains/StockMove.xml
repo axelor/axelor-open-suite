@@ -124,6 +124,9 @@
     <many-to-one name="stockCorrection" title="Stock correction"
       ref="com.axelor.apps.stock.db.StockCorrection" copy="false"/>
 
+    <many-to-one name="massStockMove" title="Mass move"
+      ref="com.axelor.apps.stock.db.MassStockMove"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
 
     <extra-code><![CDATA[
@@ -133,7 +136,6 @@
 		public static final int STATUS_PLANNED = 2;
 		public static final int STATUS_REALIZED = 3;
 		public static final int STATUS_CANCELED = 4;
-		public static final int STATUS_MERGED = 5;
 
 		// AVAILABLE STATUS SELECT
 		public static final int STATUS_AVAILABLE = 1;
