@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -70,6 +71,7 @@ public class DoubtfulCustomerService {
   protected AppBaseService appBaseService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceTermReplaceService invoiceTermReplaceService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
 
   @Inject
   public DoubtfulCustomerService(
@@ -83,7 +85,8 @@ public class DoubtfulCustomerService {
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
       InvoiceTermRepository invoiceTermRepo,
-      InvoiceTermReplaceService invoiceTermReplaceService) {
+      InvoiceTermReplaceService invoiceTermReplaceService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -96,6 +99,7 @@ public class DoubtfulCustomerService {
     this.appBaseService = appBaseService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceTermReplaceService = invoiceTermReplaceService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
   }
 
   /**
@@ -223,6 +227,7 @@ public class DoubtfulCustomerService {
             2,
             origin,
             debtPassReason);
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(newMove, debitMoveLine, false);
     debitMoveLine.setPassageReason(debtPassReason);
 
     newMove.addMoveLineListItem(debitMoveLine);
