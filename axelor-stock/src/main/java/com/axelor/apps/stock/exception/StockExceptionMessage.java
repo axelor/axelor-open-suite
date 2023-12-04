@@ -278,24 +278,68 @@ public final class StockExceptionMessage {
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
       "Error: %s and %s fields are required and can not be null" /*)*/;
 
-  /** Stock move merging controller and service */
-  public static final String STOCK_MOVE_NO_LINE_SELECTED = /*$$(*/
-      "Please select at least 2 stock moves" /*)*/;
+  /**
+   * Mass stock move, mass stock move needs, stored products and picked products services and
+   * controllers
+   */
+  public static final String MASS_STOCK_MOVE_EMPTY_FIELD = /*$$(*/
+      "One of these values is missing : product ; tracking number, to stock location ; unit. (%s %s)" /*)*/;
 
-  public static final String STOCK_MOVE_MERGE_ERROR = /*$$(*/
-      "Your merge doesn't respect this/these condition(s) : %s" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_COMPANY = /*$$(*/ "Same company" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_TRADING_NAME = /*$$(*/
-      "Same trading name" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_PARTNER = /*$$(*/ "Same partner" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION = /*$$(*/
-      "Same from stock location and to stock location" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
-      "Status must be planned or draft" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_SALE_ORDER = /*$$(*/ "Same sale order" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER = /*$$(*/
-      "Same purchase order" /*)*/;
-  public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
-  public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
-      "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
+  public static final String MASS_STOCK_MOVE_EMPTY_FIELD_WITHOUT_TN = /*$$(*/
+      "One of these values is missing : to stock location ; unit. (%s %s)" /*)*/;
+  public static final String MASS_STOCK_MOVE_EMPTY_TRACKING_NUMBER = /*$$(*/
+      "Tracking number is missing. (%s %s)" /*)*/;
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_COMPANY = /*$$(*/
+      "There's no company in this stock's mass moves" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_LOCATION_LINE = /*$$(*/
+      "No stock location lines have been found in the common from stock location." /*)*/;
+
+  public static final String MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
+      "Can't delete a line linked to a realized stock move line." /*)*/;
+
+  public static final String MASS_STOCK_MOVE_LINE_ALREADY_STORED = /*$$(*/
+      "Some moves couldn't be canceled because the associed products had already been stored." /*)*/;
+
+  public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/
+      "Picked quantity is equal to 0 (%s %s)" /*)*/;
+
+  public static final String PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Picked quantity is greater than current quantity (%s %s)" /*)*/;
+
+  public static final String ALREADY_PICKED_PRODUCT = /*$$(*/
+      "These products have already been picked (%s %s)" /*)*/;
+
+  public static final String ALREADY_STORED_PRODUCT = /*$$(*/
+      "These products have already been stored" /*)*/;
+
+  public static final String AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO = /*$$(*/
+      "At least one line has a picked quantity is equal to 0" /*)*/;
+
+  public static final String AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO = /*$$(*/
+      "At least one line has a stored quantity is equal to 0" /*)*/;
+
+  public static final String PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated (%s %s)" /*)*/;
+
+  public static final String MANY_PRODUCTS_HAVE_NOT_BEEN_PICKED = /*$$(*/
+      "Many products have not been picked due to stock mismatch" /*)*/;
+
+  public static final String AT_LEAST_ONE_PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "At least one line has a picked quantity  greater than current quantity" /*)*/;
+
+  public static final String AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "At least one line has a stored quantity  greater than current quantity" /*)*/;
+
+  public static final String STORED_QUANTITY_IS_ZERO = /*$$(*/
+      "Stored quantity is equal to 0 (%s %s)" /*)*/;
+
+  public static final String STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Stored quantity is greater than current quantity (%s %s)" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
 }
