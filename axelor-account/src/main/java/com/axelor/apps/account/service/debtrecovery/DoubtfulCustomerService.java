@@ -209,6 +209,7 @@ public class DoubtfulCustomerService {
                 1,
                 move.getOrigin(),
                 debtPassReason);
+        moveLineInvoiceTermService.generateDefaultInvoiceTerm(newMove, creditMoveLine, false);
 
         origin = creditMoveLine.getOrigin();
         creditMoveLines.add(creditMoveLine);
