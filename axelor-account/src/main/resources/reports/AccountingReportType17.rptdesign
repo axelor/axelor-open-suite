@@ -1227,7 +1227,7 @@ where AccountingReport.id = ?
 				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
+   	), 0) + Asset.fiscal_already_depreciated_amount AS year_start_value,
 	SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
