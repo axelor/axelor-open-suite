@@ -166,7 +166,8 @@ public class BatchBillOfExchange extends AbstractBatch {
     Move placementMove = createLCRAccountMove(invoice, accountConfig, accountingBatch);
     moveValidateService.accounting(placementMove);
 
-    invoiceTermReplaceService.replaceInvoiceTerms(invoice, placementMove);
+    invoiceTermReplaceService.replaceInvoiceTerms(
+        invoice, placementMove, invoice.getMove().getMoveLineList(), invoice.getPartnerAccount());
     updateInvoice(invoice, placementMove, accountConfig);
   }
 

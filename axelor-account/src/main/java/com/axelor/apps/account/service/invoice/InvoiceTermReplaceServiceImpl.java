@@ -13,6 +13,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -27,12 +28,24 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
   protected InvoiceRepository invoiceRepo;
   protected InvoiceTermRepository invoiceTermRepo;
 
+  @Inject
+  public InvoiceTermReplaceServiceImpl(
+      ReconcileService reconcileService,
+      InvoiceRepository invoiceRepo,
+      InvoiceTermRepository invoiceTermRepo) {
+    this.reconcileService = reconcileService;
+    this.invoiceRepo = invoiceRepo;
+    this.invoiceTermRepo = invoiceTermRepo;
+  }
+
   @Override
-  public void replaceInvoiceTerms(Invoice invoice, Move move) throws AxelorException {
+  public void replaceInvoiceTerms(
+      Invoice invoice, Move move, List<MoveLine> invoiceMoveLineList, Account partnerAccount)
+      throws AxelorException {
     List<InvoiceTerm> newInvoiceTermList = new ArrayList<>();
     List<InvoiceTerm> invoiceTermListToRemove = new ArrayList<>();
     copyInvoiceTerms(invoice, move, newInvoiceTermList, invoiceTermListToRemove);
-    reconcilesMoves(move, invoice.getMove(), invoice);
+    reconcilesMoves(move, invoiceMoveLineList, invoice, partnerAccount);
     replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove);
   }
 
@@ -40,15 +53,15 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
    * Reconcile moves on account partnerAccount move line
    *
    * @param move
-   * @param invoiceMove
+   * @param invoiceMoveLineList
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
-  protected void reconcilesMoves(Move move, Move invoiceMove, Invoice invoice)
+  protected void reconcilesMoves(
+      Move move, List<MoveLine> invoiceMoveLineList, Invoice invoice, Account partnerAccount)
       throws AxelorException {
     Objects.requireNonNull(move);
-    Objects.requireNonNull(invoiceMove);
-    Account partnerAccount = invoice.getPartnerAccount();
+    Objects.requireNonNull(invoiceMoveLineList);
 
     MoveLine creditMoveLine =
         move.getMoveLineList().stream()
@@ -61,7 +74,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
                         "Missing move line with account %s",
                         partnerAccount.getName()));
     MoveLine debitMoveLine =
-        invoiceMove.getMoveLineList().stream()
+        invoiceMoveLineList.stream()
             .filter(ml -> ml.getAccount().equals(partnerAccount))
             .findFirst()
             .orElseThrow(
@@ -124,7 +137,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       Move move,
       List<InvoiceTerm> newInvoiceTermList,
       List<InvoiceTerm> invoiceTermListToRemove) {
-    if (ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
       return;
     }
 

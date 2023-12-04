@@ -49,6 +49,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Query;
 import org.slf4j.Logger;
@@ -233,7 +234,14 @@ public class DoubtfulCustomerService {
     todayDate,
     amountRemaining);*/
 
-    Beans.get(InvoiceTermReplaceService.class).replaceInvoiceTerms(invoice, newMove);
+    newMove.addMoveLineListItem(debitMoveLine);
+    creditMoveLines.forEach(newMove::addMoveLineListItem);
+
+    for (MoveLine moveLine : invoicePartnerMoveLines) {
+      Beans.get(InvoiceTermReplaceService.class)
+          .replaceInvoiceTerms(
+              invoice, newMove, Collections.singletonList(moveLine), moveLine.getAccount());
+    }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
   }
