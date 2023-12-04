@@ -114,6 +114,18 @@
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
   </action-view>
 
+  <!-- MOUVEMENT DE MASSE -->
+
+  <menuitem name="stock-root-mass-moves" parent="stock-root" title="Mass moves"
+    action="stock.root.mass.moves" order="350"
+    if="__config__.app.isApp('stock') &amp;&amp; __user__.activeCompany?.stockConfig?.isMassStockMoveManaged"/>
+
+  <action-view name="stock.root.mass.moves" title="Mass move"
+    model="com.axelor.apps.stock.db.MassStockMove">
+    <view type="grid" name="mass-stock-move-grid"/>
+    <view type="form" name="mass-stock-move-form"/>
+  </action-view>
+
   <menuitem name="stock-root-products" parent="stock-root" order="400"
     title="Products.items" action="stock.root.products"/>
 
@@ -190,7 +202,7 @@
     icon="fa-cog"/>
 
   <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"
-    action="stock.root.incoterm" order="100" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+    action="stock.root.incoterm" order="100"/>
 
   <action-view name="stock.root.incoterm" title="Incoterms"
     model="com.axelor.apps.stock.db.Incoterm">
