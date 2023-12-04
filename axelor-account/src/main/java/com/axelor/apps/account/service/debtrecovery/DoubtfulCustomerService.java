@@ -67,7 +67,6 @@ public class DoubtfulCustomerService {
   protected MoveLineRepository moveLineRepo;
   protected ReconcileService reconcileService;
   protected AccountConfigService accountConfigService;
-  protected DoubtfulCustomerInvoiceTermService doubtfulCustomerInvoiceTermService;
   protected AppBaseService appBaseService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceTermReplaceService invoiceTermReplaceService;
@@ -82,7 +81,6 @@ public class DoubtfulCustomerService {
       MoveLineRepository moveLineRepo,
       ReconcileService reconcileService,
       AccountConfigService accountConfigService,
-      DoubtfulCustomerInvoiceTermService doubtfulCustomerInvoiceTermService,
       AppBaseService appBaseService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceTermReplaceService invoiceTermReplaceService) {
@@ -95,7 +93,6 @@ public class DoubtfulCustomerService {
     this.moveLineRepo = moveLineRepo;
     this.reconcileService = reconcileService;
     this.accountConfigService = accountConfigService;
-    this.doubtfulCustomerInvoiceTermService = doubtfulCustomerInvoiceTermService;
     this.appBaseService = appBaseService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceTermReplaceService = invoiceTermReplaceService;
