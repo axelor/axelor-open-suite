@@ -65,7 +65,7 @@ public class ExpenseKilometricServiceImpl implements ExpenseKilometricService {
     Expense expense = expenseLine.getExpense();
 
     if (expense == null) {
-      return kilometricAllowParamList;
+      return getKilometricAllowParams(expenseLine.getEmployee(), expenseLine.getExpenseDate());
     }
 
     if (expense.getId() != null) {

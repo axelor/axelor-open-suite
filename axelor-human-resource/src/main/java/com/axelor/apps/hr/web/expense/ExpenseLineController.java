@@ -20,18 +20,14 @@ package com.axelor.apps.hr.web.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
-import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.helpers.StringHelper;
-import java.util.List;
 
 public class ExpenseLineController {
   public void checkJustificationFile(ActionRequest request, ActionResponse response) {
@@ -49,23 +45,18 @@ public class ExpenseLineController {
     }
   }
 
-  public void getKAPDomain(ActionRequest request, ActionResponse response) {
-    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-
-    List<KilometricAllowParam> kilometricAllowParamList =
-        Beans.get(ExpenseKilometricService.class)
-            .getKilometricAllowParams(expenseLine.getEmployee(), expenseLine.getExpenseDate());
-    response.setAttr(
-        "kilometricAllowParam",
-        "domain",
-        "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
-  }
-
   public void openExpenseCreateWizard(ActionRequest request, ActionResponse response)
       throws AxelorException {
     response.setView(
         Beans.get(ExpenseCreateWizardService.class)
             .getCreateExpenseWizard(request.getContext())
             .map());
+  }
+
+  public void fillExpenseProduct(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    response.setValue(
+        "expenseProduct", Beans.get(ExpenseLineService.class).getExpenseProduct(expenseLine));
   }
 }

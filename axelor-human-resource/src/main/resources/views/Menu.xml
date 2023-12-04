@@ -32,11 +32,8 @@
     <context name="to_justify_leave_reason" expr="eval: false"/>
   </action-view>
 
-  <menuitem name="my-hr-expense" parent="my-hr-root" title="Expenses" order="300"
-    if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"/>
-
-  <menuitem name="all-expense" parent="my-hr-expense" title="Expenses" action="expense.all"
-    order="100" if="__config__.app.isApp('expense')"/>
+  <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
+    order="300" if="__config__.app.isApp('expense')" icon="fa-credit-card" icon-background="#84429f"/>
 
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
@@ -49,9 +46,10 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
 
-  <menuitem name="line-expense" parent="my-hr-expense" title="Orphan expense line"
-    action="expense.line" order="200"
-    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.getIsOrphanExpenseLineManaged()"/>
+  <menuitem name="line-expense" parent="my-hr-root" title="Orphan expense line"
+    action="expense.line" order="350"
+    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.getIsOrphanExpenseLineManaged()"
+    icon="fa-receipt" icon-background="#84429f"/>
 
   <action-view name="expense.line" title="Orphan expense line"
     model="com.axelor.apps.hr.db.ExpenseLine">
