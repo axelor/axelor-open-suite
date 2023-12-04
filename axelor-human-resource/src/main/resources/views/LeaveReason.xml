@@ -5,7 +5,6 @@
 
   <grid name="leave-reason-grid" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     <field name="name"/>
-    <field name="manageAccumulation"/>
     <field name="allowNegativeValue"/>
     <field name="allowInjection"/>
     <field name="isActive"/>
@@ -40,7 +39,6 @@
         if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() == 2">
         <field name="useWeeklyPlanningCoef" widget="boolean-switch" colSpan="6"/>
       </panel>
-      <field name="manageAccumulation" widget="boolean-switch" colSpan="4" hidden="true"/>
     </panel>
 
     <panel name="exportsPanel"
