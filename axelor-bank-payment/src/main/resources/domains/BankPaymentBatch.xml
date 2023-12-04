@@ -22,8 +22,6 @@
     <integer name="daysNbr" title="Number of days to take into account to alert"/>
 
     <!-- BANK STATEMENT -->
-    <many-to-many name="ebicsPartnerSet" title="Ebics partners"
-      ref="com.axelor.apps.bankpayment.db.EbicsPartner"/>
     <many-to-many name="bankStatementFileFormatSet" title="Bank statement file formats"
       ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat"/>
 
