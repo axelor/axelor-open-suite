@@ -83,6 +83,6 @@ public class PricingMetaServiceImpl implements PricingMetaService {
 
   @Override
   public String setButtonCondition(String model) {
-    return "";
+    return "__config__.app.getApp('base')?.getEnablePricingScale()";
   }
 }

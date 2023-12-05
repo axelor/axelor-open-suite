@@ -9,13 +9,10 @@ public class SalePricingMetaServiceImpl extends PricingMetaServiceImpl {
   public String setButtonCondition(String model) {
     String condition = super.setButtonCondition(model);
 
-    if (model != null && model.contains(SaleOrder.class.getPackage().getName())) {
-      condition = "__config__.app.getApp('sale')?.getEnablePricingScale()";
-      if (SaleOrder.class.getName().equals(model)) {
-        condition =
-            condition.concat(
-                " && __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()");
-      }
+    if (model != null && SaleOrder.class.getName().equals(model)) {
+      condition =
+          condition.concat(
+              " && __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()");
     }
 
     return condition;

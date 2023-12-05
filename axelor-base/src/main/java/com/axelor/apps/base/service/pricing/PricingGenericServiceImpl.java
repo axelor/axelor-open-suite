@@ -3,6 +3,7 @@ package com.axelor.apps.base.service.pricing;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaRepository;
@@ -13,17 +14,24 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PricingGenericServiceImpl implements PricingGenericService {
 
   protected PricingService pricingService;
   protected PricingObserver pricingObserver;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public PricingGenericServiceImpl(PricingService pricingService, PricingObserver pricingObserver) {
+  public PricingGenericServiceImpl(
+      PricingService pricingService,
+      PricingObserver pricingObserver,
+      AppBaseService appBaseService) {
     this.pricingService = pricingService;
     this.pricingObserver = pricingObserver;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -57,11 +65,27 @@ public class PricingGenericServiceImpl implements PricingGenericService {
 
   @Override
   public List<Pricing> getPricings(Company company, Model model) {
-    List<Pricing> pricingList = pricingService.getPricings(company, model, null);
-    pricingList =
-        pricingList.stream()
-            .filter(pricing -> pricing.getLinkedPricing() == null)
-            .collect(Collectors.toList());
+    List<Pricing> pricingList = new ArrayList<>();
+    if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
+      pricingList =
+          pricingService.getPricings(company, model, null).stream().collect(Collectors.toList());
+    } else {
+      List<Pricing> resultList = pricingService.getAllPricings(company, model);
+
+      Set<Long> pricingsPointedTo =
+          resultList.stream()
+              .map(Pricing::getLinkedPricing)
+              .filter(Objects::nonNull)
+              .map(Pricing::getId)
+              .collect(Collectors.toSet());
+
+      // find the pricing that doesn't have any pricing pointing to it, that's the root
+      for (Pricing pricing : resultList) {
+        if (!pricingsPointedTo.contains(pricing.getId())) {
+          pricingList.add(pricing);
+        }
+      }
+    }
 
     return pricingList;
   }

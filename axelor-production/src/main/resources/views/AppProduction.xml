@@ -45,6 +45,7 @@
 
       <panel name="secondConfigurationPanel" colSpan="6" itemSpan="12">
         <panel name="mainConfiguratorPanel" title="Main configurations">
+          <field name="employeeScheduling" widget="boolean-switch"/>
           <field name="enableConfigurator" widget="boolean-switch"/>
           <field name="enableToolManagement" widget="boolean-switch"/>
           <field name="manageOutsourcing" widget="boolean-switch"

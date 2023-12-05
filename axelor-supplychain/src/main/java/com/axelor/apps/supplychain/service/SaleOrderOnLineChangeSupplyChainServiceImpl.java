@@ -32,6 +32,7 @@ import com.google.inject.Inject;
 public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLineChangeServiceImpl {
 
   protected SaleOrderSupplychainService saleOrderSupplychainService;
+  protected SaleOrderShipmentService saleOrderShipmentService;
 
   @Inject
   public SaleOrderOnLineChangeSupplyChainServiceImpl(
@@ -41,7 +42,8 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderComputeService saleOrderComputeService,
       SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderSupplychainService saleOrderSupplychainService) {
+      SaleOrderSupplychainService saleOrderSupplychainService,
+      SaleOrderShipmentService saleOrderShipmentService) {
     super(
         appSaleService,
         saleOrderService,
@@ -50,6 +52,7 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
         saleOrderComputeService,
         saleOrderLineRepository);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
+    this.saleOrderShipmentService = saleOrderShipmentService;
   }
 
   @Override
@@ -58,5 +61,6 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
     saleOrderSupplychainService.setAdvancePayment(saleOrder);
     saleOrderSupplychainService.updateTimetableAmounts(saleOrder);
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
+    saleOrderShipmentService.createShipmentCostLine(saleOrder);
   }
 }
