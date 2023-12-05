@@ -5,7 +5,7 @@
 
   <grid name="country-grid" title="Countries" model="com.axelor.apps.base.db.Country">
     <toolbar>
-      <button name="recomputeAddressOfSelectedCountriesBtn" title="Recompute all Address"
+      <button name="recomputeAddressOfSelectedCountriesBtn" title="Recompute all addresses"
         onClick="action-base-batch-method-recompute-all-addresses"/>
     </toolbar>
     <field name="name"/>

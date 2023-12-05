@@ -10,13 +10,19 @@ public class CountryController {
   public void recomputeAllAddress(ActionRequest request, ActionResponse response) {
     CountryService countryService = Beans.get(CountryService.class);
     Object ids = request.getContext().get("_ids");
-    List<Long> countryIdsList = (List<Long>) ids;
 
-    int updatedRecordCount = 0;
-    if (ids != null) {
+    if (ids == null) {
+      response.setInfo("Needs to select at least one country");
+    }
+    else{
+
+      int updatedRecordCount = 0;
+      List<Long> countryIdsList = (List<Long>) ids;
       updatedRecordCount = countryService.recomputeAllAddress(countryIdsList);
+
+      response.setInfo(updatedRecordCount + " records updated");
     }
 
-    response.setInfo(updatedRecordCount + " records Updated");
+
   }
 }

@@ -138,13 +138,7 @@
   <action-group name="action-group-base-address-onsave">
     <action name="action-base-address-set-address-used"/>
     <action name="action-base-address-check-address-used"/>
-    <!-- <action name="action-base-address-set-formatted-address-used"/> -->
   </action-group>
-
-  <!-- <action-method name="action-base-address-set-formatted-address-used" -->
-  <!-- model="com.axelor.apps.base.db.Address"> -->
-  <!-- <call class="com.axelor.apps.base.web.AddressController" method="setFormattedFullName"/> -->
-  <!-- </action-method> -->
 
   <action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
     <field name="addressL7Country"
