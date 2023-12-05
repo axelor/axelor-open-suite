@@ -283,7 +283,11 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
-    return  address.getFormattedFullName();
+    try {
+      setFormattedFullName(address);
+    } catch (AxelorException e) {
+    }
+    return address.getFormattedFullName();
   }
 
   @Override
@@ -358,7 +362,8 @@ public class AddressServiceImpl implements AddressService {
     } catch (Exception e) {
       // Catch any exception that occurs during the compute
       String errorMessage = I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR);
-      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate);
     }
   }
 
@@ -367,31 +372,29 @@ public class AddressServiceImpl implements AddressService {
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
     int totalAddressFormatted = 0;
 
-    Query<Address> query =
-                addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
+    Query<Address> query = addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
 
-      int offset = 0;
-      int countExceptions = 0;
-      List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
+    int offset = 0;
+    int countExceptions = 0;
+    List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
 
-      while (!addressList.isEmpty()) {
+    while (!addressList.isEmpty()) {
 
-          totalAddressFormatted = totalAddressFormatted + addressList.size();
-          countExceptions += generateFormattedAddressForAddress(addressList);
+      totalAddressFormatted = totalAddressFormatted + addressList.size();
+      countExceptions += generateFormattedAddressForAddress(addressList);
 
-          JPA.clear();
+      JPA.clear();
 
-          offset = addressList.size();
-          addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-
-      }
-      return Pair.of(totalAddressFormatted, countExceptions);
+      offset = addressList.size();
+      addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
+    }
+    return Pair.of(totalAddressFormatted, countExceptions);
   }
 
   private int generateFormattedAddressForAddress(List<Address> addressList) {
     int exceptionCount = 0;
 
-    for(Address address: addressList){
+    for (Address address : addressList) {
       try {
         setFormattedFullName(address);
       } catch (Exception e) {
@@ -400,6 +403,5 @@ public class AddressServiceImpl implements AddressService {
     }
 
     return exceptionCount;
-
   }
 }
