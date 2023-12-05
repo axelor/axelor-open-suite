@@ -34,6 +34,7 @@ public class AddressBaseRepository extends AddressRepository {
     entity.setFullName(addressService.computeFullName(entity));
     try {
       addressService.updateLatLong(entity);
+      addressService.setFormattedFullName(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);

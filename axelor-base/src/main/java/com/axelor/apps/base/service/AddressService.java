@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.meta.CallMethod;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -105,4 +106,18 @@ public interface AddressService {
   public void autocompleteAddress(Address address);
 
   public String getZipCode(Address address);
+
+  /**
+   * Set formatted full name for the address from address template
+   *
+   * @param address
+   */
+  public void setFormattedFullName(Address address);
+
+  /**
+   * Compute Formatted Address for selected countries
+   *
+   * @param countries
+   */
+  public int computeFormattedAddressForCountries(List<Long> countries);
 }

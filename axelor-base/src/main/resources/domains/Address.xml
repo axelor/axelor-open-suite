@@ -28,9 +28,9 @@
     <string name="streetNumber" title="Street number"/>
     <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
 
-    <string name="fullName" namecolumn="true"
-      search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
-
+    <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6"
+      title="Address"/>
+    <string name="formattedFullName" title="Address"/>
   </entity>
 
 </domain-models>

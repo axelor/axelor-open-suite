@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
@@ -27,15 +28,28 @@ import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.Street;
 import com.axelor.apps.base.db.repo.AddressRepository;
+import com.axelor.apps.base.db.repo.AddressTemplateRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
+import com.axelor.text.GroovyTemplates;
+import com.axelor.text.StringTemplates;
+import com.axelor.text.Templates;
 import com.axelor.utils.helpers.address.AddressHelper;
+import com.google.api.client.util.Maps;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -62,7 +76,6 @@ import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService {
-
   @Inject protected AddressRepository addressRepo;
   @Inject protected AddressHelper ads;
   @Inject protected MapService mapService;
@@ -74,6 +87,7 @@ public class AddressServiceImpl implements AddressService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  private static final char TEMPLATE_DELIMITER = '$';
   private static final Pattern ZIP_CODE_PATTERN =
       Pattern.compile(
           "\\d{4} [A-Z]{2} |\\d{4,6}|\\d{3}-\\d{4}|[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{1}[A-Z0-9]?");
@@ -270,31 +284,35 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
-    StringBuilder addressString = new StringBuilder();
-    if (address == null) {
-      return "";
+    if(address == null || address.getAddressL7Country() == null) {
+      StringBuilder addressString = new StringBuilder();
+      if (address == null) {
+        return "";
+      }
+
+      if (StringUtils.notBlank(address.getAddressL2())) {
+        addressString.append(address.getAddressL2()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL3())) {
+        addressString.append(address.getAddressL3()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL4())) {
+        addressString.append(address.getAddressL4()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL5())) {
+        addressString.append(address.getAddressL5()).append(System.lineSeparator());
+      }
+      if (StringUtils.notBlank(address.getAddressL6())) {
+        addressString.append(address.getAddressL6());
+      }
+      if (address.getAddressL7Country() != null) {
+        addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
+      }
+
+      return addressString.toString();
     }
 
-    if (StringUtils.notBlank(address.getAddressL2())) {
-      addressString.append(address.getAddressL2()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL3())) {
-      addressString.append(address.getAddressL3()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL4())) {
-      addressString.append(address.getAddressL4()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL5())) {
-      addressString.append(address.getAddressL5()).append(System.lineSeparator());
-    }
-    if (StringUtils.notBlank(address.getAddressL6())) {
-      addressString.append(address.getAddressL6());
-    }
-    if (address.getAddressL7Country() != null) {
-      addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
-    }
-
-    return addressString.toString();
+    return  address.getFormattedFullName();
   }
 
   @Override
@@ -340,5 +358,72 @@ public class AddressServiceImpl implements AddressService {
       return matcher.group();
     }
     return null;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setFormattedFullName(Address address){
+    AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
+    String content = addressTemplate.getTemplateStr();
+
+    try {
+      Templates templates;
+      if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
+        templates = Beans.get(GroovyTemplates.class);
+      } else {
+        templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
+      }
+
+      Map<String, Object> templatesContext = Maps.newHashMap();
+
+      Class<?> klass = EntityHelper.getEntityClass(address);
+      Context context = new Context(Mapper.toMap(address), klass);
+
+      templatesContext.put(klass.getSimpleName(), context.asType(klass));
+
+      String fullFormattedString = templates.fromText(content).make(templatesContext).render();
+      address.setFormattedFullName(fullFormattedString);
+    }
+    catch (Exception e){
+
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public int computeFormattedAddressForCountries(List<Long> countryIds) {
+    int totalAddressFormatted = 0;
+
+    Query<Address> query =
+                addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
+
+    try {
+      int offset = 0;
+      int countExceptions = 0;
+      List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
+
+      while (!addressList.isEmpty()) {
+
+          totalAddressFormatted = totalAddressFormatted + addressList.size();
+          generateFormattedAddressForAddress(addressList);
+
+          JPA.clear();
+
+          offset = addressList.size();
+          addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
+
+      }
+
+    } catch (Exception e) {
+
+    }
+
+
+
+      return totalAddressFormatted;
+  }
+
+  private void generateFormattedAddressForAddress(List<Address> addressList) {
+      addressList.forEach(this::setFormattedFullName);
   }
 }
