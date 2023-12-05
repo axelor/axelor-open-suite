@@ -447,18 +447,22 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
   @Override
   public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        invoice.getCompany(), invoice.getInvoiceLineList())) {
+            invoice.getCompany(), invoice.getInvoiceLineList())
+        || date == null) {
       return;
     }
+
     for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
       budgetDistributionService.autoComputeBudgetDistribution(
           invoiceLine.getAnalyticMoveLineList(),
           invoiceLine.getAccount(),
           invoice.getCompany(),
-          invoice.getInvoiceDate() != null
-              ? invoice.getInvoiceDate()
-              : invoice.getCreatedOn().toLocalDate(),
+          date,
           invoiceLine.getCompanyExTaxTotal(),
           invoiceLine);
     }

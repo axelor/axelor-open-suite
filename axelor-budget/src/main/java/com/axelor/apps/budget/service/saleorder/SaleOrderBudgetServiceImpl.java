@@ -308,8 +308,11 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
 
   @Override
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
+    LocalDate date =
+        saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        saleOrder.getCompany(), saleOrder.getSaleOrderLineList())) {
+            saleOrder.getCompany(), saleOrder.getSaleOrderLineList())
+        || date == null) {
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
@@ -317,7 +320,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           saleOrderLine.getAnalyticMoveLineList(),
           saleOrderLine.getAccount(),
           saleOrder.getCompany(),
-          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate(),
+          date,
           saleOrderLine.getCompanyExTaxTotal(),
           saleOrderLine);
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
