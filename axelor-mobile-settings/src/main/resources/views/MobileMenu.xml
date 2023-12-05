@@ -15,7 +15,7 @@
       <field name="name" colSpan="4"/>
       <field name="technicalName" colSpan="4"/>
       <spacer colSpan="2"/>
-      <field name="authorizedRoles" placeholder="none" colSpan="6" canNew="false"
+      <field name="authorizedRoles" placeholder="None" colSpan="6" canNew="false"
         canEdit="false" widget="TagSelect"/>
     </panel>
 
