@@ -20,7 +20,6 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -64,8 +63,6 @@ public interface BankOrderService {
   public BankOrder cancelPayment(BankOrder bankOrder) throws AxelorException;
 
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;
-
-  public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);
 
   public String createDomainForBankDetails(BankOrder bankOrder);
 

@@ -33,14 +33,9 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
@@ -63,11 +58,9 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -95,7 +88,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderLineService bankOrderLineService;
-  protected EbicsService ebicsService;
   protected InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
@@ -113,7 +105,6 @@ public class BankOrderServiceImpl implements BankOrderService {
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
-      EbicsService ebicsService,
       InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
@@ -129,7 +120,6 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderLineService = bankOrderLineService;
-    this.ebicsService = ebicsService;
     this.invoicePaymentBankPaymentCancelService = invoicePaymentBankPaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
@@ -438,18 +428,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
-        && paymentMode != null
-        && paymentMode.getAutomaticTransmission()) {
-
-      bankOrder.setConfirmationDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-      bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-      makeEbicsUserFollow(bankOrder);
-
-      bankOrderRepo.save(bankOrder);
-    } else {
-      validate(bankOrder);
-    }
+    processBankOrderStatus(bankOrder, paymentMode);
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
@@ -459,6 +438,11 @@ public class BankOrderServiceImpl implements BankOrderService {
       }
       this.generateMoves(bankOrder);
     }
+  }
+
+  protected void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
+      throws AxelorException {
+    validate(bankOrder);
   }
 
   @Override
@@ -491,57 +475,9 @@ public class BankOrderServiceImpl implements BankOrderService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(BankOrder bankOrder) throws AxelorException {
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      if (bankOrder.getSignatoryEbicsUser() == null) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_SIGNATORY_EBICS_USER));
-      }
-      if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
-        throw new AxelorException(
-            bankOrder.getSignatoryEbicsUser().getEbicsPartner(),
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
-      }
-
-      if (!bankOrder.getHasBeenSentToBank()) {
-        sendBankOrderFile(bankOrder);
-      }
-    }
-    realizeBankOrder(bankOrder);
-  }
-
-  protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {
-
-    File dataFileToSend = null;
-    File signatureFileToSend = null;
-
-    if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect()
-        == EbicsPartnerRepository.EBICS_TYPE_TS) {
-      if (bankOrder.getSignedMetaFile() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED));
-      }
-
-      signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
-    }
-    dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-
-    sendFile(bankOrder, dataFileToSend, signatureFileToSend);
-    markAsSent(bankOrder);
-  }
-
-  @Transactional
-  protected void markAsSent(BankOrder bankOrder) {
-    bankOrder.setHasBeenSentToBank(true);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
     LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
     if (!bankOrder.getAreMovesGenerated()
@@ -557,31 +493,12 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
-    }
-
     bankOrderRepo.save(bankOrder);
   }
 
-  protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend)
-      throws AxelorException {
-
-    PaymentMode paymentMode = bankOrder.getPaymentMode();
-
-    if (paymentMode != null && !paymentMode.getAutomaticTransmission()) {
-      return;
-    }
-
-    EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
-
-    ebicsService.sendFULRequest(
-        signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(),
-        signatoryEbicsUser,
-        null,
-        dataFileToSend,
-        bankOrder.getBankOrderFileFormat(),
-        signatureFileToSend);
+  @Transactional
+  protected void markAsSent(BankOrder bankOrder) {
+    bankOrder.setHasBeenSentToBank(true);
   }
 
   @Override
@@ -622,21 +539,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected void saveBankOrder(BankOrder bankOrder) {
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
     bankOrderRepo.save(bankOrder);
-  }
-
-  @Override
-  @Transactional
-  public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails) {
-    EbicsPartner ebicsPartner =
-        Beans.get(EbicsPartnerRepository.class)
-            .all()
-            .filter("? MEMBER OF self.bankDetailsSet", bankDetails)
-            .fetchOne();
-    if (ebicsPartner != null) {
-      return ebicsPartner.getDefaultSignatoryEbicsUser();
-    } else {
-      return null;
-    }
   }
 
   @Override
@@ -892,19 +794,6 @@ public class BankOrderServiceImpl implements BankOrderService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(BankPaymentExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE),
         bankOrder.getSenderCompany().getName());
-  }
-
-  /**
-   * The signatory ebics user will follow the bank order record
-   *
-   * @param bankOrder
-   */
-  protected void makeEbicsUserFollow(BankOrder bankOrder) {
-    EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
-    if (ebicsUser != null) {
-      User signatoryUser = ebicsUser.getAssociatedUser();
-      Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
-    }
   }
 
   @Override
