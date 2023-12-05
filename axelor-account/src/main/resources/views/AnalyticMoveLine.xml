@@ -63,7 +63,9 @@
     <field name="analyticAxis" hidden="true"/>
     <field name="analyticAccount"/>
     <field name="percentage"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="analyticJournal"/>
   </grid>
 
