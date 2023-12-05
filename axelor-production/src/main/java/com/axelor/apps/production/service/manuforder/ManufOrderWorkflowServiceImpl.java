@@ -857,7 +857,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
       this.setPurchaseOrderSupplierDetails(purchaseOrder);
 
-      purchaseOrderService.computePurchaseOrder(purchaseOrder);
       generatedPurchaseOrders.add(purchaseOrder);
       manufOrder.addPurchaseOrderSetItem(purchaseOrder);
     }
@@ -879,6 +878,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
         this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
       }
+      purchaseOrderService.computePurchaseOrder(purchaseOrder);
     }
 
     manufOrderRepo.save(manufOrder);
