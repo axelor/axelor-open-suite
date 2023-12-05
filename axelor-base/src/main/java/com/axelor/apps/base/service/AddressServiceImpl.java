@@ -385,8 +385,9 @@ public class AddressServiceImpl implements AddressService {
 
       JPA.clear();
 
-      offset = addressList.size();
+      offset += addressList.size();
       addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
+
     }
     return Pair.of(totalAddressFormatted, countExceptions);
   }
