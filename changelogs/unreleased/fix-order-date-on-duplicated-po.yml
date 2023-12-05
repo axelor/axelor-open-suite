@@ -1,0 +1,3 @@
+---
+title : "[Purchase Order] Duplicated order don't get their order date updated"
+type: fix
