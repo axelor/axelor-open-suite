@@ -234,10 +234,6 @@
     <option value="D">Equivalent amount in sender bank details' currency</option>
   </selection>
 
-  <selection name="bank.payment.batch.action.select">
-    <option value="2">Bank statement</option>
-  </selection>
-
   <selection name="bank.payment.bank.order.line.origin.related.to.select">
     <option value="com.axelor.apps.account.db.Invoice" data-grid="invoice-grid"
       data-form="invoice-form">Invoice</option>

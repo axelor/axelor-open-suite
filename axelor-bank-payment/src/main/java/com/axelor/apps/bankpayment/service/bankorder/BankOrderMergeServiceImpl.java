@@ -100,7 +100,6 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     bankOrder.setBankOrderDate(
         Beans.get(AppBaseService.class).getTodayDate(bankOrder.getSenderCompany()));
     bankOrder.setSignatoryUser(null);
-    bankOrder.setSignatoryEbicsUser(null);
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
