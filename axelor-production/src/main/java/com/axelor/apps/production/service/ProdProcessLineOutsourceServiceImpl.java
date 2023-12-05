@@ -1,6 +1,5 @@
 package com.axelor.apps.production.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.google.inject.Inject;
@@ -18,8 +17,7 @@ public class ProdProcessLineOutsourceServiceImpl implements ProdProcessLineOutso
   }
 
   @Override
-  public Optional<Partner> getOutsourcePartner(ProdProcessLine prodProcessLine)
-      throws AxelorException {
+  public Optional<Partner> getOutsourcePartner(ProdProcessLine prodProcessLine) {
     Objects.requireNonNull(prodProcessLine);
     Objects.requireNonNull(prodProcessLine.getProdProcess());
 

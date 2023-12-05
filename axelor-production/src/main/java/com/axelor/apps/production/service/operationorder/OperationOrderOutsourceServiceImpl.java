@@ -1,6 +1,5 @@
 package com.axelor.apps.production.service.operationorder;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
@@ -23,8 +22,7 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
   }
 
   @Override
-  public Optional<Partner> getOutsourcePartner(OperationOrder operationOrder)
-      throws AxelorException {
+  public Optional<Partner> getOutsourcePartner(OperationOrder operationOrder) {
     Objects.requireNonNull(operationOrder);
     Objects.requireNonNull(operationOrder.getManufOrder());
 

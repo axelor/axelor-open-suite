@@ -828,6 +828,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     List<Partner> outsourcePartners = getOutsourcePartnersForGenerationPO(manufOrder);
 
+    List<PurchaseOrder> generatedPurchaseOrders = new ArrayList<>();
     for (Partner outsourcePartner : outsourcePartners) {
       PurchaseOrder purchaseOrder =
           purchaseOrderService.createPurchaseOrder(
@@ -856,14 +857,28 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
       this.setPurchaseOrderSupplierDetails(purchaseOrder);
 
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getUseLineInGeneratedPurchaseOrder()) {
-          this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
-        }
-      }
-
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
+      generatedPurchaseOrders.add(purchaseOrder);
       manufOrder.addPurchaseOrderSetItem(purchaseOrder);
+    }
+
+    for (PurchaseOrder purchaseOrder : generatedPurchaseOrders) {
+      List<OperationOrder> operationOrderGeneratePurchaseOrderList =
+          manufOrder.getOperationOrderList().stream()
+              .filter(
+                  oo ->
+                      oo.getUseLineInGeneratedPurchaseOrder()
+                          && purchaseOrder
+                              .getSupplierPartner()
+                              .equals(
+                                  operationOrderOutsourceService
+                                      .getOutsourcePartner(oo)
+                                      .orElse(null)))
+              .collect(Collectors.toList());
+
+      for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
+        this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+      }
     }
 
     manufOrderRepo.save(manufOrder);
@@ -883,14 +898,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               oo ->
                   oo.getOutsourcing()
                       && oo.getProdProcessLine().getGeneratePurchaseOrderOnMoPlanning())
-          .map(
-              oo -> {
-                try {
-                  return operationOrderOutsourceService.getOutsourcePartner(oo);
-                } catch (AxelorException e) {
-                  throw new RuntimeException(e);
-                }
-              })
+          .map(oo -> operationOrderOutsourceService.getOutsourcePartner(oo))
           .map(optPartner -> optPartner.orElse(null))
           .filter(Objects::nonNull)
           .distinct()
