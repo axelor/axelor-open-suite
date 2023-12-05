@@ -387,7 +387,6 @@ public class AddressServiceImpl implements AddressService {
 
       offset += addressList.size();
       addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-
     }
     return Pair.of(totalAddressFormatted, countExceptions);
   }

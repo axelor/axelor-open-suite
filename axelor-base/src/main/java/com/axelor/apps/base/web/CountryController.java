@@ -4,7 +4,6 @@ import com.axelor.apps.base.service.CountryService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
