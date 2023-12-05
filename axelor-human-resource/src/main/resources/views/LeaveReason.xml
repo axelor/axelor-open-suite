@@ -13,8 +13,8 @@
   <form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason"
     onNew="action-leave-reason-group-onnew">
     <panel name="mainPanel">
-      <field name="$viewerTags" showTitle="false" readonly="true"
-        showIf="$readonly() &amp;&amp; leaveReasonTypeSelect == 1" colSpan="9" depends="isActive">
+      <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
+        colSpan="9" depends="isActive">
         <viewer>
           <![CDATA[
             <>
@@ -27,12 +27,13 @@
 
       <field name="name" colSpan="4"/>
       <field name="leaveReasonTypeSelect" colSpan="4"/>
-      <field name="defaultDayNumberGain" colSpan="4"/>
-      <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="4"/>
+      <field name="defaultDayNumberGain" colSpan="4" showIf="leaveReasonTypeSelect != 2"/>
+      <field name="isActive" widget="boolean-switch" colSpan="3"/>
+      <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="3"/>
       <field name="planningSet" colSpan="6" canNew="false" widget="TagSelect"
         placeholder="All"/>
-      <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"/>
-      <field name="isActive" widget="boolean-switch" colSpan="4"/>
+      <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"
+        showIf="leaveReasonTypeSelect != 2"/>
       <field name="instruction" colSpan="12" widget="html"/>
 
       <panel name="planningPanel" colSpan="12"
