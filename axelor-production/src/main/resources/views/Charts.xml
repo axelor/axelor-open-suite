@@ -5,7 +5,7 @@
 
 
   <chart name="chart.planned.charge.by.machine.hours"
-    title="Previsional charge by machine (per hour)"
+    title="Previsional charge rate by machine (% per hour)"
     onInit="action.production.chart.set.from.date.to.date">
     <search-fields>
       <field type="datetime" name="fromDateTime" title="From Date"/>
@@ -18,7 +18,7 @@
 
 
   <chart name="chart.planned.charge.by.machine.days"
-    title="Previsional charge by machine (per days)"
+    title="Previsional charge rate by machine (% per days)"
     onInit="action.production.chart.set.from.date.to.date">
     <search-fields>
       <field type="datetime" name="fromDateTime" title="From Date"/>
@@ -29,7 +29,7 @@
     <series key="charge" groupBy="machine" type="bar"/>
   </chart>
 
-  <chart name="chart.machine.charge.per.hours" title="Previsional Charge (per hour)"
+  <chart name="chart.machine.charge.per.hours" title="Previsional charge rate (% per hour)"
     onInit="action.production.chart.set.from.date.to.date">
     <search-fields>
       <field type="datetime" name="fromDateTime" title="From Date"/>
@@ -40,7 +40,7 @@
     <series key="charge" groupBy="company" type="line"/>
   </chart>
 
-  <chart name="chart.machine.charge.per.days" title="Previsional charge (per day)"
+  <chart name="chart.machine.charge.per.days" title="Previsional charge rate (% per day)"
     onInit="action.production.chart.set.from.date.to.date">
     <search-fields>
       <field type="datetime" name="fromDateTime" title="From Date"/>
