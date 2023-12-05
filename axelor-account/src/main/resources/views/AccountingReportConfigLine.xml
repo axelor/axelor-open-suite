@@ -117,8 +117,9 @@
             requiredIf="ruleTypeSelect == 2" selection-in="[1,2,3,5,6]"/>
         </panel>
         <field name="negateValue" colSpan="6" showIf="[1,2,6].includes(resultSelect)"/>
-        <field name="accountCode"/>
-        <field name="analyticAccountCode" showIf="ruleTypeSelect == 2"/>
+        <field name="accountCode" widget="code-editor" x-code-syntax="sql"/>
+        <field name="analyticAccountCode" showIf="ruleTypeSelect == 2" widget="code-editor"
+          x-code-syntax="sql"/>
         <panel-related name="accountingReportConfigLineAccountTypeSetPanel"
           field="accountTypeSet" canNew="false" canEdit="false" form-view="account-type-form"
           grid-view="account-type-grid"/>
