@@ -188,10 +188,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
 
     AnalyticJournal analyticJournal = analyticDistributionLine.getAnalyticJournal();
-    Company company = analyticJournal == null ? null : analyticJournal.getCompany();
-    if (company != null) {
-      analyticMoveLine.setCurrency(company.getCurrency());
-    }
+    this.computeAnalyticCurrency(
+        analyticJournal == null ? null : analyticJournal.getCompany(), analyticMoveLine);
+
     analyticMoveLine.setDate(date);
     analyticMoveLine.setPercentage(analyticDistributionLine.getPercentage());
     analyticMoveLine.setAmount(computeAmount(analyticMoveLine));
@@ -251,6 +250,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
+    this.computeAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setDate(moveLine.getDate());
     if (moveLine.getAccount() != null) {
@@ -258,9 +258,11 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAccountType(moveLine.getAccount().getAccountType());
     }
     if (moveLine.getCredit().signum() > 0) {
-      analyticMoveLine.setAmount(moveLine.getCredit());
+      analyticMoveLine.setAmount(
+          currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCredit()));
     } else if (moveLine.getDebit().signum() > 0) {
-      analyticMoveLine.setAmount(moveLine.getDebit());
+      analyticMoveLine.setAmount(
+          currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getDebit()));
     }
     return analyticMoveLine;
   }
@@ -328,7 +330,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     AnalyticMoveLine reverse = analyticMoveLineRepository.copy(analyticMoveLine, false);
     reverse.setOriginAnalyticMoveLine(analyticMoveLine);
     moveLine.addAnalyticMoveLineListItem(reverse);
-    reverse.setAmount(analyticMoveLine.getAmount().negate());
+    reverse.setAmount(
+        currencyScaleServiceAccount.getScaledValue(
+            analyticMoveLine, analyticMoveLine.getAmount().negate()));
     reverse.setSubTypeSelect(AnalyticMoveLineRepository.SUB_TYPE_REVERSE);
 
     return reverse;
@@ -377,5 +381,12 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     String idList = StringHelper.getIdListString(analyticAxisList);
     domain.append(" AND self.id IN (").append(idList).append(")");
     return domain.toString();
+  }
+
+  protected void computeAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
+    if (analyticMoveLine != null) {
+      analyticMoveLine.setCurrency(
+          company != null && company.getCurrency() != null ? company.getCurrency() : null);
+    }
   }
 }

@@ -148,6 +148,7 @@
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
       <field name="currency" hidden="true"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
