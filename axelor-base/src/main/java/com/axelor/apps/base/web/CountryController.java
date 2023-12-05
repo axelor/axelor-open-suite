@@ -4,6 +4,8 @@ import com.axelor.apps.base.service.CountryService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.List;
 
 public class CountryController {
@@ -15,14 +17,12 @@ public class CountryController {
       response.setInfo("Needs to select at least one country");
     }
     else{
-
-      int updatedRecordCount = 0;
       List<Long> countryIdsList = (List<Long>) ids;
-      updatedRecordCount = countryService.recomputeAllAddress(countryIdsList);
+      Pair<Integer, Integer> pair = countryService.recomputeAllAddress(countryIdsList);
 
-      response.setInfo(updatedRecordCount + " records updated");
+      int updatedRecordCount = pair.getLeft();
+      int exceptionCount = pair.getRight();
+      response.setInfo(updatedRecordCount + " records updated\n" + exceptionCount +" records generated exceptions!");
     }
-
-
   }
 }

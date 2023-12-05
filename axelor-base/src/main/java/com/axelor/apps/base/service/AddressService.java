@@ -112,12 +112,12 @@ public interface AddressService {
    *
    * @param address
    */
-  public void setFormattedFullName(Address address);
+  public void setFormattedFullName(Address address) throws AxelorException;
 
   /**
    * Compute Formatted Address for selected countries
    *
    * @param countries
    */
-  public int computeFormattedAddressForCountries(List<Long> countries);
+  public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countries);
 }

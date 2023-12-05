@@ -1,7 +1,7 @@
 package com.axelor.apps.base.service;
 
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public class CountryServiceImpl implements CountryService {
   }
 
   @Override
-  public int recomputeAllAddress(List<Long> countryIdsList) {
+  public Pair<Integer, Integer> recomputeAllAddress(List<Long> countryIdsList) {
     int updatedRecordCount = 0;
-    updatedRecordCount = addressService.computeFormattedAddressForCountries(countryIdsList);
-    return updatedRecordCount;
+    Pair<Integer, Integer> pair = addressService.computeFormattedAddressForCountries(countryIdsList);
+    return pair;
   }
 }

@@ -35,7 +35,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
@@ -284,34 +283,6 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
-    if(address == null || address.getAddressL7Country() == null) {
-      StringBuilder addressString = new StringBuilder();
-      if (address == null) {
-        return "";
-      }
-
-      if (StringUtils.notBlank(address.getAddressL2())) {
-        addressString.append(address.getAddressL2()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getAddressL3())) {
-        addressString.append(address.getAddressL3()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getAddressL4())) {
-        addressString.append(address.getAddressL4()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getAddressL5())) {
-        addressString.append(address.getAddressL5()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getAddressL6())) {
-        addressString.append(address.getAddressL6());
-      }
-      if (address.getAddressL7Country() != null) {
-        addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
-      }
-
-      return addressString.toString();
-    }
-
     return  address.getFormattedFullName();
   }
 
@@ -362,7 +333,7 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void setFormattedFullName(Address address){
+  public void setFormattedFullName(Address address) throws AxelorException {
     AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
     String content = addressTemplate.getTemplateStr();
 
@@ -383,21 +354,22 @@ public class AddressServiceImpl implements AddressService {
 
       String fullFormattedString = templates.fromText(content).make(templatesContext).render();
       address.setFormattedFullName(fullFormattedString);
-    }
-    catch (Exception e){
 
+    } catch (Exception e) {
+      // Catch any exception that occurs during the compute
+      String errorMessage = I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR);
+      throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate);
     }
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public int computeFormattedAddressForCountries(List<Long> countryIds) {
+  public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
     int totalAddressFormatted = 0;
 
     Query<Address> query =
                 addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
 
-    try {
       int offset = 0;
       int countExceptions = 0;
       List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
@@ -405,7 +377,7 @@ public class AddressServiceImpl implements AddressService {
       while (!addressList.isEmpty()) {
 
           totalAddressFormatted = totalAddressFormatted + addressList.size();
-          generateFormattedAddressForAddress(addressList);
+          countExceptions += generateFormattedAddressForAddress(addressList);
 
           JPA.clear();
 
@@ -413,17 +385,21 @@ public class AddressServiceImpl implements AddressService {
           addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
 
       }
-
-    } catch (Exception e) {
-
-    }
-
-
-
-      return totalAddressFormatted;
+      return Pair.of(totalAddressFormatted, countExceptions);
   }
 
-  private void generateFormattedAddressForAddress(List<Address> addressList) {
-      addressList.forEach(this::setFormattedFullName);
+  private int generateFormattedAddressForAddress(List<Address> addressList) {
+    int exceptionCount = 0;
+
+    for(Address address: addressList){
+      try {
+        setFormattedFullName(address);
+      } catch (Exception e) {
+        exceptionCount++;
+      }
+    }
+
+    return exceptionCount;
+
   }
 }
