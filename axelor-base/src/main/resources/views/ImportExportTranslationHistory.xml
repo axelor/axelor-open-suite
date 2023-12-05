@@ -5,9 +5,13 @@
 
   <grid name="import-export-translation-history-grid" title="Import/Export Translation History"
     model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
+    <button name="traceBackHistoryBtn" title="Trace Back History"
+      onClick="import-export-translation-history-view-trace-back-history" icon="fa-wrench"
+      help="Check the trace back history"/>
     <field name="actionType"/>
     <field name="recordNumber"/>
     <field name="errorNumber"/>
+
   </grid>
 
   <form name="import-export-translation-history-form" title="Import/Export Translation History"
@@ -17,8 +21,19 @@
       <field name="actionType"/>
       <field name="recordNumber"/>
       <field name="errorNumber"/>
+      <button name="traceBackHistoryBtn" title="Trace Back History"
+        help="Check the trace back history"
+        onClick="import-export-translation-history-view-trace-back-history"/>
     </panel>
   </form>
+
+  <action-view name="import-export-translation-history-view-trace-back-history"
+    title="Trace Back History" model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.refId = :importExportTranslationHistoryId</domain>
+    <context name="importExportTranslationHistoryId" expr="eval: __this__.id"/>
+  </action-view>
 
 
 </object-views>

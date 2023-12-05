@@ -2,11 +2,14 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.ImportExportTranslationHistory;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.repo.ImportExportTranslationHistoryRepository;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -60,14 +63,25 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    */
   @Override
   public void exportTranslations(ImportExportTranslation importExportTranslation)
-      throws IOException {
+      throws IOException, AxelorException {
     errorNumber = 0;
+    countRecords = 0;
+    ImportExportTranslationHistory importExportTranslationHistory =
+        saveHistory(importExportTranslation, "Export");
     List<String> languageHeaders = getLanguageHeaders(importExportTranslation);
     int languageNumber = languageHeaders.size();
     String[] headers = computeCsvFileHeaders(languageHeaders);
     Map<String, String[]> map =
         saveRecordsIntoMap(importExportTranslation, languageNumber, headers);
-    List<String[]> translationList = addRecordRowIntoList(map, languageNumber);
+    List<String[]> translationList;
+    try {
+      translationList = addRecordRowIntoList(map, languageNumber, importExportTranslationHistory);
+    } catch (AxelorException e) {
+      TraceBackService.trace(e);
+      Logger logger = LoggerFactory.getLogger(getClass());
+      logger.error("Import line processing error.", e);
+      return;
+    }
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
     CsvHelper.csvWriter(
@@ -75,10 +89,12 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     try (InputStream is = new FileInputStream(file)) {
       Beans.get(MetaFiles.class).attach(is, file.getName(), importExportTranslation);
     } catch (IOException e) {
-      Logger logger = LoggerFactory.getLogger(getClass());
-      logger.error("FileInputStream error", e);
+      throw new AxelorException(
+          importExportTranslationHistory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "File input error.");
     }
-    saveHistory(importExportTranslation, "Export");
+    saveHistory(importExportTranslationHistory);
   }
 
   /**
@@ -86,9 +102,11 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    *
    * @param importExportTranslation
    * @param actionType "Export" or "Import"
+   * @return importExportTranslationHistory
    */
   @Transactional
-  protected void saveHistory(ImportExportTranslation importExportTranslation, String actionType) {
+  protected ImportExportTranslationHistory saveHistory(
+      ImportExportTranslation importExportTranslation, String actionType) {
     ImportExportTranslationHistory importExportTranslationHistory =
         new ImportExportTranslationHistory();
     importExportTranslationHistory.setActionType(actionType);
@@ -97,6 +115,14 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     importExportTranslation.addImportExportTranslationHistoryListItem(
         importExportTranslationHistory);
     importExportTranslationRepository.save(importExportTranslation);
+    return importExportTranslationHistory;
+  }
+
+  @Transactional
+  protected void saveHistory(ImportExportTranslationHistory importExportTranslationHistory) {
+    importExportTranslationHistory.setRecordNumber(countRecords);
+    importExportTranslationHistory.setErrorNumber(errorNumber);
+    importExportTranslationHistoryRepository.save(importExportTranslationHistory);
   }
 
   /**
@@ -107,13 +133,17 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @param languageNumber
    * @return List containing each row of records.
    */
-  protected List<String[]> addRecordRowIntoList(Map<String, String[]> map, int languageNumber) {
+  protected List<String[]> addRecordRowIntoList(
+      Map<String, String[]> map,
+      int languageNumber,
+      ImportExportTranslationHistory importExportTranslationHistory)
+      throws AxelorException {
     String[] row;
     List<String[]> translationList = new ArrayList<>();
-    countRecords = 0;
     for (Map.Entry<String, String[]> entry : map.entrySet()) {
+      String[] value = null;
       try {
-        String[] value = entry.getValue();
+        value = entry.getValue();
         row = new String[languageNumber + 1];
         row[0] = entry.getKey();
         for (int j = 0; j < value.length; j++) {
@@ -123,6 +153,10 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         translationList.add(row);
       } catch (Exception e) {
         errorNumber++;
+        throw new AxelorException(
+            importExportTranslationHistory,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            "Import line processing error: " + Arrays.toString(value));
       }
     }
     return translationList;
@@ -255,16 +289,23 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @return File path
    */
   @Override
-  public Path importTranslations(ImportExportTranslation importExportTranslation) {
+  public Path importTranslations(ImportExportTranslation importExportTranslation)
+      throws AxelorException {
     countRecords = 0;
     errorNumber = 0;
+    ImportExportTranslationHistory importExportTranslationHistory =
+        saveHistory(importExportTranslation, "Import");
     Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
-    List<String[]> data = null;
+    List<String[]> data;
     try {
       data = CsvHelper.cSVFileReader(filePath.toString(), separator);
     } catch (Exception e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("Read CSV file failed.", e);
+      throw new AxelorException(
+          importExportTranslationHistory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "Read file error.");
     }
     if (data == null) {
       return null;
@@ -276,16 +317,18 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       }
       List<String> dataLine = Arrays.asList(data.get(i));
       try {
-        countRecords += insertOrUpdateTranslation(dataLine, headers);
-      } catch (Exception e) {
+        countRecords +=
+            insertOrUpdateTranslation(dataLine, headers, importExportTranslationHistory);
+      } catch (AxelorException e) {
         Logger logger = LoggerFactory.getLogger(getClass());
         logger.error("Error processing data line: " + dataLine, e);
         errorNumber++;
+        TraceBackService.trace(e);
       }
     }
-    importExportTranslation =
-        importExportTranslationRepository.find(importExportTranslation.getId());
-    saveHistory(importExportTranslation, "Import");
+    importExportTranslationHistory =
+        importExportTranslationHistoryRepository.find(importExportTranslationHistory.getId());
+    saveHistory(importExportTranslationHistory);
     return filePath;
   }
 
@@ -294,15 +337,22 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    *
    * @param dataLine
    * @param headers
+   * @param importExportTranslationHistory
    * @return total records imported or updated for the dataLine.
    */
   @Transactional
-  protected int insertOrUpdateTranslation(List<String> dataLine, List<String> headers)
-      throws Exception {
+  protected int insertOrUpdateTranslation(
+      List<String> dataLine,
+      List<String> headers,
+      ImportExportTranslationHistory importExportTranslationHistory)
+      throws AxelorException {
     int importNumber = 0;
     String key = dataLine.get(0);
     if (dataLine.size() != headers.size()) {
-      throw new Exception("CSV file line has different number of columns against headers");
+      throw new AxelorException(
+          importExportTranslationHistory,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          "Data line process error: " + dataLine);
     }
     for (int i = 1; i < dataLine.size(); i++) {
       // dataLine: messageKey, en_value, fr_value, L3_value, ...
