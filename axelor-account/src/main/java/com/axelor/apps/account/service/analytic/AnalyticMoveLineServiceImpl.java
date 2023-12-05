@@ -259,10 +259,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     }
     if (moveLine.getCredit().signum() > 0) {
       analyticMoveLine.setAmount(
-          currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getCredit()));
+          currencyScaleServiceAccount.getScaledValue(analyticMoveLine, moveLine.getCredit()));
     } else if (moveLine.getDebit().signum() > 0) {
       analyticMoveLine.setAmount(
-          currencyScaleServiceAccount.getScaledValue(moveLine, moveLine.getDebit()));
+          currencyScaleServiceAccount.getScaledValue(analyticMoveLine, moveLine.getDebit()));
     }
     return analyticMoveLine;
   }
