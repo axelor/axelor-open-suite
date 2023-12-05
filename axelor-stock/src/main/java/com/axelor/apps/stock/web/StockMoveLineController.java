@@ -142,8 +142,8 @@ public class StockMoveLineController {
   public void openTrackNumberWizard(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
-    StockMove stockMove = null;
-    Boolean fromStockMove = false;
+    StockMove stockMove;
+    boolean fromStockMove;
     if (context.getParent() != null
         && StockMove.class.equals(context.getParent().getContextClass())) {
       stockMove = context.getParent().asType(StockMove.class);
@@ -151,25 +151,30 @@ public class StockMoveLineController {
     } else if (stockMoveLine.getStockMove() != null
         && stockMoveLine.getStockMove().getId() != null) {
       stockMove = Beans.get(StockMoveRepository.class).find(stockMoveLine.getStockMove().getId());
+      fromStockMove = false;
+    } else {
+      return;
     }
 
-    boolean _isSeqUsedForSerialNumber = false;
     Product product = stockMoveLine.getProduct();
+    if (product == null) {
+      return;
+    }
     TrackingNumberConfiguration trackingNumberConfiguration =
         product.getTrackingNumberConfiguration();
-    if (trackingNumberConfiguration != null) {
-      _isSeqUsedForSerialNumber = trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr();
+    if (trackingNumberConfiguration == null) {
+      return;
     }
 
     String formName = "stock-move-line-create-tracking-number-wizard-form";
     String title = I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_TITLE_1);
 
     if ("stock-move-line-consumed-production-grid".equals(context.get("_viewName"))
-        || (fromStockMove && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
-            || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-                && trackingNumberConfiguration.getIsSaleTrackingManaged()
-                && (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
-                    || trackingNumberConfiguration.getIsProductionTrackingManaged())))) {
+        || fromStockMove && stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
+        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && trackingNumberConfiguration.getIsSaleTrackingManaged()
+            && (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
+                || trackingNumberConfiguration.getIsProductionTrackingManaged()))) {
       formName = "stock-move-line-select-tracking-number-wizard-form";
       title = I18n.get(StockExceptionMessage.TRACK_NUMBER_WIZARD_TITLE_2);
     }
@@ -184,7 +189,9 @@ public class StockMoveLineController {
             .param("popup-save", "false")
             .context("_stockMove", stockMove)
             .context("_stockMoveLine", stockMoveLine)
-            .context("_isSeqUsedForSerialNumber", _isSeqUsedForSerialNumber)
+            .context(
+                "_isSeqUsedForSerialNumber",
+                trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr())
             .map());
   }
 
