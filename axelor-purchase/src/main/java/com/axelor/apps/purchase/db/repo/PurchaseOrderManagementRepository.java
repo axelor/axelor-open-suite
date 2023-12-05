@@ -17,6 +17,7 @@
  */
 package com.axelor.apps.purchase.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
@@ -37,6 +38,7 @@ public class PurchaseOrderManagementRepository extends PurchaseOrderRepository {
     copy.setDeliveryDate(null);
     copy.setValidatedByUser(null);
     copy.setValidationDate(null);
+    copy.setOrderDate(Beans.get(AppBaseService.class).getTodayDate(entity.getCompany()));
     if (copy.getPurchaseOrderLineList() != null) {
       for (PurchaseOrderLine purchaseOrderLine : copy.getPurchaseOrderLineList()) {
         purchaseOrderLine.setDesiredDelivDate(null);
