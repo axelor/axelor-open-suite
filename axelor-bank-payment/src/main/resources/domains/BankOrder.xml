@@ -121,7 +121,6 @@
 
     <track>
       <field name="bankOrderDate" on="UPDATE" if="statusSelect &gt; 1"/>
-      <field name="signatoryEbicsUser" on="UPDATE" if="statusSelect &gt; 1"/>
       <field name="senderCompany" on="UPDATE" if="statusSelect &gt; 1"/>
       <field name="senderBankDetails" on="UPDATE" if="statusSelect &gt; 1"/>
       <field name="bankOrderTotalAmount" on="UPDATE" if="statusSelect &gt; 1"/>
