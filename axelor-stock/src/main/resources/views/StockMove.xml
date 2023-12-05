@@ -67,6 +67,9 @@
     <hilite
       if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"
       color="danger"/>
+    <hilite color="orange"
+      if="__config__.app.isApp('production') &amp;&amp; toStockLocation.isOutsourcingLocation"/>
+    <field name="toStockLocation.isOutsourcingLocation" hidden="true"/>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="pickingIsEdited"/>
     </field>
@@ -94,6 +97,7 @@
       if="__config__.app.isApp('supplychain')"/>
     <field name="pickingIsEdited" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
+    <field name="toStockLocation" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
