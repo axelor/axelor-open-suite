@@ -14,11 +14,14 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.Year;
 import java.util.List;
 
 public class IncrementLeaveServiceImpl implements IncrementLeaveService {
@@ -60,11 +63,34 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
       throws AxelorException {
     List<LeaveLine> leaveLineList = employee.getLeaveLineList();
     LocalDate todayDate = appBaseService.getTodayDate(null);
+    AppLeave appLeave = appHumanResourceService.getAppLeave();
+    int typeSelect = leaveReason.getLeaveReasonTypeSelect();
     int todayMonth = todayDate.getMonthValue();
-    int firstLeaveDayPeriod = appHumanResourceService.getAppLeave().getFirstLeaveDayPeriod();
-    LocalDate fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
-    LocalDate toDate = computeToDate(todayDate, todayMonth, firstLeaveDayPeriod);
-    BigDecimal value = getLeaveManagementValue(leaveReason, employee, fromDate, toDate);
+    int firstLeaveDayPeriod = appLeave.getFirstLeaveDayPeriod();
+    int firstLeaveMonthPeriod = appLeave.getFirstLeaveMonthPeriod();
+    LocalDate fromDate = null;
+    LocalDate toDate = null;
+    BigDecimal value = null;
+
+    if (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
+      fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
+      toDate =
+          computeToDate(
+              leaveReason, todayDate, todayMonth, firstLeaveDayPeriod, firstLeaveMonthPeriod);
+      value = getLeaveManagementValue(leaveReason, employee, fromDate, toDate);
+    }
+
+    if (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR) {
+      fromDate = LocalDate.of(todayDate.getYear(), firstLeaveMonthPeriod, firstLeaveDayPeriod);
+      toDate =
+          computeToDate(
+              leaveReason,
+              todayDate,
+              firstLeaveMonthPeriod,
+              firstLeaveDayPeriod,
+              firstLeaveMonthPeriod);
+      value = getLeaveManagementValue(leaveReason, employee, fromDate, toDate);
+    }
 
     if (value.signum() == 0) {
       return;
@@ -158,12 +184,34 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     return totalDays;
   }
 
-  protected LocalDate computeToDate(LocalDate todayDate, int todayMonth, int firstLeaveDayPeriod) {
-    LocalDate toDate;
-    if (firstLeaveDayPeriod == 1) {
-      toDate = LocalDate.of(todayDate.getYear(), todayMonth, todayDate.lengthOfMonth());
-    } else {
-      toDate = LocalDate.of(todayDate.getYear(), todayMonth + 1, firstLeaveDayPeriod - 1);
+  protected LocalDate computeToDate(
+      LeaveReason leaveReason,
+      LocalDate todayDate,
+      int todayMonth,
+      int firstLeaveDayPeriod,
+      int firstLeaveMonthPeriod) {
+    LocalDate toDate = null;
+    int typeSelect = leaveReason.getLeaveReasonTypeSelect();
+    int year = todayDate.getYear();
+    switch (typeSelect) {
+      case LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH:
+        if (firstLeaveDayPeriod == 1) {
+          toDate = LocalDate.of(year, todayMonth, todayDate.lengthOfMonth());
+        } else {
+          toDate = LocalDate.of(year, todayMonth + 1, firstLeaveDayPeriod - 1);
+        }
+        break;
+      case LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR:
+        if (firstLeaveDayPeriod == 1) {
+          toDate =
+              LocalDate.of(year + 1, firstLeaveMonthPeriod, Month.of(6).length(Year.isLeap(year)));
+        } else {
+          toDate = LocalDate.of(year + 1, firstLeaveMonthPeriod, firstLeaveDayPeriod - 1);
+        }
+
+        break;
+      default:
+        break;
     }
     return toDate;
   }
