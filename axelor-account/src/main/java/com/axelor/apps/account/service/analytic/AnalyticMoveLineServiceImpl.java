@@ -36,6 +36,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -71,8 +72,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   protected AccountRepository accountRepository;
   protected AppBaseService appBaseService;
   protected AccountingSituationService accountingSituationService;
-  private final int RETURN_SCALE = 2;
-  private final int CALCULATION_SCALE = 10;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public AnalyticMoveLineServiceImpl(
@@ -83,7 +83,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
       AppBaseService appBaseService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.appAccountService = appAccountService;
@@ -93,6 +94,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     this.accountRepository = accountRepository;
     this.appBaseService = appBaseService;
     this.accountingSituationService = accountingSituationService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
@@ -105,7 +107,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     return analyticMoveLine
         .getPercentage()
         .multiply(analyticMoveLine.getOriginalPieceAmount())
-        .divide(new BigDecimal(100), 2, RoundingMode.HALF_UP);
+        .divide(
+            new BigDecimal(100),
+            currencyScaleServiceAccount.getScale(analyticMoveLine),
+            RoundingMode.HALF_UP);
   }
 
   @Override
@@ -313,32 +318,6 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       analyticMoveLine.setAnalyticAccount(analyticAccount);
     }
     return analyticMoveLine;
-  }
-
-  protected BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
-  }
-
-  protected BigDecimal getAnalyticAmount(
-      InvoiceLine invoiceLine, AnalyticMoveLine analyticMoveLine) {
-    if (invoiceLine.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(invoiceLine.getCompanyExTaxTotal())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
   }
 
   @Override
