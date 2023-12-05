@@ -217,6 +217,7 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-dashlet-sale-order" title="Sale order"
@@ -230,6 +231,7 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-view-show-sale-order-lines" title="Sale Order Lines"
@@ -544,6 +546,7 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-view-show-sale-invoice-lines"
@@ -573,6 +576,7 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-view-show-purchase-invoice-lines"
@@ -601,6 +605,7 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-attrs name="action-project-attrs-customer-invoice-line-select-lines">

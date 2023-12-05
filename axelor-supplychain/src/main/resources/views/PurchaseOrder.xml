@@ -73,6 +73,7 @@
     <context name="purchaseOrderId" expr="eval: id"/>
     <context name="purchaseOrderLineIdList"
       expr="eval: (id != null &amp;&amp; purchaseOrderLineList != null &amp;&amp; !purchaseOrderLineList.isEmpty()) ? purchaseOrderLineList.collect{it.id} : null"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-method name="supplychain-action-create-shipment-cost-line-purchase">

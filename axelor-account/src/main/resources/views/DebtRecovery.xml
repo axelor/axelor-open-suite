@@ -140,6 +140,7 @@
     <view name="invoice-form" type="form"/>
     <domain>self.debtRecoveryBlockingOk = false and self.id IN (:_ids)</domain>
     <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-debt-recovery-view-recovery-invoice-terms"
@@ -157,6 +158,7 @@
     <view name="invoice-form" type="form"/>
     <domain>self.debtRecoveryBlockingOk = true and self.id IN (:_ids)</domain>
     <context name="_ids" expr="eval: invoiceDebtRecoverySet.collect{it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 </object-views>

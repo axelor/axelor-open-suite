@@ -308,6 +308,7 @@
     <view type="grid" name="my-lead-grid"/>
     <view type="form" name="lead-form"/>
     <domain>self.user= :__user__</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="dashlet.leads.by.source" title="Leads by Source">
@@ -337,6 +338,7 @@
     <view type="form" name="lead-form"/>
     <domain>self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="dashlet.unassigned.leads" title="Unassigned Leads"
@@ -345,6 +347,7 @@
     <view type="form" name="lead-form"/>
     <domain>self.user is null</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="dashlet.team.leads" title="My Team Leads"
@@ -355,6 +358,7 @@
     <context name="user_active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="dashlet.created.leads.per.month" title="Created leads per month"

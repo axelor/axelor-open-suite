@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
@@ -101,7 +102,9 @@ public class InvoicingProjectController {
               .model(Invoice.class.getName())
               .add("grid", "invoice-grid")
               .add("form", "invoice-form")
-              .param("search-filters", "customer-invoices-filters");
+              .param("search-filters", "customer-invoices-filters")
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate());
       response.setReload(true);
       response.setView(
           (ids.contains(","))

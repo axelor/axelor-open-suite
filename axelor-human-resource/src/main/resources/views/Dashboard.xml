@@ -61,6 +61,7 @@
     <view type="form" name="extra-hours-form"/>
     <domain>self.employee.user.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="hr.dashboard.my.expenses" title="My expenses"
@@ -69,6 +70,7 @@
     <view type="form" name="expense-form"/>
     <domain>self.employee.user.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="hr.dashboard.my.leave.requests" title="My leave requests"
@@ -77,6 +79,7 @@
     <view type="form" name="leave-request-form"/>
     <domain>self.employee.user.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="hr.dashboard.my.timesheets" title="My timesheets"
@@ -85,6 +88,7 @@
     <view type="form" name="timesheet-form"/>
     <domain>self.employee.user.id = :userId</domain>
     <context name="userId" expr="eval: __user__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <!-- Manager Dashboard -->

@@ -723,6 +723,7 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.invoiceLine = :id</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <search-filters name="invoice-line-filters"

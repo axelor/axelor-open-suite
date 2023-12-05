@@ -181,7 +181,8 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
                 + roots.stream()
                     .map(root -> root.getId().toString())
                     .collect(Collectors.joining(", "))
-                + ")");
+                + ")")
+        .context("todayDate", appBusinessProjectService.getTodayDate(project.getCompany()));
   }
 
   protected void updateTask(ProjectTask root, ProjectTask childTask, SaleOrderLine orderLine)

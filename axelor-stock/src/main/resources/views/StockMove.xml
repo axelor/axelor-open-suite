@@ -1293,6 +1293,7 @@
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
     <domain>self.reversionOriginStockMove =:id</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <search-filters name="customer-deliveries-filters"

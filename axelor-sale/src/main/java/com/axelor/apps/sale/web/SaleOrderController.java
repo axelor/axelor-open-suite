@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.HandleExceptionResponse;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
@@ -595,6 +596,8 @@ public class SaleOrderController {
             .add("grid", "sale-order-grid")
             .param("forceEdit", "true")
             .context("_showRecord", copiedSO.getId())
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()))
             .map());
   }
 

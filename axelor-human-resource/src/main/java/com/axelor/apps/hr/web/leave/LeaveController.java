@@ -21,6 +21,7 @@ package com.axelor.apps.hr.web.leave;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -144,7 +145,10 @@ public class LeaveController {
               .model(LeaveRequest.class.getName())
               .add("grid", "leave-request-validate-grid")
               .add("form", "leave-request-form")
-              .param("search-filters", "leave-request-filters");
+              .param("search-filters", "leave-request-filters")
+              .context(
+                  "todayDate",
+                  Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
       Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 

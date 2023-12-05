@@ -20,6 +20,7 @@ package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
@@ -48,6 +49,8 @@ public class PartnerController {
               .param("forceTitle", "true")
               .param("forceEdit", "true")
               .context("_showRecord", project.getId())
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDate(project.getCompany()))
               .map());
 
     } catch (Exception e) {

@@ -429,6 +429,8 @@ public class InvoiceController {
               .param("forceTitle", "true")
               .context("_showRecord", refund.getId().toString())
               .domain("self.originalInvoice.id = " + invoice.getId())
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1058,6 +1060,8 @@ public class InvoiceController {
                   "self.invoice.operationTypeSelect in (3,4) AND self.invoice.id in ("
                       + idList
                       + ")")
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate())
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1122,6 +1126,8 @@ public class InvoiceController {
                   "self.invoice.operationTypeSelect in (1,2) AND self.invoice.id in ("
                       + idList
                       + ")")
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate())
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

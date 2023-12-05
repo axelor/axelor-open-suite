@@ -26,6 +26,7 @@
       :active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view title="My Turnover per month" name="dashlet.my.turnover.per.month">

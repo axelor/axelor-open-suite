@@ -160,6 +160,7 @@
     <view type="form" name="invoice-form"/>
     <domain>self.partner.id = :partnerId</domain>
     <context name="partnerId" expr="eval: id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-partner-view-show-unpaid-invoice" title="Unpaid invoices"
@@ -168,6 +169,7 @@
     <view type="form" name="invoice-form"/>
     <domain>self.partner.id = :partnerId AND (self.inTaxTotal - self.amountPaid) &gt; 0</domain>
     <context name="partnerId" expr="eval: id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-method name="action-partner-method-show-client-situation">

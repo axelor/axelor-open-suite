@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
@@ -48,6 +49,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   @Inject protected ProjectTaskRepository projectTaskRepo;
   @Inject protected ProjectTaskCategoryRepository taskCategoryRepo;
   @Inject protected ProjectService projectService;
+  @Inject protected AppBaseService appBaseService;
 
   @Override
   public Map<String, Object> getData(Project project) {
@@ -146,6 +148,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .context("_project", currentUser.getContextProject())
             .context("projectIds", projectService.getContextProjectIds())
             .context("taskCategory", taskCategoryRepo.find(id))
+            .context("todayDate", appBaseService.getTodayDate(currentUser.getActiveCompany()))
             .param("search-filters", "project-task-filters")
             .map());
     return response;
@@ -166,6 +169,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .context("_project", currentUser.getContextProject())
             .context("projectIds", projectService.getContextProjectIds())
             .context("taskCategory", taskCategoryRepo.find(id))
+            .context("todayDate", appBaseService.getTodayDate(currentUser.getActiveCompany()))
             .param("search-filters", "project-task-filters")
             .map());
     return response;
@@ -186,6 +190,7 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
             .context("_project", currentUser.getContextProject())
             .context("projectIds", projectService.getContextProjectIds())
             .context("taskCategory", taskCategoryRepo.find(id))
+            .context("todayDate", appBaseService.getTodayDate(currentUser.getActiveCompany()))
             .param("search-filters", "project-task-filters")
             .map());
     return response;

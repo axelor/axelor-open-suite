@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
@@ -260,6 +261,8 @@ public class InventoryController {
               .domain("self.inventory.id = :inventoryId")
               .context("_showSingle", true)
               .context("inventoryId", inventory.getId())
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDate(inventory.getCompany()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

@@ -107,7 +107,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
         .param("search-filters", "project-task-filters")
-        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)))
+        .context("todayDate", appBusinessProjectService.getTodayDate(project.getCompany()));
   }
 
   protected void processSaleOrderLine(

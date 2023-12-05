@@ -19,6 +19,7 @@
 package com.axelor.apps.portal.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.portal.service.ClientViewService;
@@ -74,6 +75,9 @@ public class ClientViewController {
                   .add("form", "sale-order-form")
                   .param("search-filters", "sale-order-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -98,6 +102,9 @@ public class ClientViewController {
                   .add("form", "sale-order-form")
                   .param("search-filters", "sale-order-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -150,6 +157,9 @@ public class ClientViewController {
                   .add("form", "project-form")
                   .param("search-filters", "project-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -174,6 +184,9 @@ public class ClientViewController {
                   .add("form", "project-task-form")
                   .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -198,6 +211,9 @@ public class ClientViewController {
                   .add("form", "project-task-form")
                   .param("search-filters", "project-task-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -277,6 +293,9 @@ public class ClientViewController {
                   .add("form", "stock-move-form")
                   .param("search-filters", "internal-stock-move-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -301,6 +320,9 @@ public class ClientViewController {
                   .add("form", "stock-move-form")
                   .param("search-filters", "internal-stock-move-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -326,6 +348,9 @@ public class ClientViewController {
                   .add("form", "invoice-form")
                   .param("search-filters", "customer-invoices-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -350,6 +375,9 @@ public class ClientViewController {
                   .add("form", "invoice-form")
                   .param("search-filters", "customer-invoices-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -374,6 +402,9 @@ public class ClientViewController {
                   .add("form", "invoice-form")
                   .param("search-filters", "customer-invoices-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }
@@ -398,6 +429,9 @@ public class ClientViewController {
                   .add("form", "invoice-form")
                   .param("search-filters", "customer-refunds-filters")
                   .domain(filter.getQuery())
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(clientUser.getActiveCompany()))
                   .map());
         }
       }

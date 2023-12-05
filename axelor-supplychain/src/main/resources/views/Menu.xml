@@ -176,6 +176,7 @@
       s.deliveryState != 3 AND s.product.productTypeSelect = 'storable' AND s.product.stockManaged =
       true) AND self.id NOT IN (SELECT so.id FROM StockMove s JOIN s.saleOrderSet AS so WHERE
       s.statusSelect = 2)</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="sc-root-sale-timetable" title="Timetables" parent="sc-root-sale"

@@ -545,6 +545,7 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain>self.saleOrderLine = :id</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <search-filters title="Sale order lines filter" name="sale-order-lines-filter"

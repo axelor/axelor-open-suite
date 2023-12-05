@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.web;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingService;
@@ -117,6 +118,9 @@ public class SaleOrderMergingController {
               .param("search-filters", "sale-order-filters")
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(result.getSaleOrder().getId()))
+              .context(
+                  "todayDate",
+                  Beans.get(AppBaseService.class).getTodayDate(result.getSaleOrder().getCompany()))
               .map());
       response.setCanClose(true);
     }

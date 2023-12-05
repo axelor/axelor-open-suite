@@ -140,6 +140,7 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_template" expr="eval:false"/>
     <context name="status" expr="eval: [1,2,3,4,5]"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
@@ -298,6 +299,7 @@
     <context name="_myActiveTeam"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_template" expr="eval:false"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="top-menu-sales-sale-orders" parent="top-menu-sales" title="Sale orders"
@@ -316,6 +318,7 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_template" expr="eval:false"/>
     <context name="status" expr="3"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="100"

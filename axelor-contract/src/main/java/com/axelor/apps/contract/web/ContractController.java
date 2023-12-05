@@ -82,6 +82,8 @@ public class ContractController {
                 .param("search-filters", "customer-invoices-filters")
                 .param("forceTitle", "true")
                 .context("_showRecord", invoice.getId().toString())
+                .context(
+                    "todayDate", Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()))
                 .map());
       }
     } catch (Exception e) {
@@ -104,6 +106,8 @@ public class ContractController {
               .param("search-filters", "customer-invoices-filters")
               .param("forceTitle", "true")
               .context("_showRecord", invoice.getId().toString())
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

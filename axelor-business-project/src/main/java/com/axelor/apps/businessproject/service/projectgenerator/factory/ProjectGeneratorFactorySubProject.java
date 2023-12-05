@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service.projectgenerator.factory;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.ProductTaskTemplateService;
 import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
@@ -47,17 +48,20 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
   private ProjectRepository projectRepository;
   private SaleOrderLineRepository saleOrderLineRepository;
   private ProductTaskTemplateService productTaskTemplateService;
+  private AppBaseService appBaseService;
 
   @Inject
   public ProjectGeneratorFactorySubProject(
       ProjectBusinessService projectBusinessService,
       ProjectRepository projectRepository,
       SaleOrderLineRepository saleOrderLineRepository,
-      ProductTaskTemplateService productTaskTemplateService) {
+      ProductTaskTemplateService productTaskTemplateService,
+      AppBaseService appBaseService) {
     this.projectBusinessService = projectBusinessService;
     this.projectRepository = projectRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.productTaskTemplateService = productTaskTemplateService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -112,6 +116,7 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
         .add("grid", "project-grid")
         .add("form", "project-form")
         .param("search-filters", "project-filters")
-        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(projects)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(projects)))
+        .context("todayDate", appBaseService.getTodayDate(project.getCompany()));
   }
 }

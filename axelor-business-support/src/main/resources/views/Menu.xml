@@ -43,6 +43,7 @@
     <context name="user" expr="eval: __user__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="project-task-customer-new" title="New Ticket"
@@ -67,6 +68,7 @@
       self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="project-task-customer-treated-by-provider"
@@ -81,6 +83,7 @@
       self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="project-task-customer-open-all" title="All open ticket"
@@ -94,6 +97,7 @@
       :_typeSelect</domain>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="project-task-customer-all" title="All tickets"
@@ -106,6 +110,7 @@
     <domain>self.isPrivate = false AND self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 </object-views>

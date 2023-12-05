@@ -235,6 +235,7 @@
       (self.assignedTo = :__user__ AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date OR self.taskDate <= current_date)
     ]]></domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-db-my-tasks-due" title="My tasks due"
@@ -245,6 +246,7 @@
       (self.assignedTo = :__user__  AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date)
     ]]></domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-db-my-today-planning" title="My today planning"
@@ -274,6 +276,7 @@
     <context name="_project" expr="eval: __user__.contextProject"/>
     <context name="_projectIds"
       expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-dashboard-view-per-user-calendar"

@@ -51,6 +51,7 @@
     <domain>:_batch MEMBER OF self.batchSet AND self.partner = :_partner</domain>
     <context name="_batch" expr="eval: __this__?.batch"/>
     <context name="_partner" expr="eval: __this__?.partner"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 </object-views>

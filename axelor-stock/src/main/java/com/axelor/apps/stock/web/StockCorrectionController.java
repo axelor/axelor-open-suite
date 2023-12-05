@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -97,6 +98,9 @@ public class StockCorrectionController {
                 .add("form", "stock-move-form")
                 .param("search-filters", "internal-stock-move-filters")
                 .context("_showRecord", stockMove.getId().toString())
+                .context(
+                    "todayDate",
+                    Beans.get(AppBaseService.class).getTodayDate(stockMove.getCompany()))
                 .map());
       } else {
         response.setInfo(I18n.get("No record found"));

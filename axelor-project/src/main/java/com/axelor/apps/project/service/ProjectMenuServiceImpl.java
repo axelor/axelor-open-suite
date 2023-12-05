@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -33,12 +34,16 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
 
   protected ProjectService projectService;
   protected ProjectTaskRepository projectTaskRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectMenuServiceImpl(
-      ProjectService projectService, ProjectTaskRepository projectTaskRepo) {
+      ProjectService projectService,
+      ProjectTaskRepository projectTaskRepo,
+      AppBaseService appBaseService) {
     this.projectService = projectService;
     this.projectTaskRepo = projectTaskRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -57,6 +62,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
             .context("_project", contextProject)
             .context("_projectIds", projectService.getContextProjectIds())
+            .context("todayDate", appBaseService.getTodayDate(currentUser.getActiveCompany()))
             .param("details-view", "true")
             .param("search-filters", "project-task-filters");
 
@@ -79,6 +85,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .context("_typeSelect", ProjectTaskRepository.TYPE_TICKET)
             .context("_project", contextProject)
             .context("_projectIds", projectService.getContextProjectIds())
+            .context("todayDate", appBaseService.getTodayDate(currentUser.getActiveCompany()))
             .param("search-filters", "project-task-filters")
             .param("forceTitle", "true");
 
@@ -93,7 +100,8 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("grid", "project-grid")
             .add("form", "project-form")
             .add("kanban", "project-kanban")
-            .param("search-filters", "project-filters");
+            .param("search-filters", "project-filters")
+            .context("todayDate", appBaseService.getTodayDateTime().toLocalDate());
 
     return builder.map();
   }
@@ -108,6 +116,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .add("form", "project-task-form")
             .domain("self.typeSelect = :_typeSelect")
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .context("todayDate", appBaseService.getTodayDateTime().toLocalDate())
             .param("search-filters", "project-task-filters");
 
     return builder.map();
@@ -124,6 +133,7 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")
             .context("_id", project.getId())
             .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .context("todayDate", appBaseService.getTodayDate(project.getCompany()))
             .param("search-filters", "project-task-filters");
 
     return builder.map();

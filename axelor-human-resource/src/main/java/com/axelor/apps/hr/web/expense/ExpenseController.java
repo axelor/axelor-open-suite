@@ -204,7 +204,9 @@ public class ExpenseController {
             .model(Expense.class.getName())
             .add("grid", "expense-validate-grid")
             .add("form", "expense-form")
-            .param("search-filters", "expense-filters");
+            .param("search-filters", "expense-filters")
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 

@@ -1040,6 +1040,7 @@
     <view type="form" name="invoice-term-move-line-form"/>
     <domain>self.moveLine.id = :_moveLineId</domain>
     <context name="_moveLineId" expr="eval: id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-move-line-view-show-related-invoice-terms-from-invoice"

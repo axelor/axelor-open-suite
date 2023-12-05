@@ -279,6 +279,7 @@
     <context name="saleOrderId" expr="eval: id"/>
     <context name="saleOrderLineIdList"
       expr="eval: (id != null &amp;&amp; saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()) ? saleOrderLineList.collect{it.id} : null"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-group name="action-supplychain-sale-order-group-generate-invoice">

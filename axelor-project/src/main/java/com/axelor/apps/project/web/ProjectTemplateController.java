@@ -21,6 +21,7 @@ package com.axelor.apps.project.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTemplate;
@@ -86,6 +87,8 @@ public class ProjectTemplateController {
               .add("grid", "project-grid")
               .param("search-filters", "project-filters")
               .context("_showRecord", project.getId())
+              .context(
+                  "todayDate", Beans.get(AppBaseService.class).getTodayDate(project.getCompany()))
               .map());
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);

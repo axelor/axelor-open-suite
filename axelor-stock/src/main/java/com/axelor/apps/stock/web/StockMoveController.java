@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
@@ -404,6 +405,9 @@ public class StockMoveController {
                 .param("search-filters", "internal-stock-move-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(reversion.get().getId()))
+                .context(
+                    "todayDate",
+                    Beans.get(AppBaseService.class).getTodayDate(stockMove.getCompany()))
                 .map());
       } else {
         response.setInfo(I18n.get("No reversion generated"));
@@ -434,6 +438,9 @@ public class StockMoveController {
                 .param("search-filters", "internal-stock-move-filters")
                 .param("forceEdit", "true")
                 .context("_showRecord", String.valueOf(newStockMove.getId()))
+                .context(
+                    "todayDate",
+                    Beans.get(AppBaseService.class).getTodayDate(stockMove.getCompany()))
                 .map());
       }
     } catch (Exception e) {

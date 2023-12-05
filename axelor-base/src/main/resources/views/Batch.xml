@@ -204,6 +204,7 @@
     <view type="form" name="invoice-form"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-batch-show-move" title="Moves"
@@ -303,6 +304,7 @@
     <view type="form" name="invoice-form"/>
     <domain>self.lcrAccounted = 'true' AND :batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 

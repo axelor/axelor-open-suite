@@ -19,6 +19,7 @@
 package com.axelor.apps.supplierportal.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -171,6 +172,9 @@ public class SupplierViewController {
               .add("grid", "invoice-grid")
               .add("form", "invoice-form")
               .domain(domain)
+              .context(
+                  "todayDate",
+                  Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -188,6 +192,9 @@ public class SupplierViewController {
               .add("grid", "invoice-grid")
               .add("form", "invoice-form")
               .domain(domain)
+              .context(
+                  "todayDate",
+                  Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -205,6 +212,9 @@ public class SupplierViewController {
               .add("grid", "invoice-grid")
               .add("form", "invoice-form")
               .domain(domain)
+              .context(
+                  "todayDate",
+                  Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

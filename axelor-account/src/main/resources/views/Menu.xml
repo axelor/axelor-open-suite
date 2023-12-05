@@ -68,6 +68,7 @@
       self.pfpValidatorUser = :_currentUser</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="invoice-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
@@ -82,6 +83,7 @@
     <domain>((self.invoice IS NOT NULL AND self.invoice.statusSelect IN (2,3)) OR (self.invoice IS
       NULL AND self.moveLine.move.statusSelect IN (2,3))) AND self.pfpValidateStatusSelect = 1</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="invoice-root-purchase-sup-credit-note" parent="invoice-root" order="600"
@@ -104,6 +106,7 @@
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="grid" name="invoice-term-grid"/>
     <view type="form" name="invoice-term-form"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-payment-schedule" title="Payment Schedule" order="800"
@@ -198,6 +201,7 @@
       self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="_currentUser" expr="eval:__user__"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-pfp-awaiting-pfp" title="awaitingPfpMenuTitle"
@@ -216,6 +220,7 @@
       (self.moveLine.move.statusSelect = 2 AND
       self.moveLine.move.company.accountConfig.isManageDaybookInPFP = true))</domain>
     <context name="_operationTypeSelect" expr="eval:1"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-payments" parent="account-root" title="Payments" order="300"/>
@@ -837,6 +842,7 @@
     <view-param name="search-filters" value="customer-invoices-filters"/>
     <domain>self.operationTypeSelect = 3</domain>
     <context name="_operationTypeSelect" expr="eval:3"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 
@@ -850,6 +856,7 @@
     <view-param name="search-filters" value="customer-refunds-filters"/>
     <domain>self.operationTypeSelect = 4</domain>
     <context name="_operationTypeSelect" expr="eval:4"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="top-invoicing-supplinvoices" title="Suppl. Invoices"
@@ -861,8 +868,8 @@
     <view type="form" name="invoice-form"/>
     <view-param name="search-filters" value="supplier-invoices-filters"/>
     <domain>self.operationTypeSelect = 1</domain>
-
     <context name="_operationTypeSelect" expr="eval:1"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="top-invoicing-suppl-credit-note" title="Suppl. Credit notes"
@@ -875,6 +882,7 @@
     <view-param name="search-filters" value="supplier-refunds-filters"/>
     <domain>self.operationTypeSelect = 2</domain>
     <context name="_operationTypeSelect" expr="eval:2"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report"

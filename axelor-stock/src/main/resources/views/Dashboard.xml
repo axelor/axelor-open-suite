@@ -112,6 +112,7 @@
     <domain>self.stockMoveLineList.toStockLocation.typeSelect = 3 AND (self.estimatedDate between
       CURRENT_DATE and
       CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view title="Late customer deliveries"
@@ -123,6 +124,7 @@
       self.statusSelect= 2 AND self.company=:active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view title="Upcoming supplier arrivals"
@@ -134,6 +136,7 @@
       CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove"
@@ -144,6 +147,7 @@
       CURRENT_DATE AND
       self.statusSelect = 2 AND self.company=:active_company</domain>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view title="Production Stock Move in Planned"

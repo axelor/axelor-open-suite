@@ -112,6 +112,7 @@
     <view-param name="search-filters" value="internal-stock-move-filters"/>
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_INTERNAL"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="stock-root-products" parent="stock-root" order="400"

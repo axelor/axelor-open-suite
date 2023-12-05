@@ -829,6 +829,7 @@
     <view type="form" name="project-task-form"/>
     <domain>self.project.id = :_id OR self.project.parentProject.id = :_id</domain>
     <context name="_project" expr="eval:__this__"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-book-resource" title="Book resource"
@@ -850,6 +851,7 @@
     <context name="_project" expr="eval:__this__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-add-ticket"
@@ -864,6 +866,7 @@
     <context name="_project" expr="eval:__this__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TICKET"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
@@ -889,6 +892,7 @@
     <view type="form" name="project-task-form"/>
     <domain>self.project.id IN (:_projectIds) OR self.project.parentProject.id IN (:_projectIds)</domain>
     <context name="_projectIds" expr="eval: projectSet.collect{it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-open-user-gantt" title="User Gantt"
@@ -898,6 +902,7 @@
     <view type="form" name="project-task-form"/>
     <domain>self.assignedTo.id IN (:_userIds) </domain>
     <context name="_userIds" expr="eval: userSet.collect{it.id}"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-project-open-task-editor" title="Task editor">
@@ -924,6 +929,7 @@
     <view-param name="show-toolbar" value="false"/>
     <context name="_project" expr="eval:__this__.project"/>
     <context name="_parentTask" expr="eval:__this__"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-record name="action-project-record-bind-customer-project"
@@ -1029,6 +1035,7 @@
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
     <domain>:_id IN self.contractSet.project.id</domain>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-attrs name="action-project-gantt-user-wizard-user-domain">

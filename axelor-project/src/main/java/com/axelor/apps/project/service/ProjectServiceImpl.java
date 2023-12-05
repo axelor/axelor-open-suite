@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
@@ -64,17 +65,20 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
   protected ProjectTemplateRepository projTemplateRepo;
+  protected AppBaseService appBaseService;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
       AppProjectService appProjectService,
-      ProjectTemplateRepository projTemplateRepo) {
+      ProjectTemplateRepository projTemplateRepo,
+      AppBaseService appBaseService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
     this.projTemplateRepo = projTemplateRepo;
+    this.appBaseService = appBaseService;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -183,6 +187,7 @@ public class ProjectServiceImpl implements ProjectService {
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
             .domain(domain)
+            .context("todayDate", appProjectService.getTodayDate(project.getCompany()))
             .param("details-view", "true");
 
     if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
@@ -213,6 +218,7 @@ public class ProjectServiceImpl implements ProjectService {
           .add("grid", "project-grid")
           .param("search-filters", "project-filters")
           .context("_showRecord", project.getId())
+          .context("todayDate", appBaseService.getTodayDate(project.getCompany()))
           .map();
     }
 
@@ -274,7 +280,8 @@ public class ProjectServiceImpl implements ProjectService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
-            .domain("self.typeSelect = :_typeSelect AND self.project = :_project");
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
+            .context("todayDate", appProjectService.getTodayDate(project.getCompany()));
 
     if (ObjectUtils.notEmpty(context)) {
       context.forEach(builder::context);

@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.hr.db.Employee;
@@ -100,7 +101,9 @@ public class ExtraHoursController {
             .model(ExtraHours.class.getName())
             .add("grid", "extra-hours-validate-grid")
             .add("form", "extra-hours-form")
-            .param("search-filters", "extra-hours-filters");
+            .param("search-filters", "extra-hours-filters")
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(user.getActiveCompany()));
 
     Beans.get(HRMenuValidateService.class).createValidateDomain(user, employee, actionView);
 

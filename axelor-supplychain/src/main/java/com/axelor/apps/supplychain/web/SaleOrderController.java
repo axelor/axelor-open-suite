@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerLinkService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -100,6 +101,9 @@ public class SaleOrderController {
                   .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()))
                   .map());
           // we have to inject TraceBackService to use non static methods
           Beans.get(TraceBackService.class)
@@ -120,6 +124,9 @@ public class SaleOrderController {
                   .param("search-filters", "internal-stock-move-filters")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
                   .context("_userType", StockMoveRepository.USER_TYPE_SALESPERSON)
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(saleOrder.getCompany()))
                   .map());
           // we have to inject TraceBackService to use non static methods
           TraceBackService traceBackService = Beans.get(TraceBackService.class);
@@ -586,6 +593,9 @@ public class SaleOrderController {
                 .add("grid", "invoice-grid")
                 .param("search-filters", "customer-invoices-filters")
                 .context("_showRecord", String.valueOf(invoice.getId()))
+                .context(
+                    "todayDate",
+                    Beans.get(AppSupplychainService.class).getTodayDate(saleOrder.getCompany()))
                 .map());
       }
     } catch (Exception e) {

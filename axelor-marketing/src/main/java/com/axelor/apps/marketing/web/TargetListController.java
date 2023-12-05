@@ -19,6 +19,7 @@
 package com.axelor.apps.marketing.web;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.marketing.db.TargetList;
@@ -54,6 +55,8 @@ public class TargetListController {
                 .add("form", "lead-form")
                 .param("search-filters", "lead-filters")
                 .domain(leadFilters)
+                .context(
+                    "todayDate", Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate())
                 .map());
       }
     } catch (Exception e) {

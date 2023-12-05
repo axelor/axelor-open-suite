@@ -61,6 +61,9 @@ public class PurchaseOrderInvoiceController {
                 .domain("self.operationTypeSelect = " + invoice.getOperationTypeSelect())
                 .context("_operationTypeSelect", invoice.getOperationTypeSelect())
                 .context("_showRecord", String.valueOf(invoice.getId()))
+                .context(
+                    "todayDate",
+                    Beans.get(AppSupplychainService.class).getTodayDate(invoice.getCompany()))
                 .map());
       }
     } catch (Exception e) {

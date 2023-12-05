@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -194,6 +195,9 @@ public class InvoiceMergingController {
               .param("search-filters", "customer-invoices-filters")
               .param("forceEdit", Boolean.TRUE.toString())
               .context("_showRecord", String.valueOf(result.getInvoice().getId()))
+              .context(
+                  "todayDate",
+                  Beans.get(AppBaseService.class).getTodayDate(result.getInvoice().getCompany()))
               .map());
       response.setCanClose(true);
     }

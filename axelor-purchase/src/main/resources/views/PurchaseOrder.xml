@@ -800,6 +800,7 @@
     <context name="_operationTypeSelect"
       expr="eval: __repo__(Invoice).OPERATION_TYPE_SUPPLIER_PURCHASE"/>
     <context name="poId" expr="eval:id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 
@@ -829,6 +830,7 @@
     <view name="stock-move-form" type="form"/>
     <domain>:purchaseOrder MEMBER OF self.purchaseOrderSet</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-validate name="action-purchase-order-validate-stock-location">

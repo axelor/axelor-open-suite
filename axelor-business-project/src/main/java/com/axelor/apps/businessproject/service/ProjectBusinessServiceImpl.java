@@ -96,7 +96,12 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       ProjectTaskReportingValuesComputingService projectTaskReportingValuesComputingService,
       AppBaseService appBaseService,
       InvoiceRepository invoiceRepository) {
-    super(projectRepository, projectStatusRepository, appProjectService, projTemplateRepo);
+    super(
+        projectRepository,
+        projectStatusRepository,
+        appProjectService,
+        projTemplateRepo,
+        appBaseService);
     this.partnerService = partnerService;
     this.addressService = addressService;
     this.appBusinessProjectService = appBusinessProjectService;

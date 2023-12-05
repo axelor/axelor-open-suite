@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -67,6 +68,9 @@ public class PurchaseOrderController {
                   .param("forceEdit", "true")
                   .domain("self.id = " + stockMoveList.get(0))
                   .context("_showRecord", String.valueOf(stockMoveList.get(0)))
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(purchaseOrder.getCompany()))
                   .map());
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -76,6 +80,9 @@ public class PurchaseOrderController {
                   .add("form", "stock-move-form")
                   .param("search-filters", "internal-stock-move-filters")
                   .domain("self.id in (" + Joiner.on(",").join(stockMoveList) + ")")
+                  .context(
+                      "todayDate",
+                      Beans.get(AppBaseService.class).getTodayDate(purchaseOrder.getCompany()))
                   .map());
         } else {
           response.setInfo(

@@ -123,6 +123,7 @@
     <view type="form" name="invoice-form"/>
     <domain>self.partner = :_myPartner</domain>
     <context name="_myPartner" expr="eval:__user__.partner"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="wizard-supplier-form-open-my-deliveries" title="My deliveries"
@@ -131,6 +132,7 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.partner = :_myPartner</domain>
     <context name="_myPartner" expr="eval:__user__.partner"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="wizard-supplier-form-open-product-supplier" title="My deliveries"

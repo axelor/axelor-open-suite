@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -86,6 +87,8 @@ public class TimetableController {
             .param("search-filters", "customer-invoices-filters")
             .param("forceEdit", "true")
             .context("_showRecord", invoice.getId().toString())
+            .context(
+                "todayDate", Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()))
             .map());
   }
 

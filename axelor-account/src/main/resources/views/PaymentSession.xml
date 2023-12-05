@@ -442,6 +442,7 @@
     <view type="form" name="invoice-term-form"/>
     <domain>self.paymentSession.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <action-view name="action-payment-session-view-move-lines" title="Move lines"

@@ -12,6 +12,7 @@
     <view type="form" name="bank-order-form"/>
     <view type="grid" name="bank-order-grid"/>
     <context name="_showRecord" expr="eval: bankOrder.id"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 </object-views>

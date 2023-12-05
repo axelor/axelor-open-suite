@@ -22,6 +22,7 @@
     <domain>self.orderTypeSelect = 2</domain>
     <context name="_orderTypeSelect" expr="2"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 2"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem title="LCR" name="account-root-bank-order-lcr"
@@ -39,6 +40,7 @@
     <view type="form" name="bank-order-form"/>
     <domain>self.orderTypeSelect = 8</domain>
     <context name="_orderTypeSelect" expr="8"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-international-direct-debit"
@@ -53,6 +55,7 @@
     <domain>self.orderTypeSelect = 4</domain>
     <context name="_orderTypeSelect" expr="4"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 4"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-credit-transfer" if-module="axelor-bank-payment"
@@ -71,6 +74,7 @@
     <domain>self.orderTypeSelect = 1</domain>
     <context name="_orderTypeSelect" expr="1"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 1"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-international-credit-transfer"
@@ -85,6 +89,7 @@
     <domain>self.orderTypeSelect = 3</domain>
     <context name="_orderTypeSelect" expr="3"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 3"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-bank-to-bank-transfer"
@@ -105,6 +110,7 @@
     <context name="_partnerTypeSelect" expr="4"/>
     <context name="_linesDomain"
       expr="self.bankOrder.orderTypeSelect = 5 AND self.bankOrder.partnerTypeSelect = 4"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-international-bank-to-bank-transfer"
@@ -122,6 +128,7 @@
     <context name="_partnerTypeSelect" expr="4"/>
     <context name="_linesDomain"
       expr="self.bankOrder.orderTypeSelect = 6 AND self.bankOrder.partnerTypeSelect = 4"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-send-a-bank-order"
@@ -136,6 +143,7 @@
     <domain>self.orderTypeSelect = 7</domain>
     <context name="_orderTypeSelect" expr="7"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 7"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
   <menuitem name="account-root-bank-order-awaiting-for-signature"
@@ -152,6 +160,7 @@
     <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.statusSelect = 2</domain>
     <context name="_linesDomain" expr="self.bankOrder.statusSelect = 2"/>
+    <context name="todayDate" expr="eval: __config__.date"/>
   </action-view>
 
 
