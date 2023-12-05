@@ -4,34 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
-    name="purchase-order-line-purchase-order-grid" title="PO lines"
+    name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <hilite color="danger" strong="true"
-      if="($get('exTaxTotal')-$get('budget.availableAmount')) &gt; 0"/>
-    <field name="sequence"
-      if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
-    <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
-    <field name="productName"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
-    <field name="taxLine.tax.code"/>
-    <field name="inTaxPrice" x-scale="2"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="budget.availableAmount"
-      if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="unassignedAmt" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-  </grid>
-
-  <grid id="budget-purchase-order-line-grid"
-    model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines"
-    name="purchase-order-line-grid" extension="true">
-    <extend target="//field[@name='estimatedReceiptDate']">
+    <extend target="//field[@name='inTaxTotal']">
       <insert position="after">
-        <field name="budget.budgetLevel.parentBudgetLevel" title="Group"/>
-        <field name="budget.budgetLevel" title="Section"/>
-        <field name="budget"/>
+        <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
