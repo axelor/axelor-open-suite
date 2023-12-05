@@ -874,6 +874,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       throws AxelorException {
 
     if (manufOrder.getOutsourcing()
+        && manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning()
         && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
       return List.of(manufOrderOutsourceService.getOutsourcePartner(manufOrder).get());
     } else {
