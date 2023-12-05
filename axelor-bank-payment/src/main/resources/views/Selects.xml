@@ -235,7 +235,6 @@
   </selection>
 
   <selection name="bank.payment.batch.action.select">
-    <option value="1">Check the ebics certificate validation date</option>
     <option value="2">Bank statement</option>
   </selection>
 
