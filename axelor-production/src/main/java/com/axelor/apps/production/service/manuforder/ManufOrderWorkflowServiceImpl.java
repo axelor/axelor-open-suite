@@ -51,7 +51,9 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -60,6 +62,7 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -72,13 +75,16 @@ import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
   protected OperationOrderWorkflowService operationOrderWorkflowService;
@@ -97,6 +103,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected SequenceService sequenceService;
   protected ProductionOrderService productionOrderService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
+  protected OperationOrderOutsourceService operationOrderOutsourceService;
+  protected StockConfigProductionService stockConfigProductionService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -115,7 +123,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderService productionOrderService,
-      ManufOrderOutsourceService manufOrderOutsourceService) {
+      ManufOrderOutsourceService manufOrderOutsourceService,
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      StockConfigProductionService stockConfigProductionService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -132,6 +142,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.sequenceService = sequenceService;
     this.productionOrderService = productionOrderService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
+    this.operationOrderOutsourceService = operationOrderOutsourceService;
+    this.stockConfigProductionService = stockConfigProductionService;
   }
 
   @Override
@@ -815,26 +827,30 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   @Transactional(rollbackOn = {Exception.class})
   public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
 
+    List<Partner> outsourcePartners = getOutsourcePartners(manufOrder);
+
+    for (Partner outsourcePartner : outsourcePartners) {
     PurchaseOrder purchaseOrder =
-        purchaseOrderService.createPurchaseOrder(
-            null,
-            manufOrder.getCompany(),
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            manufOrderOutsourceService.getOutsourcePartner(manufOrder).orElse(null),
-            null);
+            purchaseOrderService.createPurchaseOrder(
+                    null,
+                    manufOrder.getCompany(),
+                    null,
+                    null,
+                    null,
+                    manufOrder.getManufOrderSeq(),
+                    null,
+                    null,
+                    null,
+                    outsourcePartner,
+                    null);
 
     purchaseOrder.setOutsourcingOrder(true);
-
+    purchaseOrder.setFiscalPosition(outsourcePartner.getFiscalPosition());
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(manufOrder.getCompany());
     if (manufOrder.getCompany() != null && manufOrder.getCompany().getStockConfig() != null) {
-      purchaseOrder.setStockLocation(
-          manufOrder.getCompany().getStockConfig().getOutsourcingReceiptStockLocation());
+      purchaseOrder.setStockLocation( stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig));
     }
+    purchaseOrder.setFromStockLocation(stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig));
 
     this.setPurchaseOrderSupplierDetails(purchaseOrder);
 
@@ -845,9 +861,32 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     purchaseOrderService.computePurchaseOrder(purchaseOrder);
-    manufOrder.setPurchaseOrder(purchaseOrder);
+    manufOrder.addPurchaseOrderSetItem(purchaseOrder);
+  }
+
 
     manufOrderRepo.save(manufOrder);
+  }
+
+  @Override
+  public List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getOutsourcing() && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
+      return List.of(manufOrderOutsourceService.getOutsourcePartner(manufOrder).get());
+    } else {
+      return manufOrder.getOperationOrderList().stream().filter(OperationOrder::getOutsourcing)
+              .map(oo -> {
+                try {
+                  return operationOrderOutsourceService.getOutsourcePartner(oo);
+                } catch (AxelorException e) {
+                  throw new RuntimeException(e);
+                }
+              })
+              .map(optPartner -> optPartner.orElse(null))
+              .filter(Objects::nonNull)
+              .distinct()
+              .collect(Collectors.toList());
+    }
   }
 
   @Override

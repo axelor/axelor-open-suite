@@ -90,7 +90,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+    manufOrderList.forEach(manufOrder -> manufOrder.clearPurchaseOrderSet());
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -102,7 +102,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+    manufOrderList.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
     return mergedPurchaseOrder;
   }
 
@@ -121,7 +121,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(null));
+    manufOrderList.forEach(manufOrder -> manufOrder.clearPurchaseOrderSet());
 
     PurchaseOrder mergedPurchaseOrder =
         super.mergePurchaseOrders(
@@ -134,7 +134,7 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             priceList,
             tradingName);
 
-    manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
+    manufOrderList.forEach(manufOrder -> manufOrder.addPurchaseOrderSetItem(mergedPurchaseOrder));
 
     return mergedPurchaseOrder;
   }

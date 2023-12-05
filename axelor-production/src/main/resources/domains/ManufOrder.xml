@@ -110,7 +110,7 @@
     <many-to-one name="outsourcingPartner" ref="com.axelor.apps.base.db.Partner"
       title="Subcontractor"/>
     title="Generate a purchase order on MO planning"/>
-    <many-to-one name="purchaseOrder" title="Purchase order"
+    <many-to-many name="purchaseOrderSet" title="Purchase orders"
       ref="com.axelor.apps.purchase.db.PurchaseOrder"/>
 
     <many-to-one name="parentMO" ref="com.axelor.apps.production.db.ManufOrder"

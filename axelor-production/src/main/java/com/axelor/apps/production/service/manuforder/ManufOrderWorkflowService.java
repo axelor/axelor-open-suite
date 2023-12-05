@@ -20,8 +20,10 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -71,6 +73,8 @@ public interface ManufOrderWorkflowService {
    * @param manufOrder
    */
   void updatePlannedDates(ManufOrder manufOrder);
+
+  List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException;
 
   void setOperationOrderMaxPriority(ManufOrder manufOrder);
 

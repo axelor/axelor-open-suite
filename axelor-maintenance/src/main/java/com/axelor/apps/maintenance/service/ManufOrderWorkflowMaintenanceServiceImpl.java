@@ -29,10 +29,12 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
@@ -41,30 +43,33 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.collections.CollectionUtils;
+
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflowServiceImpl {
 
   @Inject
   public ManufOrderWorkflowMaintenanceServiceImpl(
-      OperationOrderWorkflowService operationOrderWorkflowService,
-      OperationOrderRepository operationOrderRepo,
-      ManufOrderStockMoveService manufOrderStockMoveService,
-      ManufOrderRepository manufOrderRepo,
-      ProductCompanyService productCompanyService,
-      ProductionConfigRepository productionConfigRepo,
-      PurchaseOrderService purchaseOrderService,
-      AppBaseService appBaseService,
-      OperationOrderService operationOrderService,
-      AppProductionService appProductionService,
-      ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService,
-      ManufOrderService manufOrderService,
-      SequenceService sequenceService,
-      ProductionOrderService productionOrderService,
-      ManufOrderOutsourceService manufOrderOutsourceService) {
+          OperationOrderWorkflowService operationOrderWorkflowService,
+          OperationOrderRepository operationOrderRepo,
+          ManufOrderStockMoveService manufOrderStockMoveService,
+          ManufOrderRepository manufOrderRepo,
+          ProductCompanyService productCompanyService,
+          ProductionConfigRepository productionConfigRepo,
+          PurchaseOrderService purchaseOrderService,
+          AppBaseService appBaseService,
+          OperationOrderService operationOrderService,
+          AppProductionService appProductionService,
+          ProductionConfigService productionConfigService,
+          OperationOrderPlanningService operationOrderPlanningService,
+          ManufOrderService manufOrderService,
+          SequenceService sequenceService,
+          ProductionOrderService productionOrderService,
+          ManufOrderOutsourceService manufOrderOutsourceService,
+          OperationOrderOutsourceService operationOrderOutsourceService,
+          StockConfigProductionService stockConfigProductionService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -81,7 +86,9 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         manufOrderService,
         sequenceService,
         productionOrderService,
-        manufOrderOutsourceService);
+        manufOrderOutsourceService,
+            operationOrderOutsourceService,
+            stockConfigProductionService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
