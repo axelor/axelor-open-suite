@@ -75,8 +75,6 @@ import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import org.apache.commons.collections.CollectionUtils;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -85,6 +83,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
   protected OperationOrderWorkflowService operationOrderWorkflowService;
@@ -825,67 +824,76 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException {
+  public void createPurchaseOrders(ManufOrder manufOrder) throws AxelorException {
 
-    List<Partner> outsourcePartners = getOutsourcePartners(manufOrder);
+    List<Partner> outsourcePartners = getOutsourcePartnersForGenerationPO(manufOrder);
 
     for (Partner outsourcePartner : outsourcePartners) {
-    PurchaseOrder purchaseOrder =
-            purchaseOrderService.createPurchaseOrder(
-                    null,
-                    manufOrder.getCompany(),
-                    null,
-                    null,
-                    null,
-                    manufOrder.getManufOrderSeq(),
-                    null,
-                    null,
-                    null,
-                    outsourcePartner,
-                    null);
+      PurchaseOrder purchaseOrder =
+          purchaseOrderService.createPurchaseOrder(
+              null,
+              manufOrder.getCompany(),
+              null,
+              null,
+              null,
+              manufOrder.getManufOrderSeq(),
+              null,
+              null,
+              null,
+              outsourcePartner,
+              null);
 
-    purchaseOrder.setOutsourcingOrder(true);
-    purchaseOrder.setFiscalPosition(outsourcePartner.getFiscalPosition());
-    StockConfig stockConfig = stockConfigProductionService.getStockConfig(manufOrder.getCompany());
-    if (manufOrder.getCompany() != null && manufOrder.getCompany().getStockConfig() != null) {
-      purchaseOrder.setStockLocation( stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig));
-    }
-    purchaseOrder.setFromStockLocation(stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig));
-
-    this.setPurchaseOrderSupplierDetails(purchaseOrder);
-
-    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-      if (operationOrder.getUseLineInGeneratedPurchaseOrder()) {
-        this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+      purchaseOrder.setOutsourcingOrder(true);
+      purchaseOrder.setFiscalPosition(outsourcePartner.getFiscalPosition());
+      StockConfig stockConfig =
+          stockConfigProductionService.getStockConfig(manufOrder.getCompany());
+      if (manufOrder.getCompany() != null && manufOrder.getCompany().getStockConfig() != null) {
+        purchaseOrder.setStockLocation(
+            stockConfigProductionService.getReceiptDefaultStockLocation(stockConfig));
       }
+      purchaseOrder.setFromStockLocation(
+          stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig));
+
+      this.setPurchaseOrderSupplierDetails(purchaseOrder);
+
+      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        if (operationOrder.getUseLineInGeneratedPurchaseOrder()) {
+          this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+        }
+      }
+
+      purchaseOrderService.computePurchaseOrder(purchaseOrder);
+      manufOrder.addPurchaseOrderSetItem(purchaseOrder);
     }
-
-    purchaseOrderService.computePurchaseOrder(purchaseOrder);
-    manufOrder.addPurchaseOrderSetItem(purchaseOrder);
-  }
-
 
     manufOrderRepo.save(manufOrder);
   }
 
   @Override
-  public List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException {
+  public List<Partner> getOutsourcePartnersForGenerationPO(ManufOrder manufOrder)
+      throws AxelorException {
 
-    if (manufOrder.getOutsourcing() && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
+    if (manufOrder.getOutsourcing()
+        && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
       return List.of(manufOrderOutsourceService.getOutsourcePartner(manufOrder).get());
     } else {
-      return manufOrder.getOperationOrderList().stream().filter(OperationOrder::getOutsourcing)
-              .map(oo -> {
+      return manufOrder.getOperationOrderList().stream()
+          .filter(
+              oo ->
+                  oo.getOutsourcing()
+                      && oo.getProdProcessLine().getGeneratePurchaseOrderOnMoPlanning())
+          .map(
+              oo -> {
                 try {
                   return operationOrderOutsourceService.getOutsourcePartner(oo);
                 } catch (AxelorException e) {
                   throw new RuntimeException(e);
                 }
               })
-              .map(optPartner -> optPartner.orElse(null))
-              .filter(Objects::nonNull)
-              .distinct()
-              .collect(Collectors.toList());
+          .map(optPartner -> optPartner.orElse(null))
+          .filter(Objects::nonNull)
+          .distinct()
+          .collect(Collectors.toList());
     }
   }
 
@@ -941,9 +949,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
       }
 
-      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
-        this.createPurchaseOrder(manufOrder);
-      }
+      this.createPurchaseOrders(manufOrder);
 
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrderLine())) {
         messageBuilder

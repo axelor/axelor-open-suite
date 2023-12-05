@@ -12,7 +12,9 @@
       orderBy="priority"/>
     <string name="name" title="Label" required="true" massUpdate="true"/>
     <string name="code" title="Code"/>
-    <boolean name="outsourcing" title="Outsourcing"/>
+    <boolean name="outsourcing" title="Outsourced"/>
+    <boolean name="outsourcable" title="Outsourcable"/>
+    <boolean name="prodProcessLinesOutsourcable" title="Subcontracting service"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>
     <string name="fullName" namecolumn="true" title="Label"/>
@@ -62,6 +64,7 @@
       <field name="name"/>
       <field name="code"/>
       <field name="outsourcing"/>
+      <field name="outsourced"/>
       <field name="company"/>
       <field name="fullName"/>
       <field name="statusSelect"/>

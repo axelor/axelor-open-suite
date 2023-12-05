@@ -118,6 +118,19 @@
 					]]>
           </viewer>
         </field>
+        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
+        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
+          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
+          <viewer>
+            <![CDATA[
+						<>
+							<Box d="flex" justifyContent="flex-end">
+								{$areLinesOutsourced && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracting service')}</Badge>}
+							</Box>
+						</>
+					]]>
+          </viewer>
+        </field>
         <field name="$viewerIsPermanent" showTitle="false" colSpan="2"
           showIf="typeSelect == 2 &amp;&amp; $readonly()">
           <viewer depends="typeSelect">
@@ -136,9 +149,11 @@
           grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"
           edit-window="blank"/>
         <field name="outsourcing" colSpan="3"
-          onChange="action-production-attrs-hide-purchaseOrder"/>
-        <field name="outsourcingPartner" colSpan="3"
-          showIf="outsourcing &amp;&amp; !prodProcess.outsourcing"
+          hideIf="prodProcess.prodProcessLinesOutsourcable
+           || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
+          readonlyIf="prodProcess.outsourcing"/>
+        <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
+          requiredIf="outsourcing &amp;&amp; prodProcess.outsourcable"
           domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
           readonly="true" hideIf="statusSelect != 1"/>
@@ -168,15 +183,18 @@
           if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
           hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0"
-          onClick="save,action-manuf-order-method-pre-fill-operations"/>
+          onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
         <field name="product.isModel" hidden="true"/>
         <field name="typeSelect" hidden="true"/>
         <field name="prodProcess.outsourcing" hidden="true"/>
+        <field name="prodProcess.outsourcable" hidden="true"/>
+        <field name="prodProcess.prodProcessLinesOutsourcable" hidden="true"/>
       </panel>
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 2"
-          onClick="save,action-manuf-order-method-plan" hidden="true"/>
+          onClick="save,action-manuf-order-method-plan,action-manuf-order-method-update-lines-outsourced"
+          hidden="true"/>
         <button name="startBtn" icon="fa-play" title="Start" colSpan="12"
           showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start" hidden="true"/>
         <button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12"
@@ -201,7 +219,8 @@
     <panel-tabs name="mainPanelTab" colSpan="4">
       <panel-related name="operationOrderListPanel" field="operationOrderList"
         readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
-        grid-view="operation-order-grid" canNew="false"/>
+        grid-view="operation-order-grid" canNew="false"
+        onChange="action-manuf-order-method-update-lines-outsourced"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -661,6 +680,7 @@
     <action name="action-manuf-order-attrs-scale-and-precision"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-method-compute-producible-qty" if="statusSelect == 1"/>
+    <action name="action-manuf-order-method-update-lines-outsourced"/>
   </action-group>
 
   <action-attrs name="action-production-attrs-hide-purchaseOrder">
@@ -670,6 +690,8 @@
 
   <action-attrs name="action-production-attrs-set-outsourcing-value">
     <attribute name="value" for="outsourcing" expr="eval: prodProcess?.outsourcing"/>
+    <attribute name="value" for="outsourcingPartner"
+      expr="eval: prodProcess?.subcontractor" if="prodProcess?.outsourcing"/>
   </action-attrs>
 
   <action-group name="action-manuf-order-group-finish">
@@ -729,6 +751,11 @@
 
   <action-method name="action-manuf-order-method-part-finish">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="partialFinish"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-update-lines-outsourced">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="updateLinesOutsourced"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-pre-fill-operations">

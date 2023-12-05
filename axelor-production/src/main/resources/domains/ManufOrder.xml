@@ -106,7 +106,7 @@
     <string name="moCommentFromSaleOrder" title="MO's comment from sale order" large="true"/>
     <string name="moCommentFromSaleOrderLine" title="MO's comment from sale order line"
       large="true"/>
-    <boolean name="outsourcing" title="Outsourcing" initParam="true"/>
+    <boolean name="outsourcing" title="Outsourced" initParam="true"/>
     <many-to-one name="outsourcingPartner" ref="com.axelor.apps.base.db.Partner"
       title="Subcontractor"/>
     title="Generate a purchase order on MO planning"/>

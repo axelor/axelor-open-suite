@@ -2,26 +2,31 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
+import com.google.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
 
 public class ProdProcessLineOutsourceServiceImpl implements ProdProcessLineOutsourceService {
+
+  protected ProdProcessOutsourceService prodProcessOutsourceService;
+
+  @Inject
+  public ProdProcessLineOutsourceServiceImpl(
+      ProdProcessOutsourceService prodProcessOutsourceService) {
+    this.prodProcessOutsourceService = prodProcessOutsourceService;
+  }
+
   @Override
   public Optional<Partner> getOutsourcePartner(ProdProcessLine prodProcessLine)
       throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
     Objects.requireNonNull(prodProcessLine.getProdProcess());
 
-    Optional<ProdProcess> optionalProdProcess =
-        Optional.ofNullable(prodProcessLine.getProdProcess());
-    if (optionalProdProcess.map(ProdProcess::getOutsourcing).orElse(false)) {
-      return optionalProdProcess.map(ProdProcess::getSubcontractor);
-    } else if (prodProcessLine.getOutsourcing()) {
+    if (prodProcessLine.getOutsourcing() && !prodProcessLine.getProdProcess().getOutsourcing()) {
       return Optional.ofNullable(prodProcessLine.getOutsourcingPartner());
+    } else {
+      return prodProcessOutsourceService.getOutsourcePartner(prodProcessLine.getProdProcess());
     }
-
-    return Optional.empty();
   }
 }

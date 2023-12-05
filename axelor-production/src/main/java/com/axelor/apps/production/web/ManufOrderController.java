@@ -741,4 +741,14 @@ public class ManufOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateLinesOutsourced(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      response.setValue(
+          "$areLinesOutsourced", Beans.get(ManufOrderService.class).areLinesOutsourced(manufOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

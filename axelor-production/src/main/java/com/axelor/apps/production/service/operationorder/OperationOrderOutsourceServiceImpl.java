@@ -6,7 +6,6 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.google.inject.Inject;
-
 import java.util.Objects;
 import java.util.Optional;
 
@@ -27,20 +26,21 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
   public Optional<Partner> getOutsourcePartner(OperationOrder operationOrder)
       throws AxelorException {
     Objects.requireNonNull(operationOrder);
+    Objects.requireNonNull(operationOrder.getManufOrder());
 
-    Optional<Partner> optProdProcessLinePartner =
-        prodProcessLineOutsourceService.getOutsourcePartner(operationOrder.getProdProcessLine());
-
-    Optional<Partner> optManufOrderPartner =
-            manufOrderOutsourceService.getOutsourcePartner(operationOrder.getManufOrder());
-
-
-    if (optProdProcessLinePartner.isPresent()) {
-      return optProdProcessLinePartner;
-    } else if (optManufOrderPartner.isPresent()) {
-      return optManufOrderPartner;
-    } else if (operationOrder.getOutsourcing()) {
-      return Optional.ofNullable(operationOrder.getOutsourcingPartner());
+    // Fetching from manufOrder
+    if (operationOrder.getOutsourcing() && operationOrder.getManufOrder().getOutsourcing()) {
+      return manufOrderOutsourceService.getOutsourcePartner(operationOrder.getManufOrder());
+      // Fetching from prodProcessLine or itself
+    } else if (operationOrder.getOutsourcing()
+        && !operationOrder.getManufOrder().getOutsourcing()) {
+      if (operationOrder.getProdProcessLine().getOutsourcing()
+          && operationOrder.getOutsourcingPartner() == null) {
+        return prodProcessLineOutsourceService.getOutsourcePartner(
+            operationOrder.getProdProcessLine());
+      } else {
+        return Optional.ofNullable(operationOrder.getOutsourcingPartner());
+      }
     }
     return Optional.empty();
   }

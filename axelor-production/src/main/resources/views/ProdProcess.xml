@@ -81,21 +81,37 @@
         <field name="stockMoveRealizeOrderSelect"/>
         <field name="isConsProOnOperation" onChange="action-prod-process-validate-is-cons-pro"
           readonlyIf="isEnabledForAllProducts"/>
-        <field name="outsourcing" colSpan="3"
-          onChange="action-prod-process-method-change-prodprocesslist-outsourcing"
-          if="__config__.app.getApp('production')?.getManageOutsourcing()"/>
-        <field name="generatePurchaseOrderOnMoPlanning" colSpan="3"
-          if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"/>
+        <panel name="outsourcePanel"
+          if="__config__.app.getApp('production')?.getManageOutsourcing()" colSpan="12"
+          showTitle="false">
+          <field name="outsourcing" colSpan="4"
+            onChange="action-prod-process-method-change-prodprocesslist-outsourcing"
+            if="__config__.app.getApp('production')?.getManageOutsourcing()"
+            readonlyIf="outsourcable || prodProcessLinesOutsourcable"/>
+          <field name="outsourcable" colSpan="4"
+            onChange="action-prod-process-method-change-prodprocesslist-outsourcing"
+            if="__config__.app.getApp('production')?.getManageOutsourcing()"
+            readonlyIf="outsourcing || prodProcessLinesOutsourcable"/>
+          <field name="prodProcessLinesOutsourcable" colSpan="4"
+            onChange="action-prod-process-method-change-prodprocesslist-outsourcing"
+            if="__config__.app.getApp('production')?.getManageOutsourcing()"
+            readonlyIf="outsourcing || outsourcable"/>
+          <field name="subcontractor" domain="self.isSubcontractor = true" colSpan="4"
+            onChange="action-production-record-subcontractor-on-change"
+            if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"
+            requiredIf="outsourcing" form-view="partner-form"/>
+          <field name="generatePurchaseOrderOnMoPlanning" colSpan="4"
+            if="__config__.app.getApp('production')?.getManageOutsourcing()"
+            showIf="outsourcing || outsourcable"/>
+          <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
+            colSpan="4" if="__config__.app.getApp('production')?.getManageOutsourcing()"
+            showIf="outsourcing"/>
+        </panel>
+
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
         <spacer colSpan="2"/>
         <field name="operationContinuity"/>
-        <field name="subcontractor" domain="self.isSubcontractor = true" colSpan="3"
-          onChange="action-production-record-subcontractor-on-change"
-          if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"
-          requiredIf="outsourcing" form-view="partner-form"/>
-        <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
-          colSpan="3" if="__config__.app.getApp('production')?.getManageOutsourcing()"
-          showIf="outsourcing"/>
+
       </panel>
 
       <panel-dashlet name="viewBillOfMaterialsPanel"

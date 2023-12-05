@@ -156,6 +156,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  public boolean areLinesOutsourced(ManufOrder manufOrder) {
+
+    if (manufOrder.getOutsourcing()) {
+      return false;
+    }
+    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
@@ -221,9 +230,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
-      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
-        manufOrderWorkflowService.createPurchaseOrder(manufOrder);
-      }
+      manufOrderWorkflowService.createPurchaseOrders(manufOrder);
     }
 
     return manufOrderRepo.save(manufOrder);

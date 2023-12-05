@@ -102,6 +102,7 @@ public class ProdProcessService {
   public ProdProcess changeProdProcessListOutsourcing(ProdProcess prodProcess) {
     for (ProdProcessLine prodProcessLine : prodProcess.getProdProcessLineList()) {
       prodProcessLine.setOutsourcing(prodProcess.getOutsourcing());
+      prodProcessLine.setOutsourcable(false);
     }
     return prodProcess;
   }
