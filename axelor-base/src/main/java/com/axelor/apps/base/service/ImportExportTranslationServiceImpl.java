@@ -136,11 +136,14 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     String[] row;
     List<String[]> translationList = new ArrayList<>();
     for (Map.Entry<String, String[]> entry : map.entrySet()) {
-      String[] value = null;
+      String[] value;
       try {
         value = entry.getValue();
         row = new String[languageNumber + 1];
         row[0] = entry.getKey();
+        if (row[0].contains("\\")) {
+          row[0] = row[0].replace("\\", "\\\\");
+        }
         for (int j = 0; j < value.length; j++) {
           row[j + 1] = value[j];
           countRecords++;
@@ -152,10 +155,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
             new AxelorException(
                 importExportTranslationHistory,
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                "Import line processing error: "
-                    + Arrays.toString(value)
-                    + ". Error message: "
-                    + e.getMessage());
+                "Import line processing error. " + "Error message: " + e.getMessage());
         TraceBackService.trace(ae);
       }
     }
@@ -205,6 +205,11 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     return translationMap;
   }
 
+  /**
+   * This method queries all the existing translation key in the database and save the in a map.
+   *
+   * @param languageNumber
+   */
   protected Map<String, String[]> saveTranslationKeyIntoMap(int languageNumber) {
     TypedQuery<String> query =
         JPA.em().createQuery("select distinct mt.key " + "from MetaTranslation mt ", String.class);
@@ -251,7 +256,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
             .setParameter("curId", importExportTranslation.getId());
     translationRecordsQuery.setFirstResult(offset);
     translationRecordsQuery.setMaxResults(FETCH_LIMIT);
-    return translationRecordsQuery.getResultList();
+    return (List<Object[]>) translationRecordsQuery.getResultList();
   }
 
   /**
@@ -366,8 +371,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       // dataLine: messageKey, language1_value, language2_value, language3_value, ...
       String messageValue = dataLine.get(i);
       String languageCode = headers.get(i);
-      // if key does not exist, do nothing
-
       TypedQuery<String> keyExistenceQuery =
           JPA.em()
               .createQuery(
@@ -376,16 +379,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
               .setParameter("key", key);
       List<String> keyExistenceQueryResultList = keyExistenceQuery.getResultList();
 
-      Query query =
-          JPA.em()
-              .createNativeQuery(
-                  "select mt.message_key "
-                      + "from meta_translation mt "
-                      + "where mt.message_key = :key ")
-              .setParameter("key", key);
-      List<String> testResultList = query.getResultList();
-
-      if (testResultList.isEmpty()) {
+      if (keyExistenceQueryResultList.isEmpty()) {
         errorNumber++;
         AxelorException ae =
             new AxelorException(
@@ -395,7 +389,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         TraceBackService.trace(ae);
       } else {
         // key exists, but the message, key may not exist
-
         Query languageTranslationExistenceQuery =
             JPA.em()
                 .createQuery(
@@ -405,7 +398,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
                         + "and mt.key = :key ")
                 .setParameter("key", key)
                 .setParameter("languageCode", languageCode);
-        List languageTranslationExistenceQueryResultList =
+        List<Object[]> languageTranslationExistenceQueryResultList =
             languageTranslationExistenceQuery.getResultList();
         if (!languageTranslationExistenceQueryResultList.isEmpty()) {
           Query updateQuery =
@@ -419,12 +412,11 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
                   .setParameter("key", key)
                   .setParameter("languageCode", languageCode);
           updateQuery.executeUpdate();
-          importNumber++;
         } else {
           // this translation is newly added.
           saveNewTranslation(key, messageValue, languageCode);
-          importNumber++;
         }
+        importNumber++;
       }
     }
     return importNumber;
