@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.operationorder.planning;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
@@ -42,8 +43,13 @@ public class OperationOrderPlanningAsapFiniteCapacityService
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
+      AppBaseService appBaseService,
       MachineService machineService) {
-    super(operationOrderService, operationOrderStockMoveService, operationOrderRepository);
+    super(
+        operationOrderService,
+        operationOrderStockMoveService,
+        operationOrderRepository,
+        appBaseService);
     this.machineService = machineService;
   }
 

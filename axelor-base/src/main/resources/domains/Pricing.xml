@@ -33,6 +33,7 @@
       title="Product / Product model"/>
     <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
       title="Product category"/>
+    <string name="formula" title="Formula"/>
     <many-to-one name="linkedPricing" ref="com.axelor.apps.base.db.Pricing"
       title="Linked pricing"/>
     <one-to-many name="pricingLineList" ref="com.axelor.apps.base.db.PricingLine"
