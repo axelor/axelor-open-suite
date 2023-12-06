@@ -153,7 +153,7 @@
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" showIf="partner">
       <panel title="Content" name="contentPanel">
         <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement"
           colSpan="12">
