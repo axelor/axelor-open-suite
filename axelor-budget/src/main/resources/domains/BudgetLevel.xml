@@ -136,14 +136,6 @@
 				public static final String BUDGET_LEVEL_SOURCE_AUTO = "auto";
 				public static final String BUDGET_LEVEL_SOURCE_CUSTOM = "custom";
 
-				//budget level category select
-				public static final String BUDGET_LEVEL_CATEGORY_TURNOVER = "turnover";
-				public static final String BUDGET_LEVEL_CATEGORY_COSTS = "costs";
-
-	         //budget level sub category select
-	         public static final String BUDGET_LEVEL_SUB_CATEGORY_PROJECT = "proj";
-	         public static final String BUDGET_LEVEL_SUB_CATEGORY_SERVICE = "service";
-
 				//budget level level type select
 				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL = "global";
 				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP = "group";
