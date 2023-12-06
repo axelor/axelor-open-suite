@@ -37,6 +37,7 @@ public class LeaveValueProrataServiceImpl implements LeaveValueProrataService {
       LeaveReason leaveReason, Employee employee, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
     LocalDate employeeHireDate = employee.getHireDate();
+    LocalDate employeeLeavingDate = employee.getLeavingDate();
 
     if (!leaveReason.getIsDaysAddedProrated()
         || (!LocalDateHelper.isBetween(fromDate, toDate, employeeHireDate)
@@ -45,7 +46,7 @@ public class LeaveValueProrataServiceImpl implements LeaveValueProrataService {
     }
 
     if (!LocalDateHelper.isBetween(fromDate, toDate, employeeHireDate)
-        && employeeHireDate.isAfter(fromDate)) {
+        && employeeHireDate.isAfter(toDate)) {
       return BigDecimal.ZERO;
     }
 
@@ -53,6 +54,11 @@ public class LeaveValueProrataServiceImpl implements LeaveValueProrataService {
     if (LocalDateHelper.isBetween(fromDate, toDate, employeeHireDate)) {
       BigDecimal employeeWorkDays =
           employeeService.getDaysWorksInPeriod(employee, employeeHireDate, toDate);
+      if (employeeLeavingDate != null && employeeLeavingDate.isBefore(toDate)) {
+        employeeWorkDays =
+            employeeService.getDaysWorksInPeriod(employee, employeeHireDate, employeeLeavingDate);
+      }
+
       BigDecimal workDays = employeeService.getDaysWorksInPeriod(employee, fromDate, toDate);
       ratio =
           employeeWorkDays.divide(
