@@ -236,4 +236,6 @@ public interface StockMoveService {
   void checkPrintingSettings(StockMove stockMove) throws AxelorException;
 
   public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException;
+
+  void setMergedStatus(StockMove stockMove);
 }

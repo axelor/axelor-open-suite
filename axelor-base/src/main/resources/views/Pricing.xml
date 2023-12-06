@@ -218,10 +218,10 @@
   <action-attrs name="action-pricing-attrs-linked-pricing-title">
     <attribute name="title" for="linkedPricing"
       expr="eval: com.axelor.i18n.I18n.get('Previous pricing')"
-      if="__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+      if="__config__.app.getApp('base')?.isPricingComputingOrder"/>
     <attribute name="title" for="linkedPricing"
       expr="eval: com.axelor.i18n.I18n.get('Next pricing')"
-      if="!__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+      if="!__config__.app.getApp('base')?.isPricingComputingOrder"/>
   </action-attrs>
 
   <action-group name="action-pricing-group-attrs-pricing-line-list">

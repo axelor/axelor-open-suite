@@ -48,7 +48,13 @@
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetDistributionSumAmount" readonly="true" colSpan="6"
-            x-scale="$companyCurrencyScale"/>
+            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
+            <viewer depends="budgetDistributionSumAmount">
+              <![CDATA[
+				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+              ]]>
+            </viewer>
+          </field>
           <field name="groupBudget" title="Group" colSpan="4"
             onSelect="action-budget-sale-order-line-method-group-domain"
             form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>

@@ -17,6 +17,7 @@
     <option value="2">Planned</option>
     <option value="3">Realized</option>
     <option value="4">Canceled</option>
+    <option value="5">Merged</option>
   </selection>
 
   <selection name="stock.stock.move.available.status.select">
