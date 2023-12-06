@@ -32,7 +32,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -51,17 +50,20 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
   protected InvoiceTermService invoiceTermService;
   protected AppAccountService appAccountService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
 
   @Inject
   public InvoiceTermPaymentServiceImpl(
       CurrencyService currencyService,
       InvoiceTermService invoiceTermService,
       AppAccountService appAccountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
     this.currencyService = currencyService;
     this.invoiceTermService = invoiceTermService;
     this.appAccountService = appAccountService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
   }
 
   @Override
@@ -134,9 +136,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     BigDecimal availableAmountUnchanged = availableAmount;
     int invoiceTermCount = invoiceTermsToPay.size();
     boolean isCompanyCurrency;
-
-    InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService =
-        Beans.get(InvoicePaymentFinancialDiscountService.class);
 
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();

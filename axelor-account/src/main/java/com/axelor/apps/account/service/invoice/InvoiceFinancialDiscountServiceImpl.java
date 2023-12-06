@@ -69,7 +69,7 @@ public class InvoiceFinancialDiscountServiceImpl implements InvoiceFinancialDisc
   protected BigDecimal computeFinancialDiscountTotalAmount(
       FinancialDiscount financialDiscount, Invoice invoice) {
     return financialDiscountService.computeFinancialDiscountTotalAmount(
-        financialDiscount, invoice.getInTaxTotal(), invoice.getTaxTotal());
+        financialDiscount, invoice.getInTaxTotal(), invoice.getTaxTotal(), invoice.getCurrency());
   }
 
   @Override

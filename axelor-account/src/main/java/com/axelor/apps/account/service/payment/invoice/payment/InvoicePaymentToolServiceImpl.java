@@ -340,8 +340,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
     if (invoiceId > 0) {
       List<InvoiceTerm> invoiceTerms =
-          Beans.get(InvoiceTermService.class)
-              .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+          invoiceTermService.getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
 
       if (invoicePayment.getManualChange()) {
         invoiceTerms.stream()

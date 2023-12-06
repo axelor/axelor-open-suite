@@ -84,7 +84,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
       percentage =
           amount
               .multiply(new BigDecimal(100))
-              .divide(inTaxTotal, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+              .divide(inTaxTotal, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     }
     return percentage;
   }
@@ -98,7 +98,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
               .multiply(invoiceTerm.getRemainingAmountAfterFinDiscount())
               .divide(
                   invoiceTerm.getAmount(),
-                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  currencyScaleServiceAccount.getScale(invoiceTerm),
                   RoundingMode.HALF_UP));
     }
   }
@@ -140,7 +140,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(
               BigDecimal.valueOf(10000),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              currencyScaleServiceAccount.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     } else {
       BigDecimal exTaxTotal;
@@ -157,7 +157,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
           .multiply(invoiceTerm.getFinancialDiscount().getDiscountRate())
           .divide(
               taxTotal.add(exTaxTotal).multiply(BigDecimal.valueOf(10000)),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              currencyScaleServiceAccount.getScale(invoiceTerm),
               RoundingMode.HALF_UP);
     }
   }

@@ -7,52 +7,63 @@ import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.db.Currency;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class FinancialDiscountServiceImpl implements FinancialDiscountService {
   AccountConfigService accountConfigService;
+  CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
-  public FinancialDiscountServiceImpl(AccountConfigService accountConfigService) {
+  public FinancialDiscountServiceImpl(
+      AccountConfigService accountConfigService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.accountConfigService = accountConfigService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
   public BigDecimal computeFinancialDiscountTotalAmount(
-      FinancialDiscount financialDiscount, BigDecimal inTaxTotal, BigDecimal taxTotal) {
+      FinancialDiscount financialDiscount,
+      BigDecimal inTaxTotal,
+      BigDecimal taxTotal,
+      Currency currency) {
     BigDecimal exTaxTotal = inTaxTotal.subtract(taxTotal);
 
     if (financialDiscount.getDiscountBaseSelect()
         == FinancialDiscountRepository.DISCOUNT_BASE_VAT) {
-      return this.getFinancialDiscountAmount(financialDiscount, inTaxTotal);
+      return this.getFinancialDiscountAmount(financialDiscount, inTaxTotal, currency);
     } else {
       BigDecimal financialDiscountAmountWithoutTax =
-          this.getFinancialDiscountAmount(financialDiscount, exTaxTotal);
+          this.getFinancialDiscountAmount(financialDiscount, exTaxTotal, currency);
 
       BigDecimal financialDiscountTaxAmount =
-          this.getFinancialDiscountTaxAmount(financialDiscount, inTaxTotal, exTaxTotal, taxTotal);
+          this.getFinancialDiscountTaxAmount(
+              financialDiscount, inTaxTotal, exTaxTotal, taxTotal, currency);
 
       return financialDiscountAmountWithoutTax.add(financialDiscountTaxAmount);
     }
   }
 
   protected BigDecimal getFinancialDiscountAmount(
-      FinancialDiscount financialDiscount, BigDecimal amount) {
+      FinancialDiscount financialDiscount, BigDecimal amount, Currency currency) {
     return financialDiscount
         .getDiscountRate()
         .multiply(amount)
         .divide(
-            new BigDecimal(100), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            new BigDecimal(100),
+            currencyScaleServiceAccount.getScale(currency),
+            RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getFinancialDiscountTaxAmount(
       FinancialDiscount financialDiscount,
       BigDecimal inTaxTotal,
       BigDecimal exTaxTotal,
-      BigDecimal taxTotal) {
+      BigDecimal taxTotal,
+      Currency currency) {
     return inTaxTotal.signum() == 0
         ? BigDecimal.ZERO
         : taxTotal
@@ -60,7 +71,7 @@ public class FinancialDiscountServiceImpl implements FinancialDiscountService {
             .multiply(financialDiscount.getDiscountRate())
             .divide(
                 inTaxTotal.multiply(BigDecimal.valueOf(100)),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                currencyScaleServiceAccount.getScale(currency),
                 RoundingMode.HALF_UP);
   }
 

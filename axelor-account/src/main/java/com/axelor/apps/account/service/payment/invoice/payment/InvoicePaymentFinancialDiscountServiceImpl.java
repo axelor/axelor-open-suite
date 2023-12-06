@@ -3,6 +3,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -20,15 +21,18 @@ public class InvoicePaymentFinancialDiscountServiceImpl
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public InvoicePaymentFinancialDiscountServiceImpl(
       InvoiceTermService invoiceTermService,
       InvoiceTermPaymentService invoiceTermPaymentService,
-      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
     this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -98,7 +102,7 @@ public class InvoicePaymentFinancialDiscountServiceImpl
         .map(InvoiceTermPayment::getFinancialDiscountAmount)
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        .setScale(this.findScale(invoiceTermPaymentList), RoundingMode.HALF_UP);
   }
 
   protected BigDecimal getFinancialDiscountTaxAmount(
@@ -121,7 +125,15 @@ public class InvoicePaymentFinancialDiscountServiceImpl
             })
         .reduce(BigDecimal::add)
         .orElse(BigDecimal.ZERO)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        .setScale(this.findScale(invoiceTermPaymentList), RoundingMode.HALF_UP);
+  }
+
+  protected int findScale(List<InvoiceTermPayment> invoiceTermPaymentList) {
+    return invoiceTermPaymentList.stream()
+        .map(InvoiceTermPayment::getInvoiceTerm)
+        .map(currencyScaleServiceAccount::getScale)
+        .findAny()
+        .orElse(currencyScaleServiceAccount.getScale());
   }
 
   protected LocalDate getFinancialDiscountDeadlineDate(

@@ -121,7 +121,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
             .orElse(BigDecimal.ZERO);
 
     return financialDiscountService.computeFinancialDiscountTotalAmount(
-        financialDiscount, amount, taxAmount);
+        financialDiscount, amount, taxAmount, moveLine.getMove().getCurrency());
   }
 
   protected void computeInvoiceTermsFinancialDiscount(MoveLine moveLine) {
@@ -241,14 +241,14 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean isDebit,
       boolean financialDiscountVat)
       throws AxelorException {
+    int scale = currencyScaleServiceAccount.getScale(move);
+
     financialDiscountAmount =
-        financialDiscountAmount
-            .multiply(prorata.getLeft())
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        financialDiscountAmount.multiply(prorata.getLeft()).setScale(scale, RoundingMode.HALF_UP);
     financialDiscountTaxAmount =
         financialDiscountTaxAmount
             .multiply(prorata.getRight())
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            .setScale(scale, RoundingMode.HALF_UP);
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
