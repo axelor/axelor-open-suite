@@ -383,7 +383,8 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     return domain.toString();
   }
 
-  protected void computeAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
+  @Override
+  public void computeAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
     if (analyticMoveLine != null) {
       analyticMoveLine.setCurrency(
           company != null && company.getCurrency() != null ? company.getCurrency() : null);
