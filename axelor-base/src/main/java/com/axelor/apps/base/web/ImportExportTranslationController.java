@@ -1,6 +1,7 @@
 package com.axelor.apps.base.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.apps.base.service.ImportExportTranslationService;
@@ -26,7 +27,7 @@ public class ImportExportTranslationController {
     } catch (AxelorException e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("File input error.", e);
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
     response.setInfo("File successfully exported.");
     response.setReload(true);
@@ -45,7 +46,7 @@ public class ImportExportTranslationController {
     } catch (AxelorException e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("Read CSV file failed.", e);
-      TraceBackService.trace(e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
     if (path == null) {
       response.setInfo("The import file is empty or it has error format.");

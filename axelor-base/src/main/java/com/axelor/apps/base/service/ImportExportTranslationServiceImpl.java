@@ -13,6 +13,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
@@ -60,6 +61,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    *
    * @param importExportTranslation
    * @throws IOException
+   * @throws AxelorException
    */
   @Override
   public void exportTranslations(ImportExportTranslation importExportTranslation)
@@ -68,20 +70,14 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     countRecords = 0;
     ImportExportTranslationHistory importExportTranslationHistory =
         saveHistory(importExportTranslation, "Export");
-    List<String> languageHeaders = getLanguageHeaders(importExportTranslation);
-    int languageNumber = languageHeaders.size();
-    String[] headers = computeCsvFileHeaders(languageHeaders);
+    List<String> languageCodes = getLanguageCodes(importExportTranslation);
+    int languageNumber = languageCodes.size();
+    // headers: key, code1, code2, ...
+    String[] headers = computeCsvFileHeaders(languageCodes);
     Map<String, String[]> map =
         saveRecordsIntoMap(importExportTranslation, languageNumber, headers);
-    List<String[]> translationList;
-    try {
-      translationList = addRecordRowIntoList(map, languageNumber, importExportTranslationHistory);
-    } catch (AxelorException e) {
-      TraceBackService.trace(e);
-      Logger logger = LoggerFactory.getLogger(getClass());
-      logger.error("Import line processing error.", e);
-      return;
-    }
+    List<String[]> translationList =
+        addRecordRowIntoList(map, languageNumber, importExportTranslationHistory);
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
     CsvHelper.csvWriter(
@@ -136,8 +132,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   protected List<String[]> addRecordRowIntoList(
       Map<String, String[]> map,
       int languageNumber,
-      ImportExportTranslationHistory importExportTranslationHistory)
-      throws AxelorException {
+      ImportExportTranslationHistory importExportTranslationHistory) {
     String[] row;
     List<String[]> translationList = new ArrayList<>();
     for (Map.Entry<String, String[]> entry : map.entrySet()) {
@@ -153,10 +148,15 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         translationList.add(row);
       } catch (Exception e) {
         errorNumber++;
-        throw new AxelorException(
-            importExportTranslationHistory,
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            "Import line processing error: " + Arrays.toString(value));
+        AxelorException ae =
+            new AxelorException(
+                importExportTranslationHistory,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                "Import line processing error: "
+                    + Arrays.toString(value)
+                    + ". Error message: "
+                    + e.getMessage());
+        TraceBackService.trace(ae);
       }
     }
     return translationList;
@@ -174,7 +174,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   protected Map<String, String[]> saveRecordsIntoMap(
       ImportExportTranslation importExportTranslation, int languageNumber, String[] headers) {
     int offset = 0;
-    Map<String, String[]> map = new HashMap<>();
+    Map<String, String[]> translationMap = saveTranslationKeyIntoMap(languageNumber);
     Object[] messageRecord;
     String messageKey;
     String languageCode;
@@ -192,31 +192,39 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           languageCode = (String) messageRecord[0];
           messageKey = (String) messageRecord[1];
           messageValue = (String) messageRecord[2];
-          if (!map.containsKey(messageKey)) {
-            messageValueArray = new String[languageNumber];
-          } else {
-            messageValueArray = map.get(messageKey);
-          }
+          messageValueArray = translationMap.get(messageKey);
           int position = findPosition(languageCode, headers);
           messageValueArray[position] = messageValue;
-          map.put(messageKey, messageValueArray);
+          translationMap.put(messageKey, messageValueArray);
         } catch (Exception e) {
           errorNumber++;
         }
       }
       offset += FETCH_LIMIT;
     } while (!messageQueryResultList.isEmpty());
-    return map;
+    return translationMap;
+  }
+
+  protected Map<String, String[]> saveTranslationKeyIntoMap(int languageNumber) {
+    TypedQuery<String> query =
+        JPA.em().createQuery("select distinct mt.key " + "from MetaTranslation mt ", String.class);
+    List<String> keyResultList = query.getResultList();
+    int initialCapacity = keyResultList.size() * 2;
+    Map<String, String[]> translationMap = new HashMap<>(initialCapacity);
+    for (String key : keyResultList) {
+      translationMap.put(key, new String[languageNumber]);
+    }
+    return translationMap;
   }
 
   /**
    * This method compute the csv file headers from all language codes.
    *
-   * @param languageHeaders all language codes, e.g. en, fr, etc.
+   * @param languageCodes all language codes, e.g. en, fr, etc.
    * @return Headers String array.
    */
-  protected String[] computeCsvFileHeaders(List<String> languageHeaders) {
-    return Stream.concat(Stream.of("key"), languageHeaders.stream()).toArray(String[]::new);
+  protected String[] computeCsvFileHeaders(List<String> languageCodes) {
+    return Stream.concat(Stream.of("key"), languageCodes.stream()).toArray(String[]::new);
   }
 
   /**
@@ -272,7 +280,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @return A List&lt;String&gt; type list containing all the language codes corresponding to the
    *     importExportTranslation object.
    */
-  protected List<String> getLanguageHeaders(ImportExportTranslation importExportTranslation) {
+  protected List<String> getLanguageCodes(ImportExportTranslation importExportTranslation) {
     Set<Language> languageSet = importExportTranslation.getLanguageSet();
     List<String> languageHeaders = new ArrayList<>();
     for (Language language : languageSet) {
@@ -355,35 +363,79 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           "Data line process error: " + dataLine);
     }
     for (int i = 1; i < dataLine.size(); i++) {
-      // dataLine: messageKey, en_value, fr_value, L3_value, ...
+      // dataLine: messageKey, language1_value, language2_value, language3_value, ...
       String messageValue = dataLine.get(i);
       String languageCode = headers.get(i);
-      TypedQuery<String> existenceQuery =
+      // if key does not exist, do nothing
+
+      TypedQuery<String> keyExistenceQuery =
           JPA.em()
               .createQuery(
-                  "select mt.message "
-                      + "from MetaTranslation mt "
-                      + "where mt.language = :languageCode "
-                      + "and mt.key = :key",
+                  "select mt.key " + "from MetaTranslation mt " + "where mt.key = :key",
                   String.class)
-              .setParameter("languageCode", languageCode)
               .setParameter("key", key);
-      List<String> existenceQueryResultList = existenceQuery.getResultList();
-      if (!existenceQueryResultList.isEmpty()) {
-        Query updateQuery =
+      List<String> keyExistenceQueryResultList = keyExistenceQuery.getResultList();
+
+      Query query =
+          JPA.em()
+              .createNativeQuery(
+                  "select mt.message_key "
+                      + "from meta_translation mt "
+                      + "where mt.message_key = :key ")
+              .setParameter("key", key);
+      List<String> testResultList = query.getResultList();
+
+      if (testResultList.isEmpty()) {
+        errorNumber++;
+        AxelorException ae =
+            new AxelorException(
+                importExportTranslationHistory,
+                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                "The key doesn't exist. " + key);
+        TraceBackService.trace(ae);
+      } else {
+        // key exists, but the message, key may not exist
+
+        Query languageTranslationExistenceQuery =
             JPA.em()
                 .createQuery(
-                    "update MetaTranslation mt "
-                        + "set mt.message = :messageValue "
-                        + "where mt.key = :key "
-                        + "and mt.language = :languageCode ")
-                .setParameter("messageValue", messageValue)
+                    "select mt.message, mt.language "
+                        + "from MetaTranslation mt "
+                        + "where mt.language = :languageCode "
+                        + "and mt.key = :key ")
                 .setParameter("key", key)
                 .setParameter("languageCode", languageCode);
-        updateQuery.executeUpdate();
-        importNumber++;
+        List languageTranslationExistenceQueryResultList =
+            languageTranslationExistenceQuery.getResultList();
+        if (!languageTranslationExistenceQueryResultList.isEmpty()) {
+          Query updateQuery =
+              JPA.em()
+                  .createQuery(
+                      "update MetaTranslation mt "
+                          + "set mt.message = :messageValue "
+                          + "where mt.key = :key "
+                          + "and mt.language = :languageCode ")
+                  .setParameter("messageValue", messageValue)
+                  .setParameter("key", key)
+                  .setParameter("languageCode", languageCode);
+          updateQuery.executeUpdate();
+          importNumber++;
+        } else {
+          // this translation is newly added.
+          saveNewTranslation(key, messageValue, languageCode);
+          importNumber++;
+        }
       }
     }
     return importNumber;
+  }
+
+  @Transactional
+  protected void saveNewTranslation(String key, String messageValue, String language) {
+    MetaTranslation metaTranslation = new MetaTranslation();
+    metaTranslation.setKey(key);
+    metaTranslation.setMessage(messageValue);
+    metaTranslation.setLanguage(language);
+    metaTranslationRepository.save(metaTranslation);
   }
 }
