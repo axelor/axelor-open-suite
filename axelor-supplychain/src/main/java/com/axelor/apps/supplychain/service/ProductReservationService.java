@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.db.ProductReservation;
 
 public interface ProductReservationService {
-  void updateStatus(ProductReservation productionReservation) throws AxelorException;
+  ProductReservation updateStatus(ProductReservation productReservation) throws AxelorException;
 
-  void cancelReservation(ProductReservation productionReservation);
+  void cancelReservation(ProductReservation productReservation);
 }

@@ -82,6 +82,8 @@ import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
+import com.axelor.apps.supplychain.db.repo.ProductReservationSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
@@ -238,5 +240,6 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineTreeComputationServiceSupplychainImpl.class);
     bind(AnalyticToolSupplychainService.class).to(AnalyticToolSupplychainServiceImpl.class);
     bind(ProductReservationService.class).to(ProductReservationServiceImpl.class);
+    bind(ProductReservationRepository.class).to(ProductReservationSupplychainRepository.class);
   }
 }

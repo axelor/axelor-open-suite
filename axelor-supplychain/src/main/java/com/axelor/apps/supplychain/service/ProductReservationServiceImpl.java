@@ -36,7 +36,8 @@ public class ProductReservationServiceImpl implements ProductReservationService 
 
   @Override
   @Transactional
-  public void updateStatus(ProductReservation productReservation) throws AxelorException {
+  public ProductReservation updateStatus(ProductReservation productReservation)
+      throws AxelorException {
     if (productReservation.getTypeSelect()
         == ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION) {
       productReservation.setStatus(
@@ -81,7 +82,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
             productReservation);
       }
     }
-    productReservationRepository.save(productReservation);
+    return productReservation;
   }
 
   protected BigDecimal getRealQtyForProductReservation(ProductReservation productReservation)

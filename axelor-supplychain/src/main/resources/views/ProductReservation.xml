@@ -22,13 +22,12 @@
   </grid>
 
   <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
-    model="com.axelor.apps.supplychain.db.ProductReservation" width="large"
-    onSave="action-method-product-reservation-update-status">
+    model="com.axelor.apps.supplychain.db.ProductReservation" width="large">
     <toolbar>
       <button name="cancelBtn" title="Cancel"
         onClick="action-product-reservation-method-cancel" showIf="id" icon="fa-times"/>
     </toolbar>
-    <panel name="mainPanel" itemSpan="12">
+    <panel name="mainPanel" itemSpan="12" readonlyIf="status &gt;= 1">
       <panel name="general">
         <field name="typeSelect" required="true"/>
         <field name="status" readonly="true"/>
@@ -58,11 +57,6 @@
   <action-method name="action-product-reservation-method-cancel">
     <call class="com.axelor.apps.supplychain.web.ProductReservationController"
       method="cancelReservation"/>
-  </action-method>
-
-  <action-method name="action-method-product-reservation-update-status">
-    <call class="com.axelor.apps.supplychain.web.ProductReservationController"
-      method="updateStatus"/>
   </action-method>
 
 </object-views>
