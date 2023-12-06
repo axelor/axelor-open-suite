@@ -6,15 +6,30 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Address">
+<!--    <string name="addressL6" title="Zip/City"/>-->
 
-    <string name="addressL2" title="Recipient details"/>
-    <string name="addressL3" title="Address precisions"/>
-    <string name="addressL4" title="N° and Street label" required="true"/>
-    <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
-    <string name="addressL6" title="Zip/City"/>
-    <many-to-one name="addressL7Country" ref="com.axelor.apps.base.db.Country"
-      title="Country"/>
+    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <string name="department" title="Department"/>
+    <string name="subDepartment" title="Sub Department"/>
+
+    <string name="streetName" title="Street" required="true"/>
+    <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
+    <string name="buildingNumber" title="Building number"/>
+    <string name="buildingName" title="Building"/>
+    <string name="floor" title="Floor"/>
+    <string name="postBox" title="Post box"/>
+    <string name="room" title="Room"/>
+
+    <string name="townName" title="Town"/>
     <many-to-one name="city" ref="City" title="City"/>
+
+    <string name="zip" title="Zip code"/>
+    <string name="townLocationName" title="Town Location"/>
+    <string name="districtName" title="District"/>
+
+    <string name="countrySubDivision" title="Country sub division"/>
+    <string name="formattedFullName" title="Address" readonly="true"/>
+
     <decimal name="latit" title="Latitude" precision="38" scale="18" nullable="true"/>
     <decimal name="longit" title="Longitude" precision="38" scale="18" nullable="true"/>
     <boolean name="isValidLatLong" title="Valid Latitude Longitude" default="true"/>
@@ -24,13 +39,9 @@
       readonly="true"/>
     <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry"
       title="QAS Proposal lists" mappedBy="address"/>
-    <string name="zip" title="Zip code"/>
-    <string name="streetNumber" title="Street number"/>
-    <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
 
     <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6"
       title="Address"/>
-    <string name="formattedFullName" title="Address"/>
   </entity>
 
 </domain-models>
