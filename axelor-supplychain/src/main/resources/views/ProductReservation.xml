@@ -9,8 +9,10 @@
     <toolbar>
       <button name="cancelBtn" title="Cancel"
         onClick="action-product-reservation-method-cancel" showIf="id" icon="fa-times"/>
+      <button name="realiseBtn" title="Realise"
+        onClick="action-product-reservation-method-realise" showIf="id" icon="fa-play"/>
     </toolbar>
-    <field name="typeSelect"/>
+    <field name="productReservationTypeSelect"/>
     <field name="product"/>
     <field name="qty"/>
     <field name="reservationTypeSelect"/>
@@ -21,29 +23,53 @@
     <field name="status"/>
   </grid>
 
+  <grid name="product-reservation-editable-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" canDelete="false"
+    groupBy="productReservationTypeSelect" editable="true"
+    onNew="product-reservation-editable-grid-record-on-new">
+    <field name="productReservationTypeSelect" required="true" selection-in="[1,2]"/>
+    <field name="product" readonly="true"/>
+    <field name="qty" required="true" title="Quantity"
+      readonlyIf="!productReservationTypeSelect"/>
+    <field name="reservationTypeSelect" readonly="true"/>
+    <field name="stockLocation"
+      readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
+      requiredIf="productReservationTypeSelect == 2"/>
+    <field name="trackingNumber"
+      readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
+      requiredIf="productReservationTypeSelect == 2 &amp;&amp; product.trackingNumberConfiguration"/>
+    <field name="$availableQty" title="Available Qty." type="decimal" readonly="true"/>
+    <field name="status" readonly="true"/>
+    <field name="product.trackingNumberConfiguration" hidden="true"/>
+  </grid>
+
   <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
-    model="com.axelor.apps.supplychain.db.ProductReservation" width="large"
-    onSave="action-method-product-reservation-update-status">
+    model="com.axelor.apps.supplychain.db.ProductReservation" width="large">
     <toolbar>
       <button name="cancelBtn" title="Cancel"
         onClick="action-product-reservation-method-cancel" showIf="id" icon="fa-times"/>
+      <button name="realiseBtn" title="Realise"
+        onClick="action-product-reservation-method-realise" showIf="id" icon="fa-play"/>
     </toolbar>
-    <panel name="mainPanel" itemSpan="12">
+    <panel name="mainPanel" itemSpan="12" readonlyIf="status &gt;= 1">
       <panel name="general">
-        <field name="typeSelect" required="true"/>
+        <field name="productReservationTypeSelect" required="true"/>
         <field name="status" readonly="true"/>
-        <field name="product" showIf="typeSelect" required="true"
-          domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"/>
-        <field name="qty" showIf="typeSelect" required="true" validIf="qty &gt; 0"/>
-        <field name="description" colSpan="12" showIf="typeSelect" widget="html" large="true"/>
+        <field name="product" showIf="productReservationTypeSelect" required="true"
+          domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged = true"/>
+        <field name="qty" showIf="productReservationTypeSelect" required="true"
+          validIf="qty &gt; 0"/>
+        <field name="description" colSpan="12" showIf="productReservationTypeSelect"
+          widget="html" large="true"/>
       </panel>
-      <panel name="reservation" showIf="typeSelect == 1 &amp;&amp; product">
-        <field name="priorityReservationDateTime" colSpan="6" requiredIf="typeSelect == 1"
-          widget="date-time"/>
-        <field name="reservationTypeSelect" colSpan="6" requiredIf="typeSelect == 1"/>
+      <panel name="reservation" showIf="productReservationTypeSelect == 1 &amp;&amp; product">
+        <field name="priorityReservationDateTime" colSpan="6"
+          requiredIf="productReservationTypeSelect == 1" widget="date-time"/>
+        <field name="reservationTypeSelect" colSpan="6"
+          requiredIf="productReservationTypeSelect == 1"/>
       </panel>
-      <panel name="allocation" showIf="typeSelect == 2 &amp;&amp; product">
-        <field name="stockLocation" requiredIf="typeSelect == 2"/>
+      <panel name="allocation" showIf="productReservationTypeSelect == 2 &amp;&amp; product">
+        <field name="stockLocation" requiredIf="productReservationTypeSelect == 2"/>
         <field name="trackingNumber" title="Tracking number"
           showIf="product.trackingNumberConfiguration != null"
           requiredIf="product.trackingNumberConfiguration != null"/>
@@ -60,9 +86,16 @@
       method="cancelReservation"/>
   </action-method>
 
-  <action-method name="action-method-product-reservation-update-status">
+  <action-method name="action-product-reservation-method-realise">
     <call class="com.axelor.apps.supplychain.web.ProductReservationController"
-      method="updateStatus"/>
+      method="realiseReservation"/>
   </action-method>
+
+  <action-record name="product-reservation-editable-grid-record-on-new"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="reservationTypeSelect" expr="eval: 1"
+      if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+    <field name="product" expr="eval: __parent__?.product"/>
+  </action-record>
 
 </object-views>
