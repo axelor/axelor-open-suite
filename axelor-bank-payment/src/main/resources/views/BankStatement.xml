@@ -12,10 +12,6 @@
         onClick="action-bank-statement-method-delete-multiple-statement"/>
     </toolbar>
     <field name="id" hidden="false" width="120"/>
-    <field name="ebicsPartner.ebicsBank" width="250"
-      if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="ebicsPartner" width="150"
-      if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
     <field name="bankStatementFileFormat"/>
     <field name="fromDate" width="120"/>
     <field name="toDate" width="120"/>
@@ -42,10 +38,6 @@
           <field name="bankStatementFile" widget="binary-link" canNew="true"/>
           <field name="fromDate"/>
           <field name="toDate"/>
-          <field name="ebicsPartner"
-            if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
-          <field name="ebicsPartner.ebicsBank"
-            if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
           <field name="bankStatementFileFormat"/>
           <field name="bankStatementFileFormat.statementFileFormatSelect" hidden="true"/>
         </panel>
@@ -144,15 +136,5 @@
     <error message="Unknown format for file import process"
       if="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
   </action-validate>
-
-  <!-- SEARCH FILTERS -->
-
-  <search-filters name="bank-statement-filters"
-    model="com.axelor.apps.bankpayment.db.BankStatement" title="Bank Statement filters">
-    <field name="ebicsPartner.ebicsBank" hidden="true"
-      if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
-    <field name="ebicsPartner" hidden="true"
-      if="eval: !__config__.app.getApp('bank-payment').enableEbicsModule"/>
-  </search-filters>
 
 </object-views>
