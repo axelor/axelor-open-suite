@@ -140,48 +140,10 @@
     <option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
   </selection>
 
-  <selection name="bankpayment.ebics.bank.bank.statement.period.mode.select">
-    <option value="1">Automatic</option>
-    <option value="2">Period</option>
-  </selection>
 
-  <selection name="bankpayment.ebics.partner.ebics.type.select">
-    <option value="0">Ebics T</option>
-    <option value="1">Ebics TS</option>
-  </selection>
 
-  <selection name="bankpayment.ebics.user.user.type.select">
-    <option value="0">Transport</option>
-    <option value="1">Signatory</option>
-  </selection>
 
-  <selection name="bankpayment.account.ebics.user.status.select">
-    <option value="0">Waiting for the certificate configuration</option>
-    <option value="1">Waiting for the sending of the signature certificate to the bank</option>
-    <option value="2">Waiting for the sending of the authentication and encryption certificates</option>
-    <option value="3">Active connection</option>
-    <option value="4">Certificates should be renewed</option>
-  </selection>
 
-  <selection name="bankpayment.ebics.certificate.type.select">
-    <option value="ssl">SSL</option>
-    <option value="encryption">Encryption</option>
-    <option value="authentication">Authentication</option>
-    <option value="signature">Signature</option>
-  </selection>
-
-  <selection name="bankpayment.ebics.bank.protocol.select">
-    <option value="ssl">SSL</option>
-    <option value="tls">TLS</option>
-  </selection>
-
-  <selection name="bankpayment.ebics.bank.certificate.validity.period.select">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </selection>
 
   <selection name="iaccounting.batch.action.select"
     id="bankpayment.iaccounting.batch.action.select">

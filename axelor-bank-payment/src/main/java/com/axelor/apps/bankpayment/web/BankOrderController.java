@@ -104,16 +104,6 @@ public class BankOrderController {
     }
   }
 
-  public void fillSignatoryEbicsUser(ActionRequest request, ActionResponse response) {
-    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    if (bankOrder.getSenderBankDetails() != null) {
-      /*EbicsUser ebicsUser =
-          Beans.get(BankOrderService.class)
-              .getDefaultEbicsUserFromBankDetails(bankOrder.getSenderBankDetails());
-      bankOrder.setSignatoryEbicsUser(ebicsUser);*/
-      response.setValues(bankOrder);
-    }
-  }
 
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);

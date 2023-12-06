@@ -63,36 +63,6 @@
     <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
-  <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders"
-    model="com.axelor.apps.bankpayment.db.BankOrder" canNew="false">
-    <toolbar>
-      <button name="mergeBtn" title="Merge bank orders"
-        onClick="action-bank-order-method-merge"
-        prompt="Are you sure you want merge the selected bank orders ?"/>
-    </toolbar>
-    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
-    <hilite
-      if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
-      color="danger"/>
-    <hilite
-      if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &gt;= 2"
-      color="warning"/>
-    <field name="bankOrderSeq" width="120"/>
-    <field name="orderTypeSelect"/>
-    <field name="partnerTypeSelect"/>
-    <field name="bankOrderDate"/>
-    <field name="confirmationDateTime"/>
-    <field name="senderCompany" canEdit="false"/>
-    <field name="bankOrderTotalAmount"/>
-    <field name="bankOrderCurrency"/>
-    <field name="senderReference"/>
-    <field name="nbOfLines"/>
-    <field name="senderBankDetails.bank.bankName"/>
-    <field name="signatoryEbicsUser"/>
-    <field name="statusSelect"/>
-    <field name="hasBeenSentToBank" hidden="true"/>
-  </grid>
-
   <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <toolbar>
@@ -203,17 +173,7 @@
       <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">
         <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
           form-view="user-form" grid-view="user-grid" hidden="true"/>
-        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
-        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false"
-          hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
-          <viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
-		        	<![CDATA[
-		        		<>
-		        			{signatoryEbicsUser?.ebicsPartner?.testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
-		        		</>
-		        	]]>
-          </viewer>
-        </field>
+
         <field name="testMode" hidden="true"/>
         <field name="$viewerTestMode" showTitle="false" showIf="testMode">
           <viewer depends="testMode">
@@ -385,10 +345,7 @@
     </panel-mail>
   </form>
 
-  <form title="Bank Order" model="com.axelor.apps.bankpayment.db.BankOrder"
-    name="bank-order-awaiting-signature-form" canNew="false">
-    <panel-include view="bank-order-form"/>
-  </form>
+
 
   <form name="bank-order-send-form" title="Send a bank order"
     model="com.axelor.apps.bankpayment.db.BankOrder" onNew="action-bank-order-group-onnew">
@@ -443,17 +400,7 @@
       <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">
         <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
           form-view="user-form" grid-view="user-grid" hidden="true"/>
-        <field name="signatoryEbicsUser.ebicsPartner.testMode" hidden="true"/>
-        <field name="$viewerPartnerTestMode" readonly="true" showTitle="false"
-          hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
-          <viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
-					<![CDATA[
-		        	<>
-		        		{signatoryEbicsUser?.ebicsPartner?.testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
-		        	</>
-					]]>
-          </viewer>
-        </field>
+
         <field name="testMode" hidden="true"/>
         <field name="$viewerTestMode" showTitle="false" showIf="testMode">
           <viewer depends="testMode">
@@ -510,12 +457,10 @@
     <action name="action-bank-order-group-sender-company-change"/>
     <action name="action-bank-order-group-sender-bank-details-onchange"/>
     <action name="action-bank-order-method-fill-bankdetails"/>
-    <action name="action-bank-order-record-fill-signatory-user"/>
     <action name="action-bank-order-attrs-set-accounting-trigger-select-default-null"/>
   </action-group>
 
   <action-group name="action-bank-order-group-sender-bank-details-onchange">
-    <action name="action-bank-order-method-fill-signatory-ebics-user"/>
     <action name="action-bank-order-record-update-bankorder-currency"/>
   </action-group>
 
@@ -714,10 +659,7 @@
     <field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 2 || orderTypeSelect == 4"/>
   </action-record>
 
-  <action-record name="action-bank-order-record-fill-signatory-user"
-    model="com.axelor.apps.bankpayment.db.BankOrder">
-    <field name="signatoryUser" expr="eval: signatoryEbicsUser?.associatedUser"/>
-  </action-record>
+
 
   <action-record name="action-bank-order-record-currency-onchange"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -752,11 +694,7 @@
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="merge"/>
   </action-method>
 
-  <action-method name="action-bank-order-method-fill-signatory-ebics-user"
-    model="com.axelor.apps.bankpayment.db.BankOrder">
-    <call class="com.axelor.apps.bankpayment.web.BankOrderController"
-      method="fillSignatoryEbicsUser"/>
-  </action-method>
+
 
   <action-method name="action-bank-order-method-bank-details-domain">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController"
