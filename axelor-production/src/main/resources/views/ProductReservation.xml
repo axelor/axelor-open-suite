@@ -29,4 +29,12 @@
 
   </form>
 
+  <action-record id="production-product-reservation-editable-grid-record-on-new"
+    name="product-reservation-editable-grid-record-on-new"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="reservationTypeSelect" expr="eval: 1"
+      if="_parent != null &amp;&amp; (_parent._model == 'com.axelor.apps.sale.db.SaleOrderLine' || _parent._model == 'com.axelor.apps.production.db.ManufOrder')"/>
+    <field name="product" expr="eval: __parent__?.product"/>
+  </action-record>
+
 </object-views>
