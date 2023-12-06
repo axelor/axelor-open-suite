@@ -67,8 +67,7 @@
     <hilite
       if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"
       color="danger"/>
-    <hilite color="orange"
-      if="__config__.app.isApp('production') &amp;&amp; toStockLocation.isOutsourcingLocation"/>
+    <hilite color="orange" if="$get('toStockLocation.isOutsourcingLocation')"/>
     <field name="toStockLocation.isOutsourcingLocation" hidden="true"/>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="pickingIsEdited"/>
