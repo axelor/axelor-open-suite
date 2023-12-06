@@ -58,12 +58,10 @@
       width="100px" readonlyIf="lineTypeSelect == 1"/>
     <field name="wapPrice" x-scale="2" hidden="true"/>
     <field name="trackingNumber"
-      canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+      canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
       form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2"/>
-    <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
-    <field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
     <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
     <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
       hidden="true"/>
@@ -216,13 +214,16 @@
       <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
       <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
       <field name="trackingNumber"
-        canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
         onChange="action-stock-move-line-record-product"
         form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"/>
-      <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
-      <field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged"
+        hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
+        hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
@@ -455,13 +456,16 @@
       <field name="totalNetMass" readonly="true" showIf="totalNetMass" colSpan="3"/>
       <field name="stockMove.company.stockConfig.customsMassUnit" colSpan="3"/>
       <field name="trackingNumber"
-        canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
         onChange="action-stock-move-line-record-product" form-view="tracking-number-form"
         grid-view="tracking-number-grid"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"/>
-      <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
-      <field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged"
+        hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
+        hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="description" colSpan="12" widget="html"/>
       <field name="regime"/>
