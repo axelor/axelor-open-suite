@@ -38,8 +38,8 @@
     <field name="percentage"/>
     <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="amount" x-scale="currency.numberOfDecimals"/>
-    <field name="currency" hidden="false"/>
-    <field name="currency.numberOfDecimals" hidden="false"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="date"/>
     <field name="project" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
