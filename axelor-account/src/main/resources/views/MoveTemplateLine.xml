@@ -32,7 +32,9 @@
   </grid>
 
   <form name="move-template-line-in-amount-form" title="Move template line"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
+    model="com.axelor.apps.account.db.MoveTemplateLine"
+    onNew="action-move-template-attrs-set-tax-attrs"
+    onLoad="action-move-template-attrs-set-tax-attrs">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"
@@ -45,7 +47,7 @@
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
       <field name="account" canEdit="false"
         onSelect="action-move-template-line-set-account-domain" grid-view="account-grid"
-        form-view="account-form" onChange="action-move-template-line-record-account-onchange"/>
+        form-view="account-form" onChange="action-move-template-line-group-account-onchange"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
       <field name="analyticDistributionTemplate"
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
@@ -56,7 +58,9 @@
   </form>
 
   <form name="move-template-line-in-percentage-form" title="Move template line"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
+    model="com.axelor.apps.account.db.MoveTemplateLine"
+    onNew="action-move-template-attrs-set-tax-attrs"
+    onLoad="action-move-template-attrs-set-tax-attrs">
     <panel name="mainPanel">
       <field name="name"/>
       <field name="debitCreditSelect" onChange="action-move-template-line-get-account"
@@ -68,7 +72,7 @@
         form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
       <field name="account" canEdit="false"
         onSelect="action-move-template-line-set-account-domain" grid-view="account-grid"
-        form-view="account-form" onChange="action-move-template-line-record-account-onchange"/>
+        form-view="account-form" onChange="action-move-template-line-group-account-onchange"/>
       <field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
       <field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
@@ -79,6 +83,15 @@
       <field name="isValid" readonly="true" hidden="true"/>
     </panel>
   </form>
+
+  <!-- ACTION GROUP -->
+
+  <action-group name="action-move-template-line-group-account-onchange">
+    <action name="action-move-template-line-record-account-onchange"/>
+    <action name="action-move-template-attrs-set-tax-attrs"/>
+  </action-group>
+
+  <!-- ACTION RECORD -->
 
   <action-record name="action-move-template-line-record-update-need-to-check-validity"
     model="com.axelor.apps.account.db.MoveTemplateLine">
@@ -101,15 +114,26 @@
       if="product != null &amp;&amp; __parent__?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
   </action-record>
 
+  <action-record name="action-template-move-line-set-percent"
+    model="com.axelor.apps.account.db.MoveTemplateLine">
+    <field name="percentage" expr="eval: 0"/>
+  </action-record>
+
+  <action-record name="action-move-template-line-record-account-onchange"
+    model="com.axelor.apps.account.db.MoveTemplateLine">
+    <field name="tax" expr="eval: account?.defaultTax"/>
+    <field name="analyticDistributionTemplate"
+      expr="eval: account?.analyticDistributionTemplate "/>
+  </action-record>
+
+  <!-- ACTION VALIDATE -->
+
   <action-validate name="action-template-move-line-check-percent">
     <error message="Please input values between 1 to 100"
       action="action-template-move-line-set-percent" if="percentage &lt; 0 || percentage &gt; 100"/>
   </action-validate>
 
-  <action-record name="action-template-move-line-set-percent"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
-    <field name="percentage" expr="eval: 0"/>
-  </action-record>
+  <!-- ACTION ATTRS -->
 
   <action-attrs name="action-move-template-line-set-account-domain">
     <attribute name="domain" for="account"
@@ -120,12 +144,13 @@
       if="moveTemplate != null"/>
   </action-attrs>
 
-  <action-record name="action-move-template-line-record-account-onchange"
-    model="com.axelor.apps.account.db.MoveTemplateLine">
-    <field name="tax" expr="eval: account?.defaultTax"/>
-    <field name="analyticDistributionTemplate"
-      expr="eval: account?.analyticDistributionTemplate "/>
-  </action-record>
+  <action-attrs name="action-move-template-attrs-set-tax-attrs">
+    <attribute for="tax" name="hidden" expr="eval: !account?.isTaxAuthorizedOnMoveLine"/>
+    <attribute for="tax" name="required"
+      expr="eval: account &amp;&amp; account.isTaxAuthorizedOnMoveLine &amp;&amp; account.isTaxRequiredOnMoveLine"/>
+  </action-attrs>
+
+  <!-- ACTION METHOD -->
 
   <action-method name="action-method-move-template-line-set-partner-domain">
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="filterPartner"/>
