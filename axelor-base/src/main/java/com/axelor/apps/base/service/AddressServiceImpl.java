@@ -35,6 +35,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
@@ -399,6 +400,7 @@ public class AddressServiceImpl implements AddressService {
         setFormattedFullName(address);
       } catch (Exception e) {
         exceptionCount++;
+        TraceBackService.trace(e);
       }
     }
 
