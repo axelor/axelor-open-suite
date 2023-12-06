@@ -4,9 +4,15 @@ import com.axelor.apps.base.service.CountryService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.lang.invoke.MethodHandles;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CountryController {
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   public void recomputeAllAddress(ActionRequest request, ActionResponse response) {
     CountryService countryService = Beans.get(CountryService.class);
     Object ids = request.getContext().get("_ids");
@@ -14,12 +20,16 @@ public class CountryController {
     if (ids == null) {
       response.setInfo("Needs to select at least one country");
     } else {
-
-      int updatedRecordCount = 0;
       List<Long> countryIdsList = (List<Long>) ids;
-      updatedRecordCount = countryService.recomputeAllAddress(countryIdsList);
+      Pair<Integer, Integer> pair = countryService.recomputeAllAddress(countryIdsList);
 
-      response.setInfo(updatedRecordCount + " records updated");
+      int updatedRecordCount = pair.getLeft();
+      int exceptionCount = pair.getRight();
+      response.setInfo(
+          updatedRecordCount
+              + " records updated and "
+              + exceptionCount
+              + " records generated exceptions!");
     }
   }
 }

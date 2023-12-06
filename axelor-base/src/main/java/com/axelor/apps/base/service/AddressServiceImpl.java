@@ -31,9 +31,11 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AddressTemplateRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
@@ -84,6 +86,7 @@ public class AddressServiceImpl implements AddressService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
   private static final char TEMPLATE_DELIMITER = '$';
   private static final Pattern ZIP_CODE_PATTERN =
       Pattern.compile(
@@ -277,32 +280,10 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
-    if (address == null || address.getCountry() == null) {
-      StringBuilder addressString = new StringBuilder();
-      if (address == null) {
-        return "";
-      }
-
-      if (StringUtils.notBlank(address.getRoom())) {
-        addressString.append(address.getRoom()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getFloor())) {
-        addressString.append(address.getFloor()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getStreetName())) {
-        addressString.append(address.getStreetName()).append(System.lineSeparator());
-      }
-      if (StringUtils.notBlank(address.getPostBox())) {
-        addressString.append(address.getPostBox()).append(System.lineSeparator());
-      }
-
-      if (address.getCountry() != null) {
-        addressString.append(System.lineSeparator()).append(address.getCountry().getName());
-      }
-
-      return addressString.toString();
+    try {
+      setFormattedFullName(address);
+    } catch (AxelorException e) {
     }
-
     return address.getFormattedFullName();
   }
 
@@ -352,7 +333,7 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void setFormattedFullName(Address address) {
+  public void setFormattedFullName(Address address) throws AxelorException {
     AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
     String content = addressTemplate.getTemplateStr();
 
@@ -365,50 +346,60 @@ public class AddressServiceImpl implements AddressService {
       }
 
       Map<String, Object> templatesContext = Maps.newHashMap();
-
       Class<?> klass = EntityHelper.getEntityClass(address);
       Context context = new Context(Mapper.toMap(address), klass);
-
       templatesContext.put(klass.getSimpleName(), context.asType(klass));
-
       String fullFormattedString = templates.fromText(content).make(templatesContext).render();
-      address.setFormattedFullName(fullFormattedString);
-    } catch (Exception e) {
 
+      fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
+
+      address.setFormattedFullName(fullFormattedString);
+
+    } catch (Exception e) {
+      // Catch any exception that occurs during the compute
+      String errorMessage = I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR);
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate.getName());
     }
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public int computeFormattedAddressForCountries(List<Long> countryIds) {
+  public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
     int totalAddressFormatted = 0;
 
     Query<Address> query = addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
 
-    try {
-      int offset = 0;
-      int countExceptions = 0;
-      List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
+    int offset = 0;
+    int countExceptions = 0;
+    List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
 
-      while (!addressList.isEmpty()) {
+    while (!addressList.isEmpty()) {
 
-        totalAddressFormatted = totalAddressFormatted + addressList.size();
-        generateFormattedAddressForAddress(addressList);
+      int currentCountException = generateFormattedAddressForAddress(addressList);
+      countExceptions += currentCountException;
 
-        JPA.clear();
+      totalAddressFormatted += (addressList.size() - countExceptions);
 
-        offset = addressList.size();
-        addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-      }
+      JPA.clear();
 
-    } catch (Exception e) {
-
+      offset += addressList.size();
+      addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
     }
-
-    return totalAddressFormatted;
+    return Pair.of(totalAddressFormatted, countExceptions);
   }
 
-  private void generateFormattedAddressForAddress(List<Address> addressList) {
-    addressList.forEach(this::setFormattedFullName);
+  @Transactional(rollbackOn = {Exception.class})
+  protected int generateFormattedAddressForAddress(List<Address> addressList) {
+    int exceptionCount = 0;
+
+    for (Address address : addressList) {
+      try {
+        addressRepo.save(address);
+      } catch (Exception e) {
+        exceptionCount++;
+        TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
+      }
+    }
+    return exceptionCount;
   }
 }

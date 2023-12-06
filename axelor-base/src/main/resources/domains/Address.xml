@@ -28,7 +28,6 @@
     <string name="districtName" title="District"/>
 
     <string name="countrySubDivision" title="Country sub division"/>
-    <string name="formattedFullName" title="Address" readonly="true"/>
 
     <decimal name="latit" title="Latitude" precision="38" scale="18" nullable="true"/>
     <decimal name="longit" title="Longitude" precision="38" scale="18" nullable="true"/>
@@ -42,6 +41,7 @@
 
     <string name="fullName" namecolumn="true"
       search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
+    <string name="formattedFullName" multiline="true" large="true" title="Address"/>
   </entity>
 
 </domain-models>
