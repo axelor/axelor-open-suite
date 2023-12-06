@@ -27,7 +27,7 @@ public class CountryController {
       int exceptionCount = pair.getRight();
       response.setInfo(
           updatedRecordCount
-              + " records updated\n"
+              + " records updated and "
               + exceptionCount
               + " records generated exceptions!");
     }

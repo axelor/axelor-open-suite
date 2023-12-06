@@ -283,10 +283,10 @@
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
 
-  <menuitem title="Address Template" name="referential-conf-address-template"
+  <menuitem title="Address templates" name="referential-conf-address-template"
     parent="referential-conf" action="referential.conf.address.templates" order="650"/>
 
-  <action-view name="referential.conf.address.templates" title="Address Template"
+  <action-view name="referential.conf.address.templates" title="Address templates"
     model="com.axelor.apps.base.db.AddressTemplate">
     <view type="grid" name="address-template-grid"/>
     <view type="form" name="address-template-form"/>

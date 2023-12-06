@@ -627,5 +627,5 @@ public final class BaseExceptionMessage {
       "An error occurred while generating the sequence. Please check the configuration." /*)*/;
 
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
-      "An error occurred while generating the address template. Please check the address template." /*)*/;
+      "An error occurred while generating the address template: '%s'" /*)*/;
 }

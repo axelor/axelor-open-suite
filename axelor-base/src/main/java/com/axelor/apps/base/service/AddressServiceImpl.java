@@ -87,6 +87,7 @@ public class AddressServiceImpl implements AddressService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected final String EMPTY_LINE_REMOVAL_REGEX ="(?m)^\\s*$(\\n|\\r\\n)";
   private static final char TEMPLATE_DELIMITER = '$';
   private static final Pattern ZIP_CODE_PATTERN =
       Pattern.compile(
@@ -351,25 +352,25 @@ public class AddressServiceImpl implements AddressService {
       }
 
       Map<String, Object> templatesContext = Maps.newHashMap();
-
       Class<?> klass = EntityHelper.getEntityClass(address);
       Context context = new Context(Mapper.toMap(address), klass);
-
       templatesContext.put(klass.getSimpleName(), context.asType(klass));
-
       String fullFormattedString = templates.fromText(content).make(templatesContext).render();
+
+      fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
+
       address.setFormattedFullName(fullFormattedString);
+
 
     } catch (Exception e) {
       // Catch any exception that occurs during the compute
       String errorMessage = I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR);
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate);
+          TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate.getName());
     }
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
     int totalAddressFormatted = 0;
 
@@ -381,8 +382,10 @@ public class AddressServiceImpl implements AddressService {
 
     while (!addressList.isEmpty()) {
 
-      totalAddressFormatted = totalAddressFormatted + addressList.size();
-      countExceptions += generateFormattedAddressForAddress(addressList);
+      int currentCountException = generateFormattedAddressForAddress(addressList);
+      countExceptions += currentCountException;
+
+      totalAddressFormatted += (addressList.size() - countExceptions);
 
       JPA.clear();
 
@@ -392,12 +395,13 @@ public class AddressServiceImpl implements AddressService {
     return Pair.of(totalAddressFormatted, countExceptions);
   }
 
-  private int generateFormattedAddressForAddress(List<Address> addressList) {
+  @Transactional(rollbackOn = {Exception.class})
+  protected int generateFormattedAddressForAddress(List<Address> addressList) {
     int exceptionCount = 0;
 
     for (Address address : addressList) {
       try {
-        setFormattedFullName(address);
+        addressRepo.save(address);
       } catch (Exception e) {
         exceptionCount++;
         TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
