@@ -17,7 +17,6 @@
     <field name="totalFirmGap"/>
     <field name="statusSelect"/>
     <field name="budgetManager" width="150"/>
-    <field name="project" if="__config__.app.isApp('project')"/>
     <field name="versionNumber" width="150"/>
   </grid>
 
@@ -442,7 +441,6 @@
     <field name="sourceSelect"
       expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM"
       if="(_typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET) || (__parent__ &amp;&amp; (__parent__.typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET))"/>
-    <field name="project" expr="eval: __parent__?.project"/>
     <field name="startDate" expr="eval: __parent__?.startDate"/>
     <field name="endDate" expr="eval: __parent__?.endDate"/>
     <field name="companyDepartment"

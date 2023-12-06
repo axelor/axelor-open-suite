@@ -15,7 +15,6 @@
     <date name="startDate" title="Start Date"/>
     <date name="endDate" title="End Date"/>
 
-    <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
     <many-to-one name="parentBudgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
@@ -72,8 +71,6 @@
 
     <string name="commentString" title="Commentaires" large="true" multiline="true"/>
     <string name="versionNumber" title="Version Number" default="1"/>
-    <date name="projectStartDate" title="Project start date"/>
-    <date name="projectEndDate" title="Project end Date"/>
     <date name="fromDate" title="From date"/>
     <date name="toDate" title="To date"/>
 
