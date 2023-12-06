@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="control-entry-grid" title="Control entries"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <field name="statusSelect"/>
+    <field name="controlEntrySeq"/>
+    <field name="entryDateTime"/>
+    <field name="inspector"/>
+    <field name="sampleCount"/>
+    <field name="controlPlan"/>
+  </grid>
+
+  <form name="control-entry-form" title="Control entry"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <panel name="mainPanel" colSpan="12">
+      <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"/>
+      <field name="controlEntrySeq" colSpan="6"/>
+      <field name="entryDateTime" colSpan="6"/>
+      <field name="inspector" colSpan="6"/>
+      <field name="sampleCount" colSpan="6"/>
+      <field name="controlPlan" colSpan="6"/>
+    </panel>
+    <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
+      colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"/>
+    <panel name="actionPanel" showTitle="false" sidebar="true">
+      <button name="createSamplesBtn"
+        onClick="action-method-quality-control-entry-create-samples"
+        title="Create control entry samples"
+        showIf="statusSelect == 1"/>
+      <button name="finishBtn" onClick="action-record-quality-control-finish" title="Finish"
+        showIf="statusSelect == 2"/>
+      <button name="cancelBtn" onClick="action-record-quality-control-cancel" title="Cancel"
+        showIf="statusSelect == 2"/>
+    </panel>
+  </form>
+</object-views>

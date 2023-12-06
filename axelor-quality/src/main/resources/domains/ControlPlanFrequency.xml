@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlPlanFrequency" cacheable="true">
+    <string name="name" translatable="true">
+      <![CDATA[
+    	String fullName = "";
+    	if(sampleQty != null && sampleFrequency != null && sampleQtyUnit != null && sampleFrequencyUnit != null){
+    		return sampleQty.toString() + " (" + sampleQtyUnit.getName() + ") " + "each" + " " + sampleFrequency.toString() + " (" + sampleFrequencyUnit.getName() + ") ";
+    	}
+    	return "";
+    ]]>
+    </string>
+    <integer name="sampleTypeSelect" selection="quality.control.plan.frequency.type.select"
+      title="Sample type"/>
+    <decimal name="sampleQty" title="Sample quantity" required="true"/>
+    <decimal name="sampleFrequency" title="Sample frequency" required="true"/>
+    <many-to-one name="sampleQtyUnit" ref="com.axelor.apps.base.db.Unit" title="Unit"
+      required="true"/>
+    <many-to-one name="sampleFrequencyUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Unit" required="true"/>
+
+    <extra-code>
+			<![CDATA[
+				public static final int TYPE_SAMPLE = 1;
+				public static final int TYPE_SYSTEMATIC = 2;
+			]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

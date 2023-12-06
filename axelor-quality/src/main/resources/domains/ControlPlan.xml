@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlPlan" cacheable="true">
+    <string name="code" title="Code" required="true"/>
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="controlPlanFrequency"
+      ref="com.axelor.apps.quality.db.ControlPlanFrequency" title="Frequency"/>
+    <string large="true" name="description" title="Description"/>
+    <many-to-many name="controlPlanLinesSet"
+      ref="com.axelor.apps.quality.db.ControlPlanLine" title="Control plan lines"/>
+    <integer name="statusSelect" selection="quality.control.plan.status.select"
+      title="Status"/>
+
+    <extra-code>
+			<![CDATA[
+				public static final int DRAFT_STATUS = 1;
+				public static final int VALIDATED_STATUS = 2;
+				public static final int APPLICABLE_STATUS = 3;
+                public static final int OBSOLETE_STATUS = 4;
+			]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

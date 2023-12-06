@@ -26,6 +26,42 @@
     <option order="5" value="6">Finished</option>
   </selection>
 
+  <selection name="quality.control.plan.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Validated</option>
+    <option value="3">Applicable</option>
+    <option value="4">Obsolete</option>
+  </selection>
+
+  <selection name="quality.control.entry.status.select">
+    <option value="1">Draft</option>
+    <option value="2">In progress</option>
+    <option value="3">Finished</option>
+    <option value="4">Canceled</option>
+  </selection>
+
+  <selection name="quality.control.plan.frequency.type.select">
+    <option value="1">Sample</option>
+    <option value="2">Systematic</option>
+  </selection>
+
+  <selection name="quality.control.entry.sample.result.select">
+    <option value="1">Not controlled</option>
+    <option value="2">Compliant</option>
+    <option value="3">Not compliant</option>
+  </selection>
+
+  <selection name="quality.control.entry.sample.line.result.select">
+    <option value="2">Compliant</option>
+    <option value="3">Not compliant</option>
+  </selection>
+
+  <selection name="quality.control.plan.line.type.select">
+    <option value="1">Dimensional</option>
+    <option value="2">Attribute</option>
+  </selection>
+
+
   <selection name="quality.control.points.status.select">
     <option value="1">On hold</option>
     <option value="2">Done</option>

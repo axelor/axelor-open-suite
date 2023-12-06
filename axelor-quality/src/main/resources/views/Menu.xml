@@ -9,6 +9,24 @@
   <menuitem name="quality-controls-root" parent="menu-quality-root"
     title="Quality controls" order="100"/>
 
+  <menuitem name="quality-control-entries" parent="menu-quality-root"
+    title="Control entries" action="quality.control.entries.view" order="80"/>
+
+  <action-view name="quality.control.entries.view" title="Control entries"
+    model="com.axelor.apps.quality.db.ControlEntry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+  </action-view>
+
+  <menuitem name="quality-control-plans" parent="menu-quality-root" title="Control plans"
+    action="quality.control.plans.view" order="90"/>
+
+  <action-view name="quality.control.plans.view" title="Control plans"
+    model="com.axelor.apps.quality.db.ControlPlan">
+    <view type="grid" name="control-plan-grid"/>
+    <view type="form" name="control-plan-form"/>
+  </action-view>
+
   <menuitem name="quality-processes" parent="quality-controls-root"
     title="Quality processes" action="quality.processes" order="100"/>
 
@@ -17,6 +35,7 @@
     <view type="grid" name="quality-process-grid"/>
     <view type="form" name="quality-process-form"/>
   </action-view>
+
 
   <menuitem name="quality-controls" parent="quality-controls-root" title="Quality controls"
     action="quality.controls" order="200"/>
@@ -96,6 +115,26 @@
 
   <menuitem name="quality-configurations" parent="menu-quality-root" title="Configuration"
     icon="fa-cog" order="600"/>
+
+  <menuitem name="quality-control-plan-frequencies" parent="quality-configurations"
+    title="Control plan frequencies" action="quality.control.plan.frequencies.view" order="80"/>
+
+  <action-view name="quality.control.plan.frequencies.view"
+    title="Control plan frequencies" model="com.axelor.apps.quality.db.ControlPlanFrequency">
+    <view type="grid" name="control-plan-frequency-grid"/>
+    <view type="form" name="control-plan-frequency-form"/>
+  </action-view>
+
+  <menuitem name="quality-control-plan-characteristics" parent="quality-configurations"
+    title="Control plan characteristics" action="quality.control.plan.characteristics.view"
+    order="90"/>
+
+  <action-view name="quality.control.plan.characteristics.view"
+    title="Control plan characteristics"
+    model="com.axelor.apps.quality.db.ControlPlanLineCharacteristic">
+    <view type="grid" name="control-plan-line-characteristic-grid"/>
+    <view type="form" name="control-plan-line-characteristic-form"/>
+  </action-view>
 
   <menuitem name="quality-teams" parent="quality-configurations" title="Quality teams"
     action="quality.teams" order="100"/>

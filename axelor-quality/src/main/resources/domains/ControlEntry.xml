@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlEntry" cacheable="true">
+    <string name="controlEntrySeq" title="Sequence" required="true" namecolumn="true"/>
+    <datetime name="entryDateTime" title="Entry date" required="true"/>
+    <many-to-one name="inspector" ref="com.axelor.auth.db.User" title="Inspector"
+      required="true"/>
+    <integer name="sampleCount" title="Sample count"/>
+    <many-to-one name="controlPlan" ref="com.axelor.apps.quality.db.ControlPlan"
+      title="Control plan"/>
+    <integer name="statusSelect" selection="quality.control.entry.status.select"
+      title="Status"/>
+    <one-to-many name="controlEntrySamplesList"
+      ref="com.axelor.apps.quality.db.ControlEntrySample" title="Control entry samples"
+      mappedBy="controlEntry"/>
+
+    <extra-code>
+			<![CDATA[
+				public static final int DRAFT_STATUS = 1;
+				public static final int IN_PROGRESS_STATUS = 2;
+				public static final int FINISHED_STATUS = 3;
+                public static final int CANCELED_STATUS = 4;
+			]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

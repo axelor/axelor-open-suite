@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="control-entry-sample-grid" title="Control entry samples"
+    model="com.axelor.apps.quality.db.ControlEntrySample">
+    <field name="entrySampleNbr"/>
+    <field name="entrySampleRef"/>
+    <field name="resultSelect"/>
+  </grid>
+
+  <form name="control-entry-sample-form" title="Control entry sample"
+    model="com.axelor.apps.quality.db.ControlEntrySample">
+    <panel name="mainPanel" colSpan="12">
+      <field name="entrySampleNbr" colSpan="6"/>
+      <field name="entrySampleRef" colSpan="6"/>
+      <field name="resultSelect" colSpan="6"/>
+      <field name="controlEntry" colSpan="6" readonlyIf="true"/>
+    </panel>
+    <panel-related name="controlEntrySampleLinesPanel"
+      field="controlEntrySampleLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
+      form-view="control-entry-sample-line-form"/>
+  </form>
+</object-views>
