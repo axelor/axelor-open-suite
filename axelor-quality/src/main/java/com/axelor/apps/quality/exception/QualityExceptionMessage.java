@@ -27,4 +27,7 @@ public final class QualityExceptionMessage {
 
   public static final String QI_RESOLUTION_DECISION_INVALID_SUM_OF_QUANTITIES = /*$$(*/
       "Sum of quantities of the decisions for a default must not be greater than the default's quantity" /*)*/;
+
+  public static final String DEFAULT_QI_STATUS_NOT_FOUND = /*$$(*/
+      "No status have been found for the QA, please register at least one in the configurations" /*)*/;
 }

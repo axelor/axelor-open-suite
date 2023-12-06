@@ -12,7 +12,7 @@
   </grid>
 
   <form name="employee-file-form" title="File" model="com.axelor.apps.hr.db.EmployeeFile"
-    onLoad="action-employee-file-method-set-inline-url">
+    onLoad="action-employee-file-group-file-onload">
     <panel name="mainPanel">
       <field name="fileType" colSpan="3" onChange="action-record-set-expiration-date"/>
       <field name="metaFile" widget="binary-link" colSpan="3"
@@ -60,6 +60,12 @@
     <action name="action-record-set-record-date"/>
     <action name="save"/>
     <action name="action-employee-file-method-set-dms-file"/>
+    <action name="action-employee-file-method-set-inline-url"/>
+  </action-group>
+
+  <action-group name="action-employee-file-group-file-onload">
+    <action name="action-employee-file-method-set-dms-file"
+      if="metaFile &amp;&amp; dmsFile == null"/>
     <action name="action-employee-file-method-set-inline-url"/>
   </action-group>
 

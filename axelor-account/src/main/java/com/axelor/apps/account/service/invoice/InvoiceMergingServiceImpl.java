@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -653,8 +654,12 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
 
   @Override
   public List<Invoice> convertSelectedLinesToMergeLines(List<Integer> idList) {
-    return idList.stream()
-        .map(id -> invoiceRepository.find(Long.valueOf(id)))
-        .collect(Collectors.toList());
+    return Optional.ofNullable(idList)
+        .map(
+            list ->
+                list.stream()
+                    .map(id -> invoiceRepository.find(Long.valueOf(id)))
+                    .collect(Collectors.toList()))
+        .orElse(List.of());
   }
 }

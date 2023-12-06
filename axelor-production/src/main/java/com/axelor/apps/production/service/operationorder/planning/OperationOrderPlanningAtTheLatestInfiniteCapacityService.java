@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.operationorder.planning;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
@@ -38,17 +39,23 @@ import java.time.LocalTime;
 public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
     extends OperationOrderPlanningCommonService {
 
-  OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService;
-  WeeklyPlanningService weeklyPlanningService;
+  protected OperationOrderPlanningInfiniteCapacityService
+      operationOrderPlanningInfiniteCapacityService;
+  protected WeeklyPlanningService weeklyPlanningService;
 
   @Inject
   protected OperationOrderPlanningAtTheLatestInfiniteCapacityService(
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
+      AppBaseService appBaseService,
       OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
       WeeklyPlanningService weeklyPlanningService) {
-    super(operationOrderService, operationOrderStockMoveService, operationOrderRepository);
+    super(
+        operationOrderService,
+        operationOrderStockMoveService,
+        operationOrderRepository,
+        appBaseService);
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
     this.weeklyPlanningService = weeklyPlanningService;
@@ -72,6 +79,8 @@ public class OperationOrderPlanningAtTheLatestInfiniteCapacityService
       this.planWithPlanning(operationOrder, weeklyPlanning);
     }
     operationOrder.setPlannedStartDateT(this.computePlannedStartDateT(operationOrder));
+
+    checkIfPlannedStartDateTimeIsBeforeCurrentDateTime(operationOrder);
 
     Long plannedDuration =
         DurationHelper.getSecondsDuration(

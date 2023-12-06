@@ -47,7 +47,14 @@
 	      ]]></viewer>
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-            name="budgetDistributionSumAmount" readonly="true" colSpan="6"/>
+            name="budgetDistributionSumAmount" readonly="true" colSpan="6"
+            x-currency="$currencySymbol">
+            <viewer depends="budgetDistributionSumAmount">
+              <![CDATA[
+				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+              ]]>
+            </viewer>
+          </field>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
             onChange="action-budget-sale-order-line-method-set-account,action-budget-sale-order-line-method-fill-budget-str"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
