@@ -9,9 +9,15 @@
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true" unique="true"/>
+    <many-to-one name="qiActionDistributionBirtTemplate"
+      title="Action distribution template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="qiActionDistributionSequence"
+      title="Action distribution sequence" ref="com.axelor.apps.base.db.Sequence"/>
 
     <track>
       <field name="company" on="UPDATE"/>
+      <field name="qiActionDistributionBirtTemplate" on="UPDATE"/>
+      <field name="qiActionDistributionSequence" on="UPDATE"/>
     </track>
 
   </entity>
