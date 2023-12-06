@@ -21,6 +21,22 @@
     <field name="status"/>
   </grid>
 
+  <grid name="product-reservation-editable-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" canDelete="false" groupBy="typeSelect"
+    editable="true" onNew="product-reservation-editable-grid-record-on-new">
+    <field name="typeSelect" required="true"/>
+    <field name="product" readonly="true"/>
+    <field name="qty" required="true" title="Quantity" readonlyIf="!typeSelect"/>
+    <field name="reservationTypeSelect" readonly="true"/>
+    <field name="stockLocation" readonlyIf="!typeSelect || typeSelect == 1"
+      requiredIf="typeSelect == 2"/>
+    <field name="trackingNumber" readonlyIf="!typeSelect || typeSelect == 1"
+      requiredIf="typeSelect == 2 &amp;&amp; product.trackingNumerConfiguration"/>
+    <field name="$availableQty" title="Available Qty." type="decimal" readonly="true"/>
+    <field name="status" readonly="true"/>
+    <field name="product.trackingNumerConfiguration" hidden="true"/>
+  </grid>
+
   <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
     model="com.axelor.apps.supplychain.db.ProductReservation" width="large">
     <toolbar>
@@ -58,5 +74,12 @@
     <call class="com.axelor.apps.supplychain.web.ProductReservationController"
       method="cancelReservation"/>
   </action-method>
+
+  <action-record name="product-reservation-editable-grid-record-on-new"
+    model="com.axelor.apps.supplychain.db.ProductReservation">
+    <field name="reservationTypeSelect" expr="eval: 1"
+      if="_parent != null &amp;&amp; _parent._model == 'com.axelor.apps.sale.db.SaleOrderLine'"/>
+    <field name="product" expr="eval: __parent__?.product"/>
+  </action-record>
 
 </object-views>

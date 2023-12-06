@@ -89,6 +89,23 @@
         </panel>
       </insert>
     </extend>
+
+    <extend target="//panel[@name='reservationPanel']">
+      <replace>
+        <panel if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
+          if-module="axelor-supplychain" name="productReservationPanel" colSpan="12">
+          <button onClick="action-record-sale-order-line-show-product-reservation"
+            name="showProductReservationButton" title="Show product reservations" hidden="true"
+            showIf="product &amp;&amp; product.productTypeSelect != 'service' &amp;&amp; productReservationList.length == 0 &amp;&amp; !$showProductReservation"/>
+          <field name="$showProductReservation" type="boolean" hidden="true"/>
+          <panel-related colSpan="12" name="productReservationListPanel"
+            field="productReservationList" grid-view="product-reservation-editable-grid"
+            form-view="product-reservation-form" hidden="true"
+            showIf="(product &amp;&amp; product.productTypeSelect != 'service') &amp;&amp; (productReservationList.length &gt; 0 || $showProductReservation)"
+            onChange="sale-order-line-action-method-check-product-reservation"/>
+        </panel>
+      </replace>
+    </extend>
   </form>
 
   <form name="sale-order-line-template-form" id="supplychain-sale-order-line-template-form"
@@ -242,6 +259,11 @@
 
   <!-- ACTION RECORD -->
 
+  <action-record name="action-record-sale-order-line-show-product-reservation"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="$showProductReservation" expr="eval: true"/>
+  </action-record>
+
   <action-record
     name="action-sale-order-line-record-update-requested-reserved-qty-from-qty"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -310,6 +332,11 @@
   </action-attrs>
 
   <!-- ACTION METHOD -->
+
+  <action-method name="sale-order-line-action-method-check-product-reservation">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
+      method="checkProductionReservation"/>
+  </action-method>
 
   <action-method name="action-method-sale-order-line-available-and-allocated-stock"
     model="com.axelor.apps.sale.db.SaleOrderLine">
