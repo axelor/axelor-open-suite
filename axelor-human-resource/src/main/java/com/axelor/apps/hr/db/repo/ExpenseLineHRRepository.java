@@ -33,8 +33,7 @@ public class ExpenseLineHRRepository extends ExpenseLineRepository {
   public ExpenseLine save(ExpenseLine expenseLine) {
     if (expenseLine.getKilometricAllowParam() != null
         && expenseLine.getDistance().compareTo(BigDecimal.ZERO) != 0
-        && expenseLine.getExpenseDate() != null
-        && expenseLine.getTotalAmount().compareTo(BigDecimal.ZERO) == 0) {
+        && expenseLine.getExpenseDate() != null) {
       Long empId;
       Expense expense = expenseLine.getExpense();
 
