@@ -54,12 +54,41 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   @Override
   public void updateEmployeeLeaveLines(LeaveReason leaveReason, Employee employee) {
     List<LeaveLine> leaveLineList = employee.getLeaveLineList();
+    LocalDate todayDate = appBaseService.getTodayDate(null);
+    int todayMonth = todayDate.getMonthValue();
+    int firstLeaveDayPeriod = appHumanResourceService.getAppLeave().getFirstLeaveDayPeriod();
+    LocalDate fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
+    LocalDate toDate = computeToDate(todayDate, todayMonth, firstLeaveDayPeriod);
+    BigDecimal value = getLeaveManagementValue(leaveReason, employee, fromDate, toDate);
+
+    if (value.signum() == 0) {
+      return;
+    }
+
+    updateEmployeeLeaveLine(leaveReason, employee, leaveLineList, fromDate, toDate, value);
+  }
+
+  protected void updateEmployeeLeaveLine(
+      LeaveReason leaveReason,
+      Employee employee,
+      List<LeaveLine> leaveLineList,
+      LocalDate fromDate,
+      LocalDate toDate,
+      BigDecimal value) {
     LeaveLine leaveLine =
         leaveLineList.stream()
             .filter(leaveLine1 -> leaveLine1.getLeaveReason().equals(leaveReason))
             .findFirst()
             .orElse(null);
-    LeaveManagement leaveManagement = createLeaveManagement(leaveReason, employee);
+    LeaveManagement leaveManagement = createLeaveManagement(fromDate, toDate, value);
+    updateLeaveLines(leaveReason, employee, leaveLine, leaveManagement);
+  }
+
+  protected void updateLeaveLines(
+      LeaveReason leaveReason,
+      Employee employee,
+      LeaveLine leaveLine,
+      LeaveManagement leaveManagement) {
     if (leaveLine == null) {
       LeaveLine newLeaveLine = leaveLineService.createNewLeaveLine(leaveReason, leaveManagement);
       leaveManagementService.computeQuantityAvailable(newLeaveLine);
@@ -70,13 +99,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     }
   }
 
-  protected LeaveManagement createLeaveManagement(LeaveReason leaveReason, Employee employee) {
-    LocalDate todayDate = appBaseService.getTodayDate(null);
-    int todayMonth = todayDate.getMonthValue();
-    int firstLeaveDayPeriod = appHumanResourceService.getAppLeave().getFirstLeaveDayPeriod();
-    LocalDate fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
-    LocalDate toDate = computeToDate(todayDate, todayMonth, firstLeaveDayPeriod);
-    BigDecimal value = getLeaveManagementValue(leaveReason, employee, fromDate, toDate);
+  protected LeaveManagement createLeaveManagement(
+      LocalDate fromDate, LocalDate toDate, BigDecimal value) {
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
             AuthUtils.getUser(), "", appBaseService.getTodayDate(null), fromDate, toDate, value);

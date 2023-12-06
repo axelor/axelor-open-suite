@@ -1297,10 +1297,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           trackingNumber.setWarrantyExpirationDate(
               LocalDate.parse(trackingNumberItem.get("warrantyExpirationDate").toString()));
         }
-        if (trackingNumberItem.get("perishableExpirationDate") != null) {
-          trackingNumber.setPerishableExpirationDate(
-              LocalDate.parse(trackingNumberItem.get("perishableExpirationDate").toString()));
-        }
         if (trackingNumberItem.get("origin") != null) {
           trackingNumber.setOrigin(trackingNumberItem.get("origin").toString());
         }
@@ -1641,5 +1637,27 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     clearedStockMoveLineMap.put("totalNetMass", BigDecimal.ZERO);
     clearedStockMoveLineMap.put("trackingNumber", null);
     return clearedStockMoveLineMap;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
+    Integer type = stockMove.getTypeSelect();
+    if (type == StockMoveRepository.TYPE_INTERNAL) {
+      return;
+    }
+    List<StockMoveLine> stockMoveLineList = new ArrayList<>(stockMove.getStockMoveLineList());
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      Product product = stockMoveLine.getProduct();
+      if (product == null) {
+        return;
+      }
+      this.assignOrGenerateTrackingNumber(
+          stockMoveLine,
+          stockMove,
+          product,
+          product.getTrackingNumberConfiguration(),
+          type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
+    }
   }
 }

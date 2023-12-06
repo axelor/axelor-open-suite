@@ -356,6 +356,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
 
+    stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+
     String draftSeq;
 
     // Set the sequence.
@@ -1497,5 +1499,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     LOG.debug("Creation of a new stock move from the stock move {}", stockMove.getStockMoveSeq());
 
     return copyAndSplitStockMoveReverse(stockMove, false);
+  }
+
+  @Override
+  public void setMergedStatus(StockMove stockMove) {
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_MERGED);
   }
 }
