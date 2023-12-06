@@ -202,6 +202,12 @@
       <panel-related name="operationOrderListPanel" field="operationOrderList"
         readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
         grid-view="operation-order-grid" canNew="false"/>
+      <panel-related
+        if="__config__.app.getApp('supplychain')?.getManageStockReservation()"
+        if-module="axelor-supplychain" colSpan="12" name="productReservationListPanel"
+        field="productReservationList" grid-view="product-reservation-editable-grid"
+        form-view="product-reservation-form" hidden="true" showIf="product"
+        onChange="manuf-order-action-method-check-product-reservation"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -762,6 +768,12 @@
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="updateProducedStockMoveFromManufOrder"/>
   </action-method>
+
+  <action-method name="manuf-order-action-method-check-product-reservation">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="checkProductionReservation"/>
+  </action-method>
+
 
   <action-method name="action-manuf-order-method-allocate-all">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="allocateAll"/>
