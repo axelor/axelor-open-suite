@@ -93,6 +93,11 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getCompanyScaledValue(Company company, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(company));
+  }
+
+  @Override
   public int getScale(Move move) {
     return this.getScale(move.getCurrency());
   }
