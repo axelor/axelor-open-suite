@@ -6,8 +6,9 @@
   <module name="production" package="com.axelor.apps.supplychain.db"/>
 
   <entity name="ProductReservation">
-    <integer name="typeSelect" selection="supplychain.product.reservation.type.select"
-      required="true" title="Type of request"/>
+    <integer name="productReservationTypeSelect"
+      selection="supplychain.product.reservation.type.select" required="true"
+      title="Type of request"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" required="true"
       title="Product"/>
     <decimal name="qty" required="true" title="Quantity"/>
