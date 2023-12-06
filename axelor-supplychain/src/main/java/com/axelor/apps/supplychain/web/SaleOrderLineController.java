@@ -497,25 +497,20 @@ public class SaleOrderLineController {
       ProductReservationService productReservationService =
           Beans.get(ProductReservationService.class);
       List<ProductReservation> checkedProductReservationList = new ArrayList<ProductReservation>();
-      boolean showError = false;
-      AxelorException exception = null;
       for (ProductReservation productReservation : saleOrderLine.getProductReservationList()) {
         if (productReservation.getStatus() == null || productReservation.getStatus() == 0) {
           try {
             productReservation = productReservationService.updateStatus(productReservation);
             checkedProductReservationList.add(productReservation);
           } catch (AxelorException e) {
-            showError = true;
-            exception = e;
+            TraceBackService.trace(e);
+            response.setInfo(e.getMessage());
           }
         } else {
           checkedProductReservationList.add(productReservation);
         }
       }
       response.setValue("productReservationList", checkedProductReservationList);
-      if (showError) {
-        response.setInfo(exception.getMessage());
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
