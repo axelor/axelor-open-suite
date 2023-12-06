@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -56,6 +57,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticToolService analyticToolService;
   protected SaleConfigService saleConfigService;
   protected PurchaseConfigService purchaseConfigService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public AnalyticLineModelServiceImpl(
@@ -65,7 +67,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AccountManagementAccountService accountManagementAccountService,
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
-      PurchaseConfigService purchaseConfigService) {
+      PurchaseConfigService purchaseConfigService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.appBaseService = appBaseService;
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
@@ -73,6 +76,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     this.analyticToolService = analyticToolService;
     this.saleConfigService = saleConfigService;
     this.purchaseConfigService = purchaseConfigService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -115,9 +119,12 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
     AnalyticMoveLine analyticMoveLine =
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
+    analyticMoveLineService.computeAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
-    analyticMoveLine.setAmount(analyticLineModel.getExTaxTotal());
+    analyticMoveLine.setAmount(
+        currencyScaleServiceAccount.getScaledValue(
+            analyticMoveLine, analyticLineModel.getExTaxTotal()));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
@@ -189,7 +196,10 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal(), date);
+            analyticMoveLine,
+            currencyScaleServiceAccount.getScaledValue(
+                analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()),
+            date);
       }
     }
 
@@ -206,7 +216,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             analyticLineModel.getAnalyticDistributionTemplate(),
-            analyticLineModel.getExTaxTotal(),
+            currencyScaleServiceAccount.getCompanyScaledValue(
+                analyticLineModel.getCompany(), analyticLineModel.getExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
