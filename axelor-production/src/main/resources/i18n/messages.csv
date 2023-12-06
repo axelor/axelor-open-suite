@@ -868,6 +868,7 @@
 "Waste stock move",,,
 "Wednesday hours",,,
 "When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00).",,,
+"When enabled, new prod process and prod process line will have their option to generate purchase order set to true.",,,
 "Where-used list",,,
 "Work center",,,
 "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.",,,

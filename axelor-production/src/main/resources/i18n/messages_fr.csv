@@ -868,6 +868,7 @@
 "Waste stock move","Mouvement sortie rebuts",,
 "Wednesday hours","Heures Mercredi",,
 "When enabled, allows you to input in hours (example: 7,50 hours instead of 007:30:00).","Lorsque cette option est activée, elle permet de saisir en heures (exemple : 7,50 heures au lieu de 007:30:00).",,
+"When enabled, new prod process and prod process line will have their option to generate purchase order set to true.","Lorsque cette option est activée, les nouvelles gammes et lignes de gamme seront générés avec l'option de génération de commande à vrai. ",,
 "Where-used list","Cas d'emploi",,
 "Work center","Poste de charge",,
 "Work center cannot be null for prod process line to generate. Please correct on prod process line configurator id : %s.","Le poste de charge ne peut pas être null pour la gamme à générer. Il faut soit en sélectionner un, soit définir un script pouvant le générer, soit passer par un groupe de poste de charge. Merci de corriger le configurateur de phase avec l'id : %s",,

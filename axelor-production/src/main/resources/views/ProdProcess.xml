@@ -150,6 +150,7 @@
     <action name="action-prod-process-attrs-scale-and-precision"/>
     <action name="action-prod-process-attrs-hide-operation-continuity"/>
     <action name="action-prod-process-record-true-operation-continuity"/>
+    <action name="action-prod-process-record-generate-purchase-order-default"/>
   </action-group>
 
   <action-group name="action-prod-process-group-on-load">
@@ -175,6 +176,12 @@
       if="isConsProOnOperation == true &amp;&amp; __repo__(BillOfMaterial).all().filter('self.prodProcess.id = ?1', __self__ ? __self__.id : 0).fetch().size &gt; 1"
       action="action-prod-process-record-false"/>
   </action-validate>
+
+  <action-record name="action-prod-process-record-generate-purchase-order-default"
+    model="com.axelor.apps.production.db.ProdProcess">
+    <field name="generatePurchaseOrderOnMoPlanning"
+      expr="eval: __config__.app.getApp('production').manageOutsourcing &amp;&amp; __config__.app.getApp('production').generatePurchaseOrderOnMoPlanning"/>
+  </action-record>
 
   <action-record name="action-prod-process-default-record"
     model="com.axelor.apps.production.db.ProdProcess">

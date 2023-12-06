@@ -115,6 +115,8 @@
       expr="eval:__parent__?.company?.getStockConfig().getProductionVirtualStockLocation()"/>
     <field name="workCenterTypeSelect" expr="eval: 1"/>
     <field name="outsourcing" expr="eval: __parent__?.outsourcing"/>
+    <field name="generatePurchaseOrderOnMoPlanning"
+      expr="eval: __config__.app.getApp('production').manageOutsourcing &amp;&amp; __config__.app.getApp('production').generatePurchaseOrderOnMoPlanning"/>
   </action-record>
 
   <action-record name="action-prod-process-line-record-update-from-workcenter"
