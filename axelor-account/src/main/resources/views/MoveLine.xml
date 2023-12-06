@@ -513,7 +513,7 @@
           showIf="account.accountType.technicalTypeSelect == 'income' || account.accountType.technicalTypeSelect == 'charge' || account.accountType.technicalTypeSelect == 'tax' || account.accountType.technicalTypeSelect == 'immobilisation'"
           colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
           domain="self.endDate > :date OR self.endDate IS NULL"
-          readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+          readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="vatSystemSelect"
           readonlyIf="move.statusSelect != 1 &amp;&amp; move.statusSelect != 5"
@@ -757,7 +757,8 @@
         </field>
       </panel>
       <panel name="othersPanel" title="Others">
-        <field name="taxLine" canEdit="false" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+        <field name="taxLine" canEdit="false"
+          readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
           showIf="account.isTaxRequiredOnMoveLine" requiredIf="account.isTaxRequiredOnMoveLine"
           colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
           domain="self.endDate > :date OR self.endDate IS NULL"
