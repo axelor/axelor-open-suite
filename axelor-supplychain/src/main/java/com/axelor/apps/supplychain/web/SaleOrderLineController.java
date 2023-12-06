@@ -35,9 +35,11 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChainImpl;
@@ -51,6 +53,7 @@ import com.axelor.utils.ContextTool;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -484,6 +487,37 @@ public class SaleOrderLineController {
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void checkProductionReservation(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+
+      ProductReservationService productReservationService =
+          Beans.get(ProductReservationService.class);
+      List<ProductReservation> checkedProductReservationList = new ArrayList<ProductReservation>();
+      boolean showError = false;
+      AxelorException exception = null;
+      for (ProductReservation productReservation : saleOrderLine.getProductReservationList()) {
+        if (productReservation.getStatus() == null || productReservation.getStatus() == 0) {
+          try {
+            productReservation = productReservationService.updateStatus(productReservation);
+            checkedProductReservationList.add(productReservation);
+          } catch (AxelorException e) {
+            showError = true;
+            exception = e;
+          }
+        } else {
+          checkedProductReservationList.add(productReservation);
+        }
+      }
+      response.setValue("productReservationList", checkedProductReservationList);
+      if (showError) {
+        response.setInfo(exception.getMessage());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
