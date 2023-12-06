@@ -1654,6 +1654,12 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-ventilate-button">
+    <action name="action-invoice-group-before-ventilate"/>
+    <action name="action-invoice-method-ventilate"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
@@ -1663,8 +1669,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
-    <action name="action-invoice-method-ventilate"/>
-    <action name="save"/>
   </action-group>
 
   <action-group name="action-invoice-group-pfp-validate">
@@ -1693,6 +1697,11 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
+    <action name="action-invoice-group-before-validate"/>
+    <action name="action-invoice-method-validate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-before-validate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action
       name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
@@ -1734,25 +1743,9 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-round-invoice-term-percentages"/>
   </action-group>
 
-  <action-group name="action-invoice-group-ventilate-onclick">
-    <action name="save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
-    <action name="action-invoice-method-check-not-imputed-refunds"/>
-    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
-    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
-    <action name="action-invoice-method-ventilate"/>
-    <action name="save"/>
-  </action-group>
-
   <action-group name="action-invoice-group-validate-and-ventilate-onclick">
-    <action name="save"/>
-    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
-    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
-    <action name="action-invoice-method-check-not-imputed-refunds"/>
-    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
-    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-group-before-validate"/>
+    <action name="action-invoice-group-before-ventilate"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
 

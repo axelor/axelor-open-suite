@@ -94,6 +94,9 @@
       ref="com.axelor.auth.db.Role" title="Authorized roles"
       help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
 
+    <one-to-many name="mobileDashboardList" title="Mobile dashboard list"
+      ref="com.axelor.apps.mobilesettings.db.MobileDashboard" mappedBy="appMobileSettings"/>
+
     <track>
       <field name="isStockAppEnabled" on="UPDATE"/>
       <field name="isProductionAppEnabled" on="UPDATE"/>

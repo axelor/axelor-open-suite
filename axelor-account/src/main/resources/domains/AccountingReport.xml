@@ -99,9 +99,6 @@
       selection="account.fixed.asset.line.type.select" default="1"/>
 
     <!-- Report 3000 -->
-    <boolean name="displayDeltaYear" title="Display the delta between years"/>
-    <boolean name="displayDeltaYearPercentage"
-      title="Display the percentage delta between years"/>
     <boolean name="displayAnalyticAccountsDetails" title="Display analytic accounts details"/>
     <boolean name="displayDetails" title="Display detailed lines"/>
     <one-to-many ref="com.axelor.apps.account.db.AccountingReportAnalyticConfigLine"

@@ -340,4 +340,7 @@ public final class ProductionExceptionMessage {
 
   public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
       "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
+
+  public static final String LOOP_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The system found a loop in your bill of materials, please correct concerned data" /*)*/;
 }

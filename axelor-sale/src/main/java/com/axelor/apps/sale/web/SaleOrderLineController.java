@@ -103,7 +103,7 @@ public class SaleOrderLineController {
         product = Beans.get(ProductRepository.class).find(product.getId());
         saleOrderLineService.computeProductInformation(saleOrderLine, saleOrder);
 
-        if (Beans.get(AppSaleService.class).getAppSale().getEnablePricingScale()) {
+        if (Beans.get(AppBaseService.class).getAppBase().getEnablePricingScale()) {
           Optional<Pricing> defaultPricing =
               pricingService.getRandomPricing(saleOrder.getCompany(), saleOrderLine, null);
 
