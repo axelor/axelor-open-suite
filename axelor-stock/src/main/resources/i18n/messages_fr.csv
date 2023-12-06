@@ -240,6 +240,7 @@
 "Do you want to generate backorder for not delivered quantities?","Voulez-vous gérer les reliquats pour les quantités non livrées ?",,
 "Do you want to generate backorder for not received quantities?","Voulez-vous gérer les reliquats pour les quantités non reçues ?",,
 "Do you want to proceed?","Voulez-vous continuer?",,
+"Does not include quantities from sub stock locations","N'inclut pas les quantités provenant des sous emplacements de stock.",,
 "Draft","Brouillon",,
 "Draft move","Mvt. Brouillon",,
 "Economic area","Zone économique",,
