@@ -216,7 +216,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     Partner companyPartner = accountingExport.getCompany().getPartner();
     Address address = companyPartner.getMainAddress();
-    String alpha2code = address.getAddressL7Country().getAlpha2Code();
+    String alpha2code = address.getCountry().getAlpha2Code();
     String registrationCode = companyPartner.getRegistrationCode().replaceAll(" ", "");
     String siren = computeSiren(registrationCode, alpha2code);
     String nic = computeNic(registrationCode, alpha2code);
@@ -228,21 +228,21 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     lines.add(setN4DSLine("S10.G01.00.001.002", nic));
     lines.add(setN4DSLine("S10.G01.00.002", compileIdentityValue(companyPartner.getName())));
     String addressL2L3 = null;
-    if (!Strings.isNullOrEmpty(address.getAddressL2())) {
-      addressL2L3 = address.getAddressL2().trim();
+    if (!Strings.isNullOrEmpty(address.getRoom())) {
+      addressL2L3 = address.getRoom().trim();
     }
-    if (!Strings.isNullOrEmpty(address.getAddressL3())) {
+    if (!Strings.isNullOrEmpty(address.getFloor())) {
       if (Strings.isNullOrEmpty(addressL2L3)) {
-        addressL2L3 = compileAddressValue(address.getAddressL3().trim());
+        addressL2L3 = compileAddressValue(address.getFloor().trim());
       } else {
-        addressL2L3 = compileAddressValue(addressL2L3 + " " + address.getAddressL3().trim());
+        addressL2L3 = compileAddressValue(addressL2L3 + " " + address.getFloor().trim());
       }
     }
     if (!Strings.isNullOrEmpty(addressL2L3)) {
       lines.add(setN4DSLine("S10.G01.00.003.001", addressL2L3));
     }
-    if (!Strings.isNullOrEmpty(address.getAddressL4())) {
-      lines.add(setN4DSLine("S10.G01.00.003.006", compileAddressValue(address.getAddressL4())));
+    if (!Strings.isNullOrEmpty(address.getStreetName())) {
+      lines.add(setN4DSLine("S10.G01.00.003.006", compileAddressValue(address.getStreetName())));
     }
     if (alpha2code.equals("FR")) {
       lines.add(setN4DSLine("S10.G01.00.003.010", compileAddressValue(address.getCity().getZip())));
@@ -324,8 +324,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     if (!Strings.isNullOrEmpty(addressL2L3)) {
       lines.add(setN4DSLine("S20.G01.00.009.001", addressL2L3));
     }
-    if (!Strings.isNullOrEmpty(address.getAddressL4())) {
-      lines.add(setN4DSLine("S20.G01.00.009.006", compileAddressValue(address.getAddressL4())));
+    if (!Strings.isNullOrEmpty(address.getStreetName())) {
+      lines.add(setN4DSLine("S20.G01.00.009.006", compileAddressValue(address.getStreetName())));
     }
     if (alpha2code.equals("FR")) {
       lines.add(setN4DSLine("S20.G01.00.009.010", compileAddressValue(address.getCity().getZip())));
@@ -402,8 +402,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     if (!Strings.isNullOrEmpty(addressL2L3)) {
       lines.add(setN4DSLine("S80.G01.00.003.001", addressL2L3));
     }
-    if (!Strings.isNullOrEmpty(address.getAddressL4())) {
-      lines.add(setN4DSLine("S80.G01.00.003.006", compileAddressValue(address.getAddressL4())));
+    if (!Strings.isNullOrEmpty(address.getStreetName())) {
+      lines.add(setN4DSLine("S80.G01.00.003.006", compileAddressValue(address.getStreetName())));
     }
     if (alpha2code.equals("FR")) {
       lines.add(setN4DSLine("S80.G01.00.003.010", compileAddressValue(address.getCity().getZip())));
@@ -467,8 +467,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "partner.name AS NAME, "
             + "partner.firstName AS FIRST_NAME, "
             + "partner.registrationCode as REGISTRATION_CODE, "
-            + "TRIM(CONCAT(address.addressL2,' ',address.addressL3)) AS ADDRESS_CONSTRUCTION, "
-            + "address.addressL4 AS ADDRESSL4, "
+            + "TRIM(CONCAT(address.room,' ',address.floor)) AS ADDRESS_CONSTRUCTION, "
+            + "address.streetName AS ADDRESSL4, "
             + "city.zip AS ZIP, "
             + "city.name AS CITY, "
             + "country.alpha2Code AS COUNTRY, "
@@ -479,7 +479,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "LEFT OUTER JOIN pmvld.moveLine moveLine "
             + "LEFT OUTER JOIN pmvld.partner partner "
             + "LEFT OUTER JOIN partner.mainAddress address "
-            + "LEFT OUTER JOIN address.addressL7Country country "
+            + "LEFT OUTER JOIN address.country country "
             + "LEFT OUTER JOIN address.city city "
             + "LEFT OUTER JOIN moveLine.account account "
             + "LEFT OUTER JOIN account.serviceType serviceType "
@@ -489,7 +489,7 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
             + "AND serviceType.n4dsCode IS NOT NULL "
             + "GROUP BY partner.partnerTypeSelect,partner.das2Activity.name,"
             + "partner.name,partner.firstName,partner.registrationCode, "
-            + "address.addressL2,address.addressL3,address.addressL4,"
+            + "address.room,address.floor,address.streetName,"
             + "city.zip,city.name,country.alpha2Code,serviceType.n4dsCode";
 
     Query query = JPA.em().createQuery(queryStr).setParameter("accountingExport", accountingExport);

@@ -13,8 +13,8 @@
       required="true"/>
 
     <one-to-many name="addressTemplateLineList"
-                 ref="com.axelor.apps.base.db.AddressTemplateLine"
-                 mappedBy="addressTemplate" title="Fields to use"/>
+      ref="com.axelor.apps.base.db.AddressTemplateLine" mappedBy="addressTemplate"
+      title="Fields to use"/>
 
     <extra-code>
            <![CDATA[

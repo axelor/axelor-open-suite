@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-    <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-    <entity name="AddressTemplateLine">
-        <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"/>
-        <string name="title" title="Title" translatable="true"/>
+  <entity name="AddressTemplateLine">
+    <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"/>
+    <string name="title" title="Title" translatable="true"/>
 
-        <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"/>
-    </entity>
+    <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"/>
+  </entity>
 
 </domain-models>

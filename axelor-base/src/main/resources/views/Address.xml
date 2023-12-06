@@ -18,9 +18,8 @@
     onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"
     onNew="default-address-record" width="large">
     <panel name="mainPanel" title="Address details" colSpan="12">
-      <field name="country" onChange="action-address-record-clear-fields"
-        required="true" canEdit="false" form-view="country-form" grid-view="country-grid"
-        colSpan="12"/>
+      <field name="country" onChange="action-address-record-clear-fields" required="true"
+        canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
       <field name="room" x-bind="{{room|uppercase}}"
         placeholder="e.g. Financial department, CEO"/>
       <field name="floor" x-bind="{{floor|uppercase}}"
@@ -38,8 +37,10 @@
         canNew="true" onChange="action-address-change-city" form-view="city-form"
         grid-view="city-grid"/>
       <field name="zip" onChange="action-address-method-autocomplete-address"/>
-<!--      <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>-->
-<!--      <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.]]></static>-->
+      <!-- <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/> -->
+      <!-- <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically
+        filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor
+        change.]]></static> -->
       <field name="formattedFullName" readonly="true" colSpan="12"/>
       <button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()" readonlyIf="!id">
         <button name="mapBtn" title="View map" icon="fa-map-marker"
@@ -76,9 +77,8 @@
     onSave="action-group-base-address-onsave,save,action-base-address-method-create-partner-address,action-base-address-method-update-lat-long"
     onNew="default-address-record" width="large">
     <panel name="mainPanel" title="Address details" colSpan="12">
-      <field name="country" onChange="action-address-record-clear-fields"
-        required="true" canEdit="false" form-view="country-form" grid-view="country-grid"
-        colSpan="12"/>
+      <field name="country" onChange="action-address-record-clear-fields" required="true"
+        canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
       <field name="room" x-bind="{{room|uppercase}}"
         placeholder="e.g. Financial department, CEO"/>
       <field name="floor" x-bind="{{floor|uppercase}}"
@@ -96,8 +96,10 @@
         canNew="true" onChange="action-address-change-city" form-view="city-form"
         grid-view="city-grid"/>
       <field name="zip" onChange="action-address-method-autocomplete-address"/>
-<!--      <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/>-->
-<!--      <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor change.]]></static>-->
+      <!-- <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/> -->
+      <!-- <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically
+        filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor
+        change.]]></static> -->
       <field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
         title="Invoicing address"/>
       <field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
@@ -141,8 +143,7 @@
   </action-group>
 
   <action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
-    <field name="country"
-      expr="eval: __user__?.activeCompany?.address?.country"
+    <field name="country" expr="eval: __user__?.activeCompany?.address?.country"
       if="__user__?.activeCompany?.address"/>
     <field name="country" expr="action:default-address-country-record"
       if="!__user__?.activeCompany?.address"/>
@@ -198,8 +199,7 @@
     <attribute name="domain" if="country || zip"
       expr="eval: (country ? &quot;self.country = :country&quot; : &quot;&quot;) +        (country &amp;&amp; zip ? &quot; AND &quot; : &quot;&quot;) + (zip ? &quot;self.zip LIKE '${zip + '%'}' &quot; : &quot;&quot;)"
       for="city"/>
-    <attribute name="domain" if="!country &amp;&amp; !zip" expr="eval: null"
-      for="city"/>
+    <attribute name="domain" if="!country &amp;&amp; !zip" expr="eval: null" for="city"/>
   </action-attrs>
 
   <action-attrs name="action-address-attrs-update-domain-street">
@@ -209,8 +209,7 @@
       expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}')&quot;"/>
     <attribute name="domain" for="street" if="country &amp;&amp; !zip"
       expr="eval: &quot;self.city IN (SELECT id FROM City WHERE country = ${country.id})&quot;"/>
-    <attribute name="domain" for="street" if="!country &amp;&amp; !zip"
-      expr="eval: null"/>
+    <attribute name="domain" for="street" if="!country &amp;&amp; !zip" expr="eval: null"/>
   </action-attrs>
 
   <action-record name="action-address-record-clear-fields"

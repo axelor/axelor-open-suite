@@ -1221,7 +1221,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     BigDecimal aLon = BigDecimal.ZERO;
     if (Strings.isNullOrEmpty(fromAddressStr)) {
       Address fromAddress = stockMove.getCompany().getAddress();
-      dString = fromAddress.getAddressL4() + " ," + fromAddress.getAddressL6();
+      dString = fromAddress.getStreetName();
       dLat = fromAddress.getLatit();
       dLon = fromAddress.getLongit();
     } else {
@@ -1229,7 +1229,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     if (toAddressStr == null) {
       Address toAddress = stockMove.getCompany().getAddress();
-      aString = toAddress.getAddressL4() + " ," + toAddress.getAddressL6();
+      aString = toAddress.getStreetName();
       aLat = toAddress.getLatit();
       aLon = toAddress.getLongit();
     } else {

@@ -31,11 +31,9 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AddressTemplateRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
@@ -66,7 +64,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
@@ -134,11 +131,10 @@ public class AddressServiceImpl implements AddressService {
     for (Address a : addresses) {
 
       items.add(a.getId() != null ? a.getId().toString() : "");
-      items.add(a.getAddressL2() != null ? a.getAddressL2() : "");
-      items.add(a.getAddressL3() != null ? a.getAddressL3() : "");
-      items.add(a.getAddressL4() != null ? a.getAddressL4() : "");
-      items.add(a.getAddressL5() != null ? a.getAddressL5() : "");
-      items.add(a.getAddressL6() != null ? a.getAddressL6() : "");
+      items.add(a.getRoom() != null ? a.getRoom() : "");
+      items.add(a.getFloor() != null ? a.getFloor() : "");
+      items.add(a.getStreetName() != null ? a.getStreetName() : "");
+      items.add(a.getPostBox() != null ? a.getPostBox() : "");
       items.add(a.getInseeCode() != null ? a.getInseeCode() : "");
 
       printer.printRecord(items);
@@ -160,12 +156,11 @@ public class AddressServiceImpl implements AddressService {
       Country addressL7Country) {
 
     Address address = new Address();
-    address.setAddressL2(addressL2);
-    address.setAddressL3(addressL3);
-    address.setAddressL4(addressL4);
-    address.setAddressL5(addressL5);
-    address.setAddressL6(addressL6);
-    address.setAddressL7Country(addressL7Country);
+    address.setRoom(addressL2);
+    address.setFloor(addressL3);
+    address.setStreetName(addressL4);
+    address.setPostBox(addressL5);
+    address.setCountry(addressL7Country);
 
     return address;
   }
@@ -269,50 +264,46 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public String computeFullName(Address address) {
 
-    String l2 = address.getAddressL2();
-    String l3 = address.getAddressL3();
-    String l4 = address.getAddressL4();
-    String l5 = address.getAddressL5();
-    String l6 = address.getAddressL6();
+    String l2 = address.getRoom();
+    String l3 = address.getFloor();
+    String l4 = address.getStreetName();
+    String l5 = address.getPostBox();
 
     return (!Strings.isNullOrEmpty(l2) ? l2 : "")
         + (!Strings.isNullOrEmpty(l3) ? " " + l3 : "")
         + (!Strings.isNullOrEmpty(l4) ? " " + l4 : "")
-        + (!Strings.isNullOrEmpty(l5) ? " " + l5 : "")
-        + (!Strings.isNullOrEmpty(l6) ? " " + l6 : "");
+        + (!Strings.isNullOrEmpty(l5) ? " " + l5 : "");
   }
 
   @Override
   public String computeAddressStr(Address address) {
-    if(address == null || address.getAddressL7Country() == null) {
+    if (address == null || address.getCountry() == null) {
       StringBuilder addressString = new StringBuilder();
       if (address == null) {
         return "";
       }
 
-      if (StringUtils.notBlank(address.getAddressL2())) {
-        addressString.append(address.getAddressL2()).append(System.lineSeparator());
+      if (StringUtils.notBlank(address.getRoom())) {
+        addressString.append(address.getRoom()).append(System.lineSeparator());
       }
-      if (StringUtils.notBlank(address.getAddressL3())) {
-        addressString.append(address.getAddressL3()).append(System.lineSeparator());
+      if (StringUtils.notBlank(address.getFloor())) {
+        addressString.append(address.getFloor()).append(System.lineSeparator());
       }
-      if (StringUtils.notBlank(address.getAddressL4())) {
-        addressString.append(address.getAddressL4()).append(System.lineSeparator());
+      if (StringUtils.notBlank(address.getStreetName())) {
+        addressString.append(address.getStreetName()).append(System.lineSeparator());
       }
-      if (StringUtils.notBlank(address.getAddressL5())) {
-        addressString.append(address.getAddressL5()).append(System.lineSeparator());
+      if (StringUtils.notBlank(address.getPostBox())) {
+        addressString.append(address.getPostBox()).append(System.lineSeparator());
       }
-      if (StringUtils.notBlank(address.getAddressL6())) {
-        addressString.append(address.getAddressL6());
-      }
-      if (address.getAddressL7Country() != null) {
-        addressString.append(System.lineSeparator()).append(address.getAddressL7Country().getName());
+
+      if (address.getCountry() != null) {
+        addressString.append(System.lineSeparator()).append(address.getCountry().getName());
       }
 
       return addressString.toString();
     }
 
-    return  address.getFormattedFullName();
+    return address.getFormattedFullName();
   }
 
   @Override
@@ -321,7 +312,7 @@ public class AddressServiceImpl implements AddressService {
     if (zip == null) {
       return;
     }
-    Country country = address.getAddressL7Country();
+    Country country = address.getCountry();
 
     City city = address.getCity();
     if (city == null) {
@@ -329,7 +320,6 @@ public class AddressServiceImpl implements AddressService {
       city = cities.size() == 1 ? cities.get(0) : null;
       address.setCity(city);
     }
-    address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 
     if (appBaseService.getAppBase().getStoreStreets()) {
       List<Street> streets =
@@ -338,32 +328,32 @@ public class AddressServiceImpl implements AddressService {
         Street street = streets.get(0);
         address.setStreet(street);
         String name = street.getName();
-        String num = address.getStreetNumber();
-        address.setAddressL4(num != null ? num + " " + name : name);
+        String num = address.getBuildingNumber();
+        address.setStreetName(num != null ? num + " " + name : name);
       } else {
         address.setStreet(null);
-        address.setAddressL4(null);
+        address.setStreetName(null);
       }
     }
   }
 
   @Override
   public String getZipCode(Address address) {
-    if (address.getAddressL6() == null) {
-      return null;
-    }
-
-    Matcher matcher = ZIP_CODE_PATTERN.matcher(address.getAddressL6());
-    if (matcher.find()) {
-      return matcher.group();
-    }
-    return null;
+    //    if (address.getAddressL6() == null) {
+    //      return null;
+    //    }
+    //
+    //    Matcher matcher = ZIP_CODE_PATTERN.matcher(address.getAddressL6());
+    //    if (matcher.find()) {
+    //      return matcher.group();
+    //    }
+    return "null";
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void setFormattedFullName(Address address){
-    AddressTemplate addressTemplate = address.getAddressL7Country().getAddressTemplate();
+  public void setFormattedFullName(Address address) {
+    AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
     String content = addressTemplate.getTemplateStr();
 
     try {
@@ -383,8 +373,7 @@ public class AddressServiceImpl implements AddressService {
 
       String fullFormattedString = templates.fromText(content).make(templatesContext).render();
       address.setFormattedFullName(fullFormattedString);
-    }
-    catch (Exception e){
+    } catch (Exception e) {
 
     }
   }
@@ -394,8 +383,7 @@ public class AddressServiceImpl implements AddressService {
   public int computeFormattedAddressForCountries(List<Long> countryIds) {
     int totalAddressFormatted = 0;
 
-    Query<Address> query =
-                addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
+    Query<Address> query = addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
 
     try {
       int offset = 0;
@@ -404,26 +392,23 @@ public class AddressServiceImpl implements AddressService {
 
       while (!addressList.isEmpty()) {
 
-          totalAddressFormatted = totalAddressFormatted + addressList.size();
-          generateFormattedAddressForAddress(addressList);
+        totalAddressFormatted = totalAddressFormatted + addressList.size();
+        generateFormattedAddressForAddress(addressList);
 
-          JPA.clear();
+        JPA.clear();
 
-          offset = addressList.size();
-          addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-
+        offset = addressList.size();
+        addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
       }
 
     } catch (Exception e) {
 
     }
 
-
-
-      return totalAddressFormatted;
+    return totalAddressFormatted;
   }
 
   private void generateFormattedAddressForAddress(List<Address> addressList) {
-      addressList.forEach(this::setFormattedFullName);
+    addressList.forEach(this::setFormattedFullName);
   }
 }

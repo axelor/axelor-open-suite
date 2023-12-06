@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Address">
-<!--    <string name="addressL6" title="Zip/City"/>-->
+    <!-- <string name="addressL6" title="Zip/City"/> -->
 
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
     <string name="department" title="Department"/>
@@ -40,8 +40,8 @@
     <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry"
       title="QAS Proposal lists" mappedBy="address"/>
 
-    <string name="fullName" namecolumn="true" search="addressL2,addressL3,addressL4,addressL5,addressL6"
-      title="Address"/>
+    <string name="fullName" namecolumn="true"
+      search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
   </entity>
 
 </domain-models>

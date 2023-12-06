@@ -1,8 +1,6 @@
 package com.axelor.apps.base.service;
 
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
 import java.util.List;
 
 public class CountryServiceImpl implements CountryService {
@@ -10,7 +8,7 @@ public class CountryServiceImpl implements CountryService {
   private AddressService addressService;
 
   @Inject
-  public CountryServiceImpl(AddressService addressService){
+  public CountryServiceImpl(AddressService addressService) {
     this.addressService = addressService;
   }
 

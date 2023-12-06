@@ -229,7 +229,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
     String dept;
     try {
       Address partnerAddress = stockMoveToolService.getPartnerAddress(stockMove, stockMoveLine);
-      srcDstCountry = partnerAddress.getAddressL7Country().getAlpha2Code();
+      srcDstCountry = partnerAddress.getCountry().getAlpha2Code();
     } catch (AxelorException e) {
       srcDstCountry = e.getMessage();
     }
@@ -250,7 +250,7 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
           && ObjectUtils.notEmpty(stockMoveLine.getFromStockLocation().getAddress())) {
         countryOrigCode =
-            stockMoveLine.getFromStockLocation().getAddress().getAddressL7Country().getAlpha2Code();
+            stockMoveLine.getFromStockLocation().getAddress().getCountry().getAlpha2Code();
       } else {
         countryOrigCode = "";
       }

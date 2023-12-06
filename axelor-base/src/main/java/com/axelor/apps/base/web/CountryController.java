@@ -13,8 +13,7 @@ public class CountryController {
 
     if (ids == null) {
       response.setInfo("Needs to select at least one country");
-    }
-    else{
+    } else {
 
       int updatedRecordCount = 0;
       List<Long> countryIdsList = (List<Long>) ids;
@@ -22,7 +21,5 @@ public class CountryController {
 
       response.setInfo(updatedRecordCount + " records updated");
     }
-
-
   }
 }

@@ -85,7 +85,7 @@ public class AddressController {
 
     Address a = request.getContext().asType(Address.class);
     LOG.debug("validate a = {}", a);
-    String search = a.getAddressL4() + " " + a.getAddressL6();
+    String search = a.getStreetName();
     Map<String, Object> retDict =
         Beans.get(AddressService.class)
             .validate(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), search);

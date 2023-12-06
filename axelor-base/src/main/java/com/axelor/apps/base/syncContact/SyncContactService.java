@@ -359,7 +359,7 @@ public class SyncContactService {
     if (partnerCountry == null) {
       partnerCountry = createCountry(googleAddr.getCountry(), googleAddr.getCountryCode());
     }
-    partnerAddr.setAddressL7Country(partnerCountry);
+    partnerAddr.setCountry(partnerCountry);
     if (!Strings.isNullOrEmpty(googleAddr.getCity())) {
       City partnerCity = cityRepo.findByName(googleAddr.getCity());
       if (partnerCity == null) {
@@ -373,10 +373,9 @@ public class SyncContactService {
     }
     partnerAddr.setZip(googleAddr.getPostalCode());
     addrL4.append(googleAddr.getStreetAddress());
-    partnerAddr.setAddressL4(addrL4.toString());
-    partnerAddr.setAddressL5(googleAddr.getCity());
-    partnerAddr.setAddressL2(googleAddr.getExtendedAddress());
-    partnerAddr.setAddressL6(googleAddr.getPostalCode() + " " + googleAddr.getCity());
+    partnerAddr.setStreetName(addrL4.toString());
+    partnerAddr.setPostBox(googleAddr.getCity());
+    partnerAddr.setRoom(googleAddr.getExtendedAddress());
     partnerAddr.setFullName(Beans.get(AddressService.class).computeFullName(partnerAddr));
     partnerAddr.setImportOrigin(importOrigin);
     return partnerAddr;
