@@ -69,7 +69,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       BigDecimal availableQty =
           realQty.subtract(alreadyAllocatedQty).setScale(2, RoundingMode.HALF_UP);
 
-      if (productReservation.getQty().compareTo(availableQty) <= 0) {
+      if (productReservation.getQty().compareTo(availableQty) < 0) {
         productReservation.setStatus(
             ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS);
       } else {
