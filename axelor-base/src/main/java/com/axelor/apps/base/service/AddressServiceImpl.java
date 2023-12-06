@@ -400,7 +400,7 @@ public class AddressServiceImpl implements AddressService {
         setFormattedFullName(address);
       } catch (Exception e) {
         exceptionCount++;
-        TraceBackService.trace(e);
+        TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
       }
     }
 
