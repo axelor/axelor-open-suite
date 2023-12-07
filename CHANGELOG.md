@@ -1,3 +1,37 @@
+## [7.0.16] (2023-12-07)
+
+#### Fixed
+
+* Sale order: fixed JNPE error when copying a sale order without lines.
+* Purchase request: fixed reference to purchase order being copied on duplication.
+* Accounting batch: hide unnecessary payment mode information.
+* Sale order: fixed wrong price update when generating quotation from template.
+* Move line: removed critical error when we open move line form.
+* Team task: fixed view reload error.
+* Indicator generator: fixed indicators generators demo data.
+* Invoice: fixed reference to subrogation release being copied on duplication.
+* Message: fixed encoding errors happening with accented characters when sending an email.
+* Fixed asset: accounting report now correctly takes into account fiscal already depreciated amount.
+* Configurator: fixed EN demo data for configurator.
+* Bank Details: fixed balance display for bank details on card view and form view.
+* Invoice: fixed error popup before opening a payment voucher from an invoice.
+* Invoice: fixed invoice term generation when skip ventilation is enabled in invoicing configuration.
+* Contract: fixed UI issue by hiding some part of the view while the partner is empty.
+* Account management: use functional origin instead of journal to determine tax account.
+* Invoice: fixed error at new invoice term creation.
+* Invoice: fixed reference to "Refusal to pay reason" being copied on invoice duplication.
+* Timesheet: fixed timesheet line date check.
+* Stock move: allow to create a tracking number directly on stock move line.
+* Cost calculation: fixed an issue preventing an infinite loop in case of an error in bill of materials hierarchy.
+* Account: forbid to select the account itself as parent and its child accounts.
+* Mobile Settings: added a placeholder on every authorized roles.
+* Bank order: highlight orders sent to bank but not realized.
+* Payment session: fixed display of currency symbol in payment session.
+* Move template line: hide and set required tax field when it is configured in financial account.
+* Inventory line: fixed update of inventory line by taking into account stockLocation of line when possible, triggering update when necessary.
+* Invoice: fixed partially paid invoices in bill of exchange management.
+* Stock move: allow to select external stock location for deliveries.
+
 ## [7.0.15] (2023-11-23)
 
 #### :exclamation: Breaking Change
@@ -736,6 +770,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.16]: https://github.com/axelor/axelor-open-suite/compare/v7.0.15...v7.0.16
 [7.0.15]: https://github.com/axelor/axelor-open-suite/compare/v7.0.14...v7.0.15
 [7.0.14]: https://github.com/axelor/axelor-open-suite/compare/v7.0.13...v7.0.14
 [7.0.13]: https://github.com/axelor/axelor-open-suite/compare/v7.0.12...v7.0.13
