@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -40,6 +41,7 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
@@ -60,18 +62,20 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine reset(ContractLine contractLine) {
+  public Map<String, Object> reset(ContractLine contractLine) {
     if (contractLine == null) {
-      return new ContractLine();
+      return (Map<String, Object>) new ContractLine();
     }
-    contractLine.setTaxLine(null);
-    contractLine.setProductName(null);
-    contractLine.setUnit(null);
-    contractLine.setPrice(null);
-    contractLine.setExTaxTotal(null);
-    contractLine.setInTaxTotal(null);
-    contractLine.setDescription(null);
-    return contractLine;
+
+    Map<String, Object> contractLineMap = Mapper.toMap(new ContractLine());
+    contractLineMap.put("inTaxTotal", null);
+    contractLineMap.put("taxLine", null);
+    contractLineMap.put("productName", null);
+    contractLineMap.put("unit", null);
+    contractLineMap.put("price", null);
+    contractLineMap.put("exTaxTotal", null);
+    contractLineMap.put("description", null);
+    return contractLineMap;
   }
 
   @Override
