@@ -36,6 +36,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -99,8 +100,10 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .collect(Collectors.toList());
 
     BigDecimal reservedQty =
-        stockLocationServiceSupplychain.getReservedQtyOfProductInStockLocations(
-            productId, stockLocationIds, companyId);
+        this.getReservedProductQty(
+            product,
+            stockLocation,
+            ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION);
 
     map.put(
         "$realQty",
@@ -116,7 +119,8 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
 
     map.put(
         "$requestedReservedQty",
-        this.getRequestedReservedQty(product, company, stockLocation)
+        this.getReservedProductQty(
+                product, null, ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION)
             .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$saleOrderQty",
@@ -132,6 +136,22 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .setScale(scale, RoundingMode.HALF_UP));
 
     return map;
+  }
+
+  protected BigDecimal getReservedProductQty(Product product, StockLocation stockLocation, int type)
+      throws AxelorException {
+    return Beans.get(ProductReservationRepository.class)
+        .all()
+        .filter(
+            "self.product = :product AND self.status = :status AND self.productReservationType = :type"
+                + (stockLocation != null ? " AND self.stockLocation = :stockLocation" : ""))
+        .bind("stockLocation", stockLocation)
+        .bind("product", product)
+        .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
+        .bind("type", type)
+        .fetchStream()
+        .map(it -> it.getQty())
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   protected BigDecimal getRequestedReservedQty(
