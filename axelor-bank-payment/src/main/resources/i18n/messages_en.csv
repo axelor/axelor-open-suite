@@ -781,6 +781,7 @@
 "Please fill the sender bank details currency.",,,
 "Please fill the sender company",,,
 "Please fill the zip in %s's partner details.",,,
+"Please input an account or a journal in the bank reconciliation header (associated to the bank account) as bank reconciliation line(s) with reference(s) : %s will automatically generate accounting move entry(ies).",,,
 "Please insert a EBICS user for transport in the EBICS partner",,,
 "Please insert a password",,,
 "Please select a cash account in the bank statement rule %s",,,

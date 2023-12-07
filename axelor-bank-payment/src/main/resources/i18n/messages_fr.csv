@@ -781,6 +781,7 @@
 "Please fill the sender bank details currency.","Merci de renseigner la devise dans le compte bancaire émetteur.",,
 "Please fill the sender company","Merci de renseigner la société émettrice",,
 "Please fill the zip in %s's partner details.","Merci de renseigner le code postale dans les paramètres du tiers %s",,
+"Please input an account or a journal in the bank reconciliation header (associated to the bank account) as bank reconciliation line(s) with reference(s) : %s will automatically generate accounting move entry(ies).","Veuillez renseigner le compte comptable ou le journal dans l'entête du rapprochement (associé au compte) vu que la/les lignes de réconciliation(s) bancaire avec pour référence %s vont générer automatiquement des écritures comptables.",,
 "Please insert a EBICS user for transport in the EBICS partner","Veuillez insérer un utilisateur EBICS pour le transport dans le tiers EBICS.",,
 "Please insert a password","Veuillez insérer un mot de passe",,
 "Please select a cash account in the bank statement rule %s","Veuillez sélectionner un compte de vente pour la règle liée au relevé %s",,

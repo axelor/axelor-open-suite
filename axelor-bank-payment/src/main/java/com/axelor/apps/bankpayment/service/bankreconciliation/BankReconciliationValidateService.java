@@ -29,18 +29,24 @@ import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
+import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BankReconciliationValidateService {
 
@@ -79,6 +85,7 @@ public class BankReconciliationValidateService {
 
     // TODO CHECK should be done on all, before generate any moves.
     // Also, line should be sort by date and sequence
+    this.checkBankReconciliation(bankReconciliation);
 
     for (BankReconciliationLine bankReconciliationLine :
         bankReconciliation.getBankReconciliationLineList()) {
@@ -104,6 +111,32 @@ public class BankReconciliationValidateService {
             .toLocalDateTime());
     bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
+  }
+
+  protected void checkBankReconciliation(BankReconciliation bankReconciliation)
+      throws AxelorException {
+    List<BankReconciliationLine> bankReconciliationLinePartnerOrAccountErrorList =
+        new ArrayList<>();
+    for (BankReconciliationLine bankReconciliationLine :
+        bankReconciliation.getBankReconciliationLineList()) {
+      if (!bankReconciliationLine.getIsPosted()
+          && bankReconciliationLine.getMoveLine() == null
+          && bankReconciliationLine.getAccount() != null
+          && (bankReconciliation.getCashAccount() == null
+              || bankReconciliation.getJournal() == null)) {
+        bankReconciliationLinePartnerOrAccountErrorList.add(bankReconciliationLine);
+      }
+    }
+    if (ObjectUtils.notEmpty(bankReconciliationLinePartnerOrAccountErrorList)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              BankPaymentExceptionMessage
+                  .BANK_RECONCILIATION_HEADER_CASH_ACCOUNT_OR_JOURNAL_MISSING),
+          bankReconciliationLinePartnerOrAccountErrorList.stream()
+              .map(brl -> brl.getReference() != null ? brl.getReference() : "")
+              .collect(Collectors.joining(",")));
+    }
   }
 
   protected void validate(BankReconciliationLine bankReconciliationLine) throws AxelorException {

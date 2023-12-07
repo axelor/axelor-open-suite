@@ -336,4 +336,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT = /*$$(*/
       "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement." /*)*/;
+
+  public static final String BANK_RECONCILIATION_HEADER_CASH_ACCOUNT_OR_JOURNAL_MISSING = /*$$(*/
+      "Please input an account or a journal in the bank reconciliation header (associated to the bank account) as bank reconciliation line(s) with reference(s) : %s will automatically generate accounting move entry(ies)." /*)*/;
 }
