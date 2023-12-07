@@ -1,3 +1,22 @@
+## [6.3.34] (2023-12-07)
+
+#### Fixed
+
+* Sale order: fixed JNPE error when copying a sale order without lines.
+* Purchase request: fixed reference to purchase order being copied on duplication.
+* Accounting batch: hide unnecessary payment mode information.
+* Sale order: fixed wrong price update when generating quotation from template.
+* Invoice: fixed reference to subrogation release being copied on duplication.
+* Message: fixed encoding errors happening with accented characters when sending an email.
+* Fixed asset: accounting report now correctly takes into account fiscal already depreciated amount.
+* Configurator: fixed EN demo data for configurator.
+* Invoice: fixed reference to "Refusal to pay reason" being copied on invoice duplication.
+* Timesheet: fixed timesheet line date check.
+* Account: forbid to select the account itself as parent and its child accounts.
+* Bank order: highlight orders sent to bank but not realized.
+* Move template line: hide and set required tax field when it is configured in financial account.
+* Stock move: allow to select external stock location for deliveries.
+
 ## [6.3.33] (2023-11-23)
 
 #### Fixed
@@ -950,6 +969,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.34]: https://github.com/axelor/axelor-open-suite/compare/v6.3.33...v6.3.34
 [6.3.33]: https://github.com/axelor/axelor-open-suite/compare/v6.3.32...v6.3.33
 [6.3.32]: https://github.com/axelor/axelor-open-suite/compare/v6.3.31...v6.3.32
 [6.3.31]: https://github.com/axelor/axelor-open-suite/compare/v6.3.30...v6.3.31
