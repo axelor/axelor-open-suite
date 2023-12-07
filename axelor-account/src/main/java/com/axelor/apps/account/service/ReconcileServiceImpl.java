@@ -111,6 +111,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public ReconcileServiceImpl(
@@ -135,7 +136,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       SubrogationReleaseWorkflowService subrogationReleaseWorkflowService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -159,6 +161,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -191,7 +194,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+              currencyScaleServiceAccount.getCompanyScaledValue(debitMoveLine, amount),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
@@ -570,13 +573,13 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Recompute currency rate to avoid rounding issue
     total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-    if (total.stripTrailingZeros().scale() > AppBaseService.DEFAULT_NB_DECIMAL_DIGITS) {
+    if (total.stripTrailingZeros().scale() > currencyScaleServiceAccount.getScale(otherMoveLine)) {
       total =
           computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
-    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    total = currencyScaleServiceAccount.getScaledValue(moveLine, total);
 
     if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
         && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {
@@ -593,8 +596,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal computedAmount,
       boolean isInvoicePayment) {
     BigDecimal ratioPaid = BigDecimal.ONE;
-    int scale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
-    BigDecimal percentage = amountToPay.divide(computedAmount, scale, RoundingMode.HALF_UP);
+    int percentageScale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
+    BigDecimal percentage =
+        amountToPay.divide(computedAmount, percentageScale, RoundingMode.HALF_UP);
 
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
@@ -603,12 +607,12 @@ public class ReconcileServiceImpl implements ReconcileService {
               invoiceAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     } else if (moveLineAmount
             .multiply(percentage)
-            .setScale(scale, RoundingMode.HALF_UP)
+            .setScale(percentageScale, RoundingMode.HALF_UP)
             .compareTo(amountToPay)
         != 0) {
       // Compute ratio paid when it's invoice term partial payment
       if (amountToPay.compareTo(invoiceAmount) != 0) {
-        percentage = invoiceAmount.divide(computedAmount, scale, RoundingMode.HALF_UP);
+        percentage = invoiceAmount.divide(computedAmount, percentageScale, RoundingMode.HALF_UP);
       } else {
         percentage =
             invoiceAmount.divide(
