@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import java.util.Map;
 
 public interface ContractLineService {
   /**
@@ -30,7 +31,7 @@ public interface ContractLineService {
    * @param contractLine to reset.
    * @return ContractLine reset.
    */
-  ContractLine reset(ContractLine contractLine);
+  Map<String, Object> reset(ContractLine contractLine);
 
   /**
    * Fill ContractLine with Product information.

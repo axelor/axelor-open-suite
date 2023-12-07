@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -128,18 +129,18 @@ public class ContractVersionController {
     }
   }
 
-  public void changeProduct(ActionRequest request, ActionResponse response) {
+  public void changeProduct(ActionRequest request, ActionResponse response) throws AxelorException {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
     ContractLine contractLine = new ContractLine();
-
     try {
+
       contractLine = request.getContext().asType(ContractLine.class);
 
       ContractVersion contractVersion =
           request.getContext().getParent().asType(ContractVersion.class);
       Contract contract =
           contractVersion.getNextContract() == null
-              ? contractVersion.getContract()
+              ? request.getContext().getParent().getParent().asType(Contract.class)
               : contractVersion.getNextContract();
       Product product = contractLine.getProduct();
 
