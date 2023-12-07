@@ -879,36 +879,6 @@ public class BudgetServiceImpl implements BudgetService {
     }
   }
 
-  protected Budget createBudgetFromVariable(
-      BudgetScenarioVariable budgetScenarioVariable,
-      BudgetLevel budgetLevel,
-      Map<String, Object> variableAmountMap)
-      throws AxelorException {
-    if (budgetScenarioVariable == null || budgetLevel == null) {
-      return null;
-    }
-    Budget optBudget = new Budget();
-    optBudget.setCode(budgetScenarioVariable.getCode());
-    optBudget.setName(budgetScenarioVariable.getName());
-    optBudget.setFromDate(budgetLevel.getFromDate());
-    optBudget.setToDate(budgetLevel.getToDate());
-    optBudget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-    optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-    optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-    optBudget.setCategory(budgetScenarioVariable.getCategory());
-    BigDecimal calculatedAmount =
-        ((BigDecimal)
-                variableAmountMap.getOrDefault(budgetScenarioVariable.getCode(), BigDecimal.ZERO))
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-    optBudget.setAmountForGeneration(calculatedAmount);
-    optBudget.setTotalAmountExpected(calculatedAmount);
-    optBudget.setAvailableAmount(calculatedAmount);
-    optBudget.setAvailableAmountWithSimulated(optBudget.getAmountForGeneration());
-    optBudget.setPeriodDurationSelect(0);
-    generatePeriods(optBudget);
-    return optBudget;
-  }
-
   @Override
   public void computeAvailableFields(Budget budget) {
     budget.setAvailableAmount(
