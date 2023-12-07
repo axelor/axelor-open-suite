@@ -607,7 +607,11 @@ public class StockMoveController {
   public void getToStockLocation(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     try {
-      boolean fromOutsource = (boolean) request.getContext().get("_fromOutsource");
+
+      boolean fromOutsource =
+          Optional.ofNullable(request.getContext().get("_fromOutsource"))
+              .map(o -> (boolean) o)
+              .orElse(false);
       StockLocation toStockLocation;
       if (fromOutsource) {
         toStockLocation = Beans.get(StockMoveService.class).getToStockLocationOutsource(stockMove);
