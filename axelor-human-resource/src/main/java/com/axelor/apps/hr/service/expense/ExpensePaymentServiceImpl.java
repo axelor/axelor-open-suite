@@ -253,8 +253,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BankOrder bankOrder = expense.getBankOrder();
 
     if (bankOrder != null) {
-      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-          || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
+      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));

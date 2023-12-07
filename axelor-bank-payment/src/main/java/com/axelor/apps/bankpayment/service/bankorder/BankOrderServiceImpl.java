@@ -884,12 +884,4 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
     bankOrderRepo.save(bankOrder);
   }
-
-  @Transactional
-  @Override
-  public void setStatusToRejected(BankOrder bankOrder) {
-    bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_TOTALLY_REJECTED);
-    bankOrder.setStatusSelect(BankOrderRepository.STATUS_REJECTED);
-    bankOrderRepo.save(bankOrder);
-  }
 }

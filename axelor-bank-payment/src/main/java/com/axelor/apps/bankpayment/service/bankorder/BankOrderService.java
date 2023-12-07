@@ -81,6 +81,4 @@ public interface BankOrderService {
       String gridViewName, String formViewName, String viewDomain);
 
   public void setStatusToDraft(BankOrder bankOrder);
-
-  public void setStatusToRejected(BankOrder bankOrder);
 }

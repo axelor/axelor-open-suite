@@ -48,10 +48,8 @@
 
   <selection name="bankpayment.bank.order.status.select">
     <option value="1">Draft</option>
-    <option value="2">Awaiting signature</option>
     <option value="3">Validated</option>
     <option value="4">Carried out</option>
-    <option value="5">Rejected</option>
     <option value="6">Canceled</option>
   </selection>
 

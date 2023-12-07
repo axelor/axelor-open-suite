@@ -151,8 +151,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     for (BankOrder bankOrder : bankOrders) {
 
       int statusSelect = bankOrder.getStatusSelect();
-      if (statusSelect != BankOrderRepository.STATUS_DRAFT
-          && statusSelect != BankOrderRepository.STATUS_AWAITING_SIGNATURE) {
+      if (statusSelect != BankOrderRepository.STATUS_DRAFT) {
         throw new AxelorException(
             bankOrder,
             TraceBackRepository.CATEGORY_INCONSISTENCY,

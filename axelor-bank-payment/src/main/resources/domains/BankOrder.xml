@@ -83,10 +83,8 @@
 
 	   	// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
-		public static final int STATUS_AWAITING_SIGNATURE = 2;
 		public static final int STATUS_VALIDATED = 3;
 		public static final int STATUS_CARRIED_OUT = 4;
-		public static final int STATUS_REJECTED = 5;
 		public static final int STATUS_CANCELED = 6;
 
 

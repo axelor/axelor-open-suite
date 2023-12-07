@@ -104,7 +104,6 @@ public class BankOrderController {
     }
   }
 
-
   public void setBankDetailDomain(ActionRequest request, ActionResponse response) {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     String domain = Beans.get(BankOrderService.class).createDomainForBankDetails(bankOrder);
@@ -173,13 +172,6 @@ public class BankOrderController {
     BankOrder bankOrder = request.getContext().asType(BankOrder.class);
     bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
     Beans.get(BankOrderService.class).setStatusToDraft(bankOrder);
-    response.setReload(true);
-  }
-
-  public void setStatusReject(ActionRequest request, ActionResponse response) {
-    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
-    bankOrder = Beans.get(BankOrderRepository.class).find(bankOrder.getId());
-    Beans.get(BankOrderService.class).setStatusToRejected(bankOrder);
     response.setReload(true);
   }
 }
