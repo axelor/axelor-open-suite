@@ -24,6 +24,7 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetLevelService {
 
@@ -96,4 +97,12 @@ public interface BudgetLevelService {
   public void computeBudgetLevelTotals(Budget budget);
 
   List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
+
+  void generateBudgetLevelFromGenerator(
+      BudgetLevel budgetLevel,
+      BudgetLevel parent,
+      GlobalBudget globalBudget,
+      Map<String, Object> variableAmountMap,
+      boolean linkToGlobal)
+      throws AxelorException;
 }

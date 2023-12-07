@@ -32,12 +32,11 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.GlobalBudgetTemplate;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface BudgetService {
 
@@ -304,16 +303,19 @@ public interface BudgetService {
 
   public BigDecimal computeTotalAmountRealized(Budget budget);
 
-  void generateBudgetsUsingTemplate(
-      GlobalBudgetTemplate globalBudgetTemplate,
-      List<Budget> budgetList,
-      Set<BudgetScenarioVariable> variablesList,
-      BudgetLevel budgetLevel,
-      GlobalBudget global,
-      Map<String, Object> variableAmountMap)
-      throws AxelorException;
-
   void computeAvailableFields(Budget budget);
 
   void archiveBudget(Budget budget);
+
+  @Transactional(rollbackOn = {Exception.class})
+  void generateLineFromGenerator(Budget budget, BudgetLevel parent, GlobalBudget globalBudget)
+      throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  void generateLineFromGenerator(
+      BudgetScenarioVariable budgetScenarioVariable,
+      BudgetLevel parent,
+      Map<String, Object> variableAmountMap,
+      GlobalBudget globalBudget)
+      throws AxelorException;
 }
