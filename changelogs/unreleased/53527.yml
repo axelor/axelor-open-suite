@@ -1,0 +1,3 @@
+---
+title: "InventoryLine: Fixed update of inventory line by taking into account stockLocation of line when possible, triggering update when necessary."
+type: fix
