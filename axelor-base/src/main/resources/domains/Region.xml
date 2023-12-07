@@ -7,7 +7,7 @@
 
   <entity name="Region">
 
-    <string name="name" title="Region name" required="true"/>
+    <string name="name" title="Region name" required="true" translatable="true"/>
     <string name="code" title="Region code" required="true"/>
     <many-to-one name="country" ref="Country" title="Country"/>
 

@@ -7,7 +7,7 @@
 
   <entity name="MoveTemplateLine" cacheable="true">
     <many-to-one name="moveTemplate" title="Move template" ref="MoveTemplate"/>
-    <string name="name" title="Label"/>
+    <string name="name" title="Label" translatable="true"/>
     <string name="debitCreditSelect" title="Debit/Credit"
       selection="move.template.line.debit.credit.select"/>
     <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>

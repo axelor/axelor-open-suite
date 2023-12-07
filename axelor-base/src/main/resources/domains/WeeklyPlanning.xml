@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="WeeklyPlanning" cacheable="true">
-    <string name="name" required="true" namecolumn="true"/>
+    <string name="name" required="true" namecolumn="true" translatable="true"/>
     <one-to-many name="weekDays" ref="com.axelor.apps.base.db.DayPlanning"
       mappedBy="weeklyPlanning"/>
     <decimal name="bonusCoef" title="Coefficient for bonus"/>

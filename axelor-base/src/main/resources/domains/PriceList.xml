@@ -6,7 +6,7 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="PriceList">
-    <string name="title" title="Title" namecolumn="true" required="true"/>
+    <string name="title" title="Title" namecolumn="true" required="true" translatable="true"/>
     <boolean name="isActive" title="Active"/>
     <string name="comments" title="Comments" large="true"/>
     <one-to-many name="priceListLineList" ref="com.axelor.apps.base.db.PriceListLine"

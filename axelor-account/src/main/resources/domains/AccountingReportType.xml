@@ -7,7 +7,7 @@
 
   <entity name="AccountingReportType">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="reportTitle" title="Report title"/>
     <integer name="typeSelect" title="Printing output" required="true"
       selection="accounting.report.type.select"/>

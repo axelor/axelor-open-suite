@@ -8,7 +8,7 @@
   <entity name="DebtRecoveryMethodLine" cacheable="true">
 
     <integer name="sequence" title="Sequence"/>
-    <string name="debtRecoveryLevelLabel" namecolumn="true" title="Label"/>
+    <string name="debtRecoveryLevelLabel" namecolumn="true" title="Label" translatable="true"/>
     <integer name="standardDeadline" title="Standard trigger delay (days)"/>
     <decimal name="minThreshold" title="Min. amount (€)"/>
     <many-to-many name="messageTemplateSet" ref="com.axelor.message.db.Template"

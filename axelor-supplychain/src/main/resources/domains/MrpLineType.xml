@@ -8,8 +8,8 @@
   <entity name="MrpLineType">
 
     <string name="code" title="Code"/>
-    <string name="label" title="Label"/>
-    <string name="name" title="Name"/>
+    <string name="label" title="Label" translatable="true"/>
+    <string name="name" title="Name" translatable="true"/>
     <integer name="elementSelect" title="Element"
       selection="supplychain.mrp.line.element.select" default="0"/>
     <integer name="typeSelect" title="Type" selection="supplychain.mrp.line.type.select"

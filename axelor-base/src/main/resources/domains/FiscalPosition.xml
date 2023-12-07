@@ -7,7 +7,7 @@
 
   <entity name="FiscalPosition">
 
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code" required="true"/>
     <boolean name="customerSpecificNote" title="Customer specific note"/>
     <string name="customerSpecificNoteText" title="Customer specific note" large="true"/>

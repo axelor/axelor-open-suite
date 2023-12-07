@@ -6,7 +6,7 @@
   <module name="production" package="com.axelor.apps.production.db"/>
 
   <entity name="MachineType">
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
     <string name="code" title="Code"/>
   </entity>
 

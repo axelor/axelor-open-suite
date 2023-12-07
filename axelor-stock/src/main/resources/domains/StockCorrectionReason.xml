@@ -7,7 +7,7 @@
 
   <entity name="StockCorrectionReason">
 
-    <string name="name" namecolumn="true" required="true"/>
+    <string name="name" namecolumn="true" required="true" translatable="true"/>
 
   </entity>
 

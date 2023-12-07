@@ -6,7 +6,7 @@
   <module name="maintenance" package="com.axelor.apps.maintenance.db"/>
 
   <entity name="MaintenanceCategory">
-    <string name="name" title="Name" required="true"/>
+    <string name="name" title="Name" required="true" translatable="true"/>
   </entity>
 
 </domain-models>

@@ -7,7 +7,7 @@
 
   <entity name="Function" cacheable="true">
 
-    <string name="name" title="Function Name"/>
+    <string name="name" title="Function Name" translatable="true"/>
     <string name="code" title="Code"/>
 
   </entity>
