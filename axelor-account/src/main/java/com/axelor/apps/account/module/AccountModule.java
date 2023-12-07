@@ -165,6 +165,7 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
@@ -265,6 +266,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
@@ -293,6 +296,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
@@ -736,5 +741,15 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermPaymentGroupService.class).to(InvoiceTermPaymentGroupServiceImpl.class);
 
     bind(InvoiceTermPaymentAttrsService.class).to(InvoiceTermPaymentAttrsServiceImpl.class);
+
+    bind(MoveLineFinancialDiscountService.class).to(MoveLineFinancialDiscountServiceImpl.class);
+
+    bind(FinancialDiscountService.class).to(FinancialDiscountServiceImpl.class);
+
+    bind(InvoicePaymentFinancialDiscountService.class)
+        .to(InvoicePaymentFinancialDiscountServiceImpl.class);
+
+    bind(InvoiceTermFinancialDiscountService.class)
+        .to(InvoiceTermFinancialDiscountServiceImpl.class);
   }
 }
