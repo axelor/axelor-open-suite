@@ -80,7 +80,7 @@
         onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"/>
       <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
-        readonlyIf="expenseProduct.blockExpenseTax == true"/>
+        readonlyIf="expenseProduct.blockExpenseTax"/>
       <field name="untaxedAmount"/>
       <field name="toInvoice" colSpan="3"/>
       <field name="invoiced" colSpan="3"
@@ -99,6 +99,7 @@
       <field name="expense" hidden="true"/>
       <field name="expense.companyCbSelect" hidden="true"/>
       <field name="expense.multipleUsers" hidden="true"/>
+      <field name="expenseProduct.blockExpenseTax" hidden="true"/>
     </panel>
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
