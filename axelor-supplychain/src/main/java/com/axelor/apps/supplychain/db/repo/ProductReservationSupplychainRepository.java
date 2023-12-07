@@ -30,7 +30,8 @@ public class ProductReservationSupplychainRepository extends ProductReservationR
       Long id = (Long) json.get("id");
       ProductReservation productReservation = find(id);
       try {
-        if (context.get("_field").equals("productReservationList")) {
+        if (context.get("_field") != null
+            && context.get("_field").equals("productReservationList")) {
 
           BigDecimal availableQty =
               Beans.get(ProductReservationService.class).getAvailableQty(productReservation);
