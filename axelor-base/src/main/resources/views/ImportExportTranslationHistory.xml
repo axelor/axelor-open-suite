@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="import-export-translation-history-grid" title="History"
+    model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
+    <button name="traceBackHistoryBtn" title="Tracebacks"
+      onClick="import-export-translation-history-view-trace-back-history" icon="fa-wrench"
+      help="Show tracebacks"/>
+    <field name="actionType"/>
+    <field name="recordNumber"/>
+    <field name="errorNumber"/>
+
+  </grid>
+
+  <form name="import-export-translation-history-form" title="History"
+    model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
+    <panel name="importExportTranslationHistoryPanel" showTitle="false" title="History"
+      colSpan="12">
+      <field name="actionType"/>
+      <field name="recordNumber"/>
+      <field name="errorNumber"/>
+      <button name="traceBackHistoryBtn" title="Tracebacks"
+        onClick="import-export-translation-history-view-trace-back-history"/>
+    </panel>
+  </form>
+
+  <action-view name="import-export-translation-history-view-trace-back-history"
+    title="Trace Back History" model="com.axelor.apps.base.db.TraceBack">
+    <view type="grid" name="trace-back-grid"/>
+    <view type="form" name="trace-back-form"/>
+    <domain>self.refId = :importExportTranslationHistoryId</domain>
+    <context name="importExportTranslationHistoryId" expr="eval: __this__.id"/>
+  </action-view>
+
+
+</object-views>
