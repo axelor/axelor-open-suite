@@ -607,8 +607,14 @@ public class StockMoveController {
   public void getToStockLocation(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     try {
-      StockLocation toStockLocation =
-          Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      boolean fromOutsource = (boolean) request.getContext().get("_fromOutsource");
+      StockLocation toStockLocation;
+      if (fromOutsource) {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocationOutsource(stockMove);
+      } else {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      }
+
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

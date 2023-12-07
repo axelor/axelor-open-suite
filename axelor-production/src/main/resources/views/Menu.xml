@@ -154,6 +154,7 @@
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>
+    <context name="_fromOutsource" expr="eval:true"/>
   </action-view>
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals"
