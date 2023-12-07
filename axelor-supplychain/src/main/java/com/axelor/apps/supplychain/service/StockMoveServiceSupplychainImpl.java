@@ -152,6 +152,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           I18n.get(SupplychainExceptionMessage.CUSTOMER_HAS_BLOCKED_ACCOUNT));
     }
 
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      stockMoveLineServiceSupplychain.realizeProductReservations(stockMoveLine);
+    }
+
     if (!appSupplyChainService.isApp("supplychain")) {
       return super.realizeStockMove(stockMove, check);
     }

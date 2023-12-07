@@ -41,6 +41,14 @@ public class StockMoveLineSupplychainRepository extends StockMoveLineStockReposi
       Long stockMoveLineId = (Long) json.get("id");
       StockMoveLine stockMoveLine = find(stockMoveLineId);
       StockMove stockMove = stockMoveLine.getStockMove();
+      if (context.get("_field").equals("stockMoveLineList")
+          && stockMove != null
+          && stockMove.getStatusSelect() < StockMoveRepository.STATUS_REALIZED) {
+        json.put(
+            "$isAllocationToBeSelected",
+            Beans.get(StockMoveLineServiceSupplychain.class)
+                .isAllocationToBeSelected(stockMoveLine));
+      }
 
       if (context.containsKey("_cutOffPreview") && (boolean) context.get("_cutOffPreview")) {
         boolean isPurchase =

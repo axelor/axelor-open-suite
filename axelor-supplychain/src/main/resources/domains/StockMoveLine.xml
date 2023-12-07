@@ -25,6 +25,12 @@
 
     <datetime name="reservationDateTime" readonly="true"/>
 
+    <one-to-many name="productReservationList"
+      ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservations"
+      mappedBy="originStockMoveLine"/>
+
+    <boolean name="isAllocationToBeSelected" readonly="true" default="false"/>
+
     <finder-method name="findAllBySaleOrder"
       using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
       filter="self.stockMove.saleOrder.id = :saleOrder.id"/>

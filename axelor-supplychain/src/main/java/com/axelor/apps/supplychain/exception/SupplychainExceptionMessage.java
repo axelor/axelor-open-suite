@@ -380,6 +380,9 @@ public final class SupplychainExceptionMessage {
   public static final String ALLOCATION_QTY_BY_PRODUCT_IS_NOT_AVAILABLE =
       /*$$(*/ "Allocation quantity is not available for this product at this location." /*)*/;
 
-  public static final String PRODUCT_RESERVATION_INVALID =
-      /*$$(*/ "Product reservation invalid" /*)*/;
+  public static final String STOCK_MOVE_LINE_INCORECT_ALLOCATION =
+      /*$$(*/ "Total allocated quantity for each stock move line must be equals to the real quantity." /*)*/;
+
+  public static final String STOCK_MOVE_LINE_NOT_ENOUGH_QTY_SELECTED =
+      /*$$(*/ "Not enough quantity was allocated to meet the real quantity." /*)*/;
 }

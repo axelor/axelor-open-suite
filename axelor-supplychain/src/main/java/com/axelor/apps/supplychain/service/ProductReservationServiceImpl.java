@@ -1,7 +1,11 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
@@ -25,6 +29,22 @@ public class ProductReservationServiceImpl implements ProductReservationService 
       StockLocationService stockLocationService) {
     this.productReservationRepository = productReservationRepository;
     this.stockLocationService = stockLocationService;
+  }
+
+  @Override
+  public ProductReservation createProductReservation(
+      Product product,
+      BigDecimal qty,
+      int typeSelect,
+      StockLocation stockLocation,
+      TrackingNumber trackingNumber) {
+    ProductReservation productReservation = new ProductReservation();
+    productReservation.setProduct(product);
+    productReservation.setStockLocation(stockLocation);
+    productReservation.setTrackingNumber(trackingNumber);
+    productReservation.setQty(qty);
+    productReservation.setTypeSelect(typeSelect);
+    return productReservation;
   }
 
   @Override
@@ -64,26 +84,46 @@ public class ProductReservationServiceImpl implements ProductReservationService 
 
   public BigDecimal getAvailableQty(ProductReservation productReservation) throws AxelorException {
     BigDecimal alreadyAllocatedQty =
-        productReservationRepository
-            .all()
-            .filter(
-                "self.typeSelect = :typeSelect AND self.status = :status"
-                    + (productReservation.getStockLocation() != null
-                        ? " AND self.stockLocation = :stockLocation"
-                        : "")
-                    + (productReservation.getProduct().getTrackingNumberConfiguration() != null
-                        ? " AND self.trackingNumber = :trackingNumber"
-                        : " AND self.product = :product"))
-            .bind("product", productReservation.getProduct())
-            .bind("typeSelect", productReservation.getTypeSelect())
-            .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
-            .bind("stockLocation", productReservation.getStockLocation())
-            .bind("trackingNumber", productReservation.getTrackingNumber())
-            .fetchStream()
-            .map(ProductReservation::getQty)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        this.getAllocatedQty(
+            productReservation.getProduct(),
+            productReservation.getStockLocation(),
+            productReservation.getProduct().getTrackingNumberConfiguration() != null
+                ? productReservation.getTrackingNumber()
+                : null);
+
     BigDecimal realQty = this.getRealQtyForProductReservation(productReservation);
     return realQty.subtract(alreadyAllocatedQty).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  public BigDecimal getAllocatedQty(
+      Product product, StockLocation stockLocation, TrackingNumber trackingNumber) {
+    return productReservationRepository
+        .all()
+        .filter(
+            "self.typeSelect = :typeSelect AND self.status = :status"
+                + (stockLocation != null ? " AND self.stockLocation = :stockLocation" : "")
+                + (trackingNumber != null
+                    ? " AND self.trackingNumber = :trackingNumber"
+                    : " AND self.product = :product"))
+        .bind("product", product)
+        .bind("typeSelect", ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION)
+        .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
+        .bind("stockLocation", stockLocation)
+        .bind("trackingNumber", trackingNumber)
+        .fetchStream()
+        .map(ProductReservation::getQty)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  public BigDecimal getAvailableQtyForAllocation(Product product, StockLocation stockLocation)
+      throws AxelorException {
+    List<Long> stockLocationIds = new ArrayList<Long>();
+    if (stockLocation != null) {
+      stockLocationIds.add(stockLocation.getId());
+    }
+    return stockLocationService
+        .getRealQtyOfProductInStockLocations(product.getId(), stockLocationIds, null)
+        .subtract(this.getAllocatedQty(product, stockLocation, null));
   }
 
   protected BigDecimal getRealQtyForProductReservation(ProductReservation productReservation)
@@ -99,5 +139,18 @@ public class ProductReservationServiceImpl implements ProductReservationService 
               productReservation.getProduct().getId(), stockLocationIds, null);
     }
     return realQty;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void realizeProductReservation(
+      ProductReservation productReservation, StockLocation stockLocation) {
+    if (stockLocation.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+      productReservation.setStatus(
+          ProductReservationRepository.PRODUCT_RESERVATION_STATUS_REALIZED);
+    } else {
+      productReservation.setStockLocation(stockLocation);
+    }
+    productReservationRepository.save(productReservation);
   }
 }

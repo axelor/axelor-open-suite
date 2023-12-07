@@ -23,6 +23,8 @@
     <string name="description" title="Description"/>
     <integer name="status" selection="supplychain.product.reservation.status.select"
       title="Status"/>
+    <many-to-one ref="com.axelor.apps.stock.db.StockMoveLine" name="originStockMoveLine"
+      title="Stock move line"/>
 
     <extra-code><![CDATA[
 	   	// RESERVATION TYPE SELECT

@@ -37,6 +37,14 @@
     <field name="product.trackingNumerConfiguration" hidden="true"/>
   </grid>
 
+  <grid name="product-reservation-selection-grid" title="Product reservation"
+    model="com.axelor.apps.supplychain.db.ProductReservation" canDelete="false" editable="true">
+    <field name="qty" title="Available qty" readonly="true"/>
+    <field name="originSaleOrderLine" readonly="true"/>
+    <field name="originStockMoveLine" readonly="true"/>
+    <field name="selectQty" title="Selected qty" type="decimal" min="0"/>
+  </grid>
+
   <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
     model="com.axelor.apps.supplychain.db.ProductReservation" width="large">
     <toolbar>
