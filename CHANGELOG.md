@@ -1,3 +1,33 @@
+## [6.5.23] (2023-12-07)
+
+#### Fixed
+
+* Sale order: fixed JNPE error when copying a sale order without lines.
+* Purchase request: fixed reference to purchase order being copied on duplication.
+* Accounting batch: hide unnecessary payment mode information.
+* Sale order: fixed wrong price update when generating quotation from template.
+* Indicator generator: fixed indicators generators demo data.
+* Invoice: fixed reference to subrogation release being copied on duplication.
+* Message: fixed encoding errors happening with accented characters when sending an email.
+* Fixed asset: accounting report now correctly takes into account fiscal already depreciated amount.
+* Configurator: fixed EN demo data for configurator.
+* Bank Details: fixed balance display for bank details on card view and form view.
+* Invoice: fixed error popup before opening a payment voucher from an invoice.
+* Invoice: fixed invoice term generation when skip ventilation is enabled in invoicing configuration.
+* Contract: fixed UI issue by hiding some part of the view while the partner is empty.
+* Account management: use functional origin instead of journal to determine tax account.
+* Invoice: fixed reference to "Refusal to pay reason" being copied on invoice duplication.
+* Timesheet: fixed timesheet line date check.
+* Stock move: allow to create a tracking number directly on stock move line.
+* Cost calculation: fixed an issue preventing an infinite loop in case of an error in bill of materials hierarchy.
+* Account: forbid to select the account itself as parent and its child accounts.
+* Bank order: highlight orders sent to bank but not realized.
+* Payment session: fixed display of currency symbol in payment session.
+* Move template line: hide and set required tax field when it is configured in financial account.
+* Inventory line: fixed update of inventory line by taking into account stockLocation of line when possible, triggering update when necessary.
+* Invoice: fixed partially paid invoices in bill of exchange management.
+* Stock move: allow to select external stock location for deliveries.
+
 ## [6.5.22] (2023-11-23)
 
 #### :exclamation: Breaking Change
@@ -1004,6 +1034,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.23]: https://github.com/axelor/axelor-open-suite/compare/v6.5.22...v6.5.23
 [6.5.22]: https://github.com/axelor/axelor-open-suite/compare/v6.5.21...v6.5.22
 [6.5.21]: https://github.com/axelor/axelor-open-suite/compare/v6.5.20...v6.5.21
 [6.5.20]: https://github.com/axelor/axelor-open-suite/compare/v6.5.19...v6.5.20
