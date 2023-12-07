@@ -20,6 +20,7 @@ package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -31,6 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.repo.AppAccountRepository;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.PostUpdate;
 import javax.persistence.PreRemove;
@@ -69,7 +71,7 @@ public class InvoiceTermListener {
     checkDebtRecovery(invoiceTerm, allowMultiInvoiceTerm);
     checkPayVoucherDueElement(invoiceTerm, allowMultiInvoiceTerm);
     checkPayVoucherElementToPay(invoiceTerm, allowMultiInvoiceTerm);
-    checkInvoiceTermPayment(invoiceTerm);
+    checkInvoiceTermPayment(invoiceTerm, allowMultiInvoiceTerm);
 
     LOG.debug("Deleted {}", invoiceTerm);
   }
@@ -105,24 +107,51 @@ public class InvoiceTermListener {
     }
   }
 
-  protected void checkInvoiceTermPayment(InvoiceTerm invoiceTerm) throws AxelorException {
+  protected void checkInvoiceTermPayment(InvoiceTerm invoiceTerm, boolean allowMultiInvoiceTerm)
+      throws AxelorException {
     LOG.debug("Checking invoice term payment");
-    long linkedInvoiceTermPaymentCount =
+    List<InvoiceTermPayment> linkedInvoiceTermPayment =
         Beans.get(InvoiceTermPaymentRepository.class)
             .all()
-            .filter(
-                "self.invoiceTerm = :invoiceTerm "
-                    + "AND (self.invoicePayment IS NULL OR self.invoicePayment.statusSelect = :statusValidated)")
+            .filter("self.invoiceTerm = :invoiceTerm")
             .bind("invoiceTerm", invoiceTerm)
-            .bind("statusValidated", InvoicePaymentRepository.STATUS_VALIDATED)
             .autoFlush(false)
-            .count();
+            .fetch();
 
-    if (linkedInvoiceTermPaymentCount > 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_PAYMENT),
-          invoiceTerm.getName());
+    if (!linkedInvoiceTermPayment.isEmpty()) {
+
+      if (allowMultiInvoiceTerm) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT),
+            invoiceTerm.getName(),
+            linkedInvoiceTermPayment.stream()
+                .map(
+                    itp -> {
+                      if (itp.getInvoicePayment() != null
+                          && itp.getInvoicePayment().getInvoice() != null) {
+                        return itp.getInvoicePayment().getInvoice().getInvoiceId();
+                      }
+                      return null;
+                    })
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("<br>")));
+      } else {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.MONO_INVOICE_TERM_LINKED_TO_INVOICE_PAYMENT),
+            linkedInvoiceTermPayment.stream()
+                .map(
+                    itp -> {
+                      if (itp.getInvoicePayment() != null
+                          && itp.getInvoicePayment().getInvoice() != null) {
+                        return itp.getInvoicePayment().getInvoice().getInvoiceId();
+                      }
+                      return null;
+                    })
+                .filter(Objects::nonNull)
+                .collect(Collectors.joining("<br>")));
+      }
     }
   }
 
