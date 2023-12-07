@@ -60,6 +60,9 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -68,8 +71,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 public class ManufOrderController {
@@ -776,5 +777,21 @@ public class ManufOrderController {
 
     Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
     response.setValue("operationOrderList", manufOrder.getOperationOrderList());
+  }
+
+  public void outsourceDeclarationOnNew(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void declareDelivery(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
