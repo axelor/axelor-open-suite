@@ -43,4 +43,20 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
     }
     return Optional.empty();
   }
+
+  @Override
+  public boolean getUseLineInGeneratedPO(OperationOrder operationOrder) {
+    Objects.requireNonNull(operationOrder);
+    Objects.requireNonNull(operationOrder.getProdProcessLine());
+
+    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+
+    if (operationOrder.getManufOrder().getOutsourcing()
+        || prodProcessLine.getOutsourcing()
+        || operationOrder.getOutsourcing()
+        || (prodProcessLine.getOutsourcable() && operationOrder.getOutsourcing())) {
+      return prodProcessLine.getUseLineInGeneratedPurchaseOrder();
+    }
+    return false;
+  }
 }

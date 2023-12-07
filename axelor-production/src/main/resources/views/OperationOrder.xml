@@ -124,13 +124,13 @@
       </panel>
       <field name="isToInvoice" colSpan="3"/>
       <field name="prodProcessLine" hidden="true"/>
+      <field name="generatePurchaseOrderOnMoPlanning" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
         <viewer>
 		  <![CDATA[<>{prodProcessLine.optional && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Optional')}</Badge>}</>]]>
         </viewer>
       </field>
       <field name="manufOrder.statusSelect" hidden="true"/>
-      <field name="useLineInGeneratedPurchaseOrder"/>
       <field name="prodProcessLine.outsourcing" hidden="true"/>
       <field name="manufOrder.outsourcing" hidden="true"/>
     </panel>

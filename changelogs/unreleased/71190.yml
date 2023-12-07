@@ -1,0 +1,3 @@
+---
+title: "OperationOrder: Option to use line for the generated purchase order removed and instead use the one from prod process line"
+type: fix

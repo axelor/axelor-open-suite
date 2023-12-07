@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface OperationOrderOutsourceService {
 
   Optional<Partner> getOutsourcePartner(OperationOrder operationOrder);
+
+  boolean getUseLineInGeneratedPO(OperationOrder operationOrder);
 }

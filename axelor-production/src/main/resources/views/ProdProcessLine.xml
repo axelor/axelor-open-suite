@@ -44,10 +44,12 @@
           requiredIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable"/>
         <field name="generatePurchaseOrderOnMoPlanning"
           showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="4"/>
+        <field name="useLineInGeneratedPurchaseOrder"
+          showIf="prodProcess.outsourcing || prodProcess.outsourcable || (prodProcess.prodProcessLinesOutsourcable &amp;&amp; (outsourcing || outsourcable))"/>
       </panel>
 
       <field name="optional"/>
-      <field name="useLineInGeneratedPurchaseOrder"/>
+
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
       <field name="stockLocation"/>
@@ -64,6 +66,7 @@
           if="__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
 
         <field name="prodProcess.outsourcing" hidden="true"/>
+        <field name="prodProcess.outsourcable" hidden="true"/>
         <field name="prodProcess.prodProcessLinesOutsourcable" hidden="true"/>
       </panel>
 

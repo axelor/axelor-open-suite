@@ -140,9 +140,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             prodProcessLine,
             machineTool);
 
-    operationOrder.setUseLineInGeneratedPurchaseOrder(
-        prodProcessLine.getUseLineInGeneratedPurchaseOrder());
-
     operationOrder.setOutsourcing(
         manufOrder.getOutsourcing().equals(false)
             ? prodProcessLine.getOutsourcing()

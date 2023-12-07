@@ -872,7 +872,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           manufOrder.getOperationOrderList().stream()
               .filter(
                   oo ->
-                      oo.getUseLineInGeneratedPurchaseOrder()
+                      oo.getProdProcessLine().getUseLineInGeneratedPurchaseOrder()
                           && purchaseOrder
                               .getSupplierPartner()
                               .equals(
