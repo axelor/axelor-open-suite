@@ -38,6 +38,8 @@
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
       title="Global budget"/>
+    <many-to-one name="budgetStructure" ref="com.axelor.apps.budget.db.BudgetStructure"
+      title="Budget structure"/>
 
     <string name="typeSelect" title="Type" selection="budget.budget.type.select"
       readonly="true"/>

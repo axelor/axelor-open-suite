@@ -19,11 +19,14 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Year;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.GlobalBudgetTemplate;
+import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Map;
 
 public interface GlobalBudgetService {
   void validateDates(GlobalBudget globalBudget) throws AxelorException;
@@ -31,9 +34,6 @@ public interface GlobalBudgetService {
   void computeBudgetLevelTotals(Budget budget);
 
   void computeTotals(GlobalBudget globalBudget);
-
-  GlobalBudget generateGlobalBudgetWithTemplate(GlobalBudgetTemplate globalBudgetTemplate)
-      throws AxelorException;
 
   GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
@@ -48,4 +48,10 @@ public interface GlobalBudgetService {
   List<Long> getAllBudgetIds(GlobalBudget globalBudget);
 
   void fillGlobalBudgetOnBudget(GlobalBudget globalBudget);
+
+  @Transactional
+  GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator, Year year)
+      throws AxelorException;
+
+  List<Map<String, Object>> visualizeVariableAmounts(BudgetGenerator budgetGenerator);
 }

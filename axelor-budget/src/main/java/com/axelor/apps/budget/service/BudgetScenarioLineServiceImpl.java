@@ -19,13 +19,19 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenario;
 import com.axelor.apps.budget.db.BudgetScenarioLine;
+import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.repo.BudgetScenarioLineRepository;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.mapper.Mapper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService {
@@ -69,5 +75,39 @@ public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService 
     if (size <= 0) {
       budgetScenarioLine.setYear1Value(BigDecimal.ZERO);
     }
+  }
+
+  @Override
+  public List<Map<String, Object>> getLineUsingSection(
+      BudgetLevel section,
+      Set<BudgetScenarioVariable> budgetScenarioVariableSet,
+      List<BudgetScenarioLine> budgetScenarioLineOriginList,
+      List<Map<String, Object>> budgetScenarioLineList) {
+    if (!ObjectUtils.isEmpty(budgetScenarioVariableSet)) {
+      for (BudgetScenarioVariable budgetScenarioVariable : budgetScenarioVariableSet) {
+        BudgetScenarioLine budgetScenarioLine =
+            budgetScenarioLineOriginList.stream()
+                .filter(line -> budgetScenarioVariable.equals(line.getBudgetScenarioVariable()))
+                .findFirst()
+                .orElse(null);
+        if (budgetScenarioLine != null) {
+          BudgetScenarioLine optLine = budgetScenarioLineRepository.copy(budgetScenarioLine, false);
+
+          Map<String, Object> optLineContext = Mapper.toMap(optLine);
+          optLineContext.put("budgetLevel", section.getCode());
+          budgetScenarioLineList.add(optLineContext);
+        }
+      }
+    } else if (section != null && !ObjectUtils.isEmpty(section.getBudgetLevelList())) {
+      for (BudgetLevel child : section.getBudgetLevelList()) {
+        budgetScenarioLineList =
+            getLineUsingSection(
+                child,
+                child.getBudgetScenarioVariableSet(),
+                budgetScenarioLineOriginList,
+                budgetScenarioLineList);
+      }
+    }
+    return budgetScenarioLineList;
   }
 }

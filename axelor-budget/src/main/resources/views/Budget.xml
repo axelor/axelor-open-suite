@@ -51,7 +51,7 @@
     <column name="availableAmountWithSimulated"/>
 
     <node model="com.axelor.apps.budget.db.BudgetLevel"
-      domain="self.parentBudgetLevel is null ANS self.globalBudget.id = :_globalId "
+      domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "
       onClick="action-budget-view-budget-level">
       <field as="name" name="name"/>
       <field as="code" name="code"/>
