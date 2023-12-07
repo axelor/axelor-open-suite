@@ -4,20 +4,33 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="permission-form" id="base-permission-form" title="Permission"
-    model="com.axelor.auth.db.Permission">
-    <panel-include view="permission-form" from="axelor-core"/>
-    <panel-tabs name="permissionPanelTab">
-      <panel-dashlet name="permissionRolePanel" title="Role"
-        action="action-dashlet-permission-role" colSpan="12"/>
-      <panel-dashlet name="permissionUserPanel" title="User"
-        action="action-dashlet-permission-user" colSpan="12"/>
-      <panel-dashlet name="permissionGroupPanel" title="Group"
-        action="action-dashlet-permission-group" colSpan="12"/>
-    </panel-tabs>
-    <panel-mail name="mailsPanel">
-      <mail-messages limit="4"/>
-      <mail-followers/>
-    </panel-mail>
+    model="com.axelor.auth.db.Permission" extension="true">
+    <extend target="/">
+      <insert position="after">
+        <panel-tabs name="permissionPanelTab">
+          <panel-dashlet name="permissionRolePanel" title="Role"
+            action="action-dashlet-permission-role" colSpan="12"/>
+          <panel-dashlet name="permissionUserPanel" title="User"
+            action="action-dashlet-permission-user" colSpan="12"/>
+          <panel-dashlet name="permissionGroupPanel" title="Group"
+            action="action-dashlet-permission-group" colSpan="12"/>
+        </panel-tabs>
+        <panel-mail name="mailsPanel">
+          <mail-messages limit="4"/>
+          <mail-followers/>
+        </panel-mail>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='condition']">
+      <attribute name="colSpan" value="10"/>
+      <attribute name="onChange"
+        value="action-permission-validate-condition,action-permission-record-empty-condition-metadata"/>
+      <insert position="after">
+        <button help="Edit condition" link="" icon="fa-pencil-square-o"
+          onClick="save,action-permission-view-query-builder" name="querybuilderBtn" colSpan="2"/>
+      </insert>
+    </extend>
   </form>
 
   <action-view name="action-dashlet-permission-group" title="Group"
@@ -43,5 +56,23 @@
     <domain>self.permissions.id = :permission</domain>
     <context name="permission" expr="eval: id"/>
   </action-view>
+
+  <action-view name="action-permission-view-query-builder" title="Condition">
+    <view type="html"
+      name="qb/?type=query&amp;model=com.axelor.auth.db.Permission&amp;id={{_id}}&amp;queryModel={{_queryModel}}&amp;resultField=condition&amp;resultMetaField=conditionMetadata&amp;resultParam=conditionParams"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <context name="_queryModel" expr="eval: object"/>
+  </action-view>
+
+  <action-validate name="action-permission-validate-condition">
+    <alert message="Are you sure you want to remove condition from editor ?"/>
+  </action-validate>
+
+  <action-record name="action-permission-record-empty-condition-metadata"
+    model="com.axelor.auth.db.Permission">
+    <field name="conditionMetadata" expr="eval:null"/>
+  </action-record>
 
 </object-views>

@@ -6,6 +6,7 @@
   <module name="auth" package="com.axelor.auth.db"/>
 
   <entity name="Permission" cacheable="true">
+    <string name="conditionMetadata" title="Condition metadata" large="true"/>
 
     <track>
       <field name="name"/>
