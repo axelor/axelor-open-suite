@@ -22,14 +22,19 @@ public class ImportExportTranslationController {
         Beans.get(ImportExportTranslationRepository.class).find(importExportTranslation.getId());
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
+    String path = null;
     try {
-      importExportTranslationService.exportTranslations(importExportTranslation);
+      path = importExportTranslationService.exportTranslations(importExportTranslation);
     } catch (AxelorException e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("File input error.", e);
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-    response.setInfo("File successfully exported.");
+    if (path != null) {
+      String[] filePath = path.split("/");
+      response.setExportFile(filePath[filePath.length - 1]);
+      response.setInfo("File successfully exported.");
+    }
     response.setReload(true);
   }
 

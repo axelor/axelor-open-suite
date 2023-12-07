@@ -18,16 +18,18 @@
     model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
     <panel name="importExportTranslationHistoryPanel" showTitle="false" title="History"
       colSpan="12">
-      <field name="actionType"/>
-      <field name="recordNumber"/>
-      <field name="errorNumber"/>
+      <field name="actionType" colSpan="4"/>
+      <field name="recordNumber" colSpan="4"/>
+      <field name="errorNumber" colSpan="4"/>
+    </panel>
+    <panel name="sidePanel" sidebar="true">
       <button name="traceBackHistoryBtn" title="Tracebacks"
         onClick="import-export-translation-history-view-trace-back-history"/>
     </panel>
   </form>
 
   <action-view name="import-export-translation-history-view-trace-back-history"
-    title="Trace Back History" model="com.axelor.apps.base.db.TraceBack">
+    title="Tracebacks" model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.refId = :importExportTranslationHistoryId</domain>

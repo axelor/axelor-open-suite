@@ -11,8 +11,7 @@
       ref="com.axelor.apps.base.db.Language"/>
     <many-to-one name="uploadFile" title="Uploaded File"
       ref="com.axelor.meta.db.MetaFile"/>
-    <one-to-many name="importExportTranslationHistoryList"
-      title="Import/Export Translation History"
+    <one-to-many name="importExportTranslationHistoryList" title="History"
       ref="com.axelor.apps.base.db.ImportExportTranslationHistory"
       mappedBy="importExportTranslation"/>
   </entity>

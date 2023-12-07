@@ -64,7 +64,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * @throws AxelorException
    */
   @Override
-  public void exportTranslations(ImportExportTranslation importExportTranslation)
+  public String exportTranslations(ImportExportTranslation importExportTranslation)
       throws IOException, AxelorException {
     errorNumber = 0;
     countRecords = 0;
@@ -91,6 +91,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           "File input error.");
     }
     saveHistory(importExportTranslationHistory);
+    return file.getPath();
   }
 
   /**
@@ -212,7 +213,10 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    */
   protected Map<String, String[]> saveTranslationKeyIntoMap(int languageNumber) {
     TypedQuery<String> query =
-        JPA.em().createQuery("select distinct mt.key " + "from MetaTranslation mt ", String.class);
+        JPA.em()
+            .createQuery(
+                "select distinct mt.key " + "from MetaTranslation mt " + "order by mt.key ",
+                String.class);
     List<String> keyResultList = query.getResultList();
     int initialCapacity = keyResultList.size() * 2;
     Map<String, String[]> translationMap = new HashMap<>(initialCapacity);
@@ -422,7 +426,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     return importNumber;
   }
 
-  @Transactional
   protected void saveNewTranslation(String key, String messageValue, String language) {
     MetaTranslation metaTranslation = new MetaTranslation();
     metaTranslation.setKey(key);

@@ -6,10 +6,10 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="ImportExportTranslationHistory">
-    <string name="actionType" title="Action Type"/>
+    <string name="actionType" title="Action"/>
     <integer name="recordNumber" title="Number of records imported/exported"/>
     <integer name="errorNumber" title="Number of errors occurred"/>
-    <many-to-one name="importExportTranslation" title="ImportExportTranslation"
+    <many-to-one name="importExportTranslation" title="Import/Export translation"
       ref="com.axelor.apps.base.db.ImportExportTranslation"/>
   </entity>
 

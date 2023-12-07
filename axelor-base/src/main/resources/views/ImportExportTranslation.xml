@@ -13,16 +13,17 @@
 
   <form name="import-export-translation-form" title="Import/Export translation"
     model="com.axelor.apps.base.db.ImportExportTranslation">
-    <panel name="infoPanel" title="info" showTitle="false" colSpan="12">
+    <panel name="infoPanel" colSpan="12">
       <field name="name" title="Name" required="true"/>
       <field name="languageSet" title="Languages" widget="tagSelect" required="true"
         domain="self.isNative = false" canNew="false"/>
     </panel>
-    <panel name="importExportPanel" title="Import/Export" showTitle="false" colSpan="12">
-      <button name="export" title="Export" colSpan="4"
+    <panel sidebar="true" name="importExportPanel" title="Import/Export" showTitle="false"
+      colSpan="12">
+      <button name="export" title="Export"
         onClick="save,action-import-export-translation-method-export"/>
-      <field name="uploadFile" title="Uploaded File" colSpan="4" widget="binary-link"/>
-      <button name="import" title="Import" colSpan="4"
+      <field name="uploadFile" title="Uploaded File" widget="binary-link"/>
+      <button name="import" title="Import"
         onClick="save,action-import-export-translation-method-import"
         readonlyIf="uploadFile == null"/>
     </panel>

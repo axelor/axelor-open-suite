@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public interface ImportExportTranslationService {
-  public void exportTranslations(ImportExportTranslation importExportTranslation)
+  public String exportTranslations(ImportExportTranslation importExportTranslation)
       throws IOException, AxelorException;
 
   public Path importTranslations(ImportExportTranslation importExportTranslation)
