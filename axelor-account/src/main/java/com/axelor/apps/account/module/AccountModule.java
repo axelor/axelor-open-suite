@@ -113,8 +113,6 @@ import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.account.service.custom.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryServiceImpl;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
@@ -171,6 +169,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -602,8 +602,6 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
-    bind(DoubtfulCustomerInvoiceTermService.class).to(DoubtfulCustomerInvoiceTermServiceImpl.class);
-
     bind(FixedAssetDateService.class).to(FixedAssetDateServiceImpl.class);
 
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
@@ -722,6 +720,8 @@ public class AccountModule extends AxelorModule {
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
 
     bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
+
+    bind(InvoiceTermReplaceService.class).to(InvoiceTermReplaceServiceImpl.class);
 
     bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 
