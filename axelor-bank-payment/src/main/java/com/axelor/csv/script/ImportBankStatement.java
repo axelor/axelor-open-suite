@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
@@ -38,15 +39,18 @@ public class ImportBankStatement {
   protected BankStatementImportService bankStatementImportService;
   protected MetaFiles metaFiles;
   protected BankStatementRepository bankStatementRepository;
+  protected BankStatementCreateService bankStatementCreateService;
 
   @Inject
   public ImportBankStatement(
       BankStatementImportService bankStatementImportService,
       MetaFiles metaFiles,
-      BankStatementRepository bankStatementRepository) {
+      BankStatementRepository bankStatementRepository,
+      BankStatementCreateService bankStatementCreateService) {
     this.bankStatementImportService = bankStatementImportService;
     this.metaFiles = metaFiles;
     this.bankStatementRepository = bankStatementRepository;
+    this.bankStatementCreateService = bankStatementCreateService;
   }
 
   public Object importBankStatement(Object bean, Map<String, Object> values) {
@@ -62,6 +66,7 @@ public class ImportBankStatement {
         if (stream != null) {
           final MetaFile metaFile = metaFiles.upload(stream, fileName);
           bankStatement.setBankStatementFile(metaFile);
+          bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
           bankStatementRepository.save(bankStatement);
           bankStatementImportService.runImport(bankStatement, true);
         }
