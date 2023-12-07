@@ -59,7 +59,7 @@ public class PriceListService {
     if (priceListLineList != null && !priceListLineList.isEmpty()) {
       if (priceListLineList.size() > 1) {
         for (PriceListLine tempPriceListLine : priceListLineList) {
-          tempDiscountCurrent = this.getUnitPriceDiscounted(tempPriceListLine, price);
+          tempDiscountCurrent = this.getUnitPriceDiscounted(tempPriceListLine, qty, price);
 
           if (tempDiscountPrevious == null
               || tempDiscountPrevious.compareTo(tempDiscountCurrent) > 0) {
@@ -166,12 +166,17 @@ public class PriceListService {
     }
   }
 
-  public BigDecimal getUnitPriceDiscounted(PriceListLine priceListLine, BigDecimal unitPrice) {
+  public BigDecimal getUnitPriceDiscounted(
+      PriceListLine priceListLine, BigDecimal qty, BigDecimal unitPrice) {
 
     switch (priceListLine.getTypeSelect()) {
       case PriceListLineRepository.TYPE_ADDITIONNAL:
-        if (priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
+        if (priceListLine.getAmountTypeSelect()
+            == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE) {
           return unitPrice.add(priceListLine.getAmount());
+        } else if (priceListLine.getAmountTypeSelect()
+            == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_TOTAL_PRICE) {
+          return unitPrice.add(priceListLine.getAmount().divide(qty));
         } else if (priceListLine.getAmountTypeSelect()
             == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           return unitPrice.multiply(
@@ -181,8 +186,12 @@ public class PriceListService {
         return unitPrice;
 
       case PriceListLineRepository.TYPE_DISCOUNT:
-        if (priceListLine.getAmountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
+        if (priceListLine.getAmountTypeSelect()
+            == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE) {
           return unitPrice.subtract(priceListLine.getAmount());
+        } else if (priceListLine.getAmountTypeSelect()
+            == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_TOTAL_PRICE) {
+          return unitPrice.subtract(priceListLine.getAmount().divide(qty));
         } else if (priceListLine.getAmountTypeSelect()
             == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
           return unitPrice.multiply(
@@ -207,11 +216,19 @@ public class PriceListService {
   }
 
   public BigDecimal computeDiscount(
-      BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount) {
-    if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
+      BigDecimal unitPrice, int discountTypeSelect, BigDecimal discountAmount, BigDecimal qty) {
+    if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE) {
       return unitPrice
           .subtract(discountAmount)
           .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_TOTAL_PRICE) {
+      return qty.compareTo(BigDecimal.ZERO) == 0
+          ? BigDecimal.ZERO
+          : unitPrice
+              .subtract(
+                  discountAmount.divide(
+                      qty, appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP))
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
     } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
       return unitPrice
           .multiply(new BigDecimal(100).subtract(discountAmount))
@@ -243,7 +260,8 @@ public class PriceListService {
             computeDiscount(
                 price,
                 (int) discounts.get("discountTypeSelect"),
-                (BigDecimal) discounts.get("discountAmount"));
+                (BigDecimal) discounts.get("discountAmount"),
+                BigDecimal.ONE);
         discounts.put("price", price);
         discounts.put("discountTypeSelect", PriceListLineRepository.AMOUNT_TYPE_NONE);
         discounts.put("discountAmount", BigDecimal.ZERO);

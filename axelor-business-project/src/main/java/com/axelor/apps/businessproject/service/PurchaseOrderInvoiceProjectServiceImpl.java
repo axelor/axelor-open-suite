@@ -157,7 +157,10 @@ public class PurchaseOrderInvoiceProjectServiceImpl extends PurchaseOrderInvoice
             discountAmount = (BigDecimal) discounts.get("discountAmount");
             price =
                 priceListService.computeDiscount(
-                    price, (int) discounts.get("discountTypeSelect"), discountAmount);
+                    price,
+                    (int) discounts.get("discountTypeSelect"),
+                    discountAmount,
+                    purchaseOrderLine.getQty());
           }
 
         } else {

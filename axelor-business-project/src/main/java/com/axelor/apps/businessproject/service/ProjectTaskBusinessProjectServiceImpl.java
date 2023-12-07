@@ -247,7 +247,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return priceListService.computeDiscount(
         projectTask.getUnitPrice(),
         projectTask.getDiscountTypeSelect(),
-        projectTask.getDiscountAmount());
+        projectTask.getDiscountAmount(),
+        projectTask.getQuantity());
   }
 
   protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
@@ -428,7 +429,8 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
           priceListService.computeDiscount(
               unitPrice,
               (Integer) discounts.get("discountTypeSelect"),
-              (BigDecimal) discounts.get("discountAmount"));
+              (BigDecimal) discounts.get("discountAmount"),
+              projectTask.getQuantity());
     }
     return unitPrice;
   }

@@ -164,7 +164,8 @@
   <selection name="base.price.list.line.amount.type.select">
     <option value="0">No discount</option>
     <option value="1">In %</option>
-    <option value="2">Fixed</option>
+    <option value="2">Fixed on unit price</option>
+    <option value="3">Fixed on total price</option>
   </selection>
 
   <selection name="base.price.list.line.anomaly.select">

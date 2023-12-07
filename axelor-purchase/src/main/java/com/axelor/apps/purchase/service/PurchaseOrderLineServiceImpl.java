@@ -460,7 +460,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     BigDecimal price = inAti ? purchaseOrderLine.getInTaxPrice() : purchaseOrderLine.getPrice();
 
     return priceListService.computeDiscount(
-        price, purchaseOrderLine.getDiscountTypeSelect(), purchaseOrderLine.getDiscountAmount());
+        price,
+        purchaseOrderLine.getDiscountTypeSelect(),
+        purchaseOrderLine.getDiscountAmount(),
+        purchaseOrderLine.getQty());
   }
 
   @Override

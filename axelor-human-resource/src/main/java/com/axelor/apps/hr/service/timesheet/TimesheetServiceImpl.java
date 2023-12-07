@@ -684,7 +684,8 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
         discountAmount = (BigDecimal) discounts.get("discountAmount");
         discountTypeSelect = (int) discounts.get("discountTypeSelect");
         priceDiscounted =
-            priceListService.computeDiscount(price, discountTypeSelect, discountAmount);
+            priceListService.computeDiscount(
+                price, discountTypeSelect, discountAmount, qtyConverted);
       }
 
       if ((appHumanResourceService.getAppBase().getComputeMethodDiscountSelect()

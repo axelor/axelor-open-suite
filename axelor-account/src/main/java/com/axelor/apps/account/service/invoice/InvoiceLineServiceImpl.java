@@ -221,7 +221,10 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal unitPrice = inAti ? invoiceLine.getInTaxPrice() : invoiceLine.getPrice();
 
     return priceListService.computeDiscount(
-        unitPrice, invoiceLine.getDiscountTypeSelect(), invoiceLine.getDiscountAmount());
+        unitPrice,
+        invoiceLine.getDiscountTypeSelect(),
+        invoiceLine.getDiscountAmount(),
+        invoiceLine.getQty());
   }
 
   @Override

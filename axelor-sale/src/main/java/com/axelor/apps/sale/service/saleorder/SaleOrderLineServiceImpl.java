@@ -553,7 +553,10 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     BigDecimal price = inAti ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
 
     return priceListService.computeDiscount(
-        price, saleOrderLine.getDiscountTypeSelect(), saleOrderLine.getDiscountAmount());
+        price,
+        saleOrderLine.getDiscountTypeSelect(),
+        saleOrderLine.getDiscountAmount(),
+        saleOrderLine.getQty());
   }
 
   @Override
@@ -576,13 +579,15 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
 
         if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
             && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)
-            && priceListDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_FIXED)) {
+            && priceListDiscountAmountType.equals(
+                PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE)) {
           priceListDiscountAmount =
               priceListDiscountAmount
                   .multiply(new BigDecimal(100))
                   .divide(price, 2, RoundingMode.HALF_UP);
         } else if (!manualDiscountAmountType.equals(priceListDiscountAmountType)
-            && manualDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_FIXED)
+            && manualDiscountAmountType.equals(
+                PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE)
             && priceListDiscountAmountType.equals(PriceListLineRepository.AMOUNT_TYPE_PERCENT)) {
           priceListDiscountAmount =
               priceListDiscountAmount
@@ -744,10 +749,21 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       SaleOrderLine saleOrderLine, BigDecimal maxDiscount) {
     return (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_PERCENT
             && saleOrderLine.getDiscountAmount().compareTo(maxDiscount) > 0)
-        || (saleOrderLine.getDiscountTypeSelect() == PriceListLineRepository.AMOUNT_TYPE_FIXED
+        || (saleOrderLine.getDiscountTypeSelect()
+                == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_UNIT_PRICE
             && saleOrderLine.getPrice().signum() != 0
             && saleOrderLine
                     .getDiscountAmount()
+                    .multiply(BigDecimal.valueOf(100))
+                    .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
+                    .compareTo(maxDiscount)
+                > 0)
+        || (saleOrderLine.getDiscountTypeSelect()
+                == PriceListLineRepository.AMOUNT_TYPE_FIXED_ON_TOTAL_PRICE
+            && saleOrderLine.getPrice().signum() != 0
+            && saleOrderLine
+                    .getDiscountAmount()
+                    .divide(saleOrderLine.getQty(), 2, RoundingMode.HALF_UP)
                     .multiply(BigDecimal.valueOf(100))
                     .divide(saleOrderLine.getPrice(), 2, RoundingMode.HALF_UP)
                     .compareTo(maxDiscount)

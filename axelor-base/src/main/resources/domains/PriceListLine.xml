@@ -27,7 +27,8 @@
 				// AMOUNT TYPE SELECT
 				public static final int AMOUNT_TYPE_NONE = 0;
 				public static final int AMOUNT_TYPE_PERCENT = 1;
-				public static final int AMOUNT_TYPE_FIXED = 2;
+				public static final int AMOUNT_TYPE_FIXED_ON_UNIT_PRICE = 2;
+				public static final int AMOUNT_TYPE_FIXED_ON_TOTAL_PRICE = 3;
 
 				// AMOUNT TYPE SELECT
 				public static final int TYPE_DISCOUNT = 1;
