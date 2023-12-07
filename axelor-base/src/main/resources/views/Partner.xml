@@ -380,17 +380,15 @@
           showIf="isEmployee">
           <field name="mainAddress" form-view="address-form" grid-view="address-grid">
             <editor x-show-titles="false" x-viewer="true">
-              <field name="addressL2" x-bind="{{addressL2|uppercase}}"
+              <field name="room" x-bind="{{room|uppercase}}"
                 placeholder="e.g. Financial department, CEO"/>
-              <field name="addressL3" x-bind="{{addressL3|uppercase}}"
+              <field name="floor" x-bind="{{floor|uppercase}}"
                 placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-              <field name="addressL4" x-bind="{{addressL4|uppercase}}"/>
-              <field name="addressL5" x-bind="{{addressL5|uppercase}}"
-                placeholder="e.g. POB 254"/>
+              <field name="streetName" x-bind="{{streetName|uppercase}}"/>
+              <field name="postBox" x-bind="{{postBox|uppercase}}" placeholder="e.g. POB 254"/>
               <field name="city" canNew="true" onChange="action-address-change-city"
                 form-view="city-form" grid-view="city-grid"/>
-              <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true"/>
-              <field name="addressL7Country" required="true" form-view="country-form"
+              <field name="country" required="true" form-view="country-form"
                 grid-view="country-grid"/>
             </editor>
           </field>
@@ -421,7 +419,7 @@
                     x-icon="fa-shopping-cart"/>
                   <field name="isDefaultAddr" widget="toggle" hideIf="$readonly()"
                     x-icon="fa-star-o"/>
-                  <field name="address.addressL4" hidden="true"/>
+                  <field name="address.streetName" hidden="true"/>
                 </panel>
               </panel>
             </editor>

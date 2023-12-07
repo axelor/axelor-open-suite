@@ -13,7 +13,7 @@
     model="com.axelor.apps.base.db.AddressTemplateLine">
     <panel name="mainPanel" title="Address Template Line">
       <field name="title"/>
-      <field name="metaField" widget="SuggestBox"/>
+      <field name="metaField"/>
     </panel>
   </form>
 
