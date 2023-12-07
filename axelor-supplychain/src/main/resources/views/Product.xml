@@ -33,11 +33,11 @@
           <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o"
             widget="info-button"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
-            onClick="action-supplychain-stock-move-line-product-reserved"/>
+            onClick="action-supplychain-product-reservation-line-allocation"/>
           <button name="$requestedReservedQty" title="Requested reserved quantity"
             icon="fa-building-o" widget="info-button"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
-            onClick="action-method-suppplychain-stock-location-line-view-requested-reserved"/>
+            onClick="action-supplychain-product-reservation-line-reservation"/>
         </panel>
         <panel name="supplychainIndicators" colSpan="12" itemSpan="3">
           <button name="$saleOrderQty" title="Sale order quantity" icon="fa-shopping-cart"
@@ -135,6 +135,48 @@
     <context name="_product" expr="eval:product"/>
     <context name="_stockLocation" expr="eval:saleOrder?.stockLocation"/>
     <context name="_company" expr="eval:saleOrder?.company"/>
+  </action-view>
+
+  <action-view name="action-supplychain-product-reservation-line-reservation"
+    title="${product.fullName} reserved" model="com.axelor.apps.supplychain.db.ProductReservation">
+    <view type="grid" name="product-reservation-grid"/>
+    <view type="form" name="product-reservation-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <domain>self.product.id = :productId
+      AND (self.stockLocation.id IN :location OR 0 IN :location)
+      AND self.status = :status
+      AND
+      self.typeSelect = :typeSelect
+    </domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="location" expr="eval: stockLocationIdList"/>
+    <context name="status"
+      expr="eval: __repo__(ProductReservation).PRODUCT_RESERVATION_STATUS_IN_PROGRESS"/>
+    <context name="typeSelect"
+      expr="eval: __repo__(ProductReservation).TYPE_PRODUCT_RESERVATION_RESERVATION"/>
+  </action-view>
+
+  <action-view name="action-supplychain-product-reservation-line-allocation"
+    title="${product.fullName} reserved" model="com.axelor.apps.supplychain.db.ProductReservation">
+    <view type="grid" name="product-reservation-grid"/>
+    <view type="form" name="product-reservation-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="popup.maximized" value="true"/>
+    <domain>self.product.id = :productId
+      AND (self.stockLocation.id IN :location OR 0 IN :location)
+      AND self.status = :status
+      AND
+      self.typeSelect = :typeSelect
+    </domain>
+    <context name="productId" expr="eval:product?.id"/>
+    <context name="location" expr="eval: stockLocationIdList"/>
+    <context name="status"
+      expr="eval: __repo__(ProductReservation).PRODUCT_RESERVATION_STATUS_IN_PROGRESS"/>
+    <context name="typeSelect"
+      expr="eval: __repo__(ProductReservation).TYPE_PRODUCT_RESERVATION_ALLOCATION"/>
   </action-view>
 
   <action-method
