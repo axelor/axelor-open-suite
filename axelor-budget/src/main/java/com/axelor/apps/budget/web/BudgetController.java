@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.GlobalBudgetTemplate;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
@@ -288,16 +289,29 @@ public class BudgetController {
             .orElse(null);
     if (globalBudget != null && globalBudget.getCompany() != null) {
       return globalBudget.getCompany();
-    } else if (budget.getId() != null) {
-      globalBudget =
-          Optional.ofNullable(request.getContext())
-              .map(Context::getParent)
-              .map(Context::getParent)
-              .map(Context::getParent)
-              .map(context -> context.asType(GlobalBudget.class))
-              .orElse(null);
-      if (globalBudget != null && globalBudget.getCompany() != null) {
-        return globalBudget.getCompany();
+    }
+    GlobalBudgetTemplate globalBudgetTemplate =
+        Optional.ofNullable(budget.getBudgetLevel())
+            .map(BudgetLevel::getParentBudgetLevel)
+            .map(BudgetLevel::getGlobalBudgetTemplate)
+            .orElse(null);
+    if (globalBudgetTemplate != null && globalBudgetTemplate.getCompany() != null) {
+      return globalBudgetTemplate.getCompany();
+    }
+
+    Context contextObject =
+        Optional.ofNullable(request.getContext())
+            .map(Context::getParent)
+            .map(Context::getParent)
+            .orElse(null);
+
+    if (BudgetLevel.class.equals(contextObject.getContextClass())) {
+      if (contextObject.getParent() != null) {
+        if (GlobalBudget.class.equals(contextObject.getParent().getContextClass())) {
+          return contextObject.getParent().asType(GlobalBudget.class).getCompany();
+        } else if (GlobalBudgetTemplate.class.equals(contextObject.getParent().getContextClass())) {
+          return contextObject.getParent().asType(GlobalBudgetTemplate.class).getCompany();
+        }
       }
     }
     return null;
