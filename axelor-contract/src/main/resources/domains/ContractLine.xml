@@ -28,8 +28,8 @@
     <decimal name="price" title="Unit price" precision="20" scale="10"/>
 
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-    <decimal name="exTaxTotal" title="Total W.T."/>
-    <decimal name="inTaxTotal" title="Total A.T.I."/>
+    <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="3"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." precision="20" scale="3"/>
     <many-to-one name="fiscalPosition" ref="com.axelor.apps.account.db.FiscalPosition"
       title="Fiscal position"/>
 
@@ -68,10 +68,13 @@
       selection="base.price.list.line.amount.type.select" default="0"/>
     <decimal name="priceDiscounted" title="Unit price discounted"/>
 
-    <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"/>
+    <decimal name="initialUnitPrice" title="Initial unit price" nullable="true"
+      precision="20" scale="10"/>
     <boolean name="isToRevaluate" title="To revaluate"/>
-    <decimal name="initialPricePerYear" title="Initial price per year"/>
-    <decimal name="yearlyPriceRevalued" title="Price revalued yearly"/>
+    <decimal name="initialPricePerYear" title="Initial price per year" precision="20"
+      scale="3"/>
+    <decimal name="yearlyPriceRevalued" title="Price revalued yearly" precision="20"
+      scale="3"/>
 
     <finder-method name="findOneBy"
       using="contractVersion, product, productName,
