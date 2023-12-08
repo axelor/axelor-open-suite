@@ -14,8 +14,12 @@
     <field name="startDate"/>
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="statusSelect"/>
-    <field name="currentContractVersion.initialExTaxTotalPerYear"/>
-    <field name="currentContractVersion.yearlyExTaxTotalRevalued"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="currentContractVersion.initialExTaxTotalPerYear"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="currentContractVersion.yearlyExTaxTotalRevalued"
+      x-scale="currency.numberOfDecimals"/>
   </grid>
 
   <form name="contract-form" title="Contract" model="com.axelor.apps.contract.db.Contract"
@@ -141,14 +145,14 @@
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false" readonly="true">
             <viewer
-              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol">
+              depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol,contract.currency.numberOfDecimals">
               <![CDATA[
 					<>
 						<Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
-						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('initialExTaxTotalPerYear')}</Box>
+						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(initialExTaxTotalPerYear).toFixed(contract.currency.numberOfDecimals)}</Box>
 						<Box borderTop borderColor="inherit" m={1}/>
 						<Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>
-						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('yearlyExTaxTotalRevalued')}</Box>
+						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{parseFloat(yearlyExTaxTotalRevalued).toFixed(contract.currency.numberOfDecimals)}</Box>
 					</>
               ]]>
             </viewer>
