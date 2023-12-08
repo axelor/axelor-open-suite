@@ -54,7 +54,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     this.leaveValueProrataService = leaveValueProrataService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public void updateEmployeeLeaveLines(LeaveReason leaveReason, Employee employee)
       throws AxelorException {
