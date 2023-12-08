@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.hr.db.repo;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
@@ -26,30 +25,32 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
+import javax.persistence.PersistenceException;
 
 public class ExpenseLineHRRepository extends ExpenseLineRepository {
 
   @Override
   public ExpenseLine save(ExpenseLine expenseLine) {
-    if (expenseLine.getKilometricAllowParam() != null
-        && expenseLine.getDistance().compareTo(BigDecimal.ZERO) != 0
-        && expenseLine.getExpenseDate() != null) {
-      Long empId;
-      Expense expense = expenseLine.getExpense();
+    try {
+      if (expenseLine.getKilometricAllowParam() != null
+          && expenseLine.getDistance().compareTo(BigDecimal.ZERO) != 0
+          && expenseLine.getExpenseDate() != null) {
+        Long empId;
+        Expense expense = expenseLine.getExpense();
 
-      if (expense != null && expense.getEmployee() != null) {
-        empId = expense.getEmployee().getId();
-      } else {
-        empId = expenseLine.getEmployee().getId();
-      }
-      Employee employee = Beans.get(EmployeeRepository.class).find(empId);
-      try {
+        if (expense != null && expense.getEmployee() != null) {
+          empId = expense.getEmployee().getId();
+        } else {
+          empId = expenseLine.getEmployee().getId();
+        }
+        Employee employee = Beans.get(EmployeeRepository.class).find(empId);
         expenseLine.setTotalAmount(
             Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
       }
+      return super.save(expenseLine);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
-    return super.save(expenseLine);
   }
 }
