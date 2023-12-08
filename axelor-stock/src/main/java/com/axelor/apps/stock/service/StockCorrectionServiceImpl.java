@@ -71,7 +71,6 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     this.stockMoveLineService = stockMoveLineService;
   }
 
-
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
 
