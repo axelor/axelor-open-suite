@@ -212,9 +212,8 @@
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
           showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
         <button name="declareOutsourcedDelieveryBtn" title="Outsource declaration"
-                hidden="true" showIf="outsourcing &amp;&amp; statusSelect >= 2"
-                colSpan="12"
-                onClick="action-manuf-order-view-declare-delivery"/>
+          hidden="true" showIf="(outsourcing || $areLinesOutsourced) &amp;&amp; statusSelect >= 2"
+          colSpan="12" onClick="action-manuf-order-view-declare-delivery"/>
         <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
           showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
           hidden="true"/>
@@ -394,6 +393,8 @@
       <panel name="outsourcingPanel" title="Outsourcing"
         showIf="outsourcing || $areLinesOutsourced">
         <panel-related field="purchaseOrderSet" colSpan="12"/>
+        <panel-related field="outsourcingStockMoveList" colSpan="12"
+          title="Outgoing outsource stock move"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
@@ -511,28 +512,26 @@
 
 
   <form model="com.axelor.apps.production.db.ManufOrder" title="Outsource declaration"
-        name="manuf-order-outsource-declaration-form"
-        onNew="action-manuf-order-method-outsource-declaration-form-on-new">
+    name="manuf-order-outsource-declaration-form"
+    onNew="action-manuf-order-method-outsource-declaration-form-on-new">
     <panel name="mainPanel">
       <panel-related field="$prodProductsList" type="one-to-many"
-                     target="com.axelor.apps.production.db.ProdProduct"
-                     grid-view="prod-product-consume-manuf-order-grid"
-                     form-view="prod-product-form"
-                     orderBy="product.code"
-                     x-selector="checkbox"
-                     colSpan="12" canNew="false"
-                     canEdit="false" canRemove="false"/>
+        target="com.axelor.apps.production.db.ProdProduct"
+        grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
+        orderBy="product.code" x-selector="checkbox" colSpan="12" canNew="false" canEdit="false"
+        canRemove="false" title="Products"/>
       <field name="$partnerToDeclare" type="many-to-one"
-             target="com.axelor.apps.base.db.Partner"/>
+        target="com.axelor.apps.base.db.Partner" title="Partner" required="true" colSpan="4"/>
 
-      <button name="declareDeliveryBtn" title="Declare delivery"
-              onClick="action-manuf-order-method-declare-delivery,close" colOffset="5" colSpan="2"/>
+      <button name="declareDeliveryBtn" title="Declare delivery to outsource partner"
+        onClick="action-manuf-order-method-declare-delivery,close" colOffset="5" colSpan="4"/>
     </panel>
   </form>
 
 
   <action-method name="action-manuf-order-method-outsource-declaration-form-on-new">
-    <call class="com.axelor.apps.production.web.ManufOrderController" method="outsourceDeclarationOnNew"/>
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="outsourceDeclarationOnNew"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-declare-delivery">
@@ -580,7 +579,7 @@
   </action-view>
 
   <action-view name="action-manuf-order-view-declare-delivery"
-               title="Outsource declaration" model="com.axelor.apps.production.db.ManufOrder">
+    title="Outsource declaration" model="com.axelor.apps.production.db.ManufOrder">
     <view type="form" name="manuf-order-outsource-declaration-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
