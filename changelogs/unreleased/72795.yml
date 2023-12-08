@@ -1,0 +1,12 @@
+---
+title: "LOCALIZATION : new object to manage all localization related elements"
+type: feature
+description: |
+  A new Localization object is created. It has:
+    A String field "code";
+    A String field "name";
+    A M2O field "language "related to Language object;
+    A String field "dataFormat";
+    A String field "numbersFormat".
+  We use this object to manage all the localization related elements, the language, 
+  the date format and the numbers format. And we use this object everywhere we select a language.
