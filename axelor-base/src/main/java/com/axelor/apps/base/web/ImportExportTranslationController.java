@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.apps.base.service.ImportExportTranslationService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,7 +34,7 @@ public class ImportExportTranslationController {
     if (path != null) {
       String[] filePath = path.split("/");
       response.setExportFile(filePath[filePath.length - 1]);
-      response.setInfo("File successfully exported.");
+      response.setInfo(I18n.get("File successfully exported."));
     }
     response.setReload(true);
   }
@@ -54,10 +55,10 @@ public class ImportExportTranslationController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
     if (path == null) {
-      response.setInfo("The import file is empty or it has error format.");
+      response.setInfo(I18n.get("The import file is empty or it has error format."));
       response.setReload(true);
     } else {
-      response.setInfo("File successfully imported.");
+      response.setInfo(I18n.get("File successfully imported."));
       response.setReload(true);
     }
   }
