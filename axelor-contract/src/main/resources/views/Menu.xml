@@ -109,7 +109,7 @@
 
   <menuitem title="Pricing" name="contracts-conf-pricing" parent="contracts-root-conf-all"
     order="600" action="contracts.conf.pricing"
-    if="__config__.app.getApp('sale')?.enablePricingScale"/>
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="contracts.conf.pricing" title="Pricing"
     model="com.axelor.apps.base.db.Pricing">
@@ -120,7 +120,7 @@
 
   <menuitem title="Pricing rules" name="contracts-conf-pricing-rule"
     parent="contracts-root-conf-all" order="700" action="contracts.conf.pricing.rule"
-    if="__config__.app.getApp('sale')?.enablePricingScale"/>
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="contracts.conf.pricing.rule" title="Pricing rules"
     model="com.axelor.apps.base.db.PricingRule">
