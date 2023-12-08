@@ -27,10 +27,7 @@ public class MobileSettingsRestController {
   @GET
   @HttpExceptionHandler
   public Response getMobileSettings() {
-    new SecurityCheck()
-        .writeAccess(AppMobileSettings.class)
-        .createAccess(AppMobileSettings.class)
-        .check();
+    new SecurityCheck().readAccess(AppMobileSettings.class).check();
 
     return ResponseConstructor.build(
         Response.Status.OK,

@@ -1,5 +1,7 @@
 package com.axelor.apps.mobilesettings.service;
 
+import com.axelor.apps.mobilesettings.db.MobileConfig;
+import com.axelor.apps.mobilesettings.db.MobileMenu;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
 import com.axelor.apps.mobilesettings.rest.dto.MobileHRSettingsResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
@@ -8,7 +10,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.studio.db.AppMobileSettings;
 import com.google.inject.Inject;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MobileSettingsResponseComputeServiceImpl
     implements MobileSettingsResponseComputeService {
@@ -29,29 +33,35 @@ public class MobileSettingsResponseComputeServiceImpl
     Boolean isStockAppEnabled =
         checkConfigWithRoles(
             appMobileSettings.getIsStockAppEnabled(),
-            getMobileConfigAuthorizedRoles(MobileConfigRepository.APP_SEQUENCE_STOCK));
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_STOCK)
+                .getAuthorizedRoles());
     Boolean isHRAppEnabled =
         checkConfigWithRoles(
             appMobileSettings.getIsHRAppEnabled(),
-            getMobileConfigAuthorizedRoles(MobileConfigRepository.APP_SEQUENCE_HR));
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
+                .getAuthorizedRoles());
 
     return new MobileSettingsResponse(
         appMobileSettings.getVersion(),
         isStockAppEnabled,
         checkConfigWithRoles(
             appMobileSettings.getIsProductionAppEnabled(),
-            getMobileConfigAuthorizedRoles(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MANUFACTURING)
+                .getAuthorizedRoles()),
         checkConfigWithRoles(
             appMobileSettings.getIsCrmAppEnabled(),
-            getMobileConfigAuthorizedRoles(MobileConfigRepository.APP_SEQUENCE_CRM)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_CRM)
+                .getAuthorizedRoles()),
         checkConfigWithRoles(
             appMobileSettings.getIsHelpdeskAppEnabled(),
-            getMobileConfigAuthorizedRoles(MobileConfigRepository.APP_SEQUENCE_HELPDESK)),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HELPDESK)
+                .getAuthorizedRoles()),
         isHRAppEnabled,
         appMobileSettings.getIsLoginUserQrcodeEnabled(),
         appMobileSettings.getIsTrackerMessageEnabled(),
         getStockSettings(appMobileSettings, isStockAppEnabled),
-        getHrSettings(appMobileSettings, isHRAppEnabled));
+        getHrSettings(appMobileSettings, isHRAppEnabled),
+        getRestrictedMenus());
   }
 
   protected MobileStockSettingsResponse getStockSettings(
@@ -113,11 +123,39 @@ public class MobileSettingsResponseComputeServiceImpl
     return authorizedRoles.stream().anyMatch(AuthUtils.getUser().getRoles()::contains);
   }
 
-  protected Set<Role> getMobileConfigAuthorizedRoles(String appSequence) {
-    return mobileConfigRepository
-        .all()
-        .filter("self.sequence = '" + appSequence + "'")
-        .fetchOne()
-        .getAuthorizedRoles();
+  protected Boolean checkRestrictedMenuWithRoles(Set<Role> authorizedRoles) {
+    if (authorizedRoles == null || authorizedRoles.isEmpty()) {
+      return true;
+    }
+    return authorizedRoles.stream().noneMatch(AuthUtils.getUser().getRoles()::contains);
+  }
+
+  protected MobileConfig getMobileConfigFromAppSequence(String appSequence) {
+    return mobileConfigRepository.all().filter("self.sequence = '" + appSequence + "'").fetchOne();
+  }
+
+  protected List<String> getRestrictedMenus() {
+    List<String> appSequenceList =
+        List.of(
+            MobileConfigRepository.APP_SEQUENCE_STOCK,
+            MobileConfigRepository.APP_SEQUENCE_MANUFACTURING,
+            MobileConfigRepository.APP_SEQUENCE_CRM,
+            MobileConfigRepository.APP_SEQUENCE_HELPDESK,
+            MobileConfigRepository.APP_SEQUENCE_HR);
+    return appSequenceList.stream()
+        .map(this::getRestrictedMenusFromApp)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
+  }
+
+  private List<String> getRestrictedMenusFromApp(String appSequence) {
+    MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
+    if (mobileConfig.getIsCustomizeMenuEnabled()) {
+      return mobileConfig.getMenus().stream()
+          .filter(mobileMenu -> checkRestrictedMenuWithRoles(mobileMenu.getAuthorizedRoles()))
+          .map(MobileMenu::getTechnicalName)
+          .collect(Collectors.toList());
+    }
+    return List.of();
   }
 }

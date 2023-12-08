@@ -1,6 +1,7 @@
 package com.axelor.apps.mobilesettings.rest.dto;
 
 import com.axelor.utils.api.ResponseStructure;
+import java.util.List;
 
 public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isStockAppEnabled;
@@ -12,6 +13,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isTrackerMessageEnabled;
   protected final MobileStockSettingsResponse stockSettings;
   protected final MobileHRSettingsResponse hrSettings;
+  protected final List<String> restrictedMobileMenus;
 
   public MobileSettingsResponse(
       Integer version,
@@ -23,7 +25,8 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isLoginUserQrcodeEnabled,
       Boolean isTrackerMessageEnabled,
       MobileStockSettingsResponse stockSettings,
-      MobileHRSettingsResponse hrSettings) {
+      MobileHRSettingsResponse hrSettings,
+      List<String> restrictedMobileMenus) {
     super(version);
     this.isStockAppEnabled = isStockAppEnabled;
     this.isProductionAppEnabled = isProductionAppEnabled;
@@ -34,6 +37,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isTrackerMessageEnabled = isTrackerMessageEnabled;
     this.stockSettings = stockSettings;
     this.hrSettings = hrSettings;
+    this.restrictedMobileMenus = restrictedMobileMenus;
   }
 
   public Boolean getStockAppEnabled() {
@@ -70,5 +74,9 @@ public class MobileSettingsResponse extends ResponseStructure {
 
   public MobileHRSettingsResponse getHrSettings() {
     return hrSettings;
+  }
+
+  public List<String> getRestrictedMobileMenus() {
+    return restrictedMobileMenus;
   }
 }
