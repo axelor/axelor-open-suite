@@ -44,6 +44,9 @@
   <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
     search="self.importId = :importId"/>
 
+  <input file="base_localization.csv" separator=";"
+    type="com.axelor.apps.base.db.Localization" search="self.importId = :importId"/>
+
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
