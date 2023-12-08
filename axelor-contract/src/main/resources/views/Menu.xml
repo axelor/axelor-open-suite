@@ -30,8 +30,32 @@
     <context name="_xTargetType" expr="eval: 2"/>
   </action-view>
 
+  <menuitem title="YEB/YER Customer contracts" name="contracts-root-yer-customer-all"
+    action="contracts.root.yer.customer.all" parent="contracts-root" order="300"/>
+
+  <action-view name="contracts.root.yer.customer.all" title="YEB/YER Customer contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
+    <view-param name="search-filters" value="contract-filters"/>
+    <domain>self.targetTypeSelect = 3 AND self.statusSelect != 3</domain>
+    <context name="_xTargetType" expr="eval: 3"/>
+  </action-view>
+
+  <menuitem title="YEB/YER Supplier contracts" name="contracts-root-yer-supplier-all"
+    action="contracts.root.yer.supplier.all" parent="contracts-root" order="400"/>
+
+  <action-view name="contracts.root.yer.supplier.all" title="YEB/YER Supplier contracts"
+    model="com.axelor.apps.contract.db.Contract">
+    <view type="grid" name="contract-grid"/>
+    <view type="form" name="contract-form"/>
+    <view-param name="search-filters" value="contract-filters"/>
+    <domain>self.targetTypeSelect = 4 AND self.statusSelect != 3</domain>
+    <context name="_xTargetType" expr="eval: 4"/>
+  </action-view>
+
   <menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"
-    icon="fa-cog" order="300"/>
+    icon="fa-cog" order="500"/>
 
   <menuitem title="Terminated contracts" name="contracts-root-conf-terminated"
     action="contracts.root.conf.terminated" parent="contracts-root-conf-all" order="100"/>
@@ -81,6 +105,28 @@
     model="com.axelor.apps.contract.db.RevaluationFormula">
     <view type="grid" name="revaluation-formula-grid"/>
     <view type="form" name="revaluation-formula-form"/>
+  </action-view>
+
+  <menuitem title="Pricing" name="contracts-conf-pricing" parent="contracts-root-conf-all"
+    order="600" action="contracts.conf.pricing"
+    if="__config__.app.getApp('sale')?.enablePricingScale"/>
+
+  <action-view name="contracts.conf.pricing" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="contract-line-pricing-form"/>
+    <domain>self.concernedModel.name = 'InvoiceLine'</domain>
+  </action-view>
+
+  <menuitem title="Pricing rules" name="contracts-conf-pricing-rule"
+    parent="contracts-root-conf-all" order="700" action="contracts.conf.pricing.rule"
+    if="__config__.app.getApp('sale')?.enablePricingScale"/>
+
+  <action-view name="contracts.conf.pricing.rule" title="Pricing rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.concernedModel.name = 'InvoiceLine'</domain>
   </action-view>
 
   <menuitem name="admin-root-batch-contract" parent="admin-root-batch"

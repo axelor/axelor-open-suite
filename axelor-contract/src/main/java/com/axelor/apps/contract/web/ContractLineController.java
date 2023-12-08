@@ -21,7 +21,9 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
@@ -31,7 +33,9 @@ import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
@@ -226,5 +230,20 @@ public class ContractLineController {
         "isToRevaluate",
         "hidden",
         Beans.get(ContractLineViewService.class).hideIsToRevaluate(contract, contractVersion));
+  }
+
+  public void copyPricing(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    Pricing newPricing = Beans.get(PricingService.class).copyPricing(contractLine.getPricing());
+    response.setValue("pricing", newPricing);
+
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Pricing"));
+    actionViewBuilder.model(Pricing.class.getName());
+    actionViewBuilder.add("form", "contract-line-pricing-form");
+    actionViewBuilder.param("popup", "true");
+    actionViewBuilder.param("popup-save", "true");
+    actionViewBuilder.param("forceEdit", "true");
+    actionViewBuilder.context("_showRecord", newPricing.getId());
+    response.setView(actionViewBuilder.map());
   }
 }

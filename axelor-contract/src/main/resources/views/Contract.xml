@@ -99,7 +99,7 @@
       </panel>
       <panel colSpan="3" stacked="true" name="actionPanel">
         <panel name="templatePanel" hidden="true"
-          showIf="statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2"
+          showIf="(statusSelect == 1 || currentContractVersion.statusSelect == 1 || currentContractVersion.statusSelect == 2) &amp;&amp; targetTypeSelect &lt;= 2"
           stacked="true">
           <field name="$contractTemplate" title="Contract template to use" type="MANY-TO-ONE"
             canNew="false" canEdit="false" target="com.axelor.apps.contract.db.ContractTemplate"/>
@@ -158,8 +158,8 @@
     </panel>
     <panel-tabs name="mainPanelTab" showIf="partner">
       <panel title="Content" name="contentPanel">
-        <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement"
-          colSpan="12">
+        <panel name="contractLineListPanel" hidden="true"
+          showIf="isInvoicingManagement &amp;&amp; targetTypeSelect &lt;= 2" colSpan="12">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
@@ -168,11 +168,22 @@
             </editor>
           </field>
         </panel>
-        <field name="consumptionLineList" showIf="isConsumptionManagement" readonlyIf="!id"
+        <panel name="yerContractLineListPanel" hidden="true"
+          showIf="isInvoicingManagement &amp;&amp; targetTypeSelect > 2" colSpan="12">
+          <field name="currentContractVersion" showTitle="false" colSpan="12"
+            x-show-icons="false">
+            <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
+              <field name="contractLineList" showTitle="false" colSpan="12"
+                form-view="contract-line-yer-form" grid-view="contract-line-grid"/>
+            </editor>
+          </field>
+        </panel>
+        <field name="consumptionLineList"
+          showIf="isConsumptionManagement &amp;&amp; targetTypeSelect &lt; 2" readonlyIf="!id"
           colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
         <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement"
           readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form"
-          grid-view="additional-contract-line-grid"/>
+          grid-view="additional-contract-line-grid" hideIf="targetTypeSelect > 2"/>
         <panel name="currentContractVersionDescriptionPanel" colSpan="12">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false">
@@ -264,19 +275,20 @@
             colSpan="12" widget="boolean-switch"/>
           <panel name="managementPanel" hidden="true" showIf="isInvoicingManagement"
             colSpan="12">
+            <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
             <field name="isAdditionaBenefitManagement"
               if="__config__.app.getApp('contract')?.isAdditionalBenefitManagement"
-              widget="boolean-switch" colSpan="3"/>
-            <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="9"/>
+              widget="boolean-switch" colSpan="4" hideIf="targetTypeSelect > 2"/>
             <field name="isConsumptionManagement"
               if="__config__.app.getApp('contract')?.isConsumptionManagement"
               onChange="action-contract-record-update-field-in-version" widget="boolean-switch"
-              colSpan="3"/>
+              colSpan="4" hideIf="targetTypeSelect > 2"/>
             <field name="currentContractVersion"
               if="__config__.app.getApp('contract')?.isConsumptionManagement" showTitle="false"
               hidden="true" showIf="isConsumptionManagement" x-show-icons="false">
               <editor x-viewer="true" x-show-on-new="true" x-show-titles="true">
-                <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"/>
+                <field name="isConsumptionBeforeEndDate" colSpan="12" widget="boolean-switch"
+                  hideIf="targetTypeSelect > 2"/>
               </editor>
             </field>
           </panel>
@@ -536,9 +548,9 @@
 
   <action-attrs name="action-contract-attrs-partner-payment-config">
     <attribute for="currentContractVersion.paymentMode" name="value"
-      expr="eval: partner?.inPaymentMode" if="targetTypeSelect == 1"/>
+      expr="eval: partner?.inPaymentMode" if="targetTypeSelect == 1 || targetTypeSelect == 3"/>
     <attribute for="currentContractVersion.paymentMode" name="value"
-      expr="eval: partner?.outPaymentMode" if="targetTypeSelect == 2"/>
+      expr="eval: partner?.outPaymentMode" if="targetTypeSelect == 2 || targetTypeSelect == 4"/>
     <attribute for="currentContractVersion.paymentCondition" name="value"
       expr="eval: partner?.paymentCondition"/>
   </action-attrs>

@@ -31,6 +31,8 @@
   <selection name="contract.target.type.select">
     <option value="1">Customer</option>
     <option value="2">Supplier</option>
+    <option value="3">Customer year end bonus</option>
+    <option value="4">Supplier year end bonus</option>
   </selection>
 
   <selection name="sequence.generic.code.select"

@@ -213,6 +213,36 @@
     </panel>
   </form>
 
+  <form name="contract-line-yer-form" title="Contract line"
+    model="com.axelor.apps.contract.db.ContractLine"
+    onNew="action-contract-line-group-onnew, action-contract-line-attrs-pricing-used-in-another-line"
+    onLoad="action-contract-line-group-edit-view, action-contract-line-attrs-pricing-used-in-another-line">
+    <panel-tabs name="mainPanelTab">
+      <panel name="informationsPanel" title="Information">
+        <panel name="infoPanel" title="Information" colSpan="12">
+          <field name="product" canEdit="false"
+            onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
+          <field name="productName"/>
+          <field name="taxLine" canEdit="false"
+            onChange="action-method-contract-line-compute-total"/>
+        </panel>
+        <panel name="pricingPanel" title="Pricing" colSpan="12" itemSpan="12">
+          <field name="pricing" canNew="true" canEdit="true"
+            onChange="action-contract-line-attrs-pricing-used-in-another-line,action-contract-line-condition-check-pricing"
+            form-view="contract-line-pricing-form"/>
+          <button name="modifyPricingBtn" title="Edit" showIf="$usedInContract"
+            onClick="action-contract-line-method-copy-pricing, action-contract-line-attrs-empty-used-in-contract"
+            colSpan="4"/>
+          <field name="$usedInContract" type="boolean" hidden="true"/>
+        </panel>
+      </panel>
+
+      <panel name="datePanel" title="Date" hidden="true">
+        <field name="fromDate" onChange="action-method-contract-line-check-from-date"/>
+      </panel>
+    </panel-tabs>
+  </form>
+
   <!-- ACTION GROUP -->
 
   <action-group name="action-contract-line-group-onnew">
@@ -368,5 +398,26 @@ Please be careful when using products with unit being a time unit.
 In case you have contract lines with different invoicing duration, you can activate and use the Addtional Benefits management feature."
       if="unit?.unitTypeSelect == 3"/>
   </action-validate>
+
+  <!-- Pricing actions -->
+
+  <action-condition name="action-contract-line-condition-check-pricing">
+    <check field="pricing"
+      if="eval: pricing != null &amp;&amp; __repo__(ContractLine).all().filter('self.pricing = ?', pricing).count() > 0"
+      error="This pricing is already used by another contract line."/>
+  </action-condition>
+
+  <action-attrs name="action-contract-line-attrs-pricing-used-in-another-line">
+    <attribute for="$usedInContract" name="value"
+      expr="eval: pricing != null &amp;&amp;  __repo__(ContractLine).all().filter('self.pricing = ?', pricing).count() > 0"/>
+  </action-attrs>
+
+  <action-attrs name="action-contract-line-attrs-empty-used-in-contract">
+    <attribute for="$usedInContract" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <action-method name="action-contract-line-method-copy-pricing">
+    <call class="com.axelor.apps.contract.web.ContractLineController" method="copyPricing"/>
+  </action-method>
 
 </object-views>

@@ -67,4 +67,6 @@ public interface PricingService {
       throws AxelorException;
 
   public void historizeCurrentPricing(Pricing currentPricing) throws AxelorException;
+
+  Pricing copyPricing(Pricing pricing);
 }

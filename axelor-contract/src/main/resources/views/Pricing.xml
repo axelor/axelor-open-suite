@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form title="Pricing" name="contract-line-pricing-form"
+    model="com.axelor.apps.base.db.Pricing"
+    onLoad="action-pricing-method-set-readonly, action-pricing-group-attrs-pricing-line-list">
+    <panel name="mainPanel" readonlyIf="$usedInContract">
+      <field name="$usedInContract" type="boolean" hidden="true"
+        showIf="$readonly() &amp;&amp; $usedInContract" showTitle="false">
+        <viewer>
+                    <![CDATA[<><Badge as="span" bg="danger">{_t('This pricing is already used by another contract line.')}</Badge></>]]>
+        </viewer>
+      </field>
+      <panel-include view="pricing-form"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-pricing-attrs-set-readonly">
+    <attribute for="$usedInContract" name="value"
+      expr="eval: __parent__ != null &amp;&amp; __parent__?._model == 'com.axelor.apps.contract.db.ContractLine
+&amp;&amp;  __repo__(ContractLine).all().filter('self.pricing = ?', __this__).count() > 1"/>
+  </action-attrs>
+
+  <action-method name="action-pricing-method-set-readonly">
+    <call class="com.axelor.apps.contract.web.PricingController" method="setPricingReadonly"/>
+  </action-method>
+</object-views>

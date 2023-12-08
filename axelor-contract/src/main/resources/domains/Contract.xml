@@ -92,6 +92,8 @@
 
             public static final int CUSTOMER_CONTRACT = 1;
             public static final int SUPPLIER_CONTRACT = 2;
+            public static final int YER_CUSTOMER_CONTRACT = 3;
+            public static final int YER_SUPPLIER_CONTRACT = 4;
         ]]></extra-code>
 
   </entity>

@@ -260,4 +260,12 @@ public class PricingServiceImpl implements PricingService {
     historizedPricing.setArchived(true);
     pricingRepo.save(historizedPricing);
   }
+
+  @Transactional
+  @Override
+  public Pricing copyPricing(Pricing pricing) {
+    Pricing newPricing = pricingRepo.copy(pricing, true);
+    newPricing.setName(pricing.getName() + " " + I18n.get("Copy"));
+    return pricingRepo.save(newPricing);
+  }
 }
