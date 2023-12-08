@@ -33,4 +33,21 @@ public interface ITranslation {
   public static final String MAP_ZERO_RESULTS = /*$$(*/ "MapRest.ZERO_RESULTS" /*)*/;
   public static final String CHECK_RESPONSE_RESPONSE = /*$$(*/
       "Here is the list of the warnings and errors" /*)*/;
+
+  public static final String PRICING_OBSERVER_IDENTIFIED_PRICING = /*$$(*/
+      "Identified pricing scale: %s"; /*)*/
+  public static final String PRICING_OBSERVER_IDENTIFIED_CR = /*$$(*/
+      "Classification rule used: %s"; /*)*/
+  public static final String PRICING_OBSERVER_RESULT_CR = /*$$(*/
+      "Result of the classification rule evaluation: %s"; /*)*/
+  public static final String PRICING_OBSERVER_IDENTIFIED_RR = /*$$(*/
+      "Evaluation of result rule: %s"; /*)*/
+  public static final String PRICING_OBSERVER_RESULT_RR = /*$$(*/
+      "Result of the evaluation of the result rule: %s"; /*)*/
+  public static final String PRICING_OBSERVER_POPULATED_FIELD = /*$$(*/ "Populated field: %s"; /*)*/
+  public static final String PRICING_OBSERVER_POPULATED_CUSTOM_FIELD = /*$$(*/
+      "Populated custom field: %s"; /*)*/
+
+  public static final String PRICING_OBSERVER_NO_PRICING = /*$$(*/
+      "No pricing scale used for this record"; /*)*/
 }

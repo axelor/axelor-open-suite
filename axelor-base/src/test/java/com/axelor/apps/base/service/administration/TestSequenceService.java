@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.base.service.administration;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 
@@ -27,6 +26,7 @@ import com.axelor.apps.base.db.SequenceLettersTypeSelect;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.SequenceVersionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,7 +74,7 @@ class TestSequenceService {
       throws AxelorException {
     String actual =
         sequenceService.findNextLetterSequence(input, SequenceLettersTypeSelect.UPPERCASE);
-    assertEquals(expected, actual);
+    Assertions.assertEquals(expected, actual);
   }
 
   @ParameterizedTest
@@ -83,6 +83,13 @@ class TestSequenceService {
       throws AxelorException {
     String actual =
         sequenceService.findNextLetterSequence(input, SequenceLettersTypeSelect.LOWERCASE);
-    assertEquals(expected, actual);
+    Assertions.assertEquals(expected, actual);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"1,NLL,0AA", "67599,LLNN,ZZ99", "1,LNLN,A0A1", "6526,NLNL,0Z0Z", "496,NLNL,0B9B"})
+  void findNextAlphanumericSequence_df(Long nextNum, String pattern, String expected) {
+    String actual = sequenceService.findNextAlphanumericSequence(nextNum, pattern);
+    Assertions.assertEquals(expected, actual);
   }
 }

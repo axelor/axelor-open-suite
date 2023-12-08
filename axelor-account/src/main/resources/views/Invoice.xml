@@ -21,7 +21,7 @@
           prompt="Are you sure you want to ventilate all selected invoices ?"
           if="!__config__.app.getApp('invoice')?.isVentilationSkipped"/>
         <item name="mergeCustInvoicesItem" title="Merge Cust. Invoices"
-          action="action-invoice-mergecustinvoices"/>
+          action="action-invoice-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeCustInvoicesLinesItem" title="See cust. invoices lines"
           action="action-customer-invoice-line-menu"/>
       </menu>
@@ -41,10 +41,12 @@
     <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
@@ -193,10 +195,12 @@
       width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
-    <field name="exTaxTotal" aggregate="sum" width="120"/>
-    <field name="inTaxTotal" aggregate="sum" width="120"/>
-    <field name="amountRemaining" aggregate="sum" width="120"/>
+    <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" width="120"
+      x-scale="currency.numberOfDecimals"/>
     <field name="currency" width="60"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
@@ -244,10 +248,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="pfpValidateStatusSelect" title="PFP"
@@ -304,10 +309,11 @@
     <field name="originDate"/>
     <field name="invoiceDate"/>
     <field name="dueDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidateStatusSelect" title="PFP"/>
@@ -352,9 +358,10 @@
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
     <field name="operationSubTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -373,9 +380,11 @@
     <field name="invoiceId" width="120"/>
     <field name="invoiceDate"/>
     <field name="operationTypeSelect"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
   </grid>
@@ -412,9 +421,9 @@
 	                        <>
 	                        	<Box d="flex" justifyContent="flex-end" gap="4" flexWrap="wrap">
 	                        		{operationTypeSelect == 1 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier purchase')}</Badge>}
-	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier refund')}</Badge>}
+	                        		{operationTypeSelect == 2 && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Supplier credit note')}</Badge>}
 	                        		{operationTypeSelect == 3 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer sale')}</Badge>}
-	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer refund')}</Badge>}
+	                        		{operationTypeSelect == 4 && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Customer credit note')}</Badge>}
 
 	                        		{operationSubTypeSelect == 1 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Standard invoice')}</Badge>}
 	                        		{operationSubTypeSelect == 2 && (operationTypeSelect == 1 || operationTypeSelect == 3) && <Badge bg="info">{_t('Advance payment invoice')}</Badge>}
@@ -634,7 +643,10 @@
             onChange="action-method-invoice-compute-delivery-address-str"
             form-view="address-partner-address-form" canEdit="false" canNew="true" colSpan="6"/>
           <field name="incoterm" readonlyIf="statusSelect > 2" form-view="incoterm-form"
-            grid-view="incoterm-grid" if="__config__.app.isApp('supplychain')"/>
+            grid-view="incoterm-grid"
+            if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+          <spacer colSpan="6"
+            if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled)"/>
           <field name="deliveryAddressStr" colSpan="6" readonlyIf="statusSelect &gt; 1"
             height="5">
             <viewer><![CDATA[<>{addressStr}</>]]></viewer>
@@ -681,9 +693,9 @@
           <field name="subrogationRelease" readonly="true" showIf="subrogationRelease"/>
           <field name="subrogationReleaseMove" readonly="true" showIf="subrogationReleaseMove"/>
         </panel>
-        <panel name="refundPanel" title="Refund" showIf="statusSelect != 1 || originalInvoice"
-          colSpan="12" showTitle="false">
-          <button name="createRefundBtn" title="Generate refund" colSpan="3"
+        <panel name="refundPanel" title="Credit note"
+          showIf="statusSelect != 1 || originalInvoice" colSpan="12" showTitle="false">
+          <button name="createRefundBtn" title="Generate credit note" colSpan="3"
             showIf="statusSelect != 1 &amp;&amp; operationSubTypeSelect != 2"
             onClick="save,action-invoice-method-create-refund,save"/>
           <field name="originalInvoice" readonly="true" showIf="originalInvoice"
@@ -790,6 +802,17 @@ InvoiceSet.length > 0))"
           showIf="[2,3].includes(statusSelect) &amp;&amp; ( invoiceAutomaticMail || invoiceAutomaticMailOnValidate )"
           onClick="action.message.view.messages" css="btn-custom" colSpan="3"/>
       </panel>
+      <panel name="financialDiscountPanel" colSpan="12" title="Financial discount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()">
+        <field name="financialDiscount" readonlyIf="[3,4].includes(statusSelect)"
+          onChange="action-invoice-group-financial-discount"/>
+        <field name="financialDiscountDeadlineDate" readonly="true" showIf="financialDiscount"/>
+        <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
+          <field name="financialDiscountRate" readonly="true"/>
+          <field name="financialDiscountTotalAmount" readonly="true"/>
+          <field name="remainingAmountAfterFinDiscount" readonly="true"/>
+        </panel>
+      </panel>
       <panel name="blockingsPanel" title="Blockings" showIf="statusSelect == 3"
         showTitle="false">
         <field name="debitBlockingOk"/>
@@ -834,17 +857,6 @@ InvoiceSet.length > 0))"
             <viewer><![CDATA[<>{reasonOfRefusalToPayStr}</>]]></viewer>
           </field>
         </panel>
-        <panel name="financialDiscountPanel" showIf="statusSelect > 2" colSpan="12">
-          <field name="financialDiscount" readonlyIf="amountPaid > 0"
-            onChange="action-invoice-group-financial-discount"/>
-          <field name="financialDiscountDeadlineDate" readonly="true"
-            showIf="financialDiscount"/>
-          <panel name="financialDiscountAmountPanel" showIf="financialDiscount" colSpan="12">
-            <field name="financialDiscountRate" readonly="true"/>
-            <field name="financialDiscountTotalAmount" readonly="true"/>
-            <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-          </panel>
-        </panel>
         <panel-related name="invoicePaymentListPanel" title="Payments details"
           field="invoicePaymentList" colSpan="12" grid-view="invoice-payment-grid"
           form-view="invoice-payment-form" canNew="false" canRemove="false"/>
@@ -874,7 +886,6 @@ InvoiceSet.length > 0))"
     </panel-tabs>
 
     <panel name="actionsPanel" hideIf="partner == null" sidebar="true">
-      <field name="amountRemaining" hidden="true"/>
       <field name="hasPendingPayments" hidden="true"/>
       <button name="validateBtn" hidden="true" title="Validate"
         onClick="action-invoice-group-on-validate"/>
@@ -919,28 +930,27 @@ InvoiceSet.length > 0))"
       </panel>
     </panel>
     <panel sidebar="true" name="totalsPanel" title="Totals" showTitle="false" itemSpan="6"
-      hideIf="partner == null">
+      hideIf="partner == null" gap="0">
       <field name="currency.code" hidden="true"/>
       <field name="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" x-currency="currency.symbol" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="exTaxTotal,taxTotal">
         	<![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     </Box>
 	                  </>
 		         ]]>
         </viewer>
@@ -948,47 +958,43 @@ InvoiceSet.length > 0))"
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,totalAmountWithFinancialDiscount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 				<>
 					<Box d="flex" flexDirection="column">
-						<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
-							<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" alignItems="center">
-								<dt>
-									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"}><Icon icon="link" fontSize="22.5px"/></Box>
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+							<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+								<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+								{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+								{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+								{typeSelect == 5 && <span> {_t('On')} </span>}
+								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								<span>{$fmt('paymentDate')}</span>
+							</Box>
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
+						</Box>
+
+						{applyFinancialDiscount &&
+							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+								<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Discounted on')} </span>}
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled discount on')} </span>}
+									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending discount')} </span>}
 									{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
 									{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
 									{typeSelect == 5 && <span> {_t('On')} </span>}
 									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
 									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
-									{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
 									<span>{$fmt('paymentDate')}</span>
-								</dt>
-								{typeSelect == 8 ? <dd>{currency.symbol} {$fmt('amount')}</dd> : <dd>-{currency.symbol} {$fmt('amount')}</dd>}
-							</Box>
-						</Box>
-
-						{applyFinancialDiscount &&
-							<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
-								<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" alignItems="center">
-									<dt>
-										<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"}><Icon icon="link" fontSize="22.5px"/></Box>
-										{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Discounted on')} </span>}
-										{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled discount on')} </span>}
-										{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending discount')} </span>}
-										{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
-										{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
-										{typeSelect == 5 && <span> {_t('On')} </span>}
-										{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
-										{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
-										<span>{$fmt('paymentDate')}</span>
-									</dt>
-									{financialDiscountTaxAmount > 0 && <dd>-{currency.symbol} {$fmt('financialDiscountTotalAmount')}</dd>}
-									{financialDiscountTaxAmount == 0 && <dd>-{currency.symbol} {$fmt('financialDiscountAmount')}</dd>}
 								</Box>
+								{financialDiscountTaxAmount > 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountTotalAmount).toFixed(currency.numberOfDecimals)}</Box>}
+								{financialDiscountTaxAmount == 0 && <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(financialDiscountAmount).toFixed(currency.numberOfDecimals)}</Box>}
 							</Box>
 						}
 					</Box>
@@ -997,16 +1003,15 @@ InvoiceSet.length > 0))"
         </viewer>
         <editor></editor>
       </field>
-      <field name="inTaxTotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
+      <field name="amountRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="amountRemaining"><![CDATA[
 		         <>
-		         	<dl>
-				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{currency.symbol} {$fmt('amountRemaining')}</dd>
-				 		</Box>
-		         	</dl>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('amountRemaining')}</Box>
+				 	</Box>
 		         </>
 		      ]]>
         </viewer>
@@ -1014,43 +1019,40 @@ InvoiceSet.length > 0))"
     </panel>
     <panel name="totalsCompanyCurrencyPanel" title="Totals company currency" showTitle="false"
       itemSpan="6" sidebar="true"
-      hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code">
+      hideIf="partner == null || company == null || currency == null || company.currency.code == currency.code"
+      gap="0">
       <field name="company.currency" hidden="true"/>
       <field name="company.currency.code" hidden="true"/>
       <field name="company.currency.symbol" hidden="true"/>
-      <field name="companyInTaxTotalRemaining" hidden="true"/>
-      <field name="companyInTaxTotal" showTitle="false" colSpan="12">
-        <viewer
-          depends="companyExTaxTotal,company.currency.symbol,companyTaxTotal,companyInTaxTotal,companyInTaxTotalRemaining"><![CDATA[
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
+      <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
+      <field name="companyTaxTotal" x-currency="company.currency.symbol" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
+      <field name="companyInTaxTotal" showTitle="false" colSpan="12"
+        x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
+        <viewer depends="companyExTaxTotal,companyTaxTotal,companyInTaxTotal"><![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{company.currency.symbol} {$fmt('companyExTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{company.currency.symbol} {$fmt('companyTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{company.currency.symbol} {$fmt('companyInTaxTotal')}</dd>
-	                     	</Box>
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyExTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
+	                     </Box>
 	                  </>
 		       ]]></viewer>
       </field>
-      <field name="companyInTaxTotal" css="order-subtotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="companyInTaxTotalRemaining,company.currency.symbol"><![CDATA[
+      <field name="companyInTaxTotalRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="company.currency.symbol"
+        x-scale="company.currency.numberOfDecimals">
+        <viewer depends="companyInTaxTotalRemaining"><![CDATA[
 		         <>
-		         	<dl>
-				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{company.currency.symbol} {$fmt('companyInTaxTotalRemaining')}</dd>
-				 		</Box>
-		         	</dl>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('companyInTaxTotalRemaining')}</Box>
+				 	</Box>
 		         </>
 		       ]]>
         </viewer>
@@ -1137,9 +1139,9 @@ InvoiceSet.length > 0))"
 					<![CDATA[
 	                   <>
 	                       {operationTypeSelect == 1 && <Badge bg="danger">{_t('Supplier purchase')}</Badge>}
-	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier refund')}</Badge>}
+	                       {operationTypeSelect == 2 && <Badge bg="danger">{_t('Supplier credit note')}</Badge>}
 	                       {operationTypeSelect == 3 && <Badge bg="danger">{_t('Customer sale')}</Badge>}
-	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer refund')}</Badge>}
+	                       {operationTypeSelect == 4 && <Badge bg="danger">{_t('Customer credit note')}</Badge>}
 	                   </>
 					]]>
           </viewer>
@@ -1217,7 +1219,8 @@ InvoiceSet.length > 0))"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
           readonlyIf="statusSelect == 3 || partner == null" colSpan="12"
           form-view="invoice-line-client-form" grid-view="invoice-line-grid"
-          onChange="action-invoice-method-compute" canMove="true" orderBy="sequence"/>
+          onChange="action-invoice-group-invoice-line-list-report-onchange" canMove="true"
+          orderBy="sequence"/>
         <panel-related name="invoiceLineTaxListPanel" field="invoiceLineTaxList"
           colSpan="12" form-view="invoice-line-tax-form" grid-view="invoice-line-tax-grid"/>
       </panel>
@@ -1254,7 +1257,6 @@ InvoiceSet.length > 0))"
         <button name="addPaymentBtn" title="Register payment"
           showIf="statusSelect == 3 &amp;&amp; amountRemaining > 0 &amp;&amp; !hasPendingPayments"
           colSpan="12" onClick="save,action-invoice-view-register-payment-voucher"/>
-        <field name="amountRemaining" hidden="true"/>
         <field name="hasPendingPayments" hidden="true"/>
         <field name="validatedByUser" hidden="true" showIf="validatedByUser" colSpan="6"
           canView="false"/>
@@ -1265,27 +1267,26 @@ InvoiceSet.length > 0))"
       </panel>
     </panel>
 
-    <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6">
+    <panel sidebar="true" name="totalsPanel" title="Totals" itemSpan="6" gap="0">
       <field name="currency.symbol" hidden="true"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer depends="exTaxTotal,currency.symbol,taxTotal,inTaxTotal">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="exTaxTotal,taxTotal,inTaxTotal">
         	<![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<dt>{_t('Total A.T.I.')}</dt>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     </Box>
 	                  </>
 		         ]]>
         </viewer>
@@ -1293,42 +1294,39 @@ InvoiceSet.length > 0))"
       <field name="$paymentVouchersOnInvoice" type="boolean" hidden="true"/>
       <field name="invoicePaymentList" showTitle="false" readonly="true" colSpan="12">
         <viewer
-          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount">
+          depends="typeSelect,statusSelect,id,paymentDate,amount,currency.symbol,$paymentVouchersOnInvoice,paymentMode,companyBankDetails,financialDiscountAmount,financialDiscountTaxAmount,applyFinancialDiscount,financialDiscountTotalAmount,currency.numberOfDecimals">
                 <![CDATA[
 					<>
-						<Box as="dl" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
-							<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" alignItems="center">
-								<dt>
-									<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"}><Icon icon="link" fontSize="22.5px"/></Box>
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
-									{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
-									{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
-									{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
-									{typeSelect == 5 && <span> {_t('On')} </span>}
-									{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
-									{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
-									{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
-									<span>{$fmt('paymentDate')}</span>
-								</dt>
-								{typeSelect == 8 ? <dd>{currency.symbol} {$fmt('amount')}</dd> : <dd>-{currency.symbol} {$fmt('amount')}</dd>}
+						<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" color={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "normal"}>
+							<Box as="dt" m={0} px={3} py={1} fontWeight="normal">
+								<Box as="a" href={`#/ds/action-invoice-view-register-payment${$paymentVouchersOnInvoice ? "-voucher" : ""}/edit/${id}`} linkColor={statusSelect == 2 ? "danger" : statusSelect == 3 ? "info" : "dark"} textDecoration="none" style={{ verticalAlign: "middle" }}><Icon icon="link" fontSize="22.5px"/></Box>
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect != 2 && statusSelect != 3 && <span> {_t('Paid on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 2 && <span> {_t('Canceled payment on')} </span>}
+								{(typeSelect == 1 || typeSelect == 2) && statusSelect == 3 && <span> {_t('Pending payment')} </span>}
+								{typeSelect == 3 && <span> {_t('Ref. on')} </span>}
+								{typeSelect == 4 && <span> {_t('Inv. on')} </span>}
+								{typeSelect == 5 && <span> {_t('On')} </span>}
+								{typeSelect == 6 && <span> {_t('Imputed on')} </span>}
+								{typeSelect == 7 && <span> {_t('Exp. accounted on')} </span>}
+								{typeSelect == 8 && <span> {_t('Doubtful on')} </span>}
+								<span>{$fmt('paymentDate')}</span>
 							</Box>
+							{typeSelect == 8 ? <Box as="dd" m={0} px={3} py={1}>{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box> : <Box as="dd" m={0} px={3} py={1}>-{currency.symbol} {parseFloat(amount).toFixed(currency.numberOfDecimals)}</Box>}
 						</Box>
 					</>
                 ]]>
         </viewer>
         <editor/>
       </field>
-      <field name="inTaxTotal" showTitle="false" colSpan="12"
-        showIf="statusSelect == 2 || statusSelect == 3">
-        <viewer depends="amountRemaining,currency.symbol"><![CDATA[
+      <field name="amountRemaining" showTitle="false" colSpan="12"
+        showIf="statusSelect == 2 || statusSelect == 3" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
+        <viewer depends="amountRemaining"><![CDATA[
 		         <>
-		         	<dl>
-				 		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-				 			<dt>{_t('Amount due')}</dt>
-				 			<dd>{currency.symbol} {$fmt('amountRemaining')}</dd>
-				 		</Box>
-		         	</dl>
+		         	<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end" fontSize={5}>
+				 		<Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal">{_t('Amount due')}</Box>
+				 		<Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('amountRemaining')}</Box>
+				 	</Box>
 		         </>
 		      ]]>
         </viewer>
@@ -1542,6 +1540,8 @@ InvoiceSet.length > 0))"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
+    <action name="action-record-invoice-set-discount-values"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1566,6 +1566,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-attrs-set-hidden-analytic-accounting-panel"/>
     <action name="action-invoice-attrs-operationsubtype-selection"/>
     <action name="action-invoice-attrs-set-subrogation-partner-readonly"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1653,6 +1654,12 @@ InvoiceSet.length > 0))"
   </action-group>
 
   <action-group name="action-invoice-group-ventilate-button">
+    <action name="action-invoice-group-before-ventilate"/>
+    <action name="action-invoice-method-ventilate"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-before-ventilate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="action-invoice-validate-check-pfp-validator-user"/>
     <action name="action-invoice-line-check-distribution-template-account"/>
@@ -1662,10 +1669,7 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
     <action name="action-invoice-method-check-not-imputed-refunds"/>
     <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
-    <action name="action-invoice-method-ventilate"/>
-    <action name="save"/>
   </action-group>
-
 
   <action-group name="action-invoice-group-pfp-validate">
     <action name="save"/>
@@ -1673,7 +1677,6 @@ InvoiceSet.length > 0))"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"/>
     <action name="action-method-account-invoice-validate-pfp"/>
   </action-group>
-
 
   <action-group name="action-invoice-group-add-invoice-payment">
     <action name="save"/>
@@ -1687,10 +1690,18 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-compute"/>
     <action name="action-invoice-method-generate-invoice-terms"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
+    <action name="action-invoice-method-update-final-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="save" if="invoiceLineList.find{it->it.typeSelect == 2} != null"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-on-validate">
+    <action name="action-invoice-group-before-validate"/>
+    <action name="action-invoice-method-validate"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-before-validate">
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action
       name="action-invoice-validate-disable-to-go-back-to-validate-status-from-ventilated-invoice"/>
@@ -1732,25 +1743,9 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-method-round-invoice-term-percentages"/>
   </action-group>
 
-  <action-group name="action-invoice-group-ventilate-onclick">
-    <action name="save"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
-    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
-    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
-    <action name="action-invoice-method-check-not-imputed-refunds"/>
-    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
-    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
-    <action name="action-invoice-method-ventilate"/>
-    <action name="save"/>
-  </action-group>
-
   <action-group name="action-invoice-group-validate-and-ventilate-onclick">
-    <action name="save"/>
-    <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
-    <action name="action-invoice-method-check-not-lettered-advance-payment-move-lines"/>
-    <action name="action-invoice-method-check-not-imputed-refunds"/>
-    <action name="action-invoice-method-check-invoice-lines-analytic-distribution"/>
-    <action name="action-invoice-method-check-invoice-lines-cut-off-dates"/>
+    <action name="action-invoice-group-before-validate"/>
+    <action name="action-invoice-group-before-ventilate"/>
     <action name="action-invoice-method-validate-and-ventilate"/>
   </action-group>
 
@@ -1785,6 +1780,11 @@ InvoiceSet.length > 0))"
   <action-group name="action-invoice-group-supplier-invoice-nb-onchange">
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
+  </action-group>
+
+  <action-group name="action-invoice-group-invoice-line-list-report-onchange">
+    <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-set-invoice-line-list-scale"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-mode-onchange">
@@ -2268,6 +2268,11 @@ InvoiceSet.length > 0))"
       method="mergeSupplInvoiceFromPopup"/>
   </action-method>
 
+  <action-method name="action-invoice-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.account.web.InvoiceMergingController"
+      method="convertSelectedLinesToMergeLines"/>
+  </action-method>
+
   <action-method name="action-invoice-method-create-advance-payment-domain">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="fillAdvancePaymentInvoiceSetDomain"/>
@@ -2426,6 +2431,10 @@ InvoiceSet.length > 0))"
       method="updateSubrogationPartner"/>
   </action-method>
 
+  <action-method name="action-invoice-method-set-invoice-line-list-scale">
+    <call class="com.axelor.apps.account.web.InvoiceController" method="setInvoiceLinesScale"/>
+  </action-method>
+
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
     model="com.axelor.apps.account.db.InvoicePayment">
     <view type="form" name="invoice-payment-form"/>
@@ -2446,6 +2455,7 @@ InvoiceSet.length > 0))"
     <view-param name="forceEdit" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <context name="_invoice" expr="eval: __this__"/>
+    <context name="_operationTypeSelect" expr="eval: operationTypeSelect"/>
   </action-view>
 
   <action-view name="action-invoice-mergecustinvoices" title="Merge Cust. Invoices"
@@ -2671,7 +2681,7 @@ InvoiceSet.length > 0))"
   </search-filters>
 
   <search-filters name="supplier-refunds-filters"
-    model="com.axelor.apps.account.db.Invoice" title="Supplier refunds filters">
+    model="com.axelor.apps.account.db.Invoice" title="Supplier credit notes filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" hidden="true"
@@ -2738,8 +2748,10 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner"/>
-    <field name="financialDiscount" expr="eval: null" if="!partner"/>
+    <field name="financialDiscount" expr="eval: partner.financialDiscount"
+      if="partner &amp;&amp; financialDiscount == null"/>
+    <field name="financialDiscount" expr="eval: null"
+      if="!partner &amp;&amp; financialDiscount == null"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
@@ -2753,8 +2765,6 @@ InvoiceSet.length > 0))"
     <field name="financialDiscountDeadlineDate"
       expr="call: com.axelor.apps.account.service.invoice.InvoiceService:getFinancialDiscountDeadlineDate(__self__, financialDiscount)"
       if="dueDate &amp;&amp; id != null &amp;&amp; financialDiscount != null"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: 0"
       if="!partner || !partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount" expr="eval: 0"

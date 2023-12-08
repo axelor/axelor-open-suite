@@ -11,7 +11,7 @@
       </menu>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-open-sale-quotation-merge-form"/>
+          action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="action-view-open-quotation-lines"/>
       </menu>
@@ -455,7 +455,7 @@
         <panel-related name="detailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
           form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
+          onChange="action-sale-order-method-on-line-change"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true" if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
@@ -468,9 +468,8 @@
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
-          onClick="action-orderSaleLine-tree" canMove="true"
-          if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
+          onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
+          canMove="true" if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -507,7 +506,7 @@
           domain=":company MEMBER OF self.companySet" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
-          grid-view="incoterm-grid"/>
+          grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>
         <field name="isIspmRequired" readonly="true" colSpan="3"/>
         <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
@@ -720,41 +719,30 @@
         showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
       <button name="computeBtn" title="Compute lines with pricing scale"
         onClick="action-sale-order-group-compute-pricing-scale-btn" showIf="statusSelect == 1"
-        if="__config__.app.getApp('sale')?.getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()"/>
+        if="__config__.app.getApp('base')?.getEnablePricingScale() &amp;&amp; __config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotationUsingPricing()"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer
-          depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
+      <field name="currency.symbol" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+        <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     	{statusSelect >= 3 &&
-	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
-	                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
-	                     		</Box>
-	                     	}
-	                     	{statusSelect >= 2 &&
-	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
-	                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
-	                     		</Box>
-	                     	}
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     	 {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
+	                     	 {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
+	                     </Box>
 	                  </>
 	              ]]></viewer>
       </field>
@@ -993,38 +981,27 @@
     </panel>
 
     <panel name="inTaxTotalPanel" sidebar="true" readonly="true" colSpan="4">
-      <field name="inTaxTotal" showTitle="false" colSpan="12">
-        <viewer
-          depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
+      <field name="currency.symbol" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+        <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
-	                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     	{statusSelect >= 3 &&
-	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
-	                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
-	                     		</Box>
-	                     	}
-	                     	{statusSelect >= 2 &&
-	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
-	                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
-	                     		</Box>
-	                     	}
-	                     </dl>
+	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     	 {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
+	                     	 {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
+	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
+	                     </Box>
 	                  </>
                     ]]>
         </viewer>
@@ -1110,38 +1087,27 @@
           <field name="statusSelect" widget="NavSelect" colSpan="12"/>
         </panel>
         <panel name="inTaxTotalPanel" readonly="true" colSpan="4">
-          <field name="inTaxTotal" showTitle="false" colSpan="12">
-            <viewer
-              depends="exTaxTotal,currency.symbol,taxTotal,statusSelect,amountInvoiced,advanceTotal">
+          <field name="currency.symbol" hidden="true"/>
+          <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+          <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
+          <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
+          <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
+          <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+            <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
 		                  <>
-		                     <dl>
-		                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-		                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-		                     		<dd>{currency.symbol} {$fmt('exTaxTotal')}</dd>
-		                     	</Box>
-		                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-		                     		<Box as="dt" fontWeight="normal">{_t('Total V.A.T.')}</Box>
-		                     		<dd>{currency.symbol} {$fmt('taxTotal')}</dd>
-		                     	</Box>
-		                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-		                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-		                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
-		                     		<dd>{currency.symbol} {$fmt('inTaxTotal')}</dd>
-		                     	</Box>
-		                     	{statusSelect >= 3 &&
-		                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-		                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
-		                     			<dd>{currency.symbol} {$fmt('amountInvoiced')}</dd>
-		                     		</Box>
-		                     	}
-		                     	{statusSelect >= 2 &&
-		                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-		                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
-		                     			<dd>{currency.symbol} {$fmt('advanceTotal')}</dd>
-		                     		</Box>
-		                     	}
-		                     </dl>
+		                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+		                         <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+		                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+		                     	 <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total V.A.T.')}</Box>
+		                     	 <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+		                     	 <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+		                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+		                     	 {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
+		                     	 {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+		                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
+		                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
+		                     </Box>
 		                  </>
                         ]]>
             </viewer>
@@ -1251,8 +1217,8 @@
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-currency="currency.symbol"/>
+    <field name="inTaxTotal" x-currency="currency.symbol"/>
     <field name="currency.symbol"/>
     <field name="statusSelect"/>
     <field name="deliveryState"/>
@@ -1295,8 +1261,8 @@
 		            	{orderBeingEdited && <Badge bg="danger">{_t('Order being edited')}</Badge>}
 		            </Box>
 		            <Box>
-			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
 		            </Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
@@ -1325,8 +1291,8 @@
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-currency="currency.symbol"/>
+    <field name="inTaxTotal" x-currency="currency.symbol"/>
     <field name="currency.symbol"/>
     <field name="statusSelect"/>
     <field name="deliveryState"/>
@@ -1366,8 +1332,8 @@
 	                	{deliveryState == 3 && <Badge bg="success">{_t('Delivered')}</Badge>}
 		            </Box>
 		            <Box>
-			            <strong>{_t('WT')} : {currency.symbol}{$fmt('exTaxTotal')}</strong> <Box/>
-			            <strong>{_t('ATI')} : {currency.symbol}{$fmt('inTaxTotal')}</strong>
+			            <strong>{_t('WT')} : {$fmt('exTaxTotal')}</strong> <Box/>
+			            <strong>{_t('ATI')} : {$fmt('inTaxTotal')}</strong>
 		            </Box>
 				</Box>
 				<Box d="flex" justifyContent="space-between" alignItems="start" mt={1}>
@@ -1638,6 +1604,11 @@
   <action-method name="action-sale-order-method-merge-from-pop-up">
     <call class="com.axelor.apps.sale.web.SaleOrderMergingController"
       method="mergeSaleOrderFromPopUp"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderMergingController"
+      method="convertSelectedLinesToMergeLines"/>
   </action-method>
 
   <action-method name="action-sale-order-method-confirm">
@@ -1972,7 +1943,8 @@
     <field name="freightCarrierMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="carrierPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="forwarderPartner" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <field name="incoterm" hidden="true" if="!__config__.app.isApp('supplychain')"/>
+    <field name="incoterm" hidden="true"
+      if="!__config__.app.isApp('supplychain') || !__config__.app.getApp('stock')?.isIncotermEnabled"/>
     <field name="isNeedingConformityCertificate" hidden="true"
       if="!__config__.app.isApp('supplychain')"/>
     <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('supplychain')"/>
@@ -2153,6 +2125,7 @@
       if="exTaxTotal == 0 &amp;&amp; !saleOrderLineList.isEmpty()"/>
     <error message="Incoterm must be filled"
       if="__config__.app.isApp('supplychain')
+                &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
           &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
@@ -2303,6 +2276,7 @@
   <action-attrs name="action-sale-order-attrs-incoterm-required">
     <attribute for="incoterm" name="required"
       expr="eval: __config__.app.isApp('supplychain')
+                      &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
           &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
           &amp;&amp; (
           (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)

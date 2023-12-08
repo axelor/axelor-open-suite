@@ -83,9 +83,10 @@
   </selection>
 
   <selection name="hr.timer.status.select">
-    <option value="1">Start</option>
-    <option value="2">Pause</option>
-    <option value="3">Stop</option>
+    <option value="1">Draft</option>
+    <option value="2">TSTimer.Start</option>
+    <option value="3">TSTimer.Pause</option>
+    <option value="4">TSTimer.Stop</option>
   </selection>
 
   <selection name="ihr.batch.action.select">
@@ -96,6 +97,7 @@
     <option value="5">Leave Management Reset</option>
     <option value="6">Export des salariés</option>
     <option value="7">Email reminder for timesheets</option>
+    <option value="8">Increment leave</option>
   </selection>
 
   <selection name="hr.batch.employment.contract.export.type.select">
@@ -234,6 +236,16 @@
     <option value="2">Planned</option>
     <option value="3">Realized</option>
     <option value="4">Canceled</option>
+  </selection>
+
+  <selection name="hr.leave.reason.type.select">
+    <option value="1">Leave incremented every month</option>
+  </selection>
+
+  <selection name="hr.app.leave.use.weekly.planning.coefficient.select">
+    <option value="1">Always</option>
+    <option value="2">Configurable</option>
+    <option value="3">Never</option>
   </selection>
 
 </object-views>

@@ -62,6 +62,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   protected BudgetManagementRepository budgetRepository;
   protected AppBudgetService appBudgetService;
   protected BudgetLevelRepository budgetLevelRepository;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetLevelServiceImpl(
@@ -74,7 +75,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       BudgetService budgetService,
       BudgetManagementRepository budgetRepository,
       AppBudgetService appBudgetService,
-      BudgetLevelRepository budgetLevelRepository) {
+      BudgetLevelRepository budgetLevelRepository,
+      BudgetToolsService budgetToolsService) {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.advancedImportRepo = advancedImportRepo;
     this.advancedImportService = advancedImportService;
@@ -85,6 +87,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     this.budgetRepository = budgetRepository;
     this.appBudgetService = appBudgetService;
     this.budgetLevelRepository = budgetLevelRepository;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -331,7 +334,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
         if (budgetLevel.getParentBudgetLevel() != null
             && budgetLevel.getParentBudgetLevel().getGlobalBudget() != null) {
           Company company = budgetLevel.getParentBudgetLevel().getGlobalBudget().getCompany();
-          checkBudgetKey = budgetService.checkBudgetKeyInConfig(company);
+          checkBudgetKey = budgetToolsService.checkBudgetKeyInConfig(company);
         }
         for (Budget budget : budgetLevel.getBudgetList()) {
           budgetService.validateBudget(budget, checkBudgetKey);
@@ -370,42 +373,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     if (budgetLevel != null) {
       budgetLevel.setStatusSelect(BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT);
       budgetLevelManagementRepository.save(budgetLevel);
-    }
-  }
-
-  @Override
-  public Integer getBudgetControlLevel(Budget budget) {
-
-    if (appBudgetService.getAppBudget() == null
-        || !appBudgetService.getAppBudget().getCheckAvailableBudget()) {
-      return null;
-    }
-
-    if (budget != null
-        && budget.getBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel() != null
-        && budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget() != null
-        && budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getGlobalBudget()
-                .getCheckAvailableSelect()
-            != null
-        && budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getGlobalBudget()
-                .getCheckAvailableSelect()
-            != 0) {
-      return budget
-          .getBudgetLevel()
-          .getParentBudgetLevel()
-          .getGlobalBudget()
-          .getCheckAvailableSelect();
-    } else {
-      return appBudgetService.getAppBudget().getCheckAvailableBudget()
-          ? BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE
-          : null;
     }
   }
 

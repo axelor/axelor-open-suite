@@ -68,6 +68,8 @@ import com.axelor.apps.bankpayment.service.PaymentScheduleLineBankPaymentService
 import com.axelor.apps.bankpayment.service.PaymentSessionValidateBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentServiceImpl;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
@@ -80,6 +82,14 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -200,5 +210,10 @@ public class BankPaymentModule extends AxelorModule {
     bind(MoveCancelBankPaymentService.class).to(MoveCancelBankPaymentServiceImpl.class);
 
     bind(BankReconciliationService.class).to(BankReconciliationServiceImpl.class);
+    bind(BankStatementLineFetchService.class).to(BankStatementLineFetchServiceImpl.class);
+    bind(BankDetailsBankPaymentService.class).to(BankDetailsBankPaymentServiceImpl.class);
+    bind(BankStatementValidateService.class).to(BankStatementValidateServiceImpl.class);
+    bind(BankStatementLineDeleteService.class).to(BankStatementLineDeleteServiceImpl.class);
+    bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
   }
 }

@@ -29,6 +29,7 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -61,6 +62,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected BudgetService budgetService;
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public PurchaseOrderBudgetServiceImpl(
@@ -77,7 +79,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
       BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -93,6 +96,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     this.budgetService = budgetService;
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -177,10 +181,11 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
             budgetDistribution = new BudgetDistribution();
             budgetDistribution.setBudget(purchaseOrderLine.getBudget());
             budgetDistribution.setBudgetAmountAvailable(
-                budgetDistribution
-                    .getBudget()
-                    .getTotalAmountExpected()
-                    .subtract(budgetDistribution.getBudget().getTotalAmountCommitted()));
+                budgetToolsService.getAvailableAmountOnBudget(
+                    purchaseOrderLine.getBudget(),
+                    purchaseOrderLine.getPurchaseOrder() != null
+                        ? purchaseOrderLine.getPurchaseOrder().getOrderDate()
+                        : null));
 
             purchaseOrderLine.addBudgetDistributionListItem(budgetDistribution);
           }
@@ -251,6 +256,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
           purchaseOrderLine.getBudgetDistributionList().stream()
               .forEach(
                   budgetDistribution -> {
+                    budgetDistribution.setImputationDate(purchaseOrder.getOrderDate());
                     Budget budget = budgetDistribution.getBudget();
                     budgetService.updateLines(budget);
                     budgetService.computeTotalAmountCommitted(budget);
@@ -309,7 +315,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
         if (!budgetDistributionList.isEmpty() && budget != null) {
           for (BudgetDistribution budgetDistribution : budgetDistributionList) {
             budgetDistribution.setBudgetAmountAvailable(
-                budget.getTotalAmountExpected().subtract(budget.getTotalAmountCommitted()));
+                budgetToolsService.getAvailableAmountOnBudget(
+                    budget, purchaseOrder.getOrderDate()));
           }
         }
       }
@@ -332,6 +339,24 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
                   poLine.setBudget(null);
                 });
       }
+    }
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        purchaseOrder.getCompany(), purchaseOrder.getPurchaseOrderLineList())) {
+      return;
+    }
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          purchaseOrderLine.getAnalyticMoveLineList(),
+          purchaseOrderLine.getAccount(),
+          purchaseOrder.getCompany(),
+          purchaseOrder.getOrderDate(),
+          purchaseOrderLine.getCompanyExTaxTotal(),
+          purchaseOrderLine);
+      purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, true);
     }
   }
 }

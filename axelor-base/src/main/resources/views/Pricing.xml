@@ -67,10 +67,16 @@
       </panel>
       <panel name="otherPanel" colSpan="12">
         <field name="product" onSelect="action-pricing-attrs-set-product-domain"
-          readonlyIf="productCategory" requiredIf="!productCategory"/>
-        <field name="productCategory" readonlyIf="product" requiredIf="!product"/>
+          onChange="action-pricing-method-set-formula-field" readonlyIf="productCategory"
+          requiredIf="!productCategory &amp;&amp; !formula"/>
+        <field name="productCategory" readonlyIf="product"
+          requiredIf="!product &amp;&amp; !formula"
+          onChange="action-pricing-method-set-formula-field"/>
         <field name="linkedPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
+        <field name="formula" readonlyIf="product || productCategory"
+          requiredIf="!product &amp;&amp; !productCategory" widget="CodeEditor" colSpan="12"
+          x-code-syntax="groovy" onChange="action-pricing-method-clear-fields-related-to-formula"/>
       </panel>
       <panel-related field="pricingLineList" name="pricingLineListPanel" colSpan="12"
         grid-view="pricing-line-grid" form-view="pricing-line-form"
@@ -212,10 +218,10 @@
   <action-attrs name="action-pricing-attrs-linked-pricing-title">
     <attribute name="title" for="linkedPricing"
       expr="eval: com.axelor.i18n.I18n.get('Previous pricing')"
-      if="__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+      if="__config__.app.getApp('base')?.isPricingComputingOrder"/>
     <attribute name="title" for="linkedPricing"
       expr="eval: com.axelor.i18n.I18n.get('Next pricing')"
-      if="!__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+      if="!__config__.app.getApp('base')?.isPricingComputingOrder"/>
   </action-attrs>
 
   <action-group name="action-pricing-group-attrs-pricing-line-list">
@@ -265,5 +271,14 @@
 
   <action-method name="action-pricing-method-recover-pricing">
     <call class="com.axelor.apps.base.web.PricingController" method="recoverPricing"/>
+  </action-method>
+
+  <action-method name="action-pricing-method-set-formula-field">
+    <call class="com.axelor.apps.base.web.PricingController" method="setFormulaField"/>
+  </action-method>
+
+  <action-method name="action-pricing-method-clear-fields-related-to-formula">
+    <call class="com.axelor.apps.base.web.PricingController"
+      method="clearFieldsRelatedToFormula"/>
   </action-method>
 </object-views>

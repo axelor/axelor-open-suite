@@ -44,18 +44,20 @@
 		  <![CDATA[<><h3>{$fmt('$totalLines')}</h3></>]]>
         </viewer>
       </field>
-      <field name="$totalDebit" title="Total debit" type="decimal" colSpan="3" readonly="true">
+      <field name="$totalDebit" title="Total debit" type="decimal"
+        x-scale="company.currency.numberOfDecimals" colSpan="3" readonly="true">
         <viewer>
 		  <![CDATA[<><h3>{$fmt('$totalDebit')}</h3></>]]>
         </viewer>
       </field>
-      <field name="$totalCredit" title="Total credit" type="decimal" colSpan="3"
-        readonly="true">
+      <field name="$totalCredit" title="Total credit" type="decimal"
+        x-scale="company.currency.numberOfDecimals" colSpan="3" readonly="true">
         <viewer>
 	      <![CDATA[<><h3>{$fmt('$totalCredit')}</h3></>]]>
         </viewer>
       </field>
-      <field name="$difference" title="Difference" type="decimal" colSpan="3" readonly="true">
+      <field name="$difference" title="Difference" type="decimal"
+        x-scale="company.currency.numberOfDecimals" colSpan="3" readonly="true">
         <viewer>
 				<![CDATA[
           				<>
@@ -66,6 +68,7 @@
 				]]>
         </viewer>
       </field>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel-related name="moveTemplateLineListPanel" field="moveTemplateLineList"
       colSpan="12" form-view="move-template-line-in-percentage-form"
@@ -136,11 +139,12 @@
 
   <grid name="wizard-custom-in-percentage-grid" title="MoveLines content data input"
     model="com.axelor.utils.db.Wizard" editable="true"
-    onNew="action-move-template-wizard-line-set-move-template">
+    onNew="action-move-template-wizard-group-onnew">
     <field name="date" type="date" title="Date" required="true"
       onChange="action-move-template-wizard-check-value"/>
-    <field name="moveBalance" type="decimal" precision="20" scale="2" min="0" required="true"
-      title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+    <field name="moveBalance" type="decimal" precision="20" x-scale="companyCurrencyDecimals"
+      min="0" required="true" title="MoveLine Amount"
+      onChange="action-move-template-wizard-check-value"/>
     <field name="debitPartner" target-name="fullName" title="Partner to Debit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
       target="com.axelor.apps.base.db.Partner"/>
@@ -153,16 +157,18 @@
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveTemplate" type="many-to-one"
       target="com.axelor.apps.account.db.MoveTemplate" hidden="true"/>
+    <field name="companyCurrencyDecimals" hidden="true"/>
   </grid>
 
   <form name="wizard-custom-in-percentage-form" title="MoveLines content data input"
-    model="com.axelor.utils.db.Wizard" onLoad="action-move-template-wizard-line-set-move-template"
-    onNew="action-move-template-wizard-line-set-move-template">
+    model="com.axelor.utils.db.Wizard" onLoad="action-move-template-wizard-group-onnew"
+    onNew="action-move-template-wizard-group-onnew">
     <panel name="mainPanel">
       <field name="date" type="date" title="Date" required="true"
         onChange="action-move-template-wizard-check-value"/>
-      <field name="moveBalance" type="decimal" precision="20" scale="2" min="0"
-        required="true" title="MoveLine Amount" onChange="action-move-template-wizard-check-value"/>
+      <field name="moveBalance" type="decimal" precision="20"
+        x-scale="companyCurrencyDecimals" min="0" required="true" title="MoveLine Amount"
+        onChange="action-move-template-wizard-check-value"/>
       <field name="debitPartner" target-name="fullName" title="Partner to Debit"
         onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"/>
@@ -179,8 +185,11 @@
       <field name="moveTemplate.journal" hidden="true"/>
       <field name="moveTemplate.journal.journalType" hidden="true"/>
       <field name="moveTemplate.journal.journalType.technicalTypeSelect" hidden="true"/>
+      <field name="companyCurrencyDecimals" hidden="true"/>
     </panel>
   </form>
+
+  <!-- ACTION GROUP -->
 
   <action-group name="action-move-template-group-check-validity">
     <action name="save"/>
@@ -198,6 +207,13 @@
     <action name="action-move-template-attrs-wizard-hide-subrogation"/>
   </action-group>
 
+  <action-group name="action-move-template-wizard-group-onnew">
+    <action name="action-move-template-wizard-line-set-move-template"/>
+    <action name="action-move-template-wizard-attrs-set-number-of-decimals"/>
+  </action-group>
+
+  <!-- ACTION VALIDATE -->
+
   <action-validate name="action-move-template-validate-check-tax-lines">
     <alert
       message="The tax move lines will be recalculated and validity checks will be done taking into consideration other lines taxes"
@@ -208,6 +224,8 @@
     <error if="moveBalance != null &amp;&amp; (moveBalance as BigDecimal) &lt; 0"
       message="The Move Balance must be positive" action="action-move-template-wizard-reset-value"/>
   </action-validate>
+
+  <!-- ACTION RECORD -->
 
   <action-record name="action-move-template-set-default"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -231,11 +249,42 @@
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
+  <action-record name="action-move-template-wizard-line-set-move-template"
+    model="com.axelor.utils.db.Wizard">
+    <field name="date" expr="eval:__config__.date" if="date == null"/>
+    <field name="moveTemplate"
+      expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
+  </action-record>
+
+  <!-- ACTION ATTRS -->
+
   <action-attrs name="action-move-template-wizard-attrs-company-onchange">
     <attribute name="value" for="moveTemplateSet" expr="eval: null"/>
     <attribute name="value" for="dataInputList" expr="eval: null"/>
     <attribute name="value" for="moveTemplate" expr="eval: null"/>
   </action-attrs>
+
+  <action-attrs name="action-move-template-set-journal-domain">
+    <attribute name="domain" for="journal"
+      expr="eval:&quot;self.statusSelect = 1 AND self.company.id = ${company?.id} &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-attrs-move-template-partner-domain">
+    <attribute name="domain" for="debitPartner,creditPartner"
+      expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-template-attrs-wizard-hide-subrogation">
+    <attribute name="hidden" for="dataInputList.subrogationPartner"
+      expr="eval: !moveTemplate?.journal || ![1,2,5].contains(moveTemplate?.journal?.journalType?.technicalTypeSelect)"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-template-attrs-wizard-subrogation-partner-domain">
+    <attribute name="domain" for="subrogationPartner"
+      expr="eval: &quot; self.isSubrogation IS TRUE AND ${__parent__?.company?.id} MEMBER OF self.companySet &quot;"/>
+  </action-attrs>
+
+  <!-- ACTION METHOD -->
 
   <action-method name="action-move-template-method-check-validity">
     <call method="checkValidity" class="com.axelor.apps.account.web.MoveTemplateController"/>
@@ -252,33 +301,5 @@
   <action-method name="action-move-template-method-compute-totals">
     <call class="com.axelor.apps.account.web.MoveTemplateController" method="computeTotals"/>
   </action-method>
-
-  <action-attrs name="action-move-template-set-journal-domain">
-    <attribute name="domain" for="journal"
-      expr="eval:&quot;self.statusSelect = 1 AND self.company.id = ${company?.id} &quot;"/>
-  </action-attrs>
-
-
-  <action-attrs name="action-account-attrs-move-template-partner-domain">
-    <attribute name="domain" for="debitPartner,creditPartner"
-      expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-template-attrs-wizard-subrogation-partner-domain">
-    <attribute name="domain" for="subrogationPartner"
-      expr="eval: &quot; self.isSubrogation IS TRUE AND ${__parent__?.company?.id} MEMBER OF self.companySet &quot;"/>
-  </action-attrs>
-
-  <action-attrs name="action-move-template-attrs-wizard-hide-subrogation">
-    <attribute name="hidden" for="dataInputList.subrogationPartner"
-      expr="eval: !moveTemplate?.journal || ![1,2,5].contains(moveTemplate?.journal?.journalType?.technicalTypeSelect)"/>
-  </action-attrs>
-
-  <action-record name="action-move-template-wizard-line-set-move-template"
-    model="com.axelor.utils.db.Wizard">
-    <field name="date" expr="eval:__config__.date" if="date == null"/>
-    <field name="moveTemplate"
-      expr="eval:__repo__(MoveTemplate).find(__parent__.moveTemplate.id)"/>
-  </action-record>
 
 </object-views>

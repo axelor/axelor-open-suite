@@ -35,10 +35,11 @@ public interface BudgetDistributionService {
   /**
    * Create a budget distribution object with parameters and save
    *
-   * @param budget, amount
+   * @param budget, amount, date
    * @return BudgetDistribution
    */
-  public BudgetDistribution createDistributionFromBudget(Budget budget, BigDecimal bigDecimal);
+  public BudgetDistribution createDistributionFromBudget(
+      Budget budget, BigDecimal bigDecimal, LocalDate date);
 
   /**
    * Check amount with budget available amount watching config for budget and return an error
@@ -70,4 +71,12 @@ public interface BudgetDistributionService {
       BudgetDistribution budgetDistribution, LocalDate computeDate);
 
   String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect);
+
+  void autoComputeBudgetDistribution(
+      List<AnalyticMoveLine> analyticMoveLineList,
+      Account account,
+      Company company,
+      LocalDate date,
+      BigDecimal amount,
+      AuditableModel object);
 }

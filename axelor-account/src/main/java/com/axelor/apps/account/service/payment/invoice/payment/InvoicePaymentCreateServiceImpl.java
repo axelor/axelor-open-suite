@@ -49,7 +49,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,6 +61,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoicePaymentToolService invoicePaymentToolService;
+  protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
   protected CurrencyService currencyService;
   protected AppBaseService appBaseService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
@@ -73,6 +73,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
   public InvoicePaymentCreateServiceImpl(
       InvoicePaymentRepository invoicePaymentRepository,
       InvoicePaymentToolService invoicePaymentToolService,
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
       CurrencyService currencyService,
       AppBaseService appBaseService,
       InvoiceTermPaymentService invoiceTermPaymentService,
@@ -82,6 +83,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
 
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoicePaymentToolService = invoicePaymentToolService;
+    this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
     this.currencyService = currencyService;
     this.appBaseService = appBaseService;
     this.invoiceTermPaymentService = invoiceTermPaymentService;
@@ -212,23 +214,6 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
         InvoicePayment advancePayment = advanceInvoice.getInvoicePaymentList().get(0);
         advancePayment.setImputedBy(invoicePayment);
         invoicePaymentRepository.save(advancePayment);
-
-        // set the imputed payment currency
-        invoicePayment.setCurrency(advancePayment.getCurrency());
-
-        BigDecimal currentImputedAmount = invoicePayment.getAmount();
-
-        // we force the payment amount to be equal to the advance
-        // invoice amount, so we get the right amount in the
-        // right currency.
-        BigDecimal totalAmountInAdvanceInvoice = advancePayment.getInvoice().getCompanyInTaxTotal();
-
-        BigDecimal convertedImputedAmount =
-            currentImputedAmount
-                .multiply(advancePayment.getAmount())
-                .divide(totalAmountInAdvanceInvoice, 2, RoundingMode.HALF_UP);
-
-        invoicePayment.setAmount(convertedImputedAmount);
       }
     }
   }
@@ -339,10 +324,16 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
             invoice.getCurrency(),
             invoice.getPaymentMode(),
             InvoicePaymentRepository.TYPE_PAYMENT);
+    invoice.addInvoicePaymentListItem(invoicePayment);
     invoicePayment.setCompanyBankDetails(companyBankDetails);
     invoiceTermPaymentService.createInvoicePaymentTerms(invoicePayment, null);
-    invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
-    return invoicePaymentRepository.save(invoicePayment);
+    invoicePayment = invoicePaymentRepository.save(invoicePayment);
+
+    if (invoicePayment.getStatusSelect() != InvoicePaymentRepository.STATUS_PENDING) {
+      invoiceTermService.updateInvoiceTermsPaidAmount(invoicePayment);
+    }
+
+    return invoicePayment;
   }
 
   @Transactional
@@ -383,7 +374,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
     invoice.addInvoicePaymentListItem(invoicePayment);
 
     invoiceTermPaymentService.initInvoiceTermPayments(invoicePayment, invoiceTermList);
-    invoicePaymentToolService.computeFinancialDiscount(invoicePayment);
+    invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
     invoicePayment.setAmount(
         invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));

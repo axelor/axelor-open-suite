@@ -79,4 +79,6 @@ public interface BudgetInvoiceService {
    */
   public void updateLineWithPO(
       BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine);
+
+  void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException;
 }

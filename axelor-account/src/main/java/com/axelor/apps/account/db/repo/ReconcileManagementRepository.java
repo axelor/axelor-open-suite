@@ -76,7 +76,6 @@ public class ReconcileManagementRepository extends ReconcileRepository {
     copy.setReconciliationCancelDateTime(null);
     copy.setEffectiveDate(null);
     copy.setReconcileGroup(null);
-    copy.setInvoicePayment(null);
 
     return copy;
   }
