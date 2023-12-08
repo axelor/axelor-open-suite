@@ -50,6 +50,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
   protected MoveAttrsService moveAttrsService;
   protected AnalyticAttrsService analyticAttrsService;
   protected MoveCutOffService moveCutOffService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineGroupServiceImpl(
@@ -65,7 +66,8 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       AnalyticLineService analyticLineService,
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
-      MoveCutOffService moveCutOffService) {
+      MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
 
     this.moveLineService = moveLineService;
     this.moveLineDefaultService = moveLineDefaultService;
@@ -80,6 +82,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     this.moveAttrsService = moveAttrsService;
     this.analyticAttrsService = analyticAttrsService;
     this.moveCutOffService = moveCutOffService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -98,7 +101,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineRecordService.setCurrencyFields(moveLine, move);
     moveLineToolService.setDecimals(moveLine, move);
     moveLineDefaultService.setFinancialDiscount(moveLine);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
     moveLineRecordService.setCounter(moveLine, move);
 
     valuesMap.put("counter", moveLine.getCounter());
@@ -243,7 +246,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.cleanDebitCredit(moveLine);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
     moveLineRecordService.setCurrencyFields(moveLine, move);
-    moveLineService.computeFinancialDiscount(moveLine);
+    moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
 
     Map<String, Object> valuesMap = new HashMap<>();
 

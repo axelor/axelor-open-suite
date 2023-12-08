@@ -192,8 +192,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      LocalDateTime todayDateT =
-          appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime();
       List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
       if (CollectionUtils.isNotEmpty(operationOrders)) {
         operationOrderPlanningService.plan(operationOrders);
@@ -201,24 +199,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       // Updating plannedStartDate since, it may be different now that operation orders are
       // planned
       manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
-
-      ProductionConfig productionConfig =
-          productionConfigService.getProductionConfig(manufOrder.getCompany());
-
-      int qtyScale = appBaseService.getNbDecimalDigitForQty();
-
-      if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
-          && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
-            String.format(
-                "%s %s",
-                manufOrder.getQty() != null
-                    ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
-                    : null,
-                manufOrder.getProduct().getFullName()));
-      }
     }
 
     for (ManufOrder manufOrder : manufOrderList) {

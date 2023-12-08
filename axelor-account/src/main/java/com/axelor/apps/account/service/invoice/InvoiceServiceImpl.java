@@ -1170,6 +1170,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public LocalDate getFinancialDiscountDeadlineDate(
       Invoice invoice, FinancialDiscount financialDiscount) {
+    if (invoice.getInvoiceDate() == null) {
+      return null;
+    }
+
     int discountDelay =
         Optional.ofNullable(financialDiscount).map(FinancialDiscount::getDiscountDelay).orElse(0);
 

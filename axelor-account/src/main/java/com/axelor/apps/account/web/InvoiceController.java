@@ -336,14 +336,14 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
       if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+          || Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
 
-      List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
       response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
@@ -1209,7 +1209,7 @@ public class InvoiceController {
       Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
 
       if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
         response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       }
 

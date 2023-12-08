@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -309,13 +308,12 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       Journal journal,
       int vatSystemSelect,
       int functionalOrigin,
-      boolean isFixedAssets,
-      boolean isFinancialDiscount)
+      boolean isFixedAssets)
       throws AxelorException {
     if (accountManagement != null) {
       Account account = null;
       String error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX;
-      if (!isFixedAssets && !isFinancialDiscount) {
+      if (!isFixedAssets) {
         if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
           if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
             account = accountManagement.getSaleTaxVatSystem1Account();
@@ -341,7 +339,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
                     .ACCOUNT_MANAGEMENT_PURCHASE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
           }
         }
-      } else if (isFixedAssets) {
+      } else {
         if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
           account = accountManagement.getPurchFixedAssetsTaxVatSystem1Account();
           error =
@@ -353,46 +351,6 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
           error =
               AccountExceptionMessage
                   .ACCOUNT_MANAGEMENT_PURCHASE_FIXED_ASSETS_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
-        }
-      } else {
-        if (journal != null
-            && (journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE
-                || journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY
-                || journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER
-                || (journal.getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-                    && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE))) {
-          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
-            account = accountManagement.getAllowedFinDiscountTaxVatSystem1Account();
-            error =
-                AccountExceptionMessage
-                    .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
-          } else if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
-            account = accountManagement.getAllowedFinDiscountTaxVatSystem2Account();
-            error =
-                AccountExceptionMessage
-                    .ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
-          }
-        } else if (journal != null
-            && (journal.getJournalType().getTechnicalTypeSelect()
-                    == JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-                || (journal.getJournalType().getTechnicalTypeSelect()
-                        == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE
-                    && functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE))) {
-          if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
-            account = accountManagement.getObtainedFinDiscountTaxVatSystem1Account();
-            error =
-                AccountExceptionMessage
-                    .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX;
-          } else if (vatSystemSelect == MoveLineRepository.VAT_CASH_PAYMENTS) {
-            account = accountManagement.getObtainedFinDiscountTaxVatSystem2Account();
-            error =
-                AccountExceptionMessage
-                    .ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX;
-          }
         }
       }
 
