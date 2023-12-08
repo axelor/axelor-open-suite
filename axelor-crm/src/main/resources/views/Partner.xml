@@ -142,7 +142,7 @@
     <extend target="//field[@name='webSite']">
       <insert position="after">
         <panel colSpan="12">
-          <field name="language" colSpan="6" canEdit="false"/>
+          <field name="localization" colSpan="6" canEdit="false"/>
           <field if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"
             name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)" colSpan="12"
             widget="boolean-switch"/>
@@ -320,7 +320,7 @@
         <field name="companyDepartment"/>
       </insert>
     </extend>
-    <extend target="//field[@name='language']">
+    <extend target="//field[@name='localization']">
       <insert position="after">
         <field name="createdOn" readonly="true"/>
       </insert>

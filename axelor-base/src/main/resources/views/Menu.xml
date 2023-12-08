@@ -167,6 +167,15 @@
     <view type="form" name="barcode-type-config-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-localization" parent="admin-root-general"
+    title="Localizations" action="admin.root.general.localization" order="850"/>
+
+  <action-view name="admin.root.general.localization" title="Localizations"
+    model="com.axelor.apps.base.db.Localization">
+    <view type="grid" name="localization-grid"/>
+    <view type="form" name="localization-form"/>
+  </action-view>
+
   <menuitem name="admin-root-general-language" parent="admin-root-general"
     title="Languages" action="admin.root.general.language" order="900"/>
 

@@ -44,8 +44,8 @@ public class InternationalServiceImpl implements InternationalService {
   public Map<String, String> getProductDescriptionAndNameTranslation(
       Product product, Partner partner, String userLanguage) {
     Map<String, String> translation = new HashMap<>();
-    if (product != null && partner != null && partner.getLanguage() != null) {
-      String partnerLanguage = partner.getLanguage().getCode();
+    if (product != null && partner != null && partner.getLocalization().getLanguage() != null) {
+      String partnerLanguage = partner.getLocalization().getLanguage().getCode();
       translation.put(
           "description", translate(product.getDescription(), userLanguage, partnerLanguage));
       translation.put("productName", translate(product.getName(), userLanguage, partnerLanguage));

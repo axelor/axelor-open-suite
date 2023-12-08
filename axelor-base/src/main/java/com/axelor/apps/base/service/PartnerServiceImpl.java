@@ -607,8 +607,8 @@ public class PartnerServiceImpl implements PartnerService {
 
     String locale = null;
 
-    if (partner != null && partner.getLanguage() != null) {
-      locale = partner.getLanguage().getCode();
+    if (partner != null && partner.getLocalization().getLanguage() != null) {
+      locale = partner.getLocalization().getLanguage().getCode();
     }
     if (!Strings.isNullOrEmpty(locale)) {
       return locale;

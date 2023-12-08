@@ -152,7 +152,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     AppBase appBase = getAppBase();
 
     if (appBase != null) {
-      Language language = appBase.getDefaultPartnerLanguage();
+      Language language = appBase.getDefaultPartnerLocalization().getLanguage();
       if (language != null && !Strings.isNullOrEmpty(language.getCode())) {
         return language.getCode();
       }

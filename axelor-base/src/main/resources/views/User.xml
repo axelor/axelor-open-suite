@@ -43,7 +43,11 @@
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
-        <field name="language"/>
+
+        <field name="localization" title="Localization"
+          onChange="action-base-user-record-change-language"/>
+        <field name="language" hidden="true"/>
+
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
           <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
@@ -565,6 +569,11 @@
     <attribute for="partner" name="value" expr="eval: employee?.contactPartner"
       if="partner == null &amp;&amp; employee?.contactPartner != null"/>
   </action-attrs>
+
+  <action-record name="action-base-user-record-change-language"
+    model="com.axelor.auth.db.User">
+    <field name="language" expr="eval:__this__.localization.language.code"/>
+  </action-record>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
     title="User filters">

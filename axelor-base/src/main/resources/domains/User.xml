@@ -70,6 +70,9 @@
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization"/>
+
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>
 
