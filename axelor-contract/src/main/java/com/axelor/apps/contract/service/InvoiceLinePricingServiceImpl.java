@@ -17,7 +17,8 @@ public class InvoiceLinePricingServiceImpl implements InvoiceLinePricingService 
     }
   }
 
-  protected void applyPricing(Invoice invoice, InvoiceLine invoiceLine, ContractLine contractLine) throws AxelorException {
+  protected void applyPricing(Invoice invoice, InvoiceLine invoiceLine, ContractLine contractLine)
+      throws AxelorException {
     if (contractLine != null) {
       Pricing pricing = contractLine.getPricing();
       if (pricing != null) {
