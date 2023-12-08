@@ -168,7 +168,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     }
 
     String lineTitle = line.getLabel();
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+    if ((column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+            && (line.getRuleTypeSelect()
+                    != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                || column.getPriority() > line.getPriority()))
         || (groupColumn != null
             && groupColumn.getRuleTypeSelect()
                 == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
