@@ -51,7 +51,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   protected AppBaseService baseService;
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
-  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+  protected StockCorrectionRepository stockCorrectionRepository;
 
   @Inject
   public StockCorrectionServiceImpl(
@@ -60,18 +60,17 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLineService stockLocationLineService,
       AppBaseService baseService,
       StockMoveService stockMoveService,
-      StockMoveLineService stockMoveLineService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      StockCorrectionRepository stockCorrectionRepository,
+      StockMoveLineService stockMoveLineService) {
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineService = stockLocationLineService;
     this.baseService = baseService;
     this.stockMoveService = stockMoveService;
+    this.stockCorrectionRepository = stockCorrectionRepository;
     this.stockMoveLineService = stockMoveLineService;
-    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
   }
 
-  @Inject private StockCorrectionRepository stockCorrectionRepository;
 
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {

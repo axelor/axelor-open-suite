@@ -21,11 +21,11 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.google.inject.Inject;
 import java.util.Map;
@@ -39,16 +39,16 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
       StockLocationLineService stockLocationLineService,
       AppBaseService baseService,
       StockMoveService stockMoveService,
-      StockMoveLineService stockMoveLineService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      StockCorrectionRepository stockCorrectionRepository,
+      StockMoveLineService stockMoveLineService) {
     super(
         stockConfigService,
         productCompanyService,
         stockLocationLineService,
         baseService,
         stockMoveService,
-        stockMoveLineService,
-        trackingNumberConfigurationService);
+        stockCorrectionRepository,
+        stockMoveLineService);
   }
 
   @Override
