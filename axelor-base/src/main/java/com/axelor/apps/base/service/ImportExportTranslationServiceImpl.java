@@ -161,7 +161,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         TraceBackService.trace(ae);
       }
     }
-    translationList.sort(Comparator.comparing(array -> array[0]));
     return translationList;
   }
 
