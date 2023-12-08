@@ -280,10 +280,6 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
-    try {
-      setFormattedFullName(address);
-    } catch (AxelorException e) {
-    }
     return address.getFormattedFullName();
   }
 
@@ -351,11 +347,16 @@ public class AddressServiceImpl implements AddressService {
       templatesContext.put(klass.getSimpleName(), context.asType(klass));
       String fullFormattedString = templates.fromText(content).make(templatesContext).render();
 
-      fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
+      if (StringUtils.isBlank(fullFormattedString)) {
+        throw new RuntimeException();
+      }
 
+      fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
       address.setFormattedFullName(fullFormattedString);
 
     } catch (Exception e) {
+
+      LOG.info("Runtime Exception Address: {}", addressTemplate.getName());
       // Catch any exception that occurs during the compute
       String errorMessage = I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR);
       throw new AxelorException(
@@ -365,20 +366,18 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
-    int totalAddressFormatted = 0;
-
     Query<Address> query = addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
 
     int offset = 0;
     int countExceptions = 0;
+    int totalAddressFormatted = 0;
+
     List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-
     while (!addressList.isEmpty()) {
-
       int currentCountException = generateFormattedAddressForAddress(addressList);
       countExceptions += currentCountException;
 
-      totalAddressFormatted += (addressList.size() - countExceptions);
+      totalAddressFormatted += (addressList.size() - currentCountException);
 
       JPA.clear();
 
