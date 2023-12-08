@@ -20,6 +20,7 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
@@ -27,7 +28,6 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.service.InventoryLineService;
-import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -41,7 +41,8 @@ public class ImportInventoryLine {
   protected InventoryLineService inventoryLineService;
   protected TrackingNumberService trackingNumberService;
   protected AppBaseService appBaseService;
-  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ImportInventoryLine(
@@ -49,12 +50,12 @@ public class ImportInventoryLine {
       InventoryLineService inventoryLineService,
       TrackingNumberService trackingNumberService,
       AppBaseService appBaseService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      ProductCompanyService productCompanyService) {
     this.inventoryLineRepo = inventoryLineRepo;
     this.inventoryLineService = inventoryLineService;
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
-    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -68,8 +69,9 @@ public class ImportInventoryLine {
     Company company =
         Optional.ofNullable(inventoryLine.getInventory()).map(Inventory::getCompany).orElse(null);
     TrackingNumberConfiguration trackingNumberConfig =
-        trackingNumberConfigurationService.getTrackingNumberConfiguration(
-            inventoryLine.getProduct(), company);
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                inventoryLine.getProduct(), "trackingNumberConfiguration", company);
 
     BigDecimal qtyByTracking = BigDecimal.ONE;
 

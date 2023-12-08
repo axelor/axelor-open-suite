@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
@@ -44,18 +45,18 @@ public class TrackingNumberService {
   protected TrackingNumberRepository trackingNumberRepo;
   protected AppStockService appStockService;
 
-  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public TrackingNumberService(
       SequenceService sequenceService,
       TrackingNumberRepository trackingNumberRepo,
       AppStockService appStockService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      ProductCompanyService productCompanyService) {
     this.sequenceService = sequenceService;
     this.trackingNumberRepo = trackingNumberRepo;
     this.appStockService = appStockService;
-    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -126,7 +127,8 @@ public class TrackingNumberService {
     trackingNumber.setCounter(BigDecimal.ZERO);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
-        trackingNumberConfigurationService.getTrackingNumberConfiguration(product, company);
+        (TrackingNumberConfiguration)
+            productCompanyService.get(product, "trackingNumberConfiguration", company);
 
     if (trackingNumberConfiguration.getSequence() == null) {
       throw new AxelorException(

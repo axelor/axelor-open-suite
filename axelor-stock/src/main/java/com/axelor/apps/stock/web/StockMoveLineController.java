@@ -23,6 +23,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -168,11 +169,14 @@ public class StockMoveLineController {
         _hasWarranty = product.getHasWarranty();
         _isPerishable = product.getIsPerishable();
         TrackingNumberConfiguration trackingNumberConfiguration =
-            trackingNumberConfigurationService.getTrackingNumberConfiguration(
-                product,
-                Optional.ofNullable(stockMoveLine.getStockMove())
-                    .map(StockMove::getCompany)
-                    .orElse(null));
+            (TrackingNumberConfiguration)
+                Beans.get(ProductCompanyService.class)
+                    .get(
+                        product,
+                        "trackingNumberConfiguration",
+                        Optional.ofNullable(stockMoveLine.getStockMove())
+                            .map(StockMove::getCompany)
+                            .orElse(null));
         if (trackingNumberConfiguration != null) {
           _isSeqUsedForSerialNumber =
               trackingNumberConfiguration.getUseTrackingNumberSeqAsSerialNbr();

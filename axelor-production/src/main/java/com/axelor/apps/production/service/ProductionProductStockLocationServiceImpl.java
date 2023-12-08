@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -37,7 +38,6 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -54,7 +54,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
   protected ManufOrderService manufOrderService;
   protected StockMoveLineRepository stockMoveLineRepository;
 
-  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public ProductionProductStockLocationServiceImpl(
@@ -71,7 +71,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       ManufOrderService manufOrderService,
       StockMoveLineRepository stockMoveLineRepository,
       AppBaseService appBaseService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      ProductCompanyService productCompanyService) {
     super(
         unitConversionService,
         appSupplychainService,
@@ -86,7 +86,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     this.appProductionService = appProductionService;
     this.manufOrderService = manufOrderService;
     this.stockMoveLineRepository = stockMoveLineRepository;
-    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
+    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -237,11 +237,13 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
           && availableQtyForProduct.compareTo(realQty) < 0) {
 
         TrackingNumberConfiguration trackingNumberConfiguration =
-            trackingNumberConfigurationService.getTrackingNumberConfiguration(
-                stockMoveLine.getProduct(),
-                Optional.ofNullable(stockMoveLine.getStockMove())
-                    .map(StockMove::getCompany)
-                    .orElse(null));
+            (TrackingNumberConfiguration)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(),
+                    "trackingNumberConfiguration",
+                    Optional.ofNullable(stockMoveLine.getStockMove())
+                        .map(StockMove::getCompany)
+                        .orElse(null));
 
         if (trackingNumberConfiguration != null) {
           return availableQtyForProduct.subtract(realQty);

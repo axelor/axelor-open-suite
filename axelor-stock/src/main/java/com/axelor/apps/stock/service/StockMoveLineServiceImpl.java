@@ -89,7 +89,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected ProductCompanyService productCompanyService;
   protected ShippingCoefService shippingCoefService;
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
-  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -104,8 +103,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       TrackingNumberRepository trackingNumberRepo,
       ProductCompanyService productCompanyService,
       ShippingCoefService shippingCoefService,
-      StockLocationLineHistoryService stockLocationLineHistoryService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      StockLocationLineHistoryService stockLocationLineHistoryService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -118,7 +116,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.productCompanyService = productCompanyService;
     this.shippingCoefService = shippingCoefService;
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
-    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
   }
 
   @Override
@@ -156,11 +153,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               fromStockLocation,
               toStockLocation);
       TrackingNumberConfiguration trackingNumberConfiguration =
-          trackingNumberConfigurationService.getTrackingNumberConfiguration(
-              product,
-              Optional.ofNullable(stockMoveLine.getStockMove())
-                  .map(StockMove::getCompany)
-                  .orElse(null));
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  product,
+                  "trackingNumberConfiguration",
+                  Optional.ofNullable(stockMoveLine.getStockMove())
+                      .map(StockMove::getCompany)
+                      .orElse(null));
 
       return assignOrGenerateTrackingNumber(
           stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
@@ -435,8 +434,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public List<? extends StockLocationLine> getStockLocationLines(
       Product product, StockLocation stockLocation) throws AxelorException {
     TrackingNumberConfiguration trackingNumberConfiguration =
-        trackingNumberConfigurationService.getTrackingNumberConfiguration(
-            product, Optional.of(stockLocation.getCompany()).orElse(null));
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                product,
+                "trackingNumberConfiguration",
+                Optional.of(stockLocation.getCompany()).orElse(null));
     List<? extends StockLocationLine> stockLocationLineList =
         Beans.get(StockLocationLineRepository.class)
             .all()
@@ -851,8 +853,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       TrackingNumberConfiguration trackingNumberConfig =
-          trackingNumberConfigurationService.getTrackingNumberConfiguration(
-              stockMoveLine.getProduct(), stockMove.getCompany());
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  stockMoveLine.getProduct(),
+                  "trackingNumberConfiguration",
+                  stockMove.getCompany());
 
       if (stockMoveLine.getProduct() != null
           && trackingNumberConfig != null
@@ -1326,11 +1331,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           // In case of barcode generation, retrieve the one set on tracking number configuration
           AppStock appStock = appStockService.getAppStock();
           TrackingNumberConfiguration trackingNumberConfiguration =
-              trackingNumberConfigurationService.getTrackingNumberConfiguration(
-                  stockMoveLine.getProduct(),
-                  Optional.ofNullable(stockMoveLine.getStockMove())
-                      .map(StockMove::getCompany)
-                      .orElse(null));
+              (TrackingNumberConfiguration)
+                  productCompanyService.get(
+                      stockMoveLine.getProduct(),
+                      "trackingNumberConfiguration",
+                      Optional.ofNullable(stockMoveLine.getStockMove())
+                          .map(StockMove::getCompany)
+                          .orElse(null));
           if (appStock != null
               && appStock.getActivateTrackingNumberBarCodeGeneration()
               && trackingNumberConfiguration != null) {
@@ -1378,11 +1385,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
 
     TrackingNumberConfiguration trackingNumberConfiguration =
-        trackingNumberConfigurationService.getTrackingNumberConfiguration(
-            stockMoveLine.getProduct(),
-            Optional.ofNullable(stockMoveLine.getStockMove())
-                .map(StockMove::getCompany)
-                .orElse(null));
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                stockMoveLine.getProduct(),
+                "trackingNumberConfiguration",
+                Optional.ofNullable(stockMoveLine.getStockMove())
+                    .map(StockMove::getCompany)
+                    .orElse(null));
+
     if (stockMoveLine.getProduct() != null) {
       if (trackingNumberConfiguration != null) {
 
@@ -1477,11 +1487,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           && availableQtyForProduct.compareTo(realQty) < 0) {
         BigDecimal missingQty = BigDecimal.ZERO;
         TrackingNumberConfiguration trackingNumberConfiguration =
-            trackingNumberConfigurationService.getTrackingNumberConfiguration(
-                stockMoveLine.getProduct(),
-                Optional.ofNullable(stockMoveLine.getStockMove())
-                    .map(StockMove::getCompany)
-                    .orElse(null));
+            (TrackingNumberConfiguration)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(),
+                    "trackingNumberConfiguration",
+                    Optional.ofNullable(stockMoveLine.getStockMove())
+                        .map(StockMove::getCompany)
+                        .orElse(null));
+
         if (trackingNumberConfiguration != null) {
           missingQty = availableQtyForProduct.subtract(realQty);
         } else {
@@ -1684,8 +1697,10 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         return;
       }
       TrackingNumberConfiguration trackingNumberConfiguration =
-          trackingNumberConfigurationService.getTrackingNumberConfiguration(
-              product, stockMove.getCompany());
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  product, "trackingNumberConfiguration", stockMove.getCompany());
+
       this.assignOrGenerateTrackingNumber(
           stockMoveLine,
           stockMove,

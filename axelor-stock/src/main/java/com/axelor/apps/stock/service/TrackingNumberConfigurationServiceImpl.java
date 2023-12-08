@@ -20,11 +20,8 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
-import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
@@ -38,20 +35,17 @@ public class TrackingNumberConfigurationServiceImpl implements TrackingNumberCon
   protected BarcodeGeneratorService barcodeGeneratorService;
   protected AppBaseService appBaseService;
   protected AppStockService appStockService;
-  protected ProductCompanyService productCompanyService;
 
   @Inject
   public TrackingNumberConfigurationServiceImpl(
       SequenceService sequenceService,
       BarcodeGeneratorService barcodeGeneratorService,
       AppBaseService appBaseService,
-      AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      AppStockService appStockService) {
     this.sequenceService = sequenceService;
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
-    this.productCompanyService = productCompanyService;
   }
 
   @Override
@@ -75,20 +69,5 @@ public class TrackingNumberConfigurationServiceImpl implements TrackingNumberCon
           testSeq, barcodeTypeConfig, false);
     }
     return false;
-  }
-
-  @Override
-  public TrackingNumberConfiguration getTrackingNumberConfiguration(
-      Product product, Company company) throws AxelorException {
-    TrackingNumberConfiguration trackingNumberConfig = null;
-
-    // Tracking number configuration per company
-    trackingNumberConfig =
-        (TrackingNumberConfiguration)
-            productCompanyService.get(product, "trackingNumberConfiguration", company);
-
-    return trackingNumberConfig != null
-        ? trackingNumberConfig
-        : product.getTrackingNumberConfiguration();
   }
 }

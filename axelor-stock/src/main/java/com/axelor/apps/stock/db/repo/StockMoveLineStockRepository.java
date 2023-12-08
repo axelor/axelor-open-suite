@@ -21,12 +21,12 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 import java.util.Optional;
@@ -84,8 +84,9 @@ public class StockMoveLineStockRepository extends StockMoveLineRepository {
           Optional.ofNullable(stockMoveLine.getStockMove()).map(StockMove::getCompany).orElse(null);
 
       trackingNumberConfig =
-          Beans.get(TrackingNumberConfigurationService.class)
-              .getTrackingNumberConfiguration(product, company);
+          (TrackingNumberConfiguration)
+              Beans.get(ProductCompanyService.class)
+                  .get(product, "trackingNumberConfiguration", company);
     }
 
     json.put(trackingNumberConfiguration, trackingNumberConfig);

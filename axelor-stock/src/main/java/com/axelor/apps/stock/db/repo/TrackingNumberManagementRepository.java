@@ -21,12 +21,12 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.stock.service.TrackingNumberConfigurationService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
@@ -45,7 +45,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
 
   @Inject private BarcodeGeneratorService barcodeGeneratorService;
 
-  @Inject protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+  @Inject protected ProductCompanyService productCompanyService;
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
@@ -101,8 +101,9 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       if (trackingNumber.getProduct() != null) {
         try {
           trackingNumberConfiguration =
-              trackingNumberConfigurationService.getTrackingNumberConfiguration(
-                  trackingNumber.getProduct(), null);
+              (TrackingNumberConfiguration)
+                  productCompanyService.get(
+                      trackingNumber.getProduct(), "trackingNumberConfiguration", null);
 
         } catch (AxelorException e) {
           TraceBackService.traceExceptionFromSaveMethod(e);

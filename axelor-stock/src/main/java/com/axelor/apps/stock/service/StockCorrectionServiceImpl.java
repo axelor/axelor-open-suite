@@ -316,8 +316,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     stockCorrection.setStockLocation(stockLocation);
     stockCorrection.setProduct(product);
     TrackingNumberConfiguration trackingNumberConfiguration =
-        trackingNumberConfigurationService.getTrackingNumberConfiguration(
-            product, stockLocation.getCompany());
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                product, "trackingNumberConfiguration", stockLocation.getCompany());
     if (trackingNumberConfiguration != null && trackingNumber != null) {
       stockCorrection.setTrackingNumber(trackingNumber);
     }

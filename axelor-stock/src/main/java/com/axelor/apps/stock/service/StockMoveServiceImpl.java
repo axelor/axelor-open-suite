@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -90,7 +91,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
-  protected TrackingNumberConfigurationService trackingNumberConfigurationService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -104,7 +105,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      TrackingNumberConfigurationService trackingNumberConfigurationService) {
+      ProductCompanyService productCompanyService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -115,7 +116,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
-    this.trackingNumberConfigurationService = trackingNumberConfigurationService;
+    this.productCompanyService = productCompanyService;
   }
 
   /**
@@ -292,8 +293,9 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
 
     TrackingNumberConfiguration trackingNumberConfiguration =
-        trackingNumberConfigurationService.getTrackingNumberConfiguration(
-            product, stockMove.getCompany());
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                product, "trackingNumberConfiguration", stockMove.getCompany());
     if (trackingNumberConfiguration != null) {
       stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
