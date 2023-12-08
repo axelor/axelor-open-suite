@@ -153,7 +153,6 @@
            || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
           readonlyIf="prodProcess.outsourcing"/>
         <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
-          requiredIf="outsourcing &amp;&amp; prodProcess.outsourcable"
           domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
           readonly="true" hideIf="statusSelect != 1"/>
@@ -383,7 +382,8 @@
         <field name="billOfMaterial.prodResidualProductList" title="Residual products"
           colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
       </panel>
-      <panel name="outsourcingPanel" title="Outsourcing">
+      <panel name="outsourcingPanel" title="Outsourcing"
+        showIf="outsourcing || $areLinesOutsourced">
         <panel-related field="purchaseOrderSet" colSpan="12"/>
       </panel>
     </panel-tabs>

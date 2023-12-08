@@ -11,7 +11,7 @@ public class ProdProcessOutsourceServiceImpl implements ProdProcessOutsourceServ
   public Optional<Partner> getOutsourcePartner(ProdProcess prodProcess) {
     Objects.requireNonNull(prodProcess);
 
-    if (prodProcess.getOutsourcing()) {
+    if (prodProcess.getOutsourcing() || prodProcess.getOutsourcable()) {
       return Optional.ofNullable(prodProcess.getSubcontractor());
     }
 

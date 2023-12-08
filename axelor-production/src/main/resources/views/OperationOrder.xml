@@ -120,7 +120,6 @@
         <field name="outsourcing" colSpan="4" readonlyIf="!prodProcessLine.outsourcable"/>
         <field name="outsourcingPartner"
           showIf="outsourcing &amp;&amp; !manufOrder.outsourcing"
-          requiredIf="outsourcing &amp;&amp; !manufOrder.outsourcing &amp;&amp; prodProcessLine.outsourcable"
           domain="self.isSubcontractor = true" colSpan="4"/>
       </panel>
       <field name="isToInvoice" colSpan="3"/>

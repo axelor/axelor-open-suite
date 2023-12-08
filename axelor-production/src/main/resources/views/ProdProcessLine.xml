@@ -39,9 +39,9 @@
         <field name="outsourcable"
           readonlyIf="!prodProcess.prodProcessLinesOutsourcable || outsourcing" colSpan="4"/>
         <field name="outsourcingPartner"
-          showIf="outsourcing &amp;&amp; !prodProcess.outsourcing" colSpan="4"
+          showIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable" colSpan="4"
           domain="self.isSubcontractor = true"
-          requiredIf="outsourcing &amp;&amp; !prodProcess.outsourcing"/>
+          requiredIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable"/>
         <field name="generatePurchaseOrderOnMoPlanning"
           showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="4"/>
       </panel>

@@ -23,6 +23,8 @@ public class ProdProcessLineOutsourceServiceImpl implements ProdProcessLineOutso
 
     if (prodProcessLine.getOutsourcing() && !prodProcessLine.getProdProcess().getOutsourcing()) {
       return Optional.ofNullable(prodProcessLine.getOutsourcingPartner());
+    } else if (prodProcessLine.getOutsourcable()) {
+      return Optional.ofNullable(prodProcessLine.getOutsourcingPartner());
     } else {
       return prodProcessOutsourceService.getOutsourcePartner(prodProcessLine.getProdProcess());
     }

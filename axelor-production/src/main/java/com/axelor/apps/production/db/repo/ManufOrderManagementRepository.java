@@ -58,6 +58,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       entity.clearWasteProdProductList();
       entity.clearOperationOrderList();
       entity.clearCostSheetList();
+      entity.clearPurchaseOrderSet();
     }
     return super.copy(entity, deep);
   }

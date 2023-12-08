@@ -98,14 +98,12 @@
             readonlyIf="outsourcing || outsourcable"/>
           <field name="subcontractor" domain="self.isSubcontractor = true" colSpan="4"
             onChange="action-production-record-subcontractor-on-change"
-            if="__config__.app.getApp('production')?.getManageOutsourcing()" showIf="outsourcing"
-            requiredIf="outsourcing" form-view="partner-form"/>
+            if="__config__.app.getApp('production')?.getManageOutsourcing()"
+            showIf="outsourcing || outsourcable" requiredIf="outsourcing || outsourcable"
+            form-view="partner-form"/>
           <field name="generatePurchaseOrderOnMoPlanning" colSpan="4"
             if="__config__.app.getApp('production')?.getManageOutsourcing()"
             showIf="outsourcing || outsourcable"/>
-          <field name="outsourcingStockLocation" domain="self.isOutsourcingLocation = true"
-            colSpan="4" if="__config__.app.getApp('production')?.getManageOutsourcing()"
-            showIf="outsourcing"/>
         </panel>
 
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>
