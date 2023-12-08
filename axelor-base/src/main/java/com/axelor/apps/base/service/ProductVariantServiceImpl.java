@@ -231,6 +231,9 @@ public class ProductVariantServiceImpl implements ProductVariantService {
   @Override
   public Product getProductVariant(Product parentProduct, Product productModel) {
 
+    if (parentProduct == null) {
+      return productModel;
+    }
     ProductVariant productVariant = parentProduct.getProductVariant();
 
     if (productVariant != null && productModel.getIsModel()) {
