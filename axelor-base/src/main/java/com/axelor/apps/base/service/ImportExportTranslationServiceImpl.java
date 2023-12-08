@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,6 +161,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
         TraceBackService.trace(ae);
       }
     }
+    translationList.sort(Comparator.comparing(array -> array[0]));
     return translationList;
   }
 
@@ -213,10 +215,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    */
   protected Map<String, String[]> saveTranslationKeyIntoMap(int languageNumber) {
     TypedQuery<String> query =
-        JPA.em()
-            .createQuery(
-                "select distinct mt.key " + "from MetaTranslation mt " + "order by mt.key ",
-                String.class);
+        JPA.em().createQuery("select distinct mt.key " + "from MetaTranslation mt ", String.class);
     List<String> keyResultList = query.getResultList();
     int initialCapacity = keyResultList.size() * 2;
     Map<String, String[]> translationMap = new HashMap<>(initialCapacity);
