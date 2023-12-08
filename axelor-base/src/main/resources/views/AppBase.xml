@@ -171,6 +171,12 @@
         <field name="pfxCertificate" canNew="true" canEdit="true"
           form-view="pfx-certificate-form"/>
       </panel>
+      <panel name="pricingScalePanel" colSpan="12" title="Pricings">
+        <field name="enablePricingScale" widget="boolean-switch"/>
+        <field name="isPricingComputingOrder" title="Pricing computing order"
+          widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
+          showIf="enablePricingScale"/>
+      </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

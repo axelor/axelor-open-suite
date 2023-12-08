@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
@@ -52,6 +53,7 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       InvoicePaymentCreateService invoicePaymentCreateService,
       UserRepository userRepo,
       JournalService journalService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
       PfpService pfpService,
       CurrencyScaleServiceAccount currencyScaleServiceAccount) {
@@ -64,6 +66,7 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
         reconcileService,
         invoicePaymentCreateService,
         journalService,
+        invoiceTermFinancialDiscountService,
         userRepo,
         pfpService,
         currencyScaleServiceAccount);

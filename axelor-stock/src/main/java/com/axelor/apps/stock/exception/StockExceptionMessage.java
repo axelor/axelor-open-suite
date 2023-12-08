@@ -254,7 +254,9 @@ public final class StockExceptionMessage {
   public static final String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK = /*$$(*/
       "Please set an economic are in AppStock." /*)*/;
 
-  public static final String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_1 = /*$$(*/
+      "Create new tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_2 = /*$$(*/ "Select tracking numbers" /*)*/;
   public static final String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/
       "No Tracking Numbers Added" /*)*/;
 
@@ -277,4 +279,25 @@ public final class StockExceptionMessage {
       "Error: %s field is required and can not be null" /*)*/;
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
       "Error: %s and %s fields are required and can not be null" /*)*/;
+
+  /** Stock move merging controller and service */
+  public static final String STOCK_MOVE_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least 2 stock moves" /*)*/;
+
+  public static final String STOCK_MOVE_MERGE_ERROR = /*$$(*/
+      "Your merge doesn't respect this/these condition(s) : %s" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_COMPANY = /*$$(*/ "Same company" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_TRADING_NAME = /*$$(*/
+      "Same trading name" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_PARTNER = /*$$(*/ "Same partner" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_FROM_AND_TO_STOCK_LOCATION = /*$$(*/
+      "Same from stock location and to stock location" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_STATUS = /*$$(*/
+      "Status must be planned or draft" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_SALE_ORDER = /*$$(*/ "Same sale order" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER = /*$$(*/
+      "Same purchase order" /*)*/;
+  public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
+  public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
+      "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
 }

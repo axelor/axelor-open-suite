@@ -1,3 +1,0 @@
----
-title: "PurchaseRequest : Avoid copy of purchaseOrder on duplicate"
-type: fix

@@ -1509,4 +1509,9 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     return copyAndSplitStockMoveReverse(stockMove, false);
   }
+
+  @Override
+  public void setMergedStatus(StockMove stockMove) {
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_MERGED);
+  }
 }

@@ -44,8 +44,7 @@
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
-      <field name="paymentDate"
-        onChange="action-invoice-payment-method-apply-financial-discount"/>
+      <field name="paymentDate" onChange="action-invoice-payment-group-payment-date-onchange"/>
       <field name="delayReason" showIf="paymentDate &gt; invoice.dueDate" readonly="false"/>
       <field name="invoice.dueDate" showIf="paymentDate &gt; invoice.dueDate"/>
       <field name="companyBankDetails" canEdit="false"
@@ -61,17 +60,22 @@
       <field name="invoice.tradingName"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       <field name="invoice" hidden="true"/>
+      <field name="invoice.financialDiscount" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
+      <field name="$isPartialPayment" type="boolean" hidden="true"/>
     </panel>
-    <panel name="discountPanel" title="Financial discount" showIf="applyFinancialDiscount"
-      if="__config__.app.getApp('account')?.getManageFinancialDiscount()">
-      <field name="applyFinancialDiscount" readonly="true"/>
-      <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
-        showIf="applyFinancialDiscount &amp;&amp; totalAmountWithFinancialDiscount != null"
-        readonly="true" x-scale="currency.numberOfDecimals"/>
-      <panel name="financialDiscountAmountPanel"
-        showIf="applyFinancialDiscount &amp;&amp; !$isMultiCurrency" readonly="true" colSpan="12">
-        <field name="financialDiscount"/>
+    <panel name="discountPanel" title="Financial discount"
+      if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
+      readonlyIf="statusSelect > 0 || invoice.amountPaid > 0"
+      showIf="invoice.financialDiscount &amp;&amp; !$isMultiCurrency">
+      <field name="applyFinancialDiscount" readonlyIf="$isPartialPayment"
+        onChange="action-invoice-payment-group-apply-financial-discount-on-change"/>
+      <field name="financialDiscount" readonly="true" showIf="applyFinancialDiscount"/>
+      <panel name="financialDiscountPanel" readonly="true" showIf="applyFinancialDiscount"
+        colSpan="12">
+        <field name="totalAmountWithFinancialDiscount" title="Total amount with Fin. Discount"
+          showIf="totalAmountWithFinancialDiscount" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"
           x-scale="currency.numberOfDecimals"/>
@@ -148,19 +152,28 @@
     <action name="action-invoice-payment-method-set-is-multi-currency"/>
     <action name="action-invoice-payment-method-filter-payment-mode"/>
     <action name="action-invoice-payment-method-load-invoice-terms"/>
-    <action name="action-invoice-payment-method-change-amount"/>
-    <action name="action-invoice-payment-method-new-discount"/>
+    <action name="action-invoice-payment-attrs-set-is-partial-payment"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-change-amounts">
     <action name="action-invoice-payment-record-manual-change"/>
     <action name="action-invoice-payment-method-change-amount"/>
-    <action name="action-invoice-payment-method-new-discount"/>
+    <action name="action-invoice-payment-attrs-set-is-partial-payment"/>
   </action-group>
 
   <action-group name="action-invoice-payment-group-mass-payment-new">
     <action name="action-invoice-payment-record-mass-payment-new"/>
     <action name="action-invoice-payment-method-mass-payment-set-amount"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-apply-financial-discount-on-change">
+    <action name="action-invoice-payment-record-manual-change"/>
+    <action name="action-invoice-payment-method-new-discount"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-payment-date-onchange">
+    <action name="action-invoice-payment-method-apply-financial-discount"/>
+    <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
   <action-validate name="action-invoice-payment-validate-mass-payment">
@@ -199,12 +212,16 @@
       expr="eval: __repo__(Invoice).all().filter(&quot;self.id in (?1) AND self.financialDiscount is not null &quot;,_invoices).fetchOne()?.financialDiscount"/>
   </action-record>
 
-
   <action-attrs name="action-invoice-payment-attrs-new">
     <attribute for="amount" name="readonly"
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
     <attribute for="currency" name="readonly"
       expr="eval: _invoice?.operationSubTypeSelect == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-payment-attrs-set-is-partial-payment">
+    <attribute name="value" for="$isPartialPayment"
+      expr="call: com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService:isPartialPayment(__this__)"/>
   </action-attrs>
 
   <action-method name="action-invoice-payment-method-filter-payment-mode">

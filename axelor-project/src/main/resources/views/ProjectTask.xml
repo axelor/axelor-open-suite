@@ -345,7 +345,7 @@
 				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
 				<Box d="flex" justifyContent="space-between">
 					<Box>
-						<Icon icon="calendar"/>
+						<Icon icon="calendar" fontSize="15px"/>
 						{!taskDeadline && <span> {_t('Not specified')} </span>}
 						{$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day') && <span> {_t('Deadline Yesterday')} </span>}
 						{$moment(taskDeadline).isSame($moment(), 'day') && <span> {_t('Deadline Today')} </span>}
@@ -366,7 +366,7 @@
 					</Box>
 				}
          		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
          		</Box>
 			</>
 		]]>
@@ -391,7 +391,7 @@
 				{assignedTo && <Image src={$image('assignedTo', 'image')}></Image>}
 				<Box d="flex" justifyContent="space-between">
 					<Box>
-						<Icon icon="calendar"/>
+						<Icon icon="calendar" fontSize="15px"/>
 						{!taskDeadline && <span> {_t('Not specified')} </span>}
 						{$moment(taskDeadline).isSame($moment().subtract(1, 'days'), 'day') && <span> {_t('Deadline Yesterday')} </span>}
 						{$moment(taskDeadline).isSame($moment(), 'day') && <span> {_t('Deadline Today')} </span>}
@@ -410,7 +410,7 @@
 					{progressSelect == 0 ? <span>{progressSelect}%</span> : <LinearProgress value={progressSelect} striped animated/>}
 				</Box>
          		<Box mt={4} color="secondary" style={{ fontSize: "12px" }}>
-         			<Icon icon="clock"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
+         			<Icon icon="clock" fontSize="15px"/> {taskDate ? <span>{$fmt('taskDate')}</span> : <span>{_t('Not specified')}</span>}
          		</Box>
 			</>
 		]]>
