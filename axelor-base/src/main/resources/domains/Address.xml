@@ -41,7 +41,7 @@
 
     <string name="fullName" namecolumn="true" search="room,floor,streetName,postBox"
       title="Address"/>
-    <string name="formattedFullName" multiline="true" large="true" title="Address"/>
+    <string name="formattedFullName" multiline="true" large="true"  title="Address"/>
   </entity>
 
 </domain-models>
