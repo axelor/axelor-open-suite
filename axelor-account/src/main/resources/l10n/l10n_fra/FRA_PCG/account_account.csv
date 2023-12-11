@@ -520,6 +520,7 @@
 464000;460;"Dettes sur acquisitions de valeurs mobilières de placement";"FRA_PCG5";"true";0;;;;;;;0;"false";"NDAS";"false";1
 465000;460;"Créances sur cessions de valeurs mobilières de placement";"FRA_PCG12";"true";2;;;;;;;0;"false";"NDAS";"false";1
 467;460;"Autres comptes débiteurs ou créditeurs";"FRA_PCG15";"true";2;;;;;;;0;"false";"NDAS";"false";1
+467000;467;"Factor 1";"FRA_PCG12";"true";2;;;;;;;0;"false";"NDAS";"false";1
 468000;460;"Divers - Charges à payer et produits à recevoir";"FRA_PCG12";"true";2;;;;;;;0;"false";"NDAS";"false";1
 468600;468000;"Charges à payer";"FRA_PCG5";"true";2;;;;;;;0;"false";"NDAS";"false";1
 468700;468000;"Produits à recevoir";"FRA_PCG12";"true";2;;;;;;;0;"false";"NDAS";"false";1

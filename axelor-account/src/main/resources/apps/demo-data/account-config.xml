@@ -57,7 +57,7 @@
       search="self.technicalTypeSelect in :validAccountTypes"
       eval="validAccountTypes.split('\\|') as List"/>
     <bind column="validAccounts" to="validAccountSet"
-      search="self.code in :validAccounts and self.company.importId = :company_importId"
+      search="self.importId in :validAccounts and self.company.importId = :company_importId"
       eval="validAccounts.split('\\|') as List"/>
     <bind to="company" search="self.importId = :company_importId"/>
   </input>
