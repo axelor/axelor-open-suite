@@ -198,7 +198,8 @@
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 2"
           onSelect="action-purchase-order-attrs-compute-tax-number-domain"
-          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"/>
+          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"
+          if="__config__.app.getApp('base')?.getEnableTaxNumbers()"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 2"
           onSelect="action-purchase-order-attrs-fiscal-position-domain"
@@ -1028,9 +1029,11 @@
   </action-attrs>
 
   <action-attrs name="action-purchase-order-attrs-fiscal-position-domain">
-    <attribute name="domain" for="fiscalPosition" if="taxNumber"
+    <attribute name="domain" for="fiscalPosition"
+      if="taxNumber &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"
       expr="eval: &quot;:taxNumber MEMBER OF self.taxNumberSet&quot;"/>
-    <attribute name="domain" for="fiscalPosition" if="!taxNumber"
+    <attribute name="domain" for="fiscalPosition"
+      if="!taxNumber &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"
       expr="eval: &quot;'${supplierPartner?.fiscalPosition?.code}' = self.code&quot;"/>
   </action-attrs>
 
