@@ -36,7 +36,7 @@
         showIf="leaveReasonTypeSelect != 2"/>
       <field name="instruction" colSpan="12" widget="html"/>
 
-      <panel name="planningPanel" colSpan="12"
+      <panel name="planningPanel" colSpan="12" hideIf="leaveReasonTypeSelect == 2"
         if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() == 2">
         <field name="useWeeklyPlanningCoef" widget="boolean-switch" colSpan="6"/>
       </panel>

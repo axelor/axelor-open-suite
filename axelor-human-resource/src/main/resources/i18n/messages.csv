@@ -1,4 +1,4 @@
-"key","message","comment","context"
+"key",message,"comment","context"
 "% in paper format",,,
 "%d expense treated successfully,",,,
 "%d expenses treated successfully,",,,
@@ -328,7 +328,7 @@
 "End of the week",,,
 "Establishment of the employer",,,
 "Event",,,
-"Exceptional days of leave",,,
+"Exceptional leave",,,
 "Exclude timesheet editor",,,
 "Executive",,,
 "Executive Status",,,
