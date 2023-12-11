@@ -152,7 +152,7 @@ public class TaxInvoiceLine extends TaxGenerator {
       int vatSystem,
       Map<TaxLineByVatSystem, InvoiceLineTax> map)
       throws AxelorException {
-    LOG.debug("ax {}", taxLine);
+    LOG.debug("Tax {}", taxLine);
 
     TaxLineByVatSystem taxLineByVatSystem = new TaxLineByVatSystem(taxLine, vatSystem);
     InvoiceLineTax invoiceLineTax = map.get(taxLineByVatSystem);
@@ -222,14 +222,14 @@ public class TaxInvoiceLine extends TaxGenerator {
     // Dans la devise de la comptabilité du tiers
     invoiceLineTax.setCompanyExTaxBase(
         currencyScaleServiceAccount.getCompanyScaledValue(
-            invoiceLine, invoiceLine.getCompanyExTaxTotal()));
+            invoice, invoiceLine.getCompanyExTaxTotal()));
 
     if (!invoiceLine.getFixedAssets()) {
       invoiceLineTax.setSubTotalExcludingFixedAssets(
-          currencyScaleServiceAccount.getScaledValue(invoiceLine, invoiceLine.getExTaxTotal()));
+          currencyScaleServiceAccount.getScaledValue(invoice, invoiceLine.getExTaxTotal()));
       invoiceLineTax.setCompanySubTotalExcludingFixedAssets(
           currencyScaleServiceAccount.getCompanyScaledValue(
-              invoiceLine,
+              invoice,
               invoiceLineTax
                   .getCompanySubTotalExcludingFixedAssets()
                   .add(invoiceLine.getCompanyExTaxTotal())));

@@ -70,6 +70,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -164,7 +165,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine.setSaleOrderLine(saleOrderLine);
       stockMoveLine.setPurchaseOrderLine(purchaseOrderLine);
       TrackingNumberConfiguration trackingNumberConfiguration =
-          product.getTrackingNumberConfiguration();
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  product, "trackingNumberConfiguration", stockMove.getCompany());
 
       return assignOrGenerateTrackingNumber(
           stockMoveLine, stockMove, product, trackingNumberConfiguration, type);
@@ -295,7 +298,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation) {
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation)
+      throws AxelorException {
 
     if (!appBaseService.isApp("supplychain")) {
       super.updateAvailableQty(stockMoveLine, stockLocation);
@@ -305,8 +309,21 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
 
+    TrackingNumberConfiguration trackingNumberConfiguration;
+
     if (stockMoveLine.getProduct() != null) {
-      if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+      trackingNumberConfiguration =
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  stockMoveLine.getProduct(),
+                  "trackingNumberConfiguration",
+                  stockLocation.getCompany());
+    } else {
+      trackingNumberConfiguration = null;
+    }
+
+    if (stockMoveLine.getProduct() != null) {
+      if (trackingNumberConfiguration != null) {
 
         if (stockMoveLine.getTrackingNumber() != null) {
           StockLocationLine stockLocationLine =
@@ -478,15 +495,23 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   }
 
   @Override
-  public boolean isAvailableProduct(StockMoveLine stockMoveLine) {
+  public boolean isAvailableProduct(StockMoveLine stockMoveLine) throws AxelorException {
     if (stockMoveLine.getProduct() == null
         || (stockMoveLine.getProduct() != null && !stockMoveLine.getProduct().getStockManaged())) {
       return true;
     }
     updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     BigDecimal availableQty = stockMoveLine.getAvailableQty();
-    if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null
-        && stockMoveLine.getTrackingNumber() == null) {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                stockMoveLine.getProduct(),
+                "trackingNumberConfiguration",
+                Optional.ofNullable(stockMoveLine.getStockMove())
+                    .map(StockMove::getCompany)
+                    .orElse(null));
+
+    if (trackingNumberConfiguration != null && stockMoveLine.getTrackingNumber() == null) {
       availableQty = stockMoveLine.getAvailableQtyForProduct();
     }
     BigDecimal realQty = stockMoveLine.getRealQty();

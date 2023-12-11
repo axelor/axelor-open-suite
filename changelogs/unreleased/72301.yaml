@@ -1,3 +1,0 @@
----
-title: "FEC import : Fix issue where empty DateLet or EcritureLet would create empty letterings"
-type: fix

@@ -19,6 +19,8 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
+import java.util.List;
 
 public interface InvoiceFinancialDiscountService {
 
@@ -35,4 +37,12 @@ public interface InvoiceFinancialDiscountService {
    * @param invoice
    */
   void resetFinancialDiscountInformations(Invoice invoice);
+
+  /**
+   * Update invoice terms financial discount if not paid with invoice financial discount
+   *
+   * @param invoice
+   * @return
+   */
+  List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 }

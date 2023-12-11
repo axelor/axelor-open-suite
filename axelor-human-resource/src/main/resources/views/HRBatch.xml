@@ -12,8 +12,9 @@
   </grid>
 
   <form name="hr-batch-form" title="HR Batch" model="com.axelor.apps.hr.db.HrBatch"
-    width="large" onNew="action-hr-batch-record-default,action-hr-batch-attrs-employee-set-domain"
-    onLoad="action-hr-batch-attrs-employee-set-domain">
+    width="large"
+    onNew="action-hr-batch-record-default,action-hr-batch-attrs-employee-set-domain, action-hr-batch-method-get-leave-reason-type-selects"
+    onLoad="action-hr-batch-attrs-employee-set-domain, action-hr-batch-method-get-leave-reason-type-selects">
     <panel name="mainPanel">
       <field name="actionSelect"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
@@ -160,4 +161,9 @@
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-method name="action-hr-batch-method-get-leave-reason-type-selects">
+    <call class="com.axelor.apps.hr.web.HrBatchController"
+      method="getIncrementLeaveReasonTypeSelects"/>
+  </action-method>
 </object-views>
