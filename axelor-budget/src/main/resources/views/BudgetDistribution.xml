@@ -11,18 +11,6 @@
     <field name="amount" aggregate="sum"/>
   </grid>
 
-  <grid name="budget-distribution-line-grid" title="Distribution lines"
-    model="com.axelor.apps.budget.db.BudgetDistribution" width="large" canNew="false"
-    canEdit="false" canArchive="false" canDelete="false" groupBy="budget">
-    <field name="budget"/>
-    <field name="invoiceLine"/>
-    <field name="purchaseOrderLine"/>
-    <field name="saleOrderLine"/>
-    <field name="moveLine"/>
-    <field name="budgetAmountAvailable"/>
-    <field name="amount" aggregate="sum"/>
-  </grid>
-
   <grid title="Budget distributions" name="reduce-budget-distribution-grid"
     model="com.axelor.apps.budget.db.BudgetDistribution"
     onNew="action-group-on-new-parent-budget-distribution" edit-icon="true">
@@ -74,11 +62,11 @@
     <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
     <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
     <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
-    <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -87,9 +75,9 @@
     <field name="budget" title="Budget"/>
     <field name="saleOrderLine.saleOrder" title="Ref."/>
     <field name="saleOrderLine.saleOrder.statusSelect"/>
-    <field name="saleOrderLine.saleOrder.orderDate"/>
     <field name="saleOrderLine.productName"/>
     <field name="saleOrderLine.exTaxTotal"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -136,6 +124,7 @@
     canArchive="false" canDelete="false" canEdit="false">
     <field name="budget"/>
     <field name="moveLine"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -147,6 +136,7 @@
     <field name="invoiceLine.invoice.purchaseOrder"/>
     <field name="invoiceLine.invoice.saleOrder"/>
     <field name="amount" aggregate="sum"/>
+    <field name="imputationDate"/>
     <field name="invoiceLine.invoice" hidden="true"/>
   </grid>
 
@@ -156,6 +146,7 @@
     <field name="budget"/>
     <field name="invoiceLine"/>
     <field name="moveLine"/>
+    <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -183,7 +174,7 @@
 
   <form name="purchase-order-budget-distribution-form" title="Budget distribution"
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
-    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    onLoad="action-budget-distribution-group-budget-amount-available-and-currency-symbol">
     <panel name="mainPanel">
       <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
         onChange="action-method-budget-budget-distribution-set-amount-available"/>
@@ -198,7 +189,7 @@
 
   <form name="purchase-order-budget-distribution-complete-form" title="Budget distribution"
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
-    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    onLoad="action-budget-distribution-group-budget-amount-available-and-currency-symbol">
     <panel name="mainPanel">
       <field name="budget" readonly="true"/>
       <field name="purchaseOrderLine.product" readonly="true"/>
@@ -214,7 +205,7 @@
 
   <form name="budget-distribution-form" title="Budget distribution"
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
-    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    onLoad="action-budget-distribution-group-budget-amount-available-and-currency-symbol">
     <panel name="mainPanel">
       <field name="budget" required="true" domain="self.statusSelect = 2"/>
       <field name="budgetAmountAvailable" readonly="true"
@@ -227,7 +218,7 @@
 
   <form name="invoice-budget-distribution-form" title="Budget distribution"
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
-    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    onLoad="action-budget-distribution-group-budget-amount-available-and-currency-symbol">
     <panel name="mainPanel">
       <field name="budget" readonly="true"/>
       <field name="invoiceLine.product" readonly="true" domain="self.dtype = 'Product'"/>
@@ -311,7 +302,7 @@
   <form name="sale-order-budget-distribution-form" title="Budget distribution"
     model="com.axelor.apps.budget.db.BudgetDistribution" width="large"
     onNew="action-method-onnew-budget-distribution-sale-order"
-    onLoad="action-budget-distribution-attrs-budget-amount-available">
+    onLoad="action-budget-distribution-group-budget-amount-available-and-currency-symbol">
     <panel name="mainPanel">
       <field name="budget" readonly="false"
         onChange="action-method-budget-budget-distribution-set-amount-available"
@@ -334,6 +325,12 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine'"/>
   </action-group>
 
+  <action-group
+    name="action-budget-distribution-group-budget-amount-available-and-currency-symbol">
+    <action name="action-budget-distribution-attrs-budget-amount-available"/>
+    <action name="action-budget-distribution-attrs-currency-symbol"/>
+  </action-group>
+
   <action-attrs name="action-budget-distribution-attrs-budget-amount-available">
     <attribute name="title" for="budgetAmountAvailable"
       expr="eval:com.axelor.i18n.I18n.get('Remaining open amount')"
@@ -343,11 +340,16 @@
       if="__parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
     <attribute name="hidden" for="budgetDistributionList.budgetAmountAvailable"
       expr="eval:__parent__?.statusSelect &gt; 2"
-      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+      if="['com.axelor.apps.purchase.db.PurchaseOrder', 'com.axelor.apps.account.db.Invoice', 'com.axelor.apps.sale.db.SaleOrder'].contains(__parent__?._model)"/>
+  </action-attrs>
 
+  <action-attrs name="action-budget-distribution-attrs-currency-symbol">
     <attribute name="value" for="$currencySymbol"
       expr="eval:__parent__?.company?.currency?.symbol"
-      if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder' || __parent__?._model == 'com.axelor.apps.account.db.Invoice' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+      if="['com.axelor.apps.purchase.db.PurchaseOrder', 'com.axelor.apps.account.db.Invoice', 'com.axelor.apps.sale.db.SaleOrder'].contains(__parent__?._model)"/>
+    <attribute name="value" for="$companyCurrencyScale"
+      expr="eval:__parent__?.company?.currency?.numberOfDecimals"
+      if="['com.axelor.apps.purchase.db.PurchaseOrder', 'com.axelor.apps.account.db.Invoice', 'com.axelor.apps.sale.db.SaleOrder'].contains(__parent__?._model)"/>
   </action-attrs>
 
   <action-method name="action-method-budget-budget-distribution-set-amount-available">

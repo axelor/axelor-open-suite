@@ -133,6 +133,7 @@
 		public static final int STATUS_PLANNED = 2;
 		public static final int STATUS_REALIZED = 3;
 		public static final int STATUS_CANCELED = 4;
+		public static final int STATUS_MERGED = 5;
 
 		// AVAILABLE STATUS SELECT
 		public static final int STATUS_AVAILABLE = 1;

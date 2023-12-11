@@ -11,6 +11,7 @@
     <string name="code" title="Printing code" required="true"/>
     <string name="symbol" title="Symbol"/>
     <string name="codeISO" title="ISO code" unique="true" required="true"/>
+    <integer name="numberOfDecimals" title="Number of decimals" min="0" max="3"/>
 
   </entity>
 

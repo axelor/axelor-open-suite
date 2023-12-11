@@ -36,7 +36,7 @@ public class JobPositionTalentRepository extends JobPositionRepository {
       try {
         jobPosition.setJobReference(
             sequenceService.getSequenceNumber(
-                SequenceRepository.JOB_POSITION, JobPosition.class, "jobReference"));
+                SequenceRepository.JOB_POSITION, JobPosition.class, "jobReference", jobPosition));
       } catch (AxelorException e) {
         TraceBackService.traceExceptionFromSaveMethod(e);
       }

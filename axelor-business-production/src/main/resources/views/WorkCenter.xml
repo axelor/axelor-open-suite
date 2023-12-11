@@ -13,5 +13,19 @@
         </panel>
       </insert>
     </extend>
+    <extend target="//field[@name='machine']">
+      <insert position="after">
+        <field name="hrEmployeeSet" widget="TagSelect" colSpan="6"
+          showIf="workCenterTypeSelect == 1 || workCenterTypeSelect == 3"
+          onSelect="action-work-center-attrs-employee-set-domain"
+          if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
+      </insert>
+    </extend>
   </form>
+
+  <action-attrs name="action-work-center-attrs-employee-set-domain">
+    <attribute for="hrEmployeeSet" if="hrSkillSet != null &amp;&amp; !hrSkillSet.empty"
+      name="domain"
+      expr="eval: &quot;self.trainingSkillList.skill.id IN (${hrSkillSet?.collect{it.id}.join(',')})&quot;"/>
+  </action-attrs>
 </object-views>

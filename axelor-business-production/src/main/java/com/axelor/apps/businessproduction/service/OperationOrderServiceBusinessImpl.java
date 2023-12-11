@@ -32,6 +32,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
@@ -66,7 +67,8 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
             appProductionService.getAppProduction().getManageBusinessProduction())) {
       operationOrder.setIsToInvoice(manufOrder.getIsToInvoice());
     }
-
+    operationOrder.setEmployeeSet(
+        Sets.newHashSet(prodProcessLine.getWorkCenter().getHrEmployeeSet()));
     return operationOrder;
   }
 

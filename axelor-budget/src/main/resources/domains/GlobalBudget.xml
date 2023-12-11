@@ -58,6 +58,9 @@
     <one-to-many name="budgetVersionList" ref="com.axelor.apps.budget.db.BudgetVersion"
       title="Budget Version" mappedBy="globalBudget"/>
 
+    <boolean name="automaticBudgetComputation" title="Automatic budget computation"
+      help="If enabled, an automatic budget computation will be done at request/finalize for orders"/>
+
 
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
             <![CDATA[
@@ -81,6 +84,7 @@
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED = 3;
 
 				//budget control type select
+				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_DEFAULT_VALUE = 0;
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;

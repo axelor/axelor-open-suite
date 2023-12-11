@@ -24,4 +24,6 @@ import com.axelor.studio.db.AppQuality;
 public interface AppQualityService extends AppBaseService {
 
   AppQuality getAppQuality();
+
+  void generateQualityConfigurations();
 }

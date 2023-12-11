@@ -61,7 +61,7 @@
   </selection>
 
   <selection name="budget.scenario.entry.method.select">
-    <option value="0">Manual</option>
+    <option value="0">budget.Manual</option>
     <option value="1">Formula</option>
   </selection>
 
@@ -78,6 +78,12 @@
   </selection>
 
   <selection name="app.budget.check.missing.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
+
+  <selection name="app.budget.check.exceed.order.select">
     <option value="0">None</option>
     <option value="1">Optional</option>
     <option value="2">Required</option>

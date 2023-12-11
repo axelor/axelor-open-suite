@@ -34,6 +34,7 @@ import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -129,7 +130,8 @@ public class BudgetController {
 
       if (company != null && company.getId() != null) {
         company = Beans.get(CompanyRepository.class).find(company.getId());
-        boolean checkBudgetKey = Beans.get(BudgetService.class).checkBudgetKeyInConfig(company);
+        boolean checkBudgetKey =
+            Beans.get(BudgetToolsService.class).checkBudgetKeyInConfig(company);
         response.setAttr("accountSet", "hidden", !checkBudgetKey);
         response.setAttr("analyticAxis", "hidden", !checkBudgetKey);
         response.setAttr("analyticAccount", "hidden", !checkBudgetKey);

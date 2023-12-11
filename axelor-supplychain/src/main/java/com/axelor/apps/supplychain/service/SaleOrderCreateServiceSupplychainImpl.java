@@ -37,6 +37,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.Team;
@@ -56,6 +57,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   protected SaleOrderRepository saleOrderRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderSupplychainService saleOrderSupplychainService;
+  protected AppStockService appStockService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
@@ -67,7 +69,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
       SaleOrderRepository saleOrderRepository,
-      SaleOrderSupplychainService saleOrderSupplychainService) {
+      SaleOrderSupplychainService saleOrderSupplychainService,
+      AppStockService appStockService) {
 
     super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
 
@@ -75,6 +78,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
     this.saleOrderRepository = saleOrderRepository;
     this.appBaseService = appBaseService;
     this.saleOrderSupplychainService = saleOrderSupplychainService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -216,7 +220,9 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
     saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
-    saleOrder.setIncoterm(incoterm);
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      saleOrder.setIncoterm(incoterm);
+    }
     saleOrder.setInvoicedPartner(invoicedPartner);
     saleOrder.setDeliveredPartner(deliveredPartner);
 

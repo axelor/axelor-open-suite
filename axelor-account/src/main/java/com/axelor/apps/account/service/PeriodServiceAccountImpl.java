@@ -38,6 +38,7 @@ import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import javax.inject.Singleton;
+import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -70,13 +71,16 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     } catch (Exception e) {
       resetStatus(period);
       TraceBackService.trace(e);
+      throw new PersistenceException(e.getMessage(), e);
     }
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void resetStatus(Period period) {
-    super.resetStatusSelect(period);
-    periodRepo.save(period);
+
+    Period periodBDD = periodRepo.find(period.getId());
+    super.resetStatusSelect(periodBDD);
+    periodRepo.save(periodBDD);
   }
 
   @Transactional(rollbackOn = {Exception.class})

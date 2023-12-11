@@ -15,6 +15,9 @@
   <input file="crm_eventCategory.csv" separator=";"
     type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
 
+  <input file="crm_opportunityType.csv" separator=";"
+    type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
+
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
     <bind to="type" eval="'tooltip'"/>

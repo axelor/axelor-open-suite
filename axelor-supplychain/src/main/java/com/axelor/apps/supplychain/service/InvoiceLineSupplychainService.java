@@ -23,10 +23,12 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceLineServiceImpl;
+import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -66,7 +68,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
       InvoiceLineAnalyticService invoiceLineAnalyticService,
       SupplierCatalogService supplierCatalogService,
       TaxService taxService,
-      InternationalService internationalService) {
+      InternationalService internationalService,
+      InvoiceLineAttrsService invoiceLineAttrsService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         currencyService,
         priceListService,
@@ -78,7 +82,9 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
         accountConfigService,
         invoiceLineAnalyticService,
         taxService,
-        internationalService);
+        internationalService,
+        invoiceLineAttrsService,
+        currencyScaleServiceAccount);
     this.supplierCatalogService = supplierCatalogService;
   }
 
@@ -143,13 +149,12 @@ public class InvoiceLineSupplychainService extends InvoiceLineServiceImpl {
   @Override
   public Map<String, Object> fillProductInformation(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.fillProductInformation(invoice, invoiceLine);
-    }
-
     Map<String, Object> productInformation =
         new HashMap<>(super.fillProductInformation(invoice, invoiceLine));
+
+    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+      return productInformation;
+    }
 
     computeSequence(invoice, invoiceLine);
 

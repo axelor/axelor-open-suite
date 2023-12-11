@@ -77,4 +77,22 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
     }
     return null;
   }
+
+  @Override
+  public Boolean isBudgetExceedValuesError(boolean isOrder) {
+    if (!isOrder) {
+      return Boolean.FALSE;
+    }
+    Integer budgetExceedCheck =
+        Optional.ofNullable(this.getAppBudget())
+            .map(AppBudget::getOrderBudgetExceedSelect)
+            .orElse(0);
+    switch (budgetExceedCheck) {
+      case AppBudgetRepository.APP_BUDGET_EXCEED_ORDERS_SELECT_OPTIONAL:
+        return Boolean.FALSE;
+      case AppBudgetRepository.APP_BUDGET_EXCEED_ORDERS_SELECT_REQUIRED:
+        return Boolean.TRUE;
+    }
+    return null;
+  }
 }

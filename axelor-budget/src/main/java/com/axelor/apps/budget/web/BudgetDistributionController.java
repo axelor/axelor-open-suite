@@ -65,15 +65,13 @@ public class BudgetDistributionController {
                   ? invoice.getInvoiceDate()
                   : Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
         }
-      }
-      if (PurchaseOrderLine.class.equals(parentContext.getContextClass())
+      } else if (PurchaseOrderLine.class.equals(parentContext.getContextClass())
           && budgetDistribution.getBudget() != null) {
         PurchaseOrder purchaseOrder = grandParentContext.asType(PurchaseOrder.class);
         if (purchaseOrder != null && purchaseOrder.getOrderDate() != null) {
           date = purchaseOrder.getOrderDate();
         }
-      }
-      if (MoveLine.class.equals(parentContext.getContextClass())
+      } else if (MoveLine.class.equals(parentContext.getContextClass())
           && budgetDistribution.getBudget() != null) {
         Move move = grandParentContext.asType(Move.class);
         if (move != null && move.getDate() != null) {
@@ -81,18 +79,20 @@ public class BudgetDistributionController {
         } else {
           date = parentContext.asType(MoveLine.class).getDate();
         }
+      } else if (SaleOrderLine.class.equals(parentContext.getContextClass())
+          && budgetDistribution.getBudget() != null) {
+        SaleOrder saleOrder = grandParentContext.asType(SaleOrder.class);
+        if (saleOrder != null) {
+          date =
+              saleOrder.getOrderDate() != null
+                  ? saleOrder.getOrderDate()
+                  : saleOrder.getCreationDate();
+        }
       }
 
       Beans.get(BudgetDistributionService.class)
           .computeBudgetDistributionSumAmount(budgetDistribution, date);
       response.setValues(budgetDistribution);
-
-      if (SaleOrderLine.class.equals(parentContext.getContextClass())
-          && budgetDistribution.getBudget() != null) {
-        budgetDistribution.setBudgetAmountAvailable(
-            budgetDistribution.getBudget().getAvailableAmount());
-        response.setValues(budgetDistribution);
-      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

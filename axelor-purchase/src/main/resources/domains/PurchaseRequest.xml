@@ -8,11 +8,11 @@
   <entity name="PurchaseRequest" cacheable="true">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-    <many-to-one name="supplierUser" ref="com.axelor.apps.base.db.Partner"
+    <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
       title="Supplier"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder"
-      title="Purchase order"/>
+      title="Purchase order" copy="false"/>
     <integer name="statusSelect" title="Status" selection="purchase.request.status.select"
       default="1"/>
     <string name="purchaseRequestSeq" title="Ref."/>
@@ -38,7 +38,7 @@
     </extra-code>
 
     <track>
-      <field name="supplierUser"/>
+      <field name="supplierPartner"/>
     </track>
 
   </entity>

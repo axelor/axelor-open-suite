@@ -167,6 +167,10 @@
             <field name="computePreviousYear" hideIf="computeOtherPeriod"/>
             <field name="computeOtherPeriod" hideIf="computePreviousYear"/>
           </panel>
+          <panel name="lineConfigPanel" colSpan="12"
+            showIf="reportType != null &amp;&amp; !$legacy">
+            <field name="hideDetailedLinesWithoutMoves" showIf="detailBySelect > 0"/>
+          </panel>
           <field name="groupsWithoutColumn" colSpan="6"
             showIf="reportTypeColumn != null &amp;&amp; typeSelect != 5 &amp;&amp; !$legacy"/>
         </panel>

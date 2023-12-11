@@ -437,7 +437,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         productionConfigService.getManufOrderSequence(
             productionConfig, manufOrder.getWorkshopStockLocation());
 
-    String seq = sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq");
+    String seq =
+        sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq", manufOrder);
 
     if (seq == null) {
       throw new AxelorException(
