@@ -123,7 +123,7 @@
       ref="com.axelor.apps.account.db.Account"/>
     <many-to-many name="partnerSet" title="Partners"
       ref="com.axelor.apps.base.db.Partner"/>
-    <string name="orderBySelect" title="Order by"
+    <string name="orderBySelect" title="accountingBatch.orderBy"
       selection="iaccount.account.batch.auto.move.lettering.order.by.select" default="0"/>
     <integer name="reconcileMethodSelect" title="Reconcile method"
       selection="iaccount.account.batch.auto.move.lettering.reconcile.method.select"/>

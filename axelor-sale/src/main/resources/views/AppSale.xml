@@ -28,14 +28,8 @@
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isEditableGridEnabled" widget="boolean-switch"/>
-      <panel name="pricingScalePanel" colSpan="12">
-        <field name="enablePricingScale" widget="boolean-switch"/>
-        <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
-          showIf="enablePricingScale"/>
-        <field name="isPricingComputingOrder" title="Pricing computing order"
-          widget="boolean-radio" x-true-text="Previous" x-false-text="Next"
-          showIf="enablePricingScale"/>
-      </panel>
+      <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
+        hidden="true"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
@@ -69,6 +63,8 @@
     model="com.axelor.studio.db.AppSale">
     <attribute name="hidden" for="enableSalesProductByTradName"
       expr="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <attribute for="isEnableCalculationEntireQuotationUsingPricing" name="hidden"
+      expr="eval: !__config__.app.getApp('base')?.enablePricingScale"/>
   </action-attrs>
 
 </object-views>

@@ -15,8 +15,8 @@
       <field name="name" colSpan="4"/>
       <field name="technicalName" colSpan="4"/>
       <spacer colSpan="2"/>
-      <field name="authorizedRoles" colSpan="6" canNew="false" canEdit="false"
-        widget="TagSelect"/>
+      <field name="authorizedRoles" placeholder="None" colSpan="6" canNew="false"
+        canEdit="false" widget="TagSelect"/>
     </panel>
 
     <panel-mail name="mailPanel">

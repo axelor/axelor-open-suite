@@ -36,12 +36,9 @@
       title="Manage partner complementary product"/>
     <boolean name="isEnableCalculationEntireQuotationUsingPricing"
       title="Enable calculation of the entire quotation using pricing"/>
-    <boolean name="enablePricingScale" title="Enable pricing scale"/>
     <boolean name="considerZeroCost"
       title="Consider zero cost and zero price lines in the margin"
       help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
-    <boolean name="isPricingComputingOrder" title="Pricing computing order"
-      help="When selected, this is the pricing scale computation order."/>
     <boolean name="isEditableGridEnabled"
       title="Enable editable grid on quotation / sales order lines"
       help="This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view."/>
@@ -64,9 +61,7 @@
       <field name="saleUnit" on="UPDATE"/>
       <field name="managePartnerComplementaryProduct" on="UPDATE"/>
       <field name="isEnableCalculationEntireQuotationUsingPricing" on="UPDATE"/>
-      <field name="enablePricingScale" on="UPDATE"/>
       <field name="considerZeroCost" on="UPDATE"/>
-      <field name="isPricingComputingOrder" on="UPDATE"/>
       <field name="isEditableGridEnabled" on="UPDATE"/>
     </track>
   </entity>

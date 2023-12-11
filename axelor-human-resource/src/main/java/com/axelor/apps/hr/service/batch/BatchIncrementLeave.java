@@ -1,5 +1,6 @@
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.hr.db.Employee;
@@ -50,7 +51,7 @@ public class BatchIncrementLeave extends AbstractBatch {
     }
   }
 
-  protected void incrementLeaveForEmployees(Long id) {
+  protected void incrementLeaveForEmployees(Long id) throws AxelorException {
     List<Employee> employeeList;
     int offset = 0;
     LeaveReason leaveReason = leaveReasonRepository.find(id);
