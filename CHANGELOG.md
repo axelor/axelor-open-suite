@@ -1,3 +1,52 @@
+## [7.2.4] (2023-12-07)
+
+#### Fixed
+
+* Quality Module: added demo data for quality module 7.2 features.
+* Budget : Add currency symbol for budgetDistributionSumAmount field
+* Sale order: fixed JNPE error when copying a sale order without lines.
+* Purchase request: fixed reference to purchase order being copied on duplication.
+* CRM: added demo data for the search functionality.
+* Opportunity: fixed "create Call" button so it correctly sets the type of event to Call.
+* Studio: fixed wrong french translation for "Order By".
+* Accounting batch: hide unnecessary payment mode information.
+* Sequence: prevented JNPE error on sequence form view when the prefix was empty.
+* Translation: French translation conflict correction with 'Manual'.
+* MRP: fixed invalid type error when selecting a product from (sale/purchase) order line.
+* Sale order: fixed wrong price update when generating quotation from template.
+* Move line: hid cut off information when functional origin is 'opening', 'closure' or 'cut off'.
+* Custom accounting report: fixed detailed line with fetching accounts from their code displaying the same value.
+* Team task: fixed view reload error.
+* Indicator generator: fixed indicators generators demo data.
+* Invoice: fixed reference to subrogation release being copied on duplication.
+* Message: fixed encoding errors happening with accented characters when sending an email.
+* Fixed asset: accounting report now correctly takes into account fiscal already depreciated amount.
+* Custom accounting report: fixed some configs being displayed whilst not being used.
+* Configurator: fixed EN demo data for configurator.
+* Bank Details: fixed balance display for bank details on card view and form view.
+* Invoice: fixed error popup before opening a payment voucher from an invoice.
+* Doubtful customer: fixed the way invoice terms are managed.
+* Invoice: fixed invoice term generation when skip ventilation is enabled in invoicing configuration.
+* Contract: fixed UI issue by hiding some part of the view while the partner is empty.
+* Account management: use functional origin instead of journal to determine tax account.
+* Employee files: creating an Employee files from a Training Skill now correctly creates the PDF viewer.
+* Invoice: fixed error at new invoice term creation.
+* Invoice: fixed reference to "Refusal to pay reason" being copied on invoice duplication.
+* Timesheet: fixed timesheet line date check.
+* Stock move: allow to create a tracking number directly on stock move line.
+* Cost calculation: fixed an issue preventing an infinite loop in case of an error in bill of materials hierarchy.
+* FEC Import: fixed the way the currency amount is imported to make sure it is correctly signed.
+* Account: forbid to select the account itself as parent and its child accounts.
+* Mobile Settings: added a placeholder on every authorized roles.
+* Bank order: highlight orders sent to bank but not realized.
+* Quality Module: fixed register when no status are registered.
+* Payment session: fixed display of currency symbol in payment session.
+* Move template line: hide and set required tax field when it is configured in financial account.
+* Inventory line: fixed update of inventory line by taking into account stockLocation of line when possible, triggering update when necessary.
+* FEC import: fixed an issue where empty 'DateLet' or 'EcritureLet' column would create empty letterings.
+* Invoice: fixed partially paid invoices in bill of exchange management.
+* Stock move: allow to select external stock location for deliveries.
+
 ## [7.2.3] (2023-11-23)
 
 #### :exclamation: Breaking Change
@@ -401,6 +450,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.4]: https://github.com/axelor/axelor-open-suite/compare/v7.2.3...v7.2.4
 [7.2.3]: https://github.com/axelor/axelor-open-suite/compare/v7.2.2...v7.2.3
 [7.2.2]: https://github.com/axelor/axelor-open-suite/compare/v7.2.1...v7.2.2
 [7.2.1]: https://github.com/axelor/axelor-open-suite/compare/v7.2.0...v7.2.1

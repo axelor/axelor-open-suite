@@ -190,13 +190,6 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-hr').fetchOne()?.id"/>
   </action-view>
 
-  <action-view name="action.mobile.settings.tracebacks.view" title="Mobile tracebacks"
-    model="com.axelor.apps.base.db.TraceBack">
-    <view type="grid" name="trace-back-grid"/>
-    <view type="form" name="trace-back-form"/>
-    <domain>self.origin = 'mobile app'</domain>
-  </action-view>
-
   <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard">
     <view type="grid" name="mobile-dashboard-grid"/>

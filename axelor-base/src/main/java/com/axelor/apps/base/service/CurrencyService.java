@@ -20,7 +20,7 @@ public interface CurrencyService {
       throws AxelorException;
 
   BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
-      BigDecimal amount, BigDecimal exchangeRate);
+      BigDecimal amount, BigDecimal exchangeRate, Currency endCurrency);
 
   LocalDate getDateToConvert(LocalDate date);
 
