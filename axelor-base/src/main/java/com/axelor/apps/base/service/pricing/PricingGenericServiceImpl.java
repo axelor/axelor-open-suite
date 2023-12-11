@@ -6,9 +6,11 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
+import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.web.ITranslation;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -35,6 +37,23 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
+  public <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
+      throws AxelorException {
+    Model model = JPA.find((Class<T>) modelClass, modelId);
+    Beans.get(PricingGenericService.class).usePricings(company, model);
+  }
+
+  @Override
+  public <T extends Model> void usePricings(
+      Company company, Class<?> modelClass, List<Integer> idList) throws AxelorException {
+    for (Number id : idList) {
+      usePricings(company, modelClass, id.longValue());
+
+      JPA.clear();
+    }
+  }
+
+  @Override
   public void usePricings(Company company, Model model) throws AxelorException {
     computePricingsOnModel(company, model);
 
@@ -42,7 +61,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void computePricingsOnModel(Company company, Model model) throws AxelorException {
     List<Pricing> pricingList = getPricings(company, model);
 

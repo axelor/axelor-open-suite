@@ -30,8 +30,6 @@ import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.base.service.pricing.PricingGroupService;
 import com.axelor.apps.base.service.pricing.PricingService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
-import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -102,7 +100,8 @@ public class PricingController {
       Long recordId = Long.valueOf(context.get("id").toString());
       Company company = (Company) request.getContext().get("company");
       if (modelName != null && recordId != null) {
-        usePricings(company, Class.forName(modelName), recordId);
+        Beans.get(PricingGenericService.class)
+            .usePricings(company, Class.forName(modelName), recordId);
         response.setReload(true);
       }
     } catch (Exception e) {
@@ -124,26 +123,12 @@ public class PricingController {
       Company company = (Company) request.getContext().get("company");
 
       if (modelName != null) {
-        usePricings(company, Class.forName(modelName), idList);
+        Beans.get(PricingGenericService.class)
+            .usePricings(company, Class.forName(modelName), idList);
         response.setReload(true);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  protected <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
-      throws AxelorException {
-    Model model = JPA.find((Class<T>) modelClass, modelId);
-    Beans.get(PricingGenericService.class).usePricings(company, model);
-  }
-
-  protected <T extends Model> void usePricings(
-      Company company, Class<?> modelClass, List<Integer> idList) throws AxelorException {
-    for (Number id : idList) {
-      usePricings(company, modelClass, id.longValue());
-
-      JPA.clear();
     }
   }
 }
