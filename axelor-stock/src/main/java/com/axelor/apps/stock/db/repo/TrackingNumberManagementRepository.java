@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
+import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
@@ -30,6 +33,7 @@ import com.axelor.studio.db.AppStock;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
+import javax.persistence.PersistenceException;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 
@@ -40,6 +44,8 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   @Inject private AppStockService appStockService;
 
   @Inject private BarcodeGeneratorService barcodeGeneratorService;
+
+  @Inject protected ProductCompanyService productCompanyService;
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   @Override
@@ -90,12 +96,29 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
        *        we take the barcode type config from App Stock as default
        */
       BarcodeTypeConfig barcodeTypeConfig;
+      TrackingNumberConfiguration trackingNumberConfiguration;
+
+      if (trackingNumber.getProduct() != null) {
+        try {
+          trackingNumberConfiguration =
+              (TrackingNumberConfiguration)
+                  productCompanyService.get(
+                      trackingNumber.getProduct(), "trackingNumberConfiguration", null);
+
+        } catch (AxelorException e) {
+          TraceBackService.traceExceptionFromSaveMethod(e);
+          throw new PersistenceException(e.getMessage(), e);
+        }
+      } else {
+        trackingNumberConfiguration = null;
+      }
+
       if (appStock.getEditTrackingNumberBarcodeType()
           && trackingNumber.getProduct() != null
-          && trackingNumber.getProduct().getTrackingNumberConfiguration() != null) {
-        TrackingNumberConfiguration trackingNumberConfiguration =
-            trackingNumber.getProduct().getTrackingNumberConfiguration();
+          && trackingNumberConfiguration != null) {
+
         barcodeTypeConfig = trackingNumberConfiguration.getBarcodeTypeConfig();
+
       } else {
         barcodeTypeConfig = appStock.getTrackingNumberBarcodeTypeConfig();
       }

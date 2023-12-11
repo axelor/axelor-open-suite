@@ -254,7 +254,9 @@ public final class StockExceptionMessage {
   public static final String DECLARATION_OF_EXCHANGES_ECONOMIC_AREA_MISSING_IN_APP_STOCK = /*$$(*/
       "Please set an economic are in AppStock." /*)*/;
 
-  public static final String TRACK_NUMBER_WIZARD_TITLE = /*$$(*/ "Enter tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_1 = /*$$(*/
+      "Create new tracking numbers" /*)*/;
+  public static final String TRACK_NUMBER_WIZARD_TITLE_2 = /*$$(*/ "Select tracking numbers" /*)*/;
   public static final String TRACK_NUMBER_WIZARD_NO_RECORD_ADDED_ERROR = /*$$(*/
       "No Tracking Numbers Added" /*)*/;
 
