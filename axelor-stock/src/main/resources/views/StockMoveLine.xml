@@ -62,10 +62,9 @@
       onSelect="action-stock-move-line-attrs-tracking-number-domain"
       form-view="tracking-number-stock-move-line-form" grid-view="tracking-number-grid"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2"/>
-    <field name="product.trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
-    <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
-      hidden="true"/>
-    <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isPurchaseTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
+    <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
     <field name="stockMove.typeSelect" hidden="true"/>
     <field name="conformitySelect" readonlyIf="lineTypeSelect == 1"/>
     <field name="availableStatus" width="150" readonlyIf="lineTypeSelect == 1">
@@ -84,10 +83,9 @@
       if="__config__.app.isApp('supplychain')"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" icon="fa-barcode"
       onClick="save,action-stock-move-line-method-open-wizard"
-      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 || (!$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isSaleTrackingManaged')) || !($get('product.trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr') &amp;&amp; $get('stockMove.typeSelect') == 2)"/>
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isSaleTrackingManaged')) || !($get('$trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr') &amp;&amp; $get('stockMove.typeSelect') == 2)"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
-    <field name="product.trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr"
-      hidden="true"/>
+    <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
@@ -121,8 +119,8 @@
 							{($availableQty >= realQty) && product && <Badge bg="success">{_t('Available')}</Badge>}
 							{($availableQtyForProduct >= realQty) && product && <Badge bg="info">{_t('Av. for product')}</Badge>}
 							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && <Badge bg="danger">{_t('Missing')}</Badge>}
-							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && !product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQty - realQty}</Badge>}
-							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQtyForProduct - realQty}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && !$trackingNumberConfiguration && <Badge bg="danger">{$availableQty - realQty}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && $trackingNumberConfiguration && <Badge bg="danger">{$availableQtyForProduct - realQty}</Badge>}
 						</Box>
 					</>
 				]]></viewer>
@@ -174,7 +172,7 @@
         type="decimal" title="Available qty" readonly="true" hidden="true"/>
       <field name="$availableQtyForProduct" type="decimal" title="Available qty for product"
         readonly="true" hidden="true"/>
-      <field name="product.trackingNumberConfiguration" hidden="true"/>
+      <field name="$trackingNumberConfiguration" hidden="true"/>
       <field name="oldQty"/>
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
         readonly="true"/>
@@ -426,8 +424,8 @@
 							{($availableQty >= realQty) && product && <Badge bg="success">{_t('Available')}</Badge>}
 							{($availableQtyForProduct >= realQty) && product && <Badge bg="info">{_t('Av. for product')}</Badge>}
 							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && <Badge bg="danger">{_t('Missing')}</Badge>}
-							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && !product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQty - realQty}</Badge>}
-							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && product?.trackingNumberConfiguration && <Badge bg="danger">{$availableQtyForProduct - realQty}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && !$trackingNumberConfiguration && <Badge bg="danger">{$availableQty - realQty}</Badge>}
+							{($availableQty < realQty) && ($availableQtyForProduct < realQty) && product && $trackingNumberConfiguration && <Badge bg="danger">{$availableQtyForProduct - realQty}</Badge>}
 						</Box>
 					</>
 				]]></viewer>
@@ -444,7 +442,7 @@
                 ]]>
         </viewer>
       </field>
-      <field name="product.trackingNumberConfiguration" hidden="true"/>
+      <field name="$trackingNumberConfiguration" hidden="true"/>
       <field name="unitPriceUntaxed" onChange="action-stock-move-line-record-price-onchange"
         readonly="true"/>
       <field name="unitPriceTaxed" hidden="true"/>
@@ -478,31 +476,42 @@
     </panel-mail>
   </form>
 
-  <form model="com.axelor.utils.db.Wizard" title="Enter tracking numbers"
-    name="stock-move-line-track-number-wizard-form"
+  <form model="com.axelor.utils.db.Wizard" title="Create new tracking numbers"
+    name="stock-move-line-create-tracking-number-wizard-form"
     onNew="action-track-number-atts-from-stock-move-line">
     <panel name="wizardPanel" colSpan="12">
       <panel-related name="$trackingNumbersPanel" field="$trackingNumbers"
-        canSelect="false" editable="true" type="one-to-many" colSpan="12"
-        title="Enter tracking numbers" target="com.axelor.apps.stock.db.TrackingNumber">
-        <field name="trackingNumber" type="many-to-one"
-          target="com.axelor.apps.stock.db.TrackingNumber" hidden="true"
-          onChange="action-stock-move-line-wizard-record-set-tracking-number-seq"
-          onSelect="action-stock-move-line-wizard-attrs-tracking-number-domain" canEdit="false"/>
-        <field name="trackingNumberSeq" title="Tracking Nbr."
-          onChange="action-stock-move-line-wizard-record-set-dates,action-track-number-atts-readonly-dates"/>
+        title="Create new tracking numbers" canSelect="false" editable="true" type="one-to-many"
+        colSpan="12" target="com.axelor.apps.stock.db.TrackingNumber">
+        <field name="trackingNumberSeq" title="Tracking Nbr."/>
         <field name="serialNbr" title="Serial Nbr"/>
-        <field name="$availableQty" title="Available qty" type="decimal" width="120"
-          readonly="true"/>
-        <field name="counter" title="Quantity"
-          readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
-        <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="false"/>
-        <field name="perishableExpirationDate" title="Perishable expiration date"
-          readonly="false"/>
+        <field name="counter" title="Quantity"/>
         <field name="origin" title="Origin"/>
         <field name="note" title="Note" colSpan="12"/>
       </panel-related>
-      <button name="availableTranckingNumberBtn" title="Display available tracking numbers"
+      <button name="validateBtn" title="Validate"
+        onClick="action-stock-move-line-method-update-lines"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Select tracking numbers"
+    name="stock-move-line-select-tracking-number-wizard-form"
+    onNew="action-track-number-atts-from-stock-move-line">
+    <panel name="wizardPanel" colSpan="12">
+      <panel-related name="$trackingNumbersPanel" field="$trackingNumbers"
+        canNew="false" canSelect="false" editable="true" type="one-to-many" colSpan="12"
+        title="Select tracking numbers" target="com.axelor.apps.stock.db.TrackingNumber">
+        <field name="trackingNumberSeq" title="Tracking Nbr." readonly="true"/>
+        <field name="serialNbr" title="Serial Nbr" readonly="true"/>
+        <field name="$availableQty" title="Available qty" type="decimal" width="120"
+          readonly="true"/>
+        <field name="counter" title="Selected quantity"
+          readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"/>
+        <field name="warrantyExpirationDate" title="Warranty expiration date" readonly="true"/>
+        <field name="origin" title="Origin" readonly="true"/>
+        <field name="note" title="Note" colSpan="12" readonly="true"/>
+      </panel-related>
+      <button name="availableTrackingNumberBtn" title="Display available tracking numbers"
         onClick="action-stock-move-line-method-display-available-tracking-number"/>
       <button name="validateBtn" title="Validate"
         onClick="action-stock-move-line-method-update-lines"/>
@@ -523,51 +532,9 @@
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="emptyLine"/>
   </action-method>
 
-  <action-attrs name="action-stock-move-line-wizard-attrs-tracking-number-domain">
-    <attribute name="domain"
-      expr="eval:
-                &quot;
-                self.product.id = ${__parent__._stockMoveLine.product.id} AND
-                (self in
-                    (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                    join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation
-                    WHERE sl.id = ${__parent__.fromStockLocation.id}) OR
-                self not in
-                        (select stockLocationLine.trackingNumber from StockLocationLine stockLocationLine
-                        join StockLocation sl on sl.id = stockLocationLine.detailsStockLocation))
-                &quot;"
-      for="trackingNumber"/>
-  </action-attrs>
-
   <action-attrs name="action-track-number-atts-from-stock-move-line">
     <attribute name="hidden" for="$trackingNumbers.serialNbr"
       expr="eval: _isSeqUsedForSerialNumber"/>
-    <attribute name="hidden" for="$trackingNumbers.warrantyExpirationDate"
-      expr="eval: !_hasWarranty"/>
-    <attribute name="hidden" for="$trackingNumbers.perishableExpirationDate"
-      expr="eval: !_isPerishable"/>
-    <attribute name="readonly" for="trackingNumberSeq"
-      expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)"/>
-    <attribute name="hidden"
-      expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect != 1 &amp;&amp; __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect != 2) &amp;&amp; __repo__(StockLocation).find(_stockMove?.toStockLocation?.id).typeSelect != 3"
-      for="$trackingNumbers.trackingNumber"/>
-    <attribute name="readonly" for="warrantyExpirationDate"
-      expr="eval: _hasWarranty &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)"/>
-    <attribute name="readonly" for="perishableExpirationDate"
-      expr="eval: _isPerishable &amp;&amp; (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 1 || __repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 2)"/>
-    <attribute name="hidden" for="availableTranckingNumberBtn"
-      expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 3)"/>
-    <attribute name="hidden" for="$trackingNumbers.$availableQty"
-      expr="eval: (__repo__(StockLocation).find(_stockMove?.fromStockLocation?.id).typeSelect == 3)"/>
-  </action-attrs>
-
-  <action-attrs name="action-track-number-atts-readonly-dates">
-    <attribute name="readonly" for="warrantyExpirationDate"
-      expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
-      if="__parent__ != null &amp;&amp; __parent__._hasWarranty"/>
-    <attribute name="readonly" for="perishableExpirationDate"
-      expr="__repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0"
-      if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-attrs-change-conformity">
@@ -666,35 +633,12 @@
 
   <action-attrs name="action-stock-move-line-tracking-number-attrs">
     <attribute for="trackingNumber" name="readonly"
-      expr="eval: product?.trackingNumberConfiguration?.generatePurchaseAutoTrackingNbr || product?.trackingNumberConfiguration?.generateProductionAutoTrackingNbr || product?.trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
+      expr="eval: $trackingNumberConfiguration?.generatePurchaseAutoTrackingNbr || $trackingNumberConfiguration?.generateProductionAutoTrackingNbr || $trackingNumberConfiguration?.generateSaleAutoTrackingNbr"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-line-qty-attrs">
     <attribute name="readonly" for="qty" expr="eval: __parent__?.statusSelect == 2"/>
   </action-attrs>
-
-  <action-record name="action-stock-move-line-wizard-record-set-tracking-number-seq"
-    model="com.axelor.apps.stock.db.TrackingNumber">
-    <field name="trackingNumberSeq" expr="eval: trackingNumber?.trackingNumberSeq"/>
-    <field name="warrantyExpirationDate"
-      expr="eval:  __repo__(TrackingNumber).find(trackingNumber?.id).warrantyExpirationDate"
-      if="__parent__ != null &amp;&amp; __parent__._hasWarranty"/>
-    <field name="perishableExpirationDate"
-      expr="eval: __repo__(TrackingNumber).find(trackingNumber?.id).perishableExpirationDate"
-      if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
-  </action-record>
-
-  <action-record name="action-stock-move-line-wizard-record-set-dates"
-    model="com.axelor.apps.stock.db.TrackingNumber">
-    <field name="warrantyExpirationDate"
-      expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ?
-	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.warrantyExpirationDate : null"
-      if="__parent__ != null &amp;&amp; __parent__._hasWarranty"/>
-    <field name="perishableExpirationDate"
-      expr="eval: __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__._stockMoveLine.product.id, trackingNumberSeq).count() &gt; 0 ?
-	            __repo__(TrackingNumber).all().filter('self.product.id = ?1 and self.trackingNumberSeq = ?2', __parent__?._stockMoveLine?.product?.id, trackingNumberSeq).fetchOne()?.perishableExpirationDate : null"
-      if="__parent__ != null &amp;&amp; __parent__._isPerishable"/>
-  </action-record>
 
   <action-record name="action-stock-move-line-record-new"
     model="com.axelor.apps.stock.db.StockMoveLine">

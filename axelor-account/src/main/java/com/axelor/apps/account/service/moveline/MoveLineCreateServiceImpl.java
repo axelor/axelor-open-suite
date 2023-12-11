@@ -176,7 +176,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            amountInSpecificMoveCurrency, currencyRate);
+            amountInSpecificMoveCurrency, currencyRate, companyCurrency);
 
     return this.createMoveLine(
         move,
