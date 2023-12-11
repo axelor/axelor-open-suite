@@ -64,6 +64,8 @@
         <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"/>
       </panel>
       <panel name="viewerTagsPanel">
+        <field name="currency.symbol" hidden="true"/>
+        <field name="sessionTotalAmountFormula" x-currency="currency.symbol" hidden="true"/>
         <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer>
             <![CDATA[<>{(sessionTotalAmountFormula < 0) && <Badge bg="info">{_t('Session total amount is negative')}</Badge>}</>]]>
@@ -72,7 +74,7 @@
         <button name="sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol" x-field="sessionTotalAmountFormula"/>
+          x-field="sessionTotalAmountFormula"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"

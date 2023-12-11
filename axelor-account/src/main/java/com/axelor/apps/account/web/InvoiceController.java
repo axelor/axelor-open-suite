@@ -34,7 +34,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -74,6 +76,7 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -333,14 +336,14 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
       if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+          || Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
 
-      List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
       response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
@@ -1206,7 +1209,7 @@ public class InvoiceController {
       Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
 
       if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
         response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       }
 
@@ -1280,5 +1283,24 @@ public class InvoiceController {
     Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void setInvoiceLinesScale(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(InvoiceLineGroupService.class)
+          .setInvoiceLineScale(invoice, attrsMap, "invoiceLineList.");
+      Beans.get(InvoiceLineTaxGroupService.class)
+          .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList.");
+
+      response.setAttrs(attrsMap);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

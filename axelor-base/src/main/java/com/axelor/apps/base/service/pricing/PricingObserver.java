@@ -61,6 +61,8 @@ public interface PricingObserver {
   /** Update the observer that the computation finished */
   void computationFinished();
 
+  void fillPricingScaleLogs(String pricingScaleLogs);
+
   /**
    * Update the observer the MetaJsonfield to populate
    *

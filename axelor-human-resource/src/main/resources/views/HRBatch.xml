@@ -116,6 +116,12 @@
           onClick="save, action-hrbatch-method-hr-batch"/>
       </panel>
 
+      <panel name="incrementLeavePanel" title="Increment leave" showIf="actionSelect == 8">
+        <field name="leaveReasonTypeSelect"/>
+        <button name="incrementLeaveBtn" title="Increment leave"
+          onClick="save,action-hrbatch-method-hr-batch"/>
+      </panel>
+
       <panel name="informationsPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"

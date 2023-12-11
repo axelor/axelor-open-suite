@@ -20,10 +20,10 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
@@ -33,16 +33,30 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Optional;
 
 public class ImportInventoryLine {
 
-  @Inject private InventoryLineRepository inventoryLineRepo;
+  protected InventoryLineRepository inventoryLineRepo;
+  protected InventoryLineService inventoryLineService;
+  protected TrackingNumberService trackingNumberService;
+  protected AppBaseService appBaseService;
 
-  @Inject private InventoryLineService inventoryLineService;
+  protected ProductCompanyService productCompanyService;
 
-  @Inject private TrackingNumberService trackingNumberService;
-
-  @Inject private AppBaseService appBaseService;
+  @Inject
+  public ImportInventoryLine(
+      InventoryLineRepository inventoryLineRepo,
+      InventoryLineService inventoryLineService,
+      TrackingNumberService trackingNumberService,
+      AppBaseService appBaseService,
+      ProductCompanyService productCompanyService) {
+    this.inventoryLineRepo = inventoryLineRepo;
+    this.inventoryLineService = inventoryLineService;
+    this.trackingNumberService = trackingNumberService;
+    this.appBaseService = appBaseService;
+    this.productCompanyService = productCompanyService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   public Object importInventoryLine(Object bean, Map<String, Object> values)
@@ -52,8 +66,12 @@ public class ImportInventoryLine {
 
     InventoryLine inventoryLine = (InventoryLine) bean;
 
+    Company company =
+        Optional.ofNullable(inventoryLine.getInventory()).map(Inventory::getCompany).orElse(null);
     TrackingNumberConfiguration trackingNumberConfig =
-        inventoryLine.getProduct().getTrackingNumberConfiguration();
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                inventoryLine.getProduct(), "trackingNumberConfiguration", company);
 
     BigDecimal qtyByTracking = BigDecimal.ONE;
 
@@ -76,8 +94,6 @@ public class ImportInventoryLine {
       InventoryLine inventoryLineNew;
 
       Inventory inventory = inventoryLine.getInventory();
-      StockLocation stockLocation = inventory.getStockLocation();
-      Company company = stockLocation.getCompany();
 
       for (int i = 0; i < inventoryLine.getRealQty().intValue(); i += qtyByTracking.intValue()) {
 

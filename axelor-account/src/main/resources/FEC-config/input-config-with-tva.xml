@@ -13,8 +13,6 @@
     <bind column="Credit" eval="Credit ? Credit.replace(',', '.') : 0" to="credit"/>
     <bind column="PieceRef" to="origin"/>
     <bind column="EcritureLib" to="description"/>
-    <bind column="Montantdevise" eval="Montantdevise ? Montantdevise.replace(',', '.') : 0"
-      to="currencyAmount"/>
     <bind column="EcritureLet" search="self.code = :EcritureLet" if="EcritureLet"
       to="reconcileGroup">
       <bind column="EcritureLet" to="code"/>
@@ -24,7 +22,6 @@
     <bind column="taxCode"
       search="self.tax.code = :taxCode and self.startDate &lt;= to_date(:EcritureDate, 'yyyyMMdd') and (self.endDate is null or self.endDate &gt;= to_date(:EcritureDate, 'yyyyMMdd'))"
       to="taxLine" update="true"/>
-    <bind to="currencyCode" column="Idevise"/>
   </input>
 
 

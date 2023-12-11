@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -423,7 +424,7 @@ public class InvoiceTermController {
 
       MoveLine moveLine = invoiceTerm.getMoveLine();
       if (moveLine != null && moveLine.getFinancialDiscount() != null) {
-        Beans.get(InvoiceTermService.class)
+        Beans.get(InvoiceTermFinancialDiscountService.class)
             .computeFinancialDiscount(
                 invoiceTerm,
                 moveLine.getCredit().max(moveLine.getDebit()),
@@ -498,7 +499,7 @@ public class InvoiceTermController {
   }
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getInvoice() != null) {
+    if (invoiceTerm.getInvoice() == null) {
       invoiceTerm.setInvoice(
           ContextHelper.getContextParent(request.getContext(), Invoice.class, 1));
     }

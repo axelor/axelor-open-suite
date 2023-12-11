@@ -33,10 +33,14 @@ import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
@@ -97,6 +101,57 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   }
 
   @Override
+  public GlobalBudget getGlobalBudgetUsingBudget(Budget budget) {
+
+    if (budget == null) {
+      return null;
+    }
+
+    if (budget.getGlobalBudget() != null) {
+      return budget.getGlobalBudget();
+    }
+    if (budget.getBudgetLevel() != null) {
+      return getGlobalBudgetUsingBudgetLevel(budget.getBudgetLevel());
+    }
+
+    return null;
+  }
+
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
+    if (budgetLevel == null) {
+      return null;
+    }
+
+    if (budgetLevel.getGlobalBudget() != null) {
+      return budgetLevel.getGlobalBudget();
+    }
+
+    return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
+  }
+
+  @Override
+  public String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError) {
+    if (Strings.isNullOrEmpty(budgetExceedAlert)) {
+      return "";
+    }
+    if (isOrder && isError) {
+      return budgetExceedAlert;
+    }
+    return String.format(
+        "%s %s",
+        I18n.get(budgetExceedAlert), I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ERROR_ALERT));
+  }
+
+  @Override
+  public boolean canAutoComputeBudgetDistribution(Company company, List<? extends Model> list)
+      throws AxelorException {
+    return !CollectionUtils.isEmpty(list)
+        && company != null
+        && checkBudgetKeyAndRole(company, AuthUtils.getUser())
+        && checkBudgetKeyInConfig(company);
+  }
+
   public List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException {
     if (company == null) {
       return new ArrayList<>();
@@ -114,6 +169,12 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   }
 
   @Override
+  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException {
+    return (company != null
+        && accountConfigService.getAccountConfig(company) != null
+        && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
+  }
+
   public BigDecimal getAvailableAmountOnBudget(Budget budget, LocalDate date) {
     if (budget == null) {
       return BigDecimal.ZERO;
@@ -175,12 +236,5 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
           ? BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE
           : null;
     }
-  }
-
-  protected GlobalBudget getGlobalBudgetUsingBudget(Budget budget) {
-    return Optional.ofNullable(budget.getBudgetLevel())
-        .map(BudgetLevel::getParentBudgetLevel)
-        .map(BudgetLevel::getGlobalBudget)
-        .orElse(null);
   }
 }

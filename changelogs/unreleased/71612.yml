@@ -1,0 +1,7 @@
+---
+title: "Synchronize languages selection and languages object"
+type: feature
+description: |
+  Where is a Language object in AOS, when a Language obj is modified, 
+  like adding a new language, alter a language code or remove a language option, 
+  then the modification should be also made in select.language.

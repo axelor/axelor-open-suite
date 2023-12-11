@@ -98,15 +98,6 @@ public interface BudgetService {
   public BigDecimal computeFirmGap(Budget budget);
 
   /**
-   * Check if budget key are enabled in account config of company
-   *
-   * @param company
-   * @return boolean
-   * @throws AxelorException
-   */
-  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException;
-
-  /**
    * Check if budget key are filled in all budgets if needed, validate budget and save it Throw an
    * exception if budget key is missing
    *

@@ -25,7 +25,7 @@ import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.db.repo.EbicsUserRepository;
 import com.axelor.apps.bankpayment.ebics.service.EbicsPartnerService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.bankstatement.BankStatementService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
@@ -52,7 +52,7 @@ public class BatchBankStatement extends AbstractBatch {
 
   @Inject protected EbicsPartnerService ebicsPartnerService;
 
-  @Inject protected BankStatementService bankStatementService;
+  @Inject protected BankStatementImportService bankStatementService;
 
   @Override
   protected void process() {

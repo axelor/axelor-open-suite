@@ -75,6 +75,7 @@
         </panel>
 
         <field name="comments" widget="html"/>
+        <field name="automaticBudgetComputation" widget="boolean-switch"/>
       </panel>
       <panel name="globalBudgetLevelButtonPanel" colSpan="3" stacked="true">
         <button name="draftBtn" title="draftBtn"
@@ -92,10 +93,6 @@
           <button name="showGlobalOrderLineBtn" hidden="true"
             onClick="action-global-budget-group-view-global-order-line" colSpan="12"
             title="Global budget committed lines"
-            showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
-          <button name="seeBudgetDistributionLines" hidden="true" colSpan="12"
-            onClick="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-            title="Display distribution lines"
             showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
           <button name="seeRealizedWithNoPo"
             onClick="action-budget-line-distribution-view-show-global-budget-distribution-lines-realized-without-po"
@@ -238,17 +235,6 @@
       self.moveLine.move.statusSelect in (2,3) AND
       self.moveLine.move.invoice IS NULL)]]>
     </domain>
-    <context name="_globalBudgetId" expr="eval: id"/>
-  </action-view>
-
-  <action-view
-    name="action-budget-distribution-view-show-budget-global-budget-distibution-lines"
-    title="Distribution lines" model="com.axelor.apps.budget.db.BudgetDistribution">
-    <view type="grid" name="budget-distribution-line-grid"/>
-    <view type="form" name="budget-distribution-line-form"/>
-    <view-param name="show-toolbar" value="true"/>
-    <view-param name="show-confirm" value="true"/>
-    <domain><![CDATA[self.budget.budgetLevel.parentBudgetLevel.globalBudget.id= :_globalBudgetId]]></domain>
     <context name="_globalBudgetId" expr="eval: id"/>
   </action-view>
 

@@ -23,7 +23,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.User;
+import com.axelor.db.Model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -41,7 +44,25 @@ public interface BudgetToolsService {
 
   boolean checkBudgetKeyAndRoleForMove(Move move) throws AxelorException;
 
+  GlobalBudget getGlobalBudgetUsingBudget(Budget budget);
+
+  GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel);
+
+  String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError);
+
+  boolean canAutoComputeBudgetDistribution(Company company, List<? extends Model> list)
+      throws AxelorException;
+
   List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException;
+
+  /**
+   * Check if budget key are enabled in account config of company
+   *
+   * @param company
+   * @return boolean
+   * @throws AxelorException
+   */
+  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException;
 
   BigDecimal getAvailableAmountOnBudget(Budget budget, LocalDate date);
 

@@ -71,4 +71,12 @@ public interface BudgetDistributionService {
       BudgetDistribution budgetDistribution, LocalDate computeDate);
 
   String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect);
+
+  void autoComputeBudgetDistribution(
+      List<AnalyticMoveLine> analyticMoveLineList,
+      Account account,
+      Company company,
+      LocalDate date,
+      BigDecimal amount,
+      AuditableModel object);
 }

@@ -22,11 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -129,15 +131,19 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
 
   protected AppSaleService appSaleService;
   protected AppBaseService appBaseService;
+  protected AppStockService appStockService;
 
   @Inject
   public SaleOrderMergingServiceSupplyChainImpl(
       SaleOrderCreateService saleOrdreCreateService,
+      SaleOrderRepository saleOrderRepository,
       AppSaleService appSaleService,
-      AppBaseService appBaseService) {
-    super(saleOrdreCreateService);
+      AppBaseService appBaseService,
+      AppStockService appStockService) {
+    super(saleOrdreCreateService, saleOrderRepository);
     this.appSaleService = appSaleService;
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -192,7 +198,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
           || (commonFields.getCommonIncoterm() != saleOrder.getIncoterm()
               && !commonFields.getCommonIncoterm().equals(saleOrder.getIncoterm()))) {
         commonFields.setCommonIncoterm(null);
-        checks.setExistIncotermDiff(true);
+        checks.setExistIncotermDiff(appStockService.getAppStock().getIsIncotermEnabled());
       }
       if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         if ((commonFields.getCommonInvoicedPartner() == null

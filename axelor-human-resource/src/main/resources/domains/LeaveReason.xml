@@ -20,6 +20,15 @@
     <boolean name="selectedByMgtOnly" title="Can only be selected by HR Management"/>
 
     <integer name="unitSelect" title="Unit" selection="hr.leave.reason.unit.select"/>
+    <integer name="leaveReasonTypeSelect" title="Leave type"
+      selection="hr.leave.reason.type.select" default="1"/>
+    <boolean name="isActive" title="Active"/>
+    <boolean name="isDaysAddedProrated" title="Prorate with employee hire date"
+      help="The hire date of the employee will be taken into account when computing days to add"/>
+
+    <many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning"
+      title="Plannings"/>
+    <boolean name="useWeeklyPlanningCoef" title="Use weekly plannning coef."/>
 
     <extra-code>
    		<![CDATA[

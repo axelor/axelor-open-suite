@@ -51,10 +51,51 @@
       title="Enable line verification on inventories" default="false"/>
 
     <boolean name="isMultiCurrencyEnabled" title="Activate multi currency" default="false"/>
-    <boolean name="isProjectInvoicingEnabled" title="Activate invoicing on projects"
+    <boolean name="isExpenseProjectInvoicingEnabled" title="Activate invoicing on projects"
       default="false"/>
     <boolean name="isKilometricExpenseLineAllowed" title="Allow kilometric expenses"
       default="false"/>
+    <boolean name="isManualCreationOfExpenseAllowed"
+      title="Allow manual creation of expense" default="false"/>
+    <boolean name="isLineCreationOfExpenseDetailsAllowed"
+      title="Allow line creation of expense details" default="false"/>
+    <boolean name="isManualCreationOfTimesheetAllowed"
+      title="Allow manual creation of timesheet" default="false"/>
+    <boolean name="isLineCreationOfTimesheetDetailsAllowed"
+      title="Allow line creation of timesheet details" default="false"/>
+    <boolean name="isEditionOfDateAllowed" title="Allow edition of date" default="false"/>
+    <boolean name="isTimesheetProjectInvoicingEnabled" title="Enable project invoicing"
+      default="false"/>
+
+    <many-to-many name="inventoryValidationRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="stockCorrectionValidationRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
+    <many-to-many name="verifyCustomerDeliveryLineRoleSet"
+      ref="com.axelor.auth.db.Role" title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="verifySupplierArrivalLineRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="verifyInternalMoveLineRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="verifyInventoryLineRoleSet" ref="com.axelor.auth.db.Role"
+      title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
+    <many-to-many name="customerDeliveryLineAdditionRoleSet"
+      ref="com.axelor.auth.db.Role" title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+    <many-to-many name="supplierArrivalLineAdditionRoleSet"
+      ref="com.axelor.auth.db.Role" title="Authorized roles"
+      help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
+    <one-to-many name="mobileDashboardList" title="Mobile dashboard list"
+      ref="com.axelor.apps.mobilesettings.db.MobileDashboard" mappedBy="appMobileSettings"/>
 
     <track>
       <field name="isStockAppEnabled" on="UPDATE"/>
@@ -76,8 +117,14 @@
       <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
       <field name="isMultiCurrencyEnabled" on="UPDATE"/>
-      <field name="isProjectInvoicingEnabled" on="UPDATE"/>
+      <field name="isExpenseProjectInvoicingEnabled" on="UPDATE"/>
       <field name="isKilometricExpenseLineAllowed" on="UPDATE"/>
+      <field name="isManualCreationOfExpenseAllowed" on="UPDATE"/>
+      <field name="isLineCreationOfExpenseDetailsAllowed" on="UPDATE"/>
+      <field name="isManualCreationOfTimesheetAllowed" on="UPDATE"/>
+      <field name="isLineCreationOfTimesheetDetailsAllowed" on="UPDATE"/>
+      <field name="isEditionOfDateAllowed" on="UPDATE"/>
+      <field name="isTimesheetProjectInvoicingEnabled" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

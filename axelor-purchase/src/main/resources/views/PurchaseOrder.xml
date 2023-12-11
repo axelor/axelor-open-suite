@@ -11,7 +11,8 @@
           action="action-purchase-order-method-show-purchase-order"/>
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="mergeQuotationsItem" title="Merge quotations" action="purchase.order.merge"/>
+        <item name="mergeQuotationsItem" title="Merge quotations"
+          action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -104,7 +105,7 @@
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <button name="confirmBtn" title="Confirm"
-        onClick="action-group-purchase-order-merge-action" colSpan="12" width="200px"/>
+        onClick="action-purchase-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
     </panel>
   </form>
 
@@ -191,7 +192,8 @@
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 2"
           onSelect="action-purchase-order-attrs-compute-tax-number-domain"
-          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"/>
+          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"
+          if="__config__.app.getApp('base')?.getEnableTaxNumbers()"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 2"
           onSelect="action-purchase-order-attrs-fiscal-position-domain"
@@ -334,33 +336,18 @@
         <viewer depends="exTaxTotal,taxTotal,amountInvoiced,advanceTotal">
                     <![CDATA[
 	                  <>
-	                     <dl>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     		<dd>{$fmt('exTaxTotal')}</dd>
-	                     	</Box>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     		<Box as="dt" fontWeight="normal">{_t('Total tax')}</Box>
-	                     		<dd>{$fmt('taxTotal')}</dd>
-	                     	</Box>
-	                     	<Box borderTop borderColor="inherit" borderWidth={1} mb={2}/>
-	                     	<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end" fontWeight="bold" fontSize={6}>
-	                     		<Box as="dt" textAlign="end">{_t('Total A.T.I.')}</Box>
-	                     		<dd>{$fmt('inTaxTotal')}</dd>
-	                     	</Box>
-	                     	{statusSelect >= 3 &&
-	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     			<Box as="dt" fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>
-	                     			<dd>{$fmt('amountInvoiced')}</dd>
-	                     		</Box>
-	                     	}
-	                     	{statusSelect >= 2 &&
-	                     		<Box d="grid" gridTemplateColumns="50% 50%" textAlign="end">
-	                     			<Box as="dt" fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>
-	                     			<dd>{$fmt('advanceTotal')}</dd>
-	                     		</Box>
-	                     	}
-	                     </dl>
+	                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                          <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+		                      <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+		                      <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+		                      <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+		                      <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+		                      <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+		                      {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
+		                      {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+		                      {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
+		                      {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
+	                      </Box>
 	                  </>
                     ]]>
         </viewer>
@@ -427,7 +414,8 @@
           action="action-purchase-order-method-show-purchase-order"/>
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="mergeQuotationsItem" title="Merge quotations" action="purchase.order.merge"/>
+        <item name="mergeQuotationsItem" title="Merge quotations"
+          action="action-purchase-order-view-open-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -607,9 +595,7 @@
   </action-group>
 
   <action-group name="action-group-purchase-order-merge-action">
-    <action name="action-purchase-order-method-merge-purchase"
-      if="__repo__(MetaModule).all().filter('self.name = ?','axelor-supplychain').fetchOne()?.installed == false"/>
-    <action name="action-purchase-order-method-merge-supplychain"/>
+    <action name="action-purchase-order-method-merge-purchase"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-partner-onchange">
@@ -728,6 +714,8 @@
     <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
+    <field name="outsourcingOrder" expr="eval: supplierPartner?.isSubcontractor"
+      if="__config__.app.isApp('production')"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-set-group-product-on-printing"
@@ -830,8 +818,8 @@
     <context name="status" expr="eval: _status"/>
   </action-view>
 
-  <action-view name="purchase.order.merge" title="Merge purchase orders"
-    model="com.axelor.utils.db.Wizard">
+  <action-view name="action-purchase-order-view-open-merge-form"
+    title="Merge purchase orders" model="com.axelor.utils.db.Wizard">
     <view type="form" name="purchase-order-merge-form"/>
   </action-view>
 
@@ -866,8 +854,13 @@
   </action-validate>
 
   <action-method name="action-purchase-order-method-merge-purchase">
-    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
       method="mergePurchaseOrder"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-merge-from-pop-up">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
+      method="mergePurchaseOrderFromPopUp"/>
   </action-method>
 
   <action-method name="action-purchase-order-method-fill-price-list">
@@ -877,12 +870,6 @@
   <action-method name="action-purchase-order-method-price-list-domain">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
       method="changePriceListDomain"/>
-  </action-method>
-
-  <action-method name="action-purchase-order-method-merge-supplychain"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="mergePurchaseOrder" if="__config__.app.isApp('supplychain')"/>
   </action-method>
 
   <action-method
@@ -1028,9 +1015,11 @@
   </action-attrs>
 
   <action-attrs name="action-purchase-order-attrs-fiscal-position-domain">
-    <attribute name="domain" for="fiscalPosition" if="taxNumber"
+    <attribute name="domain" for="fiscalPosition"
+      if="taxNumber &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"
       expr="eval: &quot;:taxNumber MEMBER OF self.taxNumberSet&quot;"/>
-    <attribute name="domain" for="fiscalPosition" if="!taxNumber"
+    <attribute name="domain" for="fiscalPosition"
+      if="!taxNumber &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"
       expr="eval: &quot;'${supplierPartner?.fiscalPosition?.code}' = self.code&quot;"/>
   </action-attrs>
 

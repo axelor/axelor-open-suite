@@ -98,47 +98,54 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     Long stockMoveId = (Long) json.get("id");
     StockMove stockMove = find(stockMoveId);
 
-    if (stockMove.getStatusSelect() > STATUS_PLANNED || stockMove.getStockMoveLineList() == null) {
-      return super.populate(json, context);
-    }
-
-    int available = 0, availableForProduct = 0, missing = 0;
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-
-      if (stockMoveLine != null
-              && stockMoveLine.getProduct() != null
-              && stockMoveLine.getProduct().getProductTypeSelect() != null
-              && stockMoveLine
-                  .getProduct()
-                  .getProductTypeSelect()
-                  .equals(ProductRepository.PRODUCT_TYPE_SERVICE)
-          || (stockMoveLine.getFromStockLocation() != null
-              && stockMoveLine.getFromStockLocation().getTypeSelect()
-                  == StockLocationRepository.TYPE_VIRTUAL)) {
-        continue;
+    try {
+      if (stockMove.getStatusSelect() > STATUS_PLANNED
+          || stockMove.getStockMoveLineList() == null) {
+        return super.populate(json, context);
       }
-      Beans.get(StockMoveLineService.class)
-          .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
-      Product product = stockMoveLine.getProduct();
-      if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
-          || product != null && !product.getStockManaged()) {
-        available++;
-      } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
-          >= 0) {
-        availableForProduct++;
-      } else if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) < 0
-          && stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty()) < 0) {
-        missing++;
+
+      int available = 0, availableForProduct = 0, missing = 0;
+      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+
+        if (stockMoveLine != null
+                && stockMoveLine.getProduct() != null
+                && stockMoveLine.getProduct().getProductTypeSelect() != null
+                && stockMoveLine
+                    .getProduct()
+                    .getProductTypeSelect()
+                    .equals(ProductRepository.PRODUCT_TYPE_SERVICE)
+            || (stockMoveLine.getFromStockLocation() != null
+                && stockMoveLine.getFromStockLocation().getTypeSelect()
+                    == StockLocationRepository.TYPE_VIRTUAL)) {
+          continue;
+        }
+        Beans.get(StockMoveLineService.class)
+            .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
+        Product product = stockMoveLine.getProduct();
+        if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
+            || product != null && !product.getStockManaged()) {
+          available++;
+        } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
+            >= 0) {
+          availableForProduct++;
+        } else if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) < 0
+            && stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
+                < 0) {
+          missing++;
+        }
       }
+
+      if ((available > 0 || availableForProduct > 0) && missing == 0) {
+        json.put("availableStatusSelect", StockMoveRepository.STATUS_AVAILABLE);
+      } else if ((available > 0 || availableForProduct > 0) && missing > 0) {
+        json.put("availableStatusSelect", StockMoveRepository.STATUS_PARTIALLY_AVAILABLE);
+      } else if (available == 0 && availableForProduct == 0 && missing > 0) {
+        json.put("availableStatusSelect", StockMoveRepository.STATUS_UNAVAILABLE);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
 
-    if ((available > 0 || availableForProduct > 0) && missing == 0) {
-      json.put("availableStatusSelect", StockMoveRepository.STATUS_AVAILABLE);
-    } else if ((available > 0 || availableForProduct > 0) && missing > 0) {
-      json.put("availableStatusSelect", StockMoveRepository.STATUS_PARTIALLY_AVAILABLE);
-    } else if (available == 0 && availableForProduct == 0 && missing > 0) {
-      json.put("availableStatusSelect", StockMoveRepository.STATUS_UNAVAILABLE);
-    }
     return super.populate(json, context);
   }
 }

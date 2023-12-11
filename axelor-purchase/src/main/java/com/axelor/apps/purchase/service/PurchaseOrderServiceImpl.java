@@ -250,7 +250,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     purchaseOrder.setPrintingSettings(
         Beans.get(TradingNameService.class).getDefaultPrintingSettings(null, company));
 
-    purchaseOrder.setPurchaseOrderSeq(this.getSequence(company));
+    this.setDraftSequence(purchaseOrder);
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
@@ -260,10 +260,14 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   }
 
   @Override
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, PurchaseOrder purchaseOrder) throws AxelorException {
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.PURCHASE_ORDER, company, PurchaseOrder.class, "purchaseOrderSeq");
+            SequenceRepository.PURCHASE_ORDER,
+            company,
+            PurchaseOrder.class,
+            "purchaseOrderSeq",
+            purchaseOrder);
     if (seq == null) {
       throw new AxelorException(
           company,
@@ -345,7 +349,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     }
     if (purchaseOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(purchaseOrder.getPurchaseOrderSeq())) {
-      purchaseOrder.setPurchaseOrderSeq(this.getSequence(purchaseOrder.getCompany()));
+      purchaseOrder.setPurchaseOrderSeq(
+          this.getSequence(purchaseOrder.getCompany(), purchaseOrder));
     }
     purchaseOrderRepo.save(purchaseOrder);
     if (appPurchaseService.getAppPurchase().getManagePurchaseOrderVersion()) {
