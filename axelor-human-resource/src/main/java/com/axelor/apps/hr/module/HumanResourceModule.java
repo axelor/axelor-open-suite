@@ -143,6 +143,8 @@ import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
 import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherExportService;
@@ -261,5 +263,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseCheckResponseService.class).to(ExpenseCheckResponseServiceImpl.class);
     bind(IncrementLeaveService.class).to(IncrementLeaveServiceImpl.class);
     bind(LeaveValueProrataService.class).to(LeaveValueProrataServiceImpl.class);
+    bind(LeaveReasonService.class).to(LeaveReasonServiceImpl.class);
   }
 }

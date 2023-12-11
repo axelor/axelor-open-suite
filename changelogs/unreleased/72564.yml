@@ -1,0 +1,3 @@
+---
+title: "Analytic Move Line : Fix type select when we create a new analytic move line from orders, invoices, contract and moves"
+type: fix

@@ -1,0 +1,4 @@
+---
+title: "Pricing: new generic function to call pricings on every object"
+type: feature
+description: "action-group-use-pricings for form views and action-method-use-pricings-list for grid views"
