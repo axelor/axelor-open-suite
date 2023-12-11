@@ -21,6 +21,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressExport;
+import com.axelor.apps.base.db.AddressTemplateLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -39,6 +40,7 @@ import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -366,5 +368,18 @@ public class AddressController {
     Address address = request.getContext().asType(Address.class);
     Beans.get(AddressService.class).autocompleteAddress(address);
     response.setValues(address);
+  }
+
+
+  public void getAddressMetaField(ActionRequest request, ActionResponse response) {
+    Address address = request.getContext().asType(Address.class);
+
+    List<AddressTemplateLine> addressTemplateLineList = address.getCountry().getAddressTemplate().getAddressTemplateLineList();
+
+    for(AddressTemplateLine addressTemplateLine: addressTemplateLineList){
+      MetaField metaField = addressTemplateLine.getMetaField();
+//      response.setAttr(metaField.getName(), m/etaField.get);
+    }
+
   }
 }

@@ -21,41 +21,41 @@
       <field name="country" onChange="action-address-record-clear-fields" required="true"
         canEdit="false" form-view="country-form" grid-view="country-grid" colSpan="12"/>
       <panel name="countryHiddrenPanel" hideIf="country == null">
-        <field name="room" x-bind="{{room|uppercase}}"
-          placeholder="e.g. Financial department, CEO"/>
-        <field name="floor" x-bind="{{floor|uppercase}}"
-          placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-        <field name="streetNumber" x-bind="{{streetNumber|uppercase}}"
-          onChange="action-address-record-change-addressL4"
-          if="__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field name="street" onSelect="action-address-attrs-update-domain-street"
-          onChange="action-address-record-change-addressL4" form-view="street-form"
-          grid-view="street-grid" canNew="true"
-          if="__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field name="streetName" x-bind="{{streetName|uppercase}}"
-          if="!__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field name="postBox" x-bind="{{postBox|uppercase}}" placeholder="e.g. POB 254"/>
-        <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false"
-          canNew="true" onChange="action-address-change-city" form-view="city-form"
-          grid-view="city-grid"/>
-        <field name="zip" onChange="action-address-method-autocomplete-address"/>
-        <button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()"
-          readonlyIf="!id">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
-            onClick="action-base-address-method-view-map"/>
-          <button name="directionsBtn" title="Get direction" icon="near_me"
-            onClick="action-base-address-method-view-direction"/>
-        </button-group>
-        <spacer name="btnGrpSpacer" colSpan="6"/>
-        <button-group name="map2BtnGroup" colSpan="6" showIf="$popup()"
-          readonlyIf="!id">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
-            onClick="action-base-address-method-view-map,close"/>
-          <button name="directionsBtn" title="Get direction" icon="near_me"
-            onClick="action-base-address-method-view-direction,close"/>
-        </button-group>
-        <field name="isUsed" hidden="true" type="boolean"/>
-        <field name="isValidLatLong" hidden="true"/>
+<!--        <field name="room" x-bind="{{room|uppercase}}"-->
+<!--          placeholder="e.g. Financial department, CEO" showIf="country.addressTemplate"/>-->
+<!--        <field name="floor" x-bind="{{floor|uppercase}}"-->
+<!--          placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>-->
+<!--        <field name="streetNumber" x-bind="{{streetNumber|uppercase}}"-->
+<!--          onChange="action-address-record-change-addressL4"-->
+<!--          if="__config__.app.getApp('base')?.getStoreStreets()"/>-->
+<!--        <field name="street" onSelect="action-address-attrs-update-domain-street"-->
+<!--          onChange="action-address-record-change-addressL4" form-view="street-form"-->
+<!--          grid-view="street-grid" canNew="true"-->
+<!--          if="__config__.app.getApp('base')?.getStoreStreets()"/>-->
+<!--        <field name="streetName" x-bind="{{streetName|uppercase}}"-->
+<!--          if="!__config__.app.getApp('base')?.getStoreStreets()"/>-->
+<!--        <field name="postBox" x-bind="{{postBox|uppercase}}" placeholder="e.g. POB 254"/>-->
+<!--        <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false"-->
+<!--          canNew="true" onChange="action-address-change-city" form-view="city-form"-->
+<!--          grid-view="city-grid"/>-->
+<!--        <field name="zip" onChange="action-address-method-autocomplete-address"/>-->
+<!--        <button-group name="map1BtnGroup" colSpan="6" hideIf="$popup()"-->
+<!--          readonlyIf="!id">-->
+<!--          <button name="mapBtn" title="View map" icon="fa-map-marker"-->
+<!--            onClick="action-base-address-method-view-map"/>-->
+<!--          <button name="directionsBtn" title="Get direction" icon="near_me"-->
+<!--            onClick="action-base-address-method-view-direction"/>-->
+<!--        </button-group>-->
+<!--        <spacer name="btnGrpSpacer" colSpan="6"/>-->
+<!--        <button-group name="map2BtnGroup" colSpan="6" showIf="$popup()"-->
+<!--          readonlyIf="!id">-->
+<!--          <button name="mapBtn" title="View map" icon="fa-map-marker"-->
+<!--            onClick="action-base-address-method-view-map,close"/>-->
+<!--          <button name="directionsBtn" title="Get direction" icon="near_me"-->
+<!--            onClick="action-base-address-method-view-direction,close"/>-->
+<!--        </button-group>-->
+<!--        <field name="isUsed" hidden="true" type="boolean"/>-->
+<!--        <field name="isValidLatLong" hidden="true"/>-->
       </panel>
       <field name="formattedFullName" readonly="true" height="4" colSpan="12"/>
     </panel>
@@ -147,6 +147,15 @@
     <action name="action-base-address-set-address-used"/>
     <action name="action-base-address-check-address-used"/>
   </action-group>
+
+  <action-group name="action-group-base-address-onnnew">
+    <action name="default-address-record"/>
+    <action name="action-base-address-get-address-fields"/>
+  </action-group>
+
+  <action-method name="action-base-address-get-address-fields">
+    <call class="com.axelor.apps.base.web.AddressController" method="getAddressMetaField"/>
+  </action-method>
 
   <action-record name="default-address-record" model="com.axelor.apps.base.db.Address">
     <field name="country" expr="eval: __user__?.activeCompany?.address?.country"
