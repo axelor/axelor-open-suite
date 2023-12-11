@@ -219,6 +219,8 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveSimulateServiceImpl;
+import com.axelor.apps.account.service.move.MoveTemplateService;
+import com.axelor.apps.account.service.move.MoveTemplateServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveToolServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -718,6 +720,8 @@ public class AccountModule extends AxelorModule {
     bind(TradingNameAnalyticService.class).to(TradingNameAnalyticServiceImpl.class);
 
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
+
+    bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
 
     bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 
