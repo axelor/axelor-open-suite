@@ -138,6 +138,12 @@
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: __user__.activeCompany?.accountConfig?.accountingDaybook"
+      if="__user__.activeCompany != null"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: __repo__(Company).all().fetchOne()?.accountConfig?.accountingDaybook"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-method name="account-journal-method-status-active">
