@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
@@ -48,7 +49,8 @@ import java.util.stream.Collectors;
 
 public class OperationOrderChartServiceImpl implements OperationOrderChartService {
 
-  protected static final int MAX_DAYS = 20;
+  protected static final int MAX_DAYS_CHARGE_PER_MACHINE_HOURS = 20;
+  protected static final int MAX_DAYS_CHARGE_PER_MACHINE_DAYS = 500;
   protected static final String DATE_TIME = "dateTime";
   protected static final String MACHINE = "machine";
   protected static final String COMPANY = "company";
@@ -70,7 +72,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     List<Map<String, Object>> dataList = new ArrayList<>();
 
     LocalDateTime itDateTime = fromDateTime;
-    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS) {
+    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS_CHARGE_PER_MACHINE_HOURS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
@@ -112,7 +114,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     List<Map<String, Object>> dataList = new ArrayList<>();
     LocalDateTime itDateTime = fromDateTime;
 
-    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS) {
+    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS_CHARGE_PER_MACHINE_HOURS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
@@ -229,7 +231,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
   protected BigDecimal calculateMachineChargePercentagePerHour(long numberOfMinutes) {
     return new BigDecimal(numberOfMinutes)
         .multiply(new BigDecimal(100))
-        .divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+        .divide(new BigDecimal(60), AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
   }
 
   protected void adjustChargePerHour(
@@ -238,7 +240,12 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
       Company company = entry.getKey();
       BigDecimal charge = entry.getValue();
       Integer divisor = companyMachineMap.getOrDefault(company, 1);
-      chargeMap.put(company, charge.divide(BigDecimal.valueOf(divisor), 2, RoundingMode.HALF_UP));
+      chargeMap.put(
+          company,
+          charge.divide(
+              BigDecimal.valueOf(divisor),
+              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              RoundingMode.HALF_UP));
     }
   }
 
@@ -249,7 +256,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     fromDateTime = fromDateTime.withHour(0).withMinute(0);
     toDateTime = toDateTime.withHour(23).withMinute(59);
 
-    if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
+    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS_CHARGE_PER_MACHINE_DAYS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
@@ -277,7 +284,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     fromDateTime = fromDateTime.withHour(0).withMinute(0);
     toDateTime = toDateTime.withHour(23).withMinute(59);
 
-    if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
+    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS_CHARGE_PER_MACHINE_DAYS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
@@ -398,7 +405,10 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     BigDecimal percentage =
         new BigDecimal(numberOfMinutes)
             .multiply(new BigDecimal(100))
-            .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
+            .divide(
+                new BigDecimal(numberOfMinutesPerDay),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
 
     map.merge(machine, percentage, BigDecimal::add);
   }
