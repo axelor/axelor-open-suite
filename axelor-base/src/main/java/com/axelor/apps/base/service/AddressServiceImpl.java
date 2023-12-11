@@ -122,11 +122,10 @@ public class AddressServiceImpl implements AddressService {
     List<String> header = new ArrayList<>();
     header.add("Id");
     header.add("AddressL1");
-    header.add("AddressL2");
-    header.add("AddressL3");
-    header.add("AddressL4");
-    header.add("AddressL5");
-    header.add("AddressL6");
+    header.add("Room");
+    header.add("Floor");
+    header.add("Street Name");
+    header.add("Postbox");
     header.add("CodeINSEE");
 
     printer.printRecord(header);
@@ -151,43 +150,43 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Address createAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
       String addressL6,
-      Country addressL7Country) {
+      Country country) {
 
     Address address = new Address();
-    address.setRoom(addressL2);
-    address.setFloor(addressL3);
-    address.setStreetName(addressL4);
-    address.setPostBox(addressL5);
-    address.setCountry(addressL7Country);
+    address.setRoom(room);
+    address.setFloor(floor);
+    address.setStreetName(streetName);
+    address.setPostBox(postBox);
+    address.setCountry(country);
 
     return address;
   }
 
   @Override
   public Address getAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
       String addressL6,
-      Country addressL7Country) {
+      Country country) {
 
     return addressRepo
         .all()
         .filter(
-            "self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 "
-                + "AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.addressL7Country = ?6",
-            addressL2,
-            addressL3,
-            addressL4,
-            addressL5,
+            "self.room = ?1 AND self.floor = ?2 AND self.streetName = ?3 "
+                + "AND self.postBox = ?4 AND self.addressL6 = ?5 AND self.country = ?6",
+            room,
+            floor,
+            streetName,
+            postBox,
             addressL6,
-            addressL7Country)
+            country)
         .fetchOne();
   }
 
@@ -366,7 +365,7 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
-    Query<Address> query = addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds);
+    Query<Address> query = addressRepo.all().filter("self.country.id in ?1", countryIds);
 
     int offset = 0;
     int countExceptions = 0;

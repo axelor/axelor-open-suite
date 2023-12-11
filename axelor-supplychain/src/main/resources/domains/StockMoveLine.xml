@@ -43,12 +43,12 @@
 	        AND self.stockMove.typeSelect = :stockMoveTypeSelect
 	        AND self.stockMove.statusSelect = 3
 	        AND self.stockMove.company = :company
-	        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.fromStockLocation.address.addressL7Country) = :country
-	        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.toStockLocation.address.addressL7Country) = :country)
-	        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.fromStockLocation.address.addressL7Country)
-	        != COALESCE(self.stockMove.toAddress.addressL7Country, self.toStockLocation.address.addressL7Country)
-	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
-	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.toStockLocation.address.addressL7Country.economicArea)
+	        AND (COALESCE(self.stockMove.fromAddress.country, self.fromStockLocation.address.country) = :country
+	        OR COALESCE(self.stockMove.toAddress.country, self.toStockLocation.address.country) = :country)
+	        AND COALESCE(self.stockMove.fromAddress.country, self.fromStockLocation.address.country)
+	        != COALESCE(self.stockMove.toAddress.country, self.toStockLocation.address.country)
+	        AND COALESCE(self.stockMove.fromAddress.country.economicArea, self.stockMove.fromStockLocation.address.country.economicArea)
+	        = COALESCE(self.stockMove.toAddress.country.economicArea, self.toStockLocation.address.country.economicArea)
 	        AND ((self.saleOrderLine IS NULL AND self.purchaseOrderLine IS NULL)
 	          OR (self.saleOrderLine IS NOT NULL AND (self.saleOrderLine.saleOrder.taxNumber IS NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true))
 	          OR (self.purchaseOrderLine IS NOT NULL AND (self.purchaseOrderLine.purchaseOrder.taxNumber IS NULL OR self.purchaseOrderLine.purchaseOrder.taxNumber.includeInDEB = true)))"

@@ -173,11 +173,6 @@
 
   <action-record name="action-address-change-city"
     model="com.axelor.apps.base.db.Address">
-    <field name="addressL6" if="city &amp;&amp; city.zip"
-      expr="eval:city.hasZipOnRight ? city.name+' '+city.zip :city.zip+' '+city.name"/>
-    <field name="addressL6" if="city &amp;&amp; !city.zip" expr="eval: city.name"/>
-    <field name="addressL6" if="!city" expr="eval: null"/>
-    <!-- <field name="country" expr="eval:city.department==null?country:city.department.region!=null?city.department.region.country:country"/> -->
     <field name="country" expr="eval: city?.country" if="city"/>
     <field name="zip" expr="eval: city?.zip"/>
     <field name="street" expr="eval: null"/>
@@ -238,10 +233,9 @@
     model="com.axelor.apps.base.db.Address">
     <field name="city" expr="eval: null"/>
     <field name="zip" expr="eval: null"/>
-    <field name="addressL6" expr="eval: null"/>
     <field name="streetNumber" expr="eval: null"/>
     <field name="street" expr="eval: null"/>
-    <field name="addressL4" expr="eval: null"/>
+    <field name="streetName" expr="eval: null"/>
   </action-record>
 
   <action-method name="action-address-method-autocomplete-address">
@@ -250,16 +244,12 @@
 
   <action-record name="action-address-record-change-addressL4"
     model="com.axelor.apps.base.db.Address">
-    <field name="addressL4" expr="eval: streetNumber + ' ' + street?.name"
+    <field name="streetName" expr="eval: streetNumber + ' ' + street?.name"
       if="streetNumber &amp;&amp; street"/>
-    <field name="addressL4" expr="eval: street?.name" if="!streetNumber &amp;&amp; street"/>
-    <field name="addressL4" expr="eval: null" if="!street"/>
+    <field name="streetName" expr="eval: street?.name" if="!streetNumber &amp;&amp; street"/>
+    <field name="streetName" expr="eval: null" if="!street"/>
     <field name="city" expr="eval: street.city" if="street"/>
     <field name="zip" expr="eval: street.city.zip" if="street"/>
-    <field name="addressL6" if="street &amp;&amp; street.city.zip"
-      expr="eval: street.city.hasZipOnRight ? street.city.name+' '+street.city.zip :street.city.zip+' '+street.city.name"/>
-    <field name="addressL6" if="street &amp;&amp; !street.city.zip"
-      expr="eval: street.city.name"/>
     <field name="country" expr="eval: street.city.country" if="street"/>
   </action-record>
 
@@ -268,7 +258,7 @@
     <field name="streetNumber" hidden="true"
       if="!__config__.app.getApp('base')?.getStoreStreets()"/>
     <field name="street" hidden="true" if="!__config__.app.getApp('base')?.getStoreStreets()"/>
-    <field name="addressL4" hidden="true"
+    <field name="streetName" hidden="true"
       if="__config__.app.getApp('base')?.getStoreStreets()"/>
     <field name="certifiedOk" hidden="true"
       if="!__config__.app.getApp('base')?.getHasQasValidation()"/>

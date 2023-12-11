@@ -41,20 +41,20 @@ public interface AddressService {
   public int export(String path) throws IOException;
 
   public Address createAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
       String addressL6,
-      Country addressL7Country);
+      Country country);
 
   public Address getAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
       String addressL6,
-      Country addressL7Country);
+      Country country);
 
   @CallMethod
   public boolean checkAddressUsed(Long addressId);
