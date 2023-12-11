@@ -29,30 +29,44 @@ public class ContractLineAttrsServiceImpl implements ContractLineAttrsService {
     attrsMap.get(field).put(attr, value);
   }
 
-  protected void addQtyScale(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("qty", "scale", appAccountService.getNbDecimalDigitForQty(), attrsMap);
+  protected String computeField(String field, String prefix) {
+    return String.format("%s%s", prefix, field);
   }
 
-  protected void addPriceScale(Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("price", "scale", appAccountService.getNbDecimalDigitForUnitPrice(), attrsMap);
+  protected void addQtyScale(Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("qty", prefix),
+        "scale",
+        appAccountService.getNbDecimalDigitForQty(),
+        attrsMap);
+  }
+
+  protected void addPriceScale(Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("price", prefix),
+        "scale",
+        appAccountService.getNbDecimalDigitForUnitPrice(),
+        attrsMap);
   }
 
   @Override
-  public Map<String, Map<String, Object>> setScaleAndPrecision(Contract contract) {
+  public Map<String, Map<String, Object>> setScaleAndPrecision(Contract contract, String prefix) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     if (contract != null) {
       int currencyScale = currencyScaleServiceContract.getScale(contract);
 
-      this.addAttr("exTaxTotal", "scale", currencyScale, attrsMap);
-      this.addAttr("inTaxTotal", "scale", currencyScale, attrsMap);
+      this.addAttr(this.computeField("exTaxTotal", prefix), "scale", currencyScale, attrsMap);
+      this.addAttr(this.computeField("inTaxTotal", prefix), "scale", currencyScale, attrsMap);
 
-      this.addAttr("initialPricePerYear", "scale", currencyScale, attrsMap);
-      this.addAttr("yearlyPriceRevalued", "scale", currencyScale, attrsMap);
+      this.addAttr(
+          this.computeField("initialPricePerYear", prefix), "scale", currencyScale, attrsMap);
+      this.addAttr(
+          this.computeField("yearlyPriceRevalued", prefix), "scale", currencyScale, attrsMap);
     }
 
-    this.addQtyScale(attrsMap);
-    this.addPriceScale(attrsMap);
+    this.addQtyScale(attrsMap, prefix);
+    this.addPriceScale(attrsMap, prefix);
 
     return attrsMap;
   }

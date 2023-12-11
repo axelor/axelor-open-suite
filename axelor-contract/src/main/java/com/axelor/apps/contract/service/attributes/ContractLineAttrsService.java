@@ -5,5 +5,5 @@ import java.util.Map;
 
 public interface ContractLineAttrsService {
 
-  Map<String, Map<String, Object>> setScaleAndPrecision(Contract contract);
+  Map<String, Map<String, Object>> setScaleAndPrecision(Contract contract, String prefix);
 }

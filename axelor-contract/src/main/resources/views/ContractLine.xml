@@ -11,11 +11,12 @@
     <field name="qty"/>
     <field name="isConsumptionLine"/>
     <field name="price"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="isToRevaluate"/>
-    <field name="initialPricePerYear" readonly="true"/>
-    <field name="yearlyPriceRevalued" readonly="true"/>
+    <field name="initialPricePerYear" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="yearlyPriceRevalued" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
@@ -24,13 +25,14 @@
     <field name="productName"/>
     <field name="qty"/>
     <field name="price"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="isInvoiced" hidden="true"/>
     <field name="invoiceId" type="string" title="Invoice N°"/>
     <field name="subscriptionFromDate" type="date" title="From"/>
     <field name="subscriptionToDate" type="date" title="To"/>
     <field name="statusSelect" type="string" title="Status"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="contract-line-grid-for-template" title="Contract Lines"

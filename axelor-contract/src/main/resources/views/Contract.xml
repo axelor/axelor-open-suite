@@ -168,7 +168,8 @@
             x-show-icons="false">
             <editor x-viewer="true" x-show-on-new="true" x-show-titles="false">
               <field name="contractLineList" showTitle="false" colSpan="12"
-                form-view="contract-line-form" grid-view="contract-line-grid"/>
+                form-view="contract-line-form" grid-view="contract-line-grid"
+                onChange="action-contract-method-on-change-contract-line-list"/>
             </editor>
           </field>
         </panel>
@@ -176,7 +177,8 @@
           colSpan="12" form-view="consumption-line-form" grid-view="consumption-line-grid"/>
         <field name="additionalBenefitContractLineList" showIf="isAdditionaBenefitManagement"
           readonlyIf="!id" colSpan="12" form-view="additional-contract-line-form"
-          grid-view="additional-contract-line-grid"/>
+          grid-view="additional-contract-line-grid"
+          onChange="action-contract-method-on-change-additional-contract-line-list"/>
         <panel name="currentContractVersionDescriptionPanel" colSpan="12">
           <field name="currentContractVersion" showTitle="false" colSpan="12"
             x-show-icons="false">
@@ -407,6 +409,8 @@
     <action name="action-contract-attrs-readonly-by-config"/>
     <action name="action-contract-readonly-if-unchangable"/>
     <action name="action-contract-method-hide-fields-list"/>
+    <action name="action-contract-method-on-change-contract-line-list"/>
+    <action name="action-contract-method-on-change-additional-contract-line-list"/>
   </action-group>
 
   <action-attrs name="action-contract-attrs-readonly-by-config">
@@ -463,7 +467,8 @@
   </action-method>
 
   <form name="contract-archived-version-form" title="Version"
-    model="com.axelor.apps.contract.db.ContractVersion">
+    model="com.axelor.apps.contract.db.ContractVersion"
+    onLoad="action-contract-method-on-change-contract-line-list">
     <panel title="Information" name="informationsPanel">
       <field name="statusSelect" colSpan="12" readonly="true" widget="NavSelect"
         showTitle="false"/>
@@ -481,7 +486,8 @@
       <field name="metaFile" widget="binary-link"/>
       <field name="contractLineList" showTitle="false" hidden="true"
         showIf="contractHistory.isInvoicingManagement" colSpan="12" form-view="contract-line-form"
-        grid-view="contract-line-grid"/>
+        grid-view="contract-line-grid"
+        onChange="action-contract-method-on-change-contract-line-list"/>
       <field name="contractHistory.isInvoicingManagement" hidden="true"/>
     </panel>
   </form>
@@ -644,5 +650,14 @@
     <field name="isConsumptionManagement" hidden="true"
       if="!__config__.app.getApp('contract')?.isConsumptionManagement"/>
   </search-filters>
+
+  <action-method name="action-contract-method-on-change-contract-line-list">
+    <call class="com.axelor.apps.contract.web.ContractController" method="changeContractLines"/>
+  </action-method>
+
+  <action-method name="action-contract-method-on-change-additional-contract-line-list">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="changeAdditionalContractLines"/>
+  </action-method>
 
 </object-views>

@@ -62,7 +62,8 @@ public class ContractLineController {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
 
     try {
-      contractLine = contractLineService.computeTotal(contractLine);
+      Contract contract = this.getContractFromContext(request);
+      contractLine = contractLineService.computeTotal(contractLine, contract);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
@@ -231,9 +232,12 @@ public class ContractLineController {
 
   public void setScaleAndPrecision(ActionRequest request, ActionResponse response) {
     ContractLine contractLine = request.getContext().asType(ContractLine.class);
-    ContractVersion contractVersion = this.getContractVersionFromContext(request);
-    Contract contract = this.getContractFromContext(request);
 
-    response.setAttrs(Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract));
+    if (contractLine != null) {
+      Contract contract = this.getContractFromContext(request);
+
+      response.setAttrs(
+          Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract, ""));
+    }
   }
 }
