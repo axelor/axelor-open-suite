@@ -35,10 +35,10 @@ public class AddressBaseRepository extends AddressRepository {
 
     entity.setFullName(addressService.computeFullName(entity));
     try {
-      //
       EntityManager em = JPA.em().getEntityManagerFactory().createEntityManager();
       Address oldAddressObject = em.find(Address.class, entity.getId());
-      if (oldAddressObject == null) {
+      if (oldAddressObject == null
+          || !oldAddressObject.getFullName().equals(entity.getFullName())) {
         addressService.updateLatLong(entity);
       }
       addressService.setFormattedFullName(entity);
