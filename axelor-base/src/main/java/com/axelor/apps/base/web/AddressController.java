@@ -370,16 +370,19 @@ public class AddressController {
     response.setValues(address);
   }
 
-
   public void getAddressMetaField(ActionRequest request, ActionResponse response) {
     Address address = request.getContext().asType(Address.class);
 
-    List<AddressTemplateLine> addressTemplateLineList = address.getCountry().getAddressTemplate().getAddressTemplateLineList();
+    if (address.getCountry() != null) {
+      List<AddressTemplateLine> addressTemplateLineList =
+          address.getCountry().getAddressTemplate().getAddressTemplateLineList();
 
-    for(AddressTemplateLine addressTemplateLine: addressTemplateLineList){
-      MetaField metaField = addressTemplateLine.getMetaField();
-//      response.setAttr(metaField.getName(), m/etaField.get);
+      for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
+        MetaField metaField = addressTemplateLine.getMetaField();
+        LOG.info("Meta Field added: {}", metaField.getLabel());
+        response.setAttr(metaField.getName(), "hidden", false);
+        response.setAttr(metaField.getName(), "title", metaField.getLabel());
+      }
     }
-
   }
 }
