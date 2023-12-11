@@ -36,8 +36,7 @@ public class ImportAddress {
     address.setZip(addressService.getZipCode(address));
     try {
       addressService.setFormattedFullName(address);
-    }
-    catch (Exception e){
+    } catch (Exception e) {
       TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
     }
 
