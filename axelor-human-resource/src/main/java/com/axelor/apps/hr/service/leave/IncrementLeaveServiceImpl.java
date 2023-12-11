@@ -202,13 +202,11 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
         }
         break;
       case LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR:
-        if (firstLeaveDayPeriod == 1) {
-          toDate =
-              LocalDate.of(year + 1, firstLeaveMonthPeriod, Month.of(6).length(Year.isLeap(year)));
-        } else {
-          toDate = LocalDate.of(year + 1, firstLeaveMonthPeriod, firstLeaveDayPeriod - 1);
-        }
-
+        toDate =
+            LocalDate.of(
+                year + 1,
+                firstLeaveMonthPeriod - 1,
+                Month.of(firstLeaveMonthPeriod - 1).length(Year.isLeap(year)));
         break;
       default:
         break;
