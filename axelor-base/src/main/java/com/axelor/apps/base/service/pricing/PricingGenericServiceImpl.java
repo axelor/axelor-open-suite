@@ -40,7 +40,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   public <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
       throws AxelorException {
     Model model = JPA.find((Class<T>) modelClass, modelId);
-    Beans.get(PricingGenericService.class).usePricings(company, model);
+    usePricings(company, model);
   }
 
   @Override
@@ -87,7 +87,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
     List<Pricing> pricingList = new ArrayList<>();
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
       pricingList =
-          pricingService.getPricings(company, model, null).stream().collect(Collectors.toList());
+          pricingService.getPricings(company, model, null);
     } else {
       List<Pricing> resultList = pricingService.getAllPricings(company, model);
 
@@ -111,14 +111,13 @@ public class PricingGenericServiceImpl implements PricingGenericService {
 
   @Override
   public void computePricingsOnChildren(Company company, Model model) throws AxelorException {
-    return;
+    //overridden in other modules
   }
 
   @Override
   public String updatePricingScaleLogs(List<StringBuilder> logsList, Model model) {
-    String logs = computePricingLogs(logsList);
-
-    return logs;
+    //overridden in other modules
+    return computePricingLogs(logsList);
   }
 
   protected String computePricingLogs(List<StringBuilder> logsList) {
