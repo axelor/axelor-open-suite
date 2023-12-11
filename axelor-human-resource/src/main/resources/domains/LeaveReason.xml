@@ -8,7 +8,6 @@
   <entity name="LeaveReason" cacheable="true">
 
     <string name="name" namecolumn="true" title="Leave reason" required="true"/>
-    <boolean name="manageAccumulation" title="Manage Accumulation"/>
     <boolean name="allowNegativeValue" title="Allow negative value for leaves"/>
     <boolean name="allowInjection" title="Allow Injection"/>
     <string name="instruction" title="Instruction" multiline="true" large="true"/>
@@ -34,6 +33,9 @@
    		<![CDATA[
    			public static final int UNIT_SELECT_DAYS = 1;
    			public static final int UNIT_SELECT_HOURS = 2;
+
+            public static final int TYPE_SELECT_EVERY_MONTH = 1;
+   			public static final int TYPE_SELECT_EXCEPTIONAL_DAYS = 2;
    		]]>
     </extra-code>
 

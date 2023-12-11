@@ -240,6 +240,7 @@
 
   <selection name="hr.leave.reason.type.select">
     <option value="1">Leave incremented every month</option>
+    <option value="2">Exceptional leave</option>
   </selection>
 
   <selection name="hr.app.leave.use.weekly.planning.coefficient.select">
