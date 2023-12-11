@@ -1542,6 +1542,7 @@ InvoiceSet.length > 0))"
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-record-due-dates"/>
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="save"/>
     <action name="action-invoice-method-manage-pfp-status"
       if="statusSelect == 3 || statusSelect == 2"/>
