@@ -35,7 +35,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -59,7 +59,7 @@ public class PurchaseOrderLineController {
             ? purchaseOrderLine.getBudget().getAccountSet()
             : null;
     if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringTool.getIdListString(accountsSet) + ")");
+      domain = domain.replace("(0)", "(" + StringHelper.getIdListString(accountsSet) + ")");
     }
     response.setAttr("account", "domain", domain);
   }
@@ -96,7 +96,14 @@ public class PurchaseOrderLineController {
 
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      PurchaseOrder purchaseOrder;
+
+      if (PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
+        purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      } else {
+        purchaseOrder = request.getContext().asType(PurchaseOrderLine.class).getPurchaseOrder();
+      }
+
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
         response.setAttr(
             "budgetDistributionPanel",
@@ -119,7 +126,13 @@ public class PurchaseOrderLineController {
   public void setProductAccount(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      PurchaseOrder purchaseOrder;
+
+      if (PurchaseOrder.class.equals(request.getContext().getParent().getContextClass())) {
+        purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+      } else {
+        purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+      }
 
       if (purchaseOrderLine.getProduct() == null) {
         response.setValue("account", null);

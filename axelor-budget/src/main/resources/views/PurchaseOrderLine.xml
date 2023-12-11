@@ -58,19 +58,20 @@
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain" colSpan="12">
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            hidden="false">
-            <viewer depends="companyExTaxTotal,$currencySymbol">
+            hidden="false" x-currency="$currencySymbol">
+            <viewer depends="companyExTaxTotal">
               <![CDATA[
-							<dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+							<dd>{{$fmt('companyExTaxTotal')}}</dd>
 						]]>
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
-            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true">
-            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
+            if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
+            x-currency="$currencySymbol">
+            <viewer depends="budgetDistributionSumAmount">
               <![CDATA[
-							<dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
-						]]>
+				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+              ]]>
             </viewer>
           </field>
           <field name="account"
@@ -208,7 +209,6 @@
   <action-group
     name="action-group-budget-purchase-order-line-budget-distribution-onchange">
     <action name="action-method-purchase-order-line-budget-distribution-validate-amount"/>
-    <action name="action-purchase-order-method-compute-budget-distribution-sum-amount"/>
     <action name="action-budget-purchase-order-line-method-fill-budget-str"/>
   </action-group>
 

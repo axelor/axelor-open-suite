@@ -49,7 +49,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProduction;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,10 +322,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   origin,
                   unitCostCalculation);
 
-          BigDecimal wasteRate =
-              Optional.ofNullable(billOfMaterialLine.getBillOfMaterial())
-                  .map(BillOfMaterial::getWasteRate)
-                  .orElse(null);
+          BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
 
           if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
             costSheetLineService.createConsumedProductWasteCostSheetLine(
@@ -819,7 +815,7 @@ public class CostSheetServiceImpl implements CostSheetService {
 
       BigDecimal plannedDuration =
           new BigDecimal(
-                  DurationTool.getSecondsDuration(
+                  DurationHelper.getSecondsDuration(
                       Duration.between(
                           operationOrder.getPlannedStartDateT(),
                           operationOrder.getPlannedEndDateT())))

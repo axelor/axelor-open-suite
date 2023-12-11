@@ -28,4 +28,6 @@ public interface PricedOrder {
   PriceList getPriceList();
 
   FiscalPosition getFiscalPosition();
+
+  void setSpecificNotes(String specificNotes);
 }

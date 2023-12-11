@@ -26,9 +26,9 @@
           <panel name="googleBtnPanel" colSpan="12">
             <field name="$googleButton" showTitle="false" showIf="id" readonly="true">
               <viewer depends="$url"><![CDATA[
-				              <iframe id="googleSignInButton" title="Google Sign in" width="100" height="70" frameBorder="0"
-				              src="{{record.$url}}">
-				          </iframe>
+				          <>
+				              <Box as="iframe" id="googleSignInButton" title="Google Sign in" width="100" height="70" border="0" src={$url}></Box>
+				          </>
 				           ]]></viewer>
             </field>
           </panel>

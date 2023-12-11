@@ -18,7 +18,8 @@
     <bind to="credit" column="Credit" eval="Credit ? Credit.replace(',', '.') : 0"/>
     <bind to="origin" column="PieceRef"/>
     <bind to="description" column="EcritureLib"/>
-    <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet">
+    <bind to="reconcileGroup" column="EcritureLet" search="self.code = :EcritureLet"
+      if="EcritureLet &amp;&amp; DateLet">
       <bind to="code" column="EcritureLet"/>
       <bind column="DateLet" to="letteringDateTime"
         eval="DateLet ? java.time.LocalDate.parse(DateLet,'yyyyMMdd').atTime(java.time.LocalTime.NOON) : null"/>

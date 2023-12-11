@@ -31,16 +31,18 @@
           colSpan="6" widget="NavSelect"/>
         <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
           <viewer depends="targetTypeSelect,statusSelect,contractId,versionNumber"><![CDATA[
-					<h3 class="text-right">
-                        <span style="margin-right: 10px;"><span x-translate>Contract</span><span ng-show="record.contractId"> - {{ record.contractId }} <span ng-show="record.versionNumber &gt; 0"> - {{ record.versionNumber }}</span></span></span>
+					<>
+						<Box as="h4" d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+							<Box as="span" me={3}><span>{_t('Contract')}</span> {contractId && <span> - {contractId} </span>} {versionNumber > 0 && <span> - {versionNumber}</span>}</Box>
 
-                        <span class="label label-info" x-translate ng-show="record.targetTypeSelect == 1">Customer</span>
-                        <span class="label label-warning" x-translate ng-show="record.targetTypeSelect == 2">Supplier</span>
+							{targetTypeSelect == 1 && <Badge bg="info">{_t('Customer')}</Badge>}
+							{targetTypeSelect == 2 && <Badge bg="warning">{_t('Supplier')}</Badge>}
 
-						<span class="label label-default" x-translate ng-show="record.statusSelect == 1">Draft</span>
-                        <span class="label label-info" x-translate ng-show="record.statusSelect == 2">Active</span>
-                        <span class="label label-important" x-translate ng-show="record.statusSelect == 3">Closed</span>
-					</h3>
+							{statusSelect == 1 && <Badge bg="secondary">{_t('Draft')}</Badge>}
+							{statusSelect == 2 && <Badge bg="info">{_t('Active')}</Badge>}
+							{statusSelect == 3 && <Badge bg="danger">{_t('Closed')}</Badge>}
+						</Box>
+					</>
                     ]]></viewer>
         </field>
         <field name="company" readonlyIf="statusSelect >= 2" canEdit="false" colSpan="4"/>
@@ -141,22 +143,21 @@
             <viewer
               depends="initialExTaxTotalPerYear,yearlyExTaxTotalRevalued,contract.currency.symbol">
               <![CDATA[
-              <div style="text-align: left;">
-              <div style="padding-top: 2%; font-weight: 600" x-translate>Initial ex tax total per year</div>
-              <div style="padding: 2% 0 5% 0; font-size: 22px; font-weight: 600; border-bottom: 1px solid #eee;">{{$fmt('initialExTaxTotalPerYear') | currency: record.contract.currency.symbol}}</div>
-              <div style="padding-top: 4%; font-weight: 600;" x-translate>Yearly ex tax total revalued</div>
-              <div style="padding: 2% 0; font-size: 22px; font-weight: 600;">{{$fmt('yearlyExTaxTotalRevalued') | currency: record.contract.currency.symbol}}</div>
-              </div>
+					<>
+						<Box mt={2} fontWeight="bold">{_t('Initial ex tax total per year')}</Box>
+						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('initialExTaxTotalPerYear')}</Box>
+						<Box borderTop borderColor="inherit" m={1}/>
+						<Box mt={2} fontWeight="bold">{_t('Yearly ex tax total revalued')}</Box>
+						<Box mt={2} fontWeight="bold" fontSize={4}>{contract.currency.symbol}{$fmt('yearlyExTaxTotalRevalued')}</Box>
+					</>
               ]]>
             </viewer>
           </field>
         </panel>
       </panel>
     </panel>
-    <panel-tabs name="mainPanelTab">
+    <panel-tabs name="mainPanelTab" showIf="partner">
       <panel title="Content" name="contentPanel">
-        <label name="saveLabel" title="You need to save your contract for add lines."
-          hidden="true" showIf="isInvoicingManagement &amp;&amp; !id" css="label-bold font-red"/>
         <panel name="contractLineListPanel" hidden="true" showIf="isInvoicingManagement"
           colSpan="12">
           <field name="currentContractVersion" showTitle="false" colSpan="12"

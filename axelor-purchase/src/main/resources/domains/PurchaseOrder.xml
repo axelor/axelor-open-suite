@@ -5,7 +5,7 @@
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrder">
+  <entity name="PurchaseOrder" implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <string name="fullName" namecolumn="true">
   	<![CDATA[

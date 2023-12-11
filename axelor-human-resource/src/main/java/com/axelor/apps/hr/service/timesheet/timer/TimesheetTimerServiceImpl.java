@@ -30,16 +30,19 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +60,9 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   public void stop(TSTimer timer) throws AxelorException {
     timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
     calculateDuration(timer);
-    if (timer.getDuration() > 59) {
+    Long duration = getDuration(timer);
+
+    if (duration > 59) {
       generateTimesheetLine(timer);
     } else {
       throw new AxelorException(
@@ -71,17 +76,18 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   public void calculateDuration(TSTimer timer) {
     long currentDuration = timer.getDuration();
     Duration duration =
-        DurationTool.computeDuration(
+        DurationHelper.computeDuration(
             timer.getTimerStartDateT(),
             Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
-    long secondes = DurationTool.getSecondsDuration(duration) + currentDuration;
+    long secondes = DurationHelper.getSecondsDuration(duration) + currentDuration;
     timer.setDuration(secondes);
   }
 
   @Transactional(rollbackOn = {Exception.class})
   public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException {
+    Long duration = getDuration(timer);
 
-    BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
+    BigDecimal durationHours = this.convertSecondDurationInHours(duration);
     Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
     LocalDate startDateTime =
         (timer.getStartDateTime() == null)
@@ -91,18 +97,40 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
         Beans.get(TimesheetLineService.class)
             .createTimesheetLine(
                 timer.getProject(),
+                timer.getProjectTask(),
                 timer.getProduct(),
                 timer.getEmployee(),
                 startDateTime,
                 timesheet,
                 durationHours,
-                timer.getComments());
+                timer.getComments(),
+                timer);
 
     Beans.get(TimesheetRepository.class).save(timesheet);
     Beans.get(TimesheetLineRepository.class).save(timesheetLine);
     timer.setTimesheetLine(timesheetLine);
+    timer.setName(computeName(timer));
 
     return timesheetLine;
+  }
+
+  protected String computeName(TSTimer timer) {
+    StringBuilder name = new StringBuilder();
+    Project project = timer.getProject();
+    LocalDateTime startDateTime = timer.getStartDateTime();
+
+    if (project != null) {
+      String code = timer.getProject().getCode();
+      if (StringUtils.notEmpty(code)) {
+        name.append(timer.getProject().getCode());
+        name.append(" - ");
+      }
+    }
+
+    name.append(timer.getProduct().getName());
+    name.append(" - ");
+    name.append(startDateTime);
+    return name.toString();
   }
 
   public BigDecimal convertSecondDurationInHours(long durationInSeconds) {
@@ -120,5 +148,10 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
         .all()
         .filter("self.employee.user.id = ?1", AuthUtils.getUser().getId())
         .fetchOne();
+  }
+
+  protected Long getDuration(TSTimer timer) {
+    Long updatedDuration = timer.getUpdatedDuration();
+    return updatedDuration == null || updatedDuration == 0 ? timer.getDuration() : updatedDuration;
   }
 }

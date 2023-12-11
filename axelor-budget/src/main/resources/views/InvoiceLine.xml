@@ -17,19 +17,19 @@
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true" hidden="false">
-            <viewer depends="companyExTaxTotal,$currencySymbol">
+            <viewer depends="companyExTaxTotal">
               <![CDATA[
-                              <dd>{{$fmt('companyExTaxTotal') | currency: record.$currencySymbol}}</dd>
+                              <dd>{{$fmt('companyExTaxTotal')}}</dd>
                           ]]>
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true">
-            <viewer depends="budgetDistributionSumAmount,$currencySymbol">
+            readonly="true" x-scale="$companyCurrencyScale" x-currency="$currencySymbol">
+            <viewer depends="budgetDistributionSumAmount">
               <![CDATA[
-                              <dd>{{$fmt('budgetDistributionSumAmount') | currency: record.$currencySymbol}}</dd>
-                          ]]>
+				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
+              ]]>
             </viewer>
           </field>
           <field name="budget"
@@ -41,6 +41,7 @@
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-group-budget-invoice-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="$companyCurrencyScale" hidden="true"/>
         </panel>
       </insert>
     </extend>

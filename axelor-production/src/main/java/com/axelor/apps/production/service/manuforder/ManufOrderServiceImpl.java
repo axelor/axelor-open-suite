@@ -72,7 +72,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
@@ -437,7 +437,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         productionConfigService.getManufOrderSequence(
             productionConfig, manufOrder.getWorkshopStockLocation());
 
-    String seq = sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq");
+    String seq =
+        sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq", manufOrder);
 
     if (seq == null) {
       throw new AxelorException(
@@ -875,7 +876,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               && stockLocation.getCompany().getId().equals(companyId)) {
             query +=
                 " AND self.fromStockLocation.id IN ("
-                    + StringTool.getIdListString(stockLocationList)
+                    + StringHelper.getIdListString(stockLocationList)
                     + ") ";
           }
         }
@@ -912,7 +913,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         if (!stockLocationList.isEmpty() && stockLocation.getCompany().getId().equals(companyId)) {
           query +=
               " AND self.stockMove.toStockLocation.id IN ("
-                  + StringTool.getIdListString(stockLocationList)
+                  + StringHelper.getIdListString(stockLocationList)
                   + ") ";
         }
       }
@@ -927,7 +928,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     statusList.add(ManufOrderRepository.STATUS_STANDBY);
     String status = appProductionService.getAppProduction().getmOFilterOnStockDetailStatusSelect();
     if (!StringUtils.isBlank(status)) {
-      statusList = StringTool.getIntegerList(status);
+      statusList = StringHelper.getIntegerList(status);
     }
     return statusList;
   }

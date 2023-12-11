@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
@@ -37,9 +38,10 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -105,7 +107,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     switch (budgetControlLevel) {
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-          if (DateTool.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
+          if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
             budgetToCompare = budgetLine.getAvailableAmount();
             budgetName +=
                 ' ' + budgetLine.getFromDate().toString() + ':' + budgetLine.getToDate().toString();
@@ -205,9 +207,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                       budget,
                       amount
                           .multiply(analyticMoveLine.getPercentage())
-                          .divide(new BigDecimal(100))
-                          .setScale(RETURN_SCALE, RoundingMode.HALF_UP),
+                          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
                       date);
+
               linkBudgetDistributionWithParent(budgetDistribution, object);
 
             } else {
@@ -299,5 +301,39 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     return query;
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(
+      List<AnalyticMoveLine> analyticMoveLineList,
+      Account account,
+      Company company,
+      LocalDate date,
+      BigDecimal amount,
+      AuditableModel object) {
+    if (ObjectUtils.isEmpty(analyticMoveLineList)) {
+      return;
+    }
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+      String key = budgetService.computeKey(account, company, analyticMoveLine);
+
+      if (!Strings.isNullOrEmpty(key)) {
+        Budget budget = budgetService.findBudgetWithKey(key, date);
+
+        if (budget != null) {
+          GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
+          if (globalBudget != null && globalBudget.getAutomaticBudgetComputation()) {
+            BudgetDistribution budgetDistribution =
+                createDistributionFromBudget(
+                    budget,
+                    amount
+                        .multiply(analyticMoveLine.getPercentage())
+                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                    date);
+            linkBudgetDistributionWithParent(budgetDistribution, object);
+          }
+        }
+      }
+    }
   }
 }

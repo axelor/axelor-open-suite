@@ -55,7 +55,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
@@ -142,7 +142,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
               .bind("operationTypeSelect", operationTypeSelect)
               .fetchStream()
               .map(ForecastRecapLineType::getStatusSelect)
-              .map(StringTool::getIntegerList)
+              .map(StringHelper::getIntegerList)
               .flatMap(Collection::stream)
               .collect(Collectors.toList());
       if (statusSelectList.isEmpty()) {
@@ -209,12 +209,12 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       throws AxelorException {
 
     List<Integer> statusSelectList =
-        StringTool.getIntegerList(forecastRecapLineType.getStatusSelect());
+        StringHelper.getIntegerList(forecastRecapLineType.getStatusSelect());
     if (statusSelectList.isEmpty()) {
       statusSelectList.add(0);
     }
     List<Integer> functionalOriginList =
-        StringTool.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
+        StringHelper.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
     if (functionalOriginList.isEmpty()) {
       functionalOriginList.add(0);
     }
@@ -786,9 +786,9 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
       boolean manageMultiBanks)
       throws AxelorException {
 
-    List<Integer> statusList = StringTool.getIntegerList(forecastRecapLineType.getStatusSelect());
+    List<Integer> statusList = StringHelper.getIntegerList(forecastRecapLineType.getStatusSelect());
     List<Integer> functionalOriginList =
-        StringTool.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
+        StringHelper.getIntegerList(forecastRecapLineType.getFunctionalOriginSelect());
     if (functionalOriginList.isEmpty()) {
       functionalOriginList.add(0);
     }

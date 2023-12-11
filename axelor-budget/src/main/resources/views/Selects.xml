@@ -83,6 +83,12 @@
     <option value="2">Required</option>
   </selection>
 
+  <selection name="app.budget.check.exceed.order.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
+
   <selection name="budget.scenario.status.select">
     <option value="0">Draft</option>
     <option value="1">Validated</option>

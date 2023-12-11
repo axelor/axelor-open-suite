@@ -12,6 +12,7 @@
       <button name="bankOrderLinesBtn" title="See Bank Order Lines"
         onClick="action-bank-order-method-display-bank-order-lines-bank-to-bank"/>
     </toolbar>
+    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -31,6 +32,7 @@
     <field name="signatoryEbicsUser" if-module="axelor-bank-payment"
       if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
     <field name="statusSelect"/>
+    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -42,6 +44,7 @@
       <button name="bankOrderLinesBtn" title="See Bank Order Lines"
         onClick="action-bank-order-method-display-bank-order-lines"/>
     </toolbar>
+    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -61,6 +64,7 @@
     <field name="signatoryEbicsUser" if-module="axelor-bank-payment"
       if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
     <field name="statusSelect"/>
+    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <grid name="bank-order-awaiting-signature-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -70,6 +74,7 @@
         onClick="action-bank-order-method-merge"
         prompt="Are you sure you want merge the selected bank orders ?"/>
     </toolbar>
+    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -89,6 +94,7 @@
     <field name="senderBankDetails.bank.bankName"/>
     <field name="signatoryEbicsUser"/>
     <field name="statusSelect"/>
+    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -98,6 +104,7 @@
         onClick="action-bank-order-method-merge"
         prompt="Are you sure you want merge the selected bank orders ?"/>
     </toolbar>
+    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -116,6 +123,7 @@
     <field name="signatoryEbicsUser"
       if="eval: __config__.app.getApp('bank-payment').enableEbicsModule"/>
     <field name="statusSelect"/>
+    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <form name="bank-order-form" title="Bank Order"
@@ -130,29 +138,39 @@
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
           <![CDATA[
-            <h4 class="text-right">
-               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
-               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
-               <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
-            </h4>
+            <>
+            	<Box d="flex" justifyContent="flex-end">
+            		<Badge bg="info">{_t(['Entry','Automatic','Import'][technicalOriginSelect])}</Badge>
+            	</Box>
+            </>
           ]]>
         </viewer>
       </field>
       <field name="$functionalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="functionalOriginSelect">
           <![CDATA[
-            <h4 class="text-right">
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 1" x-translate>Manual</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 10" x-translate>bankorder.invoicePayment</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 20" x-translate>Expense</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 30" x-translate>Payment session</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 40" x-translate>LCR</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 50" x-translate>Batch</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 51" x-translate>MonthlyPaymentScheduleLines (batch)</span>
-               <span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.functionalOriginSelect == 52" x-translate>CreditTransferPartnerReimbursement (batch)</span>
-            </h4>
+            <>
+            	<Box d="flex" justifyContent="flex-end">
+            		{functionalOriginSelect == 1 && <Badge bg="danger">{_t('Manual')}</Badge>}
+            		{functionalOriginSelect == 10 && <Badge bg="danger">{_t('bankorder.invoicePayment')}</Badge>}
+            		{functionalOriginSelect == 20 && <Badge bg="danger">{_t('Expense')}</Badge>}
+            		{functionalOriginSelect == 30 && <Badge bg="danger">{_t('Payment session')}</Badge>}
+            		{functionalOriginSelect == 40 && <Badge bg="danger">{_t('LCR')}</Badge>}
+            		{functionalOriginSelect == 50 && <Badge bg="danger">{_t('Batch')}</Badge>}
+            		{functionalOriginSelect == 51 && <Badge bg="danger">{_t('MonthlyPaymentScheduleLines (batch)')}</Badge>}
+            		{functionalOriginSelect == 52 && <Badge bg="danger">{_t('CreditTransferPartnerReimbursement (batch)')}</Badge>}
+            	</Box>
+            </>
           ]]>
         </viewer>
+      </field>
+      <field name="$hasBeenSentToBankTag" showTitle="false" colSpan="2"
+        showIf="hasBeenSentToBank" colOffset="10" readonly="true">
+        <viewer depends="hasBeenSentToBank"><![CDATA[
+          <h4 class="text-right">
+            <span class="label label-success" style="margin: 1px 0 !important; display: inline-table; line-height: initial;" x-translate>Sent to bank</span>
+          </h4>
+        ]]></viewer>
       </field>
     </panel>
     <panel name="mainPanel" colSpan="12">
@@ -200,9 +218,9 @@
           hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
           <viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
 		        	<![CDATA[
-		        		<h4>
-		        			<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.signatoryEbicsUser.ebicsPartner.testMode" x-translate="true">Test mode</span>
-		        		</h4>
+		        		<>
+		        			{signatoryEbicsUser?.ebicsPartner?.testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        		</>
 		        	]]>
           </viewer>
         </field>
@@ -210,9 +228,9 @@
         <field name="$viewerTestMode" showTitle="false" showIf="testMode">
           <viewer depends="testMode">
 		        	<![CDATA[
-		        		<h4>
-		        			<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.testMode" x-translate="true">Test mode</span>
-		        		</h4>
+		        		<>
+		        			{testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        		</>
 		        	]]>
           </viewer>
         </field>
@@ -390,17 +408,25 @@
         onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel name="statusPanel" title="Status" readonlyIf="technicalOriginSelect == 1">
-      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="10"/>
+      <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="8"/>
       <field name="$technicalOriginTags" colSpan="2" showTitle="false" readonlyIf="true">
         <viewer depends="technicalOriginSelect">
                     <![CDATA[
-                      <h4 class="text-right">
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 0" x-translate>Entry</span>
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 1" x-translate>Automatic</span>
-	                      <span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.technicalOriginSelect == 2" x-translate>Import</span>
-                      </h4>
+                      <>
+                          <Box d="flex" justifyContent="flex-end">
+                              <Badge bg="info">{_t(['Entry','Automatic','Import'][technicalOriginSelect])}</Badge>
+                          </Box>
+                      </>
                     ]]>
         </viewer>
+      </field>
+      <field name="patherTags" showTitle="false" readonly="true" showIf="hasBeenSentToBank"
+        colSpan="2">
+        <viewer depends="hasBeenSentToBank"><![CDATA[
+          <>
+              {hasBeenSentToBank && <Badge bg="success">{_t('Sent to bank')}</Badge>}
+          </>
+        ]]></viewer>
       </field>
     </panel>
     <panel name="mainPanel" colSpan="12">
@@ -439,9 +465,9 @@
           hideIf="!signatoryEbicsUser.ebicsPartner.testMode || statusSelect >= 4">
           <viewer depends="signatoryEbicsUser.ebicsPartner.testMode">
 					<![CDATA[
-					<h4>
-						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.signatoryEbicsUser.ebicsPartner.testMode" x-translate="true">Test mode</span>
-					</h4>
+		        	<>
+		        		{signatoryEbicsUser?.ebicsPartner?.testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        	</>
 					]]>
           </viewer>
         </field>
@@ -449,30 +475,22 @@
         <field name="$viewerTestMode" showTitle="false" showIf="testMode">
           <viewer depends="testMode">
 					<![CDATA[
-					<h4>
-						<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.testMode" x-translate="true">Test mode</span>
-					</h4>
+		        	<>
+		        		{testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
+		        	</>
 					]]>
           </viewer>
         </field>
       </panel>
     </panel>
 
-    <panel name="otherTagsPanel" sidebar="true"
-      showIf="hasBeenSentToBank || areMovesGenerated" itemSpan="12" readonly="true">
+    <panel name="otherTagsPanel" sidebar="true" showIf="areMovesGenerated" itemSpan="12"
+      readonly="true">
       <field name="ptherTags" showTitle="false" readonlyIf="true">
         <viewer depends="areMovesGenerated"><![CDATA[
-          <h4 class="text-left">
-            <span class="label label-success" ng-show="record.areMovesGenerated" x-translate>Moves generated</span>
-          </h4>
-        ]]></viewer>
-      </field>
-
-      <field name="patherTags" showTitle="false" readonlyIf="true">
-        <viewer depends="hasBeenSentToBank"><![CDATA[
-          <h4 class="text-left">
-            <span class="label label-success" ng-show="record.hasBeenSentToBank" x-translate>Sent to bank</span>
-          </h4>
+          <>
+              {areMovesGenerated && <Badge bg="success">{_t('Moves generated')}</Badge>}
+          </>
         ]]></viewer>
       </field>
     </panel>

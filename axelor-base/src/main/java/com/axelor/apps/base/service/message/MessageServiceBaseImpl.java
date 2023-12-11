@@ -58,7 +58,6 @@ import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl implements MessageBaseService {
 
@@ -246,7 +245,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendSMS(Message message) throws IOException, JSONException {
+  public Message sendSMS(Message message) throws IOException {
 
     if (appBaseService.getAppBase().getActivateSendingEmail()) {
       return super.sendSMS(message);

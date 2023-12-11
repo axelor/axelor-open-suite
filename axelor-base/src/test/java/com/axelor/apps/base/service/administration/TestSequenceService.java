@@ -85,4 +85,11 @@ class TestSequenceService {
         sequenceService.findNextLetterSequence(input, SequenceLettersTypeSelect.LOWERCASE);
     Assertions.assertEquals(expected, actual);
   }
+
+  @ParameterizedTest
+  @CsvSource({"1,NLL,0AA", "67599,LLNN,ZZ99", "1,LNLN,A0A1", "6526,NLNL,0Z0Z", "496,NLNL,0B9B"})
+  void findNextAlphanumericSequence_df(Long nextNum, String pattern, String expected) {
+    String actual = sequenceService.findNextAlphanumericSequence(nextNum, pattern);
+    Assertions.assertEquals(expected, actual);
+  }
 }

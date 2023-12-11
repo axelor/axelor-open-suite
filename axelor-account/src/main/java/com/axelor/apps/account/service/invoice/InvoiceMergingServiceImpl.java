@@ -35,15 +35,21 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class InvoiceMergingServiceImpl implements InvoiceMergingService {
 
   protected final InvoiceService invoiceService;
 
+  protected final InvoiceRepository invoiceRepository;
+
   @Inject
-  public InvoiceMergingServiceImpl(InvoiceService invoiceService) {
+  public InvoiceMergingServiceImpl(
+      InvoiceService invoiceService, InvoiceRepository invoiceRepository) {
     this.invoiceService = invoiceService;
+    this.invoiceRepository = invoiceRepository;
   }
 
   protected static class CommonFieldsImpl implements CommonFields {
@@ -644,5 +650,16 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
         getCommonFields(result).getCommonPaymentCondition(),
         getCommonFields(result).getCommonTradingName(),
         getCommonFields(result).getCommonFiscalPosition());
+  }
+
+  @Override
+  public List<Invoice> convertSelectedLinesToMergeLines(List<Integer> idList) {
+    return Optional.ofNullable(idList)
+        .map(
+            list ->
+                list.stream()
+                    .map(id -> invoiceRepository.find(Long.valueOf(id)))
+                    .collect(Collectors.toList()))
+        .orElse(List.of());
   }
 }

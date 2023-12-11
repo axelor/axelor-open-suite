@@ -37,28 +37,31 @@
       <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="journalType.isDisplayBalances" hidden="true"/>
       <field name="$isReadOnly" readonly="true" hidden="true"/>
+      <field name="company.currency.symbol" hidden="true"/>
     </panel>
     <panel name="totalPanel" showIf="id &amp;&amp; journalType.isDisplayBalances">
-      <field name="$totalDebit" title="Total Debit" type="decimal" colSpan="4" readonly="true">
+      <field name="$totalDebit" title="Total Debit" type="decimal" colSpan="4" readonly="true"
+        x-currency="company.currency.symbol">
         <viewer>
-					<![CDATA[
-						<h3>{{$fmt('$totalDebit')}}</h3>
-					]]>
+		  <![CDATA[<><h3>{$fmt('$totalDebit')}</h3></>]]>
         </viewer>
       </field>
       <field name="$totalCredit" title="Total Credit" type="decimal" colSpan="4"
-        readonly="true">
+        readonly="true" x-currency="company.currency.symbol">
         <viewer>
-					<![CDATA[
-						<h3>{{$fmt('$totalCredit')}}</h3>
-					]]>
+		  <![CDATA[<><h3>{$fmt('$totalCredit')}</h3></>]]>
         </viewer>
       </field>
-      <field name="$balance" title="Balance" type="decimal" colSpan="4" readonly="true">
-        <viewer>
-					<![CDATA[
-						<h3>{{$fmt('$balance')}}</h3>
-					]]>
+      <field name="$balance" title="Balance" type="decimal" colSpan="4" readonly="true"
+        x-currency="company.currency.symbol">
+        <viewer depends="$totalDebit,$totalCredit">
+		  <![CDATA[
+		      <>
+		          {$totalDebit > $totalCredit && <h3>D : {$fmt('$balance')}</h3>}
+		          {$totalDebit < $totalCredit && <h3>C : {$fmt('$balance')}</h3>}
+		          {$totalDebit == $totalCredit && <h3>{$fmt('$balance')}</h3>}
+		      </>
+		  ]]>
         </viewer>
       </field>
     </panel>
@@ -134,6 +137,12 @@
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>
     <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: __user__.activeCompany?.accountConfig?.accountingDaybook"
+      if="__user__.activeCompany != null"/>
+    <field name="allowAccountingDaybook"
+      expr="eval: __repo__(Company).all().fetchOne()?.accountConfig?.accountingDaybook"
       if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 

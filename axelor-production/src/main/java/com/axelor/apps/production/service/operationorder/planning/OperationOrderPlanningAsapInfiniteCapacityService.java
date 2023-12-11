@@ -21,6 +21,7 @@ package com.axelor.apps.production.service.operationorder.planning;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.OperationOrder;
@@ -28,8 +29,8 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.db.JPA;
-import com.axelor.utils.date.DurationTool;
-import com.axelor.utils.date.LocalDateTimeUtils;
+import com.axelor.utils.helpers.date.DurationHelper;
+import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -47,9 +48,14 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
       OperationOrderService operationOrderService,
       OperationOrderStockMoveService operationOrderStockMoveService,
       OperationOrderRepository operationOrderRepository,
+      AppBaseService appBaseService,
       OperationOrderPlanningInfiniteCapacityService operationOrderPlanningInfiniteCapacityService,
       WeeklyPlanningService weeklyPlanningService) {
-    super(operationOrderService, operationOrderStockMoveService, operationOrderRepository);
+    super(
+        operationOrderService,
+        operationOrderStockMoveService,
+        operationOrderRepository,
+        appBaseService);
     this.operationOrderPlanningInfiniteCapacityService =
         operationOrderPlanningInfiniteCapacityService;
     this.weeklyPlanningService = weeklyPlanningService;
@@ -62,7 +68,7 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
     LocalDateTime plannedStartDate = operationOrder.getPlannedStartDateT();
 
     LocalDateTime lastOperationDate = operationOrderService.getLastOperationDate(operationOrder);
-    LocalDateTime maxDate = LocalDateTimeUtils.max(plannedStartDate, lastOperationDate);
+    LocalDateTime maxDate = LocalDateTimeHelper.max(plannedStartDate, lastOperationDate);
     operationOrder.setPlannedStartDateT(maxDate);
 
     WeeklyPlanning weeklyPlanning = null;
@@ -77,7 +83,7 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
         operationOrderPlanningInfiniteCapacityService.computePlannedEndDateT(operationOrder));
 
     Long plannedDuration =
-        DurationTool.getSecondsDuration(
+        DurationHelper.getSecondsDuration(
             Duration.between(
                 operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT()));
 
@@ -167,7 +173,7 @@ public class OperationOrderPlanningAsapInfiniteCapacityService
           && endDateTime.isAfter(firstPeriodTo)) {
         LocalDateTime plannedEndDate = startDate.toLocalDate().atTime(firstPeriodTo);
         Long plannedDuration =
-            DurationTool.getSecondsDuration(Duration.between(startDate, plannedEndDate));
+            DurationHelper.getSecondsDuration(Duration.between(startDate, plannedEndDate));
         operationOrder.setPlannedDuration(plannedDuration);
         operationOrder.setPlannedEndDateT(plannedEndDate);
         operationOrderRepository.save(operationOrder);

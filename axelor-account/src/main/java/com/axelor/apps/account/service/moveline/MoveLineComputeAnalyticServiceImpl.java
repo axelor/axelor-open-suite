@@ -31,7 +31,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -45,7 +45,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountConfigService accountConfigService;
   protected AnalyticAccountRepository analyticAccountRepository;
-  protected ListToolService listToolService;
+  protected ListHelper listHelper;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
   private final int RETURN_SCALE = 2;
@@ -55,13 +55,13 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticMoveLineService analyticMoveLineService,
       AccountConfigService accountConfigService,
       AnalyticAccountRepository analyticAccountRepository,
-      ListToolService listToolService,
+      ListHelper listHelper,
       AnalyticToolService analyticToolService,
       AppAccountService appAccountService) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
-    this.listToolService = listToolService;
+    this.listHelper = listHelper;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
   }

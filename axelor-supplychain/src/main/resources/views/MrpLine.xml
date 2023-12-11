@@ -67,11 +67,9 @@
     <panel name="mainPanel">
       <field name="$warnDelayFromSupplierLabel" readonly="true" showTitle="false" colSpan="12"
         showIf="warnDelayFromSupplier">
-        <viewer><![CDATA[
-	                    <h4>
-	                        <span class="label label-warning" x-translate>The product will not be delivered in time for its corresponding need.</span>
-	                    </h4>
-					]]></viewer>
+        <viewer>
+          <![CDATA[<><Badge bg="warning">{_t('The product will not be delivered in time for its corresponding need.')}</Badge></>]]>
+        </viewer>
       </field>
       <field name="product" readonly="true" canEdit="false"/>
       <field name="mrpLineType" readonly="true"/>

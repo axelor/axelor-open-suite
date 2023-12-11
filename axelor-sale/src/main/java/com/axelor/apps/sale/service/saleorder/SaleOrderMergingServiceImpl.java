@@ -27,15 +27,18 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.team.db.Team;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
@@ -258,9 +261,13 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
 
   protected SaleOrderCreateService saleOrderCreateService;
 
+  protected SaleOrderRepository saleOrderRepository;
+
   @Inject
-  public SaleOrderMergingServiceImpl(SaleOrderCreateService saleOrderCreateService) {
+  public SaleOrderMergingServiceImpl(
+      SaleOrderCreateService saleOrderCreateService, SaleOrderRepository saleOrderRepository) {
     this.saleOrderCreateService = saleOrderCreateService;
+    this.saleOrderRepository = saleOrderRepository;
   }
 
   @Override
@@ -307,15 +314,14 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   protected void updateResultWithContext(SaleOrderMergingResult result, Context context) {
     if (context.get("priceList") != null) {
       getCommonFields(result)
-          .setCommonPriceList(MapTools.findObject(PriceList.class, context.get("priceList")));
+          .setCommonPriceList(MapHelper.get(context, PriceList.class, "priceList"));
     }
     if (context.get("contactPartner") != null) {
       getCommonFields(result)
-          .setCommonContactPartner(
-              MapTools.findObject(Partner.class, context.get("contactPartner")));
+          .setCommonContactPartner(MapHelper.get(context, Partner.class, "contactPartner"));
     }
     if (context.get("team") != null) {
-      getCommonFields(result).setCommonTeam(MapTools.findObject(Team.class, context.get("team")));
+      getCommonFields(result).setCommonTeam(MapHelper.get(context, Team.class, "team"));
     }
   }
 
@@ -453,5 +459,16 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     commonFields.setCommonTaxNumber(firstSaleOrder.getTaxNumber());
     commonFields.setCommonTeam(firstSaleOrder.getTeam());
     commonFields.setCommonClientPartner(firstSaleOrder.getClientPartner());
+  }
+
+  @Override
+  public List<SaleOrder> convertSelectedLinesToMergeLines(List<Integer> idList) {
+    return Optional.ofNullable(idList)
+        .map(
+            list ->
+                list.stream()
+                    .map(id -> saleOrderRepository.find(Long.valueOf(id)))
+                    .collect(Collectors.toList()))
+        .orElse(List.of());
   }
 }

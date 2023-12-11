@@ -28,16 +28,18 @@
         <field name="$viewerTags" showTitle="false" readonly="true" colSpan="6">
           <viewer
             depends="nextContract.targetTypeSelect,nextContract.statusSelect,nextContract.contractId"><![CDATA[
-			<h3 class="text-right">
-                      <span style="margin-right: 10px;"><span x-translate>Version</span><span ng-show="record.nextContract.contractId"> - {{ record.nextContract.contractId }}</span></span>
+					<>
+						<Box as="h4" d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+							<Box as="span" me={3}><span>{_t('Contract')}</span> {contractId && <span> - {contractId} </span>} {versionNumber > 0 && <span> - {versionNumber}</span>}</Box>
 
-                      <span class="label label-info" x-translate ng-show="record.nextContract.targetTypeSelect == 1">Customer</span>
-                      <span class="label label-warning" x-translate ng-show="record.nextContract.targetTypeSelect == 2">Supplier</span>
+							{targetTypeSelect == 1 && <Badge bg="info">{_t('Customer')}</Badge>}
+							{targetTypeSelect == 2 && <Badge bg="warning">{_t('Supplier')}</Badge>}
 
-											<span class="label label-default" x-translate ng-show="record.nextContract.statusSelect == 1">Draft</span>
-                      <span class="label label-info" x-translate ng-show="record.nextContract.statusSelect == 2">Active</span>
-                      <span class="label label-important" x-translate ng-show="record.nextContract.statusSelect == 3">Closed</span>
-			</h3>
+							{statusSelect == 1 && <Badge bg="secondary">{_t('Draft')}</Badge>}
+							{statusSelect == 2 && <Badge bg="info">{_t('Active')}</Badge>}
+							{statusSelect == 3 && <Badge bg="danger">{_t('Closed')}</Badge>}
+						</Box>
+					</>
                   ]]></viewer>
         </field>
         <field name="nextContract.company" colSpan="4"/>

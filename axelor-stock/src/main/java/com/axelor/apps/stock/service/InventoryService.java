@@ -54,8 +54,8 @@ import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.StringHTMLListBuilder;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -200,7 +200,7 @@ public class InventoryService {
 
     String ref =
         sequenceService.getSequenceNumber(
-            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq");
+            SequenceRepository.INVENTORY, company, Inventory.class, "inventorySeq", company);
     if (ref == null)
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -382,7 +382,7 @@ public class InventoryService {
     List<String[]> data = null;
     char separator = ';';
     try {
-      data = CsvTool.cSVFileReader(filePath.toString(), separator);
+      data = CsvHelper.cSVFileReader(filePath.toString(), separator);
     } catch (Exception e) {
       throw new AxelorException(
           e.getCause(),
@@ -1010,7 +1010,7 @@ public class InventoryService {
       LAST_INVENTORY_DATE,
       STOCK_LOCATION
     };
-    CsvTool.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
+    CsvHelper.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + ".csv");
@@ -1061,7 +1061,7 @@ public class InventoryService {
       }
     }
 
-    StringHTMLListBuilder stringHTMLListInventoryLine = new StringHTMLListBuilder();
+    StringHtmlListBuilder stringHTMLListInventoryLine = new StringHtmlListBuilder();
     inventoryLinesWithMissingStockLocation.stream()
         .limit(INVENTORY_LINE_WITHOUT_STOCK_LOCATION_DISPLAY_LIMIT)
         .forEach(

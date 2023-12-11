@@ -131,9 +131,11 @@
         showTitle="false" onChange="action-opportunity-group-status-onchange" readonlyIf="!id"/>
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
-                 	<h3>
-                    	<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.opportunitySeq}}</span>
-                 	</h3>
+                 	<>
+                 		<h3>
+                 			<span>{opportunitySeq}</span>
+                 		</h3>
+                 	</>
               	]]></viewer>
         <editor>
           <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
@@ -143,11 +145,14 @@
         css="label-bold bold large">
         <viewer depends="name">
                     <![CDATA[
-						<span style="font-size: 22.75px; font-weight:600; margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
+						<>
+							<Box as="span" fontSize={4} fontWeight="bold">{name}</Box>
+						</>
 					]]>
         </viewer>
       </field>
-      <field name="opportunityType" colSpan="4"/>
+      <field name="opportunityType" colSpan="4" widget="SuggestBox" canEdit="false"
+        form-view="opportunity-type-form" grid-view="opportunity-type-grid"/>
       <field name="opportunityRating" widget="ImageSelect" x-labels="false" colSpan="2"/>
       <field name="source" colSpan="4" canEdit="false" form-view="source-form"
         grid-view="source-grid"/>
@@ -229,8 +234,8 @@
         <panel name="lostReasonPanel" colSpan="12" hidden="true" showIf="lostReason">
           <field name="lostReason" readonly="true" showIf="!lostReasonStr"/>
           <field name="lostReasonStr" readonly="true" hidden="true" showIf="lostReasonStr"
-            colSpan="12" css="red">
-            <viewer><![CDATA[{{record.lostReasonStr}}]]></viewer>
+            colSpan="12">
+            <viewer><![CDATA[<><Box color="danger">{lostReasonStr}</Box></>]]></viewer>
           </field>
         </panel>
       </panel>
@@ -271,7 +276,7 @@
     <field name="partner.name"/>
     <field name="partner.fixedPhone"/>
     <field name="partner.mobilePhone"/>
-    <field name="amount"/>
+    <field name="amount" x-currency="currency.symbol"/>
     <field name="currency.symbol"/>
     <field name="opportunityRating"/>
     <hilite color="danger" if="probability &lt;= 25"/>
@@ -280,28 +285,47 @@
     <hilite color="warning" if="probability &lt; 50"/>
     <template>
             <![CDATA[
-            <h4>{{record.opportunitySeq}}</h4>
-            <h4>{{record.name}}</h4>
-            <img ng-if="user" ng-src="{{$image('user', 'image')}}">
-            <div class="card-body">
-                <dl>
-                    <dt ng-show="record.partner.name" x-translate>Customer</dt><dd ng-show="record.partner.name">{{record.partner.name}}</dd>
-                    <dt ng-show="record.amount" x-translate>Amount</dt><dd ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</dd>
-                    <dt ng-show="record.probability" x-translate>Probability</dt><dd ng-show="record.probability">{{record.probability}}</dd>
-                    <dt><i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span></dt>
-                    <dt x-translate>Score</dt> <dd ng-show="!record.opportunityRating"<i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
-                    <dd ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
-                </dl>
-            </div>
-			<div class="card-summary popover">
-			  <p style="margin:2px;">
-              	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
-              </p>
-           </div>
+	         <>
+	         	<h4>{opportunitySeq}</h4>
+	         	<h4>{name}</h4>
+	         	{user && <Image src={$image('user', 'image')}></Image>}
+	         	<Box mt={4}/>
+	         	<dl>
+	         		{partner?.name &&
+	         			<Box>
+	         				<dt>{_t('Customer')}</dt>
+	         				<Box as="dd" ms={2}>{partner.name}</Box>
+	         			</Box>
+	         		}
+	         		{amount &&
+	         			<Box>
+	         				<dt>{_t('Amount')}</dt>
+	         				<Box as="dd" ms={2}>{$fmt('amount')}</Box>
+	         			</Box>
+	         		}
+	         		{probability &&
+	         			<Box>
+	         				<dt>{_t('Probability')}</dt>
+	         				<Box as="dd" ms={2}>{probability}</Box>
+	         			</Box>
+	         		}
+	         		<dt>
+	         			<Icon icon="clock" fontSize="15px"/> {$fmt('expectedCloseDate')}
+	         		</dt>
+	         		<Box>
+	         			<dt>{_t('Score')}</dt>
+	         			<Box as="dd" ms={2}>
+	         				{Array(opportunityRating).fill(<Icon icon="star-fill" color="warning" fontSize="15px"/>)}
+	         				{Array(5-opportunityRating).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
+	         			</Box>
+	         		</Box>
+	         	</dl>
+	        	<Box className="card-summary popover">
+	       			<Box as="p" m={2}>
+	        			{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}
+	        		</Box>
+	        	</Box>
+	         </>
             ]]>
     </template>
   </kanban>
@@ -363,46 +387,51 @@
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="opportunityStatus"/>
-    <field name="amount"/>
+    <field name="amount" x-currency="currency.symbol"/>
+    <field name="currency.symbol"/>
     <field name="probability"/>
     <field name="expectedCloseDate"/>
     <field name="opportunityRating"/>
     <field name="description"/>
-    <field name="opportunityType"/>
+    <field name="opportunityType.code"/>
     <field name="$closedWonId" hidden="true"/>
     <field name="$closedLostId" hidden="true"/>
     <template><![CDATA[
-			<div>
-			  <div class="span12">
-			  	<div class="span4">
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.opportunityStatus.id != record.$closedWonId && record.opportunityStatus.id != record.$closedLostId">{{record.opportunityStatus.name}}</span>
-					<span class="label label-success" ng-show="record.opportunityStatus.id == record.$closedWonId">{{record.opportunityStatus.name}}</span>
-					<span class="label label-important" ng-show="record.opportunityStatus.id == record.$closedLostId">{{record.opportunityStatus.name}}</span>
-				</div>
-				<br/><br/>
-			  	<span>
-			  	    <strong>{{record.opportunitySeq}}</strong><br/>
-					<strong>{{name}}</strong><br/><br/>
-		        </span>
-		        <div>
-	                <strong><span ng-show="record.amount" x-translate>Amount : </span></strong>
-	                <span ng-show="record.amount">{{$fmt('amount') | currency : record.currency.symbol}}</span><br/>
-	                <strong><span ng-show="record.probability" x-translate>Probability(%) : </span></strong>
-	                <span ng-show="record.probability">{{record.probability}}</span><br/>
-	                <span><i class='fa fa-clock-o'></i> <span>{{$fmt('expectedCloseDate')}}</span></span><br/>
-	                <strong><span x-translate>Score : </span></strong>
-	                <span ng-show="!record.opportunityRating"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                    <span ng-show="record.opportunityRating && opportunityRating == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></span>
-	            </div>
-				<br/>
-				 <div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
-				 <div ng-show="!description" ng-bind-html="description"></div>
-		      </div>
-		  <div>
+		<>
+			<Box>
+			  	{opportunityStatus?.id != $closedWonId && opportunityStatus?.id != $closedLostId && <Badge bg="primary">{opportunityStatus.name}</Badge>}
+			    {opportunityStatus?.id == $closedWonId && <Badge bg="success">{opportunityStatus.name}</Badge>}
+			    {opportunityStatus?.id == $closedLostId && <Badge bg="danger">{opportunityStatus.name}</Badge>}
+			    <Box mt={4}>
+				    <strong>{opportunitySeq}</strong> <Box/>
+				    <strong>{name}</strong>
+				</Box>
+			    <Box mt={4}>
+			    	{amount &&
+			    		<Box>
+			    			<strong>{_t('Amount :')}</strong> {$fmt('amount')}
+			    		</Box>
+			    	}
+			    	<Box/>
+			    	{probability &&
+			    		<Box>
+			    			<strong>{_t('Probability(%) :')}</strong> {probability}
+			    		</Box>
+			    	}
+				    <Box>
+				    	<Icon icon="clock" fontSize="15px"/> {$fmt('expectedCloseDate')}
+				    </Box>
+				    <Box>
+				    	<strong>{_t('Score :')} </strong>
+				    	{Array(opportunityRating).fill(<Icon icon="star-fill" color="warning" fontSize="15px"/>)}
+				    	{Array(5-opportunityRating).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
+				    </Box>
+			    </Box>
+		        <Box mt={2}>
+		        	{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100 }}></Box>}
+		        </Box>
+		  	</Box>
+		</>
 	 	]]></template>
   </cards>
 

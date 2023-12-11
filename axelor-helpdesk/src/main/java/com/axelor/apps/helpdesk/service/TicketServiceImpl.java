@@ -31,8 +31,8 @@ import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
-import com.axelor.utils.date.DateTool;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -63,7 +63,7 @@ public class TicketServiceImpl implements TicketService {
     if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
       String ticketSeq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq");
+              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq", ticket);
       ticket.setTicketSeq(ticketSeq);
     }
   }
@@ -254,8 +254,8 @@ public class TicketServiceImpl implements TicketService {
         && ticket.getEndDateT() != null
         && ticket.getEndDateT().isAfter(ticket.getStartDateT())) {
       Duration duration =
-          DurationTool.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
-      return DurationTool.getSecondsDuration(duration);
+          DurationHelper.computeDuration(ticket.getStartDateT(), ticket.getEndDateT());
+      return DurationHelper.getSecondsDuration(duration);
     }
 
     return ticket.getDuration();
@@ -266,7 +266,7 @@ public class TicketServiceImpl implements TicketService {
     if (ticket.getStartDateT() != null
         && ticket.getDuration() != null
         && ticket.getDuration() != 0) {
-      return DateTool.plusSeconds(ticket.getStartDateT(), ticket.getDuration());
+      return LocalDateHelper.plusSeconds(ticket.getStartDateT(), ticket.getDuration());
     }
 
     return ticket.getEndDateT();
@@ -275,7 +275,7 @@ public class TicketServiceImpl implements TicketService {
   @Override
   public LocalDateTime computeStartDate(Ticket ticket) {
     if (ticket.getEndDateT() != null && ticket.getDuration() != null && ticket.getDuration() != 0) {
-      return DateTool.minusSeconds(ticket.getEndDateT(), ticket.getDuration());
+      return LocalDateHelper.minusSeconds(ticket.getEndDateT(), ticket.getDuration());
     }
 
     return ticket.getStartDateT();

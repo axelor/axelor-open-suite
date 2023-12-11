@@ -24,7 +24,6 @@
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <boolean name="personalized" title="Personalized"/>
-    <decimal name="wasteRate" title="Waste rate (%)"/>
     <integer name="statusSelect" title="Status" readonly="true"
       selection="production.bill.of.material.status.select" default="1"/>
     <many-to-one name="workshopStockLocation"
@@ -63,7 +62,6 @@
       <field name="company"/>
       <field name="hasNoManageStock"/>
       <field name="personalized"/>
-      <field name="wasteRate"/>
       <field name="statusSelect"/>
       <field name="workshopStockLocation"/>
       <field name="fullName"/>

@@ -34,7 +34,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -53,7 +53,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountService accountService;
-  protected ListToolService listToolService;
+  protected ListHelper listHelper;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
 
   @Inject
@@ -63,14 +63,14 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AnalyticToolService analyticToolService,
       AnalyticAccountRepository analyticAccountRepository,
       AccountService accountService,
-      ListToolService listToolService,
+      ListHelper listHelper,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountService = accountService;
-    this.listToolService = listToolService;
+    this.listHelper = listHelper;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
   }
 
@@ -148,7 +148,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =
-              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+              listHelper.intersection(analyticAccountListByAxis, analyticAccountListByRules);
         }
       }
     }

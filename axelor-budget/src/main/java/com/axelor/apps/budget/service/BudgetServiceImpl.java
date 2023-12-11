@@ -52,7 +52,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -82,6 +82,7 @@ public class BudgetServiceImpl implements BudgetService {
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AccountRepository accountRepo;
   protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetServiceImpl(
@@ -94,7 +95,8 @@ public class BudgetServiceImpl implements BudgetService {
       AnalyticMoveLineService analyticMoveLineService,
       BudgetDistributionRepository budgetDistributionRepository,
       AccountRepository accountRepo,
-      AnalyticDistributionLineRepository analyticDistributionLineRepo) {
+      AnalyticDistributionLineRepository analyticDistributionLineRepo,
+      BudgetToolsService budgetToolsService) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
     this.budgetLevelRepository = budgetLevelRepository;
@@ -105,6 +107,7 @@ public class BudgetServiceImpl implements BudgetService {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.accountRepo = accountRepo;
     this.analyticDistributionLineRepo = analyticDistributionLineRepo;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -407,13 +410,6 @@ public class BudgetServiceImpl implements BudgetService {
     return total;
   }
 
-  @Override
-  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException {
-    return (company != null
-        && accountConfigService.getAccountConfig(company) != null
-        && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
-  }
-
   @Transactional
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
@@ -590,7 +586,7 @@ public class BudgetServiceImpl implements BudgetService {
                     + "%'")
             .bind("statusSelect", GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID)
             .fetch();
-    if (!CollectionUtils.isEmpty(budgetList)) {
+    if (!CollectionUtils.isEmpty(budgetList) && date != null) {
       for (Budget budget : budgetList) {
         if ((budget.getFromDate().isBefore(date) || budget.getFromDate().isEqual(date))
             && (budget.getToDate().isAfter(date) || budget.getToDate().isEqual(date))) {
@@ -653,6 +649,7 @@ public class BudgetServiceImpl implements BudgetService {
       BudgetDistribution budgetDistribution, Move move, MoveLine moveLine) {
     if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
       LocalDate date = move.getDate();
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
@@ -708,7 +705,7 @@ public class BudgetServiceImpl implements BudgetService {
     if (budget.getGlobalBudget() != null) {
       Company company = budget.getGlobalBudget().getCompany();
 
-      if (this.checkBudgetKeyInConfig(company)) {
+      if (budgetToolsService.checkBudgetKeyInConfig(company)) {
         String errorMessage = this.checkPreconditions(budget, company);
 
         if (!Strings.isNullOrEmpty(errorMessage)) {
@@ -827,9 +824,9 @@ public class BudgetServiceImpl implements BudgetService {
         budgetLineList.remove(budgetLine);
         if (!CollectionUtils.isEmpty(budgetLineList)) {
           for (BudgetLine bl : budgetLineList) {
-            if (DateTool.isBetween(
+            if (LocalDateHelper.isBetween(
                     budgetLine.getFromDate(), budgetLine.getToDate(), bl.getFromDate())
-                || DateTool.isBetween(
+                || LocalDateHelper.isBetween(
                     budgetLine.getFromDate(), budgetLine.getToDate(), bl.getToDate())) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -43,7 +44,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -423,7 +424,7 @@ public class InvoiceTermController {
 
       MoveLine moveLine = invoiceTerm.getMoveLine();
       if (moveLine != null && moveLine.getFinancialDiscount() != null) {
-        Beans.get(InvoiceTermService.class)
+        Beans.get(InvoiceTermFinancialDiscountService.class)
             .computeFinancialDiscount(
                 invoiceTerm,
                 moveLine.getCredit().max(moveLine.getDebit()),
@@ -499,20 +500,21 @@ public class InvoiceTermController {
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getInvoice() == null) {
-      invoiceTerm.setInvoice(ContextTool.getContextParent(request.getContext(), Invoice.class, 1));
+      invoiceTerm.setInvoice(
+          ContextHelper.getContextParent(request.getContext(), Invoice.class, 1));
     }
   }
 
   protected void setMove(ActionRequest request, MoveLine moveLine) {
     if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
-      moveLine.setMove(ContextTool.getContextParent(request.getContext(), Move.class, 2));
+      moveLine.setMove(ContextHelper.getContextParent(request.getContext(), Move.class, 2));
     }
   }
 
   protected void setMoveLine(ActionRequest request, InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getMoveLine() == null) {
       invoiceTerm.setMoveLine(
-          ContextTool.getContextParent(request.getContext(), MoveLine.class, 1));
+          ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1));
     }
   }
 

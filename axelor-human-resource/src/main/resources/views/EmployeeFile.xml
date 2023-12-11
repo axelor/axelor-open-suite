@@ -29,7 +29,9 @@
       <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
         <viewer depends="$inlineUrl">
           <![CDATA[
-              <iframe ng-src="{{record.$inlineUrl}}" frameborder="0" height="900" scrolling="auto"/>
+              <>
+                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
+              </>
             ]]>
         </viewer>
       </field>

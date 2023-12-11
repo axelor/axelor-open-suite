@@ -40,6 +40,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -196,57 +197,22 @@ public abstract class AccountingReportValueAbstractService {
   }
 
   protected List<String> getAccountFilters(
-      Set<AccountType> accountTypeSet,
-      String groupColumnFilter,
-      String columnAccountFilter,
-      String lineAccountFilter,
-      boolean moveLine,
-      boolean areAllAccountSetsEmpty) {
-    List<String> queryList = new ArrayList<>();
+      Set<AccountType> accountTypeSet, String groupColumnFilter, boolean areAllAccountSetsEmpty) {
+    List<String> queryList = Arrays.asList("self.isRegulatoryAccount IS FALSE");
 
     if (!areAllAccountSetsEmpty) {
-      queryList.add(
-          String.format(
-              "(self%1$s IS NULL OR self%1$s IN :accountSet)", moveLine ? ".account" : ""));
+      queryList.add("(self IS NULL OR self IN :accountSet)");
     }
 
     if (!Strings.isNullOrEmpty(groupColumnFilter)) {
-      queryList.add(this.getAccountFilterQueryList(groupColumnFilter, "groupColumn", moveLine));
-    }
-
-    if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.add(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
-    }
-
-    if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.add(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
+      queryList.add(this.getAccountFilterQueryList(groupColumnFilter));
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
-      queryList.add(
-          String.format(
-              "(self%1$s IS NULL OR self%1$s.accountType IN :accountTypeSet)",
-              moveLine ? ".account" : ""));
-    }
-
-    if (!moveLine) {
-      queryList.add("self.isRegulatoryAccount IS FALSE");
+      queryList.add("(self IS NULL OR self.accountType IN :accountTypeSet)");
     }
 
     return queryList;
-  }
-
-  protected boolean areAllAccountSetsEmpty(
-      AccountingReport accountingReport,
-      AccountingReportConfigLine groupColumn,
-      AccountingReportConfigLine column,
-      AccountingReportConfigLine line) {
-    return CollectionUtils.isEmpty(accountingReport.getAccountSet())
-        && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAccountSet()))
-        && CollectionUtils.isEmpty(column.getAccountSet())
-        && CollectionUtils.isEmpty(line.getAccountSet())
-        && (line.getDetailBySelect() != AccountingReportConfigLineRepository.DETAIL_BY_ACCOUNT
-            || !accountingReport.getDisplayDetails());
   }
 
   protected boolean areAllAnalyticAccountSetsEmpty(
@@ -263,21 +229,19 @@ public abstract class AccountingReportValueAbstractService {
             || !accountingReport.getDisplayDetails());
   }
 
-  protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {
+  protected String getAccountFilterQueryList(String accountFilter) {
     String[] tokens = accountFilter.split(",");
     List<String> filterQueryList = new ArrayList<>();
 
     for (int i = 0; i < tokens.length; i++) {
-      filterQueryList.add(
-          String.format(
-              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
+      filterQueryList.add(String.format("self.code LIKE :groupColumnAccountFilter%d", i));
     }
 
     return String.format("(%s)", String.join(" OR ", filterQueryList));
   }
 
   protected <T extends Model> Query<T> bindAccountFilters(
-      Query<T> moveLineQuery, String accountFilter, String type) {
+      Query<T> moveLineQuery, String accountFilter) {
     if (StringUtils.isEmpty(accountFilter)) {
       return moveLineQuery;
     }
@@ -285,7 +249,7 @@ public abstract class AccountingReportValueAbstractService {
     String[] tokens = accountFilter.split(",");
 
     for (int i = 0; i < tokens.length; i++) {
-      moveLineQuery = moveLineQuery.bind(String.format("%sAccountFilter%d", type, i), tokens[i]);
+      moveLineQuery = moveLineQuery.bind(String.format("groupColumnAccountFilter%d", i), tokens[i]);
     }
 
     return moveLineQuery;

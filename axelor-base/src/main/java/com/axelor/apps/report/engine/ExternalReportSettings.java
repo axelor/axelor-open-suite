@@ -25,7 +25,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.utils.net.URLService;
+import com.axelor.utils.helpers.net.UrlHelper;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
@@ -57,7 +57,7 @@ public class ExternalReportSettings extends ReportSettings {
     try {
       this.getUrl();
 
-      String urlNotExist = URLService.notExist(url.toString());
+      String urlNotExist = UrlHelper.notExist(url.toString());
       if (urlNotExist != null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -69,7 +69,7 @@ public class ExternalReportSettings extends ReportSettings {
 
       this.output = tmpFile.toFile();
 
-      URLService.fileDownload(this.output, url, "", outputName);
+      UrlHelper.fileDownload(this.output, url, "", outputName);
 
       this.attach();
 

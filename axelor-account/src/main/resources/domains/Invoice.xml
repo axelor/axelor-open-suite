@@ -86,7 +86,7 @@
     <boolean name="alreadyPrintedOk" title="Already printed" default="true"/>
     <many-to-one name="originalInvoice" ref="Invoice" title="Invoice of origin"/>
     <one-to-many name="refundInvoiceList" ref="Invoice" mappedBy="originalInvoice"
-      title="Refunds"/>
+      title="Credit notes"/>
     <integer name="irrecoverableStatusSelect" title="Irrecoverable status" default="0"
       readonly="true" selection="iaccount.account.schedule.irrecoverable.status.select"/>
     <many-to-one name="managementObject"
@@ -129,11 +129,12 @@
       title="Rejection move line"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
     <boolean name="lcrAccounted" title="LCR accounted"/>
-    <decimal name="amountRejected" title="Rejected amount"/>
+    <decimal name="amountRejected" title="Rejected amount" scale="3" precision="20"/>
     <datetime name="rejectDateTime" title="Rejection date"/>
     <many-to-one name="interbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
-    <decimal name="directDebitAmount" title="Debited amount" readonly="true"/>
+    <decimal name="directDebitAmount" title="Debited amount" scale="3" precision="20"
+      readonly="true"/>
     <many-to-one name="paymentMove" ref="com.axelor.apps.account.db.Move"
       title="Payment Move"/>
 
@@ -148,20 +149,22 @@
     <!-- Totals & Status -->
 
     <!-- Total based on the partner currency in the company accounts -->
-    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="taxTotal" title="Total Tax" scale="2" precision="20" readonly="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
-    <decimal name="amountPaid" title="Amount paid" readonly="true"/>
-    <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
+    <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total Tax" scale="3" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20" readonly="true"/>
+    <decimal name="amountPaid" title="Amount paid" scale="3" precision="20" readonly="true"/>
+    <decimal name="amountRemaining" title="Amount remaining" scale="3" precision="20"
+      readonly="true"/>
 
     <!-- Totals based on the company currency -->
-    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20"
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyTaxTotal" title="Total Tax" scale="2" precision="20"
+    <decimal name="companyTaxTotal" title="Total Tax" scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="2" precision="20"
+    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" readonly="true"/>
+    <decimal name="companyInTaxTotalRemaining" title="Remaining to pay" scale="3"
+      precision="20" readonly="true"/>
 
     <boolean name="hasPendingPayments" readonly="true"/>
     <integer name="statusSelect" title="Status" selection="iaccount.invoice.status.select"
@@ -229,9 +232,10 @@
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <decimal name="financialDiscountRate" title="Financial discount rate"/>
-    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"/>
+    <decimal name="financialDiscountTotalAmount" title="Financial discount total amount"
+      scale="3" precision="20"/>
     <decimal name="remainingAmountAfterFinDiscount"
-      title="Remaining amount after Fin. discount"/>
+      title="Remaining amount after Fin. discount" scale="3" precision="20"/>
     <string name="legalNotice" title="Legal notice" large="true"
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>

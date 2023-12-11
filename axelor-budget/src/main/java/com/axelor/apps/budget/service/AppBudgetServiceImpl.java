@@ -20,7 +20,9 @@ package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
@@ -41,9 +43,18 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
       MetaFiles metaFiles,
       AppVersionService appVersionService,
       MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsStudioService,
+      AppSettingsStudioService appSettingsService,
+      MetaModuleRepository metaModuleRepo,
+      MetaFileRepository metaFileRepo,
       AppBudgetRepository appBudgetRepo) {
-    super(appRepo, metaFiles, appVersionService, metaModelRepo, appSettingsStudioService);
+    super(
+        appRepo,
+        metaFiles,
+        appVersionService,
+        metaModelRepo,
+        appSettingsService,
+        metaModuleRepo,
+        metaFileRepo);
     this.appBudgetRepo = appBudgetRepo;
   }
 
@@ -62,6 +73,24 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
       case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_OPTIONAL:
         return Boolean.FALSE;
       case AppBudgetRepository.APP_BUDGET_MISSING_CHECK_SELECT_REQUIRED:
+        return Boolean.TRUE;
+    }
+    return null;
+  }
+
+  @Override
+  public Boolean isBudgetExceedValuesError(boolean isOrder) {
+    if (!isOrder) {
+      return Boolean.FALSE;
+    }
+    Integer budgetExceedCheck =
+        Optional.ofNullable(this.getAppBudget())
+            .map(AppBudget::getOrderBudgetExceedSelect)
+            .orElse(0);
+    switch (budgetExceedCheck) {
+      case AppBudgetRepository.APP_BUDGET_EXCEED_ORDERS_SELECT_OPTIONAL:
+        return Boolean.FALSE;
+      case AppBudgetRepository.APP_BUDGET_EXCEED_ORDERS_SELECT_REQUIRED:
         return Boolean.TRUE;
     }
     return null;

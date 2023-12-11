@@ -31,7 +31,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.auth.db.User;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -106,7 +106,7 @@ public class TimesheetLineBusinessProductionServiceImpl
     tsl.setDuration(
         computeDuration(
             timesheet,
-            DurationTool.getSecondsDuration(
+            DurationHelper.getSecondsDuration(
                 Duration.between(
                     operationOrderDuration.getStartingDateTime(),
                     operationOrderDuration.getStoppingDateTime()))));

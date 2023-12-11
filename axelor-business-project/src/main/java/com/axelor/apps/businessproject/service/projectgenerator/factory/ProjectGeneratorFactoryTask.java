@@ -38,7 +38,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
@@ -107,7 +107,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .add("grid", "project-task-grid")
         .add("form", "project-task-form")
         .param("search-filters", "project-task-filters")
-        .domain(String.format("self.id in (%s)", StringTool.getIdListString(tasks)));
+        .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)));
   }
 
   protected void processSaleOrderLine(

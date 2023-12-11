@@ -174,11 +174,11 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
               .map(Option::getTitle)
               .orElse("Project task");
       dataMap.put("modelName", modelName);
-      dataMap.put("utilityClass", "label-success");
+      dataMap.put("utilityClass", "success");
 
     } else if (Wiki.class.getName().equals(model)) {
       dataMap.put("modelName", "Wiki");
-      dataMap.put("utilityClass", "label-warning");
+      dataMap.put("utilityClass", "warning");
     }
     return dataMap;
   }
