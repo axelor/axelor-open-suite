@@ -42,6 +42,8 @@ import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
+import com.axelor.apps.base.db.repo.LanguageBaseRepository;
+import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
@@ -105,6 +107,8 @@ import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
+import com.axelor.apps.base.service.LanguageService;
+import com.axelor.apps.base.service.LanguageServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
@@ -394,5 +398,7 @@ public class BaseModule extends AxelorModule {
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
     bind(CurrencyService.class).to(CurrencyServiceImpl.class);
     bind(CurrencyScaleService.class).to(CurrencyScaleServiceImpl.class);
+    bind(LanguageService.class).to(LanguageServiceImpl.class);
+    bind(LanguageRepository.class).to(LanguageBaseRepository.class);
   }
 }

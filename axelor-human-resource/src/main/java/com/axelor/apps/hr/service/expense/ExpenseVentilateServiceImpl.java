@@ -255,7 +255,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
         BigDecimal amountConvertedInCompanyCurrency =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                entry.getValue(), currencyRate);
+                entry.getValue(), currencyRate, companyCurrency);
 
         moveLines.add(
             moveLineCreateService.createMoveLine(
@@ -347,7 +347,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            expenseLine.getUntaxedAmount(), currencyRate);
+            expenseLine.getUntaxedAmount(), currencyRate, companyCurrency);
 
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(

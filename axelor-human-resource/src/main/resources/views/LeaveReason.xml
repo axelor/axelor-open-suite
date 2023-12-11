@@ -34,6 +34,7 @@
         placeholder="All"/>
       <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"
         showIf="leaveReasonTypeSelect != 2"/>
+      <field name="isDaysAddedProrated" widget="boolean-switch" colSpan="4"/>
       <field name="instruction" colSpan="12" widget="html"/>
 
       <panel name="planningPanel" colSpan="12" hideIf="leaveReasonTypeSelect == 2"
