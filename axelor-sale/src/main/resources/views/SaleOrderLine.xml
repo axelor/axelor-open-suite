@@ -52,6 +52,43 @@
     <field name="hasTree" hidden="true"/>
   </grid>
 
+  <grid name="sale-order-line-editable-grid" title="SO lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
+
+    <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
+      width="51"/>
+    <field name="product" canEdit="false"
+      onChange="action-group-sale-saleorderline-product-onchange"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
+      grid-view="product-grid" if="!__config__.app.isApp('supplychain')"/>
+    <field name="product" canEdit="false"
+      onChange="action-group-sale-saleorderline-product-onchange"
+      onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
+      grid-view="stock-move-line-product-grid" if="__config__.app.isApp('supplychain')"/>
+    <field name="product.code" width="120"/>
+    <field name="productName"/>
+    <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
+      validIf="$qtyValid != false"/>
+    <field name="price" colSpan="3"
+      readonlyIf="deliveryState == 3 || $get(saleOrder.priceList.nonNegotiable)"
+      onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
+      hidden="true"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="taxLine" canEdit="false" colSpan="6"
+      readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
+      onChange="action-group-sale-saleorderline-tax-line-onchange"
+      domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+      form-view="tax-line-form"/>
+    <field name="inTaxPrice" x-scale="2"/>
+    <field name="exTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="description"/>
+    <field name="availableStatus" if="__config__.app.isApp('supplychain')" readonly="true">
+      <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
+      <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
+    </field>
+  </grid>
+
   <grid name="sale-order-line-menu-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" canNew="false" canDelete="false" canEdit="false">
     <field name="saleOrder"/>

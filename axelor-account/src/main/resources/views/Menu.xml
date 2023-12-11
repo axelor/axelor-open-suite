@@ -694,7 +694,8 @@
   </action-view>
 
   <menuitem name="account-conf-financial-tax-number" parent="account-conf-financial"
-    title="Tax numbers" action="account.conf.financial.tax.number" order="1200"/>
+    title="Tax numbers" action="account.conf.financial.tax.number" order="1200"
+    if="__config__.app.getApp('base')?.getEnableTaxNumbers()"/>
 
   <action-view name="account.conf.financial.tax.number" title="Tax number"
     model="com.axelor.apps.account.db.TaxNumber">

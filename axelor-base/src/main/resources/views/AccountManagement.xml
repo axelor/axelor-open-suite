@@ -182,29 +182,6 @@
         <field name="tax" form-view="tax-form" grid-view="tax-grid"
           requiredIf="typeSelect == 2"/>
       </panel>
-      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
-        showIf="typeSelect == 2">
-        <field name="allowedFinDiscountTaxVatSystem1Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-        <field name="allowedFinDiscountTaxVatSystem2Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-        <field name="obtainedFinDiscountTaxVatSystem1Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-        <field name="obtainedFinDiscountTaxVatSystem2Account"
-          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
-          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-          canEdit="false" colSpan="6"/>
-      </panel>
     </panel>
   </form>
 
