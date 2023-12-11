@@ -47,6 +47,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class OperationOrderChartServiceImpl implements OperationOrderChartService {
+
+  protected static final int MAX_DAYS = 20;
   protected static final String DATE_TIME = "dateTime";
   protected static final String MACHINE = "machine";
   protected static final String COMPANY = "company";
@@ -68,7 +70,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     List<Map<String, Object>> dataList = new ArrayList<>();
 
     LocalDateTime itDateTime = fromDateTime;
-    if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
+    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
@@ -110,7 +112,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     List<Map<String, Object>> dataList = new ArrayList<>();
     LocalDateTime itDateTime = fromDateTime;
 
-    if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
+    if (Duration.between(fromDateTime, toDateTime).toDays() > MAX_DAYS) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
@@ -126,7 +128,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
             .filter(
                 machine ->
                     machine != null
-                        && machine.getId().equals(machineInUse.getId())
+                        && machine.equals(machineInUse)
                         && machine.getStockLocation() != null
                         && machine.getStockLocation().getCompany() != null)
             .collect(
