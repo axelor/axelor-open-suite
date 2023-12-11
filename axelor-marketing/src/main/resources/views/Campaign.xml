@@ -25,9 +25,11 @@
         readonly="true"/>
       <field name="name" showTitle="false" colSpan="12">
         <viewer depends="name"><![CDATA[
-					<h3>
-						<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-					</h3>
+					<>
+						<h3>
+							<span>{name}</span>
+						</h3>
+					</>
 				]]></viewer>
         <editor>
           <field name="name" showTitle="true"/>
@@ -37,9 +39,9 @@
       <panel name="informationPanel" title="Information" colSpan="12">
         <field name="campaignType" canEdit="false" colSpan="4" showIf="!$readonly()"/>
         <field name="campaignType" showTitle="false" colSpan="4" showIf="$readonly()">
-          <viewer depends="name"><![CDATA[
-						<span class="label label-default" style="background-color: #8806CE;">{{record.name}}</span>
-					]]></viewer>
+          <viewer depends="name">
+            <![CDATA[<><Badge style={{ backgroundColor: "#8806CE" }}>{name}</Badge></>]]>
+          </viewer>
         </field>
         <field name="eventStartDateT" colSpan="4"
           validIf="eventStartDateT == null || eventEndDateT == null || eventStartDateT &lt; eventEndDateT"/>
@@ -189,8 +191,10 @@
     <hilite color="info" if="stageSelect &lt;= 3"/>
     <hilite color="success" if="stageSelect &lt;= 4"/>
     <template><![CDATA[
-	        <h4>{{name}}</h4>
-	        <div class="card-body">{{campaignType.name}}</div>
+	        <>
+		        <h4>{name}</h4>
+		        <Box>{campaignType.name}</Box>
+	        </>
 	]]></template>
   </kanban>
 
@@ -202,27 +206,27 @@
     <field name="eventStartDateT"/>
     <field name="description"/>
     <template><![CDATA[
-	  		<div>
-			  <div class="span12">
-			  	<div class="span4">
-					<span class="label label-default" style="background-color: #0285D8;" ng-show="record.stageSelect == 0" x-translate>Draft</span>
-	         		<span class="label label-warning" ng-show="record.stageSelect == 1" x-translate>Planned</span>
-	         		<span class="label label-info" ng-show="record.stageSelect == 2" x-translate>Started</span>
-					<span class="label label-important" ng-show="record.stageSelect == 3" x-translate>Suspended</span>
-					<span class="label label-success" ng-show="record.stageSelect == 4" x-translate>Ended</span>
+	      	<>
+	      		<Box>
+	      			<Box d="flex" gap="4">
+	      				{stageSelect == 0 && <Badge style={{ backgroundColor: "#0285D8" }}>{_t('Draft')}</Badge>}
+	      				{stageSelect == 1 && <Badge bg="warning">{_t('Planned')}</Badge>}
+	      				{stageSelect == 2 && <Badge bg="info">{_t('Started')}</Badge>}
+	      				{stageSelect == 3 && <Badge bg="danger">{_t('Suspended')}</Badge>}
+	      				{stageSelect == 4 && <Badge bg="success">{_t('Ended')}</Badge>}
 
-					<span class="label label-default" style="background-color: #8806CE;" x-translate>{{record.campaignType.name}}</span>
-				</div>
-				<br/><br/>
-			  	<span>
-					<strong>{{name}}</strong><br/>
-					{{$fmt('eventStartDateT')}}
-		        </span>
-				<br/></br/>
-				<strong><span x-translate>Description </span> :</strong><br/>
-				<div ng-show="description" ng-bind-html="description" style="height:100px; overflow:auto;"></div>
-				<div ng-show="!description" ng-bind-html="description"></div>
-	      	</div>
+	      				<Badge style={{ backgroundColor: "#8806CE" }}>{campaignType.name}</Badge>
+	      			</Box>
+	      			<Box mt={4}>
+						<strong>{name}</strong> <Box/>
+						{$fmt('eventStartDateT')}
+		        	</Box>
+	      			<Box mt={4}>
+						<strong>{_t('Description')} :</strong> <Box/>
+			        	{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100 }}></Box>}
+		        	</Box>
+	      		</Box>
+	      	</>
 	  	]]></template>
   </cards>
 
