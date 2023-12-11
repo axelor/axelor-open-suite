@@ -184,16 +184,6 @@
     <domain>self.outsourcingOrder = true</domain>
   </action-view>
 
-  <menuitem name="manufacturing-root-charge-by-machine-dashboard"
-    parent="manufacturing-root" title="Charge by machine"
-    action="manufacturing.root.charge.by.machine.dashboard" order="1000"/>
-
-  <action-view name="manufacturing.root.charge.by.machine.dashboard"
-    title="Charge by machine">
-    <view type="dashboard" name="charge.by.machine.dashboard"/>
-    <context name="today" expr="eval:__config__.date"/>
-  </action-view>
-
   <menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
     title="Raw material requirement" action="manufacturing.root.raw.material.requirement"
     order="1100"/>
@@ -298,6 +288,15 @@
   <action-view name="manufacturing.user.dashboard.view" title="User Dashboard"
     model="com.axelor.auth.db.User">
     <view type="form" name="manufacturing-dashboard-user"/>
+  </action-view>
+
+  <menuitem name="manufacturing-root-machine-charge-dashboard"
+    parent="manufacturing-root-report" title="Machine charge"
+    action="manufacturing.root.machine.charge.dashboard" order="1000"/>
+
+  <action-view name="manufacturing.root.machine.charge.dashboard" title="Machine charge">
+    <view type="dashboard" name="machine.charge.dashboard"/>
+    <context name="today" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration"

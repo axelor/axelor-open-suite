@@ -567,7 +567,7 @@
     <field name="contactPartner" expr="eval: _opportunity.contact"/>
     <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
     <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
-    <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_CALL" if="_call"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>

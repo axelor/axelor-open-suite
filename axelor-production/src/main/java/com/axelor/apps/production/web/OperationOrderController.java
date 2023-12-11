@@ -36,9 +36,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -181,42 +178,6 @@ public class OperationOrderController {
           .cancel(Beans.get(OperationOrderRepository.class).find(operationOrder.getId()));
 
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void chargeByMachineHours(ActionRequest request, ActionResponse response) {
-    try {
-      LocalDateTime fromDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
-      LocalDateTime toDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
-
-      List<Map<String, Object>> dataList =
-          Beans.get(OperationOrderService.class).chargeByMachineHours(fromDateTime, toDateTime);
-
-      response.setData(dataList);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void chargeByMachineDays(ActionRequest request, ActionResponse response) {
-
-    try {
-      LocalDateTime fromDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
-      LocalDateTime toDateTime =
-          LocalDateTime.parse(
-              request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
-
-      List<Map<String, Object>> dataList =
-          Beans.get(OperationOrderService.class).chargeByMachineDays(fromDateTime, toDateTime);
-      response.setData(dataList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

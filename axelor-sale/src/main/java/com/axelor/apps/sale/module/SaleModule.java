@@ -22,6 +22,9 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.ProductCategoryServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingGenericServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
+import com.axelor.apps.base.service.pricing.PricingObserverImpl;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -47,6 +50,8 @@ import com.axelor.apps.sale.service.ProductCategoryServiceSaleImpl;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.SaleOrderDomainServiceImpl;
 import com.axelor.apps.sale.service.SaleOrderLineSaleRepository;
+import com.axelor.apps.sale.service.SalePricingGenericServiceImpl;
+import com.axelor.apps.sale.service.SalePricingMetaServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.app.AppSaleServiceImpl;
 import com.axelor.apps.sale.service.config.SaleConfigService;
@@ -92,6 +97,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
 
@@ -140,5 +146,8 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLineCalculationComboService.class)
         .to(SaleOrderLineCalculationComboServiceImpl.class);
     bind(SaleOrderLineTaxService.class).to(SaleOrderLineTaxServiceImpl.class);
+    bind(PricingObserverImpl.class).to(SaleOrderLinePricingObserver.class);
+    bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
+    bind(PricingMetaServiceImpl.class).to(SalePricingMetaServiceImpl.class);
   }
 }

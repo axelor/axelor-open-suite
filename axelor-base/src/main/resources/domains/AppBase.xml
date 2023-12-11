@@ -115,6 +115,8 @@
     <boolean name="activatePartnerRelations" title="Activate partner delegations"
       default="false"/>
 
+    <boolean name="enableTaxNumbers" title="Enable tax numbers"/>
+
     <many-to-one name="passwordChangedTemplate" ref="com.axelor.message.db.Template"
       title="Template for changed password"/>
 

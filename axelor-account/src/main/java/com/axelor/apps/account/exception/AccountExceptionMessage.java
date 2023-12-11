@@ -1486,19 +1486,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX = /*$$(*/
       "No account found for Tax: %s (company: %s)" /*)*/;
 
-  public static final String
-      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an allowed financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an allowed financial discount account on payments for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an obtained financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an obtained financial discount account on payments for Tax: %s (company: %s)" /*)*/;
-
   public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a sale account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
   public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
