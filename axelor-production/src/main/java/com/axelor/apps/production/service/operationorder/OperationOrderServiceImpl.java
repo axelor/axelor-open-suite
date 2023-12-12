@@ -21,10 +21,8 @@ package com.axelor.apps.production.service.operationorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
-import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
@@ -45,7 +43,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
-import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
@@ -53,19 +50,12 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +64,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected BarcodeGeneratorService barcodeGeneratorService;
 
   protected AppProductionService appProductionService;
-
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProdProcessLineService prodProcessLineService;
   protected OperationOrderRepository operationOrderRepository;
@@ -214,239 +203,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     operationOrder.clearDiffConsumeProdProductList();
     diffConsumeList.forEach(operationOrder::addDiffConsumeProdProductListItem);
     return operationOrder;
-  }
-
-  public List<Map<String, Object>> chargeByMachineHours(
-      LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-    LocalDateTime itDateTime =
-        LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
-    OperationOrderRepository operationOrderRepo = Beans.get(OperationOrderRepository.class);
-    if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
-    }
-
-    List<OperationOrder> operationOrderListTemp =
-        operationOrderRepo
-            .all()
-            .filter(
-                "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                fromDateTime,
-                toDateTime)
-            .fetch();
-    Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
-      if (operationOrder.getWorkCenter() != null
-          && operationOrder.getWorkCenter().getMachine() != null) {
-        if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
-          machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
-        }
-      }
-    }
-    while (!itDateTime.isAfter(toDateTime)) {
-      List<OperationOrder> operationOrderList =
-          operationOrderRepo
-              .all()
-              .filter(
-                  "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                  itDateTime,
-                  itDateTime.plusHours(1))
-              .fetch();
-      Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-      for (OperationOrder operationOrder : operationOrderList) {
-        if (operationOrder.getWorkCenter() != null
-            && operationOrder.getWorkCenter().getMachine() != null) {
-          String machine = operationOrder.getWorkCenter().getMachine().getName();
-          long numberOfMinutes = 0;
-          if (operationOrder.getPlannedStartDateT().isBefore(itDateTime)) {
-            numberOfMinutes =
-                Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
-          } else if (operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))) {
-            numberOfMinutes =
-                Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1))
-                    .toMinutes();
-          } else {
-            numberOfMinutes =
-                Duration.between(
-                        operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
-                    .toMinutes();
-          }
-          if (numberOfMinutes > 60) {
-            numberOfMinutes = 60;
-          }
-          BigDecimal percentage =
-              new BigDecimal(numberOfMinutes)
-                  .multiply(new BigDecimal(100))
-                  .divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
-          if (map.containsKey(machine)) {
-            map.put(machine, map.get(machine).add(percentage));
-          } else {
-            map.put(machine, percentage);
-          }
-        }
-      }
-      Set<String> keyList = map.keySet();
-      String dateTime = L10n.getInstance().format(itDateTime);
-      for (String key : machineNameList) {
-        if (keyList.contains(key)) {
-          Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) dateTime);
-          dataMap.put("charge", (Object) map.get(key));
-          dataMap.put("machine", (Object) key);
-          dataList.add(dataMap);
-        } else {
-          Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) dateTime);
-          dataMap.put("charge", (Object) BigDecimal.ZERO);
-          dataMap.put("machine", (Object) key);
-          dataList.add(dataMap);
-        }
-      }
-
-      itDateTime = itDateTime.plusHours(1);
-    }
-    return dataList;
-  }
-
-  public List<Map<String, Object>> chargeByMachineDays(
-      LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-    List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
-    fromDateTime = fromDateTime.withHour(0).withMinute(0);
-    toDateTime = toDateTime.withHour(23).withMinute(59);
-    LocalDateTime itDateTime =
-        LocalDateTime.parse(fromDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME);
-    if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
-    }
-
-    List<OperationOrder> operationOrderListTemp =
-        Beans.get(OperationOrderRepository.class)
-            .all()
-            .filter(
-                "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                fromDateTime,
-                toDateTime)
-            .fetch();
-    Set<String> machineNameList = new HashSet<String>();
-    for (OperationOrder operationOrder : operationOrderListTemp) {
-      if (operationOrder.getWorkCenter() != null
-          && operationOrder.getWorkCenter().getMachine() != null) {
-        if (!machineNameList.contains(operationOrder.getWorkCenter().getMachine().getName())) {
-          machineNameList.add(operationOrder.getWorkCenter().getMachine().getName());
-        }
-      }
-    }
-    while (!itDateTime.isAfter(toDateTime)) {
-      List<OperationOrder> operationOrderList =
-          Beans.get(OperationOrderRepository.class)
-              .all()
-              .filter(
-                  "self.plannedStartDateT <= ?2 AND self.plannedEndDateT >= ?1",
-                  itDateTime,
-                  itDateTime.plusHours(1))
-              .fetch();
-      Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-      WeeklyPlanningService weeklyPlanningService = Beans.get(WeeklyPlanningService.class);
-      for (OperationOrder operationOrder : operationOrderList) {
-        if (operationOrder.getWorkCenter() != null
-            && operationOrder.getWorkCenter().getMachine() != null) {
-          String machine = operationOrder.getWorkCenter().getMachine().getName();
-          long numberOfMinutes = 0;
-          if (operationOrder.getPlannedStartDateT().isBefore(itDateTime)) {
-            numberOfMinutes =
-                Duration.between(itDateTime, operationOrder.getPlannedEndDateT()).toMinutes();
-          } else if (operationOrder.getPlannedEndDateT().isAfter(itDateTime.plusHours(1))) {
-            numberOfMinutes =
-                Duration.between(operationOrder.getPlannedStartDateT(), itDateTime.plusHours(1))
-                    .toMinutes();
-          } else {
-            numberOfMinutes =
-                Duration.between(
-                        operationOrder.getPlannedStartDateT(), operationOrder.getPlannedEndDateT())
-                    .toMinutes();
-          }
-          if (numberOfMinutes > 60) {
-            numberOfMinutes = 60;
-          }
-          long numberOfMinutesPerDay = 0;
-          if (operationOrder.getWorkCenter().getMachine().getWeeklyPlanning() != null) {
-            DayPlanning dayPlanning =
-                weeklyPlanningService.findDayPlanning(
-                    operationOrder.getWorkCenter().getMachine().getWeeklyPlanning(),
-                    LocalDateTime.parse(itDateTime.toString(), DateTimeFormatter.ISO_DATE_TIME)
-                        .toLocalDate());
-            if (dayPlanning != null) {
-              if (dayPlanning.getMorningFrom() != null && dayPlanning.getMorningTo() != null) {
-                numberOfMinutesPerDay =
-                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getMorningTo())
-                        .toMinutes();
-              }
-              if (dayPlanning.getAfternoonFrom() != null && dayPlanning.getAfternoonTo() != null) {
-                numberOfMinutesPerDay +=
-                    Duration.between(dayPlanning.getAfternoonFrom(), dayPlanning.getAfternoonTo())
-                        .toMinutes();
-              }
-              if (dayPlanning.getMorningFrom() != null
-                  && dayPlanning.getMorningTo() == null
-                  && dayPlanning.getAfternoonFrom() == null
-                  && dayPlanning.getAfternoonTo() != null) {
-                numberOfMinutesPerDay +=
-                    Duration.between(dayPlanning.getMorningFrom(), dayPlanning.getAfternoonTo())
-                        .toMinutes();
-              }
-
-            } else {
-              numberOfMinutesPerDay = 0;
-            }
-          } else {
-            numberOfMinutesPerDay = 60 * 24;
-          }
-          if (numberOfMinutesPerDay != 0) {
-
-            BigDecimal percentage =
-                new BigDecimal(numberOfMinutes)
-                    .multiply(new BigDecimal(100))
-                    .divide(new BigDecimal(numberOfMinutesPerDay), 2, RoundingMode.HALF_UP);
-
-            if (map.containsKey(machine)) {
-              map.put(machine, map.get(machine).add(percentage));
-            } else {
-              map.put(machine, percentage);
-            }
-          }
-        }
-      }
-      Set<String> keyList = map.keySet();
-      String itDate = L10n.getInstance().format(itDateTime.toLocalDate());
-      for (String key : machineNameList) {
-        if (keyList.contains(key)) {
-          int found = 0;
-          for (Map<String, Object> mapIt : dataList) {
-            if (mapIt.get("dateTime").equals((Object) itDate)
-                && mapIt.get("machine").equals((Object) key)) {
-              mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
-              found = 1;
-              break;
-            }
-          }
-          if (found == 0) {
-            Map<String, Object> dataMap = new HashMap<String, Object>();
-
-            dataMap.put("dateTime", (Object) itDate);
-            dataMap.put("charge", (Object) map.get(key));
-            dataMap.put("machine", (Object) key);
-            dataList.add(dataMap);
-          }
-        }
-      }
-
-      itDateTime = itDateTime.plusHours(1);
-    }
-    return dataList;
   }
 
   @Override
