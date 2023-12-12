@@ -10,7 +10,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.web.ITranslation;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -86,8 +85,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   public List<Pricing> getPricings(Company company, Model model) {
     List<Pricing> pricingList = new ArrayList<>();
     if (appBaseService.getAppBase().getIsPricingComputingOrder()) {
-      pricingList =
-          pricingService.getPricings(company, model, null);
+      pricingList = pricingService.getPricings(company, model, null);
     } else {
       List<Pricing> resultList = pricingService.getAllPricings(company, model);
 
@@ -111,12 +109,12 @@ public class PricingGenericServiceImpl implements PricingGenericService {
 
   @Override
   public void computePricingsOnChildren(Company company, Model model) throws AxelorException {
-    //overridden in other modules
+    // overridden in other modules
   }
 
   @Override
   public String updatePricingScaleLogs(List<StringBuilder> logsList, Model model) {
-    //overridden in other modules
+    // overridden in other modules
     return computePricingLogs(logsList);
   }
 
