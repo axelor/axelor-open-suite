@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.account.service.fecimport;
 
+import com.axelor.apps.account.db.ImportFECType;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.BirtTemplate;
-import com.axelor.apps.base.db.repo.BirtTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
@@ -32,43 +31,37 @@ import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
+public class ImportFECTypeServiceImpl implements ImportFECTypeService {
 
-  private BirtTemplateRepository birtTemplateRepo;
-  private MetaFiles metaFiles;
+  protected MetaFiles metaFiles;
 
   @Inject
-  public BirtTemplateViewServiceImpl(BirtTemplateRepository birtTemplateRepo, MetaFiles metaFiles) {
-    this.birtTemplateRepo = birtTemplateRepo;
+  public ImportFECTypeServiceImpl(MetaFiles metaFiles) {
     this.metaFiles = metaFiles;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void setTemplateMetaFile(Long birtId, String templateFileName)
+  public void setStandardBindingfile(ImportFECType importFecType, String bindingfileName)
       throws AxelorException, IOException {
-    BirtTemplate birtTemplate = birtTemplateRepo.find(birtId);
-    MetaFile templateFile = getTemplateFile(templateFileName);
-    if (ObjectUtils.notEmpty(templateFile)) {
-      birtTemplate.setTemplateMetaFile(templateFile);
+    MetaFile bindingFile = getBindMetaFile(bindingfileName);
+    if (ObjectUtils.notEmpty(bindingFile)) {
+      importFecType.setBindMetaFile(bindingFile);
     }
   }
 
   @Override
-  public MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
-    MetaFile standardTemplateFile = null;
-    InputStream templateFileInputStream =
-        this.getClass().getResourceAsStream("/reports/" + templateFileName);
+  public MetaFile getBindMetaFile(String bindingfileName) throws AxelorException, IOException {
+    InputStream bindFileInputStream =
+        this.getClass().getResourceAsStream("/FEC-config/" + bindingfileName);
 
-    if (ObjectUtils.isEmpty(templateFileInputStream)) {
+    if (ObjectUtils.isEmpty(bindFileInputStream)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
               I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
-              templateFileName));
+              bindingfileName));
     }
-    standardTemplateFile = metaFiles.upload(templateFileInputStream, templateFileName);
-
-    return standardTemplateFile;
+    return metaFiles.upload(bindFileInputStream, bindingfileName);
   }
 }
