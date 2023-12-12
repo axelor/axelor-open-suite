@@ -147,8 +147,7 @@
   </action-method>
 
   <action-method name="action-budget-sale-order-line-set-account-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"
-      if="__config__.app.isApp('budget')"/>
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"/>
   </action-method>
 
 </object-views>

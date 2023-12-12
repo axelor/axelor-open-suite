@@ -181,7 +181,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           budgetLevelManagementRepository.copy(groupBudgetLevel, false);
       optGroupBudgetLevel.setTypeSelect(BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
       optGroupBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-      optGroupBudgetLevel.setBudgetTypeSelect(globalBudget.getBudgetTypeSelect());
       globalBudgetTemplate.removeBudgetLevelListItem(optGroupBudgetLevel);
       optGroupBudgetLevel.setGlobalBudgetTemplate(null);
       globalBudget.addBudgetLevelListItem(optGroupBudgetLevel);
@@ -195,7 +194,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
           optSectionBudgetLevel.setTypeSelect(
               BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET);
           optSectionBudgetLevel.setSourceSelect(BudgetLevelRepository.BUDGET_LEVEL_SOURCE_AUTO);
-          optSectionBudgetLevel.setBudgetTypeSelect(globalBudget.getBudgetTypeSelect());
           optGroupBudgetLevel.addBudgetLevelListItem(optSectionBudgetLevel);
           List<Budget> budgetList = sectionBudgetLevel.getBudgetList();
           Set<BudgetScenarioVariable> variablesList =
@@ -218,7 +216,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   public GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
-    List<Budget> budgets = globalBudget.getBudgetList();
+    List<Budget> budgetList = getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
         budgetVersion.getVersionExpectedAmountsLineList();
     if (globalBudget.getActiveVersion() != null) {
@@ -227,7 +225,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       budgetVersionRepo.save(oldBudgetVersion);
     }
 
-    for (Budget budget : budgets) {
+    for (Budget budget : budgetList) {
       VersionExpectedAmountsLine versionExpectedAmountsLine =
           versionExpectedAmountsLineList.stream()
               .filter(version -> version.getBudget().equals(budget))
@@ -251,7 +249,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       }
     }
 
-    globalBudget.setBudgetList(budgets);
+    globalBudget.setBudgetList(budgetList);
     globalBudget.setActiveVersion(budgetVersion);
     budgetVersion.setIsActive(true);
     globalBudget = globalBudgetRepository.save(globalBudget);

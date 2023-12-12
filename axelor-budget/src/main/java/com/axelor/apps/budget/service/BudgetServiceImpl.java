@@ -713,16 +713,16 @@ public class BudgetServiceImpl implements BudgetService {
       List<String> accountTypeList = new ArrayList<>();
 
       switch (budgetType) {
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT:
           accountTypeList.add(AccountTypeRepository.TYPE_IMMOBILISATION);
           accountTypeList.add(AccountTypeRepository.TYPE_CHARGE);
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE:
           accountTypeList.add(AccountTypeRepository.TYPE_CHARGE);
           break;
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE:
           accountTypeList.add(AccountTypeRepository.TYPE_INCOME);
           break;
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT:
           accountTypeList.add(AccountTypeRepository.TYPE_IMMOBILISATION);
           break;
       }

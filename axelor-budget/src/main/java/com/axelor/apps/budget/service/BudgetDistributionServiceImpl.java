@@ -33,8 +33,8 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -102,14 +102,15 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     String budgetExceedAlert = "";
 
     Integer budgetControlLevel = budgetToolsService.getBudgetControlLevel(budget);
-    if (budget == null || budgetControlLevel == null) {
+    GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
+    if (budget == null || budgetControlLevel == null || globalBudget == null) {
       return budgetExceedAlert;
     }
     BigDecimal budgetToCompare = BigDecimal.ZERO;
     String budgetName = budget.getName();
 
     switch (budgetControlLevel) {
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
+      case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
           if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
             budgetToCompare = budgetLine.getAvailableAmount();
@@ -119,25 +120,12 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
           }
         }
         break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
+      case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET:
         budgetToCompare = budget.getAvailableAmount();
         break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION:
-        budgetToCompare = budget.getBudgetLevel().getTotalAmountAvailable();
-        budgetName = budget.getBudgetLevel().getName();
-        break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP:
-        budgetToCompare = budget.getBudgetLevel().getParentBudgetLevel().getTotalAmountAvailable();
-        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getName();
-        break;
       default:
-        budgetToCompare =
-            budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getGlobalBudget()
-                .getTotalAmountAvailable();
-        budgetName = budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getName();
+        budgetToCompare = globalBudget.getTotalAmountAvailable();
+        budgetName = globalBudget.getName();
         break;
     }
     if (budgetToCompare.compareTo(amount) < 0) {
@@ -146,13 +134,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               I18n.get(BudgetExceptionMessage.BUGDET_EXCEED_ERROR),
               budgetName,
               budgetToCompare,
-              budget
-                  .getBudgetLevel()
-                  .getParentBudgetLevel()
-                  .getGlobalBudget()
-                  .getCompany()
-                  .getCurrency()
-                  .getSymbol());
+              globalBudget.getCompany().getCurrency().getSymbol());
     }
     return budgetExceedAlert;
   }
@@ -266,7 +248,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
   @Override
   public String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect) {
-    String budget = "self.budgetLevel.parentBudgetLevel.globalBudget";
+    String budget = "self.globalBudget";
     String query =
         String.format(
             "self.totalAmountExpected > 0 AND self.statusSelect = %d ",
@@ -286,23 +268,23 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
           query.concat(
               String.format(
                   " AND %s.budgetTypeSelect = %d ",
-                  budget, BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE));
+                  budget, GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE));
     } else if (AccountTypeRepository.TYPE_CHARGE.equals(technicalTypeSelect)) {
       query =
           query.concat(
               String.format(
                   " AND %s.budgetTypeSelect in (%d,%d) ",
                   budget,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                  GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE,
+                  GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
     } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(technicalTypeSelect)) {
       query =
           query.concat(
               String.format(
                   " AND %s.budgetTypeSelect in (%d,%d) ",
                   budget,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT,
-                  BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
+                  GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT,
+                  GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
     } else {
       query = "self.id = 0";
     }
