@@ -9,6 +9,7 @@
 
     <boolean name="deliveriesCopyFromManufOrder"
       title="Deliveries copy from manufacturing order."/>
+
   </entity>
 
 </domain-models>
