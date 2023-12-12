@@ -478,7 +478,8 @@
           readonlyIf="clientPartner == null || statusSelect != 1" colSpan="12" height="30"
           field="saleOrderLineList" form-view="sale-order-line-form"
           grid-view="sale-order-line-editable-grid" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"
+          onChange="action-sale-order-method-on-line-change"
+          onNew="action-sale-order-line-group-editable-onnew"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
@@ -1442,6 +1443,8 @@
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-set-line-field-scale"/>
+    <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+    <action name="action-sale-order-attrs-editable-display-discount-amount"/>
   </action-group>
 
   <action-group name="action-sale-order-group-set-defualts-from-opportunity">
@@ -1484,6 +1487,8 @@
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-set-line-field-scale"/>
+    <action name="action-sale-order-attrs-list-selection-in-type-select"/>
+    <action name="action-sale-order-attrs-editable-display-discount-amount"/>
   </action-group>
 
   <action-group name="action-sale-group-confirmed">
@@ -2304,6 +2309,20 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute for="saleOrderLineList.price" name="scale"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+    <attribute for="saleOrderLineList.discountAmount" name="scale"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-list-selection-in-type-select">
+    <attribute name="selection-in" for="saleOrderLineList.typeSelect"
+      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-attrs-editable-display-discount-amount">
+    <attribute for="saleOrderLineList.discountTypeSelect" name="hidden"
+      expr="eval: !(__config__.app.getApp('sale')?.getIsEditableGridEnabled() &amp;&amp; __config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid())"/>
+    <attribute for="saleOrderLineList.discountAmount" name="hidden"
+      expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
 </object-views>

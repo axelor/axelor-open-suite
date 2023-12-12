@@ -204,6 +204,7 @@
 "Enable business configurator","Activer les configurateurs commerciaux",,
 "Enable calculation of the entire quotation using pricing","Activer le calcul complet des devis à partir des barèmes",,
 "Enable customer catalog management","Activer la gestion des catalogues clients",,
+"Enable discount on editable lines","Activer les remises sur la liste éditable",,
 "Enable editable grid on quotation / sales order lines","Activer la liste éditable sur les lignes de devis / commandes clients",,
 "Enable product description copy","Activer la copie de description des produits",,
 "End date","Date de fin",,
