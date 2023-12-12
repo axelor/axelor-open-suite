@@ -7,6 +7,7 @@
 
   <entity name="Sop">
 
+    <string name="name" title="Name" namecolumn="true"/>
     <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
       title="Category"/>
     <one-to-many name="sopLineList" ref="com.axelor.apps.production.db.SopLine"

@@ -35,6 +35,7 @@
 		public static final int TYPE_CIVIL = 0;
 		public static final int TYPE_FISCAL = 1;
 		public static final int TYPE_PAYROLL = 2;
+		public static final int TYPE_MANUFACTURING = 3;
 
 	]]></extra-code>
 
