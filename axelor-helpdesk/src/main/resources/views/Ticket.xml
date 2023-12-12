@@ -26,9 +26,11 @@
       help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"
       readonlyIf="$isClosed"/>
     <button name="startTicketBtn" icon="fa-play" onClick="action-ticket-group-on-start"
-      readonlyIf="timerState == true || $isClosed"/>
+      readonlyIf="timerState == true || $isClosed"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <button name="pauseBtn" icon="fa-pause" onClick="action-ticket-group-on-pause"
-      readonlyIf="timerState == false || $isClosed"/>
+      readonlyIf="timerState == false || $isClosed"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <button name="validateTicketBtn" icon="fa-check"
       onClick="action-ticket-group-on-validate" readonlyIf="$isClosed"/>
     <button name="finishTicketBtn" icon="fa-power-off" onClick="action-ticket-group-on-close"
@@ -118,7 +120,8 @@
       canCollapse="true">
       <field name="ticketType" colSpan="12"/>
       <field name="slaPolicy" colSpan="12"
-        hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority" readonly="true"/>
+        hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority" readonly="true"
+        if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
       <field name="prioritySelect" colSpan="6" widget="single-select"/>
       <field name="deadlineDateT" colSpan="6"/>
       <field name="isSlaCompleted" hidden="true"/>
@@ -245,8 +248,10 @@
   </action-group>
 
   <action-group name="action-ticket-group-on-start">
-    <action name="action-ticket-method-start-timer"/>
-    <action name="action-ticket-method-play"/>
+    <action name="action-ticket-method-start-timer"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
+    <action name="action-ticket-method-play"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <action name="action-ticket-record-to-fill-startDate"/>
     <action name="action-ticket-method-compute-from-start-date-time"/>
     <action name="action-ticket-method-set-start-status"/>
@@ -255,8 +260,10 @@
   </action-group>
 
   <action-group name="action-ticket-group-on-validate">
-    <action name="action-ticket-method-stop-timer"/>
-    <action name="action-ticket-method-pause"/>
+    <action name="action-ticket-method-stop-timer"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
+    <action name="action-ticket-method-pause"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <action name="action-ticket-method-compute-real-total-duration"/>
     <action name="action-ticket-record-to-fill-endDate"/>
     <action name="action-ticket-method-compute-from-end-date-time"/>
@@ -267,8 +274,10 @@
   </action-group>
 
   <action-group name="action-ticket-group-on-close">
-    <action name="action-ticket-method-stop-timer"/>
-    <action name="action-ticket-method-pause"/>
+    <action name="action-ticket-method-stop-timer"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
+    <action name="action-ticket-method-pause"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <action name="action-ticket-method-compute-real-total-duration"/>
     <action name="action-ticket-method-set-closed-status"/>
     <action name="action-ticket-method-update-dummy-status"/>
@@ -276,8 +285,10 @@
   </action-group>
 
   <action-group name="action-ticket-group-on-pause">
-    <action name="action-ticket-method-stop-timer"/>
-    <action name="action-ticket-method-pause"/>
+    <action name="action-ticket-method-stop-timer"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
+    <action name="action-ticket-method-pause"
+      if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
     <action name="save"/>
   </action-group>
 
