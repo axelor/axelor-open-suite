@@ -44,8 +44,7 @@
 
   <!-- TODO -->
   <form name="bank-order-line-form" title="Bank Order line"
-    model="com.axelor.apps.bankpayment.db.BankOrderLine" width="large" canNew="false"
-    canEdit="false" canDelete="false">
+    model="com.axelor.apps.bankpayment.db.BankOrderLine" width="large">
     <panel name="bankOrderDetailsPanel" title="Bank Order Details" showIf="bankOrder != null">
       <field name="bankOrder" readonly="true"/>
       <field name="bankOrder.orderTypeSelect" readonly="true"/>
