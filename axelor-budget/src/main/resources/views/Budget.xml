@@ -34,14 +34,14 @@
     <field name="inChargeUser"/>
     <field name="fromDate" readonlyIf="!$popup()"/>
     <field name="toDate" readonlyIf="!$popup()"/>
-    <field name="totalAmountExpected" aggregate="sum" title="Initial"/>
-    <field name="totalAmountCommitted" title="Total amount committed" aggregate="sum"/>
-    <field name="totalFirmGap" aggregate="sum"/>
-    <field name="realizedWithNoPo" aggregate="sum"/>
-    <field name="realizedWithPo" aggregate="sum"/>
-    <field name="simulatedAmount" aggregate="sum"/>
-    <field name="availableAmountWithSimulated" aggregate="sum"/>
-    <field name="availableAmount" title="Total amount available" aggregate="sum"/>
+    <field name="totalAmountExpected" aggregate="sum" title="Initial" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" title="Total amount committed" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalFirmGap" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="realizedWithNoPo" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="realizedWithPo" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="simulatedAmount" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmountWithSimulated" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmount" title="Total amount available" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect"/>
     <field name="sourceSelect"/>
@@ -49,6 +49,9 @@
     <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
     <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budgetLevel.parentBudgetLevel.globalBudget.versionNumber"/>
+    <field name="company" hidden="true"/>
+    <field name="company.currency" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-lines-grid" title="Budgets" model="com.axelor.apps.budget.db.Budget"
@@ -56,12 +59,15 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
-    <field name="totalAmountExpected"/>
-    <field name="totalAmountCommitted"/>
-    <field name="totalAmountRealized"/>
-    <field name="availableAmount"/>
+    <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountRealized" x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmount" x-scale="company.currency.numberOfDecimals "/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <field name="company" hidden="true"/>
+    <field name="company.currency" hidden="true"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
@@ -90,21 +96,22 @@
         onChange="action-budget-budget-validate-dates" required="true"/>
       <field name="company" hidden="true"/>
       <field name="company.currency" hidden="true"/>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
     </panel>
 
     <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" title="Initial"
       itemSpan="3">
-      <field name="totalAmountExpected"/>
-      <field name="availableAmount"/>
-      <field name="availableAmountWithSimulated"/>
-      <field name="simulatedAmount"/>
+      <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+      <field name="availableAmount" x-scale="company.currency.numberOfDecimals"/>
+      <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
+      <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
       <field name="totalAmountCommitted" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain')"/>
-      <field name="realizedWithNoPo"/>
-      <field name="realizedWithPo"/>
-      <field name="totalAmountPaid"/>
-      <field name="totalFirmGap"/>
-      <field name="totalAmountRealized" hidden="true"/>
+        if="__config__.app.isApp('supplychain')" x-scale="company.currency.numberOfDecimals"/>
+      <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+      <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+      <field name="totalAmountPaid" x-scale="company.currency.numberOfDecimals"/>
+      <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
+      <field name="totalAmountRealized" hidden="true" x-scale="company.currency.numberOfDecimals"/>
       <separator colSpan="12"/>
     </panel>
 
@@ -115,7 +122,7 @@
     <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
       colSpan="12" readonlyIf="statusSelect != 1">
       <field name="periodDurationSelect" colSpan="4"/>
-      <field name="amountForGeneration" colSpan="4"/>
+      <field name="amountForGeneration" colSpan="4" x-scale="company.currency.numberOfDecimals"/>
       <button name="generatePeriodsBtn" title="Generate periods"
         onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
       <separator colSpan="12"/>
