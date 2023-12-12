@@ -22,16 +22,15 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
       List<AddressTemplateLine> addressTemplateLineList,
       Map<String, Map<String, Object>> attrsMap) {
     List<String> addressFormFieldsList =
-        List.of("room", "floor", "streetNumber", "street", "streetName", "postBox", "city", "zip");
+            List.of("room", "floor", "streetNumber", "street", "streetName", "postBox", "city", "zip");
 
-    for (String field : addressFormFieldsList) {
-      this.addFieldHide(field, attrsMap);
-    }
+    // Iterate through addressFormFieldsList and call addFieldHide for each field
+    addressFormFieldsList.forEach(field -> addFieldHide(field, attrsMap));
 
-    for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
-      MetaField metaField = addressTemplateLine.getMetaField();
-      this.addFieldTitle(metaField.getName(), metaField.getLabel(), attrsMap);
-    }
+    // Iterate through addressTemplateLineList and call addFieldTitle for each MetaField
+    addressTemplateLineList.stream()
+            .map(AddressTemplateLine::getMetaField)
+            .forEach(metaField -> addFieldTitle(metaField.getName(), metaField.getLabel(), attrsMap));
   }
 
   @Override
