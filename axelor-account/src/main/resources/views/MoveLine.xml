@@ -546,15 +546,15 @@
             grid-view="management-object-grid" colSpan="6"/>
         </panel>
       </panel>
-        <panel name="cutOffPanel" title="Cut off period">
-            <field name="cutOffStartDate"
-                   validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
-                   onChange="action-move-line-method-set-is-cut-off-generated-false"/>
-            <field name="cutOffEndDate"
-                   validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
-                   onChange="action-move-line-method-set-is-cut-off-generated-false"/>
-            <field name="move.statusSelect" hidden="true"/>
-        </panel>
+      <panel name="cutOffPanel" title="Cut off period">
+        <field name="cutOffStartDate"
+          validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+          onChange="action-move-line-method-set-is-cut-off-generated-false"/>
+        <field name="cutOffEndDate"
+          validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+          onChange="action-move-line-method-set-is-cut-off-generated-false"/>
+        <field name="move.statusSelect" hidden="true"/>
+      </panel>
       <panel name="bankReconciliationPanel" title="Bank reconciliation"
         showIf="account.accountType.technicalTypeSelect == 'cash'" itemSpan="12">
         <field name="bankReconciledAmount" if-module="axelor-bank-payment" readonly="true"/>
@@ -564,7 +564,8 @@
       </panel>
       <panel name="detailsPanel" title="Détails">
         <panel name="currencyPanel" title="Currency" colSpan="6">
-          <field name="currencyAmount" title="Currency and exchange rate" x-scale="currencyDecimals">
+          <field name="currencyAmount" title="Currency and exchange rate"
+            x-scale="currencyDecimals">
             <viewer>
               <![CDATA[<><span>{currencyRate}</span> x <span>{$fmt('currencyAmount')}</span> <span>{move.currencyCode}</span></>]]>
             </viewer>
@@ -574,15 +575,15 @@
               <field name="currencyAmount" x-scale="currencyDecimals"
                 onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
               <field name="move.currencyCode" readonly="true"/>
-                <field name="currencyDecimals" hidden="true"/>
+              <field name="currencyDecimals" hidden="true"/>
             </editor>
           </field>
         </panel>
         <panel name="taxPanel" title="Tax" colSpan="6"
           showIf="account.isTaxRequiredOnMoveLine || account.accountType.technicalTypeSelect == 'tax'">
           <field name="taxLine" canEdit="false"
-            readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3" showIf="account.isTaxRequiredOnMoveLine"
-            colSpan="6" form-view="tax-line-form"
+            readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
+            showIf="account.isTaxRequiredOnMoveLine" colSpan="6" form-view="tax-line-form"
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv"/>
           <field name="vatSystemSelect"
