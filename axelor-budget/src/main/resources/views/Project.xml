@@ -97,7 +97,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
     <view name="budget-budget-distribution-purchase-order-line-global-dashlet-grid" type="grid"/>
     <view name="budget-budget-distribution-purchase-order-line-dashlet-form" type="form"/>
-    <domain>self.purchaseOrderLine.purchaseOrder.budgetLevel.id = :_globalId</domain>
+    <domain>self.purchaseOrderLine.purchaseOrder.globalBudget.id = :_globalId</domain>
     <context name="_globalId" expr="eval: budget.id"/>
   </action-view>
 

@@ -9,9 +9,6 @@
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
 
-    <integer name="budgetTypeSelect" selection="budget.level.budget.type.select" default="1"
-      title="Budget type select"/>
-
     <date name="startDate" title="Start Date"/>
     <date name="endDate" title="End Date"/>
 
@@ -81,9 +78,6 @@
       help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
     </decimal>
 
-    <integer name="checkAvailableSelect" title="Check available amount"
-      selection="budget.budget.level.check.available"/>
-
     <string name="parentId" search="parentBudgetLevel">
          <![CDATA[
          if (parentBudgetLevel != null && parentBudgetLevel.getId() != null){
@@ -121,12 +115,6 @@
 				public static final String BUDGET_LEVEL_TYPE_SELECT_BUDGET = "budget";
 				public static final String BUDGET_LEVEL_TYPE_SELECT_TEMPLATE = "template";
 
-				//budget level budget type select
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE = 1;
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE = 2;
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT = 3;
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
-
 				//budget level status select
 				public static final String BUDGET_LEVEL_STATUS_SELECT_DRAFT = "draft";
 				public static final String BUDGET_LEVEL_STATUS_SELECT_VALID = "valid";
@@ -143,14 +131,6 @@
 	         //budget level sub category select
 	         public static final String BUDGET_LEVEL_SUB_CATEGORY_PROJECT = "proj";
 	         public static final String BUDGET_LEVEL_SUB_CATEGORY_SERVICE = "service";
-
-
-				//budget level type select
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP = 4;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_GLOBAL_BUDGET = 5;
 	      ]]>
     </extra-code>
   </entity>

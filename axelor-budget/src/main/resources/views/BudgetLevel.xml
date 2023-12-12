@@ -166,7 +166,6 @@
     <field name="startDate" expr="eval: __parent__?.startDate"/>
     <field name="endDate" expr="eval: __parent__?.endDate"/>
     <field name="company" expr="eval: __parent__?.company"/>
-    <field name="budgetTypeSelect" expr="eval: __parent__?.budgetTypeSelect"/>
   </action-record>
 
   <action-record name="action-budget-level-template-record-onnew"
