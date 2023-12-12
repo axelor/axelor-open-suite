@@ -24,24 +24,29 @@
     <string name="comments" title="Comment" large="true"/>
 
     <decimal name="totalAmountExpected" title="Expected amount"
-      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."/>
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
+      precision="20" scale="3"/>
     <decimal name="totalAmountCommitted" title="Committed amount"
-      help="Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice."/>
-    <decimal name="totalAmountRealized" title="Realized total amount"/>
-    <decimal name="totalAmountPaid" title="Paid total amount"/>
+      help="Represents the sum of orders of status requested, validated or finished and that don't have a invoiced invoice."
+      precision="20" scale="3"/>
+    <decimal name="totalAmountRealized" title="Realized total amount" precision="20"
+      scale="3"/>
+    <decimal name="totalAmountPaid" title="Paid total amount" precision="20" scale="3"/>
     <decimal name="totalAmountAvailable" title="Available amount"
-      help="Represents the expected amount minus the sum of realized amounts."/>
-    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the expected amount minus the sum of realized amounts." precision="20"
+      scale="3"/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="3"
       help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
-    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="3"
       help="Represents the sum of ventilated invoices with an order."/>
-    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="2"
+    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="3"
       help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
     <decimal name="simulatedAmount" title="Simulated amount"
-      help="Represents the sum of moves of status simulated."/>
+      help="Represents the sum of moves of status simulated." precision="20" scale="3"/>
     <decimal name="availableAmountWithSimulated"
       title="Available amount with simulated moves"
-      help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
+      help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated."
+      precision="20" scale="3">
     </decimal>
 
     <one-to-many name="budgetList" ref="com.axelor.apps.budget.db.Budget" title="Budget"
