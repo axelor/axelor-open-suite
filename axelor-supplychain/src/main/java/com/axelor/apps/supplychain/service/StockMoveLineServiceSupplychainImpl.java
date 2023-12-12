@@ -53,7 +53,6 @@ import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
-import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
