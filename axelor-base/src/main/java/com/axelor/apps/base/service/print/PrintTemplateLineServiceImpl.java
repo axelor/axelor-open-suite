@@ -65,7 +65,7 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
     String resultOfContent = null;
 
     Locale locale =
-        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLanguage())
+        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLocalization().getLanguage())
             .map(Language::getCode)
             .map(Locale::new)
             .orElseGet(AppFilter::getLocale);

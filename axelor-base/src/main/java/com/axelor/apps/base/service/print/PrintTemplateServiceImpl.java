@@ -104,7 +104,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     LOG.debug("");
 
     Locale locale =
-        Optional.ofNullable(printTemplate.getLanguage())
+        Optional.ofNullable(printTemplate.getLocalization().getLanguage())
             .map(Language::getCode)
             .map(Locale::new)
             .orElseGet(AppFilter::getLocale);
@@ -118,7 +118,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     print.setMetaModel(metaModel);
     print.setObjectId(objectId);
     print.setCompany(printTemplate.getCompany());
-    print.setLanguage(printTemplate.getLanguage());
+    print.setLocalization(printTemplate.getLocalization());
     print.setHidePrintSettings(printTemplate.getHidePrintSettings());
     print.setFormatSelect(printTemplate.getFormatSelect());
     print.setDisplayTypeSelect(printTemplate.getDisplayTypeSelect());

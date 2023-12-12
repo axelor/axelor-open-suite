@@ -45,7 +45,8 @@
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
 
         <field name="localization" title="Localization"
-          onChange="action-base-user-record-change-language"/>
+          onChange="action-base-user-record-change-language" form-view="localization-form"
+          grid-view="localization-grid"/>
         <field name="language" hidden="true"/>
 
         <field name="theme" widget="theme-select"/>
@@ -167,6 +168,9 @@
         <field name="group" placeholder="user group"/>
         <field name="email" widget="Email"
           showIf="!$readonly() || ($readonly() &amp;&amp; email != null)"/>
+        <field name="localization" title="Localization"
+          onChange="action-base-user-record-change-language" form-view="localization-form"
+          grid-view="localization-grid"/>
         <field name="language"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
@@ -314,6 +318,8 @@
     onNew="action-user-attrs" onLoad="action-user-attrs">
     <panel name="userPreferencesPanel" title="User preferences" itemSpan="12">
       <field name="image" showTitle="false"/>
+      <field name="localization" title="Localization" grid-view="localization-grid"
+        form-view="localization-form"/>
       <field name="language"/>
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
         widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>

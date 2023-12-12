@@ -230,7 +230,6 @@
     <bind to="isContact" eval="isContact == 'true' ? true : false"/>
     <bind to="isCustomer" eval="isCustomer == 'true' ? true : false"/>
     <bind to="isSupplier" eval="isSupplier == 'true' ? true : false"/>
-    <bind to="language" search="self.code = :languageCode"/>
   </input>
 
   <input file="base_company.csv" separator=";" type="com.axelor.apps.base.db.Company"

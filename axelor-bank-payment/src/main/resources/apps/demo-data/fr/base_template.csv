@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"localization.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 "Ebics certificate";"EbicsCertificate";2;;;;"true";"bank";"Le certificat EBICS arrive bientôt à expiration";"<p>Bonjour,</p> 
 
 <p>Le Certificat $EbicsCertificate.typeSelect$ EBICS suivant arrive à expiration le $EbicsCertificate.validTo$ :</p>

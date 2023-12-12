@@ -70,7 +70,6 @@
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
-    <bind to="language" search="self.code = :languageCode"/>
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
       search="self.importId in :birtTemplateSet_importId"
       eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
@@ -146,7 +145,6 @@
     <bind to="inPaymentMode" column="inPaymentMode.importId" if="false"/>
     <bind to="outPaymentMode" column="outPaymentMode.importId" if="false"/>
     <bind to="paymentCondition" column="paymentCondition.importId" if="false"/>
-    <bind to="language" search="self.code = :languageCode"/>
   </input>
 
   <!-- A BESOIN DE PARTNER -->

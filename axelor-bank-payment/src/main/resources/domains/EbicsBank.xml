@@ -15,7 +15,8 @@
     <string name="emailAddress" title="Email"/>
     <string name="url" title="URL"/>
 
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization"/>
 
     <integer name="certValidityPeriodSelect" title="Certificate validity period(Years)"
       default="5" selection="bankpayment.ebics.bank.certificate.validity.period.select"/>
@@ -44,7 +45,7 @@
       <field name="fax" on="UPDATE"/>
       <field name="emailAddress" on="UPDATE"/>
       <field name="url" on="UPDATE"/>
-      <field name="language" on="UPDATE"/>
+      <field name="localization" on="UPDATE"/>
       <field name="certValidityPeriodSelect" on="UPDATE"/>
       <field name="ebicsCertificateList" on="UPDATE"/>
       <field name="protocolSelect" on="UPDATE"/>
