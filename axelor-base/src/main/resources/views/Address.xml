@@ -59,7 +59,7 @@
         <field name="isUsed" hidden="true" type="boolean"/>
         <field name="isValidLatLong" hidden="true"/>
       </panel>
-      <field name="formattedFullName" readonly="true" height="4" colSpan="12"/>
+      <field name="formattedFullName" readonly="true" height="4" colSpan="12" hidden="true"/>
     </panel>
     <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"
       if="__config__.app.getApp('base')?.getHasQasValidation()">
@@ -129,7 +129,7 @@
         <field name="isValidLatLong" hidden="true"/>
       </panel>
 
-      <field name="formattedFullName" readonly="true" height="4" colSpan="12"/>
+      <field name="formattedFullName" readonly="true" height="4" colSpan="12" hidden="true"/>
 
     </panel>
     <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"

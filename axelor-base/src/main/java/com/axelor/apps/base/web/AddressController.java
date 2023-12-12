@@ -381,6 +381,8 @@ public class AddressController {
         response.setAttr(metaField.getName(), "hidden", false);
         response.setAttr(metaField.getName(), "title", metaField.getLabel());
       }
+
+      response.setAttr("formattedFullName", "hidden", false);
     }
   }
 }
