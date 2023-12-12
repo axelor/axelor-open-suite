@@ -255,7 +255,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
                     + "from ImportExportTranslation iet "
                     + "left join iet.languageSet ls "
                     + "where iet.id = :curId"
-                    + ") ")
+                    + ") "
+                    + "order by mt.id ")
             .setParameter("curId", importExportTranslation.getId());
     translationRecordsQuery.setFirstResult(offset);
     translationRecordsQuery.setMaxResults(FETCH_LIMIT);

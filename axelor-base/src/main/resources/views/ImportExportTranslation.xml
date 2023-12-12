@@ -16,7 +16,7 @@
     <panel name="infoPanel" colSpan="12">
       <field name="name" title="Name" required="true"/>
       <field name="languageSet" title="Languages" widget="tagSelect" required="true"
-        domain="self.isNative = false" canNew="false"/>
+        canNew="false"/>
     </panel>
     <panel sidebar="true" name="importExportPanel" title="Import/Export" showTitle="false"
       colSpan="12">
