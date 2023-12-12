@@ -31,7 +31,7 @@ public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoin
   public void setManufOrderOnOutgoingMove(ManufOrder manufOrder) {
     Objects.requireNonNull(manufOrder);
     if (!appSupplychainService.getAppSupplychain().getAutoFillDeliveryRealQty()
-        && appSupplychainService.getAppSupplychain().getDeliveriesHeritateFromManufOrder()
+        && appSupplychainService.getAppSupplychain().getDeliveriesCopyFromManufOrder()
         && !ObjectUtils.isEmpty(manufOrder.getProducedStockMoveLineList())
         && !ObjectUtils.isEmpty(manufOrder.getSaleOrderSet())) {
 
@@ -44,7 +44,7 @@ public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoin
               + " AND self.saleOrderLine = :saleOrderLine"
               + " AND self.stockMove != null"
               + " AND self.stockMove.statusSelect < :stockMoveStatusRealized"
-              + " AND self.heritatedManufOrder = null";
+              + " AND self.copiedManufOrder = null";
 
       List<StockMoveLine> deliveryStockMoveLinesToComplete =
           stockMoveLineRepository
@@ -65,7 +65,7 @@ public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoin
       for (StockMoveLine producedStockMoveLine : producedStockMoveLinesToDeliver) {
         StockMoveLine stockMoveLineToComplete =
             deliveryStockMoveLinesToComplete.stream()
-                .filter(it -> it.getHeritatedManufOrder() == null)
+                .filter(it -> it.getCopiedManufOrder() == null)
                 .findAny()
                 .orElse(null);
 
@@ -88,7 +88,7 @@ public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoin
     stockMoveLineToComplete.setTrackingNumber(producedStockMoveLine.getTrackingNumber());
     stockMoveLineToComplete.setNetMass(producedStockMoveLine.getNetMass());
     stockMoveLineToComplete.setTotalNetMass(producedStockMoveLine.getTotalNetMass());
-    stockMoveLineToComplete.setHeritatedManufOrder(manufOrder);
+    stockMoveLineToComplete.setCopiedManufOrder(manufOrder);
     stockMoveLineRepository.save(stockMoveLineToComplete);
   }
 

@@ -9,7 +9,7 @@
 
     <extend target="//field[@name='autoFillDeliveryRealQty']">
       <insert position="after">
-        <field name="deliveriesHeritateFromManufOrder" widget="boolean-switch" colSpan="4"
+        <field name="deliveriesCopyFromManufOrder" widget="boolean-switch" colSpan="4"
           showIf="!autoFillDeliveryRealQty"/>
       </insert>
     </extend>

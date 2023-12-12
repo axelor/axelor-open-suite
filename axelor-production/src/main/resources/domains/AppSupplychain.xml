@@ -7,8 +7,8 @@
 
   <entity name="AppSupplychain" cacheable="true">
 
-    <boolean name="deliveriesHeritateFromManufOrder"
-      title="Deliveries heritate from manufacturing order."/>
+    <boolean name="deliveriesCopyFromManufOrder"
+      title="Deliveries copy from manufacturing order."/>
   </entity>
 
 </domain-models>
