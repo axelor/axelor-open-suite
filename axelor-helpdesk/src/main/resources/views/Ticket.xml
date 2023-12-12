@@ -226,12 +226,18 @@
 
   <action-record name="action-ticket-record-to-fill-startDate"
     model="com.axelor.apps.helpdesk.db.Ticket">
-    <field name="startDateT" expr="eval: __datetime__"/>
+    <field name="startDateT"
+      expr="eval: __config__.app.getTodayDateTime(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="startDateT" expr="eval: __config__.app.getTodayDateTime(null)"/>
   </action-record>
 
   <action-record name="action-ticket-record-to-fill-endDate"
     model="com.axelor.apps.helpdesk.db.Ticket">
-    <field name="endDateT" expr="eval: __datetime__"/>
+    <field name="endDateT"
+      expr="eval:eval: __config__.app.getTodayDateTime(__user__.activeCompany)"
+      if="__user__.activeCompany != null"/>
+    <field name="endDateT" expr="eval:eval: __config__.app.getTodayDateTime(null)"/>
   </action-record>
 
   <action-record name="action-ticket-record-set-customer"
