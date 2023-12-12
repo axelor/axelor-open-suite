@@ -21,6 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.AddressTemplate;
+import com.axelor.apps.base.db.AddressTemplateLine;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
@@ -36,6 +37,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
@@ -60,6 +62,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -81,7 +84,7 @@ public class AddressServiceImpl implements AddressService {
   @Inject protected CityRepository cityRepository;
   @Inject protected StreetRepository streetRepository;
   @Inject protected AppBaseService appBaseService;
-
+  @Inject protected AddressAttrsService addressAttrsService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -385,6 +388,24 @@ public class AddressServiceImpl implements AddressService {
       addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
     }
     return Pair.of(totalAddressFormatted, countExceptions);
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
+      Address address) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    if (ObjectUtils.notEmpty(
+        address.getCountry().getAddressTemplate().getAddressTemplateLineList())) {
+      List<AddressTemplateLine> addressTemplateLineList =
+          address.getCountry().getAddressTemplate().getAddressTemplateLineList();
+      addressAttrsService.addHiddenAndTitle(addressTemplateLineList, attrsMap);
+      for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
+        addressAttrsService.addFieldUnhide(addressTemplateLine.getMetaField().getName(), attrsMap);
+      }
+    }
+
+    return attrsMap;
   }
 
   @Transactional(rollbackOn = {Exception.class})

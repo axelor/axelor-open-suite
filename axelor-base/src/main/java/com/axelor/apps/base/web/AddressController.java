@@ -40,7 +40,6 @@ import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.db.MetaField;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -374,15 +373,10 @@ public class AddressController {
     if (address.getCountry() != null) {
       List<AddressTemplateLine> addressTemplateLineList =
           address.getCountry().getAddressTemplate().getAddressTemplateLineList();
-
-      for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
-        MetaField metaField = addressTemplateLine.getMetaField();
-        LOG.info("Meta Field added: {}", metaField.getLabel());
-        response.setAttr(metaField.getName(), "hidden", false);
-        response.setAttr(metaField.getName(), "title", metaField.getLabel());
-      }
-
-      response.setAttr("formattedFullName", "hidden", false);
+      AddressService addressService = Beans.get(AddressService.class);
+      Map<String, Map<String, Object>> attrsMap =
+          addressService.getCountryAddressMetaFieldOnChangeAttrsMap(address);
+      response.setAttrs(attrsMap);
     }
   }
 }

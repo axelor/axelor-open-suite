@@ -66,6 +66,8 @@ import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AddressAttrsService;
+import com.axelor.apps.base.service.AddressAttrsServiceImpl;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
@@ -415,5 +417,6 @@ public class BaseModule extends AxelorModule {
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(CountryService.class).to(CountryServiceImpl.class);
+    bind(AddressAttrsService.class).to(AddressAttrsServiceImpl.class);
   }
 }

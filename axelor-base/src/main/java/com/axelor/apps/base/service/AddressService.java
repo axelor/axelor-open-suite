@@ -120,4 +120,7 @@ public interface AddressService {
    * @param countries
    */
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countries);
+
+  public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
+      Address address);
 }
