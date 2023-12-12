@@ -352,10 +352,10 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-stock-move-domain">
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.saleOrder = :customerSaleOrder &quot;"
+      expr="eval: &quot; :customerSaleOrder MEMBER OF self.saleOrderSet  &quot;"
       if="qi?.qiDetection?.origin == 3"/>
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.purchaseOrder = :supplierPurchaseOrder &quot;"
+      expr="eval: &quot; :supplierPurchaseOrder MEMBER OF self.purchaseOrderSet &quot;"
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 

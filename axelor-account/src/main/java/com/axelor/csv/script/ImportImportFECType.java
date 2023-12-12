@@ -20,18 +20,12 @@ package com.axelor.csv.script;
 
 import com.axelor.apps.account.db.ImportFECType;
 import com.axelor.apps.account.db.repo.ImportFECTypeRepository;
+import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
 import com.axelor.common.StringUtils;
-import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.nio.file.Path;
 import java.util.Map;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +33,7 @@ public class ImportImportFECType {
 
   private final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   @Inject private ImportFECTypeRepository importFECTypeRepository;
-  @Inject MetaFiles metaFiles;
+  @Inject ImportFECTypeService importFECTypeService;
 
   @Transactional
   public Object importFECType(Object bean, Map<String, Object> values) {
@@ -50,23 +44,8 @@ public class ImportImportFECType {
     String fileName = (String) values.get("bindMetaFile_name");
 
     if (!StringUtils.isEmpty(fileName)) {
-      final Path path = (Path) values.get("__path__");
-
       try {
-        File xmlFile = File.createTempFile(String.format("input-config-%s", fileName), ".xml");
-        InputStream bindFileInputStream =
-            this.getClass().getResourceAsStream("/FEC-config/" + fileName);
-        FileOutputStream outputStream = new FileOutputStream(xmlFile);
-        IOUtils.copy(bindFileInputStream, outputStream);
-        if (xmlFile != null) {
-          importFECType.setBindMetaFile(metaFiles.upload(xmlFile));
-        } else {
-          LOG.debug(
-              "No xml file found: {}",
-              xmlFile == null ? path.toAbsolutePath() : xmlFile.getAbsolutePath());
-        }
-        FileUtils.forceDelete(xmlFile);
-
+        importFECType.setBindMetaFile(importFECTypeService.getBindMetaFile(fileName));
       } catch (Exception e) {
         LOG.error("Error when import fec type bind meta file : {}", e);
       }
