@@ -22,13 +22,16 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -38,7 +41,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class TicketServiceImpl implements TicketService {
 
@@ -56,6 +61,8 @@ public class TicketServiceImpl implements TicketService {
 
   protected TicketStatusService ticketStatusService;
 
+  protected AppBaseService appBaseService;
+
   private LocalDateTime toDate;
 
   @Inject
@@ -66,7 +73,8 @@ public class TicketServiceImpl implements TicketService {
       SlaRepository slaRepo,
       PublicHolidayService publicHolidayService,
       WeeklyPlanningService weeklyPlanningService,
-      TicketStatusService ticketStatusService) {
+      TicketStatusService ticketStatusService,
+      AppBaseService appBaseService) {
     this.sequenceService = sequenceService;
     this.appHelpdeskRepo = appHelpdeskRepo;
     this.ticketRepo = ticketRepo;
@@ -74,6 +82,7 @@ public class TicketServiceImpl implements TicketService {
     this.publicHolidayService = publicHolidayService;
     this.weeklyPlanningService = weeklyPlanningService;
     this.ticketStatusService = ticketStatusService;
+    this.appBaseService = appBaseService;
   }
 
   /** Generate sequence of the ticket. */
@@ -97,9 +106,10 @@ public class TicketServiceImpl implements TicketService {
 
     AppHelpdesk helpdesk = appHelpdeskRepo.all().fetchOne();
     Sla sla = null;
+
     if (helpdesk.getIsSla()) {
 
-      sla =
+      List<Sla> potentialSlaList =
           slaRepo
               .all()
               .filter(
@@ -116,7 +126,23 @@ public class TicketServiceImpl implements TicketService {
                       : ticket.getAssignedToUser().getActiveTeam(),
                   ticket.getPrioritySelect(),
                   ticket.getTicketType())
-              .fetchOne();
+              .fetch();
+
+      sla =
+          potentialSlaList.stream()
+              .filter(
+                  _sla ->
+                      ticket.getTicketStatus().getPriority()
+                          < Optional.ofNullable(_sla.getReachStageTicketStatus())
+                              .map(TicketStatus::getPriority)
+                              .orElse(0))
+              .min(
+                  Comparator.comparingInt(
+                      sla2 ->
+                          Optional.ofNullable(sla2.getReachStageTicketStatus())
+                              .map(TicketStatus::getPriority)
+                              .orElse(0)))
+              .orElse(null);
     }
     ticket.setSlaPolicy(sla);
     return sla;
@@ -128,6 +154,8 @@ public class TicketServiceImpl implements TicketService {
 
     if (sla != null) {
       this.computeDeadLine(ticket, sla);
+    } else {
+      ticket.setDeadlineDateT(null);
     }
   }
 
@@ -140,18 +168,18 @@ public class TicketServiceImpl implements TicketService {
    */
   protected void computeDeadLine(Ticket ticket, Sla sla) throws AxelorException {
 
-    if (sla.getIsWorkingDays()
-        && ticket.getAssignedToUser() != null
-        && ticket.getAssignedToUser().getActiveCompany() != null
-        && ticket.getAssignedToUser().getActiveCompany().getWeeklyPlanning() != null
-        && ticket.getAssignedToUser().getActiveCompany().getPublicHolidayEventsPlanning() != null) {
+    // Check assignedUserCompany -> Current user company -> else null
+    Company company =
+        Optional.ofNullable(ticket.getAssignedToUser())
+            .map(User::getActiveCompany)
+            .orElse(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
 
+    if (sla.getIsWorkingDays() && company != null && company.getWeeklyPlanning() != null) {
       if (sla.getDays() > 0) {
         LocalDateTime fromDate = ticket.getStartDateT().plusDays(1);
-        this.calculateWorkingDays(
-            fromDate, ticket.getAssignedToUser().getActiveCompany(), sla.getDays());
+        this.calculateWorkingDays(fromDate, company, sla.getDays());
         ticket.setDeadlineDateT(toDate.plusHours(sla.getHours()));
-
       } else {
         ticket.setDeadlineDateT(ticket.getStartDateT().plusHours(sla.getHours()));
       }
