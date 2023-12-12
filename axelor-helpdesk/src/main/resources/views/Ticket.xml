@@ -126,9 +126,8 @@
       <panel name="slaPanel" showTitle="false">
         <field name="slaPolicy" colSpan="12"
           hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority"
-          readonly="true"
-        if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
-      <field name="slaPolicy.reachStageTicketStatus" readonly="true" title="Stage to reach"/>
+          readonly="true" if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
+        <field name="slaPolicy.reachStageTicketStatus" readonly="true" title="Stage to reach"/>
       </panel>
       <field name="deadlineDateT" colSpan="6"/>
       <field name="isSlaCompleted" hidden="true"/>
@@ -271,7 +270,7 @@
   </action-group>
 
   <action-group name="action-ticket-group-on-load">
-      <action name="action-ticket-method-update-dummy-status"/>
+    <action name="action-ticket-method-update-dummy-status"/>
     <action name="action-ticket-group-timer-process"/>
     <action name="action-ticket-attrs-set-hide-readonly-sla"/>
 
