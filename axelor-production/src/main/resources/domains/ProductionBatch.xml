@@ -20,10 +20,15 @@
       mappedBy="productionBatch" title="Batchs"/>
     <date name="valuationDate" title="Valuation date"/>
 
+    <!-- SOP FORECAST -->
+    <many-to-many name="sopSet" ref="com.axelor.apps.production.db.Sop"
+      title="S&amp;OP"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
 		public static final int ACTION_COMPUTE_WORK_IN_PROGRESS_VALUATION = 1;
+		public static final int ACTION_FILL_SOP_REAL_VALUES = 2;
 
 	]]></extra-code>
 
