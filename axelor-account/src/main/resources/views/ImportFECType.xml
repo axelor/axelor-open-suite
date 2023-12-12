@@ -27,7 +27,7 @@
   <form name="reload-binding-file-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Reload standard binding file">
     <panel name="mainPanel">
-      <field name="$bindingFileName" title="Binding file name" type="string"
+      <field name="$bindingFileName" title="Binding file" type="string"
         selection="account.import.fec.type.select"/>
       <button name="confirmBtn" title="Confirm" readonlyIf="!$bindingFileName"
         onClick="action-wizard-method-set-standard-binding-file,close"/>
