@@ -365,7 +365,8 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
-    Query<Address> query = addressRepo.all().filter("self.country.id in ?1", countryIds);
+    Query<Address> query =
+        addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds).order("id");
 
     int offset = 0;
     int countExceptions = 0;
