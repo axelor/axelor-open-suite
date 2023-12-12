@@ -24,8 +24,11 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
     List<String> addressFormFieldsList =
             List.of("room", "floor", "streetNumber", "street", "streetName", "postBox", "city", "zip");
 
-    // Iterate through addressFormFieldsList and call addFieldHide for each field
-    addressFormFieldsList.forEach(field -> addFieldHide(field, attrsMap));
+    if(addressTemplateLineList.isEmpty()){
+      addressFormFieldsList.forEach(field -> addFieldUnhide(field, attrsMap));
+    } else{
+      addressFormFieldsList.forEach(field -> addFieldHide(field, attrsMap));
+    }
 
     // Iterate through addressTemplateLineList and call addFieldTitle for each MetaField
     addressTemplateLineList.stream()

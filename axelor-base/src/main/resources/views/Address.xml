@@ -26,7 +26,7 @@
           placeholder="e.g. Financial department, CEO"/>
         <field name="floor" x-bind="{{floor|uppercase}}"
           placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-        <field name="streetNumber" x-bind="{{streetNumber|uppercase}}"
+        <field name="buildingNumber" x-bind="{{buildingNumber|uppercase}}"
           onChange="action-address-record-change-addressL4"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="street" onSelect="action-address-attrs-update-domain-street"
@@ -87,7 +87,7 @@
           placeholder="e.g. Financial department, CEO"/>
         <field name="floor" x-bind="{{floor|uppercase}}"
           placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-        <field name="streetNumber" x-bind="{{streetNumber|uppercase}}"
+        <field name="buildingNumber" x-bind="{{buildingNumber|uppercase}}"
           onChange="action-address-record-change-addressL4"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="street" onSelect="action-address-attrs-update-domain-street"
@@ -175,6 +175,8 @@
     <field name="country" expr="eval: city?.country" if="city"/>
     <field name="zip" expr="eval: city?.zip"/>
     <field name="street" expr="eval: null"/>
+    <field name="townName" expr="eval: city.name"/>
+    <field name="streetName" expr="eval: street.name"/>
   </action-record>
 
   <action-record name="default-address-country-record"
