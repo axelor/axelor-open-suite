@@ -2565,6 +2565,7 @@
 "Please fill printing settings on following invoices: %s",,,
 "Please fill printing settings on invoice %s.",,,
 "Please input values between 1 to 100",,,
+"Please make sur that the account %s being used can be reconciled and used for partner balance.",,,
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.",,,
 "Please make sure that the journal configured for annual closure and openning, does support simulated moves.",,,
 "Please pay attention that invoice terms will be updated except the terms already reconciled.",,,

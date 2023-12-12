@@ -2565,6 +2565,7 @@
 "Please fill printing settings on following invoices: %s","Merci de remplir les paramètres d'impressions sur les factures suivantes : %s",,
 "Please fill printing settings on invoice %s.","Merci de remplir les paramètres d'impressions sur la facture %s",,
 "Please input values between 1 to 100","Veuillez saisir une valeur comprise entre 1 et 100,",,
+"Please make sur that the account %s being used can be reconciled and used for partner balance.","Merci de vous assurer que le compte %s utilisé est bien lettrable et utilisable pour le solde des tiers.",,
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.","Merci de vous assurer que le compte client utilisé est bien lettrable et utilisable pour le solde des tiers.",,
 "Please make sure that the journal configured for annual closure and openning, does support simulated moves.","Veuillez vérifier en amont que le journal configuré pour la clôture et ouverture annuelle autorise la génération d'écritures au statut simulé.",,
 "Please pay attention that invoice terms will be updated except the terms already reconciled.","Attention, les lignes d’échéances vont être mises à jour exceptées les échéances lettrées.",,
