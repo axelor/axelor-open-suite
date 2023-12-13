@@ -113,6 +113,10 @@
     <many-to-one name="stockLocationBirtTemplate" title="Stock location template"
       ref="com.axelor.apps.base.db.BirtTemplate"/>
 
+    <boolean name="isMassStockMoveManaged" title="Mass move enabled"/>
+    <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
+      title="Transition location (cart)"/>
+
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
@@ -178,6 +182,9 @@
       <field name="conformityCertificateBirtTemplate" on="UPDATE"/>
       <field name="inventoryBirtTemplate" on="UPDATE"/>
       <field name="stockLocationBirtTemplate" on="UPDATE"/>
+
+      <field name="isMassStockMoveManaged" on="UPDATE"/>
+      <field name="cartStockLocation" on="UPDATE"/>
     </track>
   </entity>
 
