@@ -8,3 +8,4 @@
 8;"inventory";"Inventaire N°";1;4;"INV%M%YY";;1;0
 9;"productTrackingNumber";"Numéro de suivi";1;4;"TN";;1;0
 203;"logisticalForm";"Fiche logistique";1;4;"FL";;1;0
+2040;"massStockMove";"Déplacement en masse";1;3;"MM%YY%FM";;1;1
