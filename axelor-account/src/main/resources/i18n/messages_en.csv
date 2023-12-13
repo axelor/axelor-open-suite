@@ -204,6 +204,7 @@
 "A new record of fixed asset will be generated based on the split amount. Current fixed asset will be recalculated based on the remaining gross value amount.",,,
 "A new record of fixed asset will be generated based on the split quantity. Current fixed asset will be recalculated based on the remaining quantity.",,,
 "A payment mode already exists with the same information.",,,
+"A payment on invoice term %s is being attempted but its PFP has been refused.",,,
 "A previous result can be used with its code, but it can only be elements of the same type.",,,
 "A reverse charge tax is required on the fiscal position %s (From tax : %s - To tax : %s).",,,
 "A sequence already exists on this code for this company and this sequence have to be unique",,,
