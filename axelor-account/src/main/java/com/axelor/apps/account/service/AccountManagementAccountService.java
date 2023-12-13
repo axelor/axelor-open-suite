@@ -91,8 +91,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
       Journal journal,
       int vatSystemSelect,
       int functionalOrigin,
-      boolean isFixedAssets,
-      boolean isFinancialDiscount)
+      boolean isFixedAssets)
       throws AxelorException;
 
   boolean areAllAccountsOfType(List<Account> accountList, String type);

@@ -8,21 +8,21 @@
   <entity name="InvoiceLineTax">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
-    <decimal name="exTaxBase" scale="2" precision="20" title="Base W.T."/>
-    <decimal name="taxTotal" scale="2" precision="20" title="Amount Tax"/>
-    <decimal name="inTaxTotal" scale="2" precision="20" title="Amount A.T.I."/>
-    <decimal name="companyExTaxBase" scale="2" precision="20"
+    <decimal name="exTaxBase" scale="3" precision="20" title="Base W.T."/>
+    <decimal name="taxTotal" scale="3" precision="20" title="Amount Tax"/>
+    <decimal name="inTaxTotal" scale="3" precision="20" title="Amount A.T.I."/>
+    <decimal name="companyExTaxBase" scale="3" precision="20"
       title="Base W.T. in Acc. currency." hidden="true"/>
-    <decimal name="companyTaxTotal" scale="2" precision="20"
+    <decimal name="companyTaxTotal" scale="3" precision="20"
       title="Amount Tax in Acc. currency" hidden="true"/>
-    <decimal name="companyInTaxTotal" scale="2" precision="20"
+    <decimal name="companyInTaxTotal" scale="3" precision="20"
       title="Amount A.T.I. in Acc. currency" hidden="true"/>
     <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
     <boolean name="reverseCharged"/>
-    <decimal name="subTotalExcludingFixedAssets"/>
-    <decimal name="subTotalOfFixedAssets"/>
-    <decimal name="companySubTotalExcludingFixedAssets"/>
-    <decimal name="companySubTotalOfFixedAssets"/>
+    <decimal name="subTotalExcludingFixedAssets" scale="3" precision="20"/>
+    <decimal name="subTotalOfFixedAssets" scale="3" precision="20"/>
+    <decimal name="companySubTotalExcludingFixedAssets" scale="3" precision="20"/>
+    <decimal name="companySubTotalOfFixedAssets" scale="3" precision="20"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.invoice.line.tax.select" default="0"/>
   </entity>

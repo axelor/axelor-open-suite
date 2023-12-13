@@ -83,7 +83,7 @@ public class TicketServiceImpl implements TicketService {
     if (Strings.isNullOrEmpty(ticket.getTicketSeq())) {
       String ticketSeq =
           sequenceService.getSequenceNumber(
-              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq");
+              SequenceRepository.TICKET, null, Ticket.class, "ticketSeq", ticket);
       ticket.setTicketSeq(ticketSeq);
     }
   }

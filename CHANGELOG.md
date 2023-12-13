@@ -1,3 +1,134 @@
+## [7.2.4] (2023-12-07)
+
+#### Fixed
+
+* Quality Module: added demo data for quality module 7.2 features.
+* Budget : Add currency symbol for budgetDistributionSumAmount field
+* Sale order: fixed JNPE error when copying a sale order without lines.
+* Purchase request: fixed reference to purchase order being copied on duplication.
+* CRM: added demo data for the search functionality.
+* Opportunity: fixed "create Call" button so it correctly sets the type of event to Call.
+* Studio: fixed wrong french translation for "Order By".
+* Accounting batch: hide unnecessary payment mode information.
+* Sequence: prevented JNPE error on sequence form view when the prefix was empty.
+* Translation: French translation conflict correction with 'Manual'.
+* MRP: fixed invalid type error when selecting a product from (sale/purchase) order line.
+* Sale order: fixed wrong price update when generating quotation from template.
+* Move line: hid cut off information when functional origin is 'opening', 'closure' or 'cut off'.
+* Custom accounting report: fixed detailed line with fetching accounts from their code displaying the same value.
+* Team task: fixed view reload error.
+* Indicator generator: fixed indicators generators demo data.
+* Invoice: fixed reference to subrogation release being copied on duplication.
+* Message: fixed encoding errors happening with accented characters when sending an email.
+* Fixed asset: accounting report now correctly takes into account fiscal already depreciated amount.
+* Custom accounting report: fixed some configs being displayed whilst not being used.
+* Configurator: fixed EN demo data for configurator.
+* Bank Details: fixed balance display for bank details on card view and form view.
+* Invoice: fixed error popup before opening a payment voucher from an invoice.
+* Doubtful customer: fixed the way invoice terms are managed.
+* Invoice: fixed invoice term generation when skip ventilation is enabled in invoicing configuration.
+* Contract: fixed UI issue by hiding some part of the view while the partner is empty.
+* Account management: use functional origin instead of journal to determine tax account.
+* Employee files: creating an Employee files from a Training Skill now correctly creates the PDF viewer.
+* Invoice: fixed error at new invoice term creation.
+* Invoice: fixed reference to "Refusal to pay reason" being copied on invoice duplication.
+* Timesheet: fixed timesheet line date check.
+* Stock move: allow to create a tracking number directly on stock move line.
+* Cost calculation: fixed an issue preventing an infinite loop in case of an error in bill of materials hierarchy.
+* FEC Import: fixed the way the currency amount is imported to make sure it is correctly signed.
+* Account: forbid to select the account itself as parent and its child accounts.
+* Mobile Settings: added a placeholder on every authorized roles.
+* Bank order: highlight orders sent to bank but not realized.
+* Quality Module: fixed register when no status are registered.
+* Payment session: fixed display of currency symbol in payment session.
+* Move template line: hide and set required tax field when it is configured in financial account.
+* Inventory line: fixed update of inventory line by taking into account stockLocation of line when possible, triggering update when necessary.
+* FEC import: fixed an issue where empty 'DateLet' or 'EcritureLet' column would create empty letterings.
+* Invoice: fixed partially paid invoices in bill of exchange management.
+* Stock move: allow to select external stock location for deliveries.
+
+## [7.2.3] (2023-11-23)
+
+#### :exclamation: Breaking Change
+
+* InvoicePayment/Reconcile: Change the link between the models
+
+The previous link between Reconcile and Invoice Payment was a list of reconcile in the invoice payment and a link to the payment in reconcile. Now, the link will be just a link to the reconcile in the payment.
+
+This technical change means that existing payments on invoice must be migrated to avoid issues. Please run the following SQL script on your database:
+
+```sql
+ALTER TABLE account_invoice_payment ADD COLUMN IF NOT EXISTS reconcile bigint;
+
+UPDATE account_invoice_payment payment SET reconcile = (SELECT id FROM account_reconcile reconcile WHERE reconcile.invoice_payment = payment.id) WHERE payment.reconcile IS NULL;
+
+UPDATE account_invoice_payment payment SET reconcile = (
+	SELECT MIN(reconcile.id) FROM account_reconcile reconcile 
+	INNER JOIN account_invoice_term_payment itp ON itp.invoice_payment = payment.id 
+	INNER JOIN account_invoice_term it ON it.id = itp.invoice_term
+	INNER JOIN account_move_line ml ON ml.id = it.move_line
+	WHERE reconcile.debit_move_line = ml.id OR reconcile.credit_move_line = ml.id) WHERE payment.reconcile IS NULL;
+
+ALTER TABLE account_reconcile DROP COLUMN invoice_payment;
+```
+
+
+#### Change
+
+* Appraisal: add demo data for appraisal feature.
+
+#### Fixed
+
+* MRP Line: fixed an issue preventing to open a partner from a MRP line.
+* Configurator BOM: fixed a bug during bill of materials generation where lines were not generated.
+* Invoice: fixed description on move during invoice validation.
+* Opportunity: fixed a bug where contact field was not filled when we create an event from an opportunity.
+* Move template: fixed due date not being set on generated move.
+* Stock location line: fixed quantity displayed by indicators in form view.
+* Invoice: fixed currency being emptied on operation type change.
+* Move: fixed autofill fields at move line creation according to partner accounting config.
+* Bank statement: added missing french translation when we try to delete a bank statement.
+* Invoice: fixed an issue where enabling pfp management and opening a previously created supplier invoice would make it look unsaved.
+* Budget key: fixed the computation in invoices/moves/orders to manage only axis related to budget key management in accounting configuration.
+* Fixed asset: fixed inconsistency in accounting report.
+* Move Template: hide move template line grid when journal or company is not filled.
+* Project task: fixed broken time panel in project task.
+* Expense: fixed an issue were employee was not modified in the lines when modifying the employee on the expense.
+* City: fixed errors when importing city with geonames.
+* Period: fixed status not reset on closure.
+* Analytic move line: fixed required on analytic axis when the sum of analytic move line percentage is equal to 100.
+* Invoice / Reconcile: fixed issue preventing from paying an invoice with a canceled payment.
+* Fixed asset: fixed derogatory cession process not being triggered for a scrapping type disposal.
+* Unit cost calculation: fixed error when trying to select a product.
+* Global budget: fixed validate translation.
+* InvoiceTerm: fixed rounding issue when we unreconcile an invoice payment.
+* Forecast: fixed a bug that occured when changing a forecast date from the MRP.
+* Fixed asset category: fixed wrong filter on ifrs depreciation and charge accounts not allowing to select special type accounts.
+* Appraisal: fixed appraisal generation from template.
+* Move: fixed error when we set origin on move without move lines.
+* Advance payment: fixed invoice term management and advance payment imputation values in multi currency.
+* Payment session: fixed demo data not allowing daybook moves to be retrieved in payment session despite that status being enabled.
+* Bill of exchange: fixed managing invoice terms in placement and payment.
+* SOP: fixed quantity field not following the "number of decimal for quantity fields" configuration.
+* Contract template: fixed wrong payment mode in contract template from demo data.
+* Period/Move: fixed new move removal at period closure.
+* Move mass entry: fixed line duplication at counterpart generation for a move generated by the mass entry process.
+* Account chart: fixed issues in data used in account chart import.
+* SOP: added missing french translation.
+* Period: fixed errors not being displayed correctly during the closure process.
+* App Employee: remove "daily work hours" configuration in App Employee configuration as it is not used (the configuration used is the one in App Base).
+* Move: fixed error when we set description on move without move lines.
+* Budget distribution: fixed available amount using the availability check in the budget.
+* Payment session: fixed issue preventing from validating a session.
+* SOP line: fixed an issue where SOP process does not fetch the product price from the product per company configuration.
+* Contract: fixed prorata computation when invoicing a contract and end date contract version
+
+When creating a new version of a contract, the end date of the previous version
+is now the activation date of the new version minus one day.
+If left empty, it will be today's date minus one day.
+
+* Bank order: do not copy "has been sent to bank" on duplication.
+
 ## [7.2.2] (2023-11-09)
 
 
@@ -319,6 +450,8 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.4]: https://github.com/axelor/axelor-open-suite/compare/v7.2.3...v7.2.4
+[7.2.3]: https://github.com/axelor/axelor-open-suite/compare/v7.2.2...v7.2.3
 [7.2.2]: https://github.com/axelor/axelor-open-suite/compare/v7.2.1...v7.2.2
 [7.2.1]: https://github.com/axelor/axelor-open-suite/compare/v7.2.0...v7.2.1
 [7.2.0]: https://github.com/axelor/axelor-open-suite/compare/v7.1.7...v7.2.0

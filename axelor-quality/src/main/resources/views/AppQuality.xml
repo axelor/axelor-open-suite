@@ -9,9 +9,24 @@
       <field name="qualityControlTemplate" requiredIf="automaticMail" canEdit="false"/>
       <field name="automaticMail" widget="boolean-switch"/>
     </panel>
+
+    <panel name="actionPanel">
+      <button name="generateQualityConfigurationsBtn" colSpan="4"
+        title="Generate quality configurations"
+        onClick="save,com.axelor.apps.quality.web.AppQualityController:generateQualityConfigurations"/>
+      <panel-dashlet name="qualityConfigPanel" action="admin.root.conf.quality.config"
+        colSpan="12"/>
+    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
     </panel-mail>
   </form>
+
+  <action-view name="admin.root.conf.quality.config" title="Quality configurations"
+    model="com.axelor.apps.quality.db.QualityConfig">
+    <view type="grid" name="quality-config-grid"/>
+    <view type="form" name="quality-config-form"/>
+  </action-view>
 
 </object-views>

@@ -7,6 +7,24 @@
     editable="true" onNew="action-hr-ts-timer-record-default" canNew="false">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="project" form-view="project-form" grid-view="project-grid"/>
+    <field name="projectTask" readonlyIf="!project" domain="self.project = :project"
+      widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
+    <field name="product"
+      domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND self.dtype = 'Product'"
+      widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
+    <field name="startDateTime"/>
+    <field name="duration"/>
+    <field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid"
+      form-view="timesheet-line-timesheet-project-form" showIf="timesheetLine != null"/>
+    <field name="comments" colSpan="12"/>
+  </grid>
+
+  <grid name="ts-multiple-timer-grid" title="Start&amp;Stop Timer"
+    model="com.axelor.apps.hr.db.TSTimer" onNew="action-hr-ts-timer-record-default">
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="project" form-view="project-form" grid-view="project-grid"/>
+    <field name="projectTask" readonlyIf="!project" domain="self.project = :project"
+      widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid"/>
     <field name="product"
       domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND self.dtype = 'Product'"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -19,40 +37,58 @@
 
   <form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
     width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
-    <panel name="startAndStopPanel" title="Start&amp;Stop Timer">
+    <panel name="statusPanel" colSpan="12">
+      <field name="statusSelect" readonly="true" widget="NavSelect" showTitle="false"/>
+    </panel>
+    <panel name="startAndStopPanel" title="Start&amp;Stop Timer" colSpan="12">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
-        canNew="false" canEdit="false" canView="false"/>
+        canNew="false" canEdit="false" canView="false" colSpan="6"/>
+      <spacer colSpan="6"/>
       <field name="project" form-view="project-form" grid-view="project-grid"
-        domain="self.imputable = true AND self.isShowTimeSpent = true"
-        onChange="action-hr-ts-timer-record-empty-product"/>
-      <field name="startDateTime"/>
+        domain="self.imputable = true AND self.isShowTimeSpent = true" colSpan="6"
+        onChange="action-ts-timer-attrs-project-onchange"/>
+      <field name="projectTask" onSelect="action-ts-timer-attrs-project-task-onselect"
+        widget="SuggestBox" form-view="project-task-form" grid-view="project-task-grid" colSpan="6"
+        onChange="action-ts-timer-attrs-project-task-onchange"/>
       <field name="product" canEdit="false"
         onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox"
-        form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="duration" widget="duration" colSpan="2"/>
+        form-view="product-activity-form" grid-view="product-activity-grid" colSpan="6"/>
+      <spacer colSpan="6"/>
+      <field name="startDateTime" colSpan="6"/>
+      <field name="lastStartDateT" colSpan="6"/>
+      <field name="duration" widget="duration" colSpan="2" readonly="true"/>
       <label name="durationLabel" title="Hours" colSpan="1"/>
+      <spacer colSpan="9"/>
+      <field name="updatedDuration" widget="duration"
+        if="__config__.app.getApp('timesheet')?.getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"
+        colSpan="6"/>
       <field name="timesheetLine" grid-view="timesheet-line-timesheet-project-grid"
         form-view="timesheet-line-timesheet-project-form" hideIf="timesheetLine == null"
         colOffset="3"/>
       <field name="comments" colSpan="12"/>
       <field name="timerStartDateT" hidden="true"/>
-      <field name="statusSelect" hidden="true"/>
     </panel>
     <panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
       <button name="startBtn" title="Start" onClick="action-ts-timer-record-start,save"
-        hideIf="statusSelect == 1 || statusSelect == 3" hidden="true" readonlyIf="product == null"
-        icon="fa-play" css="btn-success"/>
+        showIf="statusSelect == 1" hidden="true" readonlyIf="product == null" icon="fa-play"
+        css="btn-success"/>
       <button name="resumeBtn" title="Resume" onClick="action-ts-timer-record-start,save"
-        showIf="statusSelect == 2" hidden="true" readonlyIf="product == null" icon="fa-play"
+        showIf="statusSelect == 3" hidden="true" readonlyIf="product == null" icon="fa-play"
         css="btn-success"/>
       <button name="pauseBtn" title="Pause" onClick="save,action-ts-timer-method-pause,save"
-        hideIf="statusSelect != 1" hidden="true" icon="fa-pause" css="btn-warning"/>
+        hideIf="statusSelect != 2" hidden="true" icon="fa-pause" css="btn-warning"/>
       <button name="stopBtn" title="Stop"
         onClick="save,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save"
-        hideIf="statusSelect != 1" hidden="true" icon="fa-stop" css="btn-danger"/>
+        hideIf="statusSelect != 2" hidden="true" icon="fa-stop" css="btn-danger"/>
       <button name="newBtn" title="New" onClick="action-hr-ts-timer-record-new"
-        hideIf="statusSelect != 3" hidden="true" icon="fa-plus" css="btn-primary"/>
+        hideIf="statusSelect != 4" hidden="true" icon="fa-plus" css="btn-primary"/>
     </panel>
+  </form>
+
+  <form name="ts-multi-timer-form" title="Start&amp;Stop Timer"
+    model="com.axelor.apps.hr.db.TSTimer" width="large" onNew="action-hr-ts-timer-record-default"
+    canNew="true">
+    <panel-include view="ts-timer-form"/>
   </form>
 
   <action-attrs name="action-hr-timesheet-timer-attrs-domain-product">
@@ -63,20 +99,19 @@
   <action-record name="action-hr-ts-timer-record-default"
     model="com.axelor.apps.hr.db.TSTimer">
     <field name="employee" expr="eval:__user__.employee"/>
-    <field name="product" expr="eval:__user__.employee?.product"/>
   </action-record>
 
   <action-record name="action-hr-ts-timer-record-new"
     model="com.axelor.apps.hr.db.TSTimer">
     <field name="project" expr="eval:null"
       if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet')?.getKeepProject() "/>
-    <field name="product" expr="eval:null"
+    <field name="projectTask" expr="eval:null"
       if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet')?.getKeepProject() "/>
     <field name="startDateTime" expr="eval:null"/>
     <field name="duration" expr="eval:null"/>
     <field name="timesheetLine" expr="eval:null"/>
     <field name="comments" expr="eval:null"/>
-    <field name="statusSelect" expr="eval:null"/>
+    <field name="statusSelect" expr="eval:TSTimerRepository.STATUS_DRAFT"/>
   </action-record>
 
   <action-record name="action-ts-timer-record-start"
@@ -84,12 +119,8 @@
     <field name="startDateTime" expr="eval:__config__.app.getTodayDateTime()"
       if="startDateTime == null || statusSelect != TSTimerRepository.STATUS_PAUSE "/>
     <field name="timerStartDateT" expr="eval:__config__.app.getTodayDateTime()"/>
+    <field name="lastStartDateT" expr="eval:__config__.app.getTodayDateTime()"/>
     <field name="statusSelect" expr="eval:TSTimerRepository.STATUS_START"/>
-  </action-record>
-
-  <action-record name="action-hr-ts-timer-record-empty-product"
-    model="com.axelor.apps.hr.db.TSTimer">
-    <field name="product" expr="eval:null" if="!project?.productSet?.contains(product)"/>
   </action-record>
 
   <action-method name="action-ts-timer-method-pause">
@@ -104,5 +135,25 @@
     <attribute name="readonly" for="startAndStop"
       expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.app.getApp('timesheet')?.getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"/>
   </action-attrs>
+
+  <action-attrs name="action-ts-timer-attrs-project-task-onchange">
+    <attribute for="product" name="value" expr="eval: projectTask?.product"/>
+    <attribute for="product" name="readonly" expr="eval: projectTask?.product"/>
+    <attribute for="project" name="value" expr="eval: projectTask?.project"/>
+  </action-attrs>
+
+  <action-attrs name="action-ts-timer-attrs-project-onchange">
+    <attribute for="projectTask" name="value" expr="eval: null" if="!project"/>
+    <attribute for="product" name="value" expr="eval: null" if="!project"/>
+  </action-attrs>
+
+  <action-attrs name="action-ts-timer-attrs-project-task-onselect">
+    <attribute for="projectTask" name="domain"
+      expr="eval: &quot; self.project = :project AND self.assignedTo.employee = :employee &quot;"
+      if="project"/>
+    <attribute for="projectTask" name="domain"
+      expr="eval: &quot; self.assignedTo.employee = :employee &quot;" if="!project"/>
+  </action-attrs>
+
 
 </object-views>

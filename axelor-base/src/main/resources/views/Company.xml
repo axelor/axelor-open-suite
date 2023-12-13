@@ -68,6 +68,9 @@
       <button name="supplyChainConfigBtn" title="Supply Chain config" width="100%"
         colSpan="6" onClick="action-company-view-supply-chain-config" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')"/>
+      <button name="qualityConfigBtn" title="Quality config" width="100%" colSpan="6"
+        onClick="action-company-view-quality-config" if-module="axelor-quality"
+        if="__config__.app.isApp('quality')"/>
     </panel>
 
     <panel name="notesPanel" title="Notes" showIf="$popup()" readonly="true">
@@ -112,7 +115,8 @@
         <field name="locale" colSpan="6" onChange="action-company-method-validate-locale"/>
         <field name="timezone" colSpan="6"/>
         <field name="taxNumberList" colSpan="12" canSelect="true" canNew="false"
-          canEdit="false" domain="self.company.id = :id" if="__config__.app.isApp('account')"/>
+          canEdit="false" domain="self.company.id = :id"
+          if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"/>
       </panel>
       <panel name="bankDetailsPanel" title="Bank details">
         <field name="defaultBankDetails"

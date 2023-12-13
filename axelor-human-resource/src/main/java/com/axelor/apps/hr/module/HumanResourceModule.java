@@ -123,6 +123,8 @@ import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseCompute
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
+import com.axelor.apps.hr.service.leave.IncrementLeaveService;
+import com.axelor.apps.hr.service.leave.IncrementLeaveServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveExportService;
 import com.axelor.apps.hr.service.leave.LeaveExportServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
@@ -139,6 +141,10 @@ import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.leave.LeaveRequestServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowService;
 import com.axelor.apps.hr.service.leave.LeaveRequestWorkflowServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
+import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceService;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherAdvanceServiceImpl;
 import com.axelor.apps.hr.service.lunch.voucher.LunchVoucherExportService;
@@ -255,5 +261,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineResponseComputeService.class).to(ExpenseLineResponseComputeServiceImpl.class);
     bind(ExpenseLineCheckResponseService.class).to(ExpenseLineCheckResponseServiceImpl.class);
     bind(ExpenseCheckResponseService.class).to(ExpenseCheckResponseServiceImpl.class);
+    bind(IncrementLeaveService.class).to(IncrementLeaveServiceImpl.class);
+    bind(LeaveValueProrataService.class).to(LeaveValueProrataServiceImpl.class);
+    bind(LeaveReasonService.class).to(LeaveReasonServiceImpl.class);
   }
 }

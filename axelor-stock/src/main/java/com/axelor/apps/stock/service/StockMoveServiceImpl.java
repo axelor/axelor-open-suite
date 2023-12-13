@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -42,6 +43,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -89,6 +91,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -101,7 +104,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      ProductCompanyService productCompanyService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -112,6 +116,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
+    this.productCompanyService = productCompanyService;
   }
 
   /**
@@ -287,7 +292,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     Product product = stockMoveLine.getProduct();
     stockMoveLineService.setProductInfo(stockMove, stockMoveLine, stockMove.getCompany());
 
-    if (product.getTrackingNumberConfiguration() != null) {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                product, "trackingNumberConfiguration", stockMove.getCompany());
+    if (trackingNumberConfiguration != null) {
       stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
 
@@ -356,6 +365,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
 
+    stockMoveLineService.splitStockMoveLineByTrackingNumber(stockMove);
+
     String draftSeq;
 
     // Set the sequence.
@@ -364,7 +375,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       draftSeq = stockMove.getStockMoveSeq();
       stockMove.setStockMoveSeq(
           stockMoveToolService.getSequenceStockMove(
-              stockMove.getTypeSelect(), stockMove.getCompany()));
+              stockMove.getTypeSelect(), stockMove.getCompany(), stockMove));
     } else {
       draftSeq = null;
     }
@@ -745,7 +756,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setRealDate(null);
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
-            newStockMove.getTypeSelect(), newStockMove.getCompany()));
+            newStockMove.getTypeSelect(), newStockMove.getCompany(), stockMove));
     newStockMove.setName(
         stockMoveToolService.computeName(
             newStockMove,
@@ -769,6 +780,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
 
     newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
+
     newStockMoveLine.setRealQty(newStockMoveLine.getQty());
     return newStockMoveLine;
   }
@@ -859,7 +871,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
-            newStockMove.getTypeSelect(), newStockMove.getCompany()));
+            newStockMove.getTypeSelect(), newStockMove.getCompany(), stockMove));
 
     setStockMoveName(newStockMove, stockMove);
 
@@ -1098,7 +1110,9 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
+    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
+      stockMoveLineService.fillRealQuantities(line, stockMove, line.getQty());
+    }
     stockMoveRepo.save(stockMove);
   }
 
@@ -1296,7 +1310,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   }
 
   @Override
-  public void setAvailableStatus(StockMove stockMove) {
+  public void setAvailableStatus(StockMove stockMove) throws AxelorException {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       stockMoveLineService.setAvailableStatus(stockMoveLine);
@@ -1497,5 +1511,10 @@ public class StockMoveServiceImpl implements StockMoveService {
     LOG.debug("Creation of a new stock move from the stock move {}", stockMove.getStockMoveSeq());
 
     return copyAndSplitStockMoveReverse(stockMove, false);
+  }
+
+  @Override
+  public void setMergedStatus(StockMove stockMove) {
+    stockMove.setStatusSelect(StockMoveRepository.STATUS_MERGED);
   }
 }

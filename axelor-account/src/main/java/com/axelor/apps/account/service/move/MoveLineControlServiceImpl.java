@@ -29,7 +29,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -57,17 +59,23 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   protected MoveLineService moveLineService;
   protected InvoiceTermService invoiceTermService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
 
   @Inject
   public MoveLineControlServiceImpl(
       MoveLineToolService moveLineToolService,
       MoveLineService moveLineService,
       InvoiceTermService invoiceTermService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService) {
     this.moveLineToolService = moveLineToolService;
     this.moveLineService = moveLineService;
     this.invoiceTermService = invoiceTermService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
   }
 
   @Override
@@ -184,10 +192,12 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
 
       if (!isCompanyAmount) {
         if (invoiceAttached == null) {
-          moveLineService.computeFinancialDiscount(moveLine);
+          moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
         } else {
           invoiceTermList.forEach(
-              it -> invoiceTermService.computeFinancialDiscount(it, invoiceAttached));
+              it ->
+                  invoiceTermFinancialDiscountService.computeFinancialDiscount(
+                      it, invoiceAttached));
         }
       }
 

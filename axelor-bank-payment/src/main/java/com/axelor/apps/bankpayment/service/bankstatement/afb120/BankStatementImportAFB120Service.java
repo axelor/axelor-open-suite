@@ -7,7 +7,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
-import com.axelor.apps.bankpayment.service.bankstatement.file.afb120.BankStatementFileAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatement.line.afb120.BankStatementLineCreateAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.AxelorException;
@@ -26,7 +26,7 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
       bankPaymentBankStatementLineAFB120Repository;
   protected BankStatementLineDeleteService bankStatementLineDeleteService;
   protected BankStatementLineFetchService bankStatementLineFetchService;
-  protected BankStatementFileAFB120Service bankStatementFileAFB120Service;
+  protected BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service;
 
   @Inject
   public BankStatementImportAFB120Service(
@@ -34,19 +34,23 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankStatementLineDeleteService bankStatementLineDeleteService,
       BankStatementLineFetchService bankStatementLineFetchService,
-      BankStatementFileAFB120Service bankStatementFileAFB120Service) {
+      BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service) {
     super(bankStatementRepository);
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;
     this.bankStatementLineFetchService = bankStatementLineFetchService;
-    this.bankStatementFileAFB120Service = bankStatementFileAFB120Service;
+    this.bankStatementLineCreateAFB120Service = bankStatementLineCreateAFB120Service;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
-    bankStatementFileAFB120Service.process(bankStatement);
+    bankStatementLineCreateAFB120Service.process(bankStatement);
+
+    // The process from bankStatementFileAFB120Service clears the JPA cache, so we need to find the
+    // bank statement.
+    bankStatement = bankStatementRepository.find(bankStatement.getId());
     checkImport(bankStatement);
     updateBankDetailsBalance(bankStatement);
     setBankStatementImported(bankStatement);

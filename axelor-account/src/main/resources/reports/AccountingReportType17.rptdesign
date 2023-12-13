@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1224,10 +1224,10 @@ where AccountingReport.id = ?
 		CASE 
 			WHEN 
 				AccountingReport.date_from IS NULL 
-				OR AssetLine.depreciation_date <= AccountingReport.date_from
+				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
+   	), 0) + Asset.already_depreciated_amount AS year_start_value,
 	SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
@@ -1236,19 +1236,19 @@ where AccountingReport.id = ?
    		END
    	) AS depreciation_charge,
     COALESCE(SUM(
-        CASE
-            WHEN
-                AccountingReport.date_from IS NULL
-                OR AssetLine.depreciation_date <= AccountingReport.date_from
-            THEN assetLine.depreciation
-        END
-    ), 0) + SUM(
-        CASE
-            WHEN (date_from IS NULL OR depreciation_date >= date_from)
-                AND (date_to IS NULL OR depreciation_date <= date_to)
-            THEN depreciation
-        END
-    ) AS year_end_value2,
+		CASE 
+			WHEN 
+				AccountingReport.date_from IS NULL 
+				OR AssetLine.depreciation_date < AccountingReport.date_from
+   			THEN assetLine.depreciation 
+   		END
+   	), 0) + Asset.already_depreciated_amount + SUM(
+		CASE 
+			WHEN (date_from IS NULL OR depreciation_date >= date_from)
+				AND (date_to IS NULL OR depreciation_date <= date_to)
+   			THEN depreciation 
+   		END
+   	) AS year_end_value2,
     MIN(assetLine.accounting_value)
     as accounting_value
 	

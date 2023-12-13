@@ -165,7 +165,7 @@
             </field>
           </panel>
           <field name="maxPurchasePrice" colSpan="3" readonly="true"/>
-          <label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+          <label name="qtyLimitNotRespectedLabel" hidden="true" colSpan="12"/>
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="$qtyValid" hidden="true" colSpan="12"/>
         </panel>
@@ -413,7 +413,7 @@
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-hide-qty-warning-label">
-    <attribute name="hidden" for="minQtyNotRespectedLabel" expr="true"/>
+    <attribute name="hidden" for="qtyLimitNotRespectedLabel" expr="true"/>
     <attribute name="hidden" for="multipleQtyNotRespectedLabel" expr="true"/>
     <attribute name="hidden" for="qtyValid" expr="true"/>
   </action-attrs>

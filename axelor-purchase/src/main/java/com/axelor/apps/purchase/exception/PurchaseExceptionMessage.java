@@ -25,6 +25,8 @@ public final class PurchaseExceptionMessage {
   public static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   public static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
       "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
+  public static final String PURCHASE_ORDER_LINE_MAX_QTY = /*$$(*/
+      "The maximum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
   public static final String PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG = /*$$(*/
       "This product is not available from the supplier." /*)*/;
 
@@ -37,15 +39,20 @@ public final class PurchaseExceptionMessage {
       "You must configure Purchase module for the company %s" /*)*/;
 
   /** Merge purchase order */
+  public static final String PURCHASE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
+      "List of purchase orders to merge is empty" /*)*/;
+
   public static final String PURCHASE_ORDER_MERGE_ERROR_CURRENCY = /*$$(*/
       "The currency is required and must be the same for all purchase orders" /*)*/;
-
   public static final String PURCHASE_ORDER_MERGE_ERROR_SUPPLIER_PARTNER = /*$$(*/
       "The supplier Partner is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_COMPANY = /*$$(*/
       "The company is required and must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_TRADING_NAME = /*$$(*/
       "The trading name must be the same for all purchase orders" /*)*/;
+
+  public static final String PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
+      "The fiscal position must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_REQUEST_WRONG_STATUS = /*$$(*/
       "Can only request drafted purchase order." /*)*/;
   public static final String PURCHASE_ORDER_VALIDATE_WRONG_STATUS = /*$$(*/

@@ -115,6 +115,8 @@
     <boolean name="activatePartnerRelations" title="Activate partner delegations"
       default="false"/>
 
+    <boolean name="enableTaxNumbers" title="Enable tax numbers"/>
+
     <many-to-one name="passwordChangedTemplate" ref="com.axelor.message.db.Template"
       title="Template for changed password"/>
 
@@ -174,6 +176,10 @@
       ref="com.axelor.apps.base.db.BirtTemplate" title="Contact phone book template"/>
     <many-to-one name="productCatalogPGQLBirtTemplate"
       ref="com.axelor.apps.base.db.BirtTemplate" title="Product catalog PGQL template"/>
+
+    <boolean name="enablePricingScale" title="Enable pricing scale"/>
+    <boolean name="isPricingComputingOrder" title="Pricing computing order"
+      help="When selected, this is the pricing scale computation order."/>
 
     <extra-code>
 	   		<![CDATA[
@@ -254,6 +260,8 @@
       <field name="customAppStyle" on="UPDATE"/>
       <field name="processTimeout" on="UPDATE"/>
       <field name="activatePartnerRelations" on="UPDATE"/>
+      <field name="enablePricingScale" on="UPDATE"/>
+      <field name="isPricingComputingOrder" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

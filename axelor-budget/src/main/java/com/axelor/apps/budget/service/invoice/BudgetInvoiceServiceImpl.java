@@ -47,6 +47,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -77,6 +78,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
   protected BudgetService budgetService;
   protected BudgetLineService budgetLineService;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetInvoiceServiceImpl(
@@ -104,7 +106,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
       BudgetLineService budgetLineService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -131,6 +134,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     this.budgetService = budgetService;
     this.budgetLineService = budgetLineService;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -439,5 +443,24 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     }
     return budgetDistributionList.stream()
         .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        invoice.getCompany(), invoice.getInvoiceLineList())) {
+      return;
+    }
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAccount(),
+          invoice.getCompany(),
+          invoice.getInvoiceDate() != null
+              ? invoice.getInvoiceDate()
+              : invoice.getCreatedOn().toLocalDate(),
+          invoiceLine.getCompanyExTaxTotal(),
+          invoiceLine);
+    }
   }
 }
