@@ -167,7 +167,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
           LocalDate depreciationEndDate = getFailOverDepreciationEndDate(fixedAsset);
           if (depreciationEndDate == null) {
             depreciationEndDate =
-                DateTool.plusMonths(firstDepreciationDate, getDurationInMonth(fixedAsset));
+                DateTool.plusMonths(
+                    fixedAsset.getFirstDepreciationDate(), getDurationInMonth(fixedAsset));
           }
           return Optional.ofNullable(
               createFixedAssetLine(
