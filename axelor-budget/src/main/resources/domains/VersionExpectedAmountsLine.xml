@@ -10,7 +10,7 @@
       title="Budget Version" readonly="true"/>
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
       readonly="true"/>
-    <decimal name="expectedAmount" title="Total amount expected"/>
+    <decimal name="expectedAmount" title="Total amount expected" precision="20" scale="3"/>
 
   </entity>
 

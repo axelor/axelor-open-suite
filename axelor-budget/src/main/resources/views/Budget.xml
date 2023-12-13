@@ -34,14 +34,18 @@
     <field name="inChargeUser"/>
     <field name="fromDate" readonlyIf="!$popup()"/>
     <field name="toDate" readonlyIf="!$popup()"/>
-    <field name="totalAmountExpected" aggregate="sum" title="Initial" x-scale="company.currency.numberOfDecimals"/>
-    <field name="totalAmountCommitted" title="Total amount committed" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountExpected" aggregate="sum" title="Initial"
+      x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" title="Total amount committed" aggregate="sum"
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="totalFirmGap" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
     <field name="realizedWithNoPo" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
     <field name="realizedWithPo" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
     <field name="simulatedAmount" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
-    <field name="availableAmountWithSimulated" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
-    <field name="availableAmount" title="Total amount available" aggregate="sum" x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmountWithSimulated" aggregate="sum"
+      x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmount" title="Total amount available" aggregate="sum"
+      x-scale="company.currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect"/>
     <field name="sourceSelect"/>
@@ -111,7 +115,8 @@
       <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
       <field name="totalAmountPaid" x-scale="company.currency.numberOfDecimals"/>
       <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
-      <field name="totalAmountRealized" hidden="true" x-scale="company.currency.numberOfDecimals"/>
+      <field name="totalAmountRealized" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
       <separator colSpan="12"/>
     </panel>
 
@@ -122,7 +127,8 @@
     <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
       colSpan="12" readonlyIf="statusSelect != 1">
       <field name="periodDurationSelect" colSpan="4"/>
-      <field name="amountForGeneration" colSpan="4" x-scale="company.currency.numberOfDecimals"/>
+      <field name="amountForGeneration" colSpan="4"
+        x-scale="company.currency.numberOfDecimals"/>
       <button name="generatePeriodsBtn" title="Generate periods"
         onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
       <separator colSpan="12"/>
