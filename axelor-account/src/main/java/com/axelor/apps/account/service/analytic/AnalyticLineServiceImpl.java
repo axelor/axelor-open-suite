@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.ListHelper;
@@ -83,6 +84,14 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       return accountConfigService
           .getAccountConfig(analyticLine.getAccount().getCompany())
           .getAnalyticJournal();
+    }
+    return null;
+  }
+
+  @Override
+  public Currency getCompanyCurrency(AnalyticLine analyticLine) {
+    if (analyticLine.getAccount() != null && analyticLine.getAccount().getCompany() != null) {
+      return analyticLine.getAccount().getCompany().getCurrency();
     }
     return null;
   }
