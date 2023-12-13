@@ -15,6 +15,13 @@
 
     </panel>
 
+    <panel name="schedulePanel" title="Schedules">
+      <field name="monthlySchedule"/>
+      <field name="annualSchedule"/>
+      <button name="schedulerCreationBtn" title="Scheduler creation assistant"
+        onClick="action-app-leave-method-open-scheduler-creation-wizard"/>
+    </panel>
+
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -22,5 +29,9 @@
 
   </form>
 
+  <action-method name="action-app-leave-method-open-scheduler-creation-wizard">
+    <call class="com.axelor.apps.hr.web.AppLeaveController"
+      method="openSchedulerCreationWizard"/>
+  </action-method>
 
 </object-views>
