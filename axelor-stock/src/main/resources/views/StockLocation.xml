@@ -138,6 +138,7 @@
         selection="iadministration.export.type.select" selection-in="['pdf','xlsx']" colSpan="3"/>
       <field name="$financialDataDateTime" title="Date and time" type="datetime" hidden="true"
         showIf="$printingType == 1" colSpan="3"/>
+      <spacer colSpan="3"/>
       <field name="$withoutDetailsByStockLocation" type="boolean"
         title="Without details by stock location" hidden="true" showIf="$printingType == 1"
         colSpan="3"/>

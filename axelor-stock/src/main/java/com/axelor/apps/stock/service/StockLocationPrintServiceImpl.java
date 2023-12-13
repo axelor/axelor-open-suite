@@ -2,8 +2,10 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
@@ -15,6 +17,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,17 +32,47 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
   protected BirtTemplateService birtTemplateService;
   protected StockLocationRepository stockLocationRepository;
   protected StockLocationService stockLocationService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public StockLocationPrintServiceImpl(
       StockConfigService stockConfigService,
       BirtTemplateService birtTemplateService,
       StockLocationRepository stockLocationRepository,
-      StockLocationService stockLocationService) {
+      StockLocationService stockLocationService,
+      AppBaseService appBaseService) {
     this.stockConfigService = stockConfigService;
     this.birtTemplateService = birtTemplateService;
     this.stockLocationRepository = stockLocationRepository;
     this.stockLocationService = stockLocationService;
+    this.appBaseService = appBaseService;
+  }
+
+  @Override
+  public ReportSettings print(
+      Integer printType,
+      String exportType,
+      String financialDataDateTimeString,
+      Boolean withoutDetailsByStockLocation,
+      Long... stockLocationIds)
+      throws AxelorException {
+
+    Long firstStockLocationId = stockLocationIds[0];
+    StockLocation stockLocation = stockLocationRepository.find(firstStockLocationId);
+    Company company = stockLocation.getCompany();
+
+    LocalDateTime financialDataDateTime =
+        StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA == printType
+                && financialDataDateTimeString != null
+            ? LocalDateTime.parse(financialDataDateTimeString, DateTimeFormatter.ISO_DATE_TIME)
+            : appBaseService.getTodayDateTime(company).toLocalDateTime();
+
+    return print(
+        printType,
+        exportType,
+        financialDataDateTime,
+        withoutDetailsByStockLocation,
+        stockLocationIds);
   }
 
   @Override

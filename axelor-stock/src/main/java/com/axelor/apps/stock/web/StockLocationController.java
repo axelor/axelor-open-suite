@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationPrintService;
 import com.axelor.apps.stock.service.StockLocationService;
@@ -36,8 +35,6 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
@@ -82,18 +79,13 @@ public class StockLocationController {
 
       Integer printType = Integer.parseInt(printTypeStr);
       String financialDataDateTimeString = (String) context.get("financialDataDateTime");
-      LocalDateTime financialDataDateTime =
-          StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA == printType
-                  && financialDataDateTimeString != null
-              ? LocalDateTime.parse(financialDataDateTimeString, DateTimeFormatter.ISO_DATE_TIME)
-              : LocalDateTime.now();
 
       ReportSettings reportSettings =
           Beans.get(StockLocationPrintService.class)
               .print(
                   printType,
                   exportType,
-                  financialDataDateTime,
+                  financialDataDateTimeString,
                   withoutDetailsByStockLocation,
                   idsArray);
 

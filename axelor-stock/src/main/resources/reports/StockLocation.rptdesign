@@ -1193,7 +1193,7 @@ order by Product.code;]]></xml-property>
                     </structure>
                 </list-property>
             </structure>
-            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"])]]></method>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"]).replace('@FinancialDataDateTime', "'"+Formatter.format(params["FinancialDataDateTime"],'MM/dd/yyyy HH:mm:ss')+"'")]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -1288,50 +1288,56 @@ order by Product.code;]]></xml-property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
-      -- Location.id as location_id,
-      -- StockLocationLine.id as location_line_id,
-      -- Location.name as location_name,
-       Product.name AS product_name,
-       Product.code AS product_code,
-	   SUM(StockLocationLine.current_qty) as current_qty,
-       Unit.label_to_printing as unit_code,
-       Product.sale_price,
-       Product.purchase_price,
-       Currency.code AS currency_code,
-       ProductFamily.name as product_family,
-       (CASE WHEN Product.cost_type_select = 3 THEN AVG(StockLocationLine.avg_price) ELSE Product.cost_price END) as "cost_price",
-       AVG(StockLocationLine.avg_price) as "wap",
-       Product.cost_type_select,
-       StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
-       StockConfig.is_display_ag_price_in_printing,StockConfig.is_display_purchase_value_in_printing
+    -- Location.id as location_id,
+    -- StockLocationLine.id as location_line_id,
+    -- Location.name as location_name,
+    Product.name AS product_name,
+    Product.code AS product_code,
+    SUM(StockLocationLineHistory.qty) as current_qty,
+    Unit.label_to_printing as unit_code,
+    Product.sale_price,
+    Product.purchase_price,
+    Currency.code AS currency_code,
+    ProductFamily.name as product_family,
+    (CASE WHEN Product.cost_type_select = 3 THEN AVG(StockLocationLineHistory.wap) ELSE Product.cost_price END) as "cost_price",
+    AVG(StockLocationLineHistory.wap) as "wap",
+    Product.cost_type_select,
+    StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
+    StockConfig.is_display_ag_price_in_printing,StockConfig.is_display_purchase_value_in_printing
 
 FROM stock_stock_location_line StockLocationLine
-       INNER JOIN stock_stock_location as Location ON Location.id = StockLocationLine.stock_location
-       LEFT JOIN
-            base_product Product on Product.id = StockLocationLine.product
-       LEFT JOIN
-            base_product_family AS ProductFamily ON (Product.product_family = ProductFamily.id)
-       LEFT JOIN
-            base_unit AS Unit ON (Unit.id = Product.unit)
-       LEFT JOIN
-            base_company AS Company ON (Company.id = Location.company)
-       LEFT OUTER JOIN
-            stock_stock_config AS StockConfig ON (StockConfig.company = Company.id)
-       LEFT JOIN
-            base_currency AS Currency ON (Currency.id = Company.currency)
-       WHERE stock_location in (
-WITH RECURSIVE stock_location_and_all_sub_stock_locations AS (
-    SELECT sl.id
-    FROM stock_stock_location sl
-                         WHERE sl.id in (@INJECTID)
-    UNION ALL
-    SELECT sll.id
-    FROM stock_stock_location sll
-    INNER JOIN stock_location_and_all_sub_stock_locations
-        ON sll.parent_stock_location = stock_location_and_all_sub_stock_locations.id
-) SELECT id FROM stock_location_and_all_sub_stock_locations)
-GROUP BY  Product.id,Unit.id, Currency.id, ProductFamily.id, StockConfig.id
-;]]></xml-property>
+         INNER JOIN
+    stock_stock_location as Location ON Location.id = StockLocationLine.stock_location
+         LEFT JOIN
+     stock_stock_location_line_history StockLocationLineHistory ON StockLocationLine.id = StockLocationLineHistory.stock_location_line
+         LEFT JOIN
+     base_product Product on Product.id = StockLocationLine.product
+         LEFT JOIN
+     base_product_family AS ProductFamily ON (Product.product_family = ProductFamily.id)
+         LEFT JOIN
+     base_unit AS Unit ON (Unit.id = Product.unit)
+         LEFT JOIN
+     base_company AS Company ON (Company.id = Location.company)
+         LEFT OUTER JOIN
+     stock_stock_config AS StockConfig ON (StockConfig.company = Company.id)
+         LEFT JOIN
+     base_currency AS Currency ON (Currency.id = Company.currency)
+WHERE stock_location in (
+    WITH RECURSIVE stock_location_and_all_sub_stock_locations AS (
+        SELECT sl.id
+        FROM stock_stock_location sl
+        WHERE sl.id in (@INJECTID)
+        UNION ALL
+        SELECT sll.id
+        FROM stock_stock_location sll
+                 INNER JOIN stock_location_and_all_sub_stock_locations
+                            ON sll.parent_stock_location = stock_location_and_all_sub_stock_locations.id
+    ) SELECT id FROM stock_location_and_all_sub_stock_locations)
+  AND StockLocationLineHistory.id = (SELECT ssllh.id FROM stock_stock_location_line_history ssllh
+                                                     WHERE ssllh.stock_location_line = StockLocationLine.id
+                                                     AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
+                                                     order by ssllh.datet desc LIMIT 1 )
+GROUP BY product.id, Unit.id, Currency.id, ProductFamily.id, StockConfig.id;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>

@@ -9,6 +9,14 @@ public interface StockLocationPrintService {
   ReportSettings print(
       Integer printType,
       String exportType,
+      String financialDataDateTimeString,
+      Boolean withoutDetailsByStockLocation,
+      Long... stockLocationIds)
+      throws AxelorException;
+
+  ReportSettings print(
+      Integer printType,
+      String exportType,
       LocalDateTime financialDataDateTime,
       Boolean withoutDetailsByStockLocation,
       Long... stockLocationIds)
