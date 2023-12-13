@@ -144,6 +144,32 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="FinancialDataDateTime" id="5396">
+            <property name="valueType">static</property>
+            <property name="dataType">dateTime</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="javascript">BirtDateTime.now()</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="WithoutDetailsByStockLocation" id="5797">
+            <property name="valueType">static</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">false</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -577,10 +603,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="heading">product_code</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">current_qty</property>
+                    <property name="columnName">qty</property>
                     <property name="analysis">measure</property>
-                    <text-property name="displayName">current_qty</text-property>
-                    <text-property name="heading">current_qty</text-property>
+                    <text-property name="displayName">qty</text-property>
+                    <text-property name="heading">qty</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">unit_code</property>
@@ -686,7 +712,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">current_qty</property>
+                        <property name="name">qty</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
@@ -751,7 +777,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     </structure>
                 </list-property>
             </structure>
-            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"])]]></method>
+            <method name="beforeOpen"><![CDATA[this.queryText = this.queryText.replace('@INJECTID', params["StockLocationId"]).replace('@FinancialDataDateTime', "'"+Formatter.format(params["FinancialDataDateTime"],'MM/dd/yyyy HH:mm:ss')+"'")]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -791,8 +817,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">current_qty</property>
-                    <property name="nativeName">current_qty</property>
+                    <property name="name">qty</property>
+                    <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
@@ -881,32 +907,48 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id, StockLocationLine.id as location_line_id, Location.name as location_name, Product.name AS product_name,
-		Product.code AS product_code, StockLocationLine.current_qty, Unit.label_to_printing as unit_code, Product.sale_price, Product.purchase_price,
-		Currency.code AS currency_code, ProductFamily.name as product_family,
-		(CASE WHEN Product.cost_type_select = 3 THEN StockLocationLine.avg_price ELSE Product.cost_price END) as "cost_price",
-		StockLocationLine.avg_price as "wap", Product.cost_type_select,
-		StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
-		StockConfig.is_display_ag_price_in_printing,StockConfig.is_display_purchase_value_in_printing
-FROM 
-	stock_stock_location as Location 
-LEFT OUTER JOIN 
-	stock_stock_location_line as StockLocationLine ON (StockLocationLine.stock_location = Location.id)
-LEFT JOIN 
-	base_product AS Product ON (Product.id = StockLocationLine.product)	
-LEFT JOIN
-	base_product_family AS ProductFamily ON (Product.product_family = ProductFamily.id)
-LEFT JOIN
-	base_unit AS Unit ON (Unit.id = Product.unit)
-LEFT JOIN 
-	base_company AS Company ON (Company.id = Location.company)
-LEFT OUTER JOIN 
-	stock_stock_config AS StockConfig ON (StockConfig.company = Company.id) 
-LEFT JOIN 
-	base_currency AS Currency ON (Currency.id = Company.currency)
-where StockLocationLine.current_qty != 0	and Location.id in (@INJECTID)
-order by Product.code
-]]></xml-property>
+            <xml-property name="queryText"><![CDATA[SELECT 	Location.id as location_id,
+        StockLocationLine.id as location_line_id,
+        Location.name as location_name,
+        Product.name AS product_name,
+        Product.code AS product_code,
+        StockLocationLineHistory.qty,
+        Unit.label_to_printing as unit_code,
+        Product.sale_price,
+        Product.purchase_price,
+        Currency.code AS currency_code,
+        ProductFamily.name as product_family,
+        (CASE WHEN Product.cost_type_select = 3 THEN StockLocationLineHistory.wap ELSE Product.cost_price END) as "cost_price",
+        StockLocationLineHistory.wap as "wap",
+        Product.cost_type_select,
+        StockConfig.is_display_sale_value_in_printing,
+        StockConfig.is_display_accounting_value_in_printing,
+        StockConfig.is_display_ag_price_in_printing,
+        StockConfig.is_display_purchase_value_in_printing
+FROM
+    stock_stock_location as Location
+        LEFT OUTER JOIN
+    stock_stock_location_line as StockLocationLine ON (StockLocationLine.stock_location = Location.id)
+        LEFT JOIN
+    stock_stock_location_line_history StockLocationLineHistory ON StockLocationLine.id = StockLocationLineHistory.stock_location_line
+        LEFT JOIN
+    base_product AS Product ON (Product.id = StockLocationLine.product)
+        LEFT JOIN
+    base_product_family AS ProductFamily ON (Product.product_family = ProductFamily.id)
+        LEFT JOIN
+    base_unit AS Unit ON (Unit.id = Product.unit)
+        LEFT JOIN
+    base_company AS Company ON (Company.id = Location.company)
+        LEFT OUTER JOIN
+    stock_stock_config AS StockConfig ON (StockConfig.company = Company.id)
+        LEFT JOIN
+    base_currency AS Currency ON (Currency.id = Company.currency)
+where StockLocationLineHistory.qty != 0 and Location.id in (@INJECTID)
+    AND StockLocationLineHistory.id = (SELECT ssllh.id FROM stock_stock_location_line_history ssllh
+                                                       WHERE ssllh.stock_location_line = StockLocationLine.id
+                                                       AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
+                                                       order by ssllh.datet desc LIMIT 1 )
+order by Product.code;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -961,7 +1003,7 @@ order by Product.code
   </design:ResultSets>
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
-        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="StockLocationLineOfSubLocationDS" id="5396">
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="StockLocationLineOfSubLocationDS" id="5796">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
@@ -1604,12 +1646,6 @@ if(params["PrintType"].value.equals('2'))
                                 <property name="dataType">string</property>
                             </structure>
                             <structure>
-                                <property name="name">current_qty</property>
-                                <text-property name="displayName">current_qty</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["current_qty"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
                                 <property name="name">unit_code</property>
                                 <text-property name="displayName">unit_code</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["unit_code"]</expression>
@@ -1697,7 +1733,7 @@ if(params["PrintType"].value.equals('2'))
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["wap"] * row["current_qty"]</expression>
+                                        <expression name="value" type="javascript">row["wap"] * row["qty"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -1710,7 +1746,7 @@ if(params["PrintType"].value.equals('2'))
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["current_qty"] * row["cost_price"]</expression>
+                                        <expression name="value" type="javascript">row["qty"] * row["cost_price"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -1741,9 +1777,27 @@ if(params["PrintType"].value.equals('2'))
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["current_qty"] * row["purchase_price"]</expression>
+                                        <expression name="value" type="javascript">row["qty"] * row["purchase_price"]</expression>
                                     </structure>
                                 </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">qty</property>
+                                <text-property name="displayName">qty</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">is_display_ag_price_in_printing</property>
+                                <text-property name="displayName">is_display_ag_price_in_printing</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["is_display_ag_price_in_printing"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                            <structure>
+                                <property name="name">FinancialDataDateTime</property>
+                                <expression name="expression" type="javascript">params["FinancialDataDateTime"].value</expression>
+                                <property name="dataType">date-time</property>
                                 <property name="allowExport">true</property>
                             </structure>
                         </list-property>
@@ -1880,13 +1934,22 @@ if(params["PrintType"].value.equals('2'))
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> :&amp;nbsp;]]></text-property>
                                 </text>
-                                <data id="5367">
+                                <data id="5403">
                                     <structure name="dateTimeFormat">
                                         <property name="category">Short Date</property>
                                         <property name="pattern">Short Date</property>
                                     </structure>
                                     <property name="display">inline</property>
-                                    <property name="resultSetColumn">TodayDateTime</property>
+                                    <property name="resultSetColumn">FinancialDataDateTime</property>
+                                </data>
+                                <data id="5404">
+                                    <property name="marginLeft">0.5cm</property>
+                                    <structure name="dateTimeFormat">
+                                        <property name="category">Short Time</property>
+                                        <property name="pattern">Short Time</property>
+                                    </structure>
+                                    <property name="display">inline</property>
+                                    <property name="resultSetColumn">FinancialDataDateTime</property>
                                 </data>
                             </cell>
                             <cell id="5305">
@@ -2215,12 +2278,6 @@ if(params["PrintType"].value.equals('2'))
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">current_qty</property>
-                    <text-property name="displayName">current_qty</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["current_qty"]</expression>
-                    <property name="dataType">decimal</property>
-                </structure>
-                <structure>
                     <property name="name">unit_code</property>
                     <text-property name="displayName">unit_code</text-property>
                     <expression name="expression" type="javascript">dataSetRow["unit_code"]</expression>
@@ -2274,7 +2331,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["sale_price"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["sale_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2290,7 +2347,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["cost_price"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["cost_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2306,7 +2363,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["wap"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["wap"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2329,7 +2386,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["sale_price"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["sale_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2345,7 +2402,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["cost_price"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["cost_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2361,7 +2418,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["wap"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["wap"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2427,7 +2484,7 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["purchase_price"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["purchase_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
@@ -2443,10 +2500,16 @@ if(params["PrintType"].value.equals('2'))
                     <list-property name="arguments">
                         <structure>
                             <property name="name">Expression</property>
-                            <expression name="value" type="javascript">row["current_qty"] * row["purchase_price"]</expression>
+                            <expression name="value" type="javascript">row["qty"] * row["purchase_price"]</expression>
                         </structure>
                     </list-property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">qty</property>
+                    <text-property name="displayName">qty</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["qty"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <list-property name="sort">
@@ -3552,7 +3615,7 @@ if(params["PrintType"].value.equals('2'))
                                 </structure>
                             </list-property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00########">row._outer["current_qty"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["translation"] ? row["translation"] : row._outer["unit_code"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00########">row._outer["qty"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["translation"] ? row["translation"] : row._outer["unit_code"]</VALUE-OF>]]></text-property>
                         </text>
                     </cell>
                     <cell id="4495">
@@ -3576,7 +3639,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["sale_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["sale_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4563">
                             <property name="fontSize">7pt</property>
@@ -3632,7 +3695,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["cost_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["cost_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4565">
                             <property name="fontSize">7pt</property>
@@ -3688,7 +3751,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["wap"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["wap"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4642">
                             <property name="fontSize">7pt</property>
@@ -3744,7 +3807,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="marginRight">2pt</property>
                             <property name="textAlign">right</property>
                             <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["purchase_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
+                            <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["purchase_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="5392">
                             <property name="fontSize">7pt</property>
