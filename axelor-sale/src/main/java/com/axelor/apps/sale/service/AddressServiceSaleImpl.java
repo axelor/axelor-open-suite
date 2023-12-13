@@ -21,10 +21,17 @@ package com.axelor.apps.sale.service;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.JPA;
+import com.axelor.text.GroovyTemplates;
+import com.google.inject.Inject;
 
 public class AddressServiceSaleImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceSaleImpl::checkAddressUsedSale);
+  }
+
+  @Inject
+  public AddressServiceSaleImpl(GroovyTemplates groovyTemplates) {
+    super(groovyTemplates);
   }
 
   private static boolean checkAddressUsedSale(Long addressId) {

@@ -22,10 +22,17 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.db.JPA;
+import com.axelor.text.GroovyTemplates;
+import com.google.inject.Inject;
 
 public class AddressServiceAccountImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceAccountImpl::checkAddressUsedAccount);
+  }
+
+  @Inject
+  public AddressServiceAccountImpl(GroovyTemplates groovyTemplates) {
+    super(groovyTemplates);
   }
 
   private static boolean checkAddressUsedAccount(Long addressId) {

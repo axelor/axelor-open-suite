@@ -22,10 +22,17 @@ import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.db.JPA;
+import com.axelor.text.GroovyTemplates;
+import com.google.inject.Inject;
 
 public class AddressServiceStockImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);
+  }
+
+  @Inject
+  public AddressServiceStockImpl(GroovyTemplates groovyTemplates) {
+    super(groovyTemplates);
   }
 
   private static boolean checkAddressUsedStock(Long addressId) {
