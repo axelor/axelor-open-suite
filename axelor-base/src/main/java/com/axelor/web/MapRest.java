@@ -105,12 +105,6 @@ public class MapRest {
           objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
         }
 
-        objectNode.put("pinColor", partner.getIsProspect() ? "red" : "orange");
-        String pinChar = partner.getIsProspect() ? "P" : "C";
-        if (partner.getIsSupplier()) {
-          pinChar = pinChar + "/S";
-        }
-        objectNode.put("pinChar", pinChar);
         arrayNode.add(objectNode);
       }
 
@@ -140,7 +134,6 @@ public class MapRest {
       }
 
       ArrayNode arrayNode = nodeFactory.arrayNode();
-      String pinColor = getPinColor(partner);
 
       List<PartnerAddress> partnerAddressList =
           partner.getPartnerAddressList() != null
@@ -175,9 +168,6 @@ public class MapRest {
             objectNode.put("emailAddress", partner.getEmailAddress().getAddress());
           }
         }
-
-        objectNode.put("pinColor", pinColor);
-        objectNode.put("pinChar", getPinChar(partnerAddress));
 
         arrayNode.add(objectNode);
       }
@@ -226,8 +216,6 @@ public class MapRest {
           objectNode.put("emailAddress", customer.getEmailAddress().getAddress());
         }
 
-        objectNode.put("pinColor", "orange");
-        objectNode.put("pinChar", "C");
         arrayNode.add(objectNode);
       }
 
@@ -275,8 +263,6 @@ public class MapRest {
           objectNode.put("emailAddress", prospect.getEmailAddress().getAddress());
         }
 
-        objectNode.put("pinColor", "red");
-        objectNode.put("pinChar", "P");
         arrayNode.add(objectNode);
       }
 
@@ -323,8 +309,6 @@ public class MapRest {
           objectNode.put("emailAddress", supplier.getEmailAddress().getAddress());
         }
 
-        objectNode.put("pinColor", "purple");
-        objectNode.put("pinChar", "S");
         arrayNode.add(objectNode);
       }
 
@@ -382,25 +366,5 @@ public class MapRest {
     }
 
     return fullName;
-  }
-
-  protected String getPinColor(Partner partner) {
-    return partner.getIsProspect() ? "red" : "orange";
-  }
-
-  protected String getPinChar(PartnerAddress partnerAddress) {
-    if (partnerAddress.getIsDefaultAddr()) {
-      return "";
-    }
-
-    if (partnerAddress.getIsInvoicingAddr()) {
-      return I18n.get(ITranslation.PIN_CHAR_INVOICING);
-    }
-
-    if (partnerAddress.getIsDeliveryAddr()) {
-      return I18n.get(ITranslation.PIN_CHAR_DELIVERY);
-    }
-
-    return "";
   }
 }
