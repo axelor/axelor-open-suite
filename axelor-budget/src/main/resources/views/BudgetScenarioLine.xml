@@ -6,12 +6,22 @@
   <grid name="budget-scenario-line-grid" title="Budget Scenario Line"
     model="com.axelor.apps.budget.db.BudgetScenarioLine" editable="true">
     <field name="budgetScenarioVariable" domain="self.entryMethod=0" required="true"/>
-    <field name="year1Value" hidden="true"/>
-    <field name="year2Value" hidden="true"/>
-    <field name="year3Value" hidden="true"/>
-    <field name="year4Value" hidden="true"/>
-    <field name="year5Value" hidden="true"/>
-    <field name="year6Value" hidden="true"/>
+    <field name="budgetScenario" hidden="true"/>
+    <field name="budgetScenario.company" hidden="true"/>
+    <field name="budgetScenario.company.currency" hidden="true"/>
+    <field name="budgetScenario.company.currency.numberOfDecimals" hidden="true"/>
+    <field name="year1Value" hidden="true"
+      x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+    <field name="year2Value" hidden="true"
+      x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+    <field name="year3Value" hidden="true"
+      x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+    <field name="year4Value" hidden="true"
+      x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+    <field name="year5Value" hidden="true"
+      x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+    <field name="year6Value" hidden="true"
+      x-scale="budgetScenario.company.currency.numberOfDecimals"/>
   </grid>
 
   <form model="com.axelor.apps.budget.db.BudgetScenarioLine" title="Budget Scenario Line"
@@ -23,12 +33,23 @@
       <field name="budgetScenarioVariable" domain="self.entryMethod=0" required="true"
         colSpan="12"/>
 
-      <field name="year1Value" hidden="true"/>
-      <field name="year2Value" hidden="true"/>
-      <field name="year3Value" hidden="true"/>
-      <field name="year4Value" hidden="true"/>
-      <field name="year5Value" hidden="true"/>
-      <field name="year6Value" hidden="true"/>
+      <field name="year1Value" hidden="true"
+        x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+      <field name="year2Value" hidden="true"
+        x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+      <field name="year3Value" hidden="true"
+        x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+      <field name="year4Value" hidden="true"
+        x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+      <field name="year5Value" hidden="true"
+        x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+      <field name="year6Value" hidden="true"
+        x-scale="budgetScenario.company.currency.numberOfDecimals"/>
+
+      <field name="budgetScenario" hidden="true"/>
+      <field name="budgetScenario.company" hidden="true"/>
+      <field name="budgetScenario.company.currency" hidden="true"/>
+      <field name="budgetScenario.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
