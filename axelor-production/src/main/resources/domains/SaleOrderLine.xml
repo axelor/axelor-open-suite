@@ -11,7 +11,7 @@
       ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM"/>
 
     <one-to-many name="manufOrderList" ref="com.axelor.apps.production.db.ManufOrder"
-      mappedBy="saleOrderLine" copy="false" orphanRemoval="false"/>
+      mappedBy="saleOrderLine" copy="false"/>
 
 
   </entity>

@@ -88,9 +88,6 @@
     <boolean name="autoFillDeliveryRealQty" title="Auto fill delivery real quantity"/>
     <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"/>
 
-    <boolean name="deliveriesHeritateFromManufOrder"
-      title="Deliveries heritate from manufacturing order."/>
-
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>
