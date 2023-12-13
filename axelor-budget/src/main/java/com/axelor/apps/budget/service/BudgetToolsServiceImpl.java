@@ -57,15 +57,18 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
   protected AccountConfigService accountConfigService;
   protected AppBudgetService appBudgetService;
   protected AppBaseService appBaseService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetToolsServiceImpl(
       AccountConfigService accountConfigService,
       AppBudgetService appBudgetService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.accountConfigService = accountConfigService;
     this.appBudgetService = appBudgetService;
     this.appBaseService = appBaseService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -181,7 +184,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     }
     Integer budgetControlLevel = getBudgetControlLevel(budget);
     if (budgetControlLevel == null) {
-      return budget.getAvailableAmount();
+      return currencyScaleServiceBudget.getCompanyScaledValue(budget, budget.getAvailableAmount());
     }
     GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
 
@@ -193,27 +196,35 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
 
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
           if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
-            return budgetLine.getAvailableAmount();
+            return currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, budgetLine.getAvailableAmount());
           }
         }
         break;
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
-        return budget.getAvailableAmount();
+        return currencyScaleServiceBudget.getCompanyScaledValue(
+            budget, budget.getAvailableAmount());
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION:
-        return Optional.of(budget)
-            .map(Budget::getBudgetLevel)
-            .map(BudgetLevel::getTotalAmountAvailable)
-            .orElse(BigDecimal.ZERO);
+        return currencyScaleServiceBudget.getCompanyScaledValue(
+            budget,
+            Optional.of(budget)
+                .map(Budget::getBudgetLevel)
+                .map(BudgetLevel::getTotalAmountAvailable)
+                .orElse(BigDecimal.ZERO));
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP:
-        return Optional.of(budget)
-            .map(Budget::getBudgetLevel)
-            .map(BudgetLevel::getParentBudgetLevel)
-            .map(BudgetLevel::getTotalAmountAvailable)
-            .orElse(BigDecimal.ZERO);
+        return currencyScaleServiceBudget.getCompanyScaledValue(
+            budget,
+            Optional.of(budget)
+                .map(Budget::getBudgetLevel)
+                .map(BudgetLevel::getParentBudgetLevel)
+                .map(BudgetLevel::getTotalAmountAvailable)
+                .orElse(BigDecimal.ZERO));
       default:
-        return Optional.of(globalBudget)
-            .map(GlobalBudget::getTotalAmountAvailable)
-            .orElse(BigDecimal.ZERO);
+        return currencyScaleServiceBudget.getCompanyScaledValue(
+            budget,
+            Optional.of(globalBudget)
+                .map(GlobalBudget::getTotalAmountAvailable)
+                .orElse(BigDecimal.ZERO));
     }
     return BigDecimal.ZERO;
   }

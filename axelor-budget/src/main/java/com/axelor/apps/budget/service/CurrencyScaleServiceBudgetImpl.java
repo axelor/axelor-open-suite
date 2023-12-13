@@ -3,6 +3,7 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
+import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetScenario;
 import java.math.BigDecimal;
 
@@ -15,8 +16,18 @@ public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getCompanyScaledValue(Budget budget, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(budget.getCompany()));
+  }
+
+  @Override
   public int getCompanyScale(BudgetScenario budgetScenario) {
     return this.getCompanyScale(budgetScenario.getCompany());
+  }
+
+  @Override
+  public int getCompanyScale(Budget budget) {
+    return this.getCompanyScale(budget.getCompany());
   }
 
   @Override

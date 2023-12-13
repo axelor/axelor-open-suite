@@ -213,25 +213,30 @@
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
         colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
         <field name="periodDurationSelect" colSpan="4"/>
-        <field name="amountForGeneration" colSpan="4"/>
+        <field name="amountForGeneration" colSpan="4"
+          x-scale="company.currency.numberOfDecimals"/>
         <button name="generatePeriodsBtn" title="Generate periods"
           onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
+        <field name="company"/>
+        <field name="company.currency" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
         <separator colSpan="12"/>
       </panel>
 
       <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" itemSpan="3"
         title="Total amounts">
-        <field name="totalAmountExpected"/>
-        <field name="availableAmount"/>
-        <field name="availableAmountWithSimulated"/>
-        <field name="simulatedAmount"/>
+        <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
         <field name="totalAmountCommitted" if-module="axelor-supplychain"
-          if="__config__.app.isApp('supplychain')"/>
-        <field name="realizedWithNoPo"/>
-        <field name="realizedWithPo"/>
-        <field name="totalAmountPaid"/>
-        <field name="totalFirmGap"/>
-        <field name="totalAmountRealized" hidden="true"/>
+          if="__config__.app.isApp('supplychain')" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true"
+          x-scale="company.currency.numberOfDecimals"/>
         <separator colSpan="12"/>
       </panel>
 

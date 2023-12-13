@@ -16,9 +16,12 @@
     onNew="action-group-on-new-parent-budget-distribution" edit-icon="true">
     <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
-    <field name="budgetAmountAvailable" readonly="true"/>
+    <field name="budgetAmountAvailable" readonly="true"
+      x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="amount" validIf="amount &gt; 0"
-      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+      onChange="action-method-budget-budget-distribution-set-amount-available"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoice-budget-distribution-grid" title="Budget distributions"
@@ -27,9 +30,12 @@
     <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
     <field name="invoiceLine.product"/>
-    <field name="budgetAmountAvailable" readonly="true"/>
+    <field name="budgetAmountAvailable" readonly="true"
+      x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="amount"
-      onChange="action-method-budget-budget-distribution-set-amount-available"/>
+      onChange="action-method-budget-budget-distribution-set-amount-available"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-budget-distribution-grid" title="Budget distributions"
@@ -39,9 +45,12 @@
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
     <field name="purchaseOrderLine.product"/>
     <field name="budgetAmountAvailable" readonly="true" title="Budget amount available"
-      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+      x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="amount"
-      onChange="action-method-budget-budget-distribution-set-amount-available" aggregate="sum"/>
+      onChange="action-method-budget-budget-distribution-set-amount-available" aggregate="sum"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-budget-distribution-complete-grid" title="Budget distributions"
@@ -51,8 +60,10 @@
     <field name="purchaseOrderLine.purchaseOrder"/>
     <field name="purchaseOrderLine.purchaseOrder.validationDateTime"/>
     <field name="budgetAmountAvailable"
-      if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
-    <field name="amount"/>
+      if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-budget-distribution-purchase-order-line-global-dashlet-grid"
@@ -63,11 +74,14 @@
     <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
     <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
     <field name="purchaseOrderLine.productName"/>
-    <field name="purchaseOrderLine.exTaxTotal"/>
+    <field name="purchaseOrderLine.exTaxTotal"
+      x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
+    <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="imputationDate"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-budget-distribution-sale-order-line-global-dashlet-grid"
@@ -76,9 +90,12 @@
     <field name="saleOrderLine.saleOrder" title="Ref."/>
     <field name="saleOrderLine.saleOrder.statusSelect"/>
     <field name="saleOrderLine.productName"/>
-    <field name="saleOrderLine.exTaxTotal"/>
+    <field name="saleOrderLine.exTaxTotal"
+      x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
+    <field name="saleOrderLine.saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="imputationDate"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-budget-distribution-purchase-order-line-group-dashlet-grid"
@@ -90,10 +107,13 @@
     <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
-    <field name="purchaseOrderLine.exTaxTotal"/>
+    <field name="purchaseOrderLine.exTaxTotal"
+      x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
+    <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel" title="Section line"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-budget-distribution-purchase-order-line-section-dashlet-grid"
@@ -105,18 +125,24 @@
     <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
-    <field name="purchaseOrderLine.exTaxTotal"/>
+    <field name="purchaseOrderLine.exTaxTotal"
+      x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
+    <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-budget-distribution-grid" title="Budget distributions"
     model="com.axelor.apps.budget.db.BudgetDistribution">
     <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
       onChange="action-method-budget-budget-distribution-set-amount-available"/>
-    <field name="budgetAmountAvailable" readonly="true"/>
-    <field name="amount" validIf="amount &gt; 0"/>
+    <field name="budgetAmountAvailable" readonly="true"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="amount" validIf="amount &gt; 0"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-distribution-simulated-moves" title="Distribution lines"
@@ -125,7 +151,8 @@
     <field name="budget"/>
     <field name="moveLine"/>
     <field name="imputationDate"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-distribution-realized-with-po-line-grid" title="Distribution lines"
@@ -135,9 +162,10 @@
     <field name="invoiceLine"/>
     <field name="invoiceLine.invoice.purchaseOrder"/>
     <field name="invoiceLine.invoice.saleOrder"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="imputationDate"/>
     <field name="invoiceLine.invoice" hidden="true"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-distribution-realized-without-po-line-grid" title="Distribution lines"
@@ -147,7 +175,8 @@
     <field name="invoiceLine"/>
     <field name="moveLine"/>
     <field name="imputationDate"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-distribution-grid-purchase-order-line-grid" title="Committed lines"
@@ -157,10 +186,11 @@
     <field name="purchaseOrderLine.purchaseOrder"/>
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.product"/>
-    <field name="amount"/>
+    <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-distribution-grid-invoice-line-grid" title="Realized lines"
@@ -168,7 +198,8 @@
     <field name="invoiceLine.invoice"/>
     <field name="invoiceLine.invoice.invoiceDate"/>
     <field name="invoiceLine.product" domain="self.dtype = 'Product'"/>
-    <field name="amount"/>
+    <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
 
@@ -180,10 +211,13 @@
         onChange="action-method-budget-budget-distribution-set-amount-available"/>
       <field name="purchaseOrderLine.product" readonly="true"/>
       <field name="budgetAmountAvailable" readonly="true"
-        if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
-      <field name="amount" validIf="amount &gt; 0"/>
+        if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" validIf="amount &gt; 0"
+        x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -196,10 +230,12 @@
       <field name="purchaseOrderLine.purchaseOrder" readonly="true"/>
       <field name="purchaseOrderLine.purchaseOrder.validationDateTime" readonly="true"/>
       <field name="budgetAmountAvailable" readonly="true"
-        if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
-      <field name="amount" readonly="true"/>
+        if="__config__.app.getApp('budget')?.getManageMultiBudget()"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" readonly="true" x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -209,10 +245,12 @@
     <panel name="mainPanel">
       <field name="budget" required="true" domain="self.statusSelect = 2"/>
       <field name="budgetAmountAvailable" readonly="true"
-        hideIf="purchaseOrderLine.purchaseOrder.statusSelect &gt; 2 || invoiceLine.invoice.statusSelect &gt; 2"/>
-      <field name="amount"/>
+        hideIf="purchaseOrderLine.purchaseOrder.statusSelect &gt; 2 || invoiceLine.invoice.statusSelect &gt; 2"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -222,10 +260,12 @@
     <panel name="mainPanel">
       <field name="budget" readonly="true"/>
       <field name="invoiceLine.product" readonly="true" domain="self.dtype = 'Product'"/>
-      <field name="budgetAmountAvailable" readonly="true"/>
-      <field name="amount" readonly="true"/>
+      <field name="budgetAmountAvailable" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" readonly="true" x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -235,7 +275,8 @@
       <field name="invoiceLine.invoice"/>
       <field name="invoiceLine.invoice.invoiceDate"/>
       <field name="invoiceLine.product" domain="self.dtype = 'Product'"/>
-      <field name="amount"/>
+      <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -254,7 +295,9 @@
       <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
       <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
       <field name="purchaseOrderLine.productName"/>
-      <field name="purchaseOrderLine.exTaxTotal"/>
+      <field name="purchaseOrderLine.exTaxTotal"
+        x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
+      <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
       <field name="$fromGroup" hidden="true"/>
       <field name="$fromSection" hidden="true"/>
       <field name="$fromBudget" hidden="true"/>
@@ -272,9 +315,11 @@
       <field name="saleOrderLine"/>
       <field name="moveLine"/>
       <field name="budget"/>
-      <field name="budgetAmountAvailable" readonly="true"/>
-      <field name="amount"/>
+      <field name="budgetAmountAvailable" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="invoiceLine.invoice" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -285,7 +330,8 @@
       <field name="purchaseOrderLine.purchaseOrder"/>
       <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
       <field name="purchaseOrderLine.product" domain="self.dtype = 'Product'"/>
-      <field name="amount"/>
+      <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -294,8 +340,11 @@
     <panel name="mainPanel">
       <field name="budget" onSelect="action-method-budget-distribution-set-domain-budget"
         onChange="action-method-budget-budget-distribution-set-amount-available"/>
-      <field name="budgetAmountAvailable" readonly="true"/>
-      <field name="amount" validIf="amount &gt; 0"/>
+      <field name="budgetAmountAvailable" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" validIf="amount &gt; 0"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -309,10 +358,12 @@
         onSelect="action-method-budget-distribution-set-domain-budget"/>
       <field name="saleOrderLine.product" readonly="true"/>
       <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
-        name="budgetAmountAvailable" readonly="true"/>
-      <field name="amount" readonly="false"/>
+        name="budgetAmountAvailable" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amount" readonly="false" x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="saleOrderLine.saleOrder.statusSelect" hidden="true"/>
       <field name="invoiceLine.invoice.statusSelect" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 

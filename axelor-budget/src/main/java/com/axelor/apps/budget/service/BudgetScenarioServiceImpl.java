@@ -316,7 +316,11 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
                   .findFirst()
                   .orElse(null);
           if (budgetScenarioLine != null) {
-            setYearValue(budgetScenarioLine, yearNumber, (BigDecimal) entry.getValue());
+            setYearValue(
+                budgetScenarioLine,
+                yearNumber,
+                currencyScaleServiceBudget.getCompanyScaledValue(
+                    budgetScenario, (BigDecimal) entry.getValue()));
           }
         }
       }
