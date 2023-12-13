@@ -83,8 +83,8 @@
       <label name="orLabel" title="Or" colSpan="12"
         hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1)"/>
       <spacer colSpan="12"/>
-      <field name="budgetList" title="Lines" colSpan="12" form-view="budget-included-form"
-        grid-view="budget-lines-grid"
+      <field name="budgetList" title="Lines" colSpan="12" form-view="budget-form"
+        grid-view="budget-grid"
         hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1"
         canNew="statusSelect == 'draft'" canEdit="statusSelect == 'draft'"
         canRemove="statusSelect == 'draft'"/>

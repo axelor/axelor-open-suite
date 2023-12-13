@@ -133,8 +133,8 @@
         showIf="((budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0) &amp;&amp; (!budgetLevelList || budgetLevelList.length == 0)"/>
       <spacer colSpan="12"/>
       <field name="budgetList" title="Budgets" colSpan="12"
-        showIf="!budgetLevelList || budgetLevelList.length == 0" form-view="budget-included-form"
-        grid-view="budget-lines-grid" canEdit="statusSelect == 0" canNew="statusSelect == 0"
+        showIf="!budgetLevelList || budgetLevelList.length == 0" form-view="budget-form"
+        grid-view="budget-grid" canEdit="statusSelect == 0" canNew="statusSelect == 0"
         canRemove="statusSelect == 0"/>
 
     </panel>

@@ -71,8 +71,8 @@ public class GlobalBudgetViewController {
     response.setView(
         ActionView.define(I18n.get("Lines"))
             .model(Budget.class.getName())
-            .add("grid", "budget-lines-grid")
-            .add("form", "budget-included-form")
+            .add("grid", "budget-grid")
+            .add("form", "budget-form")
             .param("details-view", "true")
             .param("showArchived", "true")
             .domain(domain)
