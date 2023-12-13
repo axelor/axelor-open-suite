@@ -27,10 +27,10 @@
         <field name="floor" x-bind="{{floor|uppercase}}"
           placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
         <field name="buildingNumber" x-bind="{{buildingNumber|uppercase}}"
-          onChange="action-address-record-change-addressL4"
+          onChange="action-address-record-change-streetName"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="street" onSelect="action-address-attrs-update-domain-street"
-          onChange="action-address-record-change-addressL4" form-view="street-form"
+          onChange="action-address-record-change-streetName" form-view="street-form"
           grid-view="street-grid" canNew="true"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="streetName" x-bind="{{streetName|uppercase}}"
@@ -88,10 +88,10 @@
         <field name="floor" x-bind="{{floor|uppercase}}"
           placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
         <field name="buildingNumber" x-bind="{{buildingNumber|uppercase}}"
-          onChange="action-address-record-change-addressL4"
+          onChange="action-address-record-change-streetName"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="street" onSelect="action-address-attrs-update-domain-street"
-          onChange="action-address-record-change-addressL4" form-view="street-form"
+          onChange="action-address-record-change-streetName" form-view="street-form"
           grid-view="street-grid" canNew="true"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="streetName" x-bind="{{streetName|uppercase}}"
@@ -101,10 +101,6 @@
           canNew="true" onChange="action-address-change-city" form-view="city-form"
           grid-view="city-grid"/>
         <field name="zip" onChange="action-address-method-autocomplete-address"/>
-        <!-- <field name="addressL6" x-bind="{{addressL6|uppercase}}" required="true" colSpan="12"/> -->
-        <!-- <static name="addressL6Text" colSpan="12"><![CDATA[Notice: The Zip/City field is automatically
-          filled when the city is selected. You can change it when the Zip/City pair is missing or in case of minor
-          change.]]></static> -->
         <field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
           title="Invoicing address"/>
         <field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
@@ -234,7 +230,7 @@
     model="com.axelor.apps.base.db.Address">
     <field name="city" expr="eval: null"/>
     <field name="zip" expr="eval: null"/>
-    <field name="streetNumber" expr="eval: null"/>
+    <field name="buildingNumber" expr="eval: null"/>
     <field name="street" expr="eval: null"/>
     <field name="streetName" expr="eval: null"/>
   </action-record>
@@ -243,11 +239,11 @@
     <call class="com.axelor.apps.base.web.AddressController" method="autocompleteAddress"/>
   </action-method>
 
-  <action-record name="action-address-record-change-addressL4"
+  <action-record name="action-address-record-change-streetName"
     model="com.axelor.apps.base.db.Address">
-    <field name="streetName" expr="eval: streetNumber + ' ' + street?.name"
-      if="streetNumber &amp;&amp; street"/>
-    <field name="streetName" expr="eval: street?.name" if="!streetNumber &amp;&amp; street"/>
+    <field name="streetName" expr="eval: buildingNumber + ' ' + street?.name"
+      if="buildingNumber &amp;&amp; street"/>
+    <field name="streetName" expr="eval: street?.name" if="!buildingNumber &amp;&amp; street"/>
     <field name="streetName" expr="eval: null" if="!street"/>
     <field name="city" expr="eval: street.city" if="street"/>
     <field name="zip" expr="eval: street.city.zip" if="street"/>
@@ -256,7 +252,7 @@
 
   <search-filters name="address-filters" model="com.axelor.apps.base.db.Address"
     title="Address filters">
-    <field name="streetNumber" hidden="true"
+    <field name="buildingNumber" hidden="true"
       if="!__config__.app.getApp('base')?.getStoreStreets()"/>
     <field name="street" hidden="true" if="!__config__.app.getApp('base')?.getStoreStreets()"/>
     <field name="streetName" hidden="true"

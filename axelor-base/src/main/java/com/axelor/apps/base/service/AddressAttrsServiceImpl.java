@@ -1,7 +1,6 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.AddressTemplateLine;
-import com.axelor.meta.db.MetaField;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,18 +21,19 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
       List<AddressTemplateLine> addressTemplateLineList,
       Map<String, Map<String, Object>> attrsMap) {
     List<String> addressFormFieldsList =
-            List.of("room", "floor", "streetNumber", "street", "streetName", "postBox", "city", "zip");
+        List.of(
+            "room", "floor", "buildingNumber", "street", "streetName", "postBox", "city", "zip");
 
-    if(addressTemplateLineList.isEmpty()){
+    if (addressTemplateLineList.isEmpty()) {
       addressFormFieldsList.forEach(field -> addFieldUnhide(field, attrsMap));
-    } else{
+    } else {
       addressFormFieldsList.forEach(field -> addFieldHide(field, attrsMap));
     }
 
     // Iterate through addressTemplateLineList and call addFieldTitle for each MetaField
     addressTemplateLineList.stream()
-            .map(AddressTemplateLine::getMetaField)
-            .forEach(metaField -> addFieldTitle(metaField.getName(), metaField.getLabel(), attrsMap));
+        .map(AddressTemplateLine::getMetaField)
+        .forEach(metaField -> addFieldTitle(metaField.getName(), metaField.getLabel(), attrsMap));
   }
 
   @Override

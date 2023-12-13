@@ -428,7 +428,7 @@
       JOIN
       base_country country
       ON
-      country.id=address.addressl7country
+      country.id=address.country
       JOIN
       auth_user _user
       ON _user.id = :__user__
@@ -437,7 +437,8 @@
       WHERE
       DATE(self.confirmation_date_time) BETWEEN DATE(:fromDate) AND
       DATE(:toDate)
-      and self.status_select in (3,4)
+      and
+      self.status_select in (3,4)
       GROUP BY
       country_name
       HAVING

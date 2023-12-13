@@ -404,7 +404,7 @@
               <panel colSpan="12" css="field-append">
                 <label colSpan="12"
                   title="The following address is invalid. Please use '+' button to create a new one :"
-                  showIf="address == null || address.addressL4 == null" hidden="true"
+                  showIf="address == null || address.streetName == null" hidden="true"
                   css="label-bold" name="addressHelperLabel"/>
                 <panel colSpan="12" stacked="true" css="field-append">
                   <field name="address" canNew="true" form-view="address-form"
@@ -1166,7 +1166,7 @@
 
   <action-validate name="action-partner-validate-registration-code">
     <error message="Registration code is required."
-      if="partnerAddressList?.findAll{it.address?.addressL7Country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
+      if="partnerAddressList?.findAll{it.address?.country?.alpha2Code == 'FR'}?.size() &gt; 0 &amp;&amp; partnerTypeSelect == 1 &amp;&amp; !registrationCode"/>
   </action-validate>
 
   <action-record name="action-partner-record-factor-supplier-customer-no-error"

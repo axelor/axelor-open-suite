@@ -6,8 +6,6 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Address">
-    <!-- <string name="addressL6" title="Zip/City"/> -->
-
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
     <string name="department" title="Department"/>
     <string name="subDepartment" title="Sub Department"/>

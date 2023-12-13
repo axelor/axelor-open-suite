@@ -101,9 +101,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   }
 
   /**
-   * Create a partner from a lead
+   * Create a partner from a lea
    *
-   * @param lead
    * @return
    * @throws AxelorException
    */
@@ -156,29 +155,18 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   @Override
   public Address createPrimaryAddress(Lead lead) {
 
-    String addressL4 = lead.getPrimaryAddress();
-    if (addressL4 == null) {
+    String streetName = lead.getPrimaryAddress();
+    if (streetName == null) {
       return null;
     }
-    String addressL5 = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
-    String addressL6 =
-        lead.getPrimaryPostalCode()
-            + " "
-            + (lead.getPrimaryCity() != null ? lead.getPrimaryCity().getName() : "");
+    String postBox = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
 
-    Country addressL7Country = lead.getPrimaryCountry();
+    Country country = lead.getPrimaryCountry();
 
-    Address address =
-        addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+    Address address = addressService.getAddress(null, null, streetName, postBox, country);
 
-    if (address == null
-        && (addressL4 != null
-            || addressL5 != null
-            || addressL6 != null
-            || addressL7Country != null)) {
-      address =
-          addressService.createAddress(
-              null, null, addressL4, addressL5, addressL6, addressL7Country);
+    if (address == null) {
+      address = addressService.createAddress(null, null, streetName, postBox, country);
     }
 
     return address;

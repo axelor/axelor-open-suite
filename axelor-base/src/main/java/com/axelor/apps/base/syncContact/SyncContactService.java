@@ -311,9 +311,9 @@ public class SyncContactService {
     String query =
         "self.zip = '"
             + googleAddr.getPostalCode()
-            + "' AND self.addressL7Country.alpha2Code = '"
+            + "' AND self.country.alpha2Code = '"
             + googleAddr.getCountryCode()
-            + "' AND self.addressL4 = '"
+            + "' AND self.streetName = '"
             + googleAddr.getStreetAddress()
             + "'";
     if (!Strings.isNullOrEmpty(googleAddr.getCity())) {

@@ -32,7 +32,7 @@
     <field name="invoice.invoiceId" width="120"/>
     <field name="invoice.invoiceDate" title="Date"/>
     <field name="invoice.statusSelect" title="invoiceLineMenu.status"/>
-    <field name="invoice.address.addressL7Country"/>
+    <field name="invoice.address.country"/>
     <field name="product.code" title="product.code" width="120"/>
     <field name="productName" width="170"/>
     <field name="qty" width="50" aggregate="sum" x-scale="2"/>

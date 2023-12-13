@@ -28,7 +28,7 @@
 			JOIN
 				base_address AS _address ON _address.id = _partner_address.address
 			JOIN
-				base_country AS _country ON _country.id = _address.addressL7country
+				base_country AS _country ON _country.id = _address.country
 			WHERE
 				_partner.is_customer = true
 			GROUP BY
@@ -77,7 +77,7 @@
       base_address AS _address ON _address.id = _partner_address.address
       JOIN
       base_country AS _country
-      ON _country.id = _address.addressL7country
+      ON _country.id = _address.country
       WHERE
       _partner.is_supplier = true
       GROUP BY
@@ -104,10 +104,11 @@
       base_address as baseAddress ON baseAddress.id=partner_address.address
       LEFT JOIN
       base_country AS
-      addressCountry ON addressCountry.id=baseAddress.addressl7country
+      addressCountry ON addressCountry.id=baseAddress.country
       WHERE
       self.is_prospect = true
-      AND is_contact=false
+      AND
+      is_contact=false
       GROUP BY
       _address_country
       ORDER BY

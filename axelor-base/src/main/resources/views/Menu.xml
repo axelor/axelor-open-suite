@@ -314,7 +314,7 @@
     <view type="form" name="address-form"/>
     <view-param name="search-filters" value="address-filters"/>
     <context name="fromMain" expr="eval:true"/>
-    <context name="_duplicateFinderFields" expr=" addressL4;addressL6"/>
+    <context name="_duplicateFinderFields" expr=" streetName"/>
   </action-view>
 
   <menuitem name="referential-conf-invoice-rib" parent="referential-conf"

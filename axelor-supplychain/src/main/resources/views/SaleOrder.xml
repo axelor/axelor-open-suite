@@ -321,7 +321,7 @@
 
   <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
     <attribute name="value" for="isIspmRequired"
-      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.addressL7Country?.isIspmRequired"/>
+      expr="eval: clientPartner?.isIspmRequired || deliveryAddress?.country?.isIspmRequired"/>
   </action-attrs>
 
   <action-method name="action-sale-order-method-allocate-all">

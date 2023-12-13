@@ -104,7 +104,6 @@ public class AddressController {
       response.setValue("floor", addressLineType.get(2).getLine());
       response.setValue("streetName", addressLineType.get(3).getLine());
       response.setValue("postBox", addressLineType.get(4).getLine());
-      response.setValue("addressL6", addressLineType.get(5).getLine());
       response.setValue("inseeCode", addressLineType.get(6).getLine());
       response.setValue("certifiedOk", true);
       response.setValue("pickList", new ArrayList<QAPicklistType>());

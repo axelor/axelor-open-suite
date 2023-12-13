@@ -2144,8 +2144,8 @@
                 &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
           &amp;&amp; (incoterm == null &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'})
           &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code))"/>
+          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code))"/>
   </action-validate>
 
   <action-record name="action-sale-record-update-info-company"
@@ -2295,8 +2295,8 @@
                       &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
           &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
           &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != stockLocation?.address?.addressL7Country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.addressL7Country?.alpha2Code != company.address?.addressL7Country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
+          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
+          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-set-line-field-scale">

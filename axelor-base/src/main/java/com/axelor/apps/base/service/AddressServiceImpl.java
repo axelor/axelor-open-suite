@@ -153,12 +153,7 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Address createAddress(
-      String room,
-      String floor,
-      String streetName,
-      String postBox,
-      String addressL6,
-      Country country) {
+      String room, String floor, String streetName, String postBox, Country country) {
 
     Address address = new Address();
     address.setRoom(room);
@@ -172,23 +167,17 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Address getAddress(
-      String room,
-      String floor,
-      String streetName,
-      String postBox,
-      String addressL6,
-      Country country) {
+      String room, String floor, String streetName, String postBox, Country country) {
 
     return addressRepo
         .all()
         .filter(
             "self.room = ?1 AND self.floor = ?2 AND self.streetName = ?3 "
-                + "AND self.postBox = ?4 AND self.addressL6 = ?5 AND self.country = ?6",
+                + "AND self.postBox = ?4 AND self.country = ?6",
             room,
             floor,
             streetName,
             postBox,
-            addressL6,
             country)
         .fetchOne();
   }
@@ -369,7 +358,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
     Query<Address> query =
-        addressRepo.all().filter("self.addressL7Country.id in ?1", countryIds).order("id");
+        addressRepo.all().filter("self.country.id in ?1", countryIds).order("id");
 
     int offset = 0;
     int countExceptions = 0;
