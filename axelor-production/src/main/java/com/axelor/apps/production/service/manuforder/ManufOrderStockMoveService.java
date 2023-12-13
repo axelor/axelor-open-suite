@@ -186,4 +186,6 @@ public interface ManufOrderStockMoveService {
 
   StockLocation getVirtualStockLocationForProducedStockMove(ManufOrder manufOrder, Company company)
       throws AxelorException;
+
+  public List<Long> getOutgoingStockMoves(ManufOrder manufOrder);
 }

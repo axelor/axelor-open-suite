@@ -54,6 +54,7 @@ import org.slf4j.LoggerFactory;
 public class StockLocationController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
   /**
    * Method that generate inventory as a pdf
    *
@@ -82,26 +83,35 @@ public class StockLocationController {
 
       @SuppressWarnings("unchecked")
       List<Integer> lstSelectedLocations = (List<Integer>) context.get("_ids");
-      if (lstSelectedLocations != null) {
-        for (Integer it : lstSelectedLocations) {
-          Set<Long> idSet =
-              stockLocationService.getContentStockLocationIds(
-                  stockLocationRepository.find(new Long(it)));
-          if (!idSet.isEmpty()) {
-            locationIds += Joiner.on(",").join(idSet) + ",";
+
+      boolean withoutDetailsByStockLocation =
+          context.get("withoutDetailsByStockLocation") != null
+              && (boolean) context.get("withoutDetailsByStockLocation");
+
+      if (withoutDetailsByStockLocation) {
+        locationIds += stockLocationId;
+      } else {
+        if (lstSelectedLocations != null) {
+          for (Integer it : lstSelectedLocations) {
+            Set<Long> idSet =
+                stockLocationService.getContentStockLocationIds(
+                    stockLocationRepository.find(new Long(it)));
+            if (!idSet.isEmpty()) {
+              locationIds += Joiner.on(",").join(idSet) + ",";
+            }
           }
         }
-      }
 
-      if (!locationIds.equals("")) {
-        locationIds = locationIds.substring(0, locationIds.length() - 1);
-        stockLocation = stockLocationRepository.find(new Long(lstSelectedLocations.get(0)));
-      } else if (stockLocation != null && stockLocation.getId() != null) {
-        Set<Long> idSet =
-            stockLocationService.getContentStockLocationIds(
-                stockLocationRepository.find(stockLocation.getId()));
-        if (!idSet.isEmpty()) {
-          locationIds = Joiner.on(",").join(idSet);
+        if (!locationIds.equals("")) {
+          locationIds = locationIds.substring(0, locationIds.length() - 1);
+          stockLocation = stockLocationRepository.find(new Long(lstSelectedLocations.get(0)));
+        } else if (stockLocation != null && stockLocation.getId() != null) {
+          Set<Long> idSet =
+              stockLocationService.getContentStockLocationIds(
+                  stockLocationRepository.find(stockLocation.getId()));
+          if (!idSet.isEmpty()) {
+            locationIds = Joiner.on(",").join(idSet);
+          }
         }
       }
 
@@ -134,7 +144,13 @@ public class StockLocationController {
                 .generateBirtTemplateLink(
                     stockLocationBirtTemplate,
                     null,
-                    Map.of("StockLocationId", locationIds, "PrintType", printType),
+                    Map.of(
+                        "StockLocationId",
+                        locationIds,
+                        "PrintType",
+                        printType,
+                        "WithoutDetailsByStockLocation",
+                        withoutDetailsByStockLocation),
                     title + "-${date}",
                     stockLocationBirtTemplate.getAttach(),
                     exportType);

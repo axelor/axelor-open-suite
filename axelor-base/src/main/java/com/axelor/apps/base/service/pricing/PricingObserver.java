@@ -25,6 +25,8 @@ import com.axelor.meta.db.MetaJsonField;
 
 public interface PricingObserver {
 
+  StringBuilder getLogs();
+
   /**
    * Update the observer for the pricing used
    *

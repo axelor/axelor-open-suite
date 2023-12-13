@@ -100,6 +100,8 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
@@ -110,6 +112,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderChartService;
+import com.axelor.apps.production.service.operationorder.OperationOrderChartServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceServiceImpl;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
@@ -204,6 +208,8 @@ public class ProductionModule extends AxelorModule {
     bind(BillOfMaterialLineService.class).to(BillOfMaterialLineServiceImpl.class);
     bind(StockMoveMergingServiceSupplychainImpl.class)
         .to(StockMoveMergingServiceProductionImpl.class);
+    bind(OperationOrderChartService.class).to(OperationOrderChartServiceImpl.class);
+    bind(ManufOrderOutgoingStockMoveService.class).to(ManufOrderOutgoingStockMoveServiceImpl.class);
     bind(ManufOrderStockMoveService.class).to(ManufOrderStockMoveServiceImpl.class);
     bind(ManufOrderOutsourceService.class).to(ManufOrderOutsourceServiceImpl.class);
     bind(ProdProcessLineOutsourceService.class).to(ProdProcessLineOutsourceServiceImpl.class);

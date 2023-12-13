@@ -8,7 +8,7 @@
     <field name="company"/>
     <field name="product"/>
     <field name="productCategory"/>
-    <field name="concernedModel" hidden="true"/>
+    <field name="concernedModel"/>
     <field name="startDate"/>
     <field name="endDate"/>
     <field name="name"/>
@@ -35,7 +35,7 @@
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
         <field name="endDate" onChange="action-pricing-method-check-dates"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
-          required="true" domain="self.name = 'SaleOrderLine'"/>
+          required="true" domain="self.name != 'Pricing'"/>
       </panel>
       <panel name="classificationPanel" colSpan="12">
         <field name="class1PricingRule"
@@ -100,6 +100,11 @@
         onClick="action-pricing-method-recover-pricing"/>
     </panel>
   </form>
+
+  <action-group name="action-group-use-pricings">
+    <action name="save"/>
+    <action name="action-method-use-pricings"/>
+  </action-group>
 
   <action-attrs name="action-pricing-attrs-clear-classification-fields">
     <attribute name="value" for="class2PricingRule" expr="eval: null"
@@ -218,10 +223,10 @@
   <action-attrs name="action-pricing-attrs-linked-pricing-title">
     <attribute name="title" for="linkedPricing"
       expr="eval: com.axelor.i18n.I18n.get('Previous pricing')"
-      if="__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+      if="__config__.app.getApp('base')?.isPricingComputingOrder"/>
     <attribute name="title" for="linkedPricing"
       expr="eval: com.axelor.i18n.I18n.get('Next pricing')"
-      if="!__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+      if="!__config__.app.getApp('base')?.isPricingComputingOrder"/>
   </action-attrs>
 
   <action-group name="action-pricing-group-attrs-pricing-line-list">
@@ -280,5 +285,13 @@
   <action-method name="action-pricing-method-clear-fields-related-to-formula">
     <call class="com.axelor.apps.base.web.PricingController"
       method="clearFieldsRelatedToFormula"/>
+  </action-method>
+
+  <action-method name="action-method-use-pricings">
+    <call class="com.axelor.apps.base.web.PricingController" method="usePricings"/>
+  </action-method>
+
+  <action-method name="action-method-use-pricings-list">
+    <call class="com.axelor.apps.base.web.PricingController" method="usePricingsList"/>
   </action-method>
 </object-views>

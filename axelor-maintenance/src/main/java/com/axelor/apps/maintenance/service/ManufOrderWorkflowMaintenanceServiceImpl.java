@@ -30,6 +30,7 @@ import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -63,6 +64,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
       OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderService productionOrderService,
@@ -82,6 +84,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         appProductionService,
         productionConfigService,
         operationOrderPlanningService,
+        manufOrderOutgoingStockMoveService,
         manufOrderService,
         sequenceService,
         productionOrderService,

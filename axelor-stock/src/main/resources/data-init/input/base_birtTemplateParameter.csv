@@ -6,6 +6,7 @@
 92;27;"PrintType";"$PrintType";"string"
 93;27;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
 94;27;"StockLocationId";"$StockLocationId";"string"
+521;27;"WithoutDetailsByStockLocation";"$WithoutDetailsByStockLocation";"boolean"
 95;28;"Timezone";"${StockMove.company?.timezone}";"string"
 96;28;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale(StockMove.partner)}";"string"
 97;28;"StockMoveId";"$StockMove.id";"decimal"

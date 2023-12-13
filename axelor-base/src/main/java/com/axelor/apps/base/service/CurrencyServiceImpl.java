@@ -174,7 +174,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     if (startCurrency != null && endCurrency != null && !startCurrency.equals(endCurrency)) {
 
       return this.getAmountCurrencyConvertedUsingExchangeRate(
-          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date));
+          amount, this.getCurrencyConversionRate(startCurrency, endCurrency, date), endCurrency);
     }
 
     return amount;
@@ -183,7 +183,6 @@ public class CurrencyServiceImpl implements CurrencyService {
   /**
    * Convert the amount in start currency into the end currency according to the exchange rate
    *
-   * @param startCurrency
    * @param endCurrency
    * @param amount
    * @param exchangeRate
@@ -191,7 +190,7 @@ public class CurrencyServiceImpl implements CurrencyService {
    * @throws AxelorException
    */
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
-      BigDecimal amount, BigDecimal exchangeRate) {
+      BigDecimal amount, BigDecimal exchangeRate, Currency endCurrency) {
 
     // If the start currency is different from end currency
     // So we convert the amount
@@ -199,7 +198,7 @@ public class CurrencyServiceImpl implements CurrencyService {
 
       return amount
           .multiply(exchangeRate)
-          .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+          .setScale(endCurrency.getNumberOfDecimals(), RoundingMode.HALF_UP);
     }
 
     return amount;

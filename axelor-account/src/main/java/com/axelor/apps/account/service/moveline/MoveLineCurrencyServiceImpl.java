@@ -38,6 +38,7 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
   protected MoveLineService moveLineService;
   protected MoveToolService moveToolService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
 
   @Inject
   public MoveLineCurrencyServiceImpl(
@@ -45,12 +46,14 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveLineService moveLineService,
       MoveToolService moveToolService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService) {
     this.currencyService = currencyService;
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveLineService = moveLineService;
     this.moveToolService = moveToolService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
   @Override
@@ -88,7 +91,7 @@ public class MoveLineCurrencyServiceImpl implements MoveLineCurrencyService {
 
       moveLine.clearInvoiceTermList();
       moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, dueDate, false);
-      moveLineService.computeFinancialDiscount(moveLine);
+      moveLineFinancialDiscountService.computeFinancialDiscount(moveLine);
     }
   }
 }

@@ -46,6 +46,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.translation.ITranslation;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -57,6 +58,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -740,6 +742,23 @@ public class ManufOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void showOutgoingStockMoves(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    List<Long> ids = Lists.newArrayList(0l);
+    if (manufOrder.getId() != null) {
+      manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrder.getId());
+      ids = Beans.get(ManufOrderStockMoveService.class).getOutgoingStockMoves(manufOrder);
+    }
+    response.setView(
+        ActionView.define(I18n.get("Outgoing moves"))
+            .model(StockMove.class.getName())
+            .add("grid", "stock-move-grid")
+            .add("form", "stock-move-form")
+            .domain("self.id in :ids")
+            .context("ids", ids)
+            .map());
   }
 
   public void updateLinesOutsourced(ActionRequest request, ActionResponse response) {

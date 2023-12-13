@@ -98,6 +98,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
   protected OperationOrderPlanningService operationOrderPlanningService;
+  protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ProductionOrderService productionOrderService;
@@ -119,6 +120,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
       OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ProductionOrderService productionOrderService,
@@ -137,6 +139,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
     this.operationOrderPlanningService = operationOrderPlanningService;
+    this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.productionOrderService = productionOrderService;
@@ -475,6 +478,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+
+    manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
+
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 
