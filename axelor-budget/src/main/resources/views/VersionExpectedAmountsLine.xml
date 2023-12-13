@@ -10,17 +10,27 @@
     <field name="budget.budgetLevel.parentBudgetLevel" readonly="true"/>
     <field name="budget.budgetLevel" readonly="true"/>
     <field name="budget" readonly="true"/>
-    <field name="expectedAmount" validIf="expectedAmount &gt;= budget.totalAmountRealized"/>
-    <field name="budget.totalAmountRealized"/>
+    <field name="expectedAmount" validIf="expectedAmount &gt;= budget.totalAmountRealized"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.totalAmountRealized"
+      x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" hidden="true"/>
+    <field name="budget.company" hidden="true"/>
+    <field name="budget.company.currency" hidden="true"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form title="Version expected amounts line" name="version-expected-amounts-line-form"
     model="com.axelor.apps.budget.db.VersionExpectedAmountsLine">
     <panel itemSpan="4">
       <field name="budget"/>
-      <field name="expectedAmount" validIf="expectedAmount &gt;= budget.totalAmountRealized"/>
-      <field name="budget.totalAmountRealized"/>
+      <field name="expectedAmount" validIf="expectedAmount &gt;= budget.totalAmountRealized"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="budget.totalAmountRealized"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="budget.company" hidden="true"/>
+      <field name="budget.company.currency" hidden="true"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
