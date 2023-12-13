@@ -21,18 +21,16 @@ public class ImportExportTranslationController {
   public void exportTranslation(ActionRequest request, ActionResponse response) {
     ImportExportTranslation importExportTranslation =
         request.getContext().asType(ImportExportTranslation.class);
-    importExportTranslation =
-        Beans.get(ImportExportTranslationRepository.class).find(importExportTranslation.getId());
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
 
-    ImportExportTranslation finalImportExportTranslation = importExportTranslation;
     Callable<String> exportTask =
         () -> {
           try {
             String path =
-                importExportTranslationService.exportTranslations(finalImportExportTranslation);
-
+                importExportTranslationService.exportTranslations(
+                    Beans.get(ImportExportTranslationRepository.class)
+                        .find(importExportTranslation.getId()));
             if (path != null) {
               String[] filePath = path.split("/");
               response.setExportFile(filePath[filePath.length - 1]);
@@ -54,17 +52,16 @@ public class ImportExportTranslationController {
   public void importTranslation(ActionRequest request, ActionResponse response) {
     ImportExportTranslation importExportTranslation =
         request.getContext().asType(ImportExportTranslation.class);
-    importExportTranslation =
-        Beans.get(ImportExportTranslationRepository.class).find(importExportTranslation.getId());
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
-
-    ImportExportTranslation finalImportExportTranslation = importExportTranslation;
     Callable<Path> importTask =
         () -> {
           Path path = null;
           try {
-            path = importExportTranslationService.importTranslations(finalImportExportTranslation);
+            path =
+                importExportTranslationService.importTranslations(
+                    Beans.get(ImportExportTranslationRepository.class)
+                        .find(importExportTranslation.getId()));
             response.setInfo(I18n.get("The import file is empty or it has error format."));
             response.setReload(true);
             if (path == null) {

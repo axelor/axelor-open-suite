@@ -69,8 +69,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       throws IOException, AxelorException {
     errorNumber = 0;
     countRecords = 0;
-    importExportTranslation =
-        importExportTranslationRepository.find(importExportTranslation.getId());
     ImportExportTranslationHistory importExportTranslationHistory =
         saveHistory(importExportTranslation, "Export");
     List<String> languageCodes = getLanguageCodes(importExportTranslation);
@@ -309,8 +307,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
       throws AxelorException {
     countRecords = 0;
     errorNumber = 0;
-    importExportTranslation =
-        importExportTranslationRepository.find(importExportTranslation.getId());
     ImportExportTranslationHistory importExportTranslationHistory =
         saveHistory(importExportTranslation, "Import");
     Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
