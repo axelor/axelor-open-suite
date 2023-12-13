@@ -186,9 +186,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     String[] messageValueArray;
     do {
       messageQueryResultList = getResultListByLimitAndOffset(offset, importExportTranslation);
-      if (messageQueryResultList.isEmpty()) {
-        break;
-      }
       for (Object[] objects : messageQueryResultList) {
         try {
           messageRecord = objects;
@@ -203,7 +200,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           errorNumber++;
         }
       }
-      offset += FETCH_LIMIT;
+      offset += messageQueryResultList.size();
     } while (!messageQueryResultList.isEmpty());
     return translationMap;
   }
