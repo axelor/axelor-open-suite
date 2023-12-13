@@ -20,32 +20,41 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PfpPartialReason;
 import com.axelor.apps.account.db.SubstitutePfpValidator;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
   protected AccountConfigService accountConfigService;
+  protected AppBaseService appBaseService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
   protected MoveRepository moveRepo;
@@ -54,11 +63,13 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
       AccountConfigService accountConfigService,
+      AppBaseService appBaseService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       MoveRepository moveRepo) {
     this.invoiceTermService = invoiceTermService;
     this.accountConfigService = accountConfigService;
+    this.appBaseService = appBaseService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
     this.moveRepo = moveRepo;
@@ -66,10 +77,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
   @Override
   public void validatePfp(InvoiceTerm invoiceTerm, User currentUser) {
+    if (this.getAlreadyValidatedStatusList().contains(invoiceTerm.getPfpValidateStatusSelect())) {
+      return;
+    }
+
     Company company = invoiceTerm.getCompany();
 
     invoiceTerm.setDecisionPfpTakenDateTime(
-        Beans.get(AppBaseService.class).getTodayDateTime(company).toLocalDateTime());
+        appBaseService.getTodayDateTime(company).toLocalDateTime());
     invoiceTerm.setInitialPfpAmount(invoiceTerm.getAmount());
     invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
     if (invoiceTerm.getPfpValidatorUser() == null) {
@@ -256,6 +271,10 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       invoiceTermService.computeFinancialDiscount(invoiceTerm, invoice);
     }
 
+    if (invoice != null) {
+      invoice.addInvoiceTermListItem(invoiceTerm);
+    }
+
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
     invoiceTerm.setIsCustomized(true);
     invoiceTermRepo.save(invoiceTerm);
@@ -399,5 +418,69 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
       invoiceTermRepo.save(it);
     }
     return true;
+  }
+
+  protected List<Integer> getAlreadyValidatedStatusList() {
+    return Arrays.asList(
+        InvoiceTermRepository.PFP_STATUS_NO_PFP,
+        InvoiceTermRepository.PFP_STATUS_VALIDATED,
+        InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED);
+  }
+
+  @Override
+  public void updatePfp(
+      InvoiceTerm invoiceTerm, Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
+      throws AxelorException {
+    int pfpValidateStatusSelect;
+    if (MapUtils.isEmpty(invoiceTermPfpValidateStatusSelectMap)) {
+      pfpValidateStatusSelect = invoiceTerm.getPfpValidateStatusSelect();
+    } else {
+      pfpValidateStatusSelect = invoiceTermPfpValidateStatusSelectMap.get(invoiceTerm);
+    }
+
+    if (this.getAlreadyValidatedStatusList().contains(pfpValidateStatusSelect)) {
+      return;
+    } else if (invoiceTerm.getPfpValidateStatusSelect()
+        == InvoiceTermRepository.PFP_STATUS_LITIGATION) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_TERM_PFP_REFUSED));
+    }
+
+    invoiceTermPfpValidateStatusSelectMap.remove(invoiceTerm);
+
+    if (invoiceTerm.getAmountRemaining().signum() > 0) {
+      BigDecimal grantedAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
+
+      this.initPftPartialValidation(invoiceTerm, grantedAmount, null);
+      this.createPfpInvoiceTerm(invoiceTerm, invoiceTerm.getInvoice(), grantedAmount);
+    } else {
+      this.validatePfp(invoiceTerm, AuthUtils.getUser());
+    }
+
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice != null
+        && invoice.getInvoiceTermList().stream()
+            .allMatch(
+                it ->
+                    this.getPfpValidateStatusSelect(it)
+                        == InvoiceTermRepository.PFP_STATUS_VALIDATED)) {
+      // Beans.get to prevent circular injection
+      Beans.get(InvoiceService.class).validatePfp(invoice.getId());
+    }
+
+    Move move = invoiceTerm.getMoveLine().getMove();
+    if (move.getMoveLineList().stream()
+        .allMatch(
+            ml ->
+                CollectionUtils.isEmpty(ml.getInvoiceTermList())
+                    || ml.getInvoiceTermList().stream()
+                        .allMatch(
+                            it ->
+                                this.getPfpValidateStatusSelect(it)
+                                    == InvoiceTermRepository.PFP_STATUS_VALIDATED))) {
+      // Beans.get to prevent circular injection
+      Beans.get(MovePfpService.class).validatePfp(move.getId());
+    }
   }
 }

@@ -66,13 +66,15 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -702,21 +704,26 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
 
     this.updateInvoiceTermsPaidAmount(
-        invoicePayment.getInvoiceTermPaymentList(), invoicePayment.getPaymentMode());
+        invoicePayment.getInvoiceTermPaymentList(), invoicePayment.getPaymentMode(), null);
   }
 
   @Override
   public void updateInvoiceTermsPaidAmount(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      InvoiceTermPayment invoiceTermPayment)
+      InvoiceTermPayment invoiceTermPayment,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     this.updateInvoiceTermsPaidAmount(
-        Collections.singletonList(invoiceTermPayment), invoiceTermToPay.getPaymentMode());
+        Collections.singletonList(invoiceTermPayment),
+        invoiceTermToPay.getPaymentMode(),
+        invoiceTermPfpValidateStatusSelectMap);
   }
 
   protected void updateInvoiceTermsPaidAmount(
-      List<InvoiceTermPayment> invoiceTermPaymentList, PaymentMode paymentMode)
+      List<InvoiceTermPayment> invoiceTermPaymentList,
+      PaymentMode paymentMode,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
       InvoiceTerm invoiceTerm = invoiceTermPayment.getInvoiceTerm();
@@ -749,6 +756,9 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPaymentMode(paymentMode);
 
       this.computeAmountRemainingAfterFinDiscount(invoiceTerm);
+      // Beans.get to prevent circular injection
+      Beans.get(InvoiceTermPfpService.class)
+          .updatePfp(invoiceTerm, invoiceTermPfpValidateStatusSelectMap);
     }
   }
 
@@ -1353,11 +1363,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoicePaymentCreateService.createInvoicePayment(invoiceTerm.getInvoice(), amount, move);
       invoicePayment.setReconcile(reconcile);
 
-      List<InvoiceTerm> invoiceTermList = new ArrayList<InvoiceTerm>();
+      List<InvoiceTerm> invoiceTermList = Arrays.asList(invoiceTerm);
 
-      invoiceTermList.add(invoiceTerm);
-
-      reconcileService.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+      reconcileService.updateInvoiceTerms(
+          invoiceTermList, invoicePayment, amount, reconcile, new HashMap<>());
     } else {
       invoiceTerm.setAmountRemaining(invoiceTerm.getAmountRemaining().subtract(amount));
     }

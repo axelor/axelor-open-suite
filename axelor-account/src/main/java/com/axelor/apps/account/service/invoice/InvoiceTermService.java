@@ -39,6 +39,7 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoiceTermService {
@@ -134,7 +135,8 @@ public interface InvoiceTermService {
   public void updateInvoiceTermsPaidAmount(
       InvoicePayment invoicePayment,
       InvoiceTerm invoiceTermToPay,
-      InvoiceTermPayment invoiceTermPayment)
+      InvoiceTermPayment invoiceTermPayment,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 
   /**

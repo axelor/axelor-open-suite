@@ -1086,6 +1086,9 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
 
+  public static final String INVOICE_TERM_PFP_REFUSED = /*$$(*/
+      "A payment on invoice term %s is being attempted but its PFP has been refused." /*)*/;
+
   public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
       "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
   public static final String RECONCILE_NOT_ENOUGH_AMOUNT = /*$$(*/

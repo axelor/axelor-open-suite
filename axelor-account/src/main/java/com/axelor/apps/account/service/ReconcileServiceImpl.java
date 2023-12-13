@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -75,7 +76,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -528,9 +531,23 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     List<InvoiceTermPayment> invoiceTermPaymentList = null;
     if (moveLine.getAccount().getUseForPartnerBalance() && updateInvoiceTerms) {
-      List<InvoiceTerm> invoiceTermList = this.getInvoiceTermsToPay(invoice, otherMove, moveLine);
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap = new HashMap<>();
+
+      List<InvoiceTerm> invoiceTermList =
+          this.getInvoiceTermsToPay(
+              invoice, otherMove, moveLine, invoiceTermPfpValidateStatusSelectMap);
       invoiceTermPaymentList =
-          this.updateInvoiceTerms(invoiceTermList, invoicePayment, amount, reconcile);
+          this.updateInvoiceTerms(
+              invoiceTermList,
+              invoicePayment,
+              amount,
+              reconcile,
+              invoiceTermPfpValidateStatusSelectMap);
+
+      invoiceTermPfpValidateStatusSelectMap
+          .keySet()
+          .forEach(
+              it -> it.setPfpValidateStatusSelect(invoiceTermPfpValidateStatusSelectMap.get(it)));
     }
 
     if (invoicePayment != null) {
@@ -627,7 +644,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       List<InvoiceTerm> invoiceTermList,
       InvoicePayment invoicePayment,
       BigDecimal amount,
-      Reconcile reconcile)
+      Reconcile reconcile,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (invoiceTermList != null) {
@@ -637,7 +655,10 @@ public class ReconcileServiceImpl implements ReconcileService {
 
       for (InvoiceTermPayment invoiceTermPayment : invoiceTermPaymentList) {
         invoiceTermService.updateInvoiceTermsPaidAmount(
-            invoicePayment, invoiceTermPayment.getInvoiceTerm(), invoiceTermPayment);
+            invoicePayment,
+            invoiceTermPayment.getInvoiceTerm(),
+            invoiceTermPayment,
+            invoiceTermPfpValidateStatusSelectMap);
 
         if (invoicePayment == null) {
           invoiceTermPayment.addReconcileListItem(reconcile);
@@ -667,7 +688,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
   }
 
-  protected List<InvoiceTerm> getInvoiceTermsToPay(Invoice invoice, Move move, MoveLine moveLine)
+  protected List<InvoiceTerm> getInvoiceTermsToPay(
+      Invoice invoice,
+      Move move,
+      MoveLine moveLine,
+      Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
     if (move != null
         && move.getPaymentVoucher() != null
@@ -680,6 +705,12 @@ public class ReconcileServiceImpl implements ReconcileService {
     } else {
       List<InvoiceTerm> invoiceTermsToPay = null;
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
+          invoiceTermPfpValidateStatusSelectMap.put(
+              invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
+          invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+        }
+
         invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);
 
       } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {

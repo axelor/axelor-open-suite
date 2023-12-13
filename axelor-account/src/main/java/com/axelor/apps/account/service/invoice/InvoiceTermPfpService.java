@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.auth.db.User;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public interface InvoiceTermPfpService {
   void validatePfp(InvoiceTerm invoiceTerm, User currenctUser);
@@ -56,5 +57,9 @@ public interface InvoiceTermPfpService {
       InvoiceTerm originalInvoiceTerm, BigDecimal grantedAmount, PfpPartialReason partialReason);
 
   boolean generateInvoiceTermsAfterPfpPartial(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException;
+
+  void updatePfp(
+      InvoiceTerm invoiceTerm, Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException;
 }
