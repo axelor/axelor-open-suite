@@ -65,6 +65,8 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudgetImpl;
 import com.axelor.apps.budget.service.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.GlobalBudgetGroupServiceImpl;
 import com.axelor.apps.budget.service.GlobalBudgetResetToolService;
@@ -168,5 +170,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
     bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
+    bind(CurrencyScaleServiceBudget.class).to(CurrencyScaleServiceBudgetImpl.class);
   }
 }

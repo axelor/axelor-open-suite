@@ -45,13 +45,16 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
 
   protected BudgetScenarioVariableRepository budgetScenarioVariableRepository;
   protected BudgetScenarioRepository budgetScenarioRepository;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetScenarioServiceImpl(
       BudgetScenarioVariableRepository budgetScenarioVariableRepository,
-      BudgetScenarioRepository budgetScenarioRepository) {
+      BudgetScenarioRepository budgetScenarioRepository,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetScenarioVariableRepository = budgetScenarioVariableRepository;
     this.budgetScenarioRepository = budgetScenarioRepository;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -61,7 +64,9 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
     if (budgetScenario != null
         && !ObjectUtils.isEmpty(budgetScenario.getBudgetScenarioLineList())) {
       for (BudgetScenarioLine budgetScenarioLine : budgetScenario.getBudgetScenarioLineList()) {
-        BigDecimal yearValue = getYearValue(budgetScenarioLine, yearNumber);
+        BigDecimal yearValue =
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budgetScenario, getYearValue(budgetScenarioLine, yearNumber));
         if (!variableAmountMap.containsKey(
             budgetScenarioLine.getBudgetScenarioVariable().getCode())) {
           variableAmountMap.put(
@@ -90,7 +95,9 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
     }
 
     for (BudgetScenarioLine budgetScenarioLine : budgetScenario.getBudgetScenarioLineList()) {
-      BigDecimal yearValue = getYearValue(budgetScenarioLine, yearNumber);
+      BigDecimal yearValue =
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budgetScenario, getYearValue(budgetScenarioLine, yearNumber));
       if (!variableAmountMap.containsKey(
           budgetScenarioLine.getBudgetScenarioVariable().getCode())) {
         variableAmountMap.put(budgetScenarioLine.getBudgetScenarioVariable().getCode(), yearValue);
