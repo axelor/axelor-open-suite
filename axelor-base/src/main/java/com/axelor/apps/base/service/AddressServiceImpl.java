@@ -34,18 +34,14 @@ import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
@@ -85,6 +81,9 @@ public class AddressServiceImpl implements AddressService {
   @Inject protected StreetRepository streetRepository;
   @Inject protected AppBaseService appBaseService;
   @Inject protected AddressAttrsService addressAttrsService;
+
+  private GroovyTemplates groovyTemplates;
+
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -107,6 +106,11 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public Map<String, Object> validate(String wsdlUrl, String search) {
     return ads.doSearch(wsdlUrl, search);
+  }
+
+  @Inject
+  public AddressServiceImpl(GroovyTemplates groovyTemplates) {
+    this.groovyTemplates = groovyTemplates;
   }
 
   @Override
@@ -327,7 +331,7 @@ public class AddressServiceImpl implements AddressService {
     try {
       Templates templates;
       if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
-        templates = Beans.get(GroovyTemplates.class);
+        templates = this.groovyTemplates;
       } else {
         templates = new StringTemplates(TEMPLATE_DELIMITER, TEMPLATE_DELIMITER);
       }
@@ -339,55 +343,29 @@ public class AddressServiceImpl implements AddressService {
       String fullFormattedString = templates.fromText(content).make(templatesContext).render();
 
       if (StringUtils.isBlank(fullFormattedString)) {
-        throw new RuntimeException();
+        throw new RuntimeException(
+            String.format(
+                I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR), addressTemplate.getName()));
       }
 
       fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
       address.setFormattedFullName(fullFormattedString);
 
     } catch (Exception e) {
-
-      LOG.info("Runtime Exception Address: {}", addressTemplate.getName());
-      // Catch any exception that occurs during the compute
-      String errorMessage = I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR);
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, errorMessage, addressTemplate.getName());
+      LOG.error("Runtime Exception Address: {}", addressTemplate.getName());
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
-  }
-
-  @Override
-  public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countryIds) {
-    Query<Address> query =
-        addressRepo.all().filter("self.country.id in ?1", countryIds).order("id");
-
-    int offset = 0;
-    int countExceptions = 0;
-    int totalAddressFormatted = 0;
-
-    List<Address> addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-    while (!addressList.isEmpty()) {
-      int currentCountException = generateFormattedAddressForAddress(addressList);
-      countExceptions += currentCountException;
-
-      totalAddressFormatted += (addressList.size() - currentCountException);
-
-      JPA.clear();
-
-      offset += addressList.size();
-      addressList = query.fetch(AbstractBatch.FETCH_LIMIT, offset);
-    }
-    return Pair.of(totalAddressFormatted, countExceptions);
   }
 
   @Override
   public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
-      Address address) {
+          Address address) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     if (ObjectUtils.notEmpty(
-        address.getCountry().getAddressTemplate().getAddressTemplateLineList())) {
+            address.getCountry().getAddressTemplate().getAddressTemplateLineList())) {
       List<AddressTemplateLine> addressTemplateLineList =
-          address.getCountry().getAddressTemplate().getAddressTemplateLineList();
+              address.getCountry().getAddressTemplate().getAddressTemplateLineList();
       addressAttrsService.addHiddenAndTitle(addressTemplateLineList, attrsMap);
       for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
         addressAttrsService.addFieldUnhide(addressTemplateLine.getMetaField().getName(), attrsMap);
@@ -395,20 +373,5 @@ public class AddressServiceImpl implements AddressService {
     }
 
     return attrsMap;
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected int generateFormattedAddressForAddress(List<Address> addressList) {
-    int exceptionCount = 0;
-
-    for (Address address : addressList) {
-      try {
-        addressRepo.save(address);
-      } catch (Exception e) {
-        exceptionCount++;
-        TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
-      }
-    }
-    return exceptionCount;
   }
 }

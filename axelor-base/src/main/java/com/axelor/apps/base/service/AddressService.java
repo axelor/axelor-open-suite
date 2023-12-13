@@ -104,13 +104,6 @@ public interface AddressService {
    */
   public void setFormattedFullName(Address address) throws AxelorException;
 
-  /**
-   * Compute Formatted Address for selected countries
-   *
-   * @param countries
-   */
-  public Pair<Integer, Integer> computeFormattedAddressForCountries(List<Long> countries);
-
   public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
-      Address address);
+          Address address);
 }

@@ -89,8 +89,6 @@ import com.axelor.apps.base.service.BirtTemplateViewService;
 import com.axelor.apps.base.service.BirtTemplateViewServiceImpl;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
-import com.axelor.apps.base.service.CountryService;
-import com.axelor.apps.base.service.CountryServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
 import com.axelor.apps.base.service.CurrencyService;
@@ -416,7 +414,6 @@ public class BaseModule extends AxelorModule {
     bind(PricingMetaService.class).to(PricingMetaServiceImpl.class);
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
-    bind(CountryService.class).to(CountryServiceImpl.class);
     bind(AddressAttrsService.class).to(AddressAttrsServiceImpl.class);
   }
 }

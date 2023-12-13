@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 
@@ -31,6 +32,7 @@ public class AddressBaseRepository extends AddressRepository {
   @Inject protected AddressService addressService;
 
   @Override
+  @Transactional
   public Address save(Address entity) {
 
     entity.setFullName(addressService.computeFullName(entity));
