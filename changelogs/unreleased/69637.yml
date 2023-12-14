@@ -1,0 +1,3 @@
+---
+title: "Invoice payment : Fix an issue where it was possible to set a higher amount that maximum one allowed"
+type: fix
