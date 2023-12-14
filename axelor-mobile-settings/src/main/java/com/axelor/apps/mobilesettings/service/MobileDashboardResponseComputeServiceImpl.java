@@ -33,8 +33,7 @@ public class MobileDashboardResponseComputeServiceImpl
       mobileDashboardLineResponseList.add(
           new MobileDashboardLineResponse(mobileDashboardLine.getName(), mobileChartResponseList));
     }
-    return new MobileDashboardResponse(
-        mobileDashboard, mobileDashboard.getName(), mobileDashboardLineResponseList);
+    return new MobileDashboardResponse(mobileDashboard, mobileDashboardLineResponseList);
   }
 
   protected void addMobileChartResponses(

@@ -9,15 +9,32 @@
       <button name="showChartsBtn" title="Show charts" onClick="action.mobile.chart.view"/>
     </toolbar>
     <field name="name"/>
+    <field name="appName"/>
   </grid>
 
   <form name="mobile-dashboard-form" title="Mobile dashboard"
     model="com.axelor.apps.mobilesettings.db.MobileDashboard" width="large">
     <panel name="mainPanel" colSpan="12">
-      <field name="name" colSpan="8"/>
+      <field name="name"/>
+      <field name="appName"
+        onChange="action-mobile-dashboard-attrs-empty-fields-on-non-custom-app"/>
+      <field name="menuTitle" hidden="true" showIf="appName == 'custom'"/>
+      <field name="iconName" hidden="true" showIf="appName == 'custom'"/>
+      <field name="parentModuleName" hidden="true" showIf="appName == 'custom'"/>
+      <field name="menuOrder" hidden="true" showIf="appName == 'custom'"/>
+      <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form" colSpan="12"
+        canNew="false" canEdit="false"/>
       <field name="mobileDashboardLineList" grid-view="mobile-dashboard-line-grid"
         form-view="mobile-dashboard-line-form" colSpan="12"/>
     </panel>
   </form>
+
+  <action-attrs name="action-mobile-dashboard-attrs-empty-fields-on-non-custom-app">
+    <attribute for="menuTitle" name="value" expr="eval: null" if="appName != 'custom'"/>
+    <attribute for="iconName" name="value" expr="eval: null" if="appName != 'custom'"/>
+    <attribute for="parentModuleName" name="value" expr="eval: null"
+      if="appName != 'custom'"/>
+    <attribute for="menuOrder" name="value" expr="eval: null" if="appName != 'custom'"/>
+  </action-attrs>
 
 </object-views>

@@ -7,10 +7,19 @@
 
   <entity name="MobileDashboard">
     <string name="name" title="Name"/>
+    <string name="appName" title="Application"
+      selection="mobilesettings.mobile.config.sequence.select"/>
+    <string name="menuTitle" title="Menu title"/>
+    <string name="iconName" title="Icon name"/>
+    <string name="parentModuleName" title="Parent module name"
+      selection="mobilesettings.mobile.config.sequence.select"/>
+    <integer name="menuOrder" title="Menu order" nullable="true"/>
     <many-to-one name="appMobileSettings" title="App mobile settings"
       ref="com.axelor.studio.db.AppMobileSettings"/>
     <one-to-many name="mobileDashboardLineList" title="Mobile dashboard line list"
       ref="com.axelor.apps.mobilesettings.db.MobileDashboardLine"/>
+    <many-to-many name="authorizedRoleSet" title="Authorized roles"
+      ref="com.axelor.auth.db.Role"/>
   </entity>
 
 </domain-models>
