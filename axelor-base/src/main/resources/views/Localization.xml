@@ -6,21 +6,28 @@
   <grid name="localization-grid" title="Localization"
     model="com.axelor.apps.base.db.Localization">
     <field name="name" title="Name" required="true"/>
-    <field name="code" title="Code" required="true"/>
+    <field name="code" title="Code" required="true" readonly="true"/>
+    <field name="country" title="Country"/>
     <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
-    <field name="dataFormat" title="Data Format" help="DD/MM/YYYY"/>
+    <field name="dateFormat" title="Date Format" help="DD/MM/YYYY"/>
     <field name="numbersFormat" title="Numbers Format" help="#,###.00"/>
   </grid>
 
   <form name="localization-form" title="Localization"
     model="com.axelor.apps.base.db.Localization">
     <panel name="mainPanel" colSpan="12">
-      <field name="name" title="Name" required="true" colSpan="4"/>
-      <field name="code" title="Code" required="true" colSpan="4"/>
+      <field name="name" title="Name" required="true" colSpan="6"/>
+      <field name="code" title="Code" required="true" colSpan="6" readonly="true"/>
+      <field name="country" title="Country" grid-view="country-grid" form-view="country-form"
+        onChange="action-base-localization-method-update-name-and-code" colSpan="6"/>
       <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"
-        colSpan="4"/>
-      <field name="dataFormat" title="Data Format" help="DD/MM/YYYY" colSpan="4"/>
-      <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="4"/>
+        colSpan="6" onChange="action-base-localization-method-update-name-and-code"/>
+      <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"/>
+      <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"/>
     </panel>
   </form>
+
+  <action-method name="action-base-localization-method-update-name-and-code">
+    <call class="com.axelor.apps.base.web.LocalizationController" method="setNameAndCode"/>
+  </action-method>
 </object-views>

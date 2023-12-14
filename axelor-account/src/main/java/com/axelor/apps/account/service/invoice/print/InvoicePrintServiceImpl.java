@@ -261,12 +261,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
       String userLanguageCode =
           Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
       String companyLanguageCode =
-          invoice.getCompany().getLocalization().getLanguage() != null
-              ? invoice.getCompany().getLocalization().getLanguage().getCode()
+          invoice.getCompany().getLocalization() != null
+              ? invoice.getCompany().getLocalization().getCode()
               : userLanguageCode;
       String partnerLanguageCode =
-          invoice.getPartner().getLocalization().getLanguage() != null
-              ? invoice.getPartner().getLocalization().getLanguage().getCode()
+          invoice.getPartner().getLocalization() != null
+              ? invoice.getPartner().getLocalization().getCode()
               : userLanguageCode;
       locale =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()

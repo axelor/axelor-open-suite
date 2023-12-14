@@ -95,7 +95,7 @@
     model="com.axelor.apps.base.db.PrintTemplate">
     <attribute for="$template" name="domain" expr="eval: &quot;self.id = -1&quot;"/>
     <attribute for="$template" name="domain"
-      expr="eval: &quot;self.metaModel.fullName = :_templateContextModel AND self.localization.language.id = ${localization.language.id}&quot;"
+      expr="eval: &quot;self.metaModel.fullName = :_templateContextModel AND self.localization.id = ${localization.id}&quot;"
       if="localization != null"/>
   </action-attrs>
 

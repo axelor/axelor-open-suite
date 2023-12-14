@@ -22,7 +22,6 @@ import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Print;
 import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.PrintTemplate;
@@ -104,8 +103,7 @@ public class PrintTemplateServiceImpl implements PrintTemplateService {
     LOG.debug("");
 
     Locale locale =
-        Optional.ofNullable(printTemplate.getLocalization().getLanguage())
-            .map(Language::getCode)
+        Optional.ofNullable(printTemplate.getLocalization().getCode())
             .map(Locale::new)
             .orElseGet(AppFilter::getLocale);
     TemplateMaker maker = initMaker(objectId, model, simpleModel, locale);

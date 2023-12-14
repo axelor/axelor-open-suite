@@ -33,6 +33,9 @@
   <input file="base_templateContext.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
 
+  <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
+    search="self.importId = :importId"/>
+
   <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
     search="self.code = :code"/>
 
@@ -46,8 +49,6 @@
       eval="birtTemplateSet_importId.split('\\|') as List" update="true"/>
     <bind to="templateContextList" search="self.name = :templateContext"
       if="templateContext != null &amp;&amp; !templateContext.empty"/>
-    <!-- <bind to="localization" column="localization.importId" -->
-    <!-- search="self.id = :localization.importId"/> -->
   </input>
 
   <input file="base_barcodeTypeConfig.csv" separator=";"

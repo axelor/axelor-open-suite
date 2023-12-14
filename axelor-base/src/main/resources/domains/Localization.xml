@@ -6,11 +6,42 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Localization">
-    <string name="name" title="Name" required="true"/>
-    <string name="code" title="Code" required="true"/>
+    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
     <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
-    <string name="dataFormat" title="Data Format" help="DD/MM/YYYY"/>
+    <string name="name" title="Name" required="true" search="country,language"/>
+    <!-- <![CDATA[ -->
+    <!-- String name = ""; -->
+    <!-- if (language == null && country != null) { -->
+    <!-- name = country.getName(); -->
+    <!-- } -->
+    <!-- if (language != null && country == null) { -->
+    <!-- name = language.getName(); -->
+    <!-- } -->
+    <!-- if (language != null && country != null) { -->
+    <!-- name = language.getName() + " (" + country.getName() + ")"; -->
+    <!-- } -->
+    <!-- return name; -->
+    <!-- ]]> -->
+    <!-- </string> -->
+
+    <string name="code" title="Code" required="true" search="country,language"/>
+    <!-- <![CDATA[ -->
+    <!-- String code = ""; -->
+    <!-- if (language == null && country != null) { -->
+    <!-- code = country.getAlpha2Code(); -->
+    <!-- } -->
+    <!-- if (language != null && country == null) { -->
+    <!-- code = language.getCode(); -->
+    <!-- } -->
+    <!-- if (language != null && country != null) { -->
+    <!-- code = language.getCode() + " (" + country.getAlpha2Code() + ")"; -->
+    <!-- } -->
+    <!-- return code; -->
+    <!-- ]]> -->
+    <!-- </string> -->
+    <string name="dateFormat" title="Date Format" help="DD/MM/YYYY"/>
     <string name="numbersFormat" title="Numbers Format" help="#,###.00"/>
+
   </entity>
 
 </domain-models>

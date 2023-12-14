@@ -21,7 +21,7 @@ package com.axelor.apps.base.service.app;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -52,7 +52,7 @@ import javax.inject.Singleton;
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
-  protected static String DEFAULT_LOCALE = "en";
+  protected static String DEFAULT_LOCALE = "en_GB";
 
   @Inject
   public AppBaseServiceImpl(
@@ -147,14 +147,14 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public String getDefaultPartnerLanguageCode() {
+  public String getDefaultPartnerLocale() {
 
     AppBase appBase = getAppBase();
 
     if (appBase != null) {
-      Language language = appBase.getDefaultPartnerLocalization().getLanguage();
-      if (language != null && !Strings.isNullOrEmpty(language.getCode())) {
-        return language.getCode();
+      Localization localization = appBase.getDefaultPartnerLocalization();
+      if (localization != null && !Strings.isNullOrEmpty(localization.getCode())) {
+        return localization.getCode();
       }
     }
     return DEFAULT_LOCALE;
