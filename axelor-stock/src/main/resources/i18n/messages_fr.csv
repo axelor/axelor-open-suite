@@ -154,6 +154,7 @@
 "ConformityCertificate.stockMoveLineRowNum","Ligne",,
 "Consignments by post","Envois postaux",,
 "Control on Receipt","Contrôle à la réception",,
+"Control stock rules are activated by supply-chain batch.","Les règles de contrôle du stock sont déclenchées par un batch supply-chain.",,
 "Correction Reason","Motif de correction",,
 "Counter","Compteur",,
 "Country","Pays",,

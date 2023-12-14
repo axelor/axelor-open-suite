@@ -154,6 +154,7 @@
 "ConformityCertificate.stockMoveLineRowNum","ROW",,
 "Consignments by post",,,
 "Control on Receipt",,,
+"Control stock rules are activated by supply-chain batch.",,,
 "Correction Reason",,,
 "Counter",,,
 "Country",,,
