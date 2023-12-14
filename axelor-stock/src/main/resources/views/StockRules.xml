@@ -45,7 +45,7 @@
       <field name="$msg" showTitle="false" colSpan="12" readonly="true">
         <viewer depends="useCaseSelect">
           <![CDATA[
-            <span class="label label-info" ng-show="record.useCaseSelect == 2" x-translate>Control stock rules are activated by supply-chain batch.</span>
+            <span class="label label-info" ng-show="record.useCaseSelect == 2" x-translate>Control stock rules are activated by supply chain batch.</span>
           ]]>
         </viewer>
       </field>
