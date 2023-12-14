@@ -1,5 +1,7 @@
 package com.axelor.apps.budget.web;
 
+import static com.ibm.icu.text.PluralRules.Operand.i;
+
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
@@ -18,7 +20,6 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Request;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
@@ -102,6 +103,8 @@ public class BudgetGeneratorController {
       }
       Collections.sort(positions);
 
+      hideAllYearValues(response);
+
       if (positions.size() > 0) {
         for (int i : positions) {
           if (i >= 0) {
@@ -164,7 +167,7 @@ public class BudgetGeneratorController {
     response.setAttr("$year", "domain", domain);
   }
 
-  public BudgetGenerator getBudgetGenerator(Request request) {
+  protected BudgetGenerator getBudgetGenerator(ActionRequest request) {
     Map<String, Object> partialBudgetGenerator =
         (Map<String, Object>) request.getContext().get("_budgetGenerator");
     if (partialBudgetGenerator != null && partialBudgetGenerator.get("id") != null) {
@@ -174,7 +177,7 @@ public class BudgetGeneratorController {
     return null;
   }
 
-  public BudgetStructure getBudgetStructure(Request request) {
+  protected BudgetStructure getBudgetStructure(ActionRequest request) {
     Map<String, Object> partialBudgetStructure =
         (Map<String, Object>) request.getContext().get("_budgetStructure");
     if (partialBudgetStructure != null && partialBudgetStructure.get("id") != null) {
@@ -184,11 +187,18 @@ public class BudgetGeneratorController {
     return null;
   }
 
-  public Year getYear(Request request) {
+  protected Year getYear(ActionRequest request) {
     Map<String, Object> partialYear = (Map<String, Object>) request.getContext().get("year");
     if (partialYear != null && partialYear.get("id") != null) {
       return Beans.get(YearRepository.class).find(Long.valueOf(partialYear.get("id").toString()));
     }
     return null;
+  }
+
+  protected void hideAllYearValues(ActionResponse response) {
+    for (int i = 1; i <= 6; i++) {
+      String fieldName = "$budgetScenarioLine.year" + (i) + "Value";
+      response.setAttr(fieldName, "hidden", true);
+    }
   }
 }
