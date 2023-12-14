@@ -369,7 +369,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setProductName(productName);
     stockMoveLine.setDescription(description);
     stockMoveLine.setQty(quantity);
-    stockMoveLine.setRealQty(quantity);
+
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
@@ -378,7 +378,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     stockMoveLine.setFromStockLocation(fromStockLocation);
     stockMoveLine.setToStockLocation(toStockLocation);
-
+    this.fillRealQuantities(stockMoveLine, stockMove, stockMoveLine.getQty());
     if (fromStockLocation == null) {
       stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
@@ -474,7 +474,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             stockMoveLine.getToStockLocation());
 
     stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
-    stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
+
+    this.fillRealQuantities(
+        stockMoveLine, stockMoveLine.getStockMove(), stockMoveLine.getRealQty().subtract(qty));
 
     return newStockMoveLine;
   }
@@ -1703,6 +1705,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           product,
           trackingNumberConfiguration,
           type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
+    }
+  }
+
+  @Override
+  public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
+    if (stockMoveLine != null) {
+      stockMoveLine.setRealQty(qty);
     }
   }
 }

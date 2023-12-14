@@ -36,6 +36,7 @@
 
             public static final int TYPE_SELECT_EVERY_MONTH = 1;
    			public static final int TYPE_SELECT_EXCEPTIONAL_DAYS = 2;
+   			public static final int TYPE_SELECT_EVERY_YEAR = 3;
    		]]>
     </extra-code>
 

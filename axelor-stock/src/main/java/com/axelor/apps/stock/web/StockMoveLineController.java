@@ -398,4 +398,24 @@ public class StockMoveLineController {
     }
     return stockMove;
   }
+
+  public void setRealQty(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+    StockMove stockMove =
+        context.getParent() != null
+            ? context.getParent().asType(StockMove.class)
+            : stockMoveLine.getStockMove();
+
+    try {
+      if (stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) {
+        Beans.get(StockMoveLineService.class)
+            .fillRealQuantities(stockMoveLine, stockMove, stockMoveLine.getQty());
+        response.setValue("realQty", stockMoveLine.getRealQty());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

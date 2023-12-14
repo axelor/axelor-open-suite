@@ -25,14 +25,6 @@
 
     <datetime name="reservationDateTime" readonly="true"/>
 
-    <finder-method name="findAllBySaleOrder"
-      using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
-      filter="self.stockMove.saleOrder.id = :saleOrder.id"/>
-
-    <finder-method name="findAllBySaleOrderAndStatusSelect"
-      using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
-      filter="self.stockMove.saleOrder.id = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
-
 
     <finder-method name="findForDeclarationOfExchanges"
       using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country,com.axelor.apps.base.db.Company:company "
