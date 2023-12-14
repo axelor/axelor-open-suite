@@ -532,7 +532,7 @@ public class MrpServiceImpl implements MrpService {
           maturityDate
               .minusDays(product.getSupplierDeliveryTime())
               .minusDays(mrpLineType.getSecurityDelay());
-      initialMaturityDate = maturityDate;
+      initialMaturityDate = initialMaturityDate.minusDays(mrpLineType.getSecurityDelay());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
       if (appPurchaseService.getAppPurchase() != null
           && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {
