@@ -188,7 +188,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     analyticMoveLine.setAnalyticJournal(analyticDistributionLine.getAnalyticJournal());
 
     AnalyticJournal analyticJournal = analyticDistributionLine.getAnalyticJournal();
-    this.computeAnalyticCurrency(
+    this.setAnalyticCurrency(
         analyticJournal == null ? null : analyticJournal.getCompany(), analyticMoveLine);
 
     analyticMoveLine.setDate(date);
@@ -250,7 +250,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   public AnalyticMoveLine computeAnalyticMoveLine(
       MoveLine moveLine, Company company, AnalyticAccount analyticAccount) throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
-    this.computeAnalyticCurrency(company, analyticMoveLine);
+    this.setAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setDate(moveLine.getDate());
     if (moveLine.getAccount() != null) {
@@ -387,10 +387,9 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public void computeAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
+  public void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
     if (analyticMoveLine != null) {
-      analyticMoveLine.setCurrency(
-          company != null && company.getCurrency() != null ? company.getCurrency() : null);
+      analyticMoveLine.setCurrency(Optional.of(company).map(Company::getCurrency).orElse(null));
     }
   }
 }

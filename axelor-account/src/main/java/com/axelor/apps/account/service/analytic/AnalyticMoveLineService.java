@@ -86,5 +86,5 @@ public interface AnalyticMoveLineService {
 
   String getAnalyticAxisDomain(Company company) throws AxelorException;
 
-  void computeAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine);
+  void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine);
 }
