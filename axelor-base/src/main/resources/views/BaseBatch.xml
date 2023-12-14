@@ -50,7 +50,7 @@
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="runBatchBtn" title="Run batch" showIf="actionSelect >= 2"
-        readonlyIf="(actionSelect == 3 &amp;&amp; !passwordChangeActionSelect) || (actionSelect == 4 &amp;&amp; countrySet == null &amp;&amp; !allCountries) "
+        readonlyIf="(actionSelect == 3 &amp;&amp; !passwordChangeActionSelect) || (actionSelect == 4 &amp;&amp; (countrySet == null || countrySet.length == 0) &amp;&amp; !allCountries) "
         onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>

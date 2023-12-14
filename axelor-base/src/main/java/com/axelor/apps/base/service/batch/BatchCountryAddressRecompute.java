@@ -86,7 +86,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  private void recomputeAddress(Address address) {
+  protected void recomputeAddress(Address address) {
     addressRepository.save(address);
   }
 

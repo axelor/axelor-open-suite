@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.AddressUtilityService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
@@ -61,6 +62,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   protected ConvertWizardService convertWizardService;
 
   protected AddressService addressService;
+  protected AddressUtilityService addressUtilityService;
 
   protected PartnerService partnerService;
 
@@ -81,6 +83,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       LeadService leadService,
       ConvertWizardService convertWizardService,
       AddressService addressService,
+      AddressUtilityService addressUtilityService,
       PartnerService partnerService,
       CountryRepository countryRepo,
       AppBaseService appBaseService,
@@ -91,6 +94,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
+    this.addressUtilityService = addressUtilityService;
     this.partnerService = partnerService;
     this.countryRepo = countryRepo;
     this.appBaseService = appBaseService;
@@ -103,7 +107,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   /**
    * Create a partner from a lead
    *
-   * @param lead
    * @return
    * @throws AxelorException
    */
@@ -169,13 +172,10 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     Country addressL7Country = lead.getPrimaryCountry();
 
     Address address =
-        addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+        addressUtilityService.getAddress(
+            null, null, addressL4, addressL5, addressL6, addressL7Country);
 
-    if (address == null
-        && (addressL4 != null
-            || addressL5 != null
-            || addressL6 != null
-            || addressL7Country != null)) {
+    if (address == null) {
       address =
           addressService.createAddress(
               null, null, addressL4, addressL5, addressL6, addressL7Country);
