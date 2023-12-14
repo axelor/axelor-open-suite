@@ -431,7 +431,7 @@ DeclarationOfExchanges.stock_move_type_select,
 coalesce(nullif(StockMoveTypeTranslation.message_value, ''), StockMoveTypeTranslation.message_key) flow_name,
 CompanyPartner.tax_nbr company_tax_nbr,
 Company.name company_name,
-CompanyAddress.streetName company_address_l4,
+CompanyAddress.addressl4 company_address_l4,
 CompanyAddress.addressl6 company_address_l6,
 ContactUser.full_name contact_full_name,
 ContactPartner.fixed_phone contact_fixed_phone,
@@ -1228,7 +1228,7 @@ on DeclarationOfExchanges.period = Period.id
 left join base_address FromAddress
 on StockMove.from_address = FromAddress.id
 left join base_country FromCountry
-on FromAddress.country = FromCountry.id
+on FromAddress.addressl7country = FromCountry.id
 left join base_city FromCity
 on FromAddress.city = FromCity.id
 left join base_department FromDepartment
@@ -1238,7 +1238,7 @@ on StockMove.from_stock_location = FromStockLocation.id
 left join base_address FromStockLocationAddress
 on FromStockLocation.address = FromStockLocationAddress.id
 left join base_country FromStockLocationCountry
-on FromStockLocationAddress.country = FromStockLocationCountry.id
+on FromStockLocationAddress.addressl7country = FromStockLocationCountry.id
 left join base_city FromStockLocationCity
 on FromStockLocationAddress.city = FromStockLocationCity.id
 left join base_department FromStockLocationDepartment
@@ -1246,7 +1246,7 @@ on FromStockLocationCity.department = FromStockLocationDepartment.id
 left join base_address ToAddress
 on StockMove.to_address = ToAddress.id
 left join base_country ToCountry
-on ToAddress.country = ToCountry.id
+on ToAddress.addressl7country = ToCountry.id
 left join base_city ToCity
 on ToAddress.city = ToCity.id
 left join base_department ToDepartment
@@ -1256,7 +1256,7 @@ on StockMove.to_stock_location = ToStockLocation.id
 left join base_address ToStockLocationAddress
 on ToStockLocation.address = ToStockLocationAddress.id
 left join base_country ToStockLocationCountry
-on ToStockLocationAddress.country = ToStockLocationCountry.id
+on ToStockLocationAddress.addressl7country = ToStockLocationCountry.id
 left join base_city ToStockLocationCity
 on ToStockLocationAddress.city = ToStockLocationCity.id
 left join base_department ToStockLocationDepartment

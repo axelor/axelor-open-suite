@@ -724,7 +724,7 @@ left join base_partner as Customer on LogisticalForm.deliver_to_customer_partner
 --left join base_partner as Forwarder on LogisticalForm.forwarder_partner = Forwarder.id
 --left join stock_incoterm as Incoterm on LogisticalForm.incoterm = Incoterm.id
 left join base_address as StockLocationAddress on StockLocation.address = StockLocationAddress.id
-left join base_country as StockLocationCountry on StockLocationAddress.country = StockLocationCountry.id
+left join base_country as StockLocationCountry on StockLocationAddress.addressl7country = StockLocationCountry.id
 left join meta_file as CompanyLogo on Company.logo = CompanyLogo.id
 left join stock_stock_config as StockConfig on Company.id = StockConfig.company
 left join base_unit as Unit on StockConfig.customs_mass_unit = Unit.id
