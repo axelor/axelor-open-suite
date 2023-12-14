@@ -148,6 +148,7 @@
 
   <action-group name="action-group-base-address-onnnew">
     <action name="default-address-record"/>
+    <action name="action-base-address-get-address-fields"/>
   </action-group>
 
   <action-group name="action-group-base-address-country-change">

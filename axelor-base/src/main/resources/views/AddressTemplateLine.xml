@@ -13,14 +13,21 @@
     model="com.axelor.apps.base.db.AddressTemplateLine">
     <panel name="mainPanel" title="Address Template Line">
       <field name="title"/>
-      <field name="metaField" onSelect="action-address-template-line-attrs-on-meta-field-domain-address"/>
+      <field name="metaField"
+        onSelect="action-address-template-line-method-on-meta-field-domain-address"/>
     </panel>
   </form>
+
+  <action-method
+    name="action-address-template-line-method-on-meta-field-domain-address">
+    <call class="com.axelor.apps.base.web.AddressTemplateLineController"
+      method="setDomainForMetaField"/>
+  </action-method>
 
 
   <action-attrs name="action-address-template-line-attrs-on-meta-field-domain-address">
     <attribute name="domain" for="metaField"
-               expr="eval:&quot;self.metaModel.name = 'Address' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;"/>
+      expr="eval:&quot;self.metaModel.name = 'Address' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;"/>
   </action-attrs>
 
 

@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.AddressTemplateLine;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AddressAttrsServiceImpl implements AddressAttrsService {
 
@@ -14,6 +15,38 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
     }
 
     attrsMap.get(field).put(attr, value);
+  }
+
+  @Override
+  public void addAddressDomainFields(String field, Map<String, Map<String, Object>> attrsMap) {
+    List<String> addressFormFieldsList =
+        List.of(
+            "department",
+            "subDepartment",
+            "buildingName",
+            "townName",
+            "townLocationName",
+            "districtName",
+            "countrySubDivision",
+            "formattedFullName",
+            "room",
+            "floor",
+            "buildingNumber",
+            "street",
+            "streetName",
+            "postBox",
+            "city",
+            "zip");
+
+    String nameList =
+        addressFormFieldsList.stream()
+            .map(item -> "'" + item + "'")
+            .collect(Collectors.joining(","));
+    addAttr(
+        field,
+        "domain",
+        "self.metaModel.name = 'Address' AND  self.name IN (" + nameList + ")",
+        attrsMap);
   }
 
   @Override

@@ -70,6 +70,8 @@ import com.axelor.apps.base.service.AddressAttrsService;
 import com.axelor.apps.base.service.AddressAttrsServiceImpl;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.AddressTemplateLineService;
+import com.axelor.apps.base.service.AddressTemplateLineServiceImpl;
 import com.axelor.apps.base.service.AddressUtilityService;
 import com.axelor.apps.base.service.AddressUtilityServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
@@ -418,5 +420,6 @@ public class BaseModule extends AxelorModule {
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(AddressAttrsService.class).to(AddressAttrsServiceImpl.class);
+    bind(AddressTemplateLineService.class).to(AddressTemplateLineServiceImpl.class);
   }
 }

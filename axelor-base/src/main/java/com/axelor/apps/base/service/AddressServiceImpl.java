@@ -60,7 +60,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,10 +79,6 @@ public class AddressServiceImpl implements AddressService {
 
   protected MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
-
-  private static final Pattern ZIP_CODE_PATTERN =
-      Pattern.compile(
-          "\\d{4} [A-Z]{2} |\\d{4,6}|\\d{3}-\\d{4}|[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{1}[A-Z0-9]?");
 
   static {
     registerCheckUsedFunc(AddressServiceImpl::checkAddressUsedBase);
@@ -261,15 +256,7 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String getZipCode(Address address) {
-    //    if (address.getAddressL6() == null) {
-    //      return null;
-    //    }
-    //
-    //    Matcher matcher = ZIP_CODE_PATTERN.matcher(address.getAddressL6());
-    //    if (matcher.find()) {
-    //      return matcher.group();
-    //    }
-    return "null";
+    return address.getZip();
   }
 
   @Override

@@ -19,7 +19,7 @@
     <string name="room" title="Room"/>
 
     <string name="townName" title="Town"/>
-    <many-to-one name="city" ref="City" title="City"/>
+    <many-to-one name="city" ref="City" title="City" massUpdate="true"/>
 
     <string name="zip" title="Zip code"/>
     <string name="townLocationName" title="Town Location"/>
