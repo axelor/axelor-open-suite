@@ -19,16 +19,37 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
+import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
+import com.axelor.common.StringUtils;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import java.io.InputStream;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportBankStatement {
 
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected BankStatementImportService bankStatementImportService;
+  protected MetaFiles metaFiles;
+  protected BankStatementRepository bankStatementRepository;
   protected BankStatementCreateService bankStatementCreateService;
 
   @Inject
-  public ImportBankStatement(BankStatementCreateService bankStatementCreateService) {
+  public ImportBankStatement(
+      BankStatementImportService bankStatementImportService,
+      MetaFiles metaFiles,
+      BankStatementRepository bankStatementRepository,
+      BankStatementCreateService bankStatementCreateService) {
+    this.bankStatementImportService = bankStatementImportService;
+    this.metaFiles = metaFiles;
+    this.bankStatementRepository = bankStatementRepository;
     this.bankStatementCreateService = bankStatementCreateService;
   }
 
@@ -36,9 +57,23 @@ public class ImportBankStatement {
     assert bean instanceof BankStatement;
     BankStatement bankStatement = (BankStatement) bean;
 
-    if (bankStatement.getName() == null) {
-      bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
+    String fileName = (String) values.get("bank_statement_demo");
+
+    if (!StringUtils.isEmpty(fileName)) {
+      try {
+        InputStream stream =
+            this.getClass().getResourceAsStream("/apps/demo-data/demo-bank-statement/" + fileName);
+        if (stream != null) {
+          final MetaFile metaFile = metaFiles.upload(stream, fileName);
+          bankStatement.setBankStatementFile(metaFile);
+          bankStatement.setName(bankStatementCreateService.computeName(bankStatement));
+          bankStatementRepository.save(bankStatement);
+          bankStatementImportService.runImport(bankStatement, true);
+        }
+      } catch (Exception e) {
+        LOG.error("Error when importing demo bank statement : {0}", e);
+      }
     }
-    return bankStatement;
+    return bankStatementRepository.find(bankStatement.getId());
   }
 }
