@@ -195,6 +195,16 @@
     <view type="form" name="import-export-interface-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-import-export-translation"
+    title="Import/Export translations" parent="admin-root-general"
+    action="admin.root.general.import.export.translation" order="1100"/>
+
+  <action-view name="admin.root.general.import.export.translation"
+    title="Import/Export translations" model="com.axelor.apps.base.db.ImportExportTranslation">
+    <view type="grid" name="import-export-translation-grid"/>
+    <view type="form" name="import-export-translation-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="300" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"

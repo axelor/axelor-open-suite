@@ -167,9 +167,11 @@
       <field name="$hasBeenSentToBankTag" showTitle="false" colSpan="2"
         showIf="hasBeenSentToBank" colOffset="10" readonly="true">
         <viewer depends="hasBeenSentToBank"><![CDATA[
-          <h4 class="text-right">
-            <span class="label label-success" style="margin: 1px 0 !important; display: inline-table; line-height: initial;" x-translate>Sent to bank</span>
-          </h4>
+          <>
+             <Box d="flex" justifyContent="flex-end">
+                 <Badge bg="success">{_t('Sent to bank')}</Badge>
+             </Box>
+          </>
         ]]></viewer>
       </field>
     </panel>
