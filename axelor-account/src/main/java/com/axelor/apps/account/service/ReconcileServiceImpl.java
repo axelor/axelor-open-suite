@@ -87,7 +87,6 @@ import org.slf4j.LoggerFactory;
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final int ALTERNATIVE_SCALE = 5;
 
   protected MoveToolService moveToolService;
   protected AccountCustomerService accountCustomerService;
@@ -356,13 +355,19 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (reconcile
-                .getAmount()
-                .compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()))
+    if (currencyScaleServiceAccount
+                .getScaledValue(creditMoveLine, reconcile.getAmount())
+                .compareTo(
+                    currencyScaleServiceAccount.getScaledValue(
+                        creditMoveLine,
+                        creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())))
             > 0
-        || reconcile
-                .getAmount()
-                .compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()))
+        || currencyScaleServiceAccount
+                .getScaledValue(debitMoveLine, reconcile.getAmount())
+                .compareTo(
+                    currencyScaleServiceAccount.getScaledValue(
+                        debitMoveLine,
+                        debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())))
             > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,

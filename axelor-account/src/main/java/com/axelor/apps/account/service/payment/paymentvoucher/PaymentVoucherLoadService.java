@@ -178,9 +178,12 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
 
-    payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
+    payVoucherDueElement.setDueAmount(
+        currencyScaleServiceAccount.getScaledValue(invoiceTerm, invoiceTerm.getAmount()));
 
-    payVoucherDueElement.setAmountRemaining(this.getAmountRemaining(paymentVoucher, invoiceTerm));
+    payVoucherDueElement.setAmountRemaining(
+        currencyScaleServiceAccount.getScaledValue(
+            invoiceTerm, this.getAmountRemaining(paymentVoucher, invoiceTerm)));
 
     payVoucherDueElement.setCurrency(
         invoiceTerm.getMoveLine().getMove().getCurrency() != null

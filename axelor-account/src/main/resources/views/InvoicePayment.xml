@@ -62,7 +62,7 @@
       <field name="invoice.financialDiscount" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
       <field name="$isPartialPayment" type="boolean" hidden="true"/>
-      <field name="$currencyScale" hidden="false"/>
+      <field name="$currencyScale" hidden="true"/>
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"

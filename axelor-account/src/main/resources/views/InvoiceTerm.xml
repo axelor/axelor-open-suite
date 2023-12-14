@@ -210,7 +210,7 @@
     <field name="financialDiscountAmount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"
       x-scale="currency.numberOfDecimals"/>
-    <field name="amountPaid" aggregate="sum"/>
+    <field name="amountPaid" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="moveLine.partner.name" hidden="true"/>
     <field name="isSelectedOnPaymentSession" hidden="true"/>
     <field name="financialDiscount" hidden="true"/>
