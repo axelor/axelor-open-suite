@@ -41,6 +41,15 @@
     onNew="action-stock-rules-record-new,action-stock-rules-attrs-scale-and-precision"
     onLoad="action-stock-rules-attrs-scale-and-precision" width="large">
     <panel name="mainPanel">
+
+      <field name="$msg" showTitle="false" colSpan="12" readonly="true">
+        <viewer depends="useCaseSelect">
+          <![CDATA[
+            <span class="label label-info" ng-show="record.useCaseSelect == 2" x-translate>Control stock rules are activated by supply chain batch.</span>
+          ]]>
+        </viewer>
+      </field>
+
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" canEdit="false" colSpan="3"/>
       <field name="product" canEdit="false"
