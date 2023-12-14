@@ -40,7 +40,6 @@ import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 public class StockRulesSupplychainServiceProductionImpl extends StockRulesSupplychainServiceImpl {
 
@@ -94,7 +93,10 @@ public class StockRulesSupplychainServiceProductionImpl extends StockRulesSupply
     Product product = stockLocationLine.getProduct();
     BigDecimal qtyToProduce = stockRulesService.getQtyToOrder(stockLocationLine, stockRules);
     productionOrderService.generateProductionOrder(
-        product, null, qtyToProduce, LocalDateTime.now());
+        product,
+        null,
+        qtyToProduce,
+        appBaseService.getTodayDateTime(stockLocation.getCompany()).toLocalDateTime());
 
     if (stockRules.getAlert()) {
       generateAndSendMessage(stockRules);
