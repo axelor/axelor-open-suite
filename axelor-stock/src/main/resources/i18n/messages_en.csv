@@ -692,6 +692,7 @@
 "Split by unit",,,
 "Split in Qty of",,,
 "Split into 2",,,
+"Split into fulfilled line and unfulfilled one",,,
 "Split quantity cannot be higher than real quantity.",,,
 "Split quantity cannot be negative.",,,
 "Start",,,
