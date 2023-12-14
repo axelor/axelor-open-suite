@@ -296,7 +296,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   public List<Integer> getSelectedPaymentVoucherDueIdList(
       List<Map<String, Object>> paymentVoucherDueList) {
     return paymentVoucherDueList.stream()
-        .filter(o -> (Boolean) o.get("selected"))
+        .filter(o -> ObjectUtils.notEmpty(o.get("selected")) && (Boolean) o.get("selected"))
         .map(o -> (Integer) o.get("id"))
         .collect(Collectors.toList());
   }
