@@ -418,6 +418,5 @@ public class BaseModule extends AxelorModule {
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(LocalizationService.class).to(LocalizationServiceImpl.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
-
   }
 }
