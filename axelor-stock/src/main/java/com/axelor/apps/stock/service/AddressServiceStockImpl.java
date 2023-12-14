@@ -18,11 +18,17 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.repo.CityRepository;
+import com.axelor.apps.base.db.repo.StreetRepository;
+import com.axelor.apps.base.service.AddressAttrsService;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.db.JPA;
 import com.axelor.text.GroovyTemplates;
+import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.inject.Inject;
 
 public class AddressServiceStockImpl extends AddressServiceImpl {
@@ -31,8 +37,22 @@ public class AddressServiceStockImpl extends AddressServiceImpl {
   }
 
   @Inject
-  public AddressServiceStockImpl(GroovyTemplates groovyTemplates) {
-    super(groovyTemplates);
+  public AddressServiceStockImpl(
+      GroovyTemplates groovyTemplates,
+      AddressHelper ads,
+      MapService mapService,
+      CityRepository cityRepository,
+      StreetRepository streetRepository,
+      AppBaseService appBaseService,
+      AddressAttrsService addressAttrsService) {
+    super(
+        groovyTemplates,
+        ads,
+        mapService,
+        cityRepository,
+        streetRepository,
+        appBaseService,
+        addressAttrsService);
   }
 
   private static boolean checkAddressUsedStock(Long addressId) {

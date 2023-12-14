@@ -628,12 +628,6 @@ public final class BaseExceptionMessage {
 
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s'" /*)*/;
-  public static final String ADDRESS_TEMPLATE_BLANK = /*$$(*/
-      "An error occurred while generating the address template: '%s'" /*)*/;
-  public static final String RECOMPUTE_ADDRESS_COUNTRY_LIST_EMPTY = /*$$(*/
-      "Needs to select at least one country" /*)*/;
-  public static final String RECOMPUTE_ADDRESS_DONE = /*$$(*/
-      "%d records updated and %d records generated exceptions!" /*)*/;
   public static final String PRICING_BUTTON_ERROR = /*$$(*/
       "There was an error while trying to add the pricing button : %s" /*)*/;
 }

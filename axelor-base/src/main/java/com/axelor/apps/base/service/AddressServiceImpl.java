@@ -28,7 +28,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
 import com.axelor.apps.base.db.Street;
-import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.AddressTemplateRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.StreetRepository;
@@ -37,7 +36,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.axelor.common.csv.CSVFile;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
@@ -53,11 +51,8 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
-import java.io.File;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -66,7 +61,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,28 +68,43 @@ import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService {
-  @Inject protected AddressRepository addressRepo;
-  @Inject protected AddressHelper ads;
-  @Inject protected MapService mapService;
-  @Inject protected CityRepository cityRepository;
-  @Inject protected StreetRepository streetRepository;
-  @Inject protected AppBaseService appBaseService;
-  @Inject protected AddressAttrsService addressAttrsService;
-
-  private GroovyTemplates groovyTemplates;
-
-  protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
-
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-
   protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
   private static final char TEMPLATE_DELIMITER = '$';
+  private GroovyTemplates groovyTemplates;
+  protected AddressHelper ads;
+  protected CityRepository cityRepository;
+  protected StreetRepository streetRepository;
+  protected AppBaseService appBaseService;
+  protected AddressAttrsService addressAttrsService;
+
+  protected MapService mapService;
+  protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
+
   private static final Pattern ZIP_CODE_PATTERN =
       Pattern.compile(
           "\\d{4} [A-Z]{2} |\\d{4,6}|\\d{3}-\\d{4}|[A-Z]{1,2}[0-9][A-Z0-9]? [0-9][A-Z]{1}[A-Z0-9]?");
 
   static {
     registerCheckUsedFunc(AddressServiceImpl::checkAddressUsedBase);
+  }
+
+  @Inject
+  public AddressServiceImpl(
+      GroovyTemplates groovyTemplates,
+      AddressHelper ads,
+      MapService mapService,
+      CityRepository cityRepository,
+      StreetRepository streetRepository,
+      AppBaseService appBaseService,
+      AddressAttrsService addressAttrsService) {
+    this.groovyTemplates = groovyTemplates;
+    this.ads = ads;
+    this.mapService = mapService;
+    this.cityRepository = cityRepository;
+    this.streetRepository = streetRepository;
+    this.appBaseService = appBaseService;
+    this.addressAttrsService = addressAttrsService;
   }
 
   @Override
@@ -108,51 +117,9 @@ public class AddressServiceImpl implements AddressService {
     return ads.doSearch(wsdlUrl, search);
   }
 
-  @Inject
-  public AddressServiceImpl(GroovyTemplates groovyTemplates) {
-    this.groovyTemplates = groovyTemplates;
-  }
-
   @Override
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker) {
     return ads.doGetAddress(wsdlUrl, moniker);
-  }
-
-  @Override
-  public int export(String path) throws IOException {
-    List<Address> addresses = addressRepo.all().filter("self.certifiedOk IS FALSE").fetch();
-
-    File tempFile = new File(path);
-    CSVFile csvFormat = CSVFile.DEFAULT.withDelimiter('|').withFirstRecordAsHeader();
-    CSVPrinter printer = csvFormat.write(tempFile);
-
-    List<String> header = new ArrayList<>();
-    header.add("Id");
-    header.add("AddressL1");
-    header.add("Room");
-    header.add("Floor");
-    header.add("Street Name");
-    header.add("Postbox");
-    header.add("CodeINSEE");
-
-    printer.printRecord(header);
-    List<String> items = new ArrayList<>();
-    for (Address a : addresses) {
-
-      items.add(a.getId() != null ? a.getId().toString() : "");
-      items.add(a.getRoom() != null ? a.getRoom() : "");
-      items.add(a.getFloor() != null ? a.getFloor() : "");
-      items.add(a.getStreetName() != null ? a.getStreetName() : "");
-      items.add(a.getPostBox() != null ? a.getPostBox() : "");
-      items.add(a.getInseeCode() != null ? a.getInseeCode() : "");
-
-      printer.printRecord(items);
-      items.clear();
-    }
-    printer.close();
-    LOG.info("{} exported", path);
-
-    return addresses.size();
   }
 
   @Override
@@ -167,23 +134,6 @@ public class AddressServiceImpl implements AddressService {
     address.setCountry(country);
 
     return address;
-  }
-
-  @Override
-  public Address getAddress(
-      String room, String floor, String streetName, String postBox, Country country) {
-
-    return addressRepo
-        .all()
-        .filter(
-            "self.room = ?1 AND self.floor = ?2 AND self.streetName = ?3 "
-                + "AND self.postBox = ?4 AND self.country = ?6",
-            room,
-            floor,
-            streetName,
-            postBox,
-            country)
-        .fetchOne();
   }
 
   @Override
@@ -359,13 +309,13 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
-          Address address) {
+      Address address) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     if (ObjectUtils.notEmpty(
-            address.getCountry().getAddressTemplate().getAddressTemplateLineList())) {
+        address.getCountry().getAddressTemplate().getAddressTemplateLineList())) {
       List<AddressTemplateLine> addressTemplateLineList =
-              address.getCountry().getAddressTemplate().getAddressTemplateLineList();
+          address.getCountry().getAddressTemplate().getAddressTemplateLineList();
       addressAttrsService.addHiddenAndTitle(addressTemplateLineList, attrsMap);
       for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
         addressAttrsService.addFieldUnhide(addressTemplateLine.getMetaField().getName(), attrsMap);

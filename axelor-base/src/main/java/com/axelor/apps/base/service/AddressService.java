@@ -22,9 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.meta.CallMethod;
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
@@ -38,12 +36,7 @@ public interface AddressService {
 
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
-  public int export(String path) throws IOException;
-
   public Address createAddress(
-      String room, String floor, String streetName, String postBox, Country country);
-
-  public Address getAddress(
       String room, String floor, String streetName, String postBox, Country country);
 
   @CallMethod
@@ -105,5 +98,5 @@ public interface AddressService {
   public void setFormattedFullName(Address address) throws AxelorException;
 
   public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
-          Address address);
+      Address address);
 }

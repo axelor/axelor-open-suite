@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.AddressUtilityService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
@@ -76,11 +77,14 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected PartnerRepository partnerRepository;
 
+  protected AddressUtilityService addressUtilityService;
+
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
       ConvertWizardService convertWizardService,
       AddressService addressService,
+      AddressUtilityService addressUtilityService,
       PartnerService partnerService,
       CountryRepository countryRepo,
       AppBaseService appBaseService,
@@ -91,6 +95,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
+    this.addressUtilityService = addressUtilityService;
     this.partnerService = partnerService;
     this.countryRepo = countryRepo;
     this.appBaseService = appBaseService;
@@ -101,7 +106,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   }
 
   /**
-   * Create a partner from a lea
+   * Create a partner from a lead
    *
    * @return
    * @throws AxelorException
@@ -163,7 +168,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
     Country country = lead.getPrimaryCountry();
 
-    Address address = addressService.getAddress(null, null, streetName, postBox, country);
+    Address address = addressUtilityService.getAddress(null, null, streetName, postBox, country);
 
     if (address == null) {
       address = addressService.createAddress(null, null, streetName, postBox, country);
