@@ -12,8 +12,8 @@
           if="__config__.app.getApp('budget')?.getEnableProject()" canCollapse="true">
           <field name="globalBudgetSet" widget="TagSelect" colSpan="12"
             form-view="global-budget-form" grid-view="global-budget-grid"
-            domain="self.company = :company AND self.statusSelect = 2 AND self.budgetTypeSelect != 2"
-            canNew="false" canEdit="false"/>
+            domain="self.company = :company AND self.statusSelect = 2" canNew="false"
+            canEdit="false"/>
         </panel>
       </insert>
     </extend>

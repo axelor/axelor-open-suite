@@ -108,8 +108,8 @@
             showIf="statusSelect == 2 &amp;&amp; simulatedAmount != 0"/>
         </panel>
         <panel name="projectPanel" title="Project" colSpan="12" sidebar="true"
-          showIf="budgetTypeSelect != 2 &amp;&amp; statusSelect == 2"
-          if="__config__.app.getApp('budget')?.getEnableProject()" canCollapse="true">
+          showIf="statusSelect == 2" if="__config__.app.getApp('budget')?.getEnableProject()"
+          canCollapse="true">
           <field name="projectSet" widget="TagSelect" colSpan="12" form-view="project-form"
             grid-view="project-grid" canNew="false" canEdit="false" domain="self.company = :company"/>
         </panel>
