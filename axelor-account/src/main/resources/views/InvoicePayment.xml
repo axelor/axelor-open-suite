@@ -62,7 +62,7 @@
       <field name="invoice.financialDiscount" hidden="true"/>
       <field name="$isMultiCurrency" type="boolean" hidden="true"/>
       <field name="$isPartialPayment" type="boolean" hidden="true"/>
-      <field name="$currencyScale" hidden="true"/>
+      <field name="$currencyScale" hidden="false"/>
     </panel>
     <panel name="discountPanel" title="Financial discount"
       if="__config__.app.getApp('account')?.getManageFinancialDiscount()"
@@ -186,7 +186,7 @@
 
   <action-record name="action-invoice-payment-record-new"
     model="com.axelor.apps.account.db.InvoicePayment">
-    <field name="currency" expr="eval: _invoice?.currency"/>
+    <field name="currency" expr="eval: __repo__(Currency).find(_invoice?.currency.id)"/>
     <field name="paymentDate"
       expr="eval: __config__.app.getTodayDate(__repo__(Company).find(_invoice.company.id))"/>
     <field name="paymentMode"
