@@ -41,6 +41,10 @@
         form-view="currency-form" grid-view="currency-grid"
         onChange="action-invoice-payment-group-change-amounts"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
+      <panel name="amountErrorPanel" colSpan="12" hidden="true">
+        <label name="amountErrorLabel" css="label-danger"
+          title="Input amount was greater than the remaining amount to pay on invoice, so it has been set back to that amount"/>
+      </panel>
       <field name="paymentMode" canEdit="false"
         onChange="action-invoice-payment-method-fill-bank-details" form-view="payment-mode-form"
         grid-view="payment-mode-grid"/>
