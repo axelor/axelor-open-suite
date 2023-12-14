@@ -147,27 +147,25 @@ public class TicketController {
 
       Timer timer = service.find(ticket);
 
-      boolean hideStart = false;
-      boolean hideCancel = true;
-      if (timer != null) {
-        hideStart = timer.getStatusSelect() == TimerRepository.TIMER_STARTED;
-        hideCancel =
-            timer.getTimerHistoryList().isEmpty()
-                || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED);
-      }
-
       response.setAttr(
           "startTimerBtn",
           HIDDEN_ATTR,
-          hideStart || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+          timer == null
+              || timer.getStatusSelect() == TimerRepository.TIMER_STARTED
+              || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
       response.setAttr(
           "stopTimerBtn",
           HIDDEN_ATTR,
-          !hideStart || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+          timer == null
+              || timer.getStatusSelect() != TimerRepository.TIMER_STARTED
+              || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
       response.setAttr(
           "cancelTimerBtn",
           HIDDEN_ATTR,
-          hideCancel || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+          timer == null
+              || timer.getTimerHistoryList().isEmpty()
+              || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED)
+              || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
