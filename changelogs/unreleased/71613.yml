@@ -1,0 +1,7 @@
+---
+title: "TRANSLATIONS : Export/import translations"
+type: feature
+description: |
+  Create a process to export and import translations in different languages.
+  All languages translations can be exported into a csv file, and can be modified by the user after downloading.
+  After modifying a translation csv file, the user can import the file to make changes of translations in the system.
