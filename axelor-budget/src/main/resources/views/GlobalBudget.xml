@@ -126,8 +126,8 @@
       <field name="budgetLevelList" title="Sections" colSpan="12"
         onChange="action-global-budget-method-clear-budget-list"
         showIf="(budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0"
-        form-view="budget-level-form" grid-view="budget-level-included-grid"
-        canEdit="statusSelect == 0" canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
+        form-view="budget-level-form" grid-view="budget-level-grid" canEdit="statusSelect == 0"
+        canNew="statusSelect == 0" canRemove="statusSelect == 0"/>
       <spacer colSpan="12"/>
       <label name="orLabel" title="Or" colSpan="12"
         showIf="((budgetLevelList &amp;&amp; budgetLevelList.length &gt; 0) || !budgetList || budgetList.length == 0) &amp;&amp; (!budgetLevelList || budgetLevelList.length == 0)"/>
@@ -312,6 +312,10 @@
     name="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-without-po">
     <call class="com.axelor.apps.budget.web.GlobalBudgetViewController"
       method="viewRealizedWithoutPo"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-clear-budget-list">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="clearBudgetList"/>
   </action-method>
 
   <action-view name="action-global-budget-view-see-budget-levels" title="Sections"

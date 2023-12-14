@@ -40,6 +40,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -299,9 +300,34 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     }
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
       for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
-        getAllBudgets(child, budgetList);
+        budgetList = getAllBudgets(child, budgetList);
       }
     }
     return budgetList;
+  }
+
+  @Override
+  public List<BudgetLevel> getLastSections(GlobalBudget globalBudget) {
+    List<BudgetLevel> budgetLevelList = new ArrayList<>();
+
+    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      return budgetLevelList;
+    }
+
+    for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
+      getLastSection(budgetLevel, budgetLevelList);
+    }
+    return budgetLevelList;
+  }
+
+  protected void getLastSection(BudgetLevel budgetLevel, List<BudgetLevel> budgetLevelList) {
+    if (budgetLevel != null && ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevelList.add(budgetLevel);
+      return;
+    }
+
+    for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
+      getLastSection(child, budgetLevelList);
+    }
   }
 }

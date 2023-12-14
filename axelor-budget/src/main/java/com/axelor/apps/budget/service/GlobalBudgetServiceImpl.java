@@ -304,7 +304,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     }
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.getAllBudgets(budgetLevel, budgetList);
+        budgetList = budgetLevelService.getAllBudgets(budgetLevel, budgetList);
       }
     }
 

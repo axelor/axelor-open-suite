@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -95,4 +96,6 @@ public interface BudgetLevelService {
   public void computeBudgetLevelTotals(Budget budget);
 
   List<Budget> getAllBudgets(BudgetLevel budgetLevel, List<Budget> budgetList);
+
+  List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
 }

@@ -74,9 +74,10 @@
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
         <field name="budgetLevel" form-view="budget-level-form"
+          requiredIf="(globalBudget.budgetLevelList &amp;&amp; globalBudget.budgetLevelList.length &gt; 0)"
           onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-          readonlyIf="$popup()" colSpan="3"/>
-        <field name="globalBudget" title="Global budget" colSpan="3" requiredIf="!$popup()"
+          readonlyIf="$popup()" colSpan="3" onSelect="action-budget-method-get-budget-level-domain"/>
+        <field name="globalBudget" title="Global budget" colSpan="3" readonly="true"
           grid-view="global-budget-grid" form-view="global-budget-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <field name="category" colSpan="4"/>
@@ -84,9 +85,8 @@
           onChange="action-budget-budget-validate-dates" required="true"/>
         <field name="toDate" colSpan="4" readonlyIf="statusSelect == 2"
           onChange="action-budget-budget-validate-dates" required="true"/>
-        <field name="$globalId" hidden="true"/>
         <field name="statusSelect" hidden="true"/>
-        <field name="globalBudget" hidden="true"/>
+        <field name="globalBudget.budgetLevelList" hidden="true"/>
         <field name="globalBudget.statusSelect" hidden="true"/>
       </panel>
       <panel name="budgetDistributionLineOrderLineBtnPanel"
@@ -215,7 +215,7 @@
   </action-validate>
 
   <action-group name="budget-action-budget-group-onnew">
-    <action name="action-budget-record-on-new"/>
+    <action name="action-budget-method-on-new"/>
     <action name="budget-action-budget-attrs-set-attrs"/>
     <action name="budget-action-method-show-period-fields"/>
     <action name="budget-action-method-budget-manage-budget-key"/>
@@ -247,24 +247,6 @@
       expr="eval: _toDate ? _toDate : __parent__?.toDate != null ? __parent__?.toDate : toDate"/>
     <field name="inChargeUser"
       expr="eval: budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetManager"/>
-  </action-record>
-
-  <action-record name="action-budget-record-on-new"
-    model="com.axelor.apps.budget.db.Budget">
-    <field name="company" expr="eval: __parent__?.company ?: __user__.activeCompany"/>
-    <field name="inChargeUser"
-      expr="eval: __parent__?.budgetManager != null ? __parent__.budgetManager : __user__"/>
-    <field name="typeSelect" expr="eval: _typeSelect"/>
-    <field name="sourceSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM"/>
-    <field name="fromDate" expr="eval: __parent__?.fromDate"/>
-    <field name="toDate" expr="eval: __parent__?.toDate"/>
-    <field name="budgetLevel" expr="eval: __parent__"
-      if="!budgetLevel &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.BudgetLevel'"/>
-    <field name="globalBudget" expr="eval: __parent__"
-      if="!globalBudget &amp;&amp; __parent__._model == 'com.axelor.apps.budget.db.GlobalBudget'"/>
-    <field name="$globalId" expr="eval: _globalId" if="_globalId"/>
-    <field name="$globalId" expr="eval: 0" if="!_globalId"/>
   </action-record>
 
   <action-validate name="action-budget-budget-validate-dates">
@@ -320,6 +302,15 @@
   <action-method name="action-method-budget-analytic-account-set-domain">
     <call class="com.axelor.apps.budget.web.BudgetController" method="setAnalyticAccountDomain"/>
   </action-method>
+
+  <action-method name="action-budget-method-get-budget-level-domain">
+    <call class="com.axelor.apps.budget.web.BudgetController" method="getBudgetLevelDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-method-on-new">
+    <call class="com.axelor.apps.budget.web.BudgetController" method="initializeValues"/>
+  </action-method>
+
 
   <action-validate name="action-budget-validate-exceed-line-amount-extax">
     <alert
