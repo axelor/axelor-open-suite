@@ -43,6 +43,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
@@ -90,10 +91,11 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   @Override
   public Currency getCompanyCurrency(AnalyticLine analyticLine) {
-    if (analyticLine.getAccount() != null && analyticLine.getAccount().getCompany() != null) {
-      return analyticLine.getAccount().getCompany().getCurrency();
-    }
-    return null;
+    return Optional.of(analyticLine)
+        .map(AnalyticLine::getAccount)
+        .map(Account::getCompany)
+        .map(Company::getCurrency)
+        .orElse(null);
   }
 
   @Override
