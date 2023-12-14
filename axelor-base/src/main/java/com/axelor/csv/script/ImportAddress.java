@@ -33,7 +33,13 @@ public class ImportAddress {
 
     Address address = (Address) bean;
     address.setFullName(addressService.computeFullName(address));
-    //    address.setZip(addressService.getZipCode(address));
+
+    if (address.getCity() != null) {
+      address.setTownName(address.getCity().getName());
+    }
+    if (address.getStreet() != null) {
+      address.setStreetName(address.getStreet().getName());
+    }
     try {
       addressService.setFormattedFullName(address);
     } catch (Exception e) {
