@@ -627,7 +627,7 @@
 
 
   <action-group name="action-stock-move-line-group-qty-onchange">
-    <action name="action-stock-move-line-record-qty"/>
+    <action name="action-stock-move-line-method-set-real-qty"/>
     <action name="action-stock-move-line-group-real-qty-onchange"/>
   </action-group>
 
@@ -662,11 +662,9 @@
     <action name="action-stock-move-line-group-real-qty-onchange"/>
   </action-group>
 
-  <action-record name="action-stock-move-line-record-qty"
-    model="com.axelor.apps.stock.db.StockMoveLine">
-    <field name="realQty" expr="eval: qty" if="__parent__?.statusSelect &lt;= 2"/>
-    <field name="realQty" expr="eval: qty" if="stockMove?.statusSelect &lt;= 2"/>
-  </action-record>
+  <action-method name="action-stock-move-line-method-set-real-qty">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController" method="setRealQty"/>
+  </action-method>
 
   <action-record name="action-stock-move-line-record-price-onchange"
     model="com.axelor.apps.stock.db.StockMoveLine">

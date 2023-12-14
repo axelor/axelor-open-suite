@@ -107,6 +107,8 @@ import com.axelor.apps.base.service.FakerService;
 import com.axelor.apps.base.service.FakerServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
 import com.axelor.apps.base.service.FrequencyServiceImpl;
+import com.axelor.apps.base.service.ImportExportTranslationService;
+import com.axelor.apps.base.service.ImportExportTranslationServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
 import com.axelor.apps.base.service.LanguageService;
@@ -415,5 +417,6 @@ public class BaseModule extends AxelorModule {
     bind(PricingMetaService.class).to(PricingMetaServiceImpl.class);
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
+    bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
   }
 }

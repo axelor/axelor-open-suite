@@ -228,6 +228,9 @@
             grid-view="in-stock-move-manuf-order-grid" hideIf="isConsProOnOperation" colSpan="12"/>
           <field name="outStockMoveList" form-view="stock-move-form"
             grid-view="out-stock-move-manuf-order-grid" colSpan="12"/>
+          <panel-dashlet name="outgoingStockMovesDashlet"
+            action="action-manuf-order-method-show-outgoing-stock-moves" colSpan="12"
+            title="Outgoing moves"/>
         </panel>
         <panel name="productionWastePanel" title="Production waste" colSpan="12"
           showIf="statusSelect &gt;= 4">
@@ -237,6 +240,7 @@
           <field name="wasteStockMove" form-view="stock-move-form"
             grid-view="out-stock-move-manuf-order-grid" readonly="true"/>
         </panel>
+
       </panel>
       <panel name="consumedProductsPanel" title="Consumed products"
         hideIf="isConsProOnOperation || statusSelect &lt; 3">
@@ -927,6 +931,11 @@
     <view type="grid" name="manuf-order-grid"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+
+  <action-method name="action-manuf-order-method-show-outgoing-stock-moves">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="showOutgoingStockMoves"/>
+  </action-method>
 
   <action-view name="action-manuf-order-view-all-child-mo" title="All Child MO"
     model="com.axelor.apps.production.db.ManufOrder">

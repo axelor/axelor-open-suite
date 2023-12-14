@@ -2007,7 +2007,11 @@
     model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-sale-order-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
-    <domain>self.stockMove.saleOrder.id = :saleOrder</domain>
+    <domain>self.id in (SELECT smLine.id FROM StockMoveLine smLine
+      JOIN StockMove sm ON
+      (smLine.stockMove = sm.id)
+      JOIN SaleOrder so ON (so MEMBER OF sm.saleOrderSet AND so.id =
+      :saleOrder))</domain>
     <context name="saleOrder" expr="eval: __self__.id"/>
   </action-view>
 
@@ -2015,7 +2019,7 @@
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-sale-order-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.saleOrder.id = :saleOrder</domain>
+    <domain>:saleOrder MEMBER OF self.saleOrderSet</domain>
     <context name="saleOrder" expr="eval: __this__.id"/>
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
   </action-view>
@@ -2178,7 +2182,7 @@
   <action-attrs name="action-sale-order-attrs-availability">
     <attribute name="hidden" for="availabilityRequestLabel"
       if="__config__.app.isApp('stock')"
-      expr="eval: !(__repo__(StockMove).all().filter('self.saleOrder.id = ? AND self.availabilityRequest = ? AND self.statusSelect = ?',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
+      expr="eval: !(__repo__(StockMove).all().filter('? MEMBER OF self.saleOrderSet  AND self.availabilityRequest = ? AND self.statusSelect = ?',id,true,__repo__(StockMove).STATUS_PLANNED).count() > 0)"/>
     <attribute name="hidden" expr="eval: statusSelect != 3"
       for="saleOrderLineList.availableStatus" if="__config__.app.isApp('supplychain')"/>
   </action-attrs>
