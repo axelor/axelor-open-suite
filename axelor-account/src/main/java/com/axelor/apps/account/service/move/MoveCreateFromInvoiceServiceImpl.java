@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -260,6 +261,11 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
    */
   @Override
   public Move createMoveUseInvoiceDue(Invoice invoice) throws AxelorException {
+    if (invoice.getInvoiceTermList().stream()
+        .allMatch(
+            it -> it.getPfpValidateStatusSelect() == InvoiceTermRepository.PFP_STATUS_LITIGATION)) {
+      return null;
+    }
 
     Company company = invoice.getCompany();
     Move move = null;

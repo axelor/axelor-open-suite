@@ -703,12 +703,16 @@ public class ReconcileServiceImpl implements ReconcileService {
           .map(PayVoucherElementToPay::getInvoiceTerm)
           .collect(Collectors.toList());
     } else {
-      List<InvoiceTerm> invoiceTermsToPay = null;
+      List<InvoiceTerm> invoiceTermsToPay;
+
       if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
         for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
-          invoiceTermPfpValidateStatusSelectMap.put(
-              invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
-          invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+          if (invoiceTerm.getPfpValidateStatusSelect()
+              != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
+            invoiceTermPfpValidateStatusSelectMap.put(
+                invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
+            invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
+          }
         }
 
         invoiceTermsToPay = invoiceTermService.getUnpaidInvoiceTermsFiltered(invoice);

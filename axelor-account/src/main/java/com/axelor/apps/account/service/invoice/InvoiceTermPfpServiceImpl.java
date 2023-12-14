@@ -440,8 +440,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
 
     if (this.getAlreadyValidatedStatusList().contains(pfpValidateStatusSelect)) {
       return;
-    } else if (invoiceTerm.getPfpValidateStatusSelect()
-        == InvoiceTermRepository.PFP_STATUS_LITIGATION) {
+    } else if (pfpValidateStatusSelect == InvoiceTermRepository.PFP_STATUS_LITIGATION) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(AccountExceptionMessage.INVOICE_TERM_PFP_REFUSED));
