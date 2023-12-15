@@ -95,9 +95,10 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
-  public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+  public ManufOrder plan(ManufOrder manufOrder, boolean isMultiLevelPlanning)
+      throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
-      return super.plan(manufOrder);
+      return super.plan(manufOrder, isMultiLevelPlanning);
     }
 
     ManufOrderService manufOrderService = Beans.get(ManufOrderService.class);
@@ -124,7 +125,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
 
-    operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
+    operationOrderPlanningService.plan(manufOrder.getOperationOrderList(), isMultiLevelPlanning);
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 

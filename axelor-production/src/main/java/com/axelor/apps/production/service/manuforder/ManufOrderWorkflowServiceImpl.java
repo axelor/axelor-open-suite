@@ -150,27 +150,30 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public ManufOrder plan(ManufOrder manufOrder) throws AxelorException {
+  public ManufOrder plan(ManufOrder manufOrder, boolean isMultiLevelPlanning)
+      throws AxelorException {
     List<ManufOrder> manufOrderList = new ArrayList<>();
     manufOrderList.add(manufOrder);
-    plan(manufOrderList);
+    plan(manufOrderList, isMultiLevelPlanning);
     return manufOrderRepo.save(manufOrder);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException {
-    return plan(manufOrderList, true);
+  public List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean isMultiLevelPlanning)
+      throws AxelorException {
+    return plan(manufOrderList, true, isMultiLevelPlanning);
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve)
+  public List<ManufOrder> plan(
+      List<ManufOrder> manufOrderList, boolean quickSolve, boolean isMultiLevelPlanning)
       throws AxelorException {
 
     for (ManufOrder manufOrder : manufOrderList) {
       planFirstStep(manufOrder);
-      planSecondStep(manufOrder);
+      planSecondStep(manufOrder, isMultiLevelPlanning);
       planThirdStep(manufOrder);
     }
 
@@ -193,8 +196,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     productionOrderService.updateStatus(manufOrder.getProductionOrderSet());
   }
 
-  protected void planSecondStep(ManufOrder manufOrder) throws AxelorException {
-    planPlanningOperationOrders(manufOrder);
+  protected void planSecondStep(ManufOrder manufOrder, boolean isMultiLevelPlanning)
+      throws AxelorException {
+    planPlanningOperationOrders(manufOrder, isMultiLevelPlanning);
     // Updating plannedStartDate since, it may be different now that operation orders are
     // planned
     manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
@@ -275,10 +279,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
   }
 
-  protected void planPlanningOperationOrders(ManufOrder manufOrder) throws AxelorException {
+  protected void planPlanningOperationOrders(ManufOrder manufOrder, boolean isMultiLevelPlanning)
+      throws AxelorException {
     List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
     if (CollectionUtils.isNotEmpty(operationOrders)) {
-      operationOrderPlanningService.plan(operationOrders);
+      operationOrderPlanningService.plan(operationOrders, isMultiLevelPlanning);
     }
   }
 
@@ -976,7 +981,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     StringBuilder messageBuilder = new StringBuilder();
 
     for (ManufOrder manufOrder : manufOrderList) {
-      this.plan(manufOrder);
+      this.plan(manufOrder, false);
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
         messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
       }

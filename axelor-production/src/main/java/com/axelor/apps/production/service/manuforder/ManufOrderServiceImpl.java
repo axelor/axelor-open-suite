@@ -183,7 +183,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      ManufOrderOriginType manufOrderOrigin)
+      ManufOrderOriginType manufOrderOrigin,
+      boolean isMultiLevelPlanning)
       throws AxelorException {
 
     if (billOfMaterial == null) {
@@ -238,7 +239,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             && appProductionService.getAppProduction().getAutoPlanManufOrderFromSO()
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
-      manufOrder = manufOrderWorkflowService.plan(manufOrder);
+      manufOrder = manufOrderWorkflowService.plan(manufOrder, isMultiLevelPlanning);
       manufOrderWorkflowService.createPurchaseOrders(manufOrder);
     }
 
@@ -1139,7 +1140,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
      */
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getIsManufOrderPlannedAfterMerge()) {
-      manufOrderWorkflowService.plan(mergedManufOrder);
+      manufOrderWorkflowService.plan(mergedManufOrder, false);
     } else {
       preFillOperations(mergedManufOrder);
     }
@@ -1298,7 +1299,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 billOfMaterial,
                 manufOrder.getPlannedStartDateT(),
                 manufOrder.getPlannedEndDateT(),
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER,
+                true);
 
         manufOrder.setClientPartner(clientPartner);
         manufOrder.setManualMOSeq(backupSeq);

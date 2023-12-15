@@ -91,7 +91,8 @@ public interface ProductionOrderService {
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
       ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
+      ManufOrder manufOrderParent,
+      boolean isMultiLevelPlanning)
       throws AxelorException;
 
   ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder);

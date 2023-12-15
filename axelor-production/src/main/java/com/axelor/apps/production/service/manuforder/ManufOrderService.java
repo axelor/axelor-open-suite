@@ -66,7 +66,8 @@ public interface ManufOrderService {
       BillOfMaterial billOfMaterial,
       LocalDateTime plannedStartDateT,
       LocalDateTime plannedEndDateT,
-      ManufOrderOriginType manufOrderOriginType)
+      ManufOrderOriginType manufOrderOriginType,
+      boolean isMultiLevelPlanning)
       throws AxelorException;
 
   public void createToConsumeProdProductList(ManufOrder manufOrder);

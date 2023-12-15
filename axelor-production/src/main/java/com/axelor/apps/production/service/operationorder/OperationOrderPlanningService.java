@@ -31,7 +31,8 @@ public interface OperationOrderPlanningService {
    * @param operationOrders
    * @throws AxelorException
    */
-  void plan(List<OperationOrder> operationOrders) throws AxelorException;
+  void plan(List<OperationOrder> operationOrders, boolean isMultiLevelPlanning)
+      throws AxelorException;
 
   /**
    * Re-plan a list of operation orders

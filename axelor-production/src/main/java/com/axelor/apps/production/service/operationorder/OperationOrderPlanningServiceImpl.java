@@ -91,7 +91,8 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void plan(List<OperationOrder> operationOrders) throws AxelorException {
+  public void plan(List<OperationOrder> operationOrders, boolean isMultiLevelPlanning)
+      throws AxelorException {
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();
@@ -113,7 +114,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
     }
 
     OperationOrderPlanningStrategy operationOrderPlanningStrategy =
-        getOperationOrderPlanningStrategy(scheduling, capacity);
+        getOperationOrderPlanningStrategy(scheduling, capacity, isMultiLevelPlanning);
 
     OperationOrderPlanningCommonService operationOrderPlanningCommonService;
     switch (operationOrderPlanningStrategy) {
@@ -165,7 +166,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
             oo.setPlannedStartDateT(null);
             oo.setPlannedEndDateT(null);
           });
-      plan(operationOrders);
+      plan(operationOrders, false);
     } else if (capacity == ProductionConfigRepository.INFINITE_CAPACITY_SCHEDULING) {
       for (OperationOrder operationOrder : operationOrders) {
         operationOrder.setPlannedStartDateT(
@@ -189,15 +190,17 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   }
 
   protected OperationOrderPlanningStrategy getOperationOrderPlanningStrategy(
-      Integer scheduling, Integer capacity) throws AxelorException {
+      Integer scheduling, Integer capacity, boolean isMultiLevelPlanning) throws AxelorException {
     if (scheduling == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
-      if (capacity == ProductionConfigRepository.FINITE_CAPACITY_SCHEDULING) {
+      if (capacity == ProductionConfigRepository.FINITE_CAPACITY_SCHEDULING
+          || isMultiLevelPlanning) {
         return OperationOrderPlanningStrategy.OperationOrderPlanningAsapFiniteCapacity;
       } else if (capacity == ProductionConfigRepository.INFINITE_CAPACITY_SCHEDULING) {
         return OperationOrderPlanningStrategy.OperationOrderPlanningAsapInfiniteCapacity;
       }
     } else if (scheduling == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING) {
-      if (capacity == ProductionConfigRepository.FINITE_CAPACITY_SCHEDULING) {
+      if (capacity == ProductionConfigRepository.FINITE_CAPACITY_SCHEDULING
+          || isMultiLevelPlanning) {
         return OperationOrderPlanningStrategy.OperationOrderPlanningAtTheLatestFiniteCapacity;
       } else if (capacity == ProductionConfigRepository.INFINITE_CAPACITY_SCHEDULING) {
         return OperationOrderPlanningStrategy.OperationOrderPlanningAtTheLatestInfiniteCapacity;
@@ -248,7 +251,7 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
                 .filter(oo -> oo.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED)
                 .collect(Collectors.toList());
 
-    plan(operationOrders);
+    plan(operationOrders, false);
     manufOrderService.updatePlannedDates(operationOrder.getManufOrder());
 
     if (willPlannedEndDateOverflow(operationOrder)) {

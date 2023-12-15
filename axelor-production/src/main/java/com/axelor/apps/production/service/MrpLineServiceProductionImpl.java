@@ -163,8 +163,8 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
             null,
             plannedStartDateT,
             plannedEndDateT,
-            ManufOrderOriginTypeProduction
-                .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
+            ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP,
+            false); // TODO compute the time to produce to put the manuf order at the
     // correct day
 
     linkToOrder(mrpLine, manufOrder);
