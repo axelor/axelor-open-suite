@@ -113,13 +113,6 @@ public final class SupplychainExceptionMessage {
   public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
       "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
 
-  /** Stock move line service */
-  public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
-      "Missing link to sale order line (from sale order id = %s) for stock move line %s" /*)*/;
-
-  public static final String STOCK_MOVE_MISSING_PURCHASE_ORDER = /*$$(*/
-      "Missing purchase order with id %s for stock move line %s" /*)*/;
-
   /** Batch Invoicing */
   public static final String BATCH_INVOICING_1 = /*$$(*/
       "Subscription invoice generation report :" /*)*/;
@@ -377,4 +370,11 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
       "Carriage paid threshold is exceeded, all shipment cost lines are removed" /*)*/;
+
+  public static final String COULD_NOT_FIND_ELIGIBLE_EMAIL_TEMPLATE_FOR_STOCK_RULES = /*$$(*/
+      "Could not find eligible email template for stock rules: %s" /*)*/;
+
+  public static final String
+      COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
+          "Could not find recipients for message generated from stock rules: %s" /*)*/;
 }
