@@ -251,7 +251,8 @@
     </panel>
     <panel-related name="bankOrderLineListPanel" colSpan="12" canNew="true"
       field="bankOrderLineList" form-view="bank-order-line-bank-order-form"
-      grid-view="bank-order-line-bank-order-grid" showIf="id"
+      grid-view="bank-order-line-bank-order-grid"
+      showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany"
       if="!__config__.app.getApp('bank-payment')?.useEditorInBankOrderForm"/>
     <panel name="bankOrderLinesPanel" title="Bank Order Lines"
       readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1"
