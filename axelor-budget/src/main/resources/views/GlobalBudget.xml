@@ -46,7 +46,7 @@
           <field name="company" canNew="false" colSpan="3"
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
           <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
-          <field name="company.currency.numberOfDecimals" hidden="false"/>
+          <field name="company.currency.numberOfDecimals" hidden="true"/>
           <field name="fromDate" colSpan="4" requiredIf="statusSelect == 0"
             onChange="action-global-budget-validate-from-to-dates"/>
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"

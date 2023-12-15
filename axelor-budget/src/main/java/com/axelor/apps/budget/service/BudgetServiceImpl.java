@@ -34,7 +34,6 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
@@ -83,6 +82,7 @@ public class BudgetServiceImpl implements BudgetService {
   protected AccountRepository accountRepo;
   protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
   protected BudgetToolsService budgetToolsService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetServiceImpl(
@@ -96,7 +96,8 @@ public class BudgetServiceImpl implements BudgetService {
       BudgetDistributionRepository budgetDistributionRepository,
       AccountRepository accountRepo,
       AnalyticDistributionLineRepository analyticDistributionLineRepo,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
     this.budgetLevelRepository = budgetLevelRepository;
@@ -108,6 +109,7 @@ public class BudgetServiceImpl implements BudgetService {
     this.accountRepo = accountRepo;
     this.analyticDistributionLineRepo = analyticDistributionLineRepo;
     this.budgetToolsService = budgetToolsService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -115,7 +117,9 @@ public class BudgetServiceImpl implements BudgetService {
     BigDecimal total = BigDecimal.ZERO;
     if (budget.getBudgetLineList() != null) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-        total = total.add(budgetLine.getAmountExpected());
+        total =
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, total.add(budgetLine.getAmountExpected()));
       }
     }
     return total;
@@ -220,7 +224,8 @@ public class BudgetServiceImpl implements BudgetService {
               .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    budget.setTotalAmountPaid(totalAmountPaid);
+    budget.setTotalAmountPaid(
+        currencyScaleServiceBudget.getCompanyScaledValue(budget, totalAmountPaid));
     budgetRepository.save(budget);
     return totalAmountPaid;
   }
@@ -235,9 +240,11 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     BigDecimal totalAmountCommitted =
-        budgetLineList.stream()
-            .map(BudgetLine::getAmountCommitted)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budget,
+            budgetLineList.stream()
+                .map(BudgetLine::getAmountCommitted)
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
 
     budget.setTotalAmountCommitted(totalAmountCommitted);
 
@@ -265,18 +272,24 @@ public class BudgetServiceImpl implements BudgetService {
 
     if (!CollectionUtils.isEmpty(budgetLineList)) {
       totalAmountRealized =
-          budgetLineList.stream()
-              .map(BudgetLine::getAmountRealized)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget,
+              budgetLineList.stream()
+                  .map(BudgetLine::getAmountRealized)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
       realizedWithPo =
-          budgetLineList.stream()
-              .map(BudgetLine::getRealizedWithPo)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget,
+              budgetLineList.stream()
+                  .map(BudgetLine::getRealizedWithPo)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
 
       realizedWithNoPo =
-          budgetLineList.stream()
-              .map(BudgetLine::getRealizedWithNoPo)
-              .reduce(BigDecimal.ZERO, BigDecimal::add);
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget,
+              budgetLineList.stream()
+                  .map(BudgetLine::getRealizedWithNoPo)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
 
       budget.setTotalAmountRealized(totalAmountRealized);
       budget.setRealizedWithPo(realizedWithPo);
@@ -303,7 +316,8 @@ public class BudgetServiceImpl implements BudgetService {
     for (BudgetDistribution budgetDistribution : budgetDistributionList) {
       simulatedAmount = simulatedAmount.add(budgetDistribution.getAmount());
     }
-    budget.setSimulatedAmount(simulatedAmount);
+    budget.setSimulatedAmount(
+        currencyScaleServiceBudget.getCompanyScaledValue(budget, simulatedAmount));
     return simulatedAmount;
   }
 
@@ -312,7 +326,8 @@ public class BudgetServiceImpl implements BudgetService {
     if (budget.getAvailableAmount().subtract(budget.getSimulatedAmount()).compareTo(BigDecimal.ZERO)
         > 0) {
       budget.setAvailableAmountWithSimulated(
-          budget.getAvailableAmount().subtract(budget.getSimulatedAmount()));
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget, budget.getAvailableAmount().subtract(budget.getSimulatedAmount())));
 
     } else {
       budget.setAvailableAmountWithSimulated(BigDecimal.ZERO);
@@ -372,9 +387,16 @@ public class BudgetServiceImpl implements BudgetService {
       budgetLine.setFromDate(fromDate);
       budgetLine.setToDate(budgetLineToDate);
       budgetLine.setBudget(budget);
-      budgetLine.setAmountExpected(budget.getAmountForGeneration());
-      budgetLine.setAvailableAmount(budget.getAmountForGeneration());
-      budgetLine.setToBeCommittedAmount(budget.getAmountForGeneration());
+      budgetLine.setAmountExpected(
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget, budget.getAmountForGeneration()));
+      budgetLine.setAvailableAmount(
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget, budget.getAmountForGeneration()));
+      budgetLine.setToBeCommittedAmount(
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget, budget.getAmountForGeneration()));
+
       budgetLineList.add(budgetLine);
       budget.addBudgetLineListItem(budgetLine);
       budgetLineNumber++;
@@ -390,7 +412,9 @@ public class BudgetServiceImpl implements BudgetService {
     BigDecimal total = BigDecimal.ZERO;
     if (budget.getBudgetLineList() != null) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-        total = total.add(budgetLine.getToBeCommittedAmount());
+        total =
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, total.add(budgetLine.getToBeCommittedAmount()));
       }
     }
 
@@ -402,7 +426,9 @@ public class BudgetServiceImpl implements BudgetService {
     BigDecimal total = BigDecimal.ZERO;
     if (budget.getBudgetLineList() != null) {
       for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-        total = total.add(budgetLine.getFirmGap());
+        total =
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, total.add(budgetLine.getFirmGap()));
       }
     }
     budget.setTotalFirmGap(total);
@@ -659,41 +685,59 @@ public class BudgetServiceImpl implements BudgetService {
                 || move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
             && !moveLine.getIsBudgetImputed()) {
           budgetLine.setRealizedWithNoPo(
-              budgetLine.getRealizedWithNoPo().add(budgetDistribution.getAmount()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget, budgetLine.getRealizedWithNoPo().add(budgetDistribution.getAmount())));
           budgetLine.setAmountRealized(
-              budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget, budgetLine.getAmountRealized().add(budgetDistribution.getAmount())));
           budgetLine.setToBeCommittedAmount(
-              budgetLine.getToBeCommittedAmount().subtract(budgetDistribution.getAmount()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  budgetLine.getToBeCommittedAmount().subtract(budgetDistribution.getAmount())));
           BigDecimal firmGap =
-              budgetLine
-                  .getAmountExpected()
-                  .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  budgetLine
+                      .getAmountExpected()
+                      .subtract(
+                          budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
           budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
           budgetLine.setAvailableAmount(
-              (budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount()))
-                          .compareTo(BigDecimal.ZERO)
-                      > 0
-                  ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
-                  : BigDecimal.ZERO);
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  (budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount()))
+                              .compareTo(BigDecimal.ZERO)
+                          > 0
+                      ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
+                      : BigDecimal.ZERO));
           return true;
         } else if (move.getStatusSelect() == MoveRepository.STATUS_CANCELED) {
           budgetLine.setRealizedWithNoPo(
-              budgetLine.getRealizedWithNoPo().subtract(budgetDistribution.getAmount()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  budgetLine.getRealizedWithNoPo().subtract(budgetDistribution.getAmount())));
           budgetLine.setAmountRealized(
-              budgetLine.getAmountRealized().subtract(budgetDistribution.getAmount()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget, budgetLine.getAmountRealized().subtract(budgetDistribution.getAmount())));
           budgetLine.setToBeCommittedAmount(
-              budgetLine.getToBeCommittedAmount().add(budgetDistribution.getAmount()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget, budgetLine.getToBeCommittedAmount().add(budgetDistribution.getAmount())));
           BigDecimal firmGap =
-              budgetLine
-                  .getAmountExpected()
-                  .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  budgetLine
+                      .getAmountExpected()
+                      .subtract(
+                          budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo())));
           budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
           budgetLine.setAvailableAmount(
-              (budgetLine.getAvailableAmount().add(budgetDistribution.getAmount()))
-                          .compareTo(BigDecimal.ZERO)
-                      > 0
-                  ? budgetLine.getAvailableAmount().add(budgetDistribution.getAmount())
-                  : BigDecimal.ZERO);
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  (budgetLine.getAvailableAmount().add(budgetDistribution.getAmount()))
+                              .compareTo(BigDecimal.ZERO)
+                          > 0
+                      ? budgetLine.getAvailableAmount().add(budgetDistribution.getAmount())
+                      : BigDecimal.ZERO));
         }
       }
     }
@@ -938,9 +982,10 @@ public class BudgetServiceImpl implements BudgetService {
     optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
     optBudget.setCategory(budgetScenarioVariable.getCategory());
     BigDecimal calculatedAmount =
-        ((BigDecimal)
-                variableAmountMap.getOrDefault(budgetScenarioVariable.getCode(), BigDecimal.ZERO))
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel,
+            ((BigDecimal)
+                variableAmountMap.getOrDefault(budgetScenarioVariable.getCode(), BigDecimal.ZERO)));
     optBudget.setAmountForGeneration(calculatedAmount);
     optBudget.setTotalAmountExpected(calculatedAmount);
     optBudget.setAvailableAmount(calculatedAmount);
