@@ -33,9 +33,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -285,7 +287,8 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
   }
 
   @Override
-  public PurchaseOrderMergingResult mergePurchaseOrders(List<PurchaseOrder> purchaseOrdersToMerge)
+  public PurchaseOrderMergingResult mergePurchaseOrders(
+      List<PurchaseOrder> purchaseOrdersToMerge, boolean dummyPurchaseOrder)
       throws AxelorException {
     Objects.requireNonNull(purchaseOrdersToMerge);
     PurchaseOrderMergingResult result = controlPurchaseOrdersToMerge(purchaseOrdersToMerge);
@@ -294,19 +297,20 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
       result.needConfirmation();
       return result;
     }
-    result.setPurchaseOrder(mergePurchaseOrders(purchaseOrdersToMerge, result));
+    result.setPurchaseOrder(mergePurchaseOrders(purchaseOrdersToMerge, result, dummyPurchaseOrder));
     return result;
   }
 
   @Override
   public PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
-      List<PurchaseOrder> purchaseOrdersToMerge, Context context) throws AxelorException {
+      List<PurchaseOrder> purchaseOrdersToMerge, Context context, boolean dummyPurchaseOrder)
+      throws AxelorException {
     Objects.requireNonNull(purchaseOrdersToMerge);
     Objects.requireNonNull(context);
 
     PurchaseOrderMergingResult result = controlPurchaseOrdersToMerge(purchaseOrdersToMerge);
     updateResultWithContext(result, context);
-    result.setPurchaseOrder(mergePurchaseOrders(purchaseOrdersToMerge, result));
+    result.setPurchaseOrder(mergePurchaseOrders(purchaseOrdersToMerge, result, dummyPurchaseOrder));
     return result;
   }
 
@@ -351,7 +355,9 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
   }
 
   protected PurchaseOrder mergePurchaseOrders(
-      List<PurchaseOrder> purchaseOrdersToMerge, PurchaseOrderMergingResult result)
+      List<PurchaseOrder> purchaseOrdersToMerge,
+      PurchaseOrderMergingResult result,
+      boolean dummyPurchaseOrder)
       throws AxelorException {
     PurchaseOrder purchaseOrder =
         purchaseOrderService.mergePurchaseOrders(
@@ -361,7 +367,8 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
             getCommonFields(result).getCommonCompany(),
             getCommonFields(result).getCommonContactPartner(),
             getCommonFields(result).getCommonPriceList(),
-            getCommonFields(result).getCommonTradingName());
+            getCommonFields(result).getCommonTradingName(),
+            dummyPurchaseOrder);
     purchaseOrder.setFiscalPosition(getCommonFields(result).getCommonFiscalPosition());
     return purchaseOrder;
   }
@@ -493,5 +500,25 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
                     .map(id -> purchaseOrderRepository.find(Long.valueOf(id)))
                     .collect(Collectors.toList()))
         .orElse(List.of());
+  }
+
+  @Override
+  public PurchaseOrder getDummyMergedPurchaseOrder(Set<PurchaseOrder> purchaseOrderSet)
+      throws AxelorException {
+    PurchaseOrderMergingResult result =
+        mergePurchaseOrders(new ArrayList<>(purchaseOrderSet), true);
+
+    if (result.isConfirmationNeeded()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          getConfirmationNeededErrorMsg(new StringJoiner("<br/>")).toString());
+    }
+    return result.getPurchaseOrder();
+  }
+
+  protected StringJoiner getConfirmationNeededErrorMsg(StringJoiner errorMsg)
+      throws AxelorException {
+    return errorMsg.add(
+        I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED));
   }
 }

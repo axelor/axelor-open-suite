@@ -97,7 +97,8 @@ public interface PurchaseOrderService {
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      TradingName tradingName)
+      TradingName tradingName,
+      boolean dummyPurchaseOrder)
       throws AxelorException;
 
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;

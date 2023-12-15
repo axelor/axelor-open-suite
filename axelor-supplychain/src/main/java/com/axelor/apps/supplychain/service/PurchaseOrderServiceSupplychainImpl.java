@@ -212,7 +212,8 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       StockLocation stockLocation,
       Partner contactPartner,
       PriceList priceList,
-      TradingName tradingName)
+      TradingName tradingName,
+      boolean dummyPurchaseOrder)
       throws AxelorException {
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
@@ -245,13 +246,13 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
             supplierPartner,
             tradingName);
 
-    super.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged);
+    super.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged, dummyPurchaseOrder);
 
     this.computePurchaseOrder(purchaseOrderMerged);
-
-    purchaseOrderRepo.save(purchaseOrderMerged);
-
-    super.removeOldPurchaseOrders(purchaseOrderList);
+    if (!dummyPurchaseOrder) {
+      purchaseOrderRepo.save(purchaseOrderMerged);
+      super.removeOldPurchaseOrders(purchaseOrderList);
+    }
 
     return purchaseOrderMerged;
   }

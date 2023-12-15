@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.rpc.Context;
 import java.util.List;
+import java.util.Set;
 
 public interface PurchaseOrderMergingService {
 
@@ -115,11 +116,15 @@ public interface PurchaseOrderMergingService {
 
   Checks getChecks(PurchaseOrderMergingResult result);
 
-  PurchaseOrderMergingResult mergePurchaseOrders(List<PurchaseOrder> purchaseOrdersToMerge)
-      throws AxelorException;
+  PurchaseOrderMergingResult mergePurchaseOrders(
+      List<PurchaseOrder> purchaseOrdersToMerge, boolean dummyPurchaseOrder) throws AxelorException;
 
   PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
-      List<PurchaseOrder> saleOrdersToMerge, Context context) throws AxelorException;
+      List<PurchaseOrder> saleOrdersToMerge, Context context, boolean dummyPurchaseOrder)
+      throws AxelorException;
 
   List<PurchaseOrder> convertSelectedLinesToMergeLines(List<Integer> idList);
+
+  PurchaseOrder getDummyMergedPurchaseOrder(Set<PurchaseOrder> purchaseOrderSet)
+      throws AxelorException;
 }
