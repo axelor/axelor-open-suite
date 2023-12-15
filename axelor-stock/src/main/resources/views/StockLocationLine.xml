@@ -10,9 +10,6 @@
       grid-view="stock-location-grid"/>
     <field name="currentQty" aggregate="sum" x-scale="2"/>
     <field name="futureQty" aggregate="sum" x-scale="2"/>
-    <field name="requestedReservedQty" if-module="axelor-supplychain"
-      if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
-      x-scale="2"/>
     <field name="reservedQty" if-module="axelor-supplychain"
       if="__config__.app.getApp('supplychain')?.getManageStockReservation()" aggregate="sum"
       x-scale="2"/>
