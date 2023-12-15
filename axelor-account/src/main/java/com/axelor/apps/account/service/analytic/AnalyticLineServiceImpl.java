@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.ListHelper;
@@ -42,6 +43,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
@@ -85,6 +87,15 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           .getAnalyticJournal();
     }
     return null;
+  }
+
+  @Override
+  public Currency getCompanyCurrency(AnalyticLine analyticLine) {
+    return Optional.of(analyticLine)
+        .map(AnalyticLine::getAccount)
+        .map(Account::getCompany)
+        .map(Company::getCurrency)
+        .orElse(null);
   }
 
   @Override

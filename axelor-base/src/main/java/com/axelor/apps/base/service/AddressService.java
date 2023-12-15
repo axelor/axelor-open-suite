@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Country;
 import com.axelor.meta.CallMethod;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
@@ -37,17 +36,7 @@ public interface AddressService {
 
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
-  public int export(String path) throws IOException;
-
   public Address createAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
-      String addressL6,
-      Country addressL7Country);
-
-  public Address getAddress(
       String addressL2,
       String addressL3,
       String addressL4,
@@ -105,4 +94,11 @@ public interface AddressService {
   public void autocompleteAddress(Address address);
 
   public String getZipCode(Address address);
+
+  /**
+   * Set formatted full name for the address from address template
+   *
+   * @param address
+   */
+  public void setFormattedFullName(Address address) throws AxelorException;
 }

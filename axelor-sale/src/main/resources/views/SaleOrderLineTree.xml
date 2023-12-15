@@ -9,6 +9,9 @@
     <field name="code"/>
     <field name="parentSaleOrderLineTree"/>
     <field name="saleOrderLine"/>
+    <field name="saleOrderLine.saleOrder" hidden="true"/>
+    <field name="saleOrderLine.saleOrder.currency" hidden="true"/>
+    <field name="saleOrderLine.saleOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="title"/>
     <field name="product"/>
     <field name="quantity"/>
@@ -16,8 +19,8 @@
     <field name="unitCost"/>
     <field name="unitPrice"/>
     <field name="marginRate"/>
-    <field name="totalCost"/>
-    <field name="totalPrice"/>
+    <field name="totalCost" x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
+    <field name="totalPrice" x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
     <field name="description"/>
   </grid>
 
@@ -33,10 +36,15 @@
       <field name="parentSaleOrderLineTree" colSpan="3"
         showIf="typeSelect &amp;&amp;parentSaleOrderLineTree"/>
       <field name="saleOrderLine" colSpan="3" showIf="false"/>
+      <field name="saleOrderLine.saleOrder" hidden="true"/>
+      <field name="saleOrderLine.saleOrder.currency" hidden="true"/>
+      <field name="saleOrderLine.saleOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel name="viewPanel" showIf="typeSelect==1">
-      <field name="totalCost" onChange="action-sale-order-line-tree-method-update-fields"/>
-      <field name="totalPrice" onChange="action-sale-order-line-tree-method-update-fields"/>
+      <field name="totalCost" onChange="action-sale-order-line-tree-method-update-fields"
+        x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
+      <field name="totalPrice" onChange="action-sale-order-line-tree-method-update-fields"
+        x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
     </panel>
     <panel name="productPanel" showIf="typeSelect==2">
       <field name="title" colSpan="6"/>
@@ -51,8 +59,10 @@
           requiredIf="typeSelect==2"/>
         <field name="marginRate"
           onChange="action-sale-order-line-tree-method-update-unit-price"/>
-        <field name="totalCost" onChange="action-sale-order-line-tree-method-update-fields"/>
-        <field name="totalPrice" onChange="action-sale-order-line-tree-method-update-fields"/>
+        <field name="totalCost" onChange="action-sale-order-line-tree-method-update-fields"
+          x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
+        <field name="totalPrice" onChange="action-sale-order-line-tree-method-update-fields"
+          x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
       </panel>
       <field name="description" showIf="description" colSpan="12"/>
     </panel>
@@ -69,8 +79,13 @@
     <column name="unitCost" type="decimal" title="Unit cost"/>
     <column name="unitPrice" type="decimal" title="Unit price"/>
     <column name="marginRate" type="decimal" title="Margin rate"/>
-    <column name="totalCost" type="decimal" title="Total cost"/>
-    <column name="totalPrice" type="decimal" title="Total price"/>
+    <column name="totalCost" type="decimal" title="Total cost"
+      x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
+    <column name="totalPrice" type="decimal" title="Total price"
+      x-scale="saleOrderLine.saleOrder.currency.numberOfDecimals"/>
+    <column name="saleOrderLine.saleOrder" hidden="true"/>
+    <column name="saleOrderLine.saleOrder.currency" hidden="true"/>
+    <column name="saleOrderLine.saleOrder.currency.numberOfDecimals" hidden="true"/>
     <column name="add" type="button" title="New"/>
     <column name="remove" type="button" title="Remove"/>
     <node model="com.axelor.apps.sale.db.SaleOrderLineTree"

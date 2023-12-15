@@ -6,6 +6,7 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -22,10 +23,13 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected OrderLineTaxService orderLineTaxService;
+  protected CurrencyScaleServiceSale currencyScaleServiceSale;
 
   @Inject
-  public SaleOrderLineTaxServiceImpl(OrderLineTaxService orderLineTaxService) {
+  public SaleOrderLineTaxServiceImpl(
+      OrderLineTaxService orderLineTaxService, CurrencyScaleServiceSale currencyScaleServiceSale) {
     this.orderLineTaxService = orderLineTaxService;
+    this.currencyScaleServiceSale = currencyScaleServiceSale;
   }
 
   /**
@@ -84,7 +88,8 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       if (map.containsKey(taxLine)) {
         SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
         saleOrderLineTax.setExTaxBase(
-            saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
+            currencyScaleServiceSale.getScaledValue(
+                saleOrder, saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal())));
       } else {
         SaleOrderLineTax saleOrderLineTax =
             createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine);
