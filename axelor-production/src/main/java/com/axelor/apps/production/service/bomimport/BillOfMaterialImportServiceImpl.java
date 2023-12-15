@@ -119,21 +119,26 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     }
     BillOfMaterialImportLine billOfMaterialImportLine = billOfMaterialImportLineOp.get();
 
-    return generateBillOfMaterialFromImportLine(billOfMaterialImportLine);
+    return generateBillOfMaterialFromImportLine(billOfMaterialImportLine).orElse(null);
   }
 
   @Transactional
-  protected BillOfMaterial generateBillOfMaterialFromImportLine(
+  protected Optional<BillOfMaterial> generateBillOfMaterialFromImportLine(
       BillOfMaterialImportLine billOfMaterialImportLine) {
     BillOfMaterial billOfMaterial = new BillOfMaterial();
     setBillOfMaterialFields(billOfMaterialImportLine, billOfMaterial);
 
+    if (billOfMaterialImportLine.getBillOfMaterialImportLineList() == null
+        || billOfMaterialImportLine.getBillOfMaterialImportLineList().isEmpty()) {
+      return Optional.empty();
+    }
+
     if (billOfMaterialImportLine.getBillOfMaterialImportLineList() != null) {
       for (BillOfMaterialImportLine billOfMaterialImportLineChild :
           billOfMaterialImportLine.getBillOfMaterialImportLineList()) {
-        Optional.of(generateBillOfMaterialFromImportLine(billOfMaterialImportLineChild))
-            .ifPresent(
-                childBom -> {
+        generateBillOfMaterialFromImportLine(billOfMaterialImportLineChild)
+            .map(
+                bom -> {
                   if (billOfMaterial.getProduct() != null
                       && billOfMaterial.getProduct().getProductSubTypeSelect()
                           == ProductRepository.PRODUCT_SUB_TYPE_COMPONENT) {
@@ -142,16 +147,29 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
                         .setProductSubTypeSelect(
                             ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT);
                   }
+                  return bom;
+                })
+            .ifPresentOrElse(
+                childBom -> {
                   billOfMaterial.addBillOfMaterialLineListItem(
                       billOfMaterialLineService.createFromBillOfMaterial(childBom));
-                });
+                },
+                () ->
+                    billOfMaterial.addBillOfMaterialLineListItem(
+                        billOfMaterialLineService.createBillOfMaterialLine(
+                            billOfMaterialImportLineChild.getProduct(),
+                            billOfMaterial,
+                            billOfMaterialImportLineChild.getQuantity(),
+                            billOfMaterialImportLineChild.getUnit(),
+                            null,
+                            false)));
       }
     }
 
     billOfMaterialImportLine
         .getBillOfMaterialImport()
         .setMainBillOfMaterialGenerated(billOfMaterial);
-    return billOfMaterialRepository.save(billOfMaterial);
+    return Optional.of(billOfMaterialRepository.save(billOfMaterial));
   }
 
   protected void setBillOfMaterialFields(

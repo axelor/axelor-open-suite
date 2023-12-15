@@ -19,6 +19,8 @@
 package com.axelor.apps.production.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.production.db.repo.BillOfMaterialImportManagementRepository;
+import com.axelor.apps.production.db.repo.BillOfMaterialImportRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialManagementRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.MachineRepository;
@@ -199,6 +201,7 @@ public class ProductionModule extends AxelorModule {
     bind(OperationOrderPlanningService.class).to(OperationOrderPlanningServiceImpl.class);
     bind(BillOfMaterialLineService.class).to(BillOfMaterialLineServiceImpl.class);
     bind(BillOfMaterialImportService.class).to(BillOfMaterialImportServiceImpl.class);
+    bind(BillOfMaterialImportRepository.class).to(BillOfMaterialImportManagementRepository.class);
     bind(BillOfMaterialImportLineService.class).to(BillOfMaterialImportLineServiceImpl.class);
     bind(StockMoveMergingServiceSupplychainImpl.class)
         .to(StockMoveMergingServiceProductionImpl.class);
