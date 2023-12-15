@@ -40,6 +40,8 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
 
   BigDecimal getScaledValue(AnalyticMoveLine analyticMoveLine, BigDecimal amount);
 
+  BigDecimal getCompanyScaledValue(Company company, BigDecimal amount);
+
   int getScale(Move move);
 
   int getCompanyScale(Move move);

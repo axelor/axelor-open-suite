@@ -272,8 +272,11 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
       InvoiceLine invoiceLine, Invoice invoice, Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = computeAnalytic(company, analyticAccount);
+    this.setAnalyticCurrency(company, analyticMoveLine);
 
-    analyticMoveLine.setAmount(invoiceLine.getCompanyExTaxTotal());
+    analyticMoveLine.setAmount(
+        currencyScaleServiceAccount.getScaledValue(
+            analyticMoveLine, invoiceLine.getCompanyExTaxTotal()));
     analyticMoveLine.setDate(this.getAnalyticMoveLineDate(invoice));
     if (invoiceLine.getAccount() != null) {
       analyticMoveLine.setAccount(invoiceLine.getAccount());
