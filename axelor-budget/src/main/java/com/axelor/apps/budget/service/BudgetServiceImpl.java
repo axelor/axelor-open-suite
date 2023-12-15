@@ -57,7 +57,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -162,7 +161,9 @@ public class BudgetServiceImpl implements BudgetService {
           statusSelect =
               budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getStatusSelect();
           amountInvoiced =
-              budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getAmountInvoiced();
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget,
+                  budgetDistribution.getPurchaseOrderLine().getPurchaseOrder().getAmountInvoiced());
         } else if (budgetDistribution.getSaleOrderLine() != null
             && budgetDistribution.getSaleOrderLine().getSaleOrder() != null) {
           orderDate =
@@ -170,7 +171,9 @@ public class BudgetServiceImpl implements BudgetService {
                   ? budgetDistribution.getSaleOrderLine().getSaleOrder().getOrderDate()
                   : budgetDistribution.getSaleOrderLine().getSaleOrder().getCreationDate();
           statusSelect = budgetDistribution.getSaleOrderLine().getSaleOrder().getStatusSelect();
-          amountInvoiced = budgetDistribution.getSaleOrderLine().getSaleOrder().getAmountInvoiced();
+          amountInvoiced =
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budget, budgetDistribution.getSaleOrderLine().getSaleOrder().getAmountInvoiced());
         }
         if (orderDate != null) {
           for (BudgetLine budgetLine : budgetLineList) {
@@ -188,17 +191,19 @@ public class BudgetServiceImpl implements BudgetService {
                           || statusSelect == SaleOrderRepository.STATUS_ORDER_COMPLETED
                           || statusSelect == SaleOrderRepository.STATUS_ORDER_CONFIRMED)))) {
                 budgetLine.setAmountPaid(
-                    budgetLine
-                        .getAmountPaid()
-                        .add(amountInvoiced)
-                        .setScale(2, RoundingMode.HALF_UP));
+                    currencyScaleServiceBudget.getCompanyScaledValue(
+                        budget, budgetLine.getAmountPaid().add(amountInvoiced)));
               }
               if (amountInvoiced.compareTo(BigDecimal.ZERO) == 0) {
                 budgetLine.setAmountCommitted(
-                    budgetLine.getAmountCommitted().add(budgetDistribution.getAmount()));
+                    currencyScaleServiceBudget.getCompanyScaledValue(
+                        budget,
+                        budgetLine.getAmountCommitted().add(budgetDistribution.getAmount())));
               }
               budgetLine.setToBeCommittedAmount(
-                  budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted()));
+                  currencyScaleServiceBudget.getCompanyScaledValue(
+                      budget,
+                      budgetLine.getAmountExpected().subtract(budgetLine.getAmountCommitted())));
               budgetLineRepository.save(budgetLine);
               break;
             }
@@ -919,7 +924,11 @@ public class BudgetServiceImpl implements BudgetService {
       throws AxelorException {
     if (!CollectionUtils.isEmpty(budgetDistributionList)) {
       for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        if (budgetDistribution.getAmount().compareTo(amount) > 0) {
+        if (currencyScaleServiceBudget
+                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount())
+                .compareTo(
+                    currencyScaleServiceBudget.getCompanyScaledValue(budgetDistribution, amount))
+            > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
