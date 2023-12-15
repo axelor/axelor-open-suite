@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ImportExportTranslationHistory">
+    <string name="actionType" title="Action"/>
+    <integer name="recordNumber" title="Number of records imported/exported"/>
+    <integer name="errorNumber" title="Number of errors occurred"/>
+    <many-to-one name="importExportTranslation" title="Import/Export translation"
+      ref="com.axelor.apps.base.db.ImportExportTranslation"/>
+  </entity>
+
+</domain-models>

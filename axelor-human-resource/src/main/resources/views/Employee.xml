@@ -239,8 +239,8 @@
           <![CDATA[
             <>
             	<Box d="flex" justifyContent="center">
-            		{contactPartner.picture && <Image src={$image('contactPartner.picture', 'content')}></Image>}
-	                {!contactPartner.picture && <Image src="img/partner-default.png"></Image>}
+            		{id && <Image src={$image('id', 'content')}></Image>}
+	                {!id && <Image src="img/partner-default.png"></Image>}
             	</Box>
             </>
           ]]>
