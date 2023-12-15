@@ -57,6 +57,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -239,12 +240,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             null,
             StockMoveRepository.TYPE_INCOMING);
 
-    stockMove.setPurchaseOrder(purchaseOrder);
+    stockMove.setPurchaseOrderSet(Sets.newHashSet(purchaseOrder));
     stockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     stockMove.setTradingName(purchaseOrder.getTradingName());
     stockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
 
-    qualityStockMove.setPurchaseOrder(purchaseOrder);
+    qualityStockMove.setPurchaseOrderSet(Sets.newHashSet(purchaseOrder));
     qualityStockMove.setOrigin(purchaseOrder.getPurchaseOrderSeq());
     qualityStockMove.setTradingName(purchaseOrder.getTradingName());
     qualityStockMove.setGroupProductsOnPrintings(purchaseOrder.getGroupProductsOnPrintings());
@@ -503,7 +504,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     List<StockMove> stockMoveList =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter("self.purchaseOrder.id = ? AND self.statusSelect = 2", purchaseOrder.getId())
+            .filter(
+                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect = 2",
+                purchaseOrder.getId())
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
@@ -555,7 +558,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "self.purchaseOrder.id = ? AND self.statusSelect <> ?",
+                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

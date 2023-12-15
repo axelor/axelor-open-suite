@@ -192,7 +192,8 @@ import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.StockRulesServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockRulesSupplychainService;
+import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.SupplyChainConvertLeadWizardServiceImpl;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigServiceImpl;
@@ -227,7 +228,7 @@ public class SupplychainModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(StockRulesService.class).to(StockRulesServiceImpl.class);
-    bind(StockRulesServiceImpl.class).to(StockRulesServiceSupplychainImpl.class);
+    bind(StockRulesSupplychainService.class).to(StockRulesSupplychainServiceImpl.class);
     bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
     bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);

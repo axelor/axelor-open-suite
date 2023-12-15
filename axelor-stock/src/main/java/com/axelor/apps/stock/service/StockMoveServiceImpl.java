@@ -780,6 +780,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
 
     newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
+
     newStockMoveLine.setRealQty(newStockMoveLine.getQty());
     return newStockMoveLine;
   }
@@ -1109,7 +1110,9 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
+    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
+      stockMoveLineService.fillRealQuantities(line, stockMove, line.getQty());
+    }
     stockMoveRepo.save(stockMove);
   }
 
