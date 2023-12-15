@@ -9,13 +9,14 @@
     <field name="name"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="totalAmountExpected"/>
-    <field name="totalAmountAvailable"/>
-    <field name="totalAmountCommitted"/>
-    <field name="realizedWithNoPo"/>
-    <field name="realizedWithPo"/>
-    <field name="totalFirmGap"/>
+    <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountAvailable" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+    <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+    <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
@@ -45,6 +46,7 @@
           <field name="company" canNew="false" colSpan="3"
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
           <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
+          <field name="company.currency.numberOfDecimals" hidden="false"/>
           <field name="fromDate" colSpan="4" requiredIf="statusSelect == 0"
             onChange="action-global-budget-validate-from-to-dates"/>
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"
@@ -110,16 +112,17 @@
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
         title="Total amounts">
-        <field name="totalAmountExpected"/>
-        <field name="totalAmountAvailable"/>
-        <field name="availableAmountWithSimulated"/>
-        <field name="simulatedAmount"/>
-        <field name="totalAmountCommitted"/>
-        <field name="realizedWithNoPo"/>
-        <field name="realizedWithPo"/>
-        <field name="totalAmountPaid"/>
-        <field name="totalFirmGap"/>
-        <field name="totalAmountRealized" hidden="true"/>
+        <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountAvailable" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true"
+          x-scale="company.currency.numberOfDecimals"/>
       </panel>
     </panel>
 

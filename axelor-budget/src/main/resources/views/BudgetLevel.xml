@@ -113,16 +113,23 @@
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
         title="Total amounts">
-        <field name="totalAmountExpected"/>
-        <field name="totalAmountAvailable"/>
-        <field name="availableAmountWithSimulated"/>
-        <field name="simulatedAmount"/>
-        <field name="totalAmountCommitted"/>
-        <field name="realizedWithNoPo"/>
-        <field name="realizedWithPo"/>
-        <field name="totalAmountPaid"/>
-        <field name="totalFirmGap"/>
-        <field name="totalAmountRealized" hidden="true"/>
+        <field name="totalAmountExpected"
+          x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="totalAmountAvailable"
+          x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated"
+          x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="totalAmountCommitted"
+          x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="realizedWithNoPo"
+          x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true"
+          x-scale="globalBudget.company.currency.numberOfDecimals"/>
+        <field name="globalBudget.company.currency.numberOfDecimals" hidden="true"/>
       </panel>
 
     </panel>
