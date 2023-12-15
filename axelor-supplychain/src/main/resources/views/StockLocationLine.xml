@@ -14,7 +14,6 @@
     <field name="currentQty" width="150" x-scale="2"/>
     <field name="futureQty" title="Future quantity" width="150" x-scale="2"/>
     <field name="reservedQty" width="150" x-scale="2"/>
-    <field name="requestedReservedQty" width="150" x-scale="2"/>
   </grid>
 
   <action-view name="action-stock-location-line-view-by-product"
