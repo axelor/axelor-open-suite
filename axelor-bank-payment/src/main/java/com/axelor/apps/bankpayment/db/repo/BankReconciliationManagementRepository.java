@@ -21,7 +21,7 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCreateService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -64,9 +64,8 @@ public class BankReconciliationManagementRepository extends BankReconciliationRe
       throw new ValidationException(
           I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION));
     } else {
-      BankReconciliationService bankReconciliationService =
-          Beans.get(BankReconciliationService.class);
-      bankReconciliationService.unreconcileLines(entity.getBankReconciliationLineList());
+      Beans.get(BankReconciliationLineService.class)
+          .unreconcileLines(entity.getBankReconciliationLineList());
       super.remove(entity);
     }
   }

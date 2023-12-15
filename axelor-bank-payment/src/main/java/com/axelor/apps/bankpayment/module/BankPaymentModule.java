@@ -78,6 +78,26 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationAccountService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationAccountServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationBalanceComputationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationBalanceComputationServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationComputeService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationComputeServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCorrectionService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationCorrectionServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationMoveGenerationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationMoveGenerationServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationQueryService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationQueryServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationReconciliationServiceImpl;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationSelectedLineComputationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationSelectedLineComputationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveService;
@@ -219,5 +239,20 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
     bind(BankStatementLineMapperAFB120Service.class)
         .to(BankStatementLineMapperAFB120ServiceImpl.class);
+    bind(BankReconciliationAccountService.class).to(BankReconciliationAccountServiceImpl.class);
+    bind(BankReconciliationBalanceComputationService.class)
+        .to(BankReconciliationBalanceComputationServiceImpl.class);
+    bind(BankReconciliationComputeService.class).to(BankReconciliationComputeServiceImpl.class);
+    bind(BankReconciliationCorrectionService.class)
+        .to(BankReconciliationCorrectionServiceImpl.class);
+    bind(BankReconciliationDomainService.class).to(BankReconciliationDomainServiceImpl.class);
+    bind(BankReconciliationLineService.class).to(BankReconciliationLineServiceImpl.class);
+    bind(BankReconciliationMoveGenerationService.class)
+        .to(BankReconciliationMoveGenerationServiceImpl.class);
+    bind(BankReconciliationQueryService.class).to(BankReconciliationQueryServiceImpl.class);
+    bind(BankReconciliationReconciliationService.class)
+        .to(BankReconciliationReconciliationServiceImpl.class);
+    bind(BankReconciliationSelectedLineComputationService.class)
+        .to(BankReconciliationSelectedLineComputationServiceImpl.class);
   }
 }

@@ -25,8 +25,8 @@ import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationComputeService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadBankStatementAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.db.JPA;
@@ -40,19 +40,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class BankReconciliationLoadBankStatementAFB120Service
     extends BankReconciliationLoadBankStatementAbstractService {
 
-  protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
   protected BankStatementLineFilterService bankStatementLineFilterService;
   protected BankReconciliationLineService bankReconciliationLineService;
 
   @Inject
   public BankReconciliationLoadBankStatementAFB120Service(
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationService bankReconciliationService,
-      BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
+      BankReconciliationComputeService bankReconciliationComputeService,
       BankStatementLineFilterService bankStatementLineFilterService,
       BankReconciliationLineService bankReconciliationLineService) {
-    super(bankReconciliationRepository, bankReconciliationService);
-    this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
+    super(bankReconciliationRepository, bankReconciliationComputeService);
     this.bankStatementLineFilterService = bankStatementLineFilterService;
     this.bankReconciliationLineService = bankReconciliationLineService;
   }

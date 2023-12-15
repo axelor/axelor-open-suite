@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationDomainService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -52,7 +52,7 @@ public class BankReconciliationLineController {
         bankReconciliation = (BankReconciliation) request.getContext().get("bankReconciliation");
       }
       String domain =
-          Beans.get(BankReconciliationService.class).getAccountDomain(bankReconciliation);
+          Beans.get(BankReconciliationDomainService.class).getAccountDomain(bankReconciliation);
       response.setAttr("account", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -69,16 +69,16 @@ public class BankReconciliationLineController {
       MoveLine moveLine = bankReconciliationLineContext.getMoveLine();
       BankReconciliationLine bankReconciliationLineDatabase =
           bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
+      BankReconciliationLineService bankReconciliationLineService =
+          Beans.get(BankReconciliationLineService.class);
 
       if (ObjectUtils.notEmpty(bankReconciliationLineDatabase.getMoveLine())) {
-        Beans.get(BankReconciliationService.class).unreconcileLine(bankReconciliationLineDatabase);
+        bankReconciliationLineService.unreconcileLine(bankReconciliationLineDatabase);
       }
 
       if (ObjectUtils.notEmpty(moveLine)) {
-        Beans.get(BankReconciliationLineService.class)
-            .reconcileBRLAndMoveLine(
-                bankReconciliationLineRepository.find(bankReconciliationLineContext.getId()),
-                moveLine);
+        bankReconciliationLineService.reconcileBRLAndMoveLine(
+            bankReconciliationLineRepository.find(bankReconciliationLineContext.getId()), moveLine);
       }
 
       response.setReload(true);
@@ -93,7 +93,7 @@ public class BankReconciliationLineController {
           request.getContext().asType(BankReconciliationLine.class);
 
       bankReconciliationLineContext =
-          Beans.get(BankReconciliationService.class).setSelected(bankReconciliationLineContext);
+          Beans.get(BankReconciliationLineService.class).setSelected(bankReconciliationLineContext);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -104,12 +104,10 @@ public class BankReconciliationLineController {
     try {
       BankReconciliationLine bankReconciliationLineContext =
           request.getContext().asType(BankReconciliationLine.class);
-      BankReconciliationService bankReconciliationService =
-          Beans.get(BankReconciliationService.class);
 
       String domain =
-          bankReconciliationService.createDomainForMoveLine(
-              bankReconciliationLineContext.getBankReconciliation());
+          Beans.get(BankReconciliationDomainService.class)
+              .createDomainForMoveLine(bankReconciliationLineContext.getBankReconciliation());
 
       response.setAttr("moveLine", "domain", domain);
     } catch (Exception e) {
