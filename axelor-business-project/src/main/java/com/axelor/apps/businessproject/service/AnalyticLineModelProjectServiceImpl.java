@@ -21,6 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -45,7 +46,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
       AccountManagementAccountService accountManagementAccountService,
       AnalyticToolService analyticToolService,
       SaleConfigService saleConfigService,
-      PurchaseConfigService purchaseConfigService) {
+      PurchaseConfigService purchaseConfigService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         appBaseService,
         appAccountService,
@@ -53,7 +55,8 @@ public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServic
         accountManagementAccountService,
         analyticToolService,
         saleConfigService,
-        purchaseConfigService);
+        purchaseConfigService,
+        currencyScaleServiceAccount);
   }
 
   @Override

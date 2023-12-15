@@ -18,6 +18,11 @@
     <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
       mappedBy="baseBatch" title="Batchs"/>
 
+    <!-- COUNTRY ADDRESS BATCH -->
+    <many-to-many name="countrySet" title="Countries"
+      ref="com.axelor.apps.base.db.Country"/>
+    <boolean name="allCountries" title="All Countries"/>
+
     <!-- CALENDAR BATCH -->
     <integer name="synchronizationDuration" min="0" title="Synchronization duration (week)"/>
     <boolean name="allEvents" title="All events"/>
@@ -35,6 +40,7 @@
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
 		public static final int ACTION_PASSWORD_CHANGE = 3;
+		public static final int ACTION_COUNTRY_RECOMPUTE_ADDRESS = 4;
 
 		public static final int PASSWORD_CHANGE_ACTION_GENERATE = 1;
 		public static final int PASSWORD_CHANGE_ACTION_FORCE_UPDATE = 2;

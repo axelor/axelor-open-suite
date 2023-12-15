@@ -31,14 +31,14 @@
             depends="nextContract.targetTypeSelect,nextContract.statusSelect,nextContract.contractId"><![CDATA[
 					<>
 						<Box as="h4" d="flex" justifyContent="flex-end" gap="4" alignItems="center">
-							<Box as="span" me={3}><span>{_t('Contract')}</span> {contractId && <span> - {contractId} </span>} {versionNumber > 0 && <span> - {versionNumber}</span>}</Box>
+							<Box as="span" me={2}><span>{_t('Version')}</span> {nextContract.contractId && <span> - {nextContract.contractId} </span>}</Box>
 
-							{targetTypeSelect == 1 && <Badge bg="info">{_t('Customer')}</Badge>}
-							{targetTypeSelect == 2 && <Badge bg="warning">{_t('Supplier')}</Badge>}
+							{nextContract.targetTypeSelect == 1 && <Badge bg="info">{_t('Customer')}</Badge>}
+							{nextContract.targetTypeSelect == 2 && <Badge bg="warning">{_t('Supplier')}</Badge>}
 
-							{statusSelect == 1 && <Badge bg="secondary">{_t('Draft')}</Badge>}
-							{statusSelect == 2 && <Badge bg="info">{_t('Active')}</Badge>}
-							{statusSelect == 3 && <Badge bg="danger">{_t('Closed')}</Badge>}
+							{nextContract.statusSelect == 1 && <Badge bg="secondary">{_t('Draft')}</Badge>}
+							{nextContract.statusSelect == 2 && <Badge bg="info">{_t('Active')}</Badge>}
+							{nextContract.statusSelect == 3 && <Badge bg="danger">{_t('Closed')}</Badge>}
 						</Box>
 					</>
                   ]]></viewer>
