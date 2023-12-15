@@ -1,7 +1,6 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.common.csv.CSVFile;
 import com.google.inject.Inject;
@@ -14,12 +13,12 @@ import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AddressUtilityServiceImpl implements AddressUtilityService {
+public class AddressExportServiceImpl implements AddressExportService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AddressRepository addressRepository;
 
   @Inject
-  public AddressUtilityServiceImpl(AddressRepository addressRepository) {
+  public AddressExportServiceImpl(AddressRepository addressRepository) {
     this.addressRepository = addressRepository;
   }
 
@@ -60,28 +59,5 @@ public class AddressUtilityServiceImpl implements AddressUtilityService {
     LOG.info("{} exported", path);
 
     return addresses.size();
-  }
-
-  @Override
-  public Address getAddress(
-      String addressL2,
-      String addressL3,
-      String addressL4,
-      String addressL5,
-      String addressL6,
-      Country addressL7Country) {
-
-    return addressRepository
-        .all()
-        .filter(
-            "self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 "
-                + "AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.addressL7Country = ?6",
-            addressL2,
-            addressL3,
-            addressL4,
-            addressL5,
-            addressL6,
-            addressL7Country)
-        .fetchOne();
   }
 }
