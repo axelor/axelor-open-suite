@@ -347,7 +347,7 @@ public class BudgetServiceImpl implements BudgetService {
               .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    budget.setTotalFirmGap(totalFirmGap);
+    budget.setTotalFirmGap(currencyScaleServiceBudget.getCompanyScaledValue(budget, totalFirmGap));
     budgetRepository.save(budget);
   }
 
@@ -944,9 +944,15 @@ public class BudgetServiceImpl implements BudgetService {
         Budget optBudget = budgetRepository.copy(budget, true);
         optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
         optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-        optBudget.setAmountForGeneration(budget.getTotalAmountExpected());
-        optBudget.setAvailableAmount(budget.getTotalAmountExpected());
-        optBudget.setAvailableAmountWithSimulated(budget.getTotalAmountExpected());
+        optBudget.setAmountForGeneration(
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, budget.getTotalAmountExpected()));
+        optBudget.setAvailableAmount(
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, budget.getTotalAmountExpected()));
+        optBudget.setAvailableAmountWithSimulated(
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, budget.getTotalAmountExpected()));
         generatePeriods(optBudget);
         budgetLevel.addBudgetListItem(optBudget);
         global.addBudgetListItem(optBudget);

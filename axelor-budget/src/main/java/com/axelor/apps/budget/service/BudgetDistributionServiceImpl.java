@@ -46,8 +46,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +60,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
 
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
-  private final int RETURN_SCALE = 2;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetDistributionServiceImpl(
@@ -71,13 +69,15 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetLevelService budgetLevelService,
       BudgetRepository budgetRepo,
       BudgetService budgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
     this.budgetRepo = budgetRepo;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -87,7 +87,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     budgetDistribution.setBudget(budget);
     budgetDistribution.setBudgetAmountAvailable(
         budgetToolsService.getAvailableAmountOnBudget(budget, date));
-    budgetDistribution.setAmount(amount);
+    budgetDistribution.setAmount(currencyScaleServiceBudget.getCompanyScaledValue(budget, amount));
 
     return budgetDistribution;
   }
@@ -108,7 +108,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
         for (BudgetLine budgetLine : budget.getBudgetLineList()) {
           if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
-            budgetToCompare = budgetLine.getAvailableAmount();
+            budgetToCompare =
+                currencyScaleServiceBudget.getCompanyScaledValue(
+                    budget, budgetLine.getAvailableAmount());
             budgetName +=
                 ' ' + budgetLine.getFromDate().toString() + ':' + budgetLine.getToDate().toString();
             break;
@@ -116,27 +118,36 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
         }
         break;
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
-        budgetToCompare = budget.getAvailableAmount();
+        budgetToCompare =
+            currencyScaleServiceBudget.getCompanyScaledValue(budget, budget.getAvailableAmount());
         break;
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION:
-        budgetToCompare = budget.getBudgetLevel().getTotalAmountAvailable();
+        budgetToCompare =
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget.getBudgetLevel(), budget.getBudgetLevel().getTotalAmountAvailable());
         budgetName = budget.getBudgetLevel().getName();
         break;
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP:
-        budgetToCompare = budget.getBudgetLevel().getParentBudgetLevel().getTotalAmountAvailable();
+        budgetToCompare =
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget.getBudgetLevel().getParentBudgetLevel(),
+                budget.getBudgetLevel().getParentBudgetLevel().getTotalAmountAvailable());
         budgetName = budget.getBudgetLevel().getParentBudgetLevel().getName();
         break;
       default:
         budgetToCompare =
-            budget
-                .getBudgetLevel()
-                .getParentBudgetLevel()
-                .getGlobalBudget()
-                .getTotalAmountAvailable();
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget(),
+                budget
+                    .getBudgetLevel()
+                    .getParentBudgetLevel()
+                    .getGlobalBudget()
+                    .getTotalAmountAvailable());
         budgetName = budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getName();
         break;
     }
-    if (budgetToCompare.compareTo(amount) < 0) {
+    if (budgetToCompare.compareTo(currencyScaleServiceBudget.getCompanyScaledValue(budget, amount))
+        < 0) {
       budgetExceedAlert =
           String.format(
               I18n.get(BudgetExceptionMessage.BUGDET_EXCEED_ERROR),
@@ -163,13 +174,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
           for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
             budget = budgetDistribution.getBudget();
             budget.setTotalAmountPaid(
-                budget
-                    .getTotalAmountPaid()
-                    .add(
-                        budgetDistribution
-                            .getAmount()
-                            .multiply(ratio)
-                            .round(new MathContext(RETURN_SCALE, RoundingMode.HALF_UP))));
+                currencyScaleServiceBudget.getCompanyScaledValue(
+                    budget,
+                    budget
+                        .getTotalAmountPaid()
+                        .add(budgetDistribution.getAmount().multiply(ratio))));
             budgetRepo.save(budget);
           }
         }
@@ -205,9 +214,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
               BudgetDistribution budgetDistribution =
                   createDistributionFromBudget(
                       budget,
-                      amount
-                          .multiply(analyticMoveLine.getPercentage())
-                          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                      currencyScaleServiceBudget.getCompanyScaledValue(
+                          budget,
+                          amount
+                              .multiply(analyticMoveLine.getPercentage())
+                              .divide(new BigDecimal(100))),
                       date);
 
               linkBudgetDistributionWithParent(budgetDistribution, object);
@@ -326,9 +337,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             BudgetDistribution budgetDistribution =
                 createDistributionFromBudget(
                     budget,
-                    amount
-                        .multiply(analyticMoveLine.getPercentage())
-                        .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP),
+                    currencyScaleServiceBudget.getCompanyScaledValue(
+                        budget,
+                        amount
+                            .multiply(analyticMoveLine.getPercentage())
+                            .divide(new BigDecimal(100))),
                     date);
             linkBudgetDistributionWithParent(budgetDistribution, object);
           }

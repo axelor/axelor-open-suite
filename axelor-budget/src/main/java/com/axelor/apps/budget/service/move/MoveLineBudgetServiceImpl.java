@@ -30,6 +30,7 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -43,15 +44,18 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   protected MoveLineRepository moveLineRepository;
   protected BudgetService budgetService;
   protected BudgetDistributionService budgetDistributionService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public MoveLineBudgetServiceImpl(
       MoveLineRepository moveLineRepository,
       BudgetService budgetService,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -78,7 +82,11 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
     if (moveLine.getBudgetDistributionList() != null
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().compareTo(moveLine.getCredit().add(moveLine.getDebit()))
+        if (currencyScaleServiceBudget
+                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount())
+                .compareTo(
+                    currencyScaleServiceBudget.getCompanyScaledValue(
+                        budgetDistribution, moveLine.getCredit().add(moveLine.getDebit())))
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

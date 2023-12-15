@@ -4,8 +4,10 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetScenario;
+import com.axelor.apps.budget.db.GlobalBudget;
 import java.math.BigDecimal;
 
 public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
@@ -27,6 +29,17 @@ public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getCompanyScaledValue(GlobalBudget globalBudget, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(globalBudget.getCompany()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(
+      BudgetDistribution budgetDistribution, BigDecimal amount) {
+    return this.getCompanyScaledValue(budgetDistribution.getBudget(), amount);
+  }
+
+  @Override
   public int getCompanyScale(BudgetScenario budgetScenario) {
     return this.getCompanyScale(budgetScenario.getCompany());
   }
@@ -39,6 +52,16 @@ public class CurrencyScaleServiceBudgetImpl extends CurrencyScaleServiceImpl
   @Override
   public int getCompanyScale(BudgetLevel budgetLevel) {
     return this.getCompanyCurrencyScale(budgetLevel.getCompany());
+  }
+
+  @Override
+  public int getCompanyScale(GlobalBudget globalBudget) {
+    return this.getCompanyCurrencyScale(globalBudget.getCompany());
+  }
+
+  @Override
+  public int getCompanyScale(BudgetDistribution budgetDistribution) {
+    return this.getCompanyScale(budgetDistribution.getBudget());
   }
 
   @Override

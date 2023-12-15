@@ -51,6 +51,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetLevelManagementRepository budgetLevelManagementRepository;
   protected BudgetVersionRepository budgetVersionRepo;
   protected BudgetScenarioService budgetScenarioService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -60,7 +61,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetRepository budgetRepository,
       BudgetLevelManagementRepository budgetLevelManagementRepository,
       BudgetVersionRepository budgetVersionRepo,
-      BudgetScenarioService budgetScenarioService) {
+      BudgetScenarioService budgetScenarioService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
@@ -68,6 +70,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.budgetVersionRepo = budgetVersionRepo;
     this.budgetScenarioService = budgetScenarioService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -118,19 +121,32 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
         simulatedAmount = simulatedAmount.add(budgetLevelObj.getSimulatedAmount());
       }
     }
-    globalBudget.setTotalAmountExpected(totalAmountExpected);
-    globalBudget.setTotalAmountCommitted(totalAmountCommitted);
-    globalBudget.setTotalAmountPaid(totalAmountPaid);
-    globalBudget.setTotalAmountRealized(totalAmountRealized);
-    globalBudget.setRealizedWithNoPo(realizedWithNoPo);
-    globalBudget.setRealizedWithPo(realizedWithPo);
+    globalBudget.setTotalAmountExpected(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, totalAmountExpected));
+    globalBudget.setTotalAmountCommitted(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, totalAmountCommitted));
+    globalBudget.setTotalAmountPaid(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, totalAmountPaid));
+    globalBudget.setTotalAmountRealized(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, totalAmountRealized));
+    globalBudget.setRealizedWithNoPo(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, realizedWithNoPo));
+    globalBudget.setRealizedWithPo(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, realizedWithPo));
     globalBudget.setTotalAmountAvailable(
-        (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
-            .max(BigDecimal.ZERO));
-    globalBudget.setTotalFirmGap(totalFirmGap);
-    globalBudget.setSimulatedAmount(simulatedAmount);
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            globalBudget,
+            (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
+                .max(BigDecimal.ZERO)));
+    globalBudget.setTotalFirmGap(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, totalFirmGap));
+    globalBudget.setSimulatedAmount(
+        currencyScaleServiceBudget.getCompanyScaledValue(globalBudget, simulatedAmount));
     globalBudget.setAvailableAmountWithSimulated(
-        (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            globalBudget,
+            (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount))
+                .max(BigDecimal.ZERO)));
   }
 
   @Override
