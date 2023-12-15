@@ -228,7 +228,7 @@
   </action-attrs>
 
   <action-attrs name="action-invoice-payment-attrs-currency-scale">
-    <attribute name="value" for="$currencyScale" expr="eval: currency.numberOfDecimals"/>
+    <attribute name="value" for="$currencyScale" expr="eval: currency?.numberOfDecimals"/>
   </action-attrs>
 
   <action-method name="action-invoice-payment-method-filter-payment-mode">
