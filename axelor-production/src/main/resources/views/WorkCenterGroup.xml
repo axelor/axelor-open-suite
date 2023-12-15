@@ -3,6 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
+  <calendar name="planning-work-center-group-calender"
+    model="com.axelor.apps.production.db.OperationOrder" title="Work center group planning"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" colorBy="statusSelect">
+    <field name="operationName"/>
+  </calendar>
+
   <grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
     name="work-center-group-grid">
     <field name="name"/>
@@ -17,6 +23,11 @@
   <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
     name="work-center-group-form" onNew="action-work-center-group-attrs-onnew"
     onSave="action-work-center-validate-check-not-empty">
+    <toolbar>
+      <button
+        onClick="action-work-center-group-view-on-click-work-center-group-calender-view"
+        name="planningWorkCenterGroupBtn" title="Work center group planning" showIf="id"/>
+    </toolbar>
 
     <panel colSpan="12" itemSpan="6">
       <field name="name"/>
@@ -32,6 +43,10 @@
       domain="self.workCenterTypeSelect = :workCenterTypeSelect" canMove="true" canNew="true"
       orderBy="sequence" grid-view="work-center-grid-small" form-view="work-center-form"
       showIf="workCenterTypeSelect == 1"/>
+    <!-- Dashboard for machines in workCenterGroup If workCenterTypeSelect = Machine or Human + Machine -->
+    <panel-dashlet action="chart:chart.charge.per.days.for.work.center.group.machines"
+      name="previsionalMachineChargePerDayPanel"
+      showIf="workCenterTypeSelect == 2 || workCenterTypeSelect == 3"/>
 
   </form>
 
@@ -44,6 +59,15 @@
     <error message="Please fill the work center group with at least one work center."
       if="!workCenterSet"/>
   </action-validate>
+
+  <action-view
+    name="action-work-center-group-view-on-click-work-center-group-calender-view"
+    title="Work center group planning" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="planning-work-center-group-calender"/>
+    <domain>self.machine.id in :_machineIds</domain>
+    <context name="_machineIds"
+      expr="call:com.axelor.apps.production.service.operationorder.OperationOrderService:getMachineIds(__this__)"/>
+  </action-view>
 
 </object-views>
 

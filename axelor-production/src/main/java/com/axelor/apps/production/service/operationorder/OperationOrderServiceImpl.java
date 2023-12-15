@@ -31,6 +31,7 @@ import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProcessLineService;
@@ -56,6 +57,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -438,5 +440,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       List<OperationOrder> operationOrders) {
 
     return Lists.reverse(getSortedOperationOrderList(operationOrders));
+  }
+
+  @Override
+  public Set<Long> getMachineIds(WorkCenterGroup workCenterGroup) {
+    return workCenterGroup.getWorkCenterSet().stream()
+        .map(WorkCenter::getMachine)
+        .filter(Objects::nonNull)
+        .map(Machine::getId)
+        .collect(Collectors.toSet());
   }
 }

@@ -27,11 +27,14 @@ import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public interface OperationOrderService {
 
@@ -120,4 +123,7 @@ public interface OperationOrderService {
   List<OperationOrder> getSortedOperationOrderList(List<OperationOrder> operationOrders);
 
   List<OperationOrder> getReversedSortedOperationOrderList(List<OperationOrder> operationOrders);
+
+  @CallMethod
+  public Set<Long> getMachineIds(WorkCenterGroup workCenterGroup);
 }

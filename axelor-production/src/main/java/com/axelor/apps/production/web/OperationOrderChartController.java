@@ -21,7 +21,10 @@ package com.axelor.apps.production.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.Machine;
+import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.db.WorkCenterGroup;
 import com.axelor.apps.production.db.repo.MachineRepository;
+import com.axelor.apps.production.db.repo.WorkCenterGroupRepository;
 import com.axelor.apps.production.service.operationorder.OperationOrderChartService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -33,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Singleton
 public class OperationOrderChartController {
@@ -111,6 +115,32 @@ public class OperationOrderChartController {
           Beans.get(OperationOrderChartService.class)
               .calculateHourlyMachineCharge(fromDateTime, toDateTime, machine);
       response.setData(dataList);
+    }
+  }
+
+  public void chargePerDayForWorkCenterGroupMachines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+
+    LocalDateTime fromDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("fromDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    LocalDateTime toDateTime =
+        LocalDateTime.parse(
+            request.getContext().get("toDateTime").toString(), DateTimeFormatter.ISO_DATE_TIME);
+    Object object = request.getContext().get("_id");
+    if (object != null) {
+      Long id = Long.valueOf(object.toString());
+      WorkCenterGroup workCenterGroup = Beans.get(WorkCenterGroupRepository.class).find((id));
+      if (workCenterGroup != null) {
+        Set<Machine> machineSet =
+            workCenterGroup.getWorkCenterSet().stream()
+                .map(WorkCenter::getMachine)
+                .collect(Collectors.toSet());
+        List<Map<String, Object>> dataList =
+            Beans.get(OperationOrderChartService.class)
+                .chargePerMachineDays(fromDateTime, toDateTime, machineSet);
+        response.setData(dataList);
+      }
     }
   }
 }
