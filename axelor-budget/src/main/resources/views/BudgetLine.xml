@@ -7,13 +7,16 @@
     model="com.axelor.apps.budget.db.BudgetLine">
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="amountExpected" title="Total amount expected"/>
-    <field name="availableAmount"/>
+    <field name="amountExpected" title="Total amount expected"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="availableAmount" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="amountCommitted" if-module="axelor-supplychain"
-      if="__config__.app.isApp('supplychain')" title="Total amount committed"/>
-    <field name="realizedWithNoPo"/>
-    <field name="realizedWithPo"/>
-    <field name="firmGap"/>
+      if="__config__.app.isApp('supplychain')" title="Total amount committed"
+      x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="realizedWithNoPo" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="realizedWithPo" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="firmGap" x-scale="budget.company.currency.numberOfDecimals"/>
+    <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="budget-line-form" title="Budget Line"
@@ -24,15 +27,22 @@
       <field name="toDate" onChange="action-budget-line-on-change-to-date-validate"
         required="true"/>
       <field name="amountExpected"
-        onChange="action-budget-line-record-compute-available-amount"/>
+        onChange="action-budget-line-record-compute-available-amount"
+        x-scale="budget.company.currency.numberOfDecimals"/>
       <field name="amountCommitted" readonly="true" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain')"/>
-      <field name="availableAmount" readonly="true"/>
-      <field name="realizedWithNoPo" readonly="true"/>
-      <field name="realizedWithPo" readonly="true"/>
-      <field name="amountPaid" readonly="true"/>
-      <field name="firmGap" readonly="true"/>
-      <field name="amountRealized" readonly="true" hidden="true"/>
+        if="__config__.app.isApp('supplychain')" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="availableAmount" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="realizedWithNoPo" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="realizedWithPo" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amountPaid" readonly="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="firmGap" readonly="true" x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="amountRealized" readonly="true" hidden="true"
+        x-scale="budget.company.currency.numberOfDecimals"/>
+      <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
