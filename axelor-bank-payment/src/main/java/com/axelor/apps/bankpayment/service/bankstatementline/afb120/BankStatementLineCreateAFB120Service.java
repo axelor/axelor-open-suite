@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.bankstatement.line.afb120;
+package com.axelor.apps.bankpayment.service.bankstatementline.afb120;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
@@ -25,8 +25,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
-import com.axelor.apps.bankpayment.service.bankstatement.line.BankStatementLineCreateAbstractService;
-import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreateAbstractService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
@@ -50,7 +49,7 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected BankStatementLineAFB120Service bankStatementLineAFB120Service;
+  protected BankStatementLineCreationAFB120Service bankStatementLineCreationAFB120Service;
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
   protected CurrencyRepository currencyRepository;
   protected BankDetailsRepository bankDetailsRepository;
@@ -61,14 +60,14 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
   public BankStatementLineCreateAFB120Service(
       BankStatementRepository bankStatementRepository,
       BankStatementImportService bankStatementService,
-      BankStatementLineAFB120Service bankStatementLineAFB120Service,
+      BankStatementLineCreationAFB120Service bankStatementLineCreationAFB120Service,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
       CurrencyRepository currencyRepository,
       BankDetailsRepository bankDetailsRepository,
       InterbankCodeLineRepository interbankCodeLineRepository,
       BankStatementLineMapperAFB120Service bankStatementLineMapperAFB120Service) {
     super(bankStatementRepository, bankStatementService);
-    this.bankStatementLineAFB120Service = bankStatementLineAFB120Service;
+    this.bankStatementLineCreationAFB120Service = bankStatementLineCreationAFB120Service;
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
     this.currencyRepository = currencyRepository;
     this.bankDetailsRepository = bankDetailsRepository;
@@ -123,7 +122,7 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
     }
 
     BankStatementLineAFB120 bankStatementLineAFB120 =
-        bankStatementLineAFB120Service.createBankStatementLine(
+        bankStatementLineCreationAFB120Service.createBankStatementLine(
             findBankStatement(),
             sequence,
             bankDetails,

@@ -84,14 +84,22 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServ
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateServiceImpl;
-import com.axelor.apps.bankpayment.service.bankstatement.line.afb120.BankStatementLineMapperAFB120Service;
-import com.axelor.apps.bankpayment.service.bankstatement.line.afb120.BankStatementLineMapperAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreationService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreationServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineCreationAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineCreationAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineFetchAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineMapperAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineMapperAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLinePrintAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLinePrintAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -219,5 +227,12 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
     bind(BankStatementLineMapperAFB120Service.class)
         .to(BankStatementLineMapperAFB120ServiceImpl.class);
+    bind(BankStatementLineFetchAFB120Service.class)
+        .to(BankStatementLineFetchAFB120ServiceImpl.class);
+    bind(BankStatementLineCreationService.class).to(BankStatementLineCreationServiceImpl.class);
+    bind(BankStatementLineCreationAFB120Service.class)
+        .to(BankStatementLineCreationAFB120ServiceImpl.class);
+    bind(BankStatementLinePrintAFB120Service.class)
+        .to(BankStatementLinePrintAFB120ServiceImpl.class);
   }
 }
