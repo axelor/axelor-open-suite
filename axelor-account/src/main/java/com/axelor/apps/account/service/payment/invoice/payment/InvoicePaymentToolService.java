@@ -30,6 +30,7 @@ import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface InvoicePaymentToolService {
 
@@ -72,7 +73,8 @@ public interface InvoicePaymentToolService {
 
   boolean applyFinancialDiscount(InvoicePayment invoicePayment);
 
-  List<Long> changeAmount(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
+  Pair<List<Long>, Boolean> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
+      throws AxelorException;
 
   List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId) throws AxelorException;
 
