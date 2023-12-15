@@ -1,0 +1,8 @@
+---
+title: "ADDRESS : create a template to manage all the different address formats in the world"
+type: feature
+description: |
+  Currently, the object "Address" has been made to work with the french address format, but this format is not working in north america per example, because the state or the province is missing.
+  Added, renamed and deleted all the required fields for the Address amd to accommodate changes updated 
+  Address field with new name in xml and java files.
+  Also, Added AddressTemplateLine to select specific field for specific column and updated views according to that.
