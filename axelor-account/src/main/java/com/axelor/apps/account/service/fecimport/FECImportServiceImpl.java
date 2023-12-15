@@ -37,6 +37,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -126,12 +127,14 @@ public class FECImportServiceImpl implements FECImportService {
           && reconcileGroupService.isBalanced(reconcileList)) {
         reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_FINAL);
       } else {
+        LocalDate todayDate =
+            Beans.get(AppBaseService.class).getTodayDate(reconcileGroup.getCompany());
         if (CollectionUtils.isEmpty(reconcileList)) {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_UNLETTERED);
-          reconcileGroup.setUnletteringDate(
-              Beans.get(AppBaseService.class).getTodayDate(reconcileGroup.getCompany()));
+          reconcileGroup.setUnletteringDate(todayDate);
         } else {
           reconcileGroup.setStatusSelect(ReconcileGroupRepository.STATUS_TEMPORARY);
+          reconcileGroup.setDateOfLettering(todayDate);
         }
       }
       reconcileGroupRepo.save(reconcileGroup);
