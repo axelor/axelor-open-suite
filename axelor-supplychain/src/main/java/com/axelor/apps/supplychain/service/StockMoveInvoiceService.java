@@ -29,6 +29,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StockMoveInvoiceService {
 
@@ -110,4 +111,9 @@ public interface StockMoveInvoiceService {
    */
   void checkSplitSalePartiallyInvoicedStockMoveLines(
       StockMove stockMove, List<StockMoveLine> stockMoveLineList) throws AxelorException;
+
+  String fillExternalReferenceInvoiceFromInStockMove(Set<PurchaseOrder> purchaseOrderSet);
+
+  String fillInternalReferenceInvoiceFromInStockMove(
+      StockMove stockMove, Set<PurchaseOrder> purchaseOrderSet);
 }

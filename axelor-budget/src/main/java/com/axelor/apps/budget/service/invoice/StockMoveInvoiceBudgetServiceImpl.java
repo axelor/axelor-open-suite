@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -57,7 +58,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
       SupplyChainConfigService supplyChainConfigService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
-      BudgetInvoiceService budgetInvoiceService) {
+      BudgetInvoiceService budgetInvoiceService,
+      PurchaseOrderMergingService purchaseOrderMergingService) {
     super(
         saleOrderInvoiceService,
         purchaseOrderInvoiceService,
@@ -69,7 +71,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceSe
         invoiceLineRepository,
         supplyChainConfigService,
         appSupplychainService,
-        appStockService);
+        appStockService,
+        purchaseOrderMergingService);
     this.budgetInvoiceService = budgetInvoiceService;
   }
 
