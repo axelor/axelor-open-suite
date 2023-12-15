@@ -119,7 +119,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
     AnalyticMoveLine analyticMoveLine =
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
-    analyticMoveLineService.computeAnalyticCurrency(company, analyticMoveLine);
+    analyticMoveLineService.setAnalyticCurrency(company, analyticMoveLine);
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(
