@@ -30,12 +30,16 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
 
   private final BudgetLineResetToolService budgetLineResetToolService;
   private final BudgetRepository budgetRepository;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetResetToolServiceImpl(
-      BudgetLineResetToolService budgetLineResetToolService, BudgetRepository budgetRepository) {
+      BudgetLineResetToolService budgetLineResetToolService,
+      BudgetRepository budgetRepository,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetLineResetToolService = budgetLineResetToolService;
     this.budgetRepository = budgetRepository;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -45,7 +49,8 @@ public class BudgetResetToolServiceImpl implements BudgetResetToolService {
     entity.setStatusSelect(BudgetRepository.STATUS_DRAFT);
     entity.setArchived(false);
 
-    entity.setTotalAmountExpected(entity.getTotalAmountExpected());
+    entity.setTotalAmountExpected(
+        currencyScaleServiceBudget.getCompanyScaledValue(entity, entity.getTotalAmountExpected()));
     entity.setTotalAmountCommitted(BigDecimal.ZERO);
     entity.setRealizedWithNoPo(BigDecimal.ZERO);
     entity.setRealizedWithPo(BigDecimal.ZERO);

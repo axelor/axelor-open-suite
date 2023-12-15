@@ -74,10 +74,12 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
         } else {
           variableAmountMap.replace(
               budgetScenarioLine.getBudgetScenarioVariable().getCode(),
-              ((BigDecimal)
-                      variableAmountMap.get(
-                          budgetScenarioLine.getBudgetScenarioVariable().getCode()))
-                  .add(yearValue));
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budgetScenario,
+                  ((BigDecimal)
+                          variableAmountMap.get(
+                              budgetScenarioLine.getBudgetScenarioVariable().getCode()))
+                      .add(yearValue)));
         }
       }
     }
@@ -104,9 +106,12 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
       } else {
         variableAmountMap.replace(
             budgetScenarioLine.getBudgetScenarioVariable().getCode(),
-            ((BigDecimal)
-                    variableAmountMap.get(budgetScenarioLine.getBudgetScenarioVariable().getCode()))
-                .add(yearValue));
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budgetScenario,
+                ((BigDecimal)
+                        variableAmountMap.get(
+                            budgetScenarioLine.getBudgetScenarioVariable().getCode()))
+                    .add(yearValue)));
       }
     }
     return variableAmountMap;
