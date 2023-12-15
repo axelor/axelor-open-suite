@@ -626,6 +626,8 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
       "An error occurred while generating the sequence. Please check the configuration." /*)*/;
 
+  public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s'" /*)*/;
   public static final String PRICING_BUTTON_ERROR = /*$$(*/
       "There was an error while trying to add the pricing button : %s" /*)*/;
 }

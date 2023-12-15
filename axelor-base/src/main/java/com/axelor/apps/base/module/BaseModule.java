@@ -66,6 +66,8 @@ import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AddressExportService;
+import com.axelor.apps.base.service.AddressExportServiceImpl;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
@@ -292,6 +294,7 @@ public class BaseModule extends AxelorModule {
         new ControllerMethodInterceptor());
 
     bind(AddressService.class).to(AddressServiceImpl.class);
+    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);
     bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
