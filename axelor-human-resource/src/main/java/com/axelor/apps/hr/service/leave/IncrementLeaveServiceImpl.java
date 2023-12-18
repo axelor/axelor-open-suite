@@ -14,14 +14,17 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class IncrementLeaveServiceImpl implements IncrementLeaveService {
@@ -34,6 +37,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   protected PublicHolidayHrService publicHolidayHrService;
   protected LeaveLineService leaveLineService;
   protected LeaveValueProrataService leaveValueProrataService;
+
+  public static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
 
   @Inject
   public IncrementLeaveServiceImpl(
@@ -132,9 +137,21 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
 
   protected LeaveManagement createLeaveManagement(
       LocalDate fromDate, LocalDate toDate, BigDecimal value) {
+
+    LocalDateTime localDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
+    String comment =
+        I18n.get("Created automatically by increment leave batch on")
+            + " "
+            + DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).format(localDateTime);
+
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
-            AuthUtils.getUser(), "", appBaseService.getTodayDate(null), fromDate, toDate, value);
+            AuthUtils.getUser(),
+            comment,
+            appBaseService.getTodayDate(null),
+            fromDate,
+            toDate,
+            value);
 
     return leaveManagementRepository.save(leaveManagement);
   }
