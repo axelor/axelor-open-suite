@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -48,19 +47,14 @@ public interface MoveLineService {
 
   boolean checkManageCutOffDates(MoveLine moveLine);
 
+  boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect);
+
   void applyCutOffDates(
       MoveLine moveLine, Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
   BigDecimal getCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
   MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
-
-  @CallMethod
-  LocalDate getFinancialDiscountDeadlineDate(MoveLine moveLine);
-
-  void computeFinancialDiscount(MoveLine moveLine);
-
-  void computeInvoiceTermsFinancialDiscount(MoveLine moveLine);
 
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
 

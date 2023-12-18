@@ -84,10 +84,14 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServ
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementRemoveServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateService;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatement.line.afb120.BankStatementLineMapperAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatement.line.afb120.BankStatementLineMapperAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -212,5 +216,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankDetailsBankPaymentService.class).to(BankDetailsBankPaymentServiceImpl.class);
     bind(BankStatementValidateService.class).to(BankStatementValidateServiceImpl.class);
     bind(BankStatementLineDeleteService.class).to(BankStatementLineDeleteServiceImpl.class);
+    bind(BankStatementLineFilterService.class).to(BankStatementLineFilterServiceImpl.class);
+    bind(BankStatementLineMapperAFB120Service.class)
+        .to(BankStatementLineMapperAFB120ServiceImpl.class);
   }
 }

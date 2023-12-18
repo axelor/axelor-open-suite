@@ -1065,6 +1065,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 
+  public static final String ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK = /*$$(*/
+      "Please make sure that the account %s being used can be reconciled and used for partner balance." /*)*/;
+
   public static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
       "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/credit note" /*)*/;
 
@@ -1079,9 +1082,6 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
-
-  public static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
-      "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
 
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
@@ -1486,19 +1486,6 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX = /*$$(*/
       "No account found for Tax: %s (company: %s)" /*)*/;
 
-  public static final String
-      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an allowed financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an allowed financial discount account on payments for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an obtained financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an obtained financial discount account on payments for Tax: %s (company: %s)" /*)*/;
-
   public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a sale account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
   public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
@@ -1522,7 +1509,7 @@ public final class AccountExceptionMessage {
       "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
 
   public static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
-      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+      "The bank statement cannot be removed because of at least a bank reconciliation record attached. Please remove the following reference(s) : %s" /*)*/;
   public static final String
       BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
           "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;

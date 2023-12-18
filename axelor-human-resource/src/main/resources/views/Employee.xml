@@ -39,6 +39,8 @@
         onClick="action-employee-view-annual-report-wizard"/>
       <button name="employeeReportBtn" title="Print" showIf="id"
         onClick="save,action-method-print-birt"/>
+      <button onClick="action-employee-view-employee-planning" name="employeePlanningBtn"
+        title="Employee planning" if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
     </toolbar>
 
     <!-- New employee wizard -->
@@ -237,8 +239,8 @@
           <![CDATA[
             <>
             	<Box d="flex" justifyContent="center">
-            		{contactPartner.picture && <Image src={$image('contactPartner.picture', 'content')}></Image>}
-	                {!contactPartner.picture && <Image src="img/partner-default.png"></Image>}
+            		{id && <Image src={$image('id', 'content')}></Image>}
+	                {!id && <Image src="img/partner-default.png"></Image>}
             	</Box>
             </>
           ]]>

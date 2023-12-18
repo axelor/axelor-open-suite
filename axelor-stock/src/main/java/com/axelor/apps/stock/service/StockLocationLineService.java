@@ -58,14 +58,6 @@ public interface StockLocationLineService {
       boolean generateOrder)
       throws AxelorException;
 
-  public void minStockRules(
-      Product product,
-      BigDecimal qty,
-      StockLocationLine stockLocationLine,
-      boolean current,
-      boolean future)
-      throws AxelorException;
-
   public void maxStockRules(
       Product product,
       BigDecimal qty,

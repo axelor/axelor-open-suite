@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -61,6 +62,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   protected ConvertWizardService convertWizardService;
 
   protected AddressService addressService;
+  protected AddressRepository addressRepository;
 
   protected PartnerService partnerService;
 
@@ -81,6 +83,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       LeadService leadService,
       ConvertWizardService convertWizardService,
       AddressService addressService,
+      AddressRepository addressRepository,
       PartnerService partnerService,
       CountryRepository countryRepo,
       AppBaseService appBaseService,
@@ -91,6 +94,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
+    this.addressRepository = addressRepository;
     this.partnerService = partnerService;
     this.countryRepo = countryRepo;
     this.appBaseService = appBaseService;
@@ -103,7 +107,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   /**
    * Create a partner from a lead
    *
-   * @param lead
    * @return
    * @throws AxelorException
    */
@@ -112,7 +115,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.setEmailAddress(partner);
 
     if (appBaseService.getAppBase().getGeneratePartnerSequence()) {
-      partner.setPartnerSeq(leadService.getSequence());
+      partner.setPartnerSeq(leadService.getSequence(partner));
     }
 
     partnerService.setPartnerFullName(partner);
@@ -169,13 +172,20 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     Country addressL7Country = lead.getPrimaryCountry();
 
     Address address =
-        addressService.getAddress(null, null, addressL4, addressL5, addressL6, addressL7Country);
+        addressRepository
+            .all()
+            .filter(
+                "self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 "
+                    + "AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.addressL7Country = ?6",
+                null,
+                null,
+                addressL4,
+                addressL5,
+                addressL6,
+                addressL7Country)
+            .fetchOne();
 
-    if (address == null
-        && (addressL4 != null
-            || addressL5 != null
-            || addressL6 != null
-            || addressL7Country != null)) {
+    if (address == null) {
       address =
           addressService.createAddress(
               null, null, addressL4, addressL5, addressL6, addressL7Country);

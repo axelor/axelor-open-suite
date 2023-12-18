@@ -92,6 +92,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
   protected OperationOrderPlanningService operationOrderPlanningService;
+  protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -106,7 +107,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService) {
+      OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -119,6 +121,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
     this.operationOrderPlanningService = operationOrderPlanningService;
+    this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
   }
 
   @Override
@@ -192,8 +195,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
-      LocalDateTime todayDateT =
-          appBaseService.getTodayDateTime(manufOrder.getCompany()).toLocalDateTime();
       List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
       if (CollectionUtils.isNotEmpty(operationOrders)) {
         operationOrderPlanningService.plan(operationOrders);
@@ -201,24 +202,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       // Updating plannedStartDate since, it may be different now that operation orders are
       // planned
       manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
-
-      ProductionConfig productionConfig =
-          productionConfigService.getProductionConfig(manufOrder.getCompany());
-
-      int qtyScale = appBaseService.getNbDecimalDigitForQty();
-
-      if (productionConfig.getScheduling() == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING
-          && manufOrder.getPlannedStartDateT().isBefore(todayDateT)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(ProductionExceptionMessage.PLAN_IS_BEFORE_TODAY_DATE),
-            String.format(
-                "%s %s",
-                manufOrder.getQty() != null
-                    ? manufOrder.getQty().setScale(qtyScale, RoundingMode.HALF_UP)
-                    : null,
-                manufOrder.getProduct().getFullName()));
-      }
     }
 
     for (ManufOrder manufOrder : manufOrderList) {
@@ -390,6 +373,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
     manufOrderRepo.save(manufOrder);
+
+    manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
+
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
   }
 

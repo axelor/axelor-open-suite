@@ -79,7 +79,7 @@
     </extend>
     <extend target="//panel[@name='outgoingMovePanel']/field[@name='fromStockLocation']">
       <attribute name="domain"
-        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
+        value="self.company = :company AND self.typeSelect != 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
     </extend>
     <extend target="//panel[@name='incomingMovePanel']/field[@name='toStockLocation']">
       <attribute name="domain"
@@ -92,6 +92,13 @@
     <extend target="//panel[@name='configPanel']/field[@name='toStockLocation']">
       <attribute name="domain"
         value="self.company = :company AND self.typeSelect = 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = true OR self.usableOnSaleOrder = true AND :isReversion = false)"/>
+    </extend>
+    <extend
+      target="//menu[@name='stockMoveToolsMenu']/item[@name='refreshProductNetMassItem']">
+      <insert position="after">
+        <item name="fillRealQties" title="Fill real quantities"
+          action="action-supplychain-stock-move-method-fill-real-quantities"/>
+      </insert>
     </extend>
   </form>
 
@@ -241,6 +248,8 @@
       method="generateMultiSupplierInvoice"/>
   </action-method>
 
+
+
   <action-method
     name="action-supplychain-stock-move-method-generate-concat-cust-invoice">
     <call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController"
@@ -269,6 +278,11 @@
     name="action-stock-move-supplychain-method-set-invoiced-partner-domain">
     <call class="com.axelor.apps.supplychain.web.StockMoveController"
       method="setInvoicedPartnerDomain"/>
+  </action-method>
+
+  <action-method name="action-supplychain-stock-move-method-fill-real-quantities">
+    <call class="com.axelor.apps.supplychain.web.StockMoveController"
+      method="fillRealQuantities"/>
   </action-method>
 
   <action-method

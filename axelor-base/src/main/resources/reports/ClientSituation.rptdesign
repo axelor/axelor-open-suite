@@ -2089,7 +2089,7 @@ and (companyId IS NULL OR Company.id = companyId)
 and (tradingNameId IS NULL OR TradingName.id = tradingNameId)
 and (fromDate IS NULL OR SaleOrder.creation_date >= fromDate)
 and (toDate IS NULL OR SaleOrder.creation_date <= toDate)
-and (saleOrderStatus IS NULL OR cast(SaleOrder.status_select as varchar) = any (regexp_split_to_array(saleOrderStatus,', ')))
+and (saleOrderStatus IS NULL OR cast(SaleOrder.status_select as varchar) = any (regexp_split_to_array(saleOrderStatus,',')))
 ORDER BY display_date desc;
 
 end if;
@@ -2159,7 +2159,7 @@ and (companyId IS NULL OR Company.id = companyId)
 and (tradingNameId IS NULL OR TradingName.id = tradingNameId)
 and (fromDate IS NULL OR Invoice.created_on::date >= fromDate)
 and (toDate IS NULL OR Invoice.created_on::date <= toDate)
-and (invoiceStatus IS NULL OR cast(Invoice.status_select as varchar) = any (regexp_split_to_array(invoiceStatus,', ')))
+and (invoiceStatus IS NULL OR cast(Invoice.status_select as varchar) = any (regexp_split_to_array(invoiceStatus,',')))
 order by InvoiceTerm.sequence;
 
 end if;
@@ -2500,7 +2500,7 @@ SELECT
 StockMove.id,
 StockMove.real_date,
 StockMove.stock_move_seq,
-SaleOrder.sale_order_seq,
+StockMove.origin as sale_order_seq,
 StockMove.to_address_str, 
 StockMove.status_select,
 AppBase.enable_trading_names_management,
@@ -2508,7 +2508,6 @@ TradingName.name as trading_name
 
 FROM base_partner AS Partner
 INNER JOIN stock_stock_move AS StockMove ON (StockMove.partner = Partner.id)
-LEFT JOIN sale_sale_order AS SaleOrder ON (StockMove.sale_order = SaleOrder.id)
 LEFT JOIN base_company as Company on (StockMove.company = Company.id)
 LEFT JOIN base_trading_name as TradingName on (StockMove.trading_name = TradingName.id)
 LEFT JOIN studio_app_base AS AppBase on true
@@ -2519,7 +2518,7 @@ and (companyId IS NULL OR Company.id = companyId)
 and (tradingNameId IS NULL OR TradingName.id = tradingNameId)
 and (fromDate IS NULL OR coalesce(StockMove.real_date, StockMove.estimated_date) >= fromDate)
 and (toDate IS NULL OR coalesce(StockMove.real_date, StockMove.estimated_date) <= toDate)
-and (stockMoveStatus IS NULL OR cast(StockMove.status_select as varchar) = any (regexp_split_to_array(stockMoveStatus,', ')))
+and (stockMoveStatus IS NULL OR cast(StockMove.status_select as varchar) = any (regexp_split_to_array(stockMoveStatus,',')))
 ORDER BY StockMove.stock_move_seq;
 
 end if;

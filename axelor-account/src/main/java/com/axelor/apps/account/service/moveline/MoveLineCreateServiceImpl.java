@@ -176,7 +176,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            amountInSpecificMoveCurrency, currencyRate);
+            amountInSpecificMoveCurrency, currencyRate, companyCurrency);
 
     return this.createMoveLine(
         move,
@@ -741,8 +741,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         }
       }
 
-      moveLine.setDebit(currencyScaleServiceAccount.getScaledValue(move, moveLine.getDebit()));
-      moveLine.setCredit(currencyScaleServiceAccount.getScaledValue(move, moveLine.getCredit()));
+      moveLine.setDebit(
+          currencyScaleServiceAccount.getCompanyScaledValue(move, moveLine.getDebit()));
+      moveLine.setCredit(
+          currencyScaleServiceAccount.getCompanyScaledValue(move, moveLine.getCredit()));
 
       moveLines.add(moveLine);
     }

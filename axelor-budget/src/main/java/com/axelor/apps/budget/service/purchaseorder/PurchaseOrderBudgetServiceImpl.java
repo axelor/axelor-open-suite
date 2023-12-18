@@ -330,4 +330,22 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       }
     }
   }
+
+  @Override
+  public void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        purchaseOrder.getCompany(), purchaseOrder.getPurchaseOrderLineList())) {
+      return;
+    }
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          purchaseOrderLine.getAnalyticMoveLineList(),
+          purchaseOrderLine.getAccount(),
+          purchaseOrder.getCompany(),
+          purchaseOrder.getOrderDate(),
+          purchaseOrderLine.getCompanyExTaxTotal(),
+          purchaseOrderLine);
+      purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, true);
+    }
+  }
 }

@@ -24,12 +24,12 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetAccountService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
+import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -52,6 +52,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   protected MoveLineRepository moveLineRepo;
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
+  protected BudgetService budgetService;
 
   @Inject
   public MoveBudgetServiceImpl(
@@ -61,8 +62,8 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
       BudgetAccountService budgetAccountService,
       MoveLineRepository moveLineRepo,
       AppBudgetService appBudgetService,
-      BudgetToolsService budgetToolsService) {
-
+      BudgetToolsService budgetToolsService,
+      BudgetService budgetService) {
     this.moveLineBudgetService = moveLineBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.moveRepo = moveRepo;
@@ -70,6 +71,7 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
     this.moveLineRepo = moveLineRepo;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
+    this.budgetService = budgetService;
   }
 
   @Override
@@ -93,16 +95,14 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
   }
 
   @Override
-  public void getBudgetExceedAlert(Move move) throws AxelorException {
+  public String getBudgetExceedAlert(Move move) {
     String budgetExceedAlert = "";
 
     List<MoveLine> moveLineList = move.getMoveLineList();
 
     if (appBudgetService.getAppBudget() != null
         && appBudgetService.getAppBudget().getCheckAvailableBudget()
-        && CollectionUtils.isNotEmpty(moveLineList)
-        && move.getStatusSelect() != MoveRepository.STATUS_NEW
-        && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
+        && CollectionUtils.isNotEmpty(moveLineList)) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
@@ -131,12 +131,8 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
             budgetDistributionService.getBudgetExceedAlert(
                 budgetEntry.getKey(), budgetEntry.getValue(), move.getDate());
       }
-
-      if (!Strings.isNullOrEmpty(budgetExceedAlert)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, budgetExceedAlert);
-      }
     }
+    return budgetExceedAlert;
   }
 
   @Override
@@ -163,5 +159,22 @@ public class MoveBudgetServiceImpl implements MoveBudgetService {
                 && move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
             || (!move.getJournal().getAllowAccountingDaybook()
                 && move.getStatusSelect() == MoveRepository.STATUS_NEW));
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(Move move) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        move.getCompany(), move.getMoveLineList())) {
+      return;
+    }
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          moveLine.getAnalyticMoveLineList(),
+          moveLine.getAccount(),
+          move.getCompany(),
+          move.getDate(),
+          moveLine.getCredit().add(moveLine.getDebit()),
+          moveLine);
+    }
   }
 }

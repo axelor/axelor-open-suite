@@ -86,6 +86,7 @@ import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
+import com.axelor.apps.budget.service.move.MoveValidateBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderInvoiceBudgetServiceImpl;
@@ -104,6 +105,7 @@ import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProje
 import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
+import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 
 public class BudgetModule extends AxelorModule {
@@ -133,6 +135,7 @@ public class BudgetModule extends AxelorModule {
     bind(MoveLineBudgetService.class).to(MoveLineBudgetServiceImpl.class);
     bind(MoveBudgetService.class).to(MoveBudgetServiceImpl.class);
     bind(MoveRemoveServiceBankPaymentImpl.class).to(MoveRemoveBudgetService.class);
+    bind(MoveValidateHRServiceImpl.class).to(MoveValidateBudgetServiceImpl.class);
     bind(MoveLineGroupBankPaymentServiceImpl.class).to(MoveLineGroupBudgetServiceImpl.class);
 
     bind(PurchaseOrderLineBudgetService.class).to(PurchaseOrderLineBudgetServiceImpl.class);

@@ -103,11 +103,11 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Override
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, SaleOrder saleOrder) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq");
+            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq", saleOrder);
     if (seq == null) {
       throw new AxelorException(
           company,
@@ -189,13 +189,10 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 
     if (saleOrder.getVersionNumber() == 1
         && sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
-      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany()));
+      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany(), saleOrder));
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
-      this.saveSaleOrderPDFAsAttachment(saleOrder);
-    }
 
     Opportunity opportunity = saleOrder.getOpportunity();
     if (opportunity != null) {
@@ -203,6 +200,10 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     }
 
     saleOrderRepo.save(saleOrder);
+
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
+      this.saveSaleOrderPDFAsAttachment(saleOrder);
+    }
   }
 
   @Override

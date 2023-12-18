@@ -37,6 +37,8 @@ public interface ITranslation {
       "StockLocation.totalWapValue"; /*)*/
   public static final String STOCK_LOCATION_LOCATION_TOTAL_CONTENT = /*$$(*/
       "StockLocation.locationTotalContent"; /*)*/
+  public static final String STOCK_LOCATION_LOCATION_AND_SUB_LOCATIONS_TOTAL_CONTENT = /*$$(*/
+      "StockLocation.locationAndSubLocationsTotalContent"; /*)*/
   public static final String STOCK_LOCATION_PRODUCT_NAME = /*$$(*/
       "StockLocation.productName"; /*)*/
   public static final String STOCK_LOCATION_CODE = /*$$(*/ "StockLocation.code"; /*)*/

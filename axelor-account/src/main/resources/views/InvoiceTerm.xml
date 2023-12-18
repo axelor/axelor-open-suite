@@ -197,8 +197,10 @@
     <field name="moveLine.origin"/>
     <field name="dueDate"/>
     <field name="paymentAmount"/>
-    <field name="applyFinancialDiscountOnPaymentSession"/>
-    <field name="financialDiscountAmount"/>
+    <field name="applyFinancialDiscountOnPaymentSession"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <field name="financialDiscountAmount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <field name="amountPaid" aggregate="sum"/>
     <field name="moveLine.partner.name" hidden="true"/>
     <field name="isSelectedOnPaymentSession" hidden="true"/>
@@ -257,8 +259,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
@@ -266,16 +267,14 @@
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
         <field name="currency.numberOfDecimals" hidden="true"/>
-        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
-        hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
-        readonly="true">
+        hidden="true" showIf="applyFinancialDiscount" readonly="true">
         <field name="financialDiscount"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount" x-scale="currency.numberOfDecimals"/>
+        <field name="financialDiscountAmount" x-scale="company.currency.numberOfDecimals"/>
         <field name="remainingAmountAfterFinDiscount"
           x-scale="company.currency.numberOfDecimals"/>
         <field name="amountRemainingAfterFinDiscount"
@@ -360,11 +359,17 @@
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
           onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
-        <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
-          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
-        <field name="financialDiscountAmount"
-          showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
+        <panel name="paymentSessionFinancialDiscountPanel"
+          if="__config__.app.getApp('account').getManageFinancialDiscount()">
+          <field name="applyFinancialDiscountOnPaymentSession"
+            readonlyIf="!_openFromPaymentSession"
+            showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
+            onChange="action-invoice-term-record-set-amount-paid"/>
+          <field name="financialDiscountAmount" readonly="true"
+            showIf="applyFinancialDiscountOnPaymentSession"
+            onChange="action-invoice-term-record-set-amount-paid"
+            x-scale="company.currency.numberOfDecimals"/>
+        </panel>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
           showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
@@ -408,16 +413,16 @@
           if-module="axelor-cash-management" if="__config__.app.isApp('cash-management')"/>
         <field name="amount" validIf="amount > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
-          onChange="action-invoice-term-group-amount-onchange"/>
+          onChange="action-invoice-term-group-amount-onchange" x-scale="currency.numberOfDecimals"/>
         <field name="percentage" validIf="percentage > 0"
           readonlyIf="pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"
           onChange="action-invoice-term-group-invoice-percentage-onchange"/>
-        <field name="amountRemaining" readonly="true"/>
+        <field name="amountRemaining" readonly="true" x-scale="currency.numberOfDecimals"/>
         <panel name="companyCurrencyPanel" colSpan="12" itemSpan="4" readonly="true"
           showIf="$isMultiCurrency">
-          <field name="companyAmount"/>
+          <field name="companyAmount" x-scale="$companyCurrencyScale"/>
           <spacer/>
-          <field name="companyAmountRemaining"/>
+          <field name="companyAmountRemaining" x-scale="$companyCurrencyScale"/>
           <field name="$isMultiCurrency" type="boolean" hidden="true"/>
         </panel>
         <field name="paymentMode" readonlyIf="isPaid" required="true"/>
@@ -426,27 +431,28 @@
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount"
-          hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="origin" hidden="true"/>
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
-        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
+        <field name="$companyCurrencyScale" hidden="true"/>
       </panel>
-      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
+      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
+        itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hidden="true" showIf="applyFinancialDiscount"
         readonlyIf="amount != amountRemaining || paymentSession || isPaid">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate" readonlyIf="financialDiscount"/>
-        <field name="financialDiscountAmount" readonly="true"/>
-        <field name="remainingAmountAfterFinDiscount" readonly="true"/>
-        <field name="amountRemainingAfterFinDiscount" readonly="true"/>
+        <field name="financialDiscountAmount" readonly="true" x-scale="$companyCurrencyScale"/>
+        <field name="remainingAmountAfterFinDiscount" readonly="true"
+          x-scale="$companyCurrencyScale"/>
+        <field name="amountRemainingAfterFinDiscount" readonly="true"
+          x-scale="$companyCurrencyScale"/>
         <field name="invoice.company" hidden="true"/>
       </panel>
       <panel name="pfpPanel" colSpan="12"
@@ -471,13 +477,13 @@
         </panel>
         <panel name="pfpDecisionFullPfp" showIf="pfpValidateStatusSelect == 2">
           <field name="decisionPfpTakenDateTime" readonly="true"/>
-          <field name="initialPfpAmount" readonly="true"/>
+          <field name="initialPfpAmount" readonly="true" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionPartialPfp" showIf="pfpValidateStatusSelect == 4">
           <field name="decisionPfpTakenDateTime" readonly="true"/>
           <field name="pfpPartialReason" readonly="true"/>
-          <field name="initialPfpAmount" readonly="true"/>
-          <field name="remainingPfpAmount" readonly="true"/>
+          <field name="initialPfpAmount" readonly="true" x-scale="currency.numberOfDecimals"/>
+          <field name="remainingPfpAmount" readonly="true" x-scale="currency.numberOfDecimals"/>
         </panel>
         <panel name="pfpDecisionDetailsReject" showIf="pfpValidateStatusSelect == 3">
           <field name="decisionPfpTakenDateTime" readonly="true"/>
@@ -532,14 +538,14 @@
         <field name="isSelectedOnPaymentSession" readonly="true"
           onChange="action-invoice-term-record-set-amount-paid"/>
         <field name="paymentAmount" readonly="true" showIf="isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="currency.numberOfDecimals"/>
         <field name="applyFinancialDiscountOnPaymentSession" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
         <field name="financialDiscountAmount" readonly="true"
           showIf="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+          onChange="action-invoice-term-record-set-amount-paid" x-scale="$companyCurrencyScale"/>
         <field name="amountPaid" title="Amount paid / withdrawn" readonly="true"
-          showIf="isSelectedOnPaymentSession"/>
+          showIf="isSelectedOnPaymentSession" x-scale="currency.numberOfDecimals"/>
       </panel>
     </panel>
     <panel-mail name="mailPanel">
@@ -601,9 +607,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount"
-          hideIf="isPaid || amountRemaining != amount || !$showFinancialDiscount"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
@@ -611,13 +615,11 @@
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
         <field name="currency.numberOfDecimals" hidden="true"/>
-        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
       </panel>
-      <panel name="financialDiscount" title="Financial discount" colSpan="12" itemSpan="4"
-        if="__config__.app.getApp('account').getManageFinancialDiscount()" hidden="true"
-        showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
-        readonlyIf="paymentSession">
+      <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
+        itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
+        hidden="true" showIf="applyFinancialDiscount" readonlyIf="paymentSession">
         <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
@@ -780,8 +782,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
-        <field name="applyFinancialDiscount" readonly="true"
-          onChange="action-invoice-term-record-set-amount-paid"/>
+        <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
         <field name="company.currency.numberOfDecimals" hidden="true"/>
@@ -789,13 +790,11 @@
         <field name="originDate" hidden="true"/>
         <field name="currency" hidden="true"/>
         <field name="currency.numberOfDecimals"/>
-        <field name="$showFinancialDiscount" type="boolean" hidden="true"/>
       </panel>
       <panel name="financialDiscountPanel" title="Financial discount" colSpan="12"
         itemSpan="4" if="__config__.app.getApp('account').getManageFinancialDiscount()"
-        hidden="true" showIf="applyFinancialDiscount &amp;&amp; $showFinancialDiscount"
-        readonly="true">
-        <field name="financialDiscount"/>
+        hidden="true" showIf="applyFinancialDiscount" readonly="true">
+        <field name="financialDiscount" readonly="true"/>
         <field name="financialDiscount.discountRate"/>
         <field name="financialDiscountDeadlineDate"/>
         <field name="financialDiscountAmount" x-scale="company.currency.numberOfDecimals"/>
@@ -916,9 +915,8 @@
     <action name="action-invoice-term-record-update-customized-true"/>
     <action name="action-invoice-term-method-compute-financial-discount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <action name="action-invoice-term-record-set-show-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-invoice-term-method-set-pfp-status"/>
+    <action name="action-invoice-term-attrs-company-currency-scale"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-check-pfp-validator-user">
@@ -952,8 +950,7 @@
   <action-group name="action-invoice-term-group-onload">
     <action name="action-invoice-term-group-check-pfp-validator-user"/>
     <action name="action-invoice-term-method-is-multi-currency"/>
-    <action name="action-invoice-term-record-set-show-financial-discount"
-      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
+    <action name="action-invoice-term-attrs-company-currency-scale"/>
   </action-group>
 
   <action-group name="action-invoice-term-move-group-onload">
@@ -1033,33 +1030,6 @@
     <field name="isCustomized" expr="true"/>
   </action-record>
 
-  <action-record name="action-invoice-term-record-set-show-financial-discount"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="$showFinancialDiscount" expr="eval: invoice?.statusSelect == 3"
-      if="id != null &amp;&amp; __parent__ == null &amp;&amp; invoice != null"/>
-    <field name="$showFinancialDiscount"
-      expr="eval: moveLine?.move?.statusSelect != 1 &amp;&amp; moveLine?.move?.statusSelect != 5"
-      if="id != null &amp;&amp; __parent__ == null &amp;&amp; invoice == null"/>
-    <field name="$showFinancialDiscount"
-      expr="eval: __parent__?.statusSelect == 3 || __parent__?.statusSelect == 4"
-      if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Invoice'"/>
-    <field name="$showFinancialDiscount"
-      expr="eval: __parent__?.move?.statusSelect != 1 &amp;&amp; __parent__?.move?.statusSelect != 5"
-      if="id == null &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.MoveLine'"/>
-    <field name="$showFinancialDiscount"
-      expr="eval: invoice?.statusSelect == 3 || invoice?.statusSelect == 4" if="invoice != null"/>
-    <field name="$showFinancialDiscount"
-      expr="eval: moveLine?.move?.statusSelect != 1 &amp;&amp; moveLine?.move?.statusSelect != 5"
-      if="invoice == null &amp;&amp; moveLine != null"/>
-  </action-record>
-
-  <action-record name="action-invoice-term-move-record-set-show-financial-discount"
-    model="com.axelor.apps.account.db.InvoiceTerm">
-    <field name="$showFinancialDiscount"
-      expr="eval: moveLine?.move?.statusSelect != 1 &amp;&amp; moveLine?.move?.statusSelect != 5"
-      if="id != null &amp;&amp; invoice == null &amp;&amp; moveLine != null"/>
-  </action-record>
-
   <action-validate name="action-invoice-term-validate-pfp-stock-move">
     <alert
       message="At least one stock move is in litigation, do you really want to validate passed for payment ?"
@@ -1092,11 +1062,11 @@
   <action-record name="action-invoice-term-record-set-amount-paid"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <field name="amountPaid" expr="eval: 0"
-      if="!applyFinancialDiscount &amp;&amp; !isSelectedOnPaymentSession"/>
+      if="!applyFinancialDiscountOnPaymentSession &amp;&amp; !isSelectedOnPaymentSession"/>
     <field name="amountPaid" expr="eval: paymentAmount"
-      if="!applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
+      if="!applyFinancialDiscountOnPaymentSession &amp;&amp; isSelectedOnPaymentSession"/>
     <field name="amountPaid" expr="eval: paymentAmount - financialDiscountAmount"
-      if="applyFinancialDiscount &amp;&amp; isSelectedOnPaymentSession"/>
+      if="applyFinancialDiscountOnPaymentSession &amp;&amp; isSelectedOnPaymentSession"/>
   </action-record>
 
   <action-method name="action-invoice-term-method-validate-pfp">
@@ -1210,6 +1180,7 @@
     <view type="form" name="invoice-term-form"/>
     <domain>self.paymentSession.id = :_id</domain>
     <context name="_id" expr="eval: id"/>
+    <context name="_openFromPaymentSession" expr="eval: true"/>
   </action-view>
 
   <action-view name="action-invoice-term-view-payment-session-group-by-partner-dashlet"
@@ -1251,5 +1222,12 @@
     <attribute name="hidden" for="pfpPanel"
       expr="eval: pfpValidateStatusSelect == 0 || ![2,3,4].contains(moveLine?.move?.statusSelect)"
       if="invoice == null &amp;&amp; moveLine != null"/>
+  </action-attrs>
+
+  <action-attrs name="action-invoice-term-attrs-company-currency-scale">
+    <attribute name="value" for="$companyCurrencyScale"
+      expr="eval: invoice?.company?.currency?.numberOfDecimals" if="invoice != null"/>
+    <attribute name="value" for="$companyCurrencyScale"
+      expr="eval:__parent__?.company?.currency?.numberOfDecimals" if="invoice ==  null"/>
   </action-attrs>
 </object-views>

@@ -3,14 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form id="budget-move-line-move-form" name="move-line-move-form" title="Move line"
+  <form id="budget-move-line-tabs-form" name="move-line-tabs-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
 
-    <extend target="//panel[@name='othersPanel']">
+    <extend target="//panel[@name='hiddenFields']">
       <insert position="inside">
-        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="account.accountType" hidden="true"/>
-        <field name="move.statusSelect" hidden="true"/>
+        <field name="account.accountType.technicalTypeSelect"/>
+        <field name="account.accountType"/>
+        <field name="move.statusSelect"/>
       </insert>
       <insert position="after">
         <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">

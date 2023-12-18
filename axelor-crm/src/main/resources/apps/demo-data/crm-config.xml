@@ -86,4 +86,32 @@
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name"/>
 
+  <input file="base_researchPrimaryKey.csv" separator=";"
+    type="com.axelor.apps.base.db.ResearchPrimaryKey" search="self.importId = :importId"/>
+
+  <input file="base_researchParameterConfig.csv" separator=";"
+    type="com.axelor.apps.base.db.ResearchParameterConfig" search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.fullName = :metaModel"/>
+  </input>
+
+  <input file="base_researchParameter.csv" separator=";"
+    type="com.axelor.apps.base.db.ResearchParameter" search="self.importId = :importId">
+    <bind to="researchParameterConfig" column="researchParameterConfig_importId"
+      search="self.importId = :researchParameterConfig_importId"/>
+    <bind to="researchPrimaryKey" column="researchPrimaryKey_importId"
+      search="self.importId = :researchPrimaryKey_importId"/>
+    <bind to="mapping" search="self.metaModel.fullName = :metaModel AND self.name = :metaField"
+      column="metaField"/>
+  </input>
+
+  <input file="base_researchRequest.csv" separator=";"
+    type="com.axelor.apps.base.db.ResearchRequest" search="self.importId = :importId">
+    <bind to="research1" column="research1_importId"
+      search="self.importId = :research1_importId"/>
+    <bind to="dateResearch1" column="dateResearch1_importId"
+      search="self.importId = :dateResearch1_importId" if="dateResearch1_importId"/>
+    <bind to="dateResearch1Value" column="dateResearch1Value"
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(dateResearch1Value)"/>
+  </input>
+
 </csv-inputs>

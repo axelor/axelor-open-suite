@@ -82,6 +82,7 @@ public class BudgetServiceImpl implements BudgetService {
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AccountRepository accountRepo;
   protected AnalyticDistributionLineRepository analyticDistributionLineRepo;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetServiceImpl(
@@ -94,7 +95,8 @@ public class BudgetServiceImpl implements BudgetService {
       AnalyticMoveLineService analyticMoveLineService,
       BudgetDistributionRepository budgetDistributionRepository,
       AccountRepository accountRepo,
-      AnalyticDistributionLineRepository analyticDistributionLineRepo) {
+      AnalyticDistributionLineRepository analyticDistributionLineRepo,
+      BudgetToolsService budgetToolsService) {
     this.budgetLineRepository = budgetLineRepository;
     this.budgetRepository = budgetRepository;
     this.budgetLevelRepository = budgetLevelRepository;
@@ -105,6 +107,7 @@ public class BudgetServiceImpl implements BudgetService {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.accountRepo = accountRepo;
     this.analyticDistributionLineRepo = analyticDistributionLineRepo;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -407,13 +410,6 @@ public class BudgetServiceImpl implements BudgetService {
     return total;
   }
 
-  @Override
-  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException {
-    return (company != null
-        && accountConfigService.getAccountConfig(company) != null
-        && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
-  }
-
   @Transactional
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
@@ -590,7 +586,7 @@ public class BudgetServiceImpl implements BudgetService {
                     + "%'")
             .bind("statusSelect", GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID)
             .fetch();
-    if (!CollectionUtils.isEmpty(budgetList)) {
+    if (!CollectionUtils.isEmpty(budgetList) && date != null) {
       for (Budget budget : budgetList) {
         if ((budget.getFromDate().isBefore(date) || budget.getFromDate().isEqual(date))
             && (budget.getToDate().isAfter(date) || budget.getToDate().isEqual(date))) {
@@ -710,7 +706,7 @@ public class BudgetServiceImpl implements BudgetService {
     if (budget.getGlobalBudget() != null) {
       Company company = budget.getGlobalBudget().getCompany();
 
-      if (this.checkBudgetKeyInConfig(company)) {
+      if (budgetToolsService.checkBudgetKeyInConfig(company)) {
         String errorMessage = this.checkPreconditions(budget, company);
 
         if (!Strings.isNullOrEmpty(errorMessage)) {

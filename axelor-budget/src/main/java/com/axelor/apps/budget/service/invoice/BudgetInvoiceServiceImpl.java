@@ -429,4 +429,23 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     return budgetDistributionList.stream()
         .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
   }
+
+  @Override
+  public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        invoice.getCompany(), invoice.getInvoiceLineList())) {
+      return;
+    }
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAccount(),
+          invoice.getCompany(),
+          invoice.getInvoiceDate() != null
+              ? invoice.getInvoiceDate()
+              : invoice.getCreatedOn().toLocalDate(),
+          invoiceLine.getCompanyExTaxTotal(),
+          invoiceLine);
+    }
+  }
 }

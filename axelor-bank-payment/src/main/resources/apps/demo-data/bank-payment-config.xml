@@ -44,23 +44,6 @@
       column="toDate"/>
   </input>
 
-  <input file="bankpayment_bankStatementLineAFB120.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankStatementLineAFB120" search="self.importId = :importId">
-    <bind to="operationDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(operationDate)"
-      column="operationDate"/>
-    <bind to="valueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(valueDate)"
-      column="valueDate"/>
-    <bind to="bankStatement" column="bankStatement_importId"
-      search="self.importId = :bankStatement_importId"/>
-    <bind to="bankDetails" column="bankDetails_importId"
-      search="self.importId = :bankDetails_importId"/>
-    <bind to="operationInterbankCodeLine" column="operationInterbankCodeLine_importId"
-      search="self.importId = :operationInterbankCodeLine_importId"
-      if="operationInterbankCodeLine_importId"/>
-    <bind to="currency" column="currency_code" search="self.code = :currency_code"/>
-  </input>
-
   <input file="base_template_context.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
 

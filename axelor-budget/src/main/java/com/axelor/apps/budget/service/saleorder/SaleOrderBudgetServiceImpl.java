@@ -38,6 +38,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -70,6 +71,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   @Inject
   public SaleOrderBudgetServiceImpl(
       AppBaseService appBaseService,
+      AppStockService appStockService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -89,6 +91,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       BudgetToolsService budgetToolsService) {
     super(
         appBaseService,
+        appStockService,
         appSupplychainService,
         saleOrderRepo,
         invoiceRepo,
@@ -292,5 +295,23 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       }
     }
     return budgetExceedAlert;
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        saleOrder.getCompany(), saleOrder.getSaleOrderLineList())) {
+      return;
+    }
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          saleOrderLine.getAnalyticMoveLineList(),
+          saleOrderLine.getAccount(),
+          saleOrder.getCompany(),
+          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate(),
+          saleOrderLine.getCompanyExTaxTotal(),
+          saleOrderLine);
+      saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
+    }
   }
 }

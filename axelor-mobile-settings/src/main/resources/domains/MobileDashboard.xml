@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileDashboard">
+    <string name="name" title="Name"/>
+    <many-to-one name="appMobileSettings" title="App mobile settings"
+      ref="com.axelor.studio.db.AppMobileSettings"/>
+    <one-to-many name="mobileDashboardLineList" title="Mobile dashboard line list"
+      ref="com.axelor.apps.mobilesettings.db.MobileDashboardLine"/>
+  </entity>
+
+</domain-models>
