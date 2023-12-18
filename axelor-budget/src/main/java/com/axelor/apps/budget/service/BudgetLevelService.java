@@ -95,7 +95,5 @@ public interface BudgetLevelService {
    */
   public void computeBudgetLevelTotals(Budget budget);
 
-  List<Budget> getAllBudgets(BudgetLevel budgetLevel, List<Budget> budgetList);
-
   List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
 }

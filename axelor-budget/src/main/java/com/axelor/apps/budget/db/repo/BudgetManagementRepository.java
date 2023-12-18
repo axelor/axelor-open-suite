@@ -19,7 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.inject.Beans;
 
 public class BudgetManagementRepository extends BudgetRepository {

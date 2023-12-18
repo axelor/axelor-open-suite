@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
@@ -25,6 +25,9 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.VersionExpectedAmountsLine;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;

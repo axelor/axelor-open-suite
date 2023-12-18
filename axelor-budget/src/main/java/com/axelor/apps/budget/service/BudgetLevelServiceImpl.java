@@ -289,24 +289,6 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   }
 
   @Override
-  public List<Budget> getAllBudgets(BudgetLevel budgetLevel, List<Budget> budgetList) {
-    if (budgetLevel == null) {
-      return budgetList;
-    }
-
-    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetList())) {
-      budgetList.addAll(budgetLevel.getBudgetList());
-      return budgetList;
-    }
-    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
-      for (BudgetLevel child : budgetLevel.getBudgetLevelList()) {
-        budgetList = getAllBudgets(child, budgetList);
-      }
-    }
-    return budgetList;
-  }
-
-  @Override
   public List<BudgetLevel> getLastSections(GlobalBudget globalBudget) {
     List<BudgetLevel> budgetLevelList = new ArrayList<>();
 

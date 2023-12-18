@@ -16,14 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.GlobalBudgetTemplate;
-import java.util.List;
 
 public interface GlobalBudgetService {
   void validateDates(GlobalBudget globalBudget) throws AxelorException;
@@ -42,10 +41,4 @@ public interface GlobalBudgetService {
   void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException;
 
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
-
-  List<Budget> getAllBudgets(GlobalBudget globalBudget);
-
-  List<Long> getAllBudgetIds(GlobalBudget globalBudget);
-
-  void fillGlobalBudgetOnBudget(GlobalBudget globalBudget);
 }

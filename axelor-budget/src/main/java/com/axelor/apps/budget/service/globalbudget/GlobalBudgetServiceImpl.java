@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -33,16 +33,18 @@ import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetScenarioService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
@@ -54,6 +56,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetVersionRepository budgetVersionRepo;
   protected BudgetScenarioService budgetScenarioService;
   protected BudgetToolsService budgetToolsService;
+  protected GlobalBudgetToolsService globalBudgetToolsService;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -64,7 +67,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetLevelManagementRepository budgetLevelManagementRepository,
       BudgetVersionRepository budgetVersionRepo,
       BudgetScenarioService budgetScenarioService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      GlobalBudgetToolsService globalBudgetToolsService) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
@@ -73,6 +77,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetVersionRepo = budgetVersionRepo;
     this.budgetScenarioService = budgetScenarioService;
     this.budgetToolsService = budgetToolsService;
+    this.globalBudgetToolsService = globalBudgetToolsService;
   }
 
   @Override
@@ -282,7 +287,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   public void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException {
-    List<Budget> budgetList = getAllBudgets(globalBudget);
+    List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     if (ObjectUtils.isEmpty(budgetList)) {
       return;
     }
@@ -292,47 +297,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       budgetService.createBudgetKey(budget, company);
       if (budget.getGlobalBudget() == null) {
         globalBudget.addBudgetListItem(budget);
-      }
-    }
-  }
-
-  @Override
-  public List<Budget> getAllBudgets(GlobalBudget globalBudget) {
-    List<Budget> budgetList = new ArrayList<>();
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
-      budgetList = globalBudget.getBudgetList();
-    }
-    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetList = budgetLevelService.getAllBudgets(budgetLevel, budgetList);
-      }
-    }
-
-    return budgetList;
-  }
-
-  @Override
-  public List<Long> getAllBudgetIds(GlobalBudget globalBudget) {
-    List<Long> budgetIdList =
-        getAllBudgets(globalBudget).stream().map(Budget::getId).collect(Collectors.toList());
-    if (ObjectUtils.isEmpty(budgetIdList)) {
-      budgetIdList.add(0L);
-    }
-
-    return budgetIdList;
-  }
-
-  @Override
-  public void fillGlobalBudgetOnBudget(GlobalBudget globalBudget) {
-    if (globalBudget == null || ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      return;
-    }
-
-    List<Budget> budgetList = getAllBudgets(globalBudget);
-
-    if (!ObjectUtils.isEmpty(budgetList)) {
-      for (Budget budget : budgetList) {
-        budget.setGlobalBudget(globalBudget);
       }
     }
   }

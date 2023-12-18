@@ -16,18 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.GlobalBudget;
 
-public interface GlobalBudgetWorkflowService {
-
-  void validateChildren(GlobalBudget globalBudget, int status) throws AxelorException;
-
+public interface GlobalBudgetGroupService {
   void validateStructure(GlobalBudget globalBudget) throws AxelorException;
-
-  void archiveChildren(GlobalBudget globalBudget);
-
-  void draftChildren(GlobalBudget globalBudget);
 }

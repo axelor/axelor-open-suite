@@ -16,28 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.google.inject.Inject;
 
-public class GlobalBudgetGroupServiceImpl implements GlobalBudgetGroupService {
+public interface GlobalBudgetWorkflowService {
 
-  protected GlobalBudgetService globalBudgetService;
-  protected GlobalBudgetWorkflowService globalBudgetWorkflowService;
+  void validateChildren(GlobalBudget globalBudget, int status) throws AxelorException;
 
-  @Inject
-  public void GlobalBudgetGroupServiceImpl(
-      GlobalBudgetService globalBudgetService,
-      GlobalBudgetWorkflowService globalBudgetWorkflowService) {
-    this.globalBudgetService = globalBudgetService;
-    this.globalBudgetWorkflowService = globalBudgetWorkflowService;
-  }
+  void validateStructure(GlobalBudget globalBudget) throws AxelorException;
 
-  @Override
-  public void validateStructure(GlobalBudget globalBudget) throws AxelorException {
+  void archiveChildren(GlobalBudget globalBudget);
 
-    globalBudgetWorkflowService.validateStructure(globalBudget);
-  }
+  void draftChildren(GlobalBudget globalBudget);
 }

@@ -19,8 +19,8 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.service.GlobalBudgetResetToolService;
-import com.axelor.apps.budget.service.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.inject.Beans;
 
 public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
@@ -37,9 +37,9 @@ public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
   @Override
   public GlobalBudget save(GlobalBudget entity) {
 
-    GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
+    GlobalBudgetToolsService globalBudgetToolsService = Beans.get(GlobalBudgetToolsService.class);
 
-    globalBudgetService.fillGlobalBudgetOnBudget(entity);
+    globalBudgetToolsService.fillGlobalBudgetOnBudget(entity);
 
     entity = super.save(entity);
 

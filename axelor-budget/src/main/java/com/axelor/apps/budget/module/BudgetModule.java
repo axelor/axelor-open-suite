@@ -67,14 +67,16 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
-import com.axelor.apps.budget.service.GlobalBudgetGroupService;
-import com.axelor.apps.budget.service.GlobalBudgetGroupServiceImpl;
-import com.axelor.apps.budget.service.GlobalBudgetResetToolService;
-import com.axelor.apps.budget.service.GlobalBudgetResetToolServiceImpl;
-import com.axelor.apps.budget.service.GlobalBudgetService;
-import com.axelor.apps.budget.service.GlobalBudgetServiceImpl;
-import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
-import com.axelor.apps.budget.service.GlobalBudgetWorkflowServiceImpl;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupServiceImpl;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolServiceImpl;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetServiceImpl;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsServiceImpl;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetWorkflowService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetWorkflowServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -171,5 +173,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
+    bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
   }
 }
