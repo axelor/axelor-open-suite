@@ -18,13 +18,31 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.db.repo.CityRepository;
+import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.JPA;
+import com.axelor.text.GroovyTemplates;
+import com.axelor.utils.helpers.address.AddressHelper;
+import com.google.inject.Inject;
 
 public class AddressServiceSaleImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceSaleImpl::checkAddressUsedSale);
+  }
+
+  @Inject
+  public AddressServiceSaleImpl(
+      GroovyTemplates groovyTemplates,
+      AddressHelper ads,
+      MapService mapService,
+      CityRepository cityRepository,
+      StreetRepository streetRepository,
+      AppBaseService appBaseService) {
+    super(groovyTemplates, ads, mapService, cityRepository, streetRepository, appBaseService);
   }
 
   private static boolean checkAddressUsedSale(Long addressId) {

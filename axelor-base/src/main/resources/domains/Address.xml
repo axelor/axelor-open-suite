@@ -30,7 +30,7 @@
 
     <string name="fullName" namecolumn="true"
       search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
-
+    <string name="formattedFullName" multiline="true" large="true" title="Address"/>
   </entity>
 
 </domain-models>
