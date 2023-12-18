@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -123,10 +122,9 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
 
   @Override
   public void manageMonoBudget(Move move) {
-    if (move.getStatusSelect() != MoveRepository.STATUS_ACCOUNTED
-        || Optional.of(appBudgetService.getAppBudget())
-            .map(AppBudget::getManageMultiBudget)
-            .orElse(true)) {
+    if (Optional.of(appBudgetService.getAppBudget())
+        .map(AppBudget::getManageMultiBudget)
+        .orElse(true)) {
       return;
     }
 
@@ -144,6 +142,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
                 move.getDate());
         budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
         moveLine.setBudgetDistributionSumAmount(moveLine.getCredit().add(moveLine.getDebit()));
+        moveLine.setIsBudgetImputed(true);
       }
     }
   }
