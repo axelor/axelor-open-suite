@@ -268,7 +268,8 @@
         if="__config__.app.isApp('supplychain')">
         <field name="expectedRealisationDate" colSpan="12" width="50%"/>
         <label name="orLabel" title="OR"/>
-        <field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
+        <field name="amountToBeSpreadOverTheTimetable" colSpan="12"
+          x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" field="timetableList" colSpan="12"
           grid-view="timetable-grid-purchase" form-view="timetable-form-purchase"
           onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"

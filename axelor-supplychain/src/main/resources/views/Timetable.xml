@@ -55,7 +55,8 @@
     <field name="estimatedDate" readonlyIf="invoiced" required="true"/>
     <field name="title" readonlyIf="invoiced"/>
     <field name="amount" readonlyIf="invoiced" required="true"
-      onChange="action-timetable-group-on-amount-change"/>
+      onChange="action-timetable-group-on-amount-change"
+      x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonlyIf="invoiced" required="true"
       onChange="action-timetable-record-on-percentage-change"/>
     <field name="comments" readonlyIf="invoiced" width="300%"/>
@@ -65,6 +66,7 @@
       onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly"
       if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="invoice" width="120" hidden="true"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="timetable-form-purchase" title="Timetable"
@@ -83,11 +85,13 @@
       </field>
       <field name="title" colSpan="12"/>
       <field name="amount" colSpan="4" required="true"
-        onChange="action-timetable-group-on-amount-change"/>
+        onChange="action-timetable-group-on-amount-change"
+        x-scale="purchaseOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" required="true"
         onChange="action-timetable-record-on-percentage-change"/>
       <field name="invoiced" hideIf="!invoice"/>
       <field name="comments" colSpan="12"/>
+      <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
