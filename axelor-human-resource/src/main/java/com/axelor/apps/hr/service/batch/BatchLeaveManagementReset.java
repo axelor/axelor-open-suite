@@ -28,6 +28,8 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
+import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
@@ -46,18 +48,22 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       LeaveLineRepository leaveLineRepository,
       LeaveManagementRepository leaveManagementRepository,
       EmployeeService employeeService,
-      LeaveLineService leaveLineService) {
+      LeaveLineService leaveLineService,
+      EmployeeFetchService employeeFetchService,
+      LeaveReasonRepository leaveReasonRepository) {
     super(
         leaveManagementService,
         leaveLineRepository,
         leaveManagementRepository,
         employeeService,
-        leaveLineService);
+        leaveLineService,
+        employeeFetchService,
+        leaveReasonRepository);
   }
 
   @Override
   protected void process() {
-    List<Employee> employeeList = getEmployees(batch.getHrBatch());
+    List<Employee> employeeList = employeeFetchService.getEmployees(batch.getHrBatch());
     resetLeaveManagementLines(employeeList);
   }
 
@@ -91,16 +97,18 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
     if (employee == null || EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;
     }
-    LeaveReason leaveReason = batch.getHrBatch().getLeaveReason();
-    for (LeaveLine leaveLine : employee.getLeaveLineList()) {
-      if (leaveReason.equals(leaveLine.getLeaveReason())) {
-        leaveManagementService.reset(
-            leaveLine,
-            employeeService.getUser(employee),
-            batch.getHrBatch().getComments(),
-            null,
-            batch.getHrBatch().getStartDate(),
-            batch.getHrBatch().getEndDate());
+
+    for (LeaveReason leaveReason : batch.getHrBatch().getLeaveReasonSet()) {
+      for (LeaveLine leaveLine : employee.getLeaveLineList()) {
+        if (leaveReason.equals(leaveLine.getLeaveReason())) {
+          leaveManagementService.reset(
+              leaveLine,
+              employeeService.getUser(employee),
+              batch.getHrBatch().getComments(),
+              null,
+              batch.getHrBatch().getStartDate(),
+              batch.getHrBatch().getEndDate());
+        }
       }
     }
   }

@@ -72,6 +72,8 @@ import com.axelor.apps.hr.service.bankorder.BankOrderServiceHRImpl;
 import com.axelor.apps.hr.service.batch.BatchCreditTransferExpensePaymentHR;
 import com.axelor.apps.hr.service.batch.MailBatchServiceHR;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
+import com.axelor.apps.hr.service.employee.EmployeeFetchService;
+import com.axelor.apps.hr.service.employee.EmployeeFetchServiceImpl;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.employee.EmployeeServiceImpl;
 import com.axelor.apps.hr.service.employee.EmploymentAmendmentTypeService;
@@ -264,5 +266,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(IncrementLeaveService.class).to(IncrementLeaveServiceImpl.class);
     bind(LeaveValueProrataService.class).to(LeaveValueProrataServiceImpl.class);
     bind(LeaveReasonService.class).to(LeaveReasonServiceImpl.class);
+    bind(EmployeeFetchService.class).to(EmployeeFetchServiceImpl.class);
   }
 }
