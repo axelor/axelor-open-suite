@@ -21,6 +21,7 @@ package com.axelor.apps.base.service.print;
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.PrintTemplateLine;
 import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
 import com.axelor.auth.AuthUtils;
@@ -64,7 +65,8 @@ public class PrintTemplateLineServiceImpl implements PrintTemplateLineService {
     String resultOfContent = null;
 
     Locale locale =
-        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLocalization().getCode())
+        Optional.ofNullable(printTemplateLine.getPrintTemplate().getLocalization())
+            .map(Localization::getCode)
             .map(Locale::new)
             .orElseGet(AppFilter::getLocale);
     TemplateMaker maker = initMaker(objectId, model, simpleModel, locale);
