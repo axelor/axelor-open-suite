@@ -21,6 +21,8 @@ package com.axelor.apps.production.service.costsheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.ProductFamily;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -298,15 +300,26 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     Set<Product> productSet = Sets.newHashSet();
 
-    if (!unitCostCalculation.getProductSet().isEmpty()) {
+    Set<Product> selectedProductSet = unitCostCalculation.getProductSet();
+    Set<ProductCategory> productCategorySet = unitCostCalculation.getProductCategorySet();
+    Set<ProductFamily> productFamilySet = unitCostCalculation.getProductFamilySet();
+    if (ObjectUtils.isEmpty(selectedProductSet)
+        && ObjectUtils.isEmpty(productCategorySet)
+        && ObjectUtils.isEmpty(productFamilySet)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_CHOOSE_FILTERS));
+    }
 
-      productSet.addAll(unitCostCalculation.getProductSet());
+    if (!selectedProductSet.isEmpty()) {
+
+      productSet.addAll(selectedProductSet);
     }
 
     List<Integer> productSubTypeSelects =
         StringTool.getIntegerList(unitCostCalculation.getProductSubTypeSelect());
 
-    if (!unitCostCalculation.getProductCategorySet().isEmpty()) {
+    if (!productCategorySet.isEmpty()) {
 
       productSet.addAll(
           productRepository
@@ -315,7 +328,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
                   "self.productCategory in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
                       + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND self.dtype = 'Product'",
-                  unitCostCalculation.getProductCategorySet(),
+                  productCategorySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
                   unitCostCalculation.getCompanySet(),
@@ -324,7 +337,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               .fetch());
     }
 
-    if (!unitCostCalculation.getProductFamilySet().isEmpty()) {
+    if (!productFamilySet.isEmpty()) {
 
       productSet.addAll(
           productRepository
@@ -333,7 +346,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
                   "self.productFamily in (?1) AND self.productTypeSelect = ?2 AND self.productSubTypeSelect in (?3)"
                       + " AND self.defaultBillOfMaterial.company in (?4) AND self.procurementMethodSelect in (?5, ?6)"
                       + " AND self.dtype = 'Product'",
-                  unitCostCalculation.getProductFamilySet(),
+                  productFamilySet,
                   ProductRepository.PRODUCT_TYPE_STORABLE,
                   productSubTypeSelects,
                   unitCostCalculation.getCompanySet(),
@@ -345,7 +358,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     if (productSet.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT));
+          I18n.get(ProductionExceptionMessage.UNIT_COST_CALCULATION_NO_PRODUCT_FOUND));
     }
 
     Company company = this.getSingleCompany(unitCostCalculation);
