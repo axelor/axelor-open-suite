@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -50,6 +51,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   protected AccountConfigService accountConfigService;
   protected ListHelper listHelper;
   protected AppAccountService appAccountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public InvoiceLineAnalyticServiceImpl(
@@ -58,13 +60,15 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
       ListHelper listHelper,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
     this.listHelper = listHelper;
     this.appAccountService = appAccountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -110,7 +114,10 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       if (invoiceLine.getAnalyticMoveLineList() != null) {
         for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
           analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+              analyticMoveLine,
+              currencyScaleServiceAccount.getScaledValue(
+                  analyticMoveLine, invoiceLine.getCompanyExTaxTotal()),
+              date);
         }
       }
       return analyticMoveLineList;
@@ -129,7 +136,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
-            invoiceLine.getCompanyExTaxTotal(),
+            currencyScaleServiceAccount.getScaledValue(
+                invoiceLine, invoiceLine.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 

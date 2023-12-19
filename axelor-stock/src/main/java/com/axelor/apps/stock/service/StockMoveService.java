@@ -185,7 +185,7 @@ public interface StockMoveService {
    */
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-  void setAvailableStatus(StockMove stockMove);
+  void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
   /**
    * Update editDate of one Outgoing Stock Move

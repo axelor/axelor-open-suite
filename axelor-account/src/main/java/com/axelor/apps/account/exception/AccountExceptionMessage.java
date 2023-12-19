@@ -1065,6 +1065,9 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 
+  public static final String ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK = /*$$(*/
+      "Please make sure that the account %s being used can be reconciled and used for partner balance." /*)*/;
+
   public static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
       "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/credit note" /*)*/;
 
@@ -1079,9 +1082,6 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
-
-  public static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
-      "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
 
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;

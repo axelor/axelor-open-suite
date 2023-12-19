@@ -1,7 +1,9 @@
 package com.axelor.apps.hr.service.batch;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -36,7 +38,12 @@ public class BatchIncrementLeave extends AbstractBatch {
   @Override
   protected void process() {
     List<Long> leaveReasonList =
-        leaveReasonRepository.all().filter("self.isActive = true").fetch().stream()
+        leaveReasonRepository.all()
+            .filter(
+                "self.isActive = true AND self.leaveReasonTypeSelect = :typeSelect AND self.leaveReasonTypeSelect != :exceptionalSelect")
+            .bind("typeSelect", batch.getHrBatch().getLeaveReasonTypeSelect())
+            .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS).fetch()
+            .stream()
             .map(LeaveReason::getId)
             .collect(Collectors.toList());
 
@@ -46,11 +53,12 @@ public class BatchIncrementLeave extends AbstractBatch {
         incrementDone();
       } catch (Exception e) {
         incrementAnomaly();
+        TraceBackService.trace(e, "Increment leave batch", batch.getId());
       }
     }
   }
 
-  protected void incrementLeaveForEmployees(Long id) {
+  protected void incrementLeaveForEmployees(Long id) throws AxelorException {
     List<Employee> employeeList;
     int offset = 0;
     LeaveReason leaveReason = leaveReasonRepository.find(id);

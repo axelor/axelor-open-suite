@@ -16,19 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.bankstatement.file;
+package com.axelor.apps.bankpayment.service.bankstatement.line;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-public abstract class BankStatementFileService {
+public abstract class BankStatementLineCreateAbstractService {
 
   protected BankStatement bankStatement;
   protected File file;
@@ -37,7 +42,7 @@ public abstract class BankStatementFileService {
   protected final BankStatementImportService bankStatementService;
 
   @Inject
-  protected BankStatementFileService(
+  protected BankStatementLineCreateAbstractService(
       BankStatementRepository bankStatementRepository,
       BankStatementImportService bankStatementService) {
     this.bankStatementRepository = bankStatementRepository;
@@ -51,19 +56,45 @@ public abstract class BankStatementFileService {
         bankStatement.getBankStatementFileFormat().getStatementFileFormatSelect();
   }
 
-  protected File getFile(BankStatement bankStatement) {
-    return MetaFiles.getPath(bankStatement.getBankStatementFile()).toFile();
-  }
-
   public void process(BankStatement bankStatement) throws IOException, AxelorException {
     setBankStatement(bankStatement);
     process();
   }
 
-  public void process() throws IOException, AxelorException {
-    if (bankStatement == null) {
-      throw new IllegalStateException("Bank statement is not set.");
+  protected void process() throws IOException, AxelorException {
+
+    List<Map<String, Object>> structuredContentFile = readFile();
+
+    int sequence = 0;
+    findBankStatement();
+
+    for (Map<String, Object> structuredContentLine : structuredContentFile) {
+      try {
+        createBankStatementLine(structuredContentLine, sequence++);
+      } catch (Exception e) {
+        TraceBackService.trace(
+            new Exception(String.format("Line %s : %s", sequence, e), e),
+            ExceptionOriginRepository.IMPORT);
+        findBankStatement();
+      } finally {
+        if (sequence % 10 == 0) {
+          JPA.clear();
+          findBankStatement();
+        }
+      }
     }
+
+    JPA.clear();
+    findBankStatement();
+  }
+
+  protected abstract List<Map<String, Object>> readFile() throws IOException, AxelorException;
+
+  protected abstract BankStatementLine createBankStatementLine(
+      Map<String, Object> structuredContentLine, int sequence);
+
+  protected File getFile(BankStatement bankStatement) {
+    return MetaFiles.getPath(bankStatement.getBankStatementFile()).toFile();
   }
 
   protected BankStatement findBankStatement() {
