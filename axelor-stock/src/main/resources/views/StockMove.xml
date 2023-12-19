@@ -9,11 +9,10 @@
       <button name="printStockMoveGridBtn" title="Print StockMove(s)"
         onClick="action-print-stock-move" icon="fa-print"/>
     </toolbar>
-    <hilite
-      if="statusSelect == 2 &amp;&amp; $moment(__config__.date).diff(estimatedDate, 'days') &gt; 0"
+    <hilite if="statusSelect == 2 &amp;&amp; $moment().diff(estimatedDate, 'days') &gt; 0"
       color="danger"/>
     <hilite
-      if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10"
+      if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff($moment(), 'days') &lt; 10"
       color="warning"/>
     <hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 2" color="success"/>
     <hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 3" color="danger"/>
@@ -61,7 +60,7 @@
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
     </toolbar>
     <hilite
-      if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"
+      if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || $moment(invoiceBlockedToDate) &gt; $moment())"
       color="danger"/>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="pickingIsEdited"/>
