@@ -448,7 +448,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
-      maturityDate = updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty);
+      maturityDate =
+          updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty)
+              .minusDays(mrpLineType.getSecurityDelay());
     }
 
     super.createProposalMrpLine(

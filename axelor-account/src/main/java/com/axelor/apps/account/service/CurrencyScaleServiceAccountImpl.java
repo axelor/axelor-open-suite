@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
@@ -88,6 +89,16 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getScaledValue(AnalyticMoveLine analyticMoveLine, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(analyticMoveLine.getCurrency()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(Company company, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(company));
+  }
+
+  @Override
   public BigDecimal getScaledValue(PaymentVoucher paymentVoucher, BigDecimal amount) {
     return this.getScaledValue(amount, this.getScale(paymentVoucher.getCurrency()));
   }
@@ -161,6 +172,11 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return invoicePayment.getInvoice() != null
         ? this.getCompanyScale(invoicePayment.getInvoice())
         : this.getCompanyScale(invoicePayment.getMove());
+  }
+
+  @Override
+  public int getScale(AnalyticMoveLine analyticMoveLine) {
+    return this.getScale(analyticMoveLine.getCurrency());
   }
 
   @Override
