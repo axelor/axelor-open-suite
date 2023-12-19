@@ -87,6 +87,9 @@
   <input file="base_economicArea.csv" separator=";"
     type="com.axelor.apps.base.db.EconomicArea" search="self.importId = :importId"/>
 
+  <input file="base_addressTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
+
   <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
     search="self.importId = :importId"/>
 
