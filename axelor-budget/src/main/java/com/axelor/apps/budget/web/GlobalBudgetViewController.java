@@ -2,6 +2,8 @@ package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.GlobalBudget;
@@ -18,7 +20,9 @@ import java.util.List;
 
 public class GlobalBudgetViewController {
 
-  public void viewGlobalPurchaseOrderLine(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void viewGlobalPurchaseOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
 
@@ -40,7 +44,9 @@ public class GlobalBudgetViewController {
             .map());
   }
 
-  public void viewGlobalSaleOrderLine(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void viewGlobalSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
 
@@ -60,7 +66,9 @@ public class GlobalBudgetViewController {
             .map());
   }
 
-  public void viewBudgetLines(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void viewBudgetLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
 
@@ -84,7 +92,9 @@ public class GlobalBudgetViewController {
             .map());
   }
 
-  public void viewSimulatedMove(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void viewSimulatedMove(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
 
@@ -106,7 +116,9 @@ public class GlobalBudgetViewController {
             .map());
   }
 
-  public void viewRealizedWithPo(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void viewRealizedWithPo(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
 
@@ -129,7 +141,9 @@ public class GlobalBudgetViewController {
             .map());
   }
 
-  public void viewRealizedWithoutPo(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void viewRealizedWithoutPo(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
 
