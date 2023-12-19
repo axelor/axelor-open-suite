@@ -19,7 +19,7 @@
   </grid>
 
   <form model="com.axelor.apps.budget.db.GlobalBudget" title="Global budget"
-    name="global-budget-form" width="large" onNew="action-global-budget-record-set-defaults"
+    name="global-budget-form" width="large" onNew="action-global-budget-group-onnew"
     onSave="action-global-budget-group-onsave">
 
     <menubar>
@@ -107,7 +107,7 @@
         </panel>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
-        title="Total amounts">
+        title="Total amounts" showIf="id">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>
@@ -161,6 +161,10 @@
     </panel>
   </form>
 
+  <action-group name="action-global-budget-group-onnew">
+    <action name="action-global-budget-record-set-defaults"/>
+    <action name="action-global-budget-method-hide-amounts" if="!id"/>
+  </action-group>
 
   <action-view name="action-view-global-budget-budget-version-new"
     title="Create New version" model="com.axelor.utils.db.Wizard">
@@ -234,6 +238,11 @@
   <action-method name="action-global-budget-method-archived-btn-onClick">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="archiveChildren"/>
   </action-method>
+
+  <action-method name="action-global-budget-method-hide-amounts">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="hideAmounts"/>
+  </action-method>
+
 
   <action-group name="action-global-budget-group-draft-children">
     <action name="action-global-budget-validate-alert-draft-children"/>

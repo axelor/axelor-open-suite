@@ -110,7 +110,7 @@
       <static name="$periodNotAvailable" colSpan="12" hidden="true">
         <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
+        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1 || !id">
         <field name="periodDurationSelect" colSpan="4"/>
         <field name="amountForGeneration" colSpan="4"/>
         <button name="generatePeriodsBtn" title="Generate periods"
@@ -119,7 +119,7 @@
       </panel>
 
       <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" itemSpan="3"
-        title="Total amounts">
+        title="Total amounts" showIf="id">
         <field name="totalAmountExpected"/>
         <field name="availableAmount"/>
         <field name="availableAmountWithSimulated"/>

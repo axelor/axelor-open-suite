@@ -60,7 +60,7 @@
           readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
-        title="Total amounts">
+        title="Total amounts" showIf="id">
         <field name="totalAmountExpected"/>
         <field name="totalAmountAvailable"/>
         <field name="availableAmountWithSimulated"/>
@@ -125,6 +125,7 @@
   <action-group name="action-budget-level-group-onnew">
     <action name="action-budget-level-record-set-defaults"/>
     <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-global-budget-method-hide-amounts" if="!id"/>
   </action-group>
 
   <action-group name="action-budget-level-template-group-onnew">

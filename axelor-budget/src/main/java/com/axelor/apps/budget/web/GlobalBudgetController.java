@@ -171,4 +171,24 @@ public class GlobalBudgetController {
       response.setValues(globalBudget);
     }
   }
+
+  public void hideAmounts(ActionRequest request, ActionResponse response) {
+
+    String[] attributesToHide = {
+      "budgetLevelList.totalAmountExpected",
+      "budgetLevelList.totalAmountAvailable",
+      "budgetLevelList.totalAmountCommitted",
+      "budgetLevelList.realizedWithNoPo",
+      "budgetLevelList.realizedWithPo",
+      "budgetLevelList.totalFirmGap",
+      "budgetList.totalAmountExpected",
+      "budgetList.totalAmountCommitted",
+      "budgetList.totalAmountRealized",
+      "budgetList.availableAmount"
+    };
+
+    for (String attribute : attributesToHide) {
+      response.setAttr(attribute, "hidden", true);
+    }
+  }
 }
