@@ -450,6 +450,7 @@
 "Next overhaul date","Date de prochaine révision",,
 "No period has been found in the weekly planning for the operation order %s","Aucune période n'a été trouvée dans le planning hebdomadaire pour l'opération %s",,
 "No period has been found in the weekly planning for the operation order %s",,,
+"No product has been found with these filters. Please check your filters","Aucun produit n'a été trouvé pour ces filtres. Merci de vérifier vos filtres.",,
 "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it.","Aucun ordre de production n’a pu être généré. Assurez-vous que tout a correctement été configuré. Rappel : vérifiez que chaque ligne de la vente devant être produite a comme mode d’approvisionnement ‘produire’ et que la nomenclature de la ligne ou de son produit a une gamme valide.",,
 "Normal",,,
 "Not enough quantity in products to consume for: %s","Pas assez de quantité de produits à consommer pour : %s",,
