@@ -63,7 +63,9 @@ public class ContractLineManagementRepository extends ContractLineRepository {
       }
     }
 
-    if (context.get("_field").equals("contractLineList") && context.get("_parent") != null) {
+    if (context.containsKey("_field")
+        && context.get("_field").equals("contractLineList")
+        && context.get("_parent") != null) {
       Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
 
       ContractVersion contractVersion =
