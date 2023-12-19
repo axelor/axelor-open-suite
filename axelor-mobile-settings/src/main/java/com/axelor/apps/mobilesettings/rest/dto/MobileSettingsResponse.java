@@ -4,60 +4,75 @@ import com.axelor.utils.api.ResponseStructure;
 import java.util.List;
 
 public class MobileSettingsResponse extends ResponseStructure {
-  protected final Boolean isStockAppEnabled;
-  protected final Boolean isProductionAppEnabled;
-  protected final Boolean isCrmAppEnabled;
-  protected final Boolean isHelpdeskAppEnabled;
-  protected final Boolean isHRAppEnabled;
+
+  protected final List<MobileConfigResponse> apps;
   protected final Boolean isLoginUserQrcodeEnabled;
   protected final Boolean isTrackerMessageEnabled;
-  protected final MobileStockSettingsResponse stockSettings;
-  protected final MobileHRSettingsResponse hrSettings;
-  protected final List<String> restrictedMobileMenus;
+  protected final Boolean isInventoryValidationEnabled;
+  protected final Boolean isStockCorrectionValidationEnabled;
+  protected final Boolean isCustomerDeliveryLineAdditionEnabled;
+  protected final Boolean isSupplierArrivalLineAdditionEnabled;
+  protected final Boolean isVerifyCustomerDeliveryLineEnabled;
+  protected final Boolean isVerifySupplierArrivalLineEnabled;
+  protected final Boolean isVerifyInternalMoveLineEnabled;
+  protected final Boolean isVerifyInventoryLineEnabled;
+  protected final Boolean isMultiCurrencyEnabled;
+  protected final Boolean isExpenseProjectInvoicingEnabled;
+  protected final Boolean isKilometricExpenseLineAllowed;
+  protected final Boolean isManualCreationOfExpenseAllowed;
+  protected final Boolean isLineCreationOfExpenseDetailsAllowed;
+  protected final Boolean isManualCreationOfTimesheetAllowed;
+  protected final Boolean isLineCreationOfTimesheetDetailsAllowed;
+  protected final Boolean isEditionOfDateAllowed;
+  protected final Boolean isTimesheetProjectInvoicingEnabled;
 
   public MobileSettingsResponse(
       Integer version,
-      Boolean isStockAppEnabled,
-      Boolean isProductionAppEnabled,
-      Boolean isCrmAppEnabled,
-      Boolean isHelpdeskAppEnabled,
-      Boolean isHRAppEnabled,
+      List<MobileConfigResponse> apps,
       Boolean isLoginUserQrcodeEnabled,
       Boolean isTrackerMessageEnabled,
-      MobileStockSettingsResponse stockSettings,
-      MobileHRSettingsResponse hrSettings,
-      List<String> restrictedMobileMenus) {
+      Boolean isInventoryValidationEnabled,
+      Boolean isStockCorrectionValidationEnabled,
+      Boolean isCustomerDeliveryLineAdditionEnabled,
+      Boolean isSupplierArrivalLineAdditionEnabled,
+      Boolean isVerifyCustomerDeliveryLineEnabled,
+      Boolean isVerifySupplierArrivalLineEnabled,
+      Boolean isVerifyInternalMoveLineEnabled,
+      Boolean isVerifyInventoryLineEnabled,
+      Boolean isMultiCurrencyEnabled,
+      Boolean isExpenseProjectInvoicingEnabled,
+      Boolean isKilometricExpenseLineAllowed,
+      Boolean isManualCreationOfExpenseAllowed,
+      Boolean isLineCreationOfExpenseDetailsAllowed,
+      Boolean isManualCreationOfTimesheetAllowed,
+      Boolean isLineCreationOfTimesheetDetailsAllowed,
+      Boolean isEditionOfDateAllowed,
+      Boolean isTimesheetProjectInvoicingEnabled) {
     super(version);
-    this.isStockAppEnabled = isStockAppEnabled;
-    this.isProductionAppEnabled = isProductionAppEnabled;
-    this.isCrmAppEnabled = isCrmAppEnabled;
-    this.isHelpdeskAppEnabled = isHelpdeskAppEnabled;
-    this.isHRAppEnabled = isHRAppEnabled;
+    this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
     this.isTrackerMessageEnabled = isTrackerMessageEnabled;
-    this.stockSettings = stockSettings;
-    this.hrSettings = hrSettings;
-    this.restrictedMobileMenus = restrictedMobileMenus;
+    this.isInventoryValidationEnabled = isInventoryValidationEnabled;
+    this.isStockCorrectionValidationEnabled = isStockCorrectionValidationEnabled;
+    this.isCustomerDeliveryLineAdditionEnabled = isCustomerDeliveryLineAdditionEnabled;
+    this.isSupplierArrivalLineAdditionEnabled = isSupplierArrivalLineAdditionEnabled;
+    this.isVerifyCustomerDeliveryLineEnabled = isVerifyCustomerDeliveryLineEnabled;
+    this.isVerifySupplierArrivalLineEnabled = isVerifySupplierArrivalLineEnabled;
+    this.isVerifyInternalMoveLineEnabled = isVerifyInternalMoveLineEnabled;
+    this.isVerifyInventoryLineEnabled = isVerifyInventoryLineEnabled;
+    this.isMultiCurrencyEnabled = isMultiCurrencyEnabled;
+    this.isExpenseProjectInvoicingEnabled = isExpenseProjectInvoicingEnabled;
+    this.isKilometricExpenseLineAllowed = isKilometricExpenseLineAllowed;
+    this.isManualCreationOfExpenseAllowed = isManualCreationOfExpenseAllowed;
+    this.isLineCreationOfExpenseDetailsAllowed = isLineCreationOfExpenseDetailsAllowed;
+    this.isManualCreationOfTimesheetAllowed = isManualCreationOfTimesheetAllowed;
+    this.isLineCreationOfTimesheetDetailsAllowed = isLineCreationOfTimesheetDetailsAllowed;
+    this.isEditionOfDateAllowed = isEditionOfDateAllowed;
+    this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
   }
 
-  public Boolean getStockAppEnabled() {
-    return isStockAppEnabled;
-  }
-
-  public Boolean getProductionAppEnabled() {
-    return isProductionAppEnabled;
-  }
-
-  public Boolean getCrmAppEnabled() {
-    return isCrmAppEnabled;
-  }
-
-  public Boolean getHelpdeskAppEnabled() {
-    return isHelpdeskAppEnabled;
-  }
-
-  public Boolean getHRAppEnabled() {
-    return isHRAppEnabled;
+  public List<MobileConfigResponse> getApps() {
+    return apps;
   }
 
   public Boolean getLoginUserQrcodeEnabled() {
@@ -68,15 +83,71 @@ public class MobileSettingsResponse extends ResponseStructure {
     return isTrackerMessageEnabled;
   }
 
-  public MobileStockSettingsResponse getStockSettings() {
-    return stockSettings;
+  public Boolean getInventoryValidationEnabled() {
+    return isInventoryValidationEnabled;
   }
 
-  public MobileHRSettingsResponse getHrSettings() {
-    return hrSettings;
+  public Boolean getStockCorrectionValidationEnabled() {
+    return isStockCorrectionValidationEnabled;
   }
 
-  public List<String> getRestrictedMobileMenus() {
-    return restrictedMobileMenus;
+  public Boolean getCustomerDeliveryLineAdditionEnabled() {
+    return isCustomerDeliveryLineAdditionEnabled;
+  }
+
+  public Boolean getSupplierArrivalLineAdditionEnabled() {
+    return isSupplierArrivalLineAdditionEnabled;
+  }
+
+  public Boolean getVerifyCustomerDeliveryLineEnabled() {
+    return isVerifyCustomerDeliveryLineEnabled;
+  }
+
+  public Boolean getVerifySupplierArrivalLineEnabled() {
+    return isVerifySupplierArrivalLineEnabled;
+  }
+
+  public Boolean getVerifyInternalMoveLineEnabled() {
+    return isVerifyInternalMoveLineEnabled;
+  }
+
+  public Boolean getVerifyInventoryLineEnabled() {
+    return isVerifyInventoryLineEnabled;
+  }
+
+  public Boolean getMultiCurrencyEnabled() {
+    return isMultiCurrencyEnabled;
+  }
+
+  public Boolean getExpenseProjectInvoicingEnabled() {
+    return isExpenseProjectInvoicingEnabled;
+  }
+
+  public Boolean getKilometricExpenseLineAllowed() {
+    return isKilometricExpenseLineAllowed;
+  }
+
+  public Boolean getManualCreationOfExpenseAllowed() {
+    return isManualCreationOfExpenseAllowed;
+  }
+
+  public Boolean getLineCreationOfExpenseDetailsAllowed() {
+    return isLineCreationOfExpenseDetailsAllowed;
+  }
+
+  public Boolean getManualCreationOfTimesheetAllowed() {
+    return isManualCreationOfTimesheetAllowed;
+  }
+
+  public Boolean getLineCreationOfTimesheetDetailsAllowed() {
+    return isLineCreationOfTimesheetDetailsAllowed;
+  }
+
+  public Boolean getEditionOfDateAllowed() {
+    return isEditionOfDateAllowed;
+  }
+
+  public Boolean getTimesheetProjectInvoicingEnabled() {
+    return isTimesheetProjectInvoicingEnabled;
   }
 }
