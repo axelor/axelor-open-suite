@@ -7,7 +7,8 @@
 
   <entity name="PurchaseOrderLine">
 
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
+      precision="20" scale="3"/>
 
     <one-to-many name="analyticMoveLineList"
       ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"

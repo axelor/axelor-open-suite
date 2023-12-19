@@ -8,7 +8,8 @@
     <field name="estimatedDate" readonlyIf="invoiced" required="true"/>
     <field name="title" readonlyIf="invoiced"/>
     <field name="amount" readonlyIf="invoiced" required="true"
-      onChange="action-timetable-group-on-amount-change"/>
+      onChange="action-timetable-group-on-amount-change"
+      x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonlyIf="invoiced" required="true"
       onChange="action-timetable-record-on-percentage-change"/>
     <field name="comments" readonlyIf="invoiced" width="300%"/>
@@ -17,6 +18,7 @@
       icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice"
       if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="invoice" width="120" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="timetable-form" title="Timetable"
@@ -35,7 +37,8 @@
       </field>
       <field name="title" colSpan="12"/>
       <field name="amount" colSpan="4" required="true"
-        onChange="action-timetable-group-on-amount-change"/>
+        onChange="action-timetable-group-on-amount-change"
+        x-scale="saleOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" required="true"
         onChange="action-timetable-record-on-percentage-change"/>
       <button name="generateInvoiceBtn" colOffset="9" colSpan="3" title="Generate Invoice"
@@ -45,6 +48,7 @@
       <field name="invoice" hideIf="!invoice"/>
       <field name="comments" colSpan="12"/>
       <field name="invoiced" hidden="true"/>
+      <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -55,7 +59,8 @@
     <field name="estimatedDate" readonlyIf="invoiced" required="true"/>
     <field name="title" readonlyIf="invoiced"/>
     <field name="amount" readonlyIf="invoiced" required="true"
-      onChange="action-timetable-group-on-amount-change"/>
+      onChange="action-timetable-group-on-amount-change"
+      x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonlyIf="invoiced" required="true"
       onChange="action-timetable-record-on-percentage-change"/>
     <field name="comments" readonlyIf="invoiced" width="300%"/>
@@ -65,6 +70,7 @@
       onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly"
       if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="invoice" width="120" hidden="true"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="timetable-form-purchase" title="Timetable"
@@ -83,11 +89,13 @@
       </field>
       <field name="title" colSpan="12"/>
       <field name="amount" colSpan="4" required="true"
-        onChange="action-timetable-group-on-amount-change"/>
+        onChange="action-timetable-group-on-amount-change"
+        x-scale="purchaseOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" required="true"
         onChange="action-timetable-record-on-percentage-change"/>
       <field name="invoiced" hideIf="!invoice"/>
       <field name="comments" colSpan="12"/>
+      <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -113,8 +121,11 @@
   <action-record name="action-timetable-record-on-percentage-change"
     model="com.axelor.apps.supplychain.db.Timetable">
     <field name="amount"
-      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(__config__.app.getApp('base')?.nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP) : 0"
-      if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
+      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(saleOrder?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
+    <field name="amount"
+      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(purchaseOrder?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
   </action-record>
 
   <action-method name="action-timetable-method-generate-invoice">
