@@ -9,10 +9,9 @@
     <string name="name" title="Name"/>
     <string name="appName" title="Application"
       selection="mobilesettings.mobile.config.sequence.select"/>
+    <boolean name="isCustom" title="Custom app"/>
     <string name="menuTitle" title="Menu title"/>
     <string name="iconName" title="Icon name"/>
-    <string name="parentModuleName" title="Parent module name"
-      selection="mobilesettings.mobile.config.sequence.select"/>
     <integer name="menuOrder" title="Menu order" nullable="true"/>
     <many-to-one name="appMobileSettings" title="App mobile settings"
       ref="com.axelor.studio.db.AppMobileSettings"/>

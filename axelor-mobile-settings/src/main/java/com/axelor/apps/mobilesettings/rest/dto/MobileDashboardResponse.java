@@ -10,6 +10,7 @@ public class MobileDashboardResponse extends ResponseStructure {
 
   protected String name;
   protected String appName;
+  protected Boolean isCustom;
   protected String menuTitle;
   protected String iconName;
   protected String parentModuleName;
@@ -22,9 +23,9 @@ public class MobileDashboardResponse extends ResponseStructure {
     super(mobileDashboard.getVersion());
     this.name = mobileDashboard.getName();
     this.appName = mobileDashboard.getAppName();
+    this.isCustom = mobileDashboard.getIsCustom();
     this.menuTitle = mobileDashboard.getMenuTitle();
     this.iconName = mobileDashboard.getIconName();
-    this.parentModuleName = mobileDashboard.getParentModuleName();
     this.menuOrder = mobileDashboard.getMenuOrder();
     this.authorizedRoleSet = mobileDashboard.getAuthorizedRoleSet();
     this.dashboardLineList = dashboardLineList;
@@ -38,16 +39,16 @@ public class MobileDashboardResponse extends ResponseStructure {
     return appName;
   }
 
+  public Boolean getIsCustom() {
+    return isCustom;
+  }
+
   public String getMenuTitle() {
     return menuTitle;
   }
 
   public String getIconName() {
     return iconName;
-  }
-
-  public String getParentModuleName() {
-    return parentModuleName;
   }
 
   public Integer getMenuOrder() {

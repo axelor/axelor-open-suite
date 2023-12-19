@@ -16,25 +16,23 @@
     model="com.axelor.apps.mobilesettings.db.MobileDashboard" width="large">
     <panel name="mainPanel" colSpan="12">
       <field name="name"/>
-      <field name="appName"
+      <field name="appName" colSpan="5"/>
+      <field name="isCustom" colSpan="1" widget="boolean-switch"
         onChange="action-mobile-dashboard-attrs-empty-fields-on-non-custom-app"/>
-      <field name="menuTitle" hidden="true" showIf="appName == 'custom'"/>
-      <field name="iconName" hidden="true" showIf="appName == 'custom'"/>
-      <field name="parentModuleName" hidden="true" showIf="appName == 'custom'"/>
-      <field name="menuOrder" hidden="true" showIf="appName == 'custom'"/>
+      <field name="menuTitle" hidden="true" showIf="isCustom" colSpan="4"/>
+      <field name="iconName" hidden="true" showIf="isCustom" colSpan="4"/>
+      <field name="menuOrder" hidden="true" showIf="isCustom" colSpan="4"/>
       <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form" colSpan="12"
-        canNew="false" canEdit="false"/>
+        canNew="false" canEdit="false" widget="tag-select"/>
       <field name="mobileDashboardLineList" grid-view="mobile-dashboard-line-grid"
         form-view="mobile-dashboard-line-form" colSpan="12"/>
     </panel>
   </form>
 
   <action-attrs name="action-mobile-dashboard-attrs-empty-fields-on-non-custom-app">
-    <attribute for="menuTitle" name="value" expr="eval: null" if="appName != 'custom'"/>
-    <attribute for="iconName" name="value" expr="eval: null" if="appName != 'custom'"/>
-    <attribute for="parentModuleName" name="value" expr="eval: null"
-      if="appName != 'custom'"/>
-    <attribute for="menuOrder" name="value" expr="eval: null" if="appName != 'custom'"/>
+    <attribute for="menuTitle" name="value" expr="eval: null" if="!isCustom"/>
+    <attribute for="iconName" name="value" expr="eval: null" if="!isCustom"/>
+    <attribute for="menuOrder" name="value" expr="eval: null" if="!isCustom"/>
   </action-attrs>
 
 </object-views>
