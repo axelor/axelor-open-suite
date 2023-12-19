@@ -125,7 +125,7 @@
   <action-group name="action-budget-level-group-onnew">
     <action name="action-budget-level-record-set-defaults"/>
     <action name="action-budget-level-attrs-set-attrs"/>
-    <action name="action-global-budget-method-hide-amounts" if="!id"/>
+    <action name="action-global-budget-method-hide-amounts"/>
   </action-group>
 
   <action-group name="action-budget-level-template-group-onnew">
@@ -136,6 +136,7 @@
 
   <action-group name="action-budget-level-group-onload">
     <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-global-budget-method-hide-amounts" if="!id"/>
   </action-group>
 
   <action-attrs name="action-budget-level-attrs-set-attrs">

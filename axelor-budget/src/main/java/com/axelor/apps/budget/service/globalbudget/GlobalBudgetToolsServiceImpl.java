@@ -6,7 +6,9 @@ import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
@@ -71,5 +73,31 @@ public class GlobalBudgetToolsServiceImpl implements GlobalBudgetToolsService {
         budget.setGlobalBudget(globalBudget);
       }
     }
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> manageHiddenAmounts(boolean hidden) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    this.addAttr("budgetLevelList.totalAmountExpected", "hidden", hidden, attrsMap);
+    this.addAttr("budgetLevelList.totalAmountAvailable", "hidden", hidden, attrsMap);
+    this.addAttr("budgetLevelList.totalAmountCommitted", "hidden", hidden, attrsMap);
+    this.addAttr("budgetLevelList.realizedWithNoPo", "hidden", hidden, attrsMap);
+    this.addAttr("budgetLevelList.realizedWithPo", "hidden", hidden, attrsMap);
+    this.addAttr("budgetLevelList.totalFirmGap", "hidden", hidden, attrsMap);
+    this.addAttr("budgetList.totalAmountExpected", "hidden", hidden, attrsMap);
+    this.addAttr("budgetList.totalAmountCommitted", "hidden", hidden, attrsMap);
+    this.addAttr("budgetList.totalAmountRealized", "hidden", hidden, attrsMap);
+    this.addAttr("budgetList.availableAmount", "hidden", hidden, attrsMap);
+
+    return attrsMap;
+  }
+
+  protected void addAttr(
+      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
+    if (!attrsMap.containsKey(field)) {
+      attrsMap.put(field, new HashMap<>());
+    }
+
+    attrsMap.get(field).put(attr, value);
   }
 }

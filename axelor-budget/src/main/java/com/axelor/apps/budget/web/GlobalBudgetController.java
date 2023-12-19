@@ -28,6 +28,7 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetWorkflowService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -173,22 +174,10 @@ public class GlobalBudgetController {
   }
 
   public void hideAmounts(ActionRequest request, ActionResponse response) {
+    response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(true));
+  }
 
-    String[] attributesToHide = {
-      "budgetLevelList.totalAmountExpected",
-      "budgetLevelList.totalAmountAvailable",
-      "budgetLevelList.totalAmountCommitted",
-      "budgetLevelList.realizedWithNoPo",
-      "budgetLevelList.realizedWithPo",
-      "budgetLevelList.totalFirmGap",
-      "budgetList.totalAmountExpected",
-      "budgetList.totalAmountCommitted",
-      "budgetList.totalAmountRealized",
-      "budgetList.availableAmount"
-    };
-
-    for (String attribute : attributesToHide) {
-      response.setAttr(attribute, "hidden", true);
-    }
+  public void showAmounts(ActionRequest request, ActionResponse response) {
+    response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(false));
   }
 }

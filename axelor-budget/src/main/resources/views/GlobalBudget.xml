@@ -163,7 +163,7 @@
 
   <action-group name="action-global-budget-group-onnew">
     <action name="action-global-budget-record-set-defaults"/>
-    <action name="action-global-budget-method-hide-amounts" if="!id"/>
+    <action name="action-global-budget-method-hide-amounts"/>
   </action-group>
 
   <action-view name="action-view-global-budget-budget-version-new"
@@ -209,6 +209,7 @@
   <action-group name="action-global-budget-group-onsave">
     <action name="action-global-budget-validate-from-to-dates"/>
     <action name="action-global-budget-method-check-budget-dates"/>
+    <action name="action-global-budget-method-show-amounts" if="!id"/>
   </action-group>
 
   <action-group name="action-global-budget-group-validate-structure">
@@ -241,6 +242,10 @@
 
   <action-method name="action-global-budget-method-hide-amounts">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="hideAmounts"/>
+  </action-method>
+
+  <action-method name="action-global-budget-method-show-amounts">
+    <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="showAmounts"/>
   </action-method>
 
 
