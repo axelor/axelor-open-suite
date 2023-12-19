@@ -6,22 +6,23 @@
   <form name="scheduler-creation-wizard-form" title="App Leave"
     model="com.axelor.utils.db.Wizard" onNew="action-scheduler-creation-group-onnew" width="large">
     <panel name="mainPanel" colSpan="12">
-      <field name="name" type="string" required="true" colSpan="4"/>
-      <field name="code" type="string" required="true" colSpan="4"/>
-      <field name="leaveReasonTypeSelect" selection="hr.leave.reason.type.select"
-        type="integer" colSpan="4" default="1"
+      <field name="name" type="string" title="Name" required="true" colSpan="4"/>
+      <field name="code" type="string" title="Code" required="true" colSpan="4"/>
+      <field name="leaveReasonTypeSelect" title="Leave type"
+        selection="hr.leave.reason.type.select" type="integer" colSpan="4" default="1"
         onChange="action-scheduler-creation-attrs-type-onchange" required="true"/>
-      <field name="description" colSpan="12"/>
+      <field name="description" title="Description" colSpan="12"/>
     </panel>
-    <panel name="cronPanel" title="CRON">
-      <field name="cronMinute" title="Minute" type="integer" required="true" colSpan="3"
-        min="0" max="59"/>
-      <field name="cronHour" title="Hour" type="integer" required="true" colSpan="3" min="0"
-        max="23"/>
-      <field name="cronDay" title="Day" type="integer" required="true" colSpan="3" min="1"
-        max="31"/>
+    <panel name="cronMonthlyPanel" title="Launched every" showIf="leaveReasonTypeSelect == 1">
+      <field name="cronDay" title="Day" type="integer" required="true" min="1" max="31"/>
+      <field name="cronHour" title="Hour" type="integer" required="true" min="0" max="23"/>
+    </panel>
+    <panel name="cronAnnualPanel" title="Launched every" itemSpan="4"
+      showIf="leaveReasonTypeSelect == 3">
       <field name="cronMonth" title="Month" type="integer" required="true"
-        showIf="leaveReasonTypeSelect == 3" colSpan="3" min="1" max="12"/>
+        readonlyIf="leaveReasonTypeSelect == 1" min="1" max="12"/>
+      <field name="cronDay" title="Day" type="integer" required="true" min="1" max="31"/>
+      <field name="cronHour" title="Hour" type="integer" required="true" min="0" max="23"/>
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="createSchedulerBtn" title="Create scheduler"
@@ -35,7 +36,6 @@
 
   <action-attrs name="action-scheduler-creation-attrs-default-value">
     <attribute for="leaveReasonTypeSelect" name="value" expr="eval: 1"/>
-    <attribute for="cronMinute" name="value" expr="eval: 0"/>
     <attribute for="cronHour" name="value" expr="eval: 0"/>
     <attribute for="cronDay" name="value" expr="eval: _firstLeaveDayPeriod"/>
     <attribute for="cronMonth" name="value" expr="eval: _firstLeaveMonthPeriod"/>

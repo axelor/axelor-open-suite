@@ -88,9 +88,7 @@ public class SchedulerCreationServiceImpl implements SchedulerCreationService {
   }
 
   @Override
-  public String createCron(
-      int cronMinute, int cronHour, int cronDay, int cronMonth, int leaveReasonTypeSelect) {
-    String minute = String.valueOf(cronMinute);
+  public String createCron(int cronHour, int cronDay, int cronMonth, int leaveReasonTypeSelect) {
     String hour = String.valueOf(cronHour);
     String day = String.valueOf(cronDay);
     String month = String.valueOf(cronMonth);
@@ -100,7 +98,7 @@ public class SchedulerCreationServiceImpl implements SchedulerCreationService {
       month = "*";
     }
 
-    return minute + " " + hour + " " + day + " " + month + " " + weekday + " ?";
+    return "0" + " " + hour + " " + day + " " + month + " " + weekday + " ?";
   }
 
   @Transactional

@@ -16,10 +16,11 @@
     </panel>
 
     <panel name="schedulePanel" title="Schedules">
-      <field name="monthlySchedule"/>
-      <field name="annualSchedule"/>
-      <button name="schedulerCreationBtn" title="Scheduler creation assistant"
+      <button name="schedulerCreationBtn" title="Create or update a scheduler"
         onClick="action-app-leave-method-open-scheduler-creation-wizard"/>
+      <spacer/>
+      <field name="monthlySchedule" showIf="monthlySchedule" readonly="true"/>
+      <field name="annualSchedule" showIf="annualSchedule" readonly="true"/>
     </panel>
 
     <panel-mail name="mailPanel">

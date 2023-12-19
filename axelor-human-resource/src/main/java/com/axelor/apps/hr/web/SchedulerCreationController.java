@@ -17,7 +17,6 @@ public class SchedulerCreationController {
     String code = (String) context.get("code");
     String description = (String) context.get("description");
     int leaveReasonTypeSelect = (int) context.get("leaveReasonTypeSelect");
-    int cronMinute = (int) context.get("cronMinute");
     int cronHour = (int) context.get("cronHour");
     int cronDay = (int) context.get("cronDay");
     int cronMonth = (int) context.get("cronMonth");
@@ -25,8 +24,7 @@ public class SchedulerCreationController {
     SchedulerCreationService schedulerCreationService = Beans.get(SchedulerCreationService.class);
 
     String cron =
-        schedulerCreationService.createCron(
-            cronMinute, cronHour, cronDay, cronMonth, leaveReasonTypeSelect);
+        schedulerCreationService.createCron(cronHour, cronDay, cronMonth, leaveReasonTypeSelect);
     MetaSchedule metaSchedule =
         schedulerCreationService.createMetaSchedule(
             name, code, description, leaveReasonTypeSelect, cron);
@@ -40,7 +38,6 @@ public class SchedulerCreationController {
     String code = (String) context.get("code");
     String description = (String) context.get("description");
     int leaveReasonTypeSelect = (int) context.get("leaveReasonTypeSelect");
-    int cronMinute = (int) context.get("cronMinute");
     int cronHour = (int) context.get("cronHour");
     int cronDay = (int) context.get("cronDay");
     int cronMonth = (int) context.get("cronMonth");
@@ -48,8 +45,7 @@ public class SchedulerCreationController {
     SchedulerCreationService schedulerCreationService = Beans.get(SchedulerCreationService.class);
 
     String cron =
-        schedulerCreationService.createCron(
-            cronMinute, cronHour, cronDay, cronMonth, leaveReasonTypeSelect);
+        schedulerCreationService.createCron(cronHour, cronDay, cronMonth, leaveReasonTypeSelect);
     MetaSchedule metaSchedule =
         schedulerCreationService.updateMetaSchedule(
             name, code, description, leaveReasonTypeSelect, cron);
