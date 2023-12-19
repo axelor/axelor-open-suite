@@ -23,7 +23,7 @@
       <field name="iconName" hidden="true" showIf="isCustom" colSpan="4"/>
       <field name="menuOrder" hidden="true" showIf="isCustom" colSpan="4"/>
       <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form" colSpan="12"
-        canNew="false" canEdit="false" widget="tag-select"/>
+        canNew="false" canEdit="false" widget="tag-select" placeholder="All"/>
       <field name="mobileDashboardLineList" grid-view="mobile-dashboard-line-grid"
         form-view="mobile-dashboard-line-form" colSpan="12"/>
     </panel>
