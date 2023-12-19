@@ -433,6 +433,7 @@
 "Need / Manufacturing order",,,
 "Need / Manufacturing proposal",,,
 "Next overhaul date",,,
+"No product has been found with these filters. Please check your filters",,,
 "No production order could be generated. Make sure that everything has been configured correctly. Reminder: check that the order lines that should be produced have their supply method set to 'produce' and that the chosen BoM has a production process associated to it.",,,
 "Normal",,,
 "Not enough quantity in products to consume for: %s",,,
