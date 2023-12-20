@@ -517,7 +517,9 @@ public class ReconcileServiceImpl implements ReconcileService {
         amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
       }
 
-      if (invoicePayment == null) {
+      if (invoicePayment == null
+          && moveLine.getAccount().getUseForPartnerBalance()
+          && otherMoveLine.getAccount().getUseForPartnerBalance()) {
         invoicePayment =
             invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
         invoicePayment.setReconcile(reconcile);
