@@ -13,9 +13,10 @@
     <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="taxLine.tax.code"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="purchaseOrder.currency" hidden="true"/>
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="purchaseOrder.company" hidden="true"/>
@@ -28,6 +29,7 @@
       if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
     <field name="unassignedAmt" if="!__config__.app.getApp('budget').getManageMultiBudget()"
       x-scale="purchaseOrder.company.currency.numberOfDecimals"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid id="budget-purchase-order-line-grid"
@@ -83,15 +85,6 @@
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
-          <field name="groupBudget" title="Group" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-method-group-domain"
-            form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
-          <field name="section" title="Section" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-method-section-domain"
-            form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
-          <field name="line" title="Line" colSpan="4" showIf="account"
-            onSelect="action-budget-purchase-order-line-method-line-domain"
-            form-view="budget-line-form" grid-view="budget-line-grid"/>
           <field name="$global" title="Global budget" type="many-to-one"
             target="com.axelor.apps.budget.db.GlobalBudget" readonly="true" colSpan="12"
             hidden="true"/>

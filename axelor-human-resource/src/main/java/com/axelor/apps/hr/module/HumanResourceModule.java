@@ -61,6 +61,8 @@ import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
+import com.axelor.apps.hr.service.SchedulerCreationService;
+import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -264,5 +266,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(IncrementLeaveService.class).to(IncrementLeaveServiceImpl.class);
     bind(LeaveValueProrataService.class).to(LeaveValueProrataServiceImpl.class);
     bind(LeaveReasonService.class).to(LeaveReasonServiceImpl.class);
+    bind(SchedulerCreationService.class).to(SchedulerCreationServiceImpl.class);
   }
 }
