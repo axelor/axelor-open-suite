@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.MapService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
@@ -66,7 +65,7 @@ import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
 @Singleton
-public class AddressServiceImpl implements com.axelor.apps.base.service.AddressService {
+public class AddressServiceImpl implements AddressService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
   private static final char TEMPLATE_DELIMITER = '$';
