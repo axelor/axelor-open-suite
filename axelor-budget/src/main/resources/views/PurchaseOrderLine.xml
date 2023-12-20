@@ -13,15 +13,17 @@
     <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="taxLine.tax.code"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
     <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
     <field name="budget.availableAmount"
       if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
     <field name="unassignedAmt" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid id="budget-purchase-order-line-grid"

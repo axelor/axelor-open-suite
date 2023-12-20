@@ -274,13 +274,13 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${analyticAxis?.company?.id} OR self.analyticAxis.company.id = ${analyticAxis?.company?.id} OR self.parent.company.id = ${analyticAxis?.company?.id})&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${analyticAxis?.company?.id} OR self.analyticAxis.company.id = ${analyticAxis?.company?.id} OR self.parent.company.id = ${analyticAxis?.company?.id})&quot;"
       if="analyticAxis &amp;&amp; analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.analyticAxis.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.parent.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id})&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.analyticAxis.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.parent.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id})&quot;"
       if="analyticAxis &amp;&amp; !analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) &quot;"
       if="!(analyticAxis?.company) &amp;&amp; !__parent__"/>
   </action-attrs>
 
