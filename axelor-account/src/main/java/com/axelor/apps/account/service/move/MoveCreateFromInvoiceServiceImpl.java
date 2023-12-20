@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
@@ -449,7 +450,17 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
     if (oDmove != null) {
       BigDecimal totalDebitAmount = moveToolService.getTotalDebitAmount(debitMoveLines);
-      BigDecimal amount = totalDebitAmount.min(invoiceCustomerMoveLine.getCredit());
+      BigDecimal invoiceAmount =
+          invoiceCustomerMoveLine.getInvoiceTermList().stream()
+              .filter(
+                  it ->
+                      it.getPfpValidateStatusSelect()
+                          != InvoiceTermRepository.PFP_STATUS_LITIGATION)
+              .map(InvoiceTerm::getCompanyAmount)
+              .reduce(BigDecimal::add)
+              .orElse(invoiceCustomerMoveLine.getCredit());
+
+      BigDecimal amount = totalDebitAmount.min(invoiceAmount);
 
       BigDecimal moveLineAmount =
           moveToolService
