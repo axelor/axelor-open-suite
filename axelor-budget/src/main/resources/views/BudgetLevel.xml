@@ -34,6 +34,11 @@
   <form model="com.axelor.apps.budget.db.BudgetLevel" title="Section" name="budget-level-form"
     width="large" onNew="action-budget-level-defaults-groups-onnew"
     onLoad="action-budget-level-group-onload">
+    <panel name="mainPanel" colSpan="12">
+      <field name="statusSelect" showTitle="false" readonly="true" colSpan="12"
+        widget="NavSelect" selection-in="'Draft','Validated'"/>
+    </panel>
+
     <panel name="overViewPanel" title="Overview" canCollapse="true" collapseIf="!$popup()">
       <panel name="budgetLevelHiddenPanel" hidden="true" colSpan="12">
         <field name="globalBudget.statusSelect"/>
@@ -71,6 +76,12 @@
         <field name="totalAmountRealized" hidden="true"/>
       </panel>
 
+    </panel>
+    <panel sidebar="true" name="buttonsPanel" hidden="true">
+      <button name="validateBtn" title="Validate"
+        onClick="action-budget-level-group-validate" hidden="true"/>
+      <button name="draftBtn" title="Draft" onClick="action-budget-level-group-draft"
+        hidden="true"/>
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-navy">
       <field name="budgetLevelList" title="Sections" form-view="budget-level-form"
@@ -132,7 +143,29 @@
 
   <action-group name="action-budget-level-group-onload">
     <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-budget-level-method-show-validate-fields"/>
   </action-group>
+
+  <action-group name="action-budget-level-group-validate">
+    <action name="action-budget-level-validate-validate"/>
+    <action name="action-budget-level-method-validate"/>
+  </action-group>
+
+  <action-group name="action-budget-level-group-draft">
+    <action name="action-budget-level-validate-draft"/>
+    <action name="action-budget-level-method-draft"/>
+  </action-group>
+
+  <action-validate name="action-budget-level-validate-validate">
+    <alert
+      message="By validating this section, you will validate children sections and budgets linked too. Do you want to continue ?"/>
+  </action-validate>
+
+  <action-validate name="action-budget-level-validate-draft">
+    <alert
+      message="By drafting this section, you will set children sections and budgets linked in draft too. Do you want to continue ?"/>
+  </action-validate>
+
 
   <action-attrs name="action-budget-level-attrs-set-attrs">
     <attribute name="domain" for="parentBudgetLevel" expr="eval: _domain" if=" _domain"/>
@@ -196,6 +229,18 @@
 
   <action-method name="action-budget-budget-level-method-set-dates">
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="setDates"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-validate">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="validate"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-show-validate-fields">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="showButtonFields"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-draft">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="draft"/>
   </action-method>
 
   <action-view name="action-budget-view-budget-level" title="Sections"

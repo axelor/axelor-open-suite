@@ -16,7 +16,7 @@
 
   <selection name="budget.level.status.select">
     <option value="draft">Draft</option>
-    <option value="valid">Valid</option>
+    <option value="valid">Validated</option>
     <option value="archived">Archived</option>
   </selection>
 
