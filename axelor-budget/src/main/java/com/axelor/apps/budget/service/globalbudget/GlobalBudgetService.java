@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
@@ -37,4 +37,8 @@ public interface GlobalBudgetService {
   GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException;
+
+  void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException;
+
+  void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 }

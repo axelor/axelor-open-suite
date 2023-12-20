@@ -55,15 +55,6 @@
               ]]>
             </viewer>
           </field>
-          <field name="groupBudget" title="Group" colSpan="4"
-            onSelect="action-budget-sale-order-line-method-group-domain"
-            form-view="budget-group-budget-level-form" grid-view="budget-level-included-grid"/>
-          <field name="section" title="Section" colSpan="4"
-            onSelect="action-budget-sale-order-line-method-section-domain"
-            form-view="budget-section-budget-level-form" grid-view="budget-level-node-grid"/>
-          <field name="line" title="Line" colSpan="4"
-            onSelect="action-budget-sale-order-line-method-line-domain" form-view="budget-line-form"
-            grid-view="budget-line-grid"/>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
             onChange="action-budget-sale-order-line-method-set-account,action-budget-sale-order-line-method-fill-budget-str"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
