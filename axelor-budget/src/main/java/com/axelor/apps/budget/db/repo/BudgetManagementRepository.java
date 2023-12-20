@@ -19,34 +19,13 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
-import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
-import com.axelor.apps.budget.service.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.inject.Beans;
-import java.math.BigDecimal;
 
 public class BudgetManagementRepository extends BudgetRepository {
 
   @Override
   public Budget save(Budget entity) {
-    CurrencyScaleServiceBudget currencyScaleServiceBudget =
-        Beans.get(CurrencyScaleServiceBudget.class);
-
-    entity.setAvailableAmount(
-        currencyScaleServiceBudget.getCompanyScaledValue(
-            entity,
-            (entity
-                    .getTotalAmountExpected()
-                    .subtract(entity.getRealizedWithPo())
-                    .subtract(entity.getRealizedWithNoPo()))
-                .max(BigDecimal.ZERO)));
-
-    entity.setAvailableAmountWithSimulated(
-        currencyScaleServiceBudget.getCompanyScaledValue(
-            entity,
-            entity
-                .getAvailableAmount()
-                .subtract(entity.getSimulatedAmount())
-                .max(BigDecimal.ZERO)));
 
     GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
     globalBudgetService.computeBudgetLevelTotals(entity);

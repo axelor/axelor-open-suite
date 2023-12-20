@@ -11,9 +11,11 @@
     <one-to-many name="budgetDistributionList"
       ref="com.axelor.apps.budget.db.BudgetDistribution" title="Budget Distribution"
       mappedBy="purchaseOrderLine"/>
-    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"/>
+    <decimal name="budgetDistributionSumAmount" title="Total amount attributed"
+      precision="20" scale="3"/>
     <many-to-one name="account" ref="com.axelor.apps.account.db.Account" title="Account"/>
-    <decimal name="unassignedAmt" title="Unassigned amount" readonly="true"/>
+    <decimal name="unassignedAmt" title="Unassigned amount" readonly="true" precision="20"
+      scale="3"/>
     <many-to-one name="groupBudget" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Group"/>
     <many-to-one name="section" ref="com.axelor.apps.budget.db.BudgetLevel"

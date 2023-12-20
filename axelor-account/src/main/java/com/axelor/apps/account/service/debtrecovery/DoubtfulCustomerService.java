@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -193,19 +194,30 @@ public class DoubtfulCustomerService {
 
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
-    List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
+    BigDecimal totalCurrencyAmountRemaining = BigDecimal.ZERO;
+    BigDecimal currencyRate = BigDecimal.ONE;
+    List<MoveLine> creditMoveLines = new ArrayList<>();
+
     if (invoicePartnerMoveLines != null) {
       for (MoveLine moveLine : invoicePartnerMoveLines) {
         amountRemaining = amountRemaining.add(moveLine.getAmountRemaining().abs());
+        BigDecimal currencyAmountRemaining = this.getCurrencyAmountRemaining(moveLine);
+        totalCurrencyAmountRemaining = totalCurrencyAmountRemaining.add(currencyAmountRemaining);
+        currencyRate = moveLine.getCurrencyRate();
+
         // Credit move line on partner account
         MoveLine creditMoveLine =
             moveLineCreateService.createMoveLine(
                 newMove,
                 partner,
                 moveLine.getAccount(),
+                currencyAmountRemaining,
                 moveLine.getAmountRemaining(),
+                currencyRate,
                 false,
                 todayDate,
+                todayDate,
+                null,
                 1,
                 move.getOrigin(),
                 debtPassReason);
@@ -222,9 +234,13 @@ public class DoubtfulCustomerService {
             newMove,
             partner,
             doubtfulCustomerAccount,
+            totalCurrencyAmountRemaining,
             amountRemaining,
+            currencyRate,
             true,
             todayDate,
+            todayDate,
+            null,
             2,
             origin,
             debtPassReason);
@@ -233,6 +249,7 @@ public class DoubtfulCustomerService {
 
     newMove.addMoveLineListItem(debitMoveLine);
     creditMoveLines.forEach(newMove::addMoveLineListItem);
+    moveValidateService.accounting(newMove);
 
     for (MoveLine moveLine : invoicePartnerMoveLines) {
       invoiceTermReplaceService.replaceInvoiceTerms(
@@ -240,6 +257,17 @@ public class DoubtfulCustomerService {
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
+  }
+
+  protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine) {
+    if (moveLine.getCurrencyRate().compareTo(BigDecimal.ONE) == 0) {
+      return moveLine.getAmountRemaining();
+    } else {
+      return moveLine.getInvoiceTermList().stream()
+          .map(InvoiceTerm::getAmountRemaining)
+          .reduce(BigDecimal::add)
+          .orElse(BigDecimal.ZERO);
+    }
   }
 
   public void createDoubtFulCustomerRejectMove(

@@ -40,6 +40,8 @@ import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -117,6 +119,8 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
+import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
+import com.axelor.apps.account.service.fecimport.ImportFECTypeServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
@@ -728,6 +732,8 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceTermReplaceService.class).to(InvoiceTermReplaceServiceImpl.class);
 
+    bind(InvoiceLineRepository.class).to(InvoiceLineManagementRepository.class);
+
     bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 
     bind(InvoiceLineAttrsService.class).to(InvoiceLineAttrsServiceImpl.class);
@@ -751,5 +757,7 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceTermFinancialDiscountService.class)
         .to(InvoiceTermFinancialDiscountServiceImpl.class);
+
+    bind(ImportFECTypeService.class).to(ImportFECTypeServiceImpl.class);
   }
 }

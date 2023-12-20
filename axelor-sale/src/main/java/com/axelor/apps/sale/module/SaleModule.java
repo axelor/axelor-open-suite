@@ -41,6 +41,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.AddressServiceSaleImpl;
 import com.axelor.apps.sale.service.AdvancePaymentService;
 import com.axelor.apps.sale.service.AdvancePaymentServiceImpl;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSaleImpl;
 import com.axelor.apps.sale.service.PackLineService;
 import com.axelor.apps.sale.service.PackLineServiceImpl;
 import com.axelor.apps.sale.service.PartnerSaleService;
@@ -97,6 +99,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowServiceImpl;
+import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsService;
+import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsServiceImpl;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
@@ -149,5 +153,7 @@ public class SaleModule extends AxelorModule {
     bind(PricingObserverImpl.class).to(SaleOrderLinePricingObserver.class);
     bind(PricingGenericServiceImpl.class).to(SalePricingGenericServiceImpl.class);
     bind(PricingMetaServiceImpl.class).to(SalePricingMetaServiceImpl.class);
+    bind(CurrencyScaleServiceSale.class).to(CurrencyScaleServiceSaleImpl.class);
+    bind(SaleOrderAttrsService.class).to(SaleOrderAttrsServiceImpl.class);
   }
 }

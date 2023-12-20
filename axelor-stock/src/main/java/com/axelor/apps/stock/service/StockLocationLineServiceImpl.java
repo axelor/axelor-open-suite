@@ -174,12 +174,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
         isIncrement,
         lastFutureStockMoveDate);
 
-    if (generateOrder) {
-      if (!isIncrement) {
-        minStockRules(product, qty, stockLocationLine, current, future);
-      } else {
-        maxStockRules(product, qty, stockLocationLine, current, future);
-      }
+    if (generateOrder && isIncrement) {
+      maxStockRules(product, qty, stockLocationLine, current, future);
     }
 
     stockLocationLine =
@@ -196,25 +192,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     this.checkStockMin(stockLocationLine, false);
 
     stockLocationLineRepo.save(stockLocationLine);
-  }
-
-  @Override
-  public void minStockRules(
-      Product product,
-      BigDecimal qty,
-      StockLocationLine stockLocationLine,
-      boolean current,
-      boolean future)
-      throws AxelorException {
-
-    if (current) {
-      stockRulesService.generateOrder(
-          product, qty, stockLocationLine, StockRulesRepository.TYPE_CURRENT);
-    }
-    if (future) {
-      stockRulesService.generateOrder(
-          product, qty, stockLocationLine, StockRulesRepository.TYPE_FUTURE);
-    }
   }
 
   @Override

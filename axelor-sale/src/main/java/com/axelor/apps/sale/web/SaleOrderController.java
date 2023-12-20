@@ -54,6 +54,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
+import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
@@ -656,12 +657,20 @@ public class SaleOrderController {
         "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
   }
 
-  public void onLineChange(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void onLineChange(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
-    response.setValues(saleOrder);
-    response.setAttr(
-        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+    try {
+      if (saleOrder == null) {
+        return;
+      }
+
+      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+
+      response.setValues(saleOrder);
+      response.setAttrs(Beans.get(SaleOrderAttrsService.class).onChangeSaleOrderLine(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void createNewVersion(ActionRequest request, ActionResponse response)
