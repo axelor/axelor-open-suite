@@ -83,8 +83,10 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
               invoicePayment,
               invoiceTerm,
               isCompanyCurrency
-                  ? invoiceTerm.getCompanyAmountRemaining()
-                  : invoiceTerm.getAmountRemaining()));
+                  ? currencyScaleServiceAccount.getCompanyScaledValue(
+                      invoiceTerm, invoiceTerm.getCompanyAmountRemaining())
+                  : currencyScaleServiceAccount.getScaledValue(
+                      invoiceTerm, invoiceTerm.getAmountRemaining())));
     }
 
     return invoicePayment;
@@ -167,7 +169,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
         availableAmount = availableAmount.subtract(invoiceTermAmount);
       }
 
-      currencyScaleServiceAccount.getCompanyScaledValue(invoiceTermToPay, availableAmount);
       invoiceTermPaymentList.add(invoiceTermPayment);
 
       if (invoicePayment != null) {
@@ -319,9 +320,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .divide(
                 invoiceTerm.getAmount(), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
 
-    return paidAmount
-        .multiply(ratio)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        invoiceTerm, paidAmount.multiply(ratio));
   }
 
   protected BigDecimal computePaidAmount(InvoiceTerm invoiceTerm, BigDecimal companyPaidAmount) {
@@ -333,9 +333,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                 AppBaseService.COMPUTATION_SCALING,
                 RoundingMode.HALF_UP);
 
-    return companyPaidAmount
-        .multiply(ratio)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return currencyScaleServiceAccount.getScaledValue(
+        invoiceTerm, companyPaidAmount.multiply(ratio));
   }
 
   @Override
@@ -345,7 +344,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       boolean applyFinancialDiscount) {
     if (applyFinancialDiscount && invoiceTerm.getAmountRemainingAfterFinDiscount().signum() > 0) {
       invoiceTermPayment.setPaidAmount(
-          invoiceTermPayment.getPaidAmount().add(invoiceTermPayment.getFinancialDiscountAmount()));
+          currencyScaleServiceAccount.getScaledValue(
+              invoiceTerm,
+              invoiceTermPayment
+                  .getPaidAmount()
+                  .add(invoiceTermPayment.getFinancialDiscountAmount())));
 
       BigDecimal ratioPaid =
           invoiceTermPayment
@@ -356,15 +359,15 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
                   RoundingMode.HALF_UP);
 
       invoiceTermPayment.setFinancialDiscountAmount(
-          invoiceTerm
-              .getFinancialDiscountAmount()
-              .multiply(ratioPaid)
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getScaledValue(
+              invoiceTerm, invoiceTerm.getFinancialDiscountAmount().multiply(ratioPaid)));
 
       invoiceTermPayment.setPaidAmount(
-          invoiceTermPayment
-              .getPaidAmount()
-              .subtract(invoiceTermPayment.getFinancialDiscountAmount()));
+          currencyScaleServiceAccount.getScaledValue(
+              invoiceTerm,
+              invoiceTermPayment
+                  .getPaidAmount()
+                  .subtract(invoiceTermPayment.getFinancialDiscountAmount())));
     }
   }
 
@@ -390,13 +393,13 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
             .orElse(BigDecimal.ZERO);
 
     sum =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
+        currencyScaleServiceAccount.getScaledValue(
+            invoicePayment,
+            currencyService.getAmountCurrencyConvertedAtDate(
                 invoicePayment.getInvoice().getCurrency(),
                 invoicePayment.getCurrency(),
                 sum,
-                appAccountService.getTodayDate(invoicePayment.getInvoice().getCompany()))
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+                appAccountService.getTodayDate(invoicePayment.getInvoice().getCompany())));
 
     return sum;
   }
