@@ -10,13 +10,13 @@
     <string name="department" title="Department"/>
     <string name="subDepartment" title="Sub Department"/>
 
-    <string name="streetName" title="Street" required="true"/>
+<!--    <string name="streetName" title="Street" required="true"/>-->
     <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
-    <string name="buildingNumber" title="Building number"/>
+<!--    <string name="buildingNumber" title="Building number"/>-->
     <string name="buildingName" title="Building"/>
-    <string name="floor" title="Floor"/>
-    <string name="postBox" title="Post box"/>
-    <string name="room" title="Room"/>
+<!--    <string name="floor" title="Floor"/>-->
+<!--    <string name="postBox" title="Post box"/>-->
+<!--    <string name="room" title="Room"/>-->
 
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions"/>

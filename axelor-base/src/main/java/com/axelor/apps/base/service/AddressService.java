@@ -37,7 +37,12 @@ public interface AddressService {
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
   public Address createAddress(
-      String room, String floor, String streetName, String postBox, Country country);
+          String addressL2,
+          String addressL3,
+          String addressL4,
+          String addressL5,
+          String addressL6,
+          Country country);
 
   @CallMethod
   public boolean checkAddressUsed(Long addressId);

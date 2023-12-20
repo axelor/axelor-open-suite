@@ -120,14 +120,20 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Address createAddress(
-      String room, String floor, String streetName, String postBox, Country country) {
+          String addressL2,
+          String addressL3,
+          String addressL4,
+          String addressL5,
+          String addressL6,
+          Country addressL7Country) {
 
     Address address = new Address();
-    address.setRoom(room);
-    address.setFloor(floor);
-    address.setStreetName(streetName);
-    address.setPostBox(postBox);
-    address.setCountry(country);
+    address.setAddressL2(addressL2);
+    address.setAddressL3(addressL3);
+    address.setAddressL4(addressL4);
+    address.setAddressL5(addressL5);
+    address.setAddressL6(addressL6);
+    address.setCountry(addressL7Country);
 
     return address;
   }
@@ -218,7 +224,7 @@ public class AddressServiceImpl implements AddressService {
         + (!Strings.isNullOrEmpty(l3) ? " " + l3 : "")
         + (!Strings.isNullOrEmpty(l4) ? " " + l4 : "")
         + (!Strings.isNullOrEmpty(l5) ? " " + l5 : "")
-        + (!Strings.isNullOrEmpty(l5) ? " " + l6 : "");
+        + (!Strings.isNullOrEmpty(l6) ? " " + l6 : "");
   }
 
   @Override

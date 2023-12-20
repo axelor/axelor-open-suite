@@ -160,18 +160,36 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   @Override
   public Address createPrimaryAddress(Lead lead) {
 
-    String streetName = lead.getPrimaryAddress();
-    if (streetName == null) {
+    String addressL4 = lead.getPrimaryAddress();
+    if (addressL4 == null) {
       return null;
     }
-    String postBox = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
+    String addressL5 = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
+    String addressL6 =
+            lead.getPrimaryPostalCode()
+                    + " "
+                    + (lead.getPrimaryCity() != null ? lead.getPrimaryCity().getName() : "");
 
     Country country = lead.getPrimaryCountry();
 
-    Address address = addressUtilityService.getAddress(null, null, streetName, postBox, country);
+    Address address =
+            addressUtilityService
+                    .all()
+                    .filter(
+                            "self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 "
+                                    + "AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.country = ?6",
+                            null,
+                            null,
+                            addressL4,
+                            addressL5,
+                            addressL6,
+                            country)
+                    .fetchOne();
 
     if (address == null) {
-      address = addressService.createAddress(null, null, streetName, postBox, country);
+      address =
+              addressService.createAddress(
+                      null, null, addressL4, addressL5, addressL6, country);
     }
 
     return address;
