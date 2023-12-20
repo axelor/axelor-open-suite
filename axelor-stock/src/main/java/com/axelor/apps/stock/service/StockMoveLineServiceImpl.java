@@ -1714,4 +1714,25 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setRealQty(qty);
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine) {
+    StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
+    this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
+    stockMoveLineRepository.save(newStockMoveLine);
+  }
+
+  protected void updateStockMoveLinesOfSplit(
+      StockMoveLine unfulfilledStockMoveLine, StockMoveLine fulfilledStockMoveLine) {
+    BigDecimal realQty = fulfilledStockMoveLine.getRealQty();
+    unfulfilledStockMoveLine.setQty(fulfilledStockMoveLine.getQty().subtract(realQty));
+    fulfilledStockMoveLine.setQty(realQty);
+    unfulfilledStockMoveLine.setTrackingNumber(null);
+    unfulfilledStockMoveLine.setTotalNetMass(BigDecimal.ZERO);
+    unfulfilledStockMoveLine.setNetMass(BigDecimal.ZERO);
+    unfulfilledStockMoveLine.setRealQty(BigDecimal.ZERO);
+    unfulfilledStockMoveLine.setStockMove(fulfilledStockMoveLine.getStockMove());
+    unfulfilledStockMoveLine.setConformitySelect(0);
+  }
 }

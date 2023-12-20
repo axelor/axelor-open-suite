@@ -1,0 +1,3 @@
+---
+title: "Reconcile : Fix an issue where a payment was created for a reconcile with an account not being used for partner balance"
+type: fix

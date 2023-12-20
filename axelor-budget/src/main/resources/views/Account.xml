@@ -30,8 +30,8 @@
 
   <action-view name="action-account-view-related-budget-line" title=""
     model="com.axelor.apps.budget.db.Budget">
-    <view type="grid" name="budget-lines-grid"/>
-    <view type="form" name="budget-included-form"/>
+    <view type="grid" name="budget-grid"/>
+    <view type="form" name="budget-form"/>
     <domain>:id MEMBER OF self.accountSet</domain>
   </action-view>
 
