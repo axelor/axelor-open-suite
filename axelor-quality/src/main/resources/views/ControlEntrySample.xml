@@ -19,7 +19,7 @@
       <field name="controlEntry" colSpan="6" readonlyIf="true"/>
     </panel>
     <panel-related name="controlEntrySampleLinesPanel"
-      field="controlEntrySampleLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
+      field="controlEntryPlanLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
       form-view="control-entry-sample-line-form"/>
   </form>
 </object-views>

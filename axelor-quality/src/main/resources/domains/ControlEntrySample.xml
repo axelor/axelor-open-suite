@@ -12,8 +12,8 @@
       title="Result"/>
     <many-to-one name="controlEntry" ref="com.axelor.apps.quality.db.ControlEntry"
       title="Control entry"/>
-    <one-to-many name="controlEntrySampleLinesList"
-      ref="com.axelor.apps.quality.db.ControlEntrySampleLine" title="Control entry sample lines"
+    <one-to-many name="controlEntryPlanLinesList"
+      ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control entry sample lines"
       mappedBy="controlEntrySample"/>
 
     <extra-code>

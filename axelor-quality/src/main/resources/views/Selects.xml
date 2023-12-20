@@ -45,22 +45,16 @@
     <option value="2">Systematic</option>
   </selection>
 
+  <selection name="quality.control.entry.plan.line.type.select">
+    <option value="1">Plan line</option>
+    <option value="2">Entry sample line</option>
+  </selection>
+
   <selection name="quality.control.entry.sample.result.select">
     <option value="1">Not controlled</option>
     <option value="2">Compliant</option>
     <option value="3">Not compliant</option>
   </selection>
-
-  <selection name="quality.control.entry.sample.line.result.select">
-    <option value="2">Compliant</option>
-    <option value="3">Not compliant</option>
-  </selection>
-
-  <selection name="quality.control.plan.line.type.select">
-    <option value="1">Dimensional</option>
-    <option value="2">Attribute</option>
-  </selection>
-
 
   <selection name="quality.control.points.status.select">
     <option value="1">On hold</option>

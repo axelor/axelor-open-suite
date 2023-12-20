@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="ControlEntryPlanLine" cacheable="true">
+
+    <integer name="typeSelect" selection="quality.control.entry.plan.line.type.select"
+      title="Type"/>
+    <string name="conformityFormula" title="Formula" large="true"/>
+
+    <!-- Type plan line part -->
+    <integer name="priority" title="priority"/>
+    <string name="reference" title="Reference"/>
+
+    <string name="name" title="Name"/>
+    <many-to-one name="characteristic"
+      ref="com.axelor.apps.quality.db.ControlPlanLineCharacteristic" title="Characteristic"/>
+    <many-to-one name="machineType" ref="com.axelor.apps.production.db.MachineType"
+      title="Type of control device"/>
+    <boolean name="isCustomFrequency" title="Custom frequency"/>
+    <many-to-one name="controlPlanFrequency"
+      ref="com.axelor.apps.quality.db.ControlPlanFrequency" title="Frequency"/>
+
+    <many-to-one name="controlType" ref="com.axelor.apps.quality.db.ControlType"
+      title="Type"/>
+
+    <string name="description" large="true" title="Description"/>
+
+    <string name="entryAttrs" json="true"/>
+    <string name="planAttrs" json="true"/>
+
+
+    <!-- Type entry sample line part -->
+    <integer name="resultSelect" selection="quality.control.entry.sample.result.select"
+      title="Result"/>
+
+    <many-to-one name="controlPlanLine"
+      ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control plan line"/>
+
+    <many-to-one name="controlEntrySample"
+      ref="com.axelor.apps.quality.db.ControlEntrySample" title="Control entry sample"/>
+
+    <extra-code>
+			<![CDATA[
+			    public static final int RESULT_NOT_CONTROLLED = 1;
+				public static final int RESULT_COMPLIANT = 2;
+				public static final int RESULT_NOT_COMPLIANT = 3;
+
+                public static final int TYPE_PLAN_LINE = 1;
+				public static final int TYPE_ENTRY_SAMPLE_LINE = 2;
+
+			]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

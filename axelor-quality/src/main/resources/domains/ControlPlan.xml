@@ -12,7 +12,7 @@
       ref="com.axelor.apps.quality.db.ControlPlanFrequency" title="Frequency"/>
     <string large="true" name="description" title="Description"/>
     <many-to-many name="controlPlanLinesSet"
-      ref="com.axelor.apps.quality.db.ControlPlanLine" title="Control plan lines"/>
+      ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control plan lines"/>
     <integer name="statusSelect" selection="quality.control.plan.status.select"
       title="Status"/>
 

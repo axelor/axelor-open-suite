@@ -28,8 +28,7 @@
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="createSamplesBtn"
         onClick="action-method-quality-control-entry-create-samples"
-        title="Create control entry samples"
-        showIf="statusSelect == 1"/>
+        title="Create control entry samples" showIf="statusSelect == 1"/>
       <button name="finishBtn" onClick="action-record-quality-control-finish" title="Finish"
         showIf="statusSelect == 2"/>
       <button name="cancelBtn" onClick="action-record-quality-control-cancel" title="Cancel"

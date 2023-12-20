@@ -125,9 +125,20 @@
     <view type="form" name="control-plan-frequency-form"/>
   </action-view>
 
+  <menuitem name="quality-control-type" parent="quality-configurations"
+    title="Control type" action="quality.control.type.view" order="89"/>
+
+  <action-view name="quality.control.type.view" title="Control type"
+    model="com.axelor.apps.quality.db.ControlType">
+    <view type="grid" name="control-type-grid"/>
+    <view type="form" name="control-type-form"/>
+  </action-view>
+
   <menuitem name="quality-control-plan-characteristics" parent="quality-configurations"
     title="Control plan characteristics" action="quality.control.plan.characteristics.view"
     order="90"/>
+
+
 
   <action-view name="quality.control.plan.characteristics.view"
     title="Control plan characteristics"
