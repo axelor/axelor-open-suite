@@ -340,4 +340,25 @@ public interface StockMoveLineService {
   Map<String, Object> getClearedStockMoveLineMap();
 
   void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException;
+
+  /**
+   * This method will fill realQty of stockMoveLine if conditions of configuration are met with the
+   * qty.
+   *
+   * @param stockMoveLine
+   * @param stockMove
+   * @param qty
+   */
+  void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty);
+
+  /**
+   * Split stock move line having realQty != 0 and realQty < qty into two lines each, one of whom is
+   * fulfilled with qty = realQty and the other one being unfulfilled with realQty = zero and qty
+   * equal the remaining unfulfilled qty ( original qty - original realQty)
+   *
+   * @param stockMoveLine
+   * @return
+   * @throws AxelorException
+   */
+  void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine);
 }

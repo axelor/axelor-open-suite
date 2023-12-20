@@ -46,8 +46,13 @@ public interface StockLocationService {
   @CallMethod
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
 
+  Set<StockLocation> getListOfStockLocationAndAllItsParentsStockLocations(
+      StockLocation stockLocation);
+
   public List<StockLocation> getAllLocationAndSubLocation(
       StockLocation stockLocation, boolean isVirtualInclude);
+
+  List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude);
 
   public BigDecimal getStockLocationValue(StockLocation stockLocation);
 
@@ -60,4 +65,7 @@ public interface StockLocationService {
       throws AxelorException;
 
   String computeStockLocationChildren(StockLocation stockLocation);
+
+  Set<Long> getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
+      StockLocation stockLocation);
 }

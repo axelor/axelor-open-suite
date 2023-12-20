@@ -308,19 +308,12 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
-  public void computeTotalAvailableWithSimulatedAmount(Move move, Budget budget) {
-    if (budget.getAvailableAmount().subtract(budget.getSimulatedAmount()).compareTo(BigDecimal.ZERO)
-        > 0) {
-      budget.setAvailableAmountWithSimulated(
-          budget.getAvailableAmount().subtract(budget.getSimulatedAmount()));
-
-    } else {
-      budget.setAvailableAmountWithSimulated(BigDecimal.ZERO);
-    }
+  public void computeTotalAvailableWithSimulatedAmount(Budget budget) {
+    budget.setAvailableAmountWithSimulated(
+        budget.getAvailableAmount().subtract(budget.getSimulatedAmount()).max(BigDecimal.ZERO));
   }
 
   @Override
-  @Transactional
   public void computeTotalFirmGap(Budget budget) {
     List<BudgetLine> budgetLineList = budget.getBudgetLineList();
     BigDecimal totalFirmGap = BigDecimal.ZERO;
@@ -333,7 +326,6 @@ public class BudgetServiceImpl implements BudgetService {
     }
 
     budget.setTotalFirmGap(totalFirmGap);
-    budgetRepository.save(budget);
   }
 
   @Override
@@ -414,16 +406,9 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
     if (budget != null) {
-      GlobalBudget globalBudget =
-          Optional.of(budget.getBudgetLevel())
-              .map(BudgetLevel::getParentBudgetLevel)
-              .map(BudgetLevel::getGlobalBudget)
-              .orElse(null);
+      GlobalBudget globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
       if (checkBudgetKey && Strings.isNullOrEmpty(budget.getBudgetKey()) && globalBudget != null) {
-        String error =
-            computeBudgetKey(
-                budget,
-                budget.getBudgetLevel().getParentBudgetLevel().getGlobalBudget().getCompany());
+        String error = computeBudgetKey(budget, globalBudget.getCompany());
         if (!Strings.isNullOrEmpty(error)) {
           throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, error);
         }
@@ -445,8 +430,9 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void draftBudget(Budget budget) {
     if (budget != null) {
+      budget = budgetRepository.find(budget.getId());
       budget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-      budgetRepository.save(budget);
+      budget.setActiveVersionExpectedAmountsLine(null);
     }
   }
 
@@ -551,7 +537,7 @@ public class BudgetServiceImpl implements BudgetService {
           budgetRepository
               .all()
               .filter(
-                  "self.budgetKey != null and self.id != ?1 AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect != ?2",
+                  "self.budgetKey != null and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
                   budget.getId() != null ? budget.getId() : new Long(0),
                   GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED)
               .fetch();
@@ -615,7 +601,7 @@ public class BudgetServiceImpl implements BudgetService {
           computeTotalAmountRealized(budget);
           computeTotalFirmGap(budget);
           computeTotalSimulatedAmount(move, budget, excludeMoveInSimulated);
-          computeTotalAvailableWithSimulatedAmount(move, budget);
+          computeTotalAvailableWithSimulatedAmount(budget);
           budgetRepository.save(budget);
         }
       }
@@ -701,23 +687,23 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
-  public void createBudgetKey(Budget budget) throws AxelorException {
-    if (budget.getGlobalBudget() != null) {
-      Company company = budget.getGlobalBudget().getCompany();
+  public void createBudgetKey(Budget budget, Company company) throws AxelorException {
+    if (budget == null || company == null) {
+      return;
+    }
 
-      if (budgetToolsService.checkBudgetKeyInConfig(company)) {
-        String errorMessage = this.checkPreconditions(budget, company);
+    if (budgetToolsService.checkBudgetKeyInConfig(company)) {
+      String errorMessage = this.checkPreconditions(budget, company);
 
-        if (!Strings.isNullOrEmpty(errorMessage)) {
-          throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, errorMessage);
-        }
-        errorMessage = this.computeBudgetKey(budget, company);
-        if (!Strings.isNullOrEmpty(errorMessage)) {
-          throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, errorMessage);
-        }
-      } else {
-        budget.setBudgetKey("");
+      if (!Strings.isNullOrEmpty(errorMessage)) {
+        throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, errorMessage);
       }
+      errorMessage = this.computeBudgetKey(budget, company);
+      if (!Strings.isNullOrEmpty(errorMessage)) {
+        throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, errorMessage);
+      }
+    } else {
+      budget.setBudgetKey("");
     }
   }
 
@@ -782,25 +768,36 @@ public class BudgetServiceImpl implements BudgetService {
 
   @Override
   public void checkDatesOnBudget(Budget budget) throws AxelorException {
-    if (budget != null && budget.getBudgetLevel() != null) {
-      checkBudgetParentDates(budget);
+    if (budget == null) {
+      return;
     }
-    if (budget != null && !CollectionUtils.isEmpty(budget.getBudgetLineList())) {
-      checkBudgetLinesDates(budget);
-    }
+
+    checkBudgetParentDates(budget);
+    checkBudgetLinesDates(budget);
   }
 
   @Override
   public void checkBudgetParentDates(Budget budget) throws AxelorException {
-    if (budget == null || budget.getBudgetLevel() == null) {
+    if (budget == null
+        || (budget.getBudgetLevel() == null && budget.getGlobalBudget() == null)
+        || budget.getFromDate() == null
+        || budget.getToDate() == null) {
       return;
     }
-    BudgetLevel section = budget.getBudgetLevel();
+    LocalDate parentFromDate = null;
+    LocalDate parentToDate = null;
+    if (budget.getBudgetLevel() != null) {
+      parentFromDate = budget.getBudgetLevel().getFromDate();
+      parentToDate = budget.getBudgetLevel().getToDate();
+    } else if (budget.getGlobalBudget() != null) {
+      parentFromDate = budget.getGlobalBudget().getFromDate();
+      parentToDate = budget.getGlobalBudget().getToDate();
+    }
 
     if (budget.getFromDate() == null
         || budget.getToDate() == null
-        || (budget.getFromDate().isBefore(section.getFromDate()))
-        || (budget.getToDate().isAfter(section.getToDate()))) {
+        || (budget.getFromDate().isBefore(parentFromDate))
+        || (budget.getToDate().isAfter(parentToDate))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(I18n.get(BudgetExceptionMessage.WRONG_DATES_ON_BUDGET), budget.getCode()));
@@ -948,5 +945,26 @@ public class BudgetServiceImpl implements BudgetService {
     optBudget.setPeriodDurationSelect(0);
     generatePeriods(optBudget);
     return optBudget;
+  }
+
+  @Override
+  public void computeAvailableFields(Budget budget) {
+    budget.setAvailableAmount(
+        (budget
+                .getTotalAmountExpected()
+                .subtract(budget.getRealizedWithPo())
+                .subtract(budget.getRealizedWithNoPo()))
+            .max(BigDecimal.ZERO));
+    computeTotalAvailableWithSimulatedAmount(budget);
+    computeTotalFirmGap(budget);
+  }
+
+  @Override
+  @Transactional
+  public void archiveBudget(Budget budget) {
+    if (budget != null) {
+      budget.setArchived(true);
+      budgetRepository.save(budget);
+    }
   }
 }

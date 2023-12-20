@@ -141,11 +141,14 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice createInvoiceFromStockMove(
       StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
     Invoice invoice;
-    if (stockMove.getSaleOrder() != null) {
-      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
-    } else if (stockMove.getPurchaseOrder() != null) {
+    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
       invoice =
-          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
+          createInvoiceFromSaleOrder(
+              stockMove, stockMove.getSaleOrderSet().iterator().next(), qtyToInvoiceMap);
+    } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+      invoice =
+          createInvoiceFromPurchaseOrder(
+              stockMove, stockMove.getPurchaseOrderSet().iterator().next(), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -390,11 +393,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((stockMove.getPurchaseOrder() != null
+    if ((ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (stockMove.getSaleOrder() != null
+        || (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {
