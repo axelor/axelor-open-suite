@@ -33,6 +33,7 @@ import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.MapService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
@@ -75,7 +76,7 @@ public class AddressServiceImpl implements com.axelor.apps.base.service.AddressS
   protected StreetRepository streetRepository;
   protected AppBaseService appBaseService;
 
-  protected com.axelor.apps.base.service.MapService mapService;
+  protected MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
   private static final Pattern ZIP_CODE_PATTERN =
@@ -90,7 +91,7 @@ public class AddressServiceImpl implements com.axelor.apps.base.service.AddressS
   public AddressServiceImpl(
       GroovyTemplates groovyTemplates,
       AddressHelper ads,
-      com.axelor.apps.base.service.MapService mapService,
+      MapService mapService,
       CityRepository cityRepository,
       StreetRepository streetRepository,
       AppBaseService appBaseService) {
