@@ -157,7 +157,7 @@ public class AddressServiceImpl implements com.axelor.apps.base.service.AddressS
 
   @Override
   public String computeAddressStr(Address address) {
-    if(address == null){
+    if (address == null) {
       return "";
     }
     return address.getFormattedFullName();
