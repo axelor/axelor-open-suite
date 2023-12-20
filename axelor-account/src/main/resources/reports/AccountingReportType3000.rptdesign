@@ -2384,6 +2384,7 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                                 <property name="pageBreakBefore">auto</property>
                                 <cell id="6006">
                                     <extended-item extensionName="Crosstab" extensionVersion="3.7.0" id="5838">
+                                        <property name="cube">ReportValues</property>
                                         <property name="measures">
                                             <extended-item extensionName="MeasureView" id="5851">
                                                 <property name="measure">result</property>
