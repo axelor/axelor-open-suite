@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -207,15 +208,17 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public String computeFullName(Address address) {
 
-    String l2 = address.getRoom();
-    String l3 = address.getFloor();
-    String l4 = address.getStreetName();
-    String l5 = address.getPostBox();
+    String l2 = address.getAddressL2();
+    String l3 = address.getAddressL3();
+    String l4 = address.getAddressL4();
+    String l5 = address.getAddressL5();
+    String l6 = address.getAddressL6();
 
     return (!Strings.isNullOrEmpty(l2) ? l2 : "")
         + (!Strings.isNullOrEmpty(l3) ? " " + l3 : "")
         + (!Strings.isNullOrEmpty(l4) ? " " + l4 : "")
-        + (!Strings.isNullOrEmpty(l5) ? " " + l5 : "");
+        + (!Strings.isNullOrEmpty(l5) ? " " + l5 : "")
+        + (!Strings.isNullOrEmpty(l5) ? " " + l6 : "");
   }
 
   @Override
@@ -263,8 +266,34 @@ public class AddressServiceImpl implements AddressService {
   @Transactional(rollbackOn = {Exception.class})
   public void setFormattedFullName(Address address) throws AxelorException {
     AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
-    String content = addressTemplate.getTemplateStr();
 
+    setFormattedAddressField(
+        addressTemplate.getTemplateStr(), addressTemplate, address, address::setFormattedFullName);
+    setFormattedAddressField(
+        addressTemplate.getAddressL2Str(), addressTemplate, address, address::setAddressL2);
+    setFormattedAddressField(
+        addressTemplate.getAddressL3Str(), addressTemplate, address, address::setAddressL3);
+    setFormattedAddressField(
+        addressTemplate.getAddressL4Str(), addressTemplate, address, address::setAddressL4);
+    setFormattedAddressField(
+        addressTemplate.getAddressL5Str(), addressTemplate, address, address::setAddressL5);
+    setFormattedAddressField(
+        addressTemplate.getAddressL6Str(), addressTemplate, address, address::setAddressL6);
+  }
+
+  private void setFormattedAddressField(
+      String contentTemplateStr,
+      AddressTemplate addressTemplate,
+      Address address,
+      Consumer<String> setter)
+      throws AxelorException {
+    String templateStr = addressTemplate.getTemplateStr();
+    String formattedString = computeTemplateStr(templateStr, address);
+    setter.accept(formattedString);
+  }
+
+  private String computeTemplateStr(String content, Address address) throws AxelorException {
+    AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
     try {
       Templates templates;
       if (addressTemplate.getEngineSelect() == AddressTemplateRepository.GROOVY_TEMPLATE) {
@@ -277,16 +306,16 @@ public class AddressServiceImpl implements AddressService {
       Class<?> klass = EntityHelper.getEntityClass(address);
       Context context = new Context(Mapper.toMap(address), klass);
       templatesContext.put(klass.getSimpleName(), context.asType(klass));
-      String fullFormattedString = templates.fromText(content).make(templatesContext).render();
-
-      if (StringUtils.isBlank(fullFormattedString)) {
+      String computedString = templates.fromText(content).make(templatesContext).render();
+      if (StringUtils.isBlank(computedString)) {
         throw new RuntimeException(
             String.format(
-                I18n.get(BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR), addressTemplate.getName()));
+                I18n.get(BaseExceptionMessage.ADDRESS_FIELD_TEMPLATE_ERROR),
+                addressTemplate.getName(),
+                content));
       }
-
-      fullFormattedString = fullFormattedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
-      address.setFormattedFullName(fullFormattedString);
+      computedString = computedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
+      return computedString;
 
     } catch (Exception e) {
       LOG.error("Runtime Exception Address: {}", addressTemplate.getName());
