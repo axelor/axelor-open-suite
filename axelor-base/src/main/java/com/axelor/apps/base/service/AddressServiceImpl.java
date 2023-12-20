@@ -65,7 +65,7 @@ import org.slf4j.LoggerFactory;
 import wslite.json.JSONException;
 
 @Singleton
-public class AddressServiceImpl implements AddressService {
+public class AddressServiceImpl implements com.axelor.apps.base.service.AddressService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected final String EMPTY_LINE_REMOVAL_REGEX = "(?m)^\\s*$(\\n|\\r\\n)";
   private static final char TEMPLATE_DELIMITER = '$';
@@ -75,7 +75,7 @@ public class AddressServiceImpl implements AddressService {
   protected StreetRepository streetRepository;
   protected AppBaseService appBaseService;
 
-  protected MapService mapService;
+  protected com.axelor.apps.base.service.MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
   private static final Pattern ZIP_CODE_PATTERN =
@@ -90,7 +90,7 @@ public class AddressServiceImpl implements AddressService {
   public AddressServiceImpl(
       GroovyTemplates groovyTemplates,
       AddressHelper ads,
-      MapService mapService,
+      com.axelor.apps.base.service.MapService mapService,
       CityRepository cityRepository,
       StreetRepository streetRepository,
       AppBaseService appBaseService) {
@@ -157,6 +157,9 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
+    if(address == null){
+      return "";
+    }
     return address.getFormattedFullName();
   }
 
