@@ -83,7 +83,7 @@
           showIf="statusSelect == 0 &amp;&amp; totalAmountCommitted == 0 &amp;&amp; realizedWithNoPo == 0 &amp;&amp; realizedWithPo == 0"
           colSpan="12" onClick="action-global-budget-group-validate-structure"/>
         <button name="validBtn" title="validateBtn" showIf="statusSelect == 1" colSpan="12"
-          onClick="action-global-budget-method-validate-children, save"/>
+          onClick="action-global-budget-group-validate"/>
         <button name="archivedBtn" title="archiveBtn" showIf="statusSelect == 2" colSpan="12"
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
 
@@ -207,6 +207,12 @@
     <action name="action-global-budget-method-check-budget-dates"/>
   </action-group>
 
+  <action-group name="action-global-budget-group-validate">
+    <action name="action-global-budget-validate-validate"/>
+    <action name="action-global-budget-method-validate-children"/>
+    <action name="save"/>
+  </action-group>
+
   <action-group name="action-global-budget-group-validate-structure">
     <action name="action-global-budget-method-check-budget-dates"/>
     <action name="save"/>
@@ -236,6 +242,7 @@
   </action-method>
 
   <action-group name="action-global-budget-group-draft-children">
+    <action name="action-global-budget-validate-draft"/>
     <action name="action-global-budget-validate-alert-draft-children"/>
     <action name="save"/>
     <action name="action-global-budget-method-draft-children"/>
@@ -245,6 +252,17 @@
     <alert
       message="Warning, you will delete all versions linked to this budget, do you want to continue ?"/>
   </action-validate>
+
+  <action-validate name="action-global-budget-validate-validate">
+    <alert
+      message="By validating this budget, you will validate children sections and budgets linked too. Do you want to continue ?"/>
+  </action-validate>
+
+  <action-validate name="action-global-budget-validate-draft">
+    <alert
+      message="By drafting this budget, you will set children sections and budgets linked in draft too. Do you want to continue ?"/>
+  </action-validate>
+
 
   <action-method name="action-global-budget-method-draft-children">
     <call class="com.axelor.apps.budget.web.GlobalBudgetController" method="draftChildren"/>
