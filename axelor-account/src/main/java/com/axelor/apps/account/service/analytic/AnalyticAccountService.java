@@ -35,4 +35,6 @@ public interface AnalyticAccountService {
 
   String getAnalyticAccountDomain(Company company, AnalyticAxis analyticAxis, Account account)
       throws AxelorException;
+
+  String getIsNotParentAnalyticAccountQuery();
 }
