@@ -1,3 +1,24 @@
+## [6.3.35] (2023-12-21)
+
+#### Fixed
+
+* Stock location: Issue on Edition of Location financial data report
+* Wrong quote sequence number on finalize
+* [Ticket]: Fix Ticket timer buttons
+* INVOICE : currency not updated on first partner onChange
+* Move Line : Prevent from updating tax line when the move is accounted
+* MAINTENANCE ORDER : fix NPE when we try to plan
+* Move lettering : Fill the date of lettering when the status becomes Temporary
+* EXPENSE LINE: fix totalTax is not in readonly in form view when expense product blocks the taxes
+* Sale / Purchase / Invoice : Fix cases where price decimal config wasn't being used
+* Fixed asset : fix depreciation date when failover is complete
+* EVENT : some highlights conditions in grids use __datetime__
+* Printing template / Printing setting: fix translation issue in position fields.
+* Sale Order/Purchase Order: Error when emptying contact
+* Business Support: TaskDeadLine field not hidden when the app is installed anymore.
+* UNITCOSTCALCULATION : Irrelevant message when no product has been found
+* Account clearance : Fix an issue where move lines could be created or edited there
+
 ## [6.3.34] (2023-12-07)
 
 #### Fixed
@@ -969,6 +990,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.35]: https://github.com/axelor/axelor-open-suite/compare/v6.3.34...v6.3.35
 [6.3.34]: https://github.com/axelor/axelor-open-suite/compare/v6.3.33...v6.3.34
 [6.3.33]: https://github.com/axelor/axelor-open-suite/compare/v6.3.32...v6.3.33
 [6.3.32]: https://github.com/axelor/axelor-open-suite/compare/v6.3.31...v6.3.32
