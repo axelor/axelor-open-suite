@@ -144,8 +144,25 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
       try {
         this._processMoveLine(
             moveLine, move, doubtfulCustomerAccount, invoice, debtPassReason, pair.getRight());
+      } catch (AxelorException e) {
+        TraceBackService.trace(
+            new AxelorException(
+                e,
+                e.getCategory(),
+                String.format("%s %s", I18n.get("Invoice"), invoice.getInvoiceId())),
+            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+            batch.getId());
+
+        incrementAnomaly();
       } catch (Exception e) {
-        return;
+        TraceBackService.trace(
+            new Exception(String.format("%s %s", I18n.get("Invoice"), invoice.getInvoiceId()), e),
+            ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
+            batch.getId());
+
+        incrementAnomaly();
+
+        log.error("Anomaly generated for the invoice {}", invoice.getInvoiceId());
       }
     }
   }
@@ -185,8 +202,7 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
 
         incrementAnomaly();
 
-        log.error(
-            "Anomaly generated for the invoice {}", invoiceId);
+        log.error("Anomaly generated for the invoice {}", invoiceId);
       } finally {
         if (i % 10 == 0) {
           JPA.clear();
