@@ -1,3 +1,32 @@
+## [6.5.24] (2023-12-21)
+
+#### Fixed
+
+* Stock location: Issue on Edition of Location financial data report
+* Wrong quote sequence number on finalize
+* Invoice : Fix partner account related errors consistency when validating and ventilating
+* [Ticket]: Fix Ticket timer buttons
+* INVOICE : currency not updated on first partner onChange
+* Move Line : Prevent from updating tax line when the move is accounted
+* Custom accounting report : Disable group by account feature as it cannot be fixed until 8.1
+* Custom accounting report : Fix an issue with custom rule priority
+* MAINTENANCE ORDER : fix NPE when we try to plan
+* Move lettering : Fill the date of lettering when the status becomes Temporary
+* EXPENSE LINE: fix totalTax is not in readonly in form view when expense product blocks the taxes
+* Sale / Purchase / Invoice : Fix cases where price decimal config wasn't being used
+* Fixed asset : fix depreciation date when failover is complete
+* EVENT : some highlights conditions in grids use __datetime__
+* Printing template / Printing setting: fix translation issue in position fields.
+* Move line: Added reference of move line in sum's control error message
+* Sale Order/Purchase Order: Error when emptying contact
+* Advance Payment Invoice : Fix error when trying to pay
+* Bank order: Fixed issue in code generating move
+* Business Support: TaskDeadLine field not hidden when the app is installed anymore.
+* UNITCOSTCALCULATION : Irrelevant message when no product has been found
+* Account clearance : Fix an issue where move lines could be created or edited there
+* Reconcile : Fix an issue where a payment was created for a reconcile with an account not being used for partner balance
+* Analytic Move Line : Fix type select when we create a new analytic move line from orders, invoices, contract and moves
+
 ## [6.5.23] (2023-12-07)
 
 #### Fixed
@@ -1034,6 +1063,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.24]: https://github.com/axelor/axelor-open-suite/compare/v6.5.23...v6.5.24
 [6.5.23]: https://github.com/axelor/axelor-open-suite/compare/v6.5.22...v6.5.23
 [6.5.22]: https://github.com/axelor/axelor-open-suite/compare/v6.5.21...v6.5.22
 [6.5.21]: https://github.com/axelor/axelor-open-suite/compare/v6.5.20...v6.5.21
