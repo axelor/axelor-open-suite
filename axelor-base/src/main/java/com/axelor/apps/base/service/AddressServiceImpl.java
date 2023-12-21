@@ -120,20 +120,20 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public Address createAddress(
-          String addressL2,
-          String addressL3,
-          String addressL4,
-          String addressL5,
-          String addressL6,
-          Country addressL7Country) {
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country) {
 
     Address address = new Address();
-    address.setAddressL2(addressL2);
-    address.setAddressL3(addressL3);
-    address.setAddressL4(addressL4);
-    address.setAddressL5(addressL5);
-    address.setAddressL6(addressL6);
-    address.setCountry(addressL7Country);
+    address.setRoom(room);
+    address.setFloor(floor);
+    address.setStreetName(streetName);
+    address.setPostBox(postBox);
+    address.setCountry(country);
 
     return address;
   }
@@ -213,7 +213,6 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeFullName(Address address) {
-
     String l2 = address.getAddressL2();
     String l3 = address.getAddressL3();
     String l4 = address.getAddressL4();
@@ -246,6 +245,7 @@ public class AddressServiceImpl implements AddressService {
       city = cities.size() == 1 ? cities.get(0) : null;
       address.setCity(city);
     }
+    address.setAddressL6(city != null ? zip + " " + city.getName() : null);
 
     if (appBaseService.getAppBase().getStoreStreets()) {
       List<Street> streets =
@@ -255,10 +255,10 @@ public class AddressServiceImpl implements AddressService {
         address.setStreet(street);
         String name = street.getName();
         String num = address.getBuildingNumber();
-        address.setStreetName(num != null ? num + " " + name : name);
+        address.setAddressL4(num != null ? num + " " + name : name);
       } else {
         address.setStreet(null);
-        address.setStreetName(null);
+        address.setAddressL4(null);
       }
     }
   }
@@ -272,29 +272,19 @@ public class AddressServiceImpl implements AddressService {
   @Transactional(rollbackOn = {Exception.class})
   public void setFormattedFullName(Address address) throws AxelorException {
     AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
+    setFormattedAddressField(
+        addressTemplate.getTemplateStr(), address, address::setFormattedFullName);
+    setFormattedAddressField(addressTemplate.getAddressL2Str(), address, address::setAddressL2);
+    setFormattedAddressField(addressTemplate.getAddressL3Str(), address, address::setAddressL3);
+    setFormattedAddressField(addressTemplate.getAddressL4Str(), address, address::setAddressL4);
+    setFormattedAddressField(addressTemplate.getAddressL5Str(), address, address::setAddressL5);
+    setFormattedAddressField(addressTemplate.getAddressL6Str(), address, address::setAddressL6);
 
-    setFormattedAddressField(
-        addressTemplate.getTemplateStr(), addressTemplate, address, address::setFormattedFullName);
-    setFormattedAddressField(
-        addressTemplate.getAddressL2Str(), addressTemplate, address, address::setAddressL2);
-    setFormattedAddressField(
-        addressTemplate.getAddressL3Str(), addressTemplate, address, address::setAddressL3);
-    setFormattedAddressField(
-        addressTemplate.getAddressL4Str(), addressTemplate, address, address::setAddressL4);
-    setFormattedAddressField(
-        addressTemplate.getAddressL5Str(), addressTemplate, address, address::setAddressL5);
-    setFormattedAddressField(
-        addressTemplate.getAddressL6Str(), addressTemplate, address, address::setAddressL6);
   }
 
   private void setFormattedAddressField(
-      String contentTemplateStr,
-      AddressTemplate addressTemplate,
-      Address address,
-      Consumer<String> setter)
-      throws AxelorException {
-    String templateStr = addressTemplate.getTemplateStr();
-    String formattedString = computeTemplateStr(templateStr, address);
+      String contentTemplateStr, Address address, Consumer<String> setter) throws AxelorException {
+    String formattedString = computeTemplateStr(contentTemplateStr, address);
     setter.accept(formattedString);
   }
 
@@ -313,7 +303,7 @@ public class AddressServiceImpl implements AddressService {
       Context context = new Context(Mapper.toMap(address), klass);
       templatesContext.put(klass.getSimpleName(), context.asType(klass));
       String computedString = templates.fromText(content).make(templatesContext).render();
-      if (StringUtils.isBlank(computedString)) {
+      if (computedString == null) {
         throw new RuntimeException(
             String.format(
                 I18n.get(BaseExceptionMessage.ADDRESS_FIELD_TEMPLATE_ERROR),
@@ -324,7 +314,7 @@ public class AddressServiceImpl implements AddressService {
       return computedString;
 
     } catch (Exception e) {
-      LOG.error("Runtime Exception Address: {}", addressTemplate.getName());
+      LOG.error("Runtime Exception Address: {} - {}", addressTemplate.getName(), content);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
   }

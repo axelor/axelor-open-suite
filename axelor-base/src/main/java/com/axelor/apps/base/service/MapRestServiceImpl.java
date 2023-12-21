@@ -83,28 +83,28 @@ public class MapRestServiceImpl implements MapRestService {
   protected String makeAddressString(Address address) {
     StringBuilder addressString = new StringBuilder();
 
-    if (StringUtils.notBlank(address.getRoom())) {
-      addressString.append(address.getRoom() + "<br/>");
+    if (StringUtils.notBlank(address.getAddressL2())) {
+      addressString.append(address.getAddressL2() + "<br/>");
     }
 
-    if (StringUtils.notBlank(address.getFloor())) {
-      addressString.append(address.getFloor() + "<br/>");
+    if (StringUtils.notBlank(address.getAddressL3())) {
+      addressString.append(address.getAddressL3() + "<br/>");
     }
 
-    if (StringUtils.notBlank(address.getStreetName())) {
-      addressString.append(address.getStreetName() + "<br/>");
+    if (StringUtils.notBlank(address.getAddressL4())) {
+      addressString.append(address.getAddressL4() + "<br/>");
     }
 
-    if (StringUtils.notBlank(address.getPostBox())) {
-      addressString.append(address.getPostBox() + "<br/>");
+    if (StringUtils.notBlank(address.getAddressL5())) {
+      addressString.append(address.getAddressL5() + "<br/>");
     }
 
-    //    if (StringUtils.notBlank(address.getAddressL6())) {
-    //      addressString.append(address.getAddressL6());
-    //    }
+    if (StringUtils.notBlank(address.getAddressL6())) {
+      addressString.append(address.getAddressL6());
+    }
 
     if (address.getCountry() != null) {
-      addressString = addressString.append("<br/>" + address.getCountry().getName());
+      addressString.append("<br/>" + address.getCountry().getName());
     }
 
     return addressString.toString();

@@ -1,6 +1,8 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.common.csv.CSVFile;
 import com.google.inject.Inject;
@@ -59,5 +61,30 @@ public class AddressExportServiceImpl implements AddressExportService {
     LOG.info("{} exported", path);
 
     return addresses.size();
+  }
+
+  @Override
+  public Address getAddress(
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country) {
+
+    return addressRepository
+        .all()
+        .filter(
+            "self.room = ?1 AND self.floor = ?2 AND self.streetName = ?3 "
+                + "AND self.postBox = ?4 AND self.zip = ?5, self.city = ?6 AND self.country = ?7",
+            room,
+            floor,
+            streetName,
+            postBox,
+            zip,
+            city,
+            country)
+        .fetchOne();
   }
 }

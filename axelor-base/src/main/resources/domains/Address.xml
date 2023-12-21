@@ -10,13 +10,6 @@
     <string name="department" title="Department"/>
     <string name="subDepartment" title="Sub Department"/>
 
-<!--    <string name="streetName" title="Street" required="true"/>-->
-    <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
-<!--    <string name="buildingNumber" title="Building number"/>-->
-    <string name="buildingName" title="Building"/>
-<!--    <string name="floor" title="Floor"/>-->
-<!--    <string name="postBox" title="Post box"/>-->
-<!--    <string name="room" title="Room"/>-->
 
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions"/>
@@ -24,6 +17,13 @@
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
     <string name="addressL6" title="Zip/City"/>
 
+    <string name="streetName" title="Street" required="true"/>
+    <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
+    <string name="buildingNumber" title="Building number"/>
+    <string name="buildingName" title="Building"/>
+    <string name="floor" title="Floor"/>
+    <string name="postBox" title="Post box"/>
+    <string name="room" title="Room"/>
 
     <string name="townName" title="Town"/>
     <many-to-one name="city" ref="City" title="City" massUpdate="true"/>

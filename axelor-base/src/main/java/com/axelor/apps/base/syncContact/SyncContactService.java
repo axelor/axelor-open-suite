@@ -373,9 +373,10 @@ public class SyncContactService {
     }
     partnerAddr.setZip(googleAddr.getPostalCode());
     addrL4.append(googleAddr.getStreetAddress());
-    partnerAddr.setStreetName(addrL4.toString());
-    partnerAddr.setPostBox(googleAddr.getCity());
-    partnerAddr.setRoom(googleAddr.getExtendedAddress());
+    partnerAddr.setAddressL4(addrL4.toString());
+    partnerAddr.setAddressL5(googleAddr.getCity());
+    partnerAddr.setAddressL2(googleAddr.getExtendedAddress());
+    partnerAddr.setAddressL6(googleAddr.getPostalCode() + " " + googleAddr.getCity());
     partnerAddr.setFullName(Beans.get(AddressService.class).computeFullName(partnerAddr));
     partnerAddr.setImportOrigin(importOrigin);
     return partnerAddr;

@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
@@ -37,12 +38,13 @@ public interface AddressService {
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
   public Address createAddress(
-          String addressL2,
-          String addressL3,
-          String addressL4,
-          String addressL5,
-          String addressL6,
-          Country country);
+      String room,
+      String floor,
+      String streetName,
+      String postBox,
+      String zip,
+      City city,
+      Country country);
 
   @CallMethod
   public boolean checkAddressUsed(Long addressId);

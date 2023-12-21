@@ -1,6 +1,6 @@
-"importId";"name";"engineSelect";"templateStr"
+"importId";"name";"engineSelect";"templateStr";"addressL2Str";"addressL3Str";"addressL4Str";"addressL5Str";"addressL6Str"
 "1";"DEFAULT";"2";"${(Address.room == null) ? '' : Address.room}
 ${(Address.floor == null) ? '' : Address.floor}
 ${(Address.streetName == null) ? '' : Address.streetName}
 ${(Address.postBox == null) ? '' : Address.postBox}
-${(Address.country == null) ? '' : Address.country.name}"
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.room == null) ? '' : Address.room}";"${(Address.floor == null) ? '' : Address.floor}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.zip == null) ? '' : Address.zip}"

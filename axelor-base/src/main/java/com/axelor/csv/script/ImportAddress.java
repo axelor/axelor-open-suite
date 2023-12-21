@@ -23,16 +23,19 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.google.inject.Inject;
+import java.lang.invoke.MethodHandles;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ImportAddress {
+  private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject protected AddressService addressService;
 
   public Object importAddress(Object bean, Map<String, Object> values) {
 
     Address address = (Address) bean;
-    address.setFullName(addressService.computeFullName(address));
 
     if (address.getCity() != null) {
       address.setTownName(address.getCity().getName());
@@ -40,11 +43,14 @@ public class ImportAddress {
     if (address.getStreet() != null) {
       address.setStreetName(address.getStreet().getName());
     }
+
     try {
       addressService.setFormattedFullName(address);
     } catch (Exception e) {
-      TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
+      TraceBackService.trace(
+          e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, Long.parseLong(address.getImportId()));
     }
+    address.setFullName(addressService.computeFullName(address));
 
     return address;
   }

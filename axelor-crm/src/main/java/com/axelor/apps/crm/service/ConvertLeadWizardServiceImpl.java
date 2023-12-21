@@ -20,14 +20,16 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.AddressExportService;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.AddressUtilityService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
@@ -77,14 +79,17 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected PartnerRepository partnerRepository;
 
-  protected AddressUtilityService addressUtilityService;
+  protected AddressRepository addressRepository;
+
+  protected AddressExportService addressExportService;
 
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
       ConvertWizardService convertWizardService,
       AddressService addressService,
-      AddressUtilityService addressUtilityService,
+      AddressExportService addressExportService,
+      AddressRepository addressRepository,
       PartnerService partnerService,
       CountryRepository countryRepo,
       AppBaseService appBaseService,
@@ -95,7 +100,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
     this.addressService = addressService;
-    this.addressUtilityService = addressUtilityService;
+    this.addressExportService = addressExportService;
+    this.addressRepository = addressRepository;
     this.partnerService = partnerService;
     this.countryRepo = countryRepo;
     this.appBaseService = appBaseService;
@@ -159,37 +165,21 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   @SuppressWarnings("unchecked")
   @Override
   public Address createPrimaryAddress(Lead lead) {
-
-    String addressL4 = lead.getPrimaryAddress();
-    if (addressL4 == null) {
+    String streetName = lead.getPrimaryAddress();
+    if (streetName == null) {
       return null;
     }
-    String addressL5 = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
-    String addressL6 =
-            lead.getPrimaryPostalCode()
-                    + " "
-                    + (lead.getPrimaryCity() != null ? lead.getPrimaryCity().getName() : "");
+    String postBox = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
 
     Country country = lead.getPrimaryCountry();
+    String zip = lead.getPrimaryPostalCode();
+    City city = lead.getPrimaryCity();
 
     Address address =
-            addressUtilityService
-                    .all()
-                    .filter(
-                            "self.addressL2 = ?1 AND self.addressL3 = ?2 AND self.addressL4 = ?3 "
-                                    + "AND self.addressL5 = ?4 AND self.addressL6 = ?5 AND self.country = ?6",
-                            null,
-                            null,
-                            addressL4,
-                            addressL5,
-                            addressL6,
-                            country)
-                    .fetchOne();
+        addressExportService.getAddress(null, null, streetName, postBox, zip, city, country);
 
     if (address == null) {
-      address =
-              addressService.createAddress(
-                      null, null, addressL4, addressL5, addressL6, country);
+      address = addressService.createAddress(null, null, streetName, postBox, zip, city, country);
     }
 
     return address;

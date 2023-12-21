@@ -30,8 +30,8 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.AddressExportService;
 import com.axelor.apps.base.service.AddressService;
-import com.axelor.apps.base.service.AddressUtilityService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -87,7 +87,7 @@ public class AddressController {
 
     Address a = request.getContext().asType(Address.class);
     LOG.debug("validate a = {}", a);
-    String search = a.getStreetName();
+    String search = a.getAddressL4() + " " + a.getAddressL6();
     Map<String, Object> retDict =
         Beans.get(AddressService.class)
             .validate(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), search);
@@ -205,7 +205,7 @@ public class AddressController {
       addressExportPath = "adresses.csv";
     }
 
-    int size = Beans.get(AddressUtilityService.class).export(dataExportDir + addressExportPath);
+    int size = Beans.get(AddressExportService.class).export(dataExportDir + addressExportPath);
 
     response.setValue("log", size + " adresses exportées");
   }
