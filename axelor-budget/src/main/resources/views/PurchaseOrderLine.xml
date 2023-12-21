@@ -14,6 +14,18 @@
     </extend>
   </grid>
 
+  <grid id="budget-purchase-order-line-grid"
+    model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines"
+    name="purchase-order-line-grid" extension="true">
+    <extend target="//field[@name='estimatedReceiptDate']">
+      <insert position="after">
+        <field name="budget.budgetLevel.parentBudgetLevel" title="Group"/>
+        <field name="budget.budgetLevel" title="Section"/>
+        <field name="budget"/>
+      </insert>
+    </extend>
+  </grid>
+
   <form id="budget-purchase-order-line-form" name="purchase-order-line-form" title="PO line"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine" extension="true">
 
