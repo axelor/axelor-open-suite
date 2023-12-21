@@ -279,7 +279,6 @@ public class AddressServiceImpl implements AddressService {
     setFormattedAddressField(addressTemplate.getAddressL4Str(), address, address::setAddressL4);
     setFormattedAddressField(addressTemplate.getAddressL5Str(), address, address::setAddressL5);
     setFormattedAddressField(addressTemplate.getAddressL6Str(), address, address::setAddressL6);
-
   }
 
   private void setFormattedAddressField(

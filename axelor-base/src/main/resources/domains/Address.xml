@@ -17,6 +17,7 @@
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
     <string name="addressL6" title="Zip/City"/>
 
+    <string name="streetNumber" title="Street number"/>
     <string name="streetName" title="Street" required="true"/>
     <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
     <string name="buildingNumber" title="Building number"/>

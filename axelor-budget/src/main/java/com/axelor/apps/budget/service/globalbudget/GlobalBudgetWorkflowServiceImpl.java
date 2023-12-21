@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
@@ -25,6 +25,9 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.VersionExpectedAmountsLine;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -34,10 +37,23 @@ import java.util.List;
 public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowService {
 
   protected BudgetLevelService budgetLevelService;
+  protected BudgetService budgetService;
+  protected BudgetToolsService budgetToolsService;
+  protected GlobalBudgetService globalBudgetService;
+  protected GlobalBudgetRepository globalBudgetRepository;
 
   @Inject
-  public GlobalBudgetWorkflowServiceImpl(BudgetLevelService budgetLevelService) {
+  public GlobalBudgetWorkflowServiceImpl(
+      BudgetLevelService budgetLevelService,
+      BudgetService budgetService,
+      BudgetToolsService budgetToolsService,
+      GlobalBudgetService globalBudgetService,
+      GlobalBudgetRepository globalBudgetRepository) {
     this.budgetLevelService = budgetLevelService;
+    this.budgetService = budgetService;
+    this.budgetToolsService = budgetToolsService;
+    this.globalBudgetService = globalBudgetService;
+    this.globalBudgetRepository = globalBudgetRepository;
   }
 
   @Override
@@ -46,9 +62,22 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetLevelService.validateChildren(budgetLevel);
       }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      boolean checkBudgetKey = budgetToolsService.checkBudgetKeyInConfig(globalBudget.getCompany());
+      for (Budget budget : globalBudget.getBudgetList()) {
+        budgetService.validateBudget(budget, checkBudgetKey);
+      }
     }
 
     globalBudget.setStatusSelect(status);
+  }
+
+  @Override
+  public void validateStructure(GlobalBudget globalBudget) throws AxelorException {
+    globalBudgetService.generateBudgetKey(globalBudget);
+
+    globalBudget.setStatusSelect(
+        GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE);
   }
 
   @Override
@@ -57,6 +86,10 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetLevelService.archiveBudgetLevel(budgetLevel);
+      }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      for (Budget budget : globalBudget.getBudgetList()) {
+        budgetService.archiveBudget(budget);
       }
     }
 
@@ -68,17 +101,25 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
   public void draftChildren(GlobalBudget globalBudget) {
 
     clearBudgetVersions(globalBudget);
+    globalBudget = globalBudgetRepository.find(globalBudget.getId());
 
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
         budgetLevelService.draftChildren(budgetLevel);
       }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      for (Budget budget : globalBudget.getBudgetList()) {
+        budgetService.draftBudget(budget);
+      }
     }
 
     globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT);
+    globalBudgetRepository.save(globalBudget);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected void clearBudgetVersions(GlobalBudget globalBudget) {
+    globalBudget = globalBudgetRepository.find(globalBudget.getId());
     if (ObjectUtils.isEmpty(globalBudget.getBudgetVersionList())) {
       return;
     }
@@ -101,5 +142,6 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
         budget.setActiveVersionExpectedAmountsLine(null);
       }
     }
+    globalBudgetRepository.save(globalBudget);
   }
 }

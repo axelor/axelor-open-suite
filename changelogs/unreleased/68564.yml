@@ -6,9 +6,4 @@ description: |
   The current system is based on the french formatting of addresses which can be applied to some countries but lack flexibility to match other countries standards.
   
   Updated processes to format the address, per example when we select an address on an invoice or an order. We don't need to format the address in these processes anymore
-  
   Updated the demo-data in base_country.csv file to add address template column value.
-  
-  MIGRATIONS:
-  Created base_address_templates in the SQL script to accomodate changes.
-  Added not null constraints on addressTemplate column of Country table.
