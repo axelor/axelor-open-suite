@@ -99,8 +99,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
 
   @Override
   public void computeBudgetLevelTotals(Budget budget) {
-    // TODO Add scale here
-
     budgetService.computeAvailableFields(budget);
 
     budgetLevelService.computeBudgetLevelTotals(budget);

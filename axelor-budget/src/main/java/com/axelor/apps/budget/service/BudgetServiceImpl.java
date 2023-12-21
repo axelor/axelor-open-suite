@@ -1014,11 +1014,13 @@ public class BudgetServiceImpl implements BudgetService {
   @Override
   public void computeAvailableFields(Budget budget) {
     budget.setAvailableAmount(
-        (budget
-                .getTotalAmountExpected()
-                .subtract(budget.getRealizedWithPo())
-                .subtract(budget.getRealizedWithNoPo()))
-            .max(BigDecimal.ZERO));
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budget,
+            (budget
+                    .getTotalAmountExpected()
+                    .subtract(budget.getRealizedWithPo())
+                    .subtract(budget.getRealizedWithNoPo()))
+                .max(BigDecimal.ZERO)));
     computeTotalAvailableWithSimulatedAmount(budget);
     computeTotalFirmGap(budget);
   }
