@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
@@ -184,7 +185,12 @@ public class AnalyticMoveLineQueryController {
 
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       List<Long> analyticAccountList = new ArrayList<>();
-      StringBuilder domain = new StringBuilder("self.id in (");
+
+      StringBuilder domain =
+          new StringBuilder(
+              Beans.get(AnalyticAccountService.class).getIsNotParentAnalyticAccountQuery());
+      domain.append(" AND self.id in (");
+
       if (invoiceLine != null) {
         analyticAccountList =
             analyticLineService.getAnalyticAccountsByAxis(

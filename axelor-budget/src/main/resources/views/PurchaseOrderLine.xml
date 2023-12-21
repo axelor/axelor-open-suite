@@ -10,7 +10,14 @@
       <insert position="after">
         <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
         <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='priceDiscounted']">
+      <attribute name="x-scale" value="$nbDecimalDigitForUnitPrice"/>
+    </extend>
+    <extend target="//field[@name='inTaxPrice']">
+      <attribute name="x-scale" value="$nbDecimalDigitForUnitPrice"/>
     </extend>
   </grid>
 
