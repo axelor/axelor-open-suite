@@ -17,6 +17,8 @@
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
     <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
     <long name="timeBeforeNextOperation" title="Time before next operation (hh:mm:ss)"
       help="Time before the next operation of the same manufacturing order."/>

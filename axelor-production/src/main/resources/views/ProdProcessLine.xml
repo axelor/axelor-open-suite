@@ -42,16 +42,27 @@
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
         <field name="minCapacityPerCycle" colSpan="4"/>
         <field name="maxCapacityPerCycle" colSpan="4"/>
-        <field name="durationPerCycle" colSpan="6" widget="duration" x-big="true"
-          x-seconds="true" if="!__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
-        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
-          x-seconds="true" if="!__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
-        <field name="timeBeforeNextOperation" colSpan="6" widget="duration" x-big="true"
-          x-seconds="true"/>
         <field name="durationPerCycleDecimal" colSpan="6"
           if="__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
         <field name="humanDurationDecimal" colSpan="6"
           if="__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
+      </panel>
+
+      <panel name="machineTimesPanel" title="Machine times">
+        <field name="durationPerCycle" colSpan="4" widget="duration" x-big="true"
+          x-seconds="true" if="!__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
+        <field name="startingDuration" widget="duration"
+          help="The time the machine starts before it can be used." colSpan="4" x-big="true"
+          x-seconds="true"/>
+        <field name="endingDuration" widget="duration" help="Ending duration of the machine."
+          colSpan="4" x-big="true" x-seconds="true"/>
+      </panel>
+
+      <panel name="humanTimesPanel" title="Human times">
+        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true" if="!__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
+        <field name="timeBeforeNextOperation" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true"/>
       </panel>
 
       <panel name="costSettingPanel" colSpan="12" itemSpan="12"
@@ -126,6 +137,8 @@
       if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
     <field name="maxCapacityPerCycle" expr="eval: workCenter?.maxCapacityPerCycle"
       if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
+    <field name="startingDuration" expr="eval: workCenter?.startingDuration"/>
+    <field name="endingDuration" expr="eval: workCenter?.endingDuration"/>
   </action-record>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
@@ -135,9 +148,9 @@
   </action-group>
 
   <action-attrs name="action-prod-process-line-attrs-hide-duration">
-    <attribute name="hidden" for="durationPerCycle"
+    <attribute name="hidden" for="machineTimesPanel"
       expr="eval: workCenter?.workCenterTypeSelect != 3 &amp;&amp; workCenter?.workCenterTypeSelect != 2"/>
-    <attribute name="hidden" for="humanDuration"
+    <attribute name="hidden" for="humanTimesPanel"
       expr="eval: workCenter?.workCenterTypeSelect != 3 &amp;&amp; workCenter?.workCenterTypeSelect != 1"/>
   </action-attrs>
 
