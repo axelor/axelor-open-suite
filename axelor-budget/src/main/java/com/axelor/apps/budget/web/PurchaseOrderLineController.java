@@ -26,9 +26,12 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -266,5 +269,19 @@ public class PurchaseOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null && request.getContext().getParent() != null){
+      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    }
+
+    Beans.get(PurchaseOrderLineBudgetService.class)
+            .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
+
+    response.setValue("budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
   }
 }

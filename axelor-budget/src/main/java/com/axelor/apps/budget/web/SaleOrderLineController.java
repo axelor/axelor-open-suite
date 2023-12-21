@@ -19,13 +19,17 @@
 package com.axelor.apps.budget.web;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
+import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -262,5 +266,19 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+            if (saleOrder == null && request.getContext().getParent() != null){
+              saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+            }
+
+    Beans.get(SaleOrderLineBudgetService.class)
+            .computeBudgetDistributionSumAmount(saleOrderLine, saleOrder);
+
+    response.setValue("budgetDistributionSumAmount", saleOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", saleOrderLine.getBudgetDistributionList());
   }
 }

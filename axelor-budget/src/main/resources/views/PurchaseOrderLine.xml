@@ -234,4 +234,9 @@
       method="setAccountDomain"/>
   </action-method>
 
+  <action-method name="action-purchase-order-method-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
+          method="computeBudgetDistributionSumAmount"/>
+  </action-method>
+
 </object-views>
