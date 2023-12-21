@@ -157,8 +157,10 @@
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setAccountDomain"/>
   </action-method>
 
-  <action-method name="action-sale-order-method-compute-budget-distribution-sum-amount">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="computeBudgetDistributionSumAmount"/>
+  <action-method
+    name="action-sale-order-method-compute-budget-distribution-sum-amount">
+    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
+      method="computeBudgetDistributionSumAmount"/>
   </action-method>
 
 </object-views>
