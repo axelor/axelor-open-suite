@@ -766,8 +766,8 @@
 
   <action-record name="action-record-po-contact-partner-change"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="supplierPartner" expr="eval: contactPartner.mainPartner"
-      if="contactPartner.mainPartner != null"/>
+    <field name="supplierPartner" expr="eval: contactPartner?.mainPartner"
+      if="!supplierPartner"/>
   </action-record>
 
   <action-method name="action-purchase-order-method-validate-supplier">
