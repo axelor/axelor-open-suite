@@ -1,3 +1,38 @@
+## [7.0.17] (2023-12-21)
+
+#### Fixed
+
+* Stock location: Issue on Edition of Location financial data report
+* Wrong quote sequence number on finalize
+* Invoice : Fix partner account related errors consistency when validating and ventilating
+* [Ticket]: Fix Ticket timer buttons
+* INVOICE : currency not updated on first partner onChange
+* Move Line : Prevent from updating tax line when the move is accounted
+* Custom accounting report : Disable group by account feature as it cannot be fixed until 8.1
+* GDPR: Fix response email couldn't be changed.
+* Custom accounting report : Fix an issue with custom rule priority
+* MAINTENANCE ORDER : fix NPE when we try to plan
+* Move lettering : Fill the date of lettering when the status becomes Temporary
+* Reconcile : Fix amount error triggering on unwanted cases
+* EXPENSE LINE: fix totalTax is not in readonly in form view when expense product blocks the taxes
+* Sale / Purchase / Invoice : Fix cases where price decimal config wasn't being used
+* Fixed asset : fix depreciation date when failover is complete
+* Move line : Fix move function original select being wrongly displayed
+* EVENT : some highlights conditions in grids use __datetime__
+* Invoice payment : Fix an issue where it was possible to set a higher amount that maximum one allowed
+* Move : Fix counterpart generation with multi currency
+* Printing template / Printing setting: fix translation issue in position fields.
+* Move line: Added reference of move line in sum's control error message
+* Sale Order/Purchase Order: Error when emptying contact
+* Advance Payment Invoice : Fix error when trying to pay
+* Bank order: Fixed issue in code generating move
+* Business Support: TaskDeadLine field not hidden when the app is installed anymore.
+* Invoice term : Fix wrong amount computation at invoice term generation with hold back
+* UNITCOSTCALCULATION : Irrelevant message when no product has been found
+* Account clearance : Fix an issue where move lines could be created or edited there
+* Reconcile : Fix an issue where a payment was created for a reconcile with an account not being used for partner balance
+* Analytic Move Line : Fix type select when we create a new analytic move line from orders, invoices, contract and moves
+
 ## [7.0.16] (2023-12-07)
 
 #### Fixed
@@ -770,6 +805,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.17]: https://github.com/axelor/axelor-open-suite/compare/v7.0.16...v7.0.17
 [7.0.16]: https://github.com/axelor/axelor-open-suite/compare/v7.0.15...v7.0.16
 [7.0.15]: https://github.com/axelor/axelor-open-suite/compare/v7.0.14...v7.0.15
 [7.0.14]: https://github.com/axelor/axelor-open-suite/compare/v7.0.13...v7.0.14
