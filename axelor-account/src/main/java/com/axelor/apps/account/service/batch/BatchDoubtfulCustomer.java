@@ -186,7 +186,7 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
         incrementAnomaly();
 
         log.error(
-            "Anomaly generated for the invoice {}", moveLine.getInvoiceReject().getInvoiceId());
+            "Anomaly generated for the invoice {}", invoiceId);
       } finally {
         if (i % 10 == 0) {
           JPA.clear();

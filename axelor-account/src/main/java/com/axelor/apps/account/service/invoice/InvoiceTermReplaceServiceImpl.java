@@ -194,6 +194,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     }
 
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
+      invoiceTerm = invoiceTermRepo.find(invoiceTerm.getId());
       invoice.removeInvoiceTermListItem(invoiceTerm);
       invoiceTerm.setInvoice(null);
     }
