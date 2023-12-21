@@ -60,6 +60,7 @@
       <field name="workshopStockLocation" canEdit="false"
         domain="self.usableOnProduction = True AND self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
         if="__config__.app.getApp('production')?.getManageWorkshop()"/>
+      <field name="leadTime" widget="duration" x-big="true" x-seconds="true"/>
     </panel>
 
     <panel-tabs>
