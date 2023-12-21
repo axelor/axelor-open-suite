@@ -208,7 +208,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             I18n.get(
                 isCompanyAmount
                     ? AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT
-                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT));
+                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
+            moveLine.getName());
       }
     }
   }
