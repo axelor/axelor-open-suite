@@ -35,17 +35,21 @@ public class ExpenseLineHRRepository extends ExpenseLineRepository {
       if (expenseLine.getKilometricAllowParam() != null
           && expenseLine.getDistance().compareTo(BigDecimal.ZERO) != 0
           && expenseLine.getExpenseDate() != null) {
-        Long empId;
+        Employee employee = null;
         Expense expense = expenseLine.getExpense();
 
         if (expense != null && expense.getEmployee() != null) {
-          empId = expense.getEmployee().getId();
-        } else {
-          empId = expenseLine.getEmployee().getId();
+          employee = expense.getEmployee();
+        } else if (expenseLine.getEmployee() != null) {
+          employee = expenseLine.getEmployee();
         }
-        Employee employee = Beans.get(EmployeeRepository.class).find(empId);
-        expenseLine.setTotalAmount(
-            Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+        if (employee != null) {
+          employee = Beans.get(EmployeeRepository.class).find(employee.getId());
+          expenseLine.setTotalAmount(
+              Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+        } else {
+          expenseLine.setTotalAmount(BigDecimal.ZERO);
+        }
       }
       return super.save(expenseLine);
     } catch (Exception e) {
