@@ -367,10 +367,12 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
             invoice.getCompanyInTaxTotalRemaining(),
             companyPaymentAmount,
             paymentAmount,
-            invoice.getMove().getMoveLineList().stream()
-                .map(MoveLine::getCurrencyRate)
-                .findAny()
-                .orElse(BigDecimal.ONE));
+            invoice.getMove() != null
+                ? invoice.getMove().getMoveLineList().stream()
+                    .map(MoveLine::getCurrencyRate)
+                    .findAny()
+                    .orElse(BigDecimal.ONE)
+                : BigDecimal.ONE);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
