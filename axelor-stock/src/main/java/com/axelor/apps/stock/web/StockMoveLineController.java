@@ -418,4 +418,20 @@ public class StockMoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(
+      ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine =
+          Beans.get(StockMoveLineRepository.class)
+              .find(request.getContext().asType(StockMoveLine.class).getId());
+      if (stockMoveLine != null) {
+        Beans.get(StockMoveLineService.class)
+            .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockMoveLine);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -37,6 +37,7 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
@@ -46,6 +47,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -200,17 +202,6 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         break;
       case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
         return budget.getAvailableAmount();
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION:
-        return Optional.of(budget)
-            .map(Budget::getBudgetLevel)
-            .map(BudgetLevel::getTotalAmountAvailable)
-            .orElse(BigDecimal.ZERO);
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP:
-        return Optional.of(budget)
-            .map(Budget::getBudgetLevel)
-            .map(BudgetLevel::getParentBudgetLevel)
-            .map(BudgetLevel::getTotalAmountAvailable)
-            .orElse(BigDecimal.ZERO);
       default:
         return Optional.of(globalBudget)
             .map(GlobalBudget::getTotalAmountAvailable)
@@ -249,5 +240,75 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
       amountPerBudgetMap.remove(budget);
       amountPerBudgetMap.put(budget, oldAmount.add(amount));
     }
+  }
+
+  @Override
+  public Map<String, BigDecimal> buildMapWithAmounts(
+      List<Budget> budgetList, List<BudgetLevel> budgetLevelList) {
+    Map<String, BigDecimal> amountByField = new HashMap<>();
+    amountByField.put("totalAmountExpected", BigDecimal.ZERO);
+    amountByField.put("totalAmountCommitted", BigDecimal.ZERO);
+    amountByField.put("totalAmountRealized", BigDecimal.ZERO);
+    amountByField.put("realizedWithPo", BigDecimal.ZERO);
+    amountByField.put("realizedWithNoPo", BigDecimal.ZERO);
+    amountByField.put("totalAmountPaid", BigDecimal.ZERO);
+    amountByField.put("totalFirmGap", BigDecimal.ZERO);
+    amountByField.put("simulatedAmount", BigDecimal.ZERO);
+    if (!ObjectUtils.isEmpty(budgetLevelList)) {
+      for (BudgetLevel budgetLevelObj : budgetLevelList) {
+        amountByField.replace(
+            "totalAmountExpected",
+            amountByField.get("totalAmountExpected").add(budgetLevelObj.getTotalAmountExpected()));
+        amountByField.replace(
+            "totalAmountCommitted",
+            amountByField
+                .get("totalAmountCommitted")
+                .add(budgetLevelObj.getTotalAmountCommitted()));
+        amountByField.replace(
+            "totalAmountRealized",
+            amountByField.get("totalAmountRealized").add(budgetLevelObj.getTotalAmountCommitted()));
+        amountByField.replace(
+            "realizedWithPo",
+            amountByField.get("realizedWithPo").add(budgetLevelObj.getRealizedWithPo()));
+        amountByField.replace(
+            "realizedWithNoPo",
+            amountByField.get("realizedWithNoPo").add(budgetLevelObj.getRealizedWithNoPo()));
+        amountByField.replace(
+            "totalAmountPaid",
+            amountByField.get("totalAmountPaid").add(budgetLevelObj.getTotalAmountPaid()));
+        amountByField.replace(
+            "totalFirmGap",
+            amountByField.get("totalFirmGap").add(budgetLevelObj.getTotalFirmGap()));
+        amountByField.replace(
+            "simulatedAmount",
+            amountByField.get("simulatedAmount").add(budgetLevelObj.getSimulatedAmount()));
+      }
+    } else if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        amountByField.replace(
+            "totalAmountExpected",
+            amountByField.get("totalAmountExpected").add(budget.getTotalAmountExpected()));
+        amountByField.replace(
+            "totalAmountCommitted",
+            amountByField.get("totalAmountCommitted").add(budget.getTotalAmountCommitted()));
+        amountByField.replace(
+            "totalAmountRealized",
+            amountByField.get("totalAmountRealized").add(budget.getTotalAmountCommitted()));
+        amountByField.replace(
+            "realizedWithPo", amountByField.get("realizedWithPo").add(budget.getRealizedWithPo()));
+        amountByField.replace(
+            "realizedWithNoPo",
+            amountByField.get("realizedWithNoPo").add(budget.getRealizedWithNoPo()));
+        amountByField.replace(
+            "totalAmountPaid",
+            amountByField.get("totalAmountPaid").add(budget.getTotalAmountPaid()));
+        amountByField.replace(
+            "totalFirmGap", amountByField.get("totalFirmGap").add(budget.getTotalFirmGap()));
+        amountByField.replace(
+            "simulatedAmount",
+            amountByField.get("simulatedAmount").add(budget.getSimulatedAmount()));
+      }
+    }
+    return amountByField;
   }
 }
