@@ -1,3 +1,0 @@
----
-title: "Sale / Purchase / Invoice : Fix cases where price decimal config wasn't being used"
-type: fix
