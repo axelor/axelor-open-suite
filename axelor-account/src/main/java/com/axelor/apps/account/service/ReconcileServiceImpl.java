@@ -87,7 +87,6 @@ import org.slf4j.LoggerFactory;
 public class ReconcileServiceImpl implements ReconcileService {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  private final int ALTERNATIVE_SCALE = 5;
 
   protected MoveToolService moveToolService;
   protected AccountCustomerService accountCustomerService;
@@ -111,6 +110,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveCreateService moveCreateService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public ReconcileServiceImpl(
@@ -135,7 +135,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       SubrogationReleaseWorkflowService subrogationReleaseWorkflowService,
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -159,6 +160,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveCreateService = moveCreateService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -191,7 +193,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       Reconcile reconcile =
           new Reconcile(
               debitMoveLine.getMove().getCompany(),
-              amount.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+              currencyScaleServiceAccount.getCompanyScaledValue(debitMoveLine, amount),
               debitMoveLine,
               creditMoveLine,
               ReconcileRepository.STATUS_DRAFT,
@@ -353,13 +355,19 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getAccount().getLabel());
     }
 
-    if (reconcile
-                .getAmount()
-                .compareTo(creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()))
+    if (currencyScaleServiceAccount
+                .getScaledValue(creditMoveLine, reconcile.getAmount())
+                .compareTo(
+                    currencyScaleServiceAccount.getScaledValue(
+                        creditMoveLine,
+                        creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid())))
             > 0
-        || reconcile
-                .getAmount()
-                .compareTo(debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid()))
+        || currencyScaleServiceAccount
+                .getScaledValue(debitMoveLine, reconcile.getAmount())
+                .compareTo(
+                    currencyScaleServiceAccount.getScaledValue(
+                        debitMoveLine,
+                        debitMoveLine.getDebit().subtract(debitMoveLine.getAmountPaid())))
             > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -517,7 +525,9 @@ public class ReconcileServiceImpl implements ReconcileService {
         amount = this.getTotal(moveLine, otherMoveLine, amount, invoicePayment != null);
       }
 
-      if (invoicePayment == null) {
+      if (invoicePayment == null
+          && moveLine.getAccount().getUseForPartnerBalance()
+          && otherMoveLine.getAccount().getUseForPartnerBalance()) {
         invoicePayment =
             invoicePaymentCreateService.createInvoicePayment(invoice, amount, otherMove);
         invoicePayment.setReconcile(reconcile);
@@ -576,7 +586,7 @@ public class ReconcileServiceImpl implements ReconcileService {
               .multiply(moveLine.getCurrencyAmount().abs());
     }
 
-    total = total.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    total = currencyScaleServiceAccount.getScaledValue(moveLine, total);
 
     if (amount.compareTo(otherMoveLine.getCredit().max(otherMoveLine.getDebit())) == 0
         && total.compareTo(otherMoveLine.getCurrencyAmount()) != 0) {
