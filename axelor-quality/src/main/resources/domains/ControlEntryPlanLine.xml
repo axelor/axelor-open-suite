@@ -9,7 +9,6 @@
 
     <integer name="typeSelect" selection="quality.control.entry.plan.line.type.select"
       title="Type"/>
-    <string name="conformityFormula" title="Formula" large="true"/>
 
     <!-- Type plan line part -->
     <integer name="priority" title="priority"/>

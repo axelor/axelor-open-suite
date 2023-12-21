@@ -30,4 +30,10 @@ public final class QualityExceptionMessage {
 
   public static final String DEFAULT_QI_STATUS_NOT_FOUND = /*$$(*/
       "No status have been found for the QA, please register at least one in the configurations" /*)*/;
+
+  public static final String EXPECTED_INT_RESULT_FORMULA = /*$$(*/
+          "Excepted result for formula is either 1 (not controlled), 2 (compliant) or 3 (non compliant). Current result = %s" /*)*/;
+
+  public static final String CAN_NOT_FETCH_FORMULA = /*$$(*/
+          "Conformity formula can not be fetched" /*)*/;
 }

@@ -14,7 +14,8 @@
   </grid>
 
   <form name="control-plan-line-form" title="Control plan line"
-    model="com.axelor.apps.quality.db.ControlEntryPlanLine" onNew="action-quality-control-plan-line-record-default">
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine"
+    onNew="action-quality-control-plan-line-record-default">
     <panel name="mainPanel" colSpan="12">
       <field name="priority" colSpan="3"/>
       <field name="controlType" colSpan="3"/>
@@ -26,7 +27,7 @@
       <field name="description" widget="html" colSpan="12"/>
     </panel>
 
-    <panel name="attrsPanel">
+    <panel name="attrsPanel" showIf="controlType">
       <field name="planAttrs"/>
     </panel>
   </form>
@@ -43,23 +44,38 @@
     onNew="action-quality-control-entry-line-record-default">
     <panel name="mainPanel" colSpan="12">
       <field name="controlPlanLine" colSpan="6" form-view="control-plan-line-form"
-        grid-view="control-plan-line-grid"/>
+        grid-view="control-plan-line-grid" domain="self.typeSelect = 1"
+        onChange="action-quality-control-entry-line-copy-attrs-record"/>
       <field name="controlPlanLine.characteristic" colSpan="6"/>
       <field name="resultSelect" colSpan="6"/>
       <field name="controlEntrySample" colSpan="6" readonly="true"/>
     </panel>
 
-    <panel name="attrsPanel">
-      <field name="entryAttrs"/>
+    <panel name="attrsPanel" showIf="controlPlanLine">
+      <field name="entryAttrs" onChange="action-quality-control-entry-line-method-check-conformity"/>
     </panel>
   </form>
 
-  <action-record name="action-quality-control-plan-line-record-default" model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+  <action-record name="action-quality-control-plan-line-record-default"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
     <field name="typeSelect" expr="eval: 1"/>
   </action-record>
 
-  <action-record name="action-quality-control-entry-line-record-default" model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+  <action-record name="action-quality-control-entry-line-record-default"
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
     <field name="typeSelect" expr="eval: 2"/>
   </action-record>
+
+  <action-record name="action-quality-control-entry-line-copy-attrs-record"
+                 model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    <field name="entryAttrs" expr="eval: controlPlanLine?.entryAttrs" if="controlPlanLine"/>
+    <field name="planAttrs" expr="eval: controlPlanLine?.planAttrs" if="controlPlanLine"/>
+    <field name="entryAttrs" expr="eval: null" if="controlPlanLine == null"/>
+    <field name="planAttrs" expr="eval: null" if="controlPlanLine == null"/>
+  </action-record>
+  
+  <action-method name="action-quality-control-entry-line-method-check-conformity">
+    <call class="com.axelor.apps.quality.web.ControlEntryPlanLineController" method="checkConformity"/>
+  </action-method>
 
 </object-views>
