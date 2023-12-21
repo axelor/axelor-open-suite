@@ -16,11 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
+import java.util.Map;
 
-public interface GlobalBudgetResetToolService {
+public class InvoiceLineManagementRepository extends InvoiceLineRepository {
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put(
+        "$nbDecimalDigitForUnitPrice",
+        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
 
-  void resetGlobalBudget(GlobalBudget globalBudget);
+    return super.populate(json, context);
+  }
 }

@@ -25,7 +25,7 @@
       title="Selected payment voucher for deposit slip" orphanRemoval="false" mappedBy="depositSlip"
       copy="false"/>
 
-    <decimal name="totalAmount" scale="2" precision="20" readonly="true" copy="false"/>
+    <decimal name="totalAmount" scale="3" precision="20" readonly="true" copy="false"/>
 
     <!-- Cheque -->
     <integer name="chequeCount" title="Number of cheques" readonly="true" copy="false"/>
