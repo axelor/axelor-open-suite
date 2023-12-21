@@ -1433,13 +1433,13 @@ PrintingSettings.table_font_size as "tableFontSize"
 from purchase_purchase_order as PurchaseOrder
 left outer join base_company as Company on (PurchaseOrder.company = Company.id)
 left outer join base_address as CompanyAddress on (Company.address = CompanyAddress.id)
-left outer join base_country as CompanyCountry on (CompanyAddress.addressl7country = CompanyCountry.id)
+left outer join base_country as CompanyCountry on (CompanyAddress.country = CompanyCountry.id)
 left outer join studio_app_purchase as AppPurchase on true
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join base_partner as Partner on (PurchaseOrder.supplier_partner = Partner.id)
 left outer join base_partner_address as PartnerAddress on (PartnerAddress.partner = Partner.id and PartnerAddress.is_default_addr is true)
 left outer join base_address as Address on (PartnerAddress.address = Address.id)
-left outer join base_country as Country on (Address.addressl7country = Country.id)
+left outer join base_country as Country on (Address.country = Country.id)
 left outer join account_payment_condition as PaymentCond on (PurchaseOrder.payment_condition = PaymentCond.id)
 left outer join base_currency as Currency on (PurchaseOrder.currency = Currency.id)
 left outer join account_payment_mode as PaymentMode on (PurchaseOrder.payment_mode = PaymentMode.id)
@@ -1454,7 +1454,7 @@ left outer join purchase_purchase_config as PurchaseConfig on (PurchaseConfig.co
 --Stock module
 left outer join stock_stock_location as StockLocation on (PurchaseOrder.stock_location = StockLocation.id)
 left outer join base_address as StockAddress on (StockLocation.address = StockAddress.id)
-left outer join base_country as StockCountry on (StockAddress.addressl7country = StockCountry.id)
+left outer join base_country as StockCountry on (StockAddress.country = StockCountry.id)
 where PurchaseOrder.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">

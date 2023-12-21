@@ -65,7 +65,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
     while (!(addressList =
             addressRepository
                 .all()
-                .filter("self.addressL7Country.id IN :countryIds")
+                .filter("self.country.id IN :countryIds")
                 .bind("countryIds", countryIdList)
                 .order("id")
                 .fetch(AbstractBatch.FETCH_LIMIT, offset))

@@ -548,7 +548,7 @@ Left join base_printing_settings PrintingSettings on Company.printing_settings =
 Left join account_accounting_situation AccountingSituation on AccountDebtRecovery.accounting_situation = AccountingSituation.id
 Left join base_partner Partner on AccountingSituation.partner = Partner.id
 Left join base_address PartnerAddress on Partner.main_address = PartnerAddress.id
-Left join base_country Country on PartnerAddress.addressl7country = Country.id
+Left join base_country Country on PartnerAddress.country = Country.id
 left join meta_file as MetaFile on (MetaFile.id = Company.logo)
 where DebtRecoveryHistory.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
