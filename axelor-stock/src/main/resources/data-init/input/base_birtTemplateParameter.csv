@@ -4,6 +4,7 @@
 21;6;"InventoryId";"$Inventory.id";"decimal"
 521;6;"activateBarCodeGeneration";"${com.axelor.inject.Beans.get(com.axelor.apps.base.service.app.AppBaseService.class).getAppBase().getActivateBarCodeGeneration()}";"boolean"
 92;27;"PrintType";"$PrintType";"string"
+522;27;"FinancialDataDateTime";"$FinancialDataDateTime";"dateTime"
 93;27;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
 94;27;"StockLocationId";"$StockLocationId";"string"
 521;27;"WithoutDetailsByStockLocation";"$WithoutDetailsByStockLocation";"boolean"

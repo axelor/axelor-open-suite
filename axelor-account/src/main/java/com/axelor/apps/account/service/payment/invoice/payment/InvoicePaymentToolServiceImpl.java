@@ -24,11 +24,11 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -64,12 +64,12 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceRepository invoiceRepo;
   protected MoveToolService moveToolService;
   protected InvoicePaymentRepository invoicePaymentRepo;
-  protected AccountConfigRepository accountConfigRepository;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -82,7 +82,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
       AppAccountService appAccountService,
-      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -92,6 +93,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -422,10 +424,15 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
-      invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
+      invoicePayment.setTotalAmountWithFinancialDiscount(
+          currencyScaleServiceAccount.getScaledValue(invoicePayment, invoicePayment.getAmount()));
 
       invoicePayment.setAmount(
-          invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
+          currencyScaleServiceAccount.getScaledValue(
+              invoicePayment,
+              invoicePayment
+                  .getAmount()
+                  .subtract(invoicePayment.getFinancialDiscountTotalAmount())));
 
       invoiceTermIdList =
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());

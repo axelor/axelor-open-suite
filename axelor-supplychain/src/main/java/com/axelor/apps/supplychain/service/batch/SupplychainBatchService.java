@@ -54,6 +54,9 @@ public class SupplychainBatchService extends AbstractBatchService {
       case SupplychainBatchRepository.ACTION_UPDATE_STOCK_HISTORY:
         batch = updateStockHistory(supplychainBatch);
         break;
+      case SupplychainBatchRepository.ACTION_RUN_STOCK_RULES_BATCH:
+        batch = runStockRulesBatch(supplychainBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -84,6 +87,10 @@ public class SupplychainBatchService extends AbstractBatchService {
 
   public Batch updateStockHistory(SupplychainBatch supplychainBatch) {
     return Beans.get(BatchUpdateStockHistory.class).run(supplychainBatch);
+  }
+
+  protected Batch runStockRulesBatch(SupplychainBatch supplychainBatch) {
+    return Beans.get(BatchCheckStockComplianceWithStockRules.class).run(supplychainBatch);
   }
 
   @Transactional

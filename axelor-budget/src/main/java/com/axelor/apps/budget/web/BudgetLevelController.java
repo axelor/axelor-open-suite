@@ -23,9 +23,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
@@ -39,27 +37,10 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
+import org.springframework.util.ObjectUtils;
 
 public class BudgetLevelController {
-
-  public void importBudgetLevel(ActionRequest request, ActionResponse response) {
-
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      MetaFile errorLogMetaFile = null;
-      Beans.get(BudgetLevelService.class).importBudgetLevel(budgetLevel);
-      if (errorLogMetaFile != null) {
-        response.setAttr("$errorLogMetaFile", "value", errorLogMetaFile);
-      } else {
-        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
 
   public void exportBudgetLevel(ActionRequest request, ActionResponse response) {
 
@@ -120,41 +101,17 @@ public class BudgetLevelController {
   @SuppressWarnings("unchecked")
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    List<BudgetLevel> budgetLevelList = budgetLevel.getBudgetLevelList();
-    String levelTypeSelect = budgetLevel.getLevelTypeSelect();
     LocalDate fromDate = budgetLevel.getFromDate();
     LocalDate toDate = budgetLevel.getToDate();
     BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
 
-    switch (levelTypeSelect) {
-      case "group":
-        budgetLevelService.getUpdatedSectionBudgetList(budgetLevelList, fromDate, toDate);
-        response.setReload(true);
-        break;
-      case "section":
-        List<Budget> budgetList = (List<Budget>) request.getContext().get("budgetList");
-        budgetLevelService.getUpdatedBudgetList(budgetList, fromDate, toDate);
-        response.setReload(true);
-        break;
-      default:
-        break;
-    }
-  }
-
-  public void setProjectBudget(ActionRequest request, ActionResponse response) {
-    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-    if (budgetLevel.getProject() != null) {
-      Beans.get(BudgetLevelService.class).setProjectBudget(budgetLevel);
-    }
-  }
-
-  public void computeChildrenKey(ActionRequest request, ActionResponse response) {
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      Beans.get(BudgetLevelService.class).computeChildrenKey(budgetLevel);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevelService.getUpdatedBudgetLevelList(
+          budgetLevel.getBudgetLevelList(), fromDate, toDate);
+      response.setReload(true);
+    } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetList())) {
+      budgetLevelService.getUpdatedBudgetList(budgetLevel.getBudgetList(), fromDate, toDate);
+      response.setReload(true);
     }
   }
 }

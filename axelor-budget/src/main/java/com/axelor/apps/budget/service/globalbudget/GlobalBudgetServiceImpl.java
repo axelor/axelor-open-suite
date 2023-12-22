@@ -16,9 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service;
+package com.axelor.apps.budget.service.globalbudget;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
@@ -32,6 +33,10 @@ import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetScenarioService;
+import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -39,7 +44,6 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 public class GlobalBudgetServiceImpl implements GlobalBudgetService {
@@ -51,6 +55,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   protected BudgetLevelManagementRepository budgetLevelManagementRepository;
   protected BudgetVersionRepository budgetVersionRepo;
   protected BudgetScenarioService budgetScenarioService;
+  protected BudgetToolsService budgetToolsService;
+  protected GlobalBudgetToolsService globalBudgetToolsService;
 
   @Inject
   public GlobalBudgetServiceImpl(
@@ -60,7 +66,9 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       BudgetRepository budgetRepository,
       BudgetLevelManagementRepository budgetLevelManagementRepository,
       BudgetVersionRepository budgetVersionRepo,
-      BudgetScenarioService budgetScenarioService) {
+      BudgetScenarioService budgetScenarioService,
+      BudgetToolsService budgetToolsService,
+      GlobalBudgetToolsService globalBudgetToolsService) {
     this.budgetLevelService = budgetLevelService;
     this.globalBudgetRepository = globalBudgetRepository;
     this.budgetService = budgetService;
@@ -68,6 +76,8 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.budgetVersionRepo = budgetVersionRepo;
     this.budgetScenarioService = budgetScenarioService;
+    this.budgetToolsService = budgetToolsService;
+    this.globalBudgetToolsService = globalBudgetToolsService;
   }
 
   @Override
@@ -76,19 +86,25 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       for (BudgetLevel budgetLevelChild : globalBudget.getBudgetLevelList()) {
         budgetLevelService.validateDates(budgetLevelChild);
       }
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      for (Budget budget : globalBudget.getBudgetList()) {
+        budgetService.checkDatesOnBudget(budget);
+      }
     }
   }
 
   @Override
   public void computeBudgetLevelTotals(Budget budget) {
 
+    budgetService.computeAvailableFields(budget);
+
     budgetLevelService.computeBudgetLevelTotals(budget);
 
-    GlobalBudget globalBudget =
-        Optional.ofNullable(budget.getBudgetLevel())
-            .map(BudgetLevel::getParentBudgetLevel)
-            .map(BudgetLevel::getGlobalBudget)
-            .orElse(null);
+    GlobalBudget globalBudget = budget.getGlobalBudget();
+
+    if (globalBudget == null) {
+      globalBudget = budgetToolsService.getGlobalBudgetUsingBudget(budget);
+    }
 
     if (globalBudget != null) {
       computeTotals(globalBudget);
@@ -98,39 +114,26 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   @Override
   public void computeTotals(GlobalBudget globalBudget) {
     List<BudgetLevel> budgetLevelList = globalBudget.getBudgetLevelList();
-    BigDecimal totalAmountExpected = BigDecimal.ZERO;
-    BigDecimal totalAmountCommitted = BigDecimal.ZERO;
-    BigDecimal totalAmountRealized = BigDecimal.ZERO;
-    BigDecimal realizedWithPo = BigDecimal.ZERO;
-    BigDecimal realizedWithNoPo = BigDecimal.ZERO;
-    BigDecimal totalAmountPaid = BigDecimal.ZERO;
-    BigDecimal totalFirmGap = BigDecimal.ZERO;
-    BigDecimal simulatedAmount = BigDecimal.ZERO;
-    if (budgetLevelList != null) {
-      for (BudgetLevel budgetLevelObj : budgetLevelList) {
-        totalAmountExpected = totalAmountExpected.add(budgetLevelObj.getTotalAmountExpected());
-        totalAmountCommitted = totalAmountCommitted.add(budgetLevelObj.getTotalAmountCommitted());
-        totalAmountPaid = totalAmountPaid.add(budgetLevelObj.getTotalAmountPaid());
-        totalAmountRealized = totalAmountRealized.add(budgetLevelObj.getTotalAmountRealized());
-        realizedWithPo = realizedWithPo.add(budgetLevelObj.getRealizedWithPo());
-        realizedWithNoPo = realizedWithNoPo.add(budgetLevelObj.getRealizedWithNoPo());
-        totalFirmGap = totalFirmGap.add(budgetLevelObj.getTotalFirmGap());
-        simulatedAmount = simulatedAmount.add(budgetLevelObj.getSimulatedAmount());
-      }
-    }
-    globalBudget.setTotalAmountExpected(totalAmountExpected);
-    globalBudget.setTotalAmountCommitted(totalAmountCommitted);
-    globalBudget.setTotalAmountPaid(totalAmountPaid);
-    globalBudget.setTotalAmountRealized(totalAmountRealized);
-    globalBudget.setRealizedWithNoPo(realizedWithNoPo);
-    globalBudget.setRealizedWithPo(realizedWithPo);
+    List<Budget> budgetList = globalBudget.getBudgetList();
+    Map<String, BigDecimal> amountByField =
+        budgetToolsService.buildMapWithAmounts(budgetList, budgetLevelList);
+    globalBudget.setTotalAmountExpected(amountByField.get("totalAmountExpected"));
+    globalBudget.setTotalAmountCommitted(amountByField.get("totalAmountCommitted"));
+    globalBudget.setTotalAmountPaid(amountByField.get("totalAmountPaid"));
+    globalBudget.setTotalAmountRealized(amountByField.get("totalAmountRealized"));
+    globalBudget.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
+    globalBudget.setRealizedWithPo(amountByField.get("realizedWithPo"));
     globalBudget.setTotalAmountAvailable(
-        (totalAmountExpected.subtract(realizedWithPo).subtract(realizedWithNoPo))
+        (amountByField
+                .get("totalAmountExpected")
+                .subtract(amountByField.get("realizedWithPo"))
+                .subtract(amountByField.get("realizedWithNoPo")))
             .max(BigDecimal.ZERO));
-    globalBudget.setTotalFirmGap(totalFirmGap);
-    globalBudget.setSimulatedAmount(simulatedAmount);
+    globalBudget.setTotalFirmGap(amountByField.get("totalFirmGap"));
+    globalBudget.setSimulatedAmount(amountByField.get("simulatedAmount"));
     globalBudget.setAvailableAmountWithSimulated(
-        (globalBudget.getTotalAmountAvailable().subtract(simulatedAmount)).max(BigDecimal.ZERO));
+        (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
+            .max(BigDecimal.ZERO));
   }
 
   @Override
@@ -263,5 +266,38 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     budgetLine.setRealizedWithPo(budget.getRealizedWithPo());
     budgetLine.setFirmGap(budget.getTotalFirmGap());
     budgetLine.setAmountPaid(budget.getTotalAmountPaid());
+  }
+
+  @Override
+  public void updateGlobalBudgetDates(GlobalBudget globalBudget) throws AxelorException {
+    if (globalBudget == null
+        || globalBudget.getFromDate() == null
+        || globalBudget.getToDate() == null) {
+      return;
+    }
+
+    if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
+      budgetLevelService.getUpdatedBudgetLevelList(
+          globalBudget.getBudgetLevelList(), globalBudget.getFromDate(), globalBudget.getToDate());
+    } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
+      budgetLevelService.getUpdatedBudgetList(
+          globalBudget.getBudgetList(), globalBudget.getFromDate(), globalBudget.getToDate());
+    }
+  }
+
+  @Override
+  public void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException {
+    List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
+    if (ObjectUtils.isEmpty(budgetList)) {
+      return;
+    }
+
+    Company company = globalBudget.getCompany();
+    for (Budget budget : budgetList) {
+      budgetService.createBudgetKey(budget, company);
+      if (budget.getGlobalBudget() == null) {
+        globalBudget.addBudgetListItem(budget);
+      }
+    }
   }
 }

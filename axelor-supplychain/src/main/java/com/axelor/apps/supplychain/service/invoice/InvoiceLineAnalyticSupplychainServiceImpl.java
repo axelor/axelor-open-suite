@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -50,14 +51,16 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       ListHelper listHelper,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         analyticAccountRepository,
         analyticMoveLineService,
         analyticToolService,
         accountConfigService,
         listHelper,
-        appAccountService);
+        appAccountService,
+        currencyScaleServiceAccount);
     this.analyticLineModelService = analyticLineModelService;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }

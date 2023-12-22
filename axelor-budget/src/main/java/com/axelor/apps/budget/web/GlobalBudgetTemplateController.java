@@ -22,7 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.GlobalBudgetTemplate;
-import com.axelor.apps.budget.service.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
