@@ -720,15 +720,19 @@ public class SaleOrderController {
 
   public void setAmountToInvoiceScale(ActionRequest request, ActionResponse response) {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    boolean isPercent = (Boolean) request.getContext().getOrDefault("isPercent", false);
+    try {
+      boolean isPercent = (Boolean) request.getContext().getOrDefault("isPercent", false);
 
-    if (saleOrder != null && saleOrder.getCurrency() != null) {
-      response.setAttr(
-          "$amountToInvoice",
-          "scale",
-          isPercent
-              ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
-              : saleOrder.getCurrency().getNumberOfDecimals());
+      if (saleOrder != null && saleOrder.getCurrency() != null) {
+        response.setAttr(
+            "$amountToInvoice",
+            "scale",
+            isPercent
+                ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
+                : saleOrder.getCurrency().getNumberOfDecimals());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

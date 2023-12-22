@@ -35,8 +35,8 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
 
     if (context.get("_model") != null
-        && (context.get("_model").toString().contains("SaleOrder")
-            || context.get("_model").toString().contains("SaleOrderLine"))
+        && (context.get("_model").equals(SaleOrder.class.getName())
+            || context.get("_model").equals(SaleOrderLine.class.getName()))
         && (context.get("id") != null || context.get("_field_ids") != null)) {
       Long id = (Long) json.get("id");
       if (id != null) {
