@@ -322,16 +322,13 @@ public class TicketController {
     }
   }
 
-  public void computeSlaAndDeadLine(ActionRequest request, ActionResponse response) {
-    try {
-      TicketRepository ticketRepo = Beans.get(TicketRepository.class);
-      Ticket ticket = request.getContext().asType(Ticket.class);
+  public void computeSlaAndDeadLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+    Ticket ticket = request.getContext().asType(Ticket.class);
 
-      Beans.get(TicketService.class).computeSLAAndDeadLine(ticket);
-      response.setValue("slaPolicy", ticket.getSlaPolicy());
-      response.setValue("deadlineDateT", ticket.getDeadlineDateT());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Beans.get(TicketService.class).computeSLAAndDeadLine(ticket);
+    response.setValue("slaPolicy", ticket.getSlaPolicy());
+    response.setValue("deadlineDateT", ticket.getDeadlineDateT());
   }
 }

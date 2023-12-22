@@ -113,19 +113,21 @@ public class TicketServiceImpl implements TicketService {
           slaRepo
               .all()
               .filter(
-                  "self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = ?3 OR "
-                      + "(self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = null OR "
-                      + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = ?3) OR "
-                      + "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = ?3)) OR "
-                      + "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = null OR "
-                      + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = null) OR "
-                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = ?3)) OR "
-                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = null)",
+                  "self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType OR "
+                      + "(self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = null OR "
+                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType) OR "
+                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
+                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = null OR "
+                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = null) OR "
+                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
+                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = null)")
+              .bind(
+                  "team",
                   ticket.getAssignedToUser() == null
                       ? null
-                      : ticket.getAssignedToUser().getActiveTeam(),
-                  ticket.getPrioritySelect(),
-                  ticket.getTicketType())
+                      : ticket.getAssignedToUser().getActiveTeam())
+              .bind("prioritySelect", ticket.getPrioritySelect())
+              .bind("ticketType", ticket.getTicketType())
               .fetch();
 
       sla =
