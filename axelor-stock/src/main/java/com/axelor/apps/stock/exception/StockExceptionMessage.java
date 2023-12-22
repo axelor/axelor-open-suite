@@ -277,4 +277,9 @@ public final class StockExceptionMessage {
       "Error: %s field is required and can not be null" /*)*/;
   public static final String REST_STOCK_MOVE_LINE_STOCK_LOCATIONS_REQUIRED = /*$$(*/
       "Error: %s and %s fields are required and can not be null" /*)*/;
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_COMPANY = /*$$(*/
+      "There's no company in this stock's mass moves" /*)*/;
 }

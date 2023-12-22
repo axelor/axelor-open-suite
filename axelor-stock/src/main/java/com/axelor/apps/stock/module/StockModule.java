@@ -27,6 +27,7 @@ import com.axelor.apps.stock.db.repo.InventoryManagementRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
+import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionStockRepository;
@@ -36,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockLocationStockRepository;
+import com.axelor.apps.stock.db.repo.StockMassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
@@ -55,6 +57,8 @@ import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.stock.service.MassStockMoveService;
+import com.axelor.apps.stock.service.MassStockMoveServiceImpl;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingServiceImpl;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
@@ -134,5 +138,7 @@ public class StockModule extends AxelorModule {
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
     bind(InventoryLineService.class).to(InventoryLineServiceImpl.class);
+    bind(MassStockMoveService.class).to(MassStockMoveServiceImpl.class);
+    bind(MassStockMoveRepository.class).to(StockMassStockMoveRepository.class);
   }
 }
