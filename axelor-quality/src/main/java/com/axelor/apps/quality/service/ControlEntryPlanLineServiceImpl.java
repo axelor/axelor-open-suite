@@ -21,7 +21,7 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
     Objects.requireNonNull(controlEntryPlanLine);
 
     if (controlEntryPlanLine.getTypeSelect()
-        != ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE) {
+        == ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE) {
       String formula = this.getFormula(controlEntryPlanLine);
 
       Context scriptContext =
