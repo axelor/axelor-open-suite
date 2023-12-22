@@ -19,38 +19,23 @@
 package com.axelor.apps.quality.web;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.exception.HandleExceptionResponse;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.quality.db.*;
-import com.axelor.apps.quality.db.repo.ControlPointRepository;
-import com.axelor.apps.quality.db.repo.QualityControlRepository;
-import com.axelor.apps.quality.db.repo.QualityProcessRepository;
 import com.axelor.apps.quality.service.ControlEntryPlanLineService;
-import com.axelor.apps.quality.service.QIAnalysisService;
-import com.axelor.apps.quality.service.QualityControlService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.rpc.Context;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-
-import javax.annotation.Nullable;
 import java.util.*;
 
 @Singleton
 public class ControlEntryPlanLineController {
 
-  public void checkConformity(ActionRequest request, ActionResponse response) throws AxelorException {
+  public void checkConformity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
-      ControlEntryPlanLine controlEntryPlanLine = request.getContext().asType(ControlEntryPlanLine.class);
-      Beans.get(ControlEntryPlanLineService.class).conformityEval(controlEntryPlanLine);
-      response.setValue("resultSelect", controlEntryPlanLine.getResultSelect());
-
+    ControlEntryPlanLine controlEntryPlanLine =
+        request.getContext().asType(ControlEntryPlanLine.class);
+    Beans.get(ControlEntryPlanLineService.class).conformityEval(controlEntryPlanLine);
+    response.setValue("resultSelect", controlEntryPlanLine.getResultSelect());
   }
-
 }

@@ -52,7 +52,8 @@
     </panel>
 
     <panel name="attrsPanel" showIf="controlPlanLine">
-      <field name="entryAttrs" onChange="action-quality-control-entry-line-method-check-conformity"/>
+      <field name="entryAttrs"
+        onChange="action-quality-control-entry-line-method-check-conformity"/>
     </panel>
   </form>
 
@@ -67,15 +68,16 @@
   </action-record>
 
   <action-record name="action-quality-control-entry-line-copy-attrs-record"
-                 model="com.axelor.apps.quality.db.ControlEntryPlanLine">
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
     <field name="entryAttrs" expr="eval: controlPlanLine?.entryAttrs" if="controlPlanLine"/>
     <field name="planAttrs" expr="eval: controlPlanLine?.planAttrs" if="controlPlanLine"/>
     <field name="entryAttrs" expr="eval: null" if="controlPlanLine == null"/>
     <field name="planAttrs" expr="eval: null" if="controlPlanLine == null"/>
   </action-record>
-  
+
   <action-method name="action-quality-control-entry-line-method-check-conformity">
-    <call class="com.axelor.apps.quality.web.ControlEntryPlanLineController" method="checkConformity"/>
+    <call class="com.axelor.apps.quality.web.ControlEntryPlanLineController"
+      method="checkConformity"/>
   </action-method>
 
 </object-views>

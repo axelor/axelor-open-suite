@@ -11,46 +11,50 @@ import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
-
 import java.util.Objects;
 import java.util.Optional;
 
 public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineService {
-    @Override
-    public void conformityEval(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
+  @Override
+  public void conformityEval(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
 
-        Objects.requireNonNull(controlEntryPlanLine);
+    Objects.requireNonNull(controlEntryPlanLine);
 
-        if (controlEntryPlanLine.getTypeSelect() != ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE) {
-            String formula = this.getFormula(controlEntryPlanLine);
+    if (controlEntryPlanLine.getTypeSelect()
+        != ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE) {
+      String formula = this.getFormula(controlEntryPlanLine);
 
-            Context scriptContext = new Context(Mapper.toMap(controlEntryPlanLine), ControlEntryPlanLine.class);
-            ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
+      Context scriptContext =
+          new Context(Mapper.toMap(controlEntryPlanLine), ControlEntryPlanLine.class);
+      ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
+      Object result = scriptHelper.eval(formula);
 
-            Object result = scriptHelper.eval(formula);
+      if (!(result instanceof Integer)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(QualityExceptionMessage.EXPECTED_INT_RESULT_FORMULA),
+            result);
+      }
 
-            if (!(result instanceof Integer)) {
-                throw new AxelorException(TraceBackRepository.CATEGORY_INCONSISTENCY,
-                        I18n.get(QualityExceptionMessage.EXPECTED_INT_RESULT_FORMULA),
-                        result);
-            }
-
-            controlEntryPlanLine.setResultSelect((Integer) result);
-
-        }
+      controlEntryPlanLine.setResultSelect((Integer) result);
     }
+  }
 
-    @Override
-    public String getFormula(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
-        Objects.requireNonNull(controlEntryPlanLine);
+  @Override
+  public String getFormula(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException {
+    Objects.requireNonNull(controlEntryPlanLine);
 
-        if (controlEntryPlanLine.getTypeSelect() == ControlEntryPlanLineRepository.TYPE_PLAN_LINE) {
-            return Optional.ofNullable(controlEntryPlanLine.getControlType()).map(ControlType::getConformityFormula)
-                    .orElseThrow(() -> new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                            I18n.get(QualityExceptionMessage.CAN_NOT_FETCH_FORMULA)));
-        }
-        //Type entry
-        return getFormula(controlEntryPlanLine.getControlPlanLine());
+    if (controlEntryPlanLine.getTypeSelect() == ControlEntryPlanLineRepository.TYPE_PLAN_LINE) {
+      return Optional.ofNullable(controlEntryPlanLine.getControlType())
+          .map(ControlType::getConformityFormula)
+          .orElseThrow(
+              () ->
+                  new AxelorException(
+                      TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                      I18n.get(QualityExceptionMessage.CAN_NOT_FETCH_FORMULA)));
     }
+    // Type entry
+    return getFormula(controlEntryPlanLine.getControlPlanLine());
+  }
 }
