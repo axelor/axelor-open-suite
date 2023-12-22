@@ -26,23 +26,19 @@ import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
+import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppHelpdesk;
 import com.google.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 
 public class TicketManagementRepository extends TicketRepository {
-
-  @Inject private TicketService ticketService;
-
-  @Inject private TicketStatusService ticketStatusRepository;
-
-  @Inject private AppHelpdeskService appHelpdeskService;
   @Inject private AppBaseService appBaseService;
 
   @Override
   public Ticket save(Ticket ticket) {
 
+    TicketService ticketService = Beans.get(TicketService.class);
     try {
       ticketService.computeSeq(ticket);
     } catch (AxelorException e) {
@@ -56,9 +52,9 @@ public class TicketManagementRepository extends TicketRepository {
   @Override
   public Ticket copy(Ticket entity, boolean deep) {
     Ticket copy = super.copy(entity, deep);
-    copy.setTicketStatus(ticketStatusRepository.findDefaultStatus());
+    copy.setTicketStatus(Beans.get(TicketStatusService.class).findDefaultStatus());
     copy.setProgressSelect(null);
-    copy.setStartDateT(appBaseService.getTodayDateTime().toLocalDateTime());
+    copy.setStartDateT(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
     copy.setTicketSeq(null);
     return copy;
   }
@@ -66,7 +62,7 @@ public class TicketManagementRepository extends TicketRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
-    AppHelpdesk appHelpdesk = appHelpdeskService.getHelpdeskApp();
+    AppHelpdesk appHelpdesk = Beans.get(AppHelpdeskService.class).getHelpdeskApp();
 
     if (context.get("_model") != null
         && context.get("_model").toString().equals(Ticket.class.getName())

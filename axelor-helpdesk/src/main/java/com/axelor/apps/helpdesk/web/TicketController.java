@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.helpdesk.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.repo.TimerRepository;
@@ -41,6 +42,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class TicketController {
@@ -151,26 +153,26 @@ public class TicketController {
       TimerTicketService service = Beans.get(TimerTicketService.class);
 
       Timer timer = service.find(ticket);
-
+      TicketStatus inProgressStatus = Beans.get(TicketStatusService.class).findOngoingStatus();
       response.setAttr(
           "startTimerBtn",
           HIDDEN_ATTR,
           timer == null
               || timer.getStatusSelect() == TimerRepository.TIMER_STARTED
-              || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+              || !ticket.getTicketStatus().equals(inProgressStatus));
       response.setAttr(
           "stopTimerBtn",
           HIDDEN_ATTR,
           timer == null
               || timer.getStatusSelect() != TimerRepository.TIMER_STARTED
-              || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+              || !ticket.getTicketStatus().equals(inProgressStatus));
       response.setAttr(
           "cancelTimerBtn",
           HIDDEN_ATTR,
           timer == null
               || timer.getTimerHistoryList().isEmpty()
               || timer.getStatusSelect().equals(TimerRepository.TIMER_STOPPED)
-              || ticket.getStatusSelect() != TicketRepository.STATUS_IN_PROGRESS);
+              || !ticket.getTicketStatus().equals(inProgressStatus));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -260,71 +262,63 @@ public class TicketController {
     }
   }
 
-  public void setStartStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Ticket ticket = request.getContext().asType(Ticket.class);
+  public void startTicket(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      Beans.get(TicketWorkflowService.class).startTicket(ticket);
-      response.setValue("ticketStatus", ticket.getTicketStatus());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Ticket ticket =
+        Optional.ofNullable(request.getContext().asType(Ticket.class))
+            .map(t -> Beans.get(TicketRepository.class).find(t.getId()))
+            .orElse(null);
+
+    Beans.get(TicketWorkflowService.class).startTicket(ticket);
+    response.setReload(true);
   }
 
-  public void setResolvedStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Ticket ticket = request.getContext().asType(Ticket.class);
+  public void resolveTicket(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      Beans.get(TicketWorkflowService.class).resolveTicket(ticket);
-      response.setValue("ticketStatus", ticket.getTicketStatus());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Ticket ticket =
+        Optional.ofNullable(request.getContext().asType(Ticket.class))
+            .map(t -> Beans.get(TicketRepository.class).find(t.getId()))
+            .orElse(null);
+
+    Beans.get(TicketWorkflowService.class).resolveTicket(ticket);
+    response.setReload(true);
   }
 
-  public void setClosedStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Ticket ticket = request.getContext().asType(Ticket.class);
+  public void closeTicket(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      Beans.get(TicketWorkflowService.class).closeTicket(ticket);
-      response.setValue("ticketStatus", ticket.getTicketStatus());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Ticket ticket =
+        Optional.ofNullable(request.getContext().asType(Ticket.class))
+            .map(t -> Beans.get(TicketRepository.class).find(t.getId()))
+            .orElse(null);
+
+    Beans.get(TicketWorkflowService.class).closeTicket(ticket);
+    response.setReload(true);
   }
 
-  public void setDefaultStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Ticket ticket = request.getContext().asType(Ticket.class);
+  public void openTicket(ActionRequest request, ActionResponse response) throws AxelorException {
 
-      Beans.get(TicketWorkflowService.class).openTicket(ticket);
-      response.setValue("ticketStatus", ticket.getTicketStatus());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+    Ticket ticket = request.getContext().asType(Ticket.class);
+
+    Beans.get(TicketWorkflowService.class).openTicket(ticket);
+    response.setValue("ticketStatus", ticket.getTicketStatus());
   }
 
   public void updateDummyStatus(ActionRequest request, ActionResponse response) {
-    try {
-      Ticket ticket = request.getContext().asType(Ticket.class);
+    Ticket ticket = request.getContext().asType(Ticket.class);
 
-      TicketStatus ticketStatus = ticket.getTicketStatus();
+    TicketStatus ticketStatus = ticket.getTicketStatus();
 
-      if (ticketStatus != null) {
-        TicketStatusService ticketStatusService = Beans.get(TicketStatusService.class);
-        response.setValue(
-            "$isResolved", ticketStatus.equals(ticketStatusService.findResolvedStatus()));
-        response.setValue("$isClosed", ticketStatus.equals(ticketStatusService.findClosedStatus()));
-        response.setValue(
-            "$isInProgress", ticketStatus.equals(ticketStatusService.findOngoingStatus()));
-      } else {
-        response.setValue("$isResolved", false);
-        response.setValue("$isClosed", false);
-        response.setValue("$isInProgress", false);
-      }
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
+    if (ticketStatus != null) {
+      TicketStatusService ticketStatusService = Beans.get(TicketStatusService.class);
+      response.setValue(
+          "$isResolved", ticketStatus.equals(ticketStatusService.findResolvedStatus()));
+      response.setValue("$isClosed", ticketStatus.equals(ticketStatusService.findClosedStatus()));
+      response.setValue(
+          "$isInProgress", ticketStatus.equals(ticketStatusService.findOngoingStatus()));
+    } else {
+      response.setValue("$isResolved", false);
+      response.setValue("$isClosed", false);
+      response.setValue("$isInProgress", false);
     }
   }
 }
