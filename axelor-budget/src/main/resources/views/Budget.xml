@@ -8,12 +8,13 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
-    <field name="totalAmountExpected"/>
-    <field name="totalAmountCommitted"/>
-    <field name="totalAmountRealized"/>
-    <field name="availableAmount"/>
+    <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountRealized" x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmount" x-scale="company.currency.numberOfDecimals"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-lines-template-grid" title="Budgets"
