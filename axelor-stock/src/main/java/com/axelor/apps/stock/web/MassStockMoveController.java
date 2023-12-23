@@ -64,4 +64,38 @@ public class MassStockMoveController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void realizeStorage(ActionRequest request, ActionResponse response) {
+    try {
+      MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+      massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+
+      if (massStockMove.getStoredProductList().stream()
+          .anyMatch(it -> BigDecimal.ZERO.compareTo(it.getStoredQty()) == 0)) {
+        response.setAlert(I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO));
+      }
+      if (massStockMove.getStoredProductList().stream()
+          .anyMatch(it -> it.getStoredQty().compareTo(it.getCurrentQty()) == 1)) {
+        response.setAlert(
+            I18n.get(StockExceptionMessage.AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY));
+      }
+
+      Beans.get(MassStockMoveService.class).realizeStorage(massStockMove);
+
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void cancelStorage(ActionRequest request, ActionResponse response) {
+    try {
+      MassStockMove massStockMove = request.getContext().asType(MassStockMove.class);
+      massStockMove = Beans.get(MassStockMoveRepository.class).find(massStockMove.getId());
+      Beans.get(MassStockMoveService.class).cancelStorage(massStockMove);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

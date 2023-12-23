@@ -319,4 +319,16 @@ public final class StockExceptionMessage {
 
   public static final String AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO = /*$$(*/
       "At least one line has a picked quantity is equal to 0" /*)*/;
+
+  public static final String STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Stored quantity is greater than current quantity (%s %s)" /*)*/;
+
+  public static final String STORED_QUANTITY_IS_ZERO = /*$$(*/
+      "Stored quantity is equal to 0 (%s %s)" /*)*/;
+
+  public static final String AT_LEAST_ONE_STORED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "At least one line has a stored quantity  greater than current quantity" /*)*/;
+
+  public static final String AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO = /*$$(*/
+      "At least one line has a stored quantity is equal to 0" /*)*/;
 }

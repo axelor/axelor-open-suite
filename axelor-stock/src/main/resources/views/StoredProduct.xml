@@ -103,4 +103,12 @@
     <action name="action-stored-products-record-get-unit"/>
   </action-group>
 
+  <action-method name="action-stored-product-method-realize-storage">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="realizeStorage"/>
+  </action-method>
+
+  <action-method name="action-stored-product-method-cancel-storage">
+    <call class="com.axelor.apps.stock.web.StoredProductController" method="cancelStorage"/>
+  </action-method>
+
 </object-views>

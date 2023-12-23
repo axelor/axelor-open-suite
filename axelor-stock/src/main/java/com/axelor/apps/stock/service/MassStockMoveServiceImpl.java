@@ -9,6 +9,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
@@ -28,6 +29,7 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   protected StoredProductRepository storedProductRepo;
   protected StockLocationLineRepository stockLocationLineRepository;
   protected PickedProductService pickedProductService;
+  protected StoredProductService storedProductService;
 
   @Inject
   public MassStockMoveServiceImpl(
@@ -36,13 +38,75 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
       PickedProductRepository pickedProductRepo,
       StoredProductRepository storedProductRepo,
       StockLocationLineRepository stockLocationLineRepository,
-      PickedProductService pickedProductService) {
+      PickedProductService pickedProductService,
+      StoredProductService storedProductService) {
     this.massStockMoveRepository = massStockMoveRepository;
     this.sequenceService = sequenceService;
     this.pickedProductRepo = pickedProductRepo;
     this.storedProductRepo = storedProductRepo;
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.pickedProductService = pickedProductService;
+    this.storedProductService = storedProductService;
+  }
+
+  @Override
+  public void realizePicking(MassStockMove massStockMove) {
+    for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
+      try {
+        if (BigDecimal.ZERO.compareTo(pickedProduct.getPickedQty()) < 0) {
+          massStockMove = massStockMoveRepository.find(massStockMove.getId());
+          pickedProduct = pickedProductRepo.find(pickedProduct.getId());
+          pickedProductService.createStockMoveAndStockMoveLine(massStockMove, pickedProduct);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
+    }
+  }
+
+  @Override
+  public void realizeStorage(MassStockMove massStockMove) {
+    for (StoredProduct storedProduct : massStockMove.getStoredProductList()) {
+      try {
+        if (BigDecimal.ZERO.compareTo(storedProduct.getStoredQty()) < 0) {
+          storedProduct = storedProductRepo.find(storedProduct.getId());
+          storedProductService.createStockMoveAndStockMoveLine(storedProduct);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
+    }
+  }
+
+  @Override
+  public int cancelPicking(MassStockMove massStockMove) {
+    int errors = 0;
+    for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
+      try {
+        if (pickedProduct.getStockMoveLine() != null) {
+          massStockMove = massStockMoveRepository.find(massStockMove.getId());
+          pickedProduct = pickedProductRepo.find(pickedProduct.getId());
+          pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProduct);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+        errors++;
+      }
+    }
+    return errors;
+  }
+
+  @Override
+  public void cancelStorage(MassStockMove massStockMove) {
+    for (StoredProduct storedProduct : massStockMove.getStoredProductList()) {
+      try {
+        if (storedProduct.getStockMoveLine() != null) {
+          storedProductService.cancelStockMoveAndStockMoveLine(storedProduct);
+        }
+      } catch (AxelorException e) {
+        TraceBackService.trace(e);
+      }
+    }
   }
 
   @Override
@@ -103,6 +167,13 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void setStatusSelectToDraft(MassStockMove massStockMove) {
+    massStockMove.setStatusSelect(MassStockMoveRepository.STATUS_DRAFT);
+    massStockMoveRepository.save(massStockMove);
+  }
+
+  @Override
   public String getSequence(MassStockMove massStockMove) throws AxelorException {
     Company company = massStockMove.getCompany();
     if (company == null) {
@@ -134,45 +205,5 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
             pickedProduct ->
                 line.getProduct().getId().equals(pickedProduct.getPickedProduct().getId())
                     && line.getTrackingNumber().equals(pickedProduct.getTrackingNumber()));
-  }
-
-  @Override
-  public int cancelPicking(MassStockMove massStockMove) {
-    int errors = 0;
-    for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
-      try {
-        if (pickedProduct.getStockMoveLine() != null) {
-          massStockMove = massStockMoveRepository.find(massStockMove.getId());
-          pickedProduct = pickedProductRepo.find(pickedProduct.getId());
-          pickedProductService.cancelStockMoveAndStockMoveLine(massStockMove, pickedProduct);
-        }
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-        errors++;
-      }
-    }
-    return errors;
-  }
-
-  @Override
-  public void realizePicking(MassStockMove massStockMove) {
-    for (PickedProduct pickedProduct : massStockMove.getPickedProductList()) {
-      try {
-        if (BigDecimal.ZERO.compareTo(pickedProduct.getPickedQty()) < 0) {
-          massStockMove = massStockMoveRepository.find(massStockMove.getId());
-          pickedProduct = pickedProductRepo.find(pickedProduct.getId());
-          pickedProductService.createStockMoveAndStockMoveLine(massStockMove, pickedProduct);
-        }
-      } catch (AxelorException e) {
-        TraceBackService.trace(e);
-      }
-    }
-  }
-
-  @Override
-  @Transactional(rollbackOn = Exception.class)
-  public void setStatusSelectToDraft(MassStockMove massStockMove) {
-    massStockMove.setStatusSelect(MassStockMoveRepository.STATUS_DRAFT);
-    massStockMoveRepository.save(massStockMove);
   }
 }

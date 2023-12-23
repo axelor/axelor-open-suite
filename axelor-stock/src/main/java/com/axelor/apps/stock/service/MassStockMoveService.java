@@ -13,4 +13,8 @@ public interface MassStockMoveService {
   public int cancelPicking(MassStockMove massStockMove);
 
   public void setStatusSelectToDraft(MassStockMove massStockMove);
+
+  public void realizeStorage(MassStockMove massStockMove);
+
+  public void cancelStorage(MassStockMove massStockMove);
 }
