@@ -30,11 +30,6 @@
       onClick="action-picked-product-method-cancel-picking"/>
   </grid>
 
-
-
-
-
-
   <form name="picked-products-form" title="Picked products"
     model="com.axelor.apps.stock.db.PickedProduct" onNew="action-picked-products-group-onnew"
     canDelete="false">
@@ -104,5 +99,13 @@
     <action name="action-picked-products-record-set-tracking-number"/>
     <action name="action-picked-products-record-set-currentqty"/>
   </action-group>
+
+  <action-method name="action-picked-product-method-cancel-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="cancelPicking"/>
+  </action-method>
+
+  <action-method name="action-picked-product-method-realize-picking">
+    <call class="com.axelor.apps.stock.web.PickedProductController" method="realizePicking"/>
+  </action-method>
 
 </object-views>

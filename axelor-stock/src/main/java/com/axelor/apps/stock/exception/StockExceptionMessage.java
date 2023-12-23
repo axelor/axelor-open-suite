@@ -282,4 +282,41 @@ public final class StockExceptionMessage {
 
   public static final String MASS_STOCK_MOVE_NO_COMPANY = /*$$(*/
       "There's no company in this stock's mass moves" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_LOCATION_LINE = /*$$(*/
+      "No stock location lines have been found in the common from stock location." /*)*/;
+
+  /** Stock mass move, stored products and picked products services and controllers */
+  public static final String MASS_STOCK_MOVE_EMPTY_FIELD = /*$$(*/
+      "One of these values is missing : product ; tracking number, to stock location ; unit. (%s %s)" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_EMPTY_TRACKING_NUMBER = /*$$(*/
+      "Tracking number is missing. (%s %s)" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_EMPTY_FIELD_WITHOUT_TN = /*$$(*/
+      "One of these values is missing : to stock location ; unit. (%s %s)" /*)*/;
+
+  public static final String PRODUCT_NO_AVAILABLE_IN_STOCKLOCATION_SOURCE = /*$$(*/
+      "The product is not available in the stock location source indicated (%s %s)" /*)*/;
+
+  public static final String ALREADY_PICKED_PRODUCT = /*$$(*/
+      "These products have already been picked (%s %s)" /*)*/;
+
+  public static final String PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "Picked quantity is greater than current quantity (%s %s)" /*)*/;
+
+  public static final String PICKED_QUANTITY_IS_ZERO = /*$$(*/
+      "Picked quantity is equal to 0 (%s %s)" /*)*/;
+
+  public static final String ALREADY_STORED_PRODUCT = /*$$(*/
+      "These products have already been stored" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_LINE_ALREADY_STORED = /*$$(*/
+      "Some moves couldn't be canceled because the associed products had already been stored." /*)*/;
+
+  public static final String AT_LEAST_ONE_PICKED_QUANTITY_GREATER_THAN_CURRENT_QTY = /*$$(*/
+      "At least one line has a picked quantity  greater than current quantity" /*)*/;
+
+  public static final String AT_LEAST_ONE_PICKED_QUANTITY_IS_ZERO = /*$$(*/
+      "At least one line has a picked quantity is equal to 0" /*)*/;
 }
