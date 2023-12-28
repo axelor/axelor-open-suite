@@ -92,11 +92,11 @@
     <many-to-one name="industrySector" title="Industry sector"
       ref="com.axelor.apps.base.db.IndustrySector" index="false" massUpdate="true"/>
     <integer name="saleTurnover" title="Turnover"/>
-    <string name="registrationCode" title="Registration code"/>
+    <string name="registrationCode" title="Registration Number"/>
     <many-to-one name="mainActivity" title="Main Activity"
       ref="com.axelor.apps.base.db.MainActivity"/>
     <string name="taxNbr" title="Tax N°"/>
-    <string name="siren" title="N° Siren"/>
+    <string name="siren" title="Short registration code"/>
     <string name="nic" title="Internal Classification Number"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
       title="Agency"/>

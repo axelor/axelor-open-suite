@@ -752,4 +752,9 @@
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
   </selection>
 
+
+  <selection name="base.registration.number.template.validation.method.select">
+    <option value="class1" hidden="true"> Java Class</option>
+  </selection>
+
 </object-views>
