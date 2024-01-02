@@ -130,7 +130,7 @@ public class MobileSettingsResponseComputeServiceImpl
             getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)));
   }
 
-  private List<String> getRestrictedMenusFromApp(String appSequence) {
+  protected List<String> getRestrictedMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
       return mobileConfig.getMenus().stream()
