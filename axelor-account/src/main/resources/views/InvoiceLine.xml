@@ -9,12 +9,14 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="inTaxPrice"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="typeSelect" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="invoice-line-menu-grid" title="Invoice lines"
@@ -36,7 +38,8 @@
     <field name="product.code" title="product.code" width="120"/>
     <field name="productName" width="170"/>
     <field name="qty" width="50" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="priceDiscounted" title="Unit price W.T."
+      x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="unit" width="60" form-view="unit-form" grid-view="unit-grid"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="invoice.currency" width="85"/>
@@ -45,6 +48,7 @@
     <field name="invoice.company.currency" title="Company currency" width="125"/>
     <field name="invoice.amountRemaining" hidden="true"/>
     <field name="invoice.dueDate" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="invoice-line-form" title="Invoice line"

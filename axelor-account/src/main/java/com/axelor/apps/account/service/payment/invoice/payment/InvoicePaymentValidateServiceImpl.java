@@ -379,7 +379,8 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
                     .map(MoveLine::getCurrencyRate)
                     .findAny()
                     .orElse(BigDecimal.ONE)
-                : BigDecimal.ONE);
+                : BigDecimal.ONE,
+            company);
 
     move.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
