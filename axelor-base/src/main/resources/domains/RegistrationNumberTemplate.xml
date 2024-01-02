@@ -7,7 +7,7 @@
 
   <entity name="RegistrationNumberTemplate">
     <boolean name="isRequiredForCompanies" title="Required for companies" required="true"/>
-    <string name="titleToDisplay" required="true"/>
+    <string name="titleToDisplay" namecolumn="true" required="true"/>
     <integer name="requiredSize" min="1"/>
     <string name="validationMethodSelect"
       selection="base.registration.number.template.validation.method.select"/>

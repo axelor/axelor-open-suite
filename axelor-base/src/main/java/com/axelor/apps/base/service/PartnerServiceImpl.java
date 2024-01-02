@@ -819,7 +819,6 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String getRegistrationCodeTitleFromTemplate(Partner partner){
-    String title = "Registration Number";
     Country country = partner.getBusinessCountry();
     if(country != null){
       RegistrationNumberTemplate registrationNumberTemplate= country.getRegistrationNumberTemplate();
@@ -827,6 +826,6 @@ public class PartnerServiceImpl implements PartnerService {
         return  registrationNumberTemplate.getTitleToDisplay();
       }
     }
-    return title;
+    return null;
   }
 }

@@ -333,7 +333,7 @@
           hideIf="partnerTypeSelect== 2"/>
 
         <field name="businessCountry" colSpan="6" widget="SuggestBox"
-          hideIf="partnerTypeSelect== 2"/>
+          hideIf="partnerTypeSelect== 2" onChange="action-partner-group-business-country-onchange"/>
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -1318,6 +1318,10 @@
     <action name="action-partner-attrs-set-customer"/>
   </action-group>
 
+  <action-group name="action-partner-group-business-country-onchange">
+    <action name="action-method-base-partner-business-country-change"/>
+  </action-group>
+
   <action-record name="action-partner-empty-first-name"
     model="com.axelor.apps.base.db.Partner">
     <field name="firstName" expr="eval: null"/>
@@ -1504,9 +1508,9 @@
       expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
   </action-record>
 
-  <!-- <action-method name="action-method-base-partner-business-country-change"> -->
-  <!-- <call class="com.axelor.apps.base.web.PartnerController" method="changeBusinessCountry"/> -->
-  <!-- </action-method> -->
+  <action-method name="action-method-base-partner-business-country-change">
+    <call class="com.axelor.apps.base.web.PartnerController" method="changeBusinessCountry"/>
+  </action-method>
 
   <action-method name="action-print-company-phonebook">
     <call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>

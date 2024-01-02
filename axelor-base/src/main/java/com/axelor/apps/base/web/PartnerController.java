@@ -389,10 +389,6 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
-
-      String registrationCodeTitle = partnerService.getRegistrationCodeTitleFromTemplate(partner);
-      response.setAttr("registrationCode", "title", registrationCodeTitle);
-
       if (partnerService.isRegistrationCodeValid(partner)) {
         String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
         String nic = partnerService.getNicFromRegistrationCode(partner);
@@ -413,6 +409,21 @@ public class PartnerController {
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    }
+  }
+
+  public void changeBusinessCountry(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+
+      String registrationCodeTitle = partnerService.getRegistrationCodeTitleFromTemplate(partner);
+      if(registrationCodeTitle != null){
+        response.setAttr("registrationCode", "title", registrationCodeTitle);
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
     }
   }
 }
