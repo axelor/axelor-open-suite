@@ -68,9 +68,14 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     int todayMonth = todayDate.getMonthValue();
     int firstLeaveDayPeriod = appLeave.getFirstLeaveDayPeriod();
     int firstLeaveMonthPeriod = appLeave.getFirstLeaveMonthPeriod();
+    LocalDate hireDate = employee.getHireDate();
     LocalDate fromDate = null;
     LocalDate toDate = null;
     BigDecimal value = null;
+
+    if (hireDate != null && hireDate.isAfter(todayDate) && hireDate.getMonthValue() > todayMonth) {
+      return;
+    }
 
     if (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
       fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
