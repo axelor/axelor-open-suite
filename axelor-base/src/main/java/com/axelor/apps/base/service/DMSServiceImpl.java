@@ -20,11 +20,14 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.interfaces.PdfViewer;
 import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import java.util.List;
 
 public class DMSServiceImpl implements DMSService {
 
@@ -59,5 +62,61 @@ public class DMSServiceImpl implements DMSService {
       return "";
     }
     return String.format("ws/dms/inline/%d", dmsFile.getId());
+  }
+
+  @Override
+  public void addLinkedDMSFiles(List<? extends Model> entityList, Model entityMerged) {
+    DMSFile dmsRoot = getDMSRoot(entityMerged);
+    DMSFile dmsHome = getDMSHome(entityMerged, dmsRoot);
+
+    for (Model entity : entityList) {
+      List<DMSFile> dmsFileList =
+          dmsFileRepository
+              .all()
+              .filter("self.relatedId = :id AND self.relatedModel = :model")
+              .bind("id", entity.getId())
+              .bind("model", entity.getClass().getName())
+              .fetch();
+
+      for (DMSFile dmsFile : dmsFileList) {
+        if (dmsFile.getParent() != null
+            && dmsRoot != null
+            && dmsFile.getParent().getId() == dmsRoot.getId()) {
+          dmsFile.setParent(dmsHome);
+        }
+        dmsFile.setRelatedId(entityMerged.getId());
+        dmsFileRepository.save(dmsFile);
+      }
+    }
+  }
+
+  @Override
+  public DMSFile getDMSRoot(Model model) {
+    return dmsFileRepository
+        .all()
+        .filter(
+            "COALESCE(self.isDirectory, FALSE) = TRUE AND self.relatedModel = :model AND COALESCE(self.relatedId, 0) = 0")
+        .bind("model", model.getClass().getName())
+        .fetchOne();
+  }
+
+  @Override
+  public DMSFile getDMSHome(Model model, DMSFile dmsRoot) {
+    String homeName = null;
+    final Mapper mapper = Mapper.of(model.getClass());
+    homeName = mapper.getNameField().get(model).toString();
+
+    if (homeName == null) {
+      homeName = Strings.padStart("" + model.getId(), 5, '0');
+    }
+
+    DMSFile dmsHome = new DMSFile();
+    dmsHome.setFileName(homeName);
+    dmsHome.setRelatedId(model.getId());
+    dmsHome.setRelatedModel(model.getClass().getName());
+    dmsHome.setParent(dmsRoot);
+    dmsHome.setIsDirectory(true);
+
+    return dmsFileRepository.save(dmsHome);
   }
 }
