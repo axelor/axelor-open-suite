@@ -94,6 +94,7 @@
 "End date","Date de fin",,
 "End of application","Date de fin d'application",,
 "End of next invoicing period","Fin de la prochaine période de facturation",,
+"End of next invoicing period should be after Start of next invoicing period.","La fin de la période de facturation suivante doit être avant le début de la période de facturation suivante.",,
 "End of period","Fin de periode",,
 "End of period plus","Fin de la période plus",,
 "Engagement","Engagement",,
