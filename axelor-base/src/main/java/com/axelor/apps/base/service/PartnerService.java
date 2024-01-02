@@ -159,4 +159,5 @@ public interface PartnerService {
   String getSirenFromRegistrationCode(Partner partner);
 
   boolean isRegistrationCodeValid(Partner partner);
+  String getRegistrationCodeTitleFromTemplate(Partner partner);
 }

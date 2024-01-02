@@ -389,6 +389,10 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
+
+      String registrationCodeTitle = partnerService.getRegistrationCodeTitleFromTemplate(partner);
+      response.setAttr("registrationCode", "title", registrationCodeTitle);
+
       if (partnerService.isRegistrationCodeValid(partner)) {
         String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
         String nic = partnerService.getNicFromRegistrationCode(partner);

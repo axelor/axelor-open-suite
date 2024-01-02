@@ -75,13 +75,14 @@ public class PartnerServiceImpl implements PartnerService {
 
   protected PartnerRepository partnerRepo;
   protected AppBaseService appBaseService;
+
+  @Inject
   protected RegistrationNumberValidation registrationNumberValidation;
 
   @Inject
-  public PartnerServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService, RegistrationNumberValidation registrationNumberValidation) {
+  public PartnerServiceImpl(PartnerRepository partnerRepo, AppBaseService appBaseService) {
     this.partnerRepo = partnerRepo;
     this.appBaseService = appBaseService;
-    this.registrationNumberValidation = registrationNumberValidation;
   }
 
   private Pattern phoneNumberPattern =
@@ -814,5 +815,18 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     return registrationNumberValidation.computeRegistrationCodeValidity(registrationCode);
+  }
+
+  @Override
+  public String getRegistrationCodeTitleFromTemplate(Partner partner){
+    String title = "Registration Number";
+    Country country = partner.getBusinessCountry();
+    if(country != null){
+      RegistrationNumberTemplate registrationNumberTemplate= country.getRegistrationNumberTemplate();
+      if(registrationNumberTemplate != null && !StringUtils.isBlank(registrationNumberTemplate.getTitleToDisplay())){
+        return  registrationNumberTemplate.getTitleToDisplay();
+      }
+    }
+    return title;
   }
 }
