@@ -95,8 +95,6 @@
     <boolean name="checkExistingSequenceOnGeneration"
       title="Check existing sequence on generation" default="true"/>
 
-    <boolean name="checkRegistrationCode" title="Check registration code" default="true"/>
-
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
 
     <boolean name="manageProductVariants" title="Manage product variants"/>
@@ -235,7 +233,6 @@
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
       <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
-      <field name="checkRegistrationCode" on="UPDATE"/>
       <field name="storeStreets" on="UPDATE"/>
       <field name="fixerApiKey" on="UPDATE"/>
       <field name="isFixerAPIPaid" on="UPDATE"/>

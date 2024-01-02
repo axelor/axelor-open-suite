@@ -20,7 +20,7 @@
   </grid>
 
   <form name="registration-number-template-form" title="Registration number templates"
-    model="com.axelor.apps.base.db.RegistrationNumberTemplate">
+    model="com.axelor.apps.base.db.RegistrationNumberTemplate" >
     <panel name="mainPanel" title="Main Template">
       <field name="isRequiredForCompanies" title="Required for companies" required="true"/>
       <field name="titleToDisplay" required="true"/>
@@ -43,6 +43,4 @@
 
     </panel>
   </form>
-
-
 </object-views>

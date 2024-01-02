@@ -218,13 +218,13 @@ public class PartnerServiceImpl implements PartnerService {
       if (partner.getRegistrationCode().length() != registrationNumberTemplate.getRequiredSize()) {
         throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+                I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
       }
 
       if (registrationNumberTemplate.getValidationMethodSelect() != null) {
         throw new AxelorException(
                 TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+                I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
       }
     }
   }

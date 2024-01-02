@@ -1161,10 +1161,8 @@
 
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
-    <action name="action-partner-validate-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
-    <action name="action-method-partner-check-registration-code"
-      if="__config__.app.getApp('base')?.getCheckRegistrationCode()"/>
+    <action name="action-partner-validate-registration-code"/>
+    <action name="action-method-partner-check-registration-code"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
   </action-group>

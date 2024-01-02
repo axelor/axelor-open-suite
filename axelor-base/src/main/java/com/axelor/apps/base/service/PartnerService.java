@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.CallMethod;
+
 import java.util.List;
 import java.util.Map;
 
