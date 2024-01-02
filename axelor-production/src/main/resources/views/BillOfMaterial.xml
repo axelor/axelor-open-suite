@@ -49,7 +49,7 @@
 
   <form name="bill-of-material-form" title="Bill of materials"
     model="com.axelor.apps.production.db.BillOfMaterial" width="large" canNew="!_isPersonalized"
-    onSave="save, action-bill-of-material-method-validate-prod-process"
+    onSave="save,action-bill-of-material-method-validate-prod-process"
     onNew="action-bill-of-material-group-on-new" onLoad="action-bill-of-material-group-on-load">
 
     <menubar>

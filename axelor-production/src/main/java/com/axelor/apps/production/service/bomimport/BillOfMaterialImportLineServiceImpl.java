@@ -28,21 +28,19 @@ public class BillOfMaterialImportLineServiceImpl implements BillOfMaterialImport
   @Override
   public Integer computeBoMLevel(BillOfMaterialImportLine billOfMaterialImportLine)
       throws AxelorException {
-    if (billOfMaterialImportLine != null) {
-      if (billOfMaterialImportLine.getParent() == null) {
-        billOfMaterialImportLine.setBomLevel(0);
-        return 0;
-      } else if (billOfMaterialImportLine.getParent().getBomLevel() != null) {
-        billOfMaterialImportLine.setBomLevel(
-            billOfMaterialImportLine.getParent().getBomLevel() + 1);
-        return billOfMaterialImportLine.getBomLevel();
-      }
-      billOfMaterialImportLine.setBomLevel(
-          computeBoMLevel(billOfMaterialImportLine.getParent()) + 1);
+    if (billOfMaterialImportLine == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          ProductionExceptionMessage.BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY);
+    }
+    if (billOfMaterialImportLine.getParent() == null) {
+      billOfMaterialImportLine.setBomLevel(0);
+      return 0;
+    } else if (billOfMaterialImportLine.getParent().getBomLevel() != null) {
+      billOfMaterialImportLine.setBomLevel(billOfMaterialImportLine.getParent().getBomLevel() + 1);
       return billOfMaterialImportLine.getBomLevel();
     }
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_INCONSISTENCY,
-        ProductionExceptionMessage.BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY);
+    billOfMaterialImportLine.setBomLevel(computeBoMLevel(billOfMaterialImportLine.getParent()) + 1);
+    return billOfMaterialImportLine.getBomLevel();
   }
 }

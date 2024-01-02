@@ -74,7 +74,7 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
     return billOfMaterialImporter.init(createImportConfiguration(billOfMaterialImport)).run();
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected ImportConfiguration createImportConfiguration(
       BillOfMaterialImport billOfMaterialImport) {
     ImportConfiguration importConfiguration = new ImportConfiguration();
@@ -89,19 +89,19 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   }
 
   @Override
-  @Transactional
-  public BillOfMaterialImport setStatusToImported(BillOfMaterialImport billOfMaterialImport) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void setStatusToImported(BillOfMaterialImport billOfMaterialImport) {
     billOfMaterialImport = billOfMaterialImportRepository.find(billOfMaterialImport.getId());
     billOfMaterialImport.setStatusSelect(BillOfMaterialImportRepository.STATUS_IMPORTED);
-    return billOfMaterialImportRepository.save(billOfMaterialImport);
+    billOfMaterialImportRepository.save(billOfMaterialImport);
   }
 
   @Override
-  public BillOfMaterial createBoMFromImport(BillOfMaterialImport billOfMaterialImport)
+  public void createBoMFromImport(BillOfMaterialImport billOfMaterialImport)
       throws AxelorException {
     if (billOfMaterialImport != null
         && billOfMaterialImport.getMainBillOfMaterialGenerated() != null) {
-      return null;
+      return;
     }
     Optional<BillOfMaterialImportLine> billOfMaterialImportLineOp = Optional.empty();
     if (billOfMaterialImport != null
@@ -117,12 +117,11 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           ProductionExceptionMessage.BOM_IMPORT_NO_MAIN_BILL_OF_MATERIAL_GENERATED);
     }
-    BillOfMaterialImportLine billOfMaterialImportLine = billOfMaterialImportLineOp.get();
 
-    return generateBillOfMaterialFromImportLine(billOfMaterialImportLine).orElse(null);
+    generateBillOfMaterialFromImportLine(billOfMaterialImportLineOp.get());
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   protected Optional<BillOfMaterial> generateBillOfMaterialFromImportLine(
       BillOfMaterialImportLine billOfMaterialImportLine) {
     BillOfMaterial billOfMaterial = new BillOfMaterial();
@@ -186,10 +185,10 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   }
 
   @Override
-  @Transactional
-  public BillOfMaterialImport setStatusToValidated(BillOfMaterialImport billOfMaterialImport) {
+  @Transactional(rollbackOn = {Exception.class})
+  public void setStatusToValidated(BillOfMaterialImport billOfMaterialImport) {
     billOfMaterialImport = billOfMaterialImportRepository.find(billOfMaterialImport.getId());
     billOfMaterialImport.setStatusSelect(BillOfMaterialImportRepository.STATUS_VALIDATED);
-    return billOfMaterialImportRepository.save(billOfMaterialImport);
+    billOfMaterialImportRepository.save(billOfMaterialImport);
   }
 }
