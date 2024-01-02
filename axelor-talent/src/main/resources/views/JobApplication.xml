@@ -83,9 +83,9 @@
         title="Hire candidate" hidden="true"/>
 
       <panel name="contactPanel" title="Contact details" itemSpan="12"
-        showIf="$readonly() &amp;&amp; (emailAddress.address || mobilePhone || employeeAddress.streetName)">
+        showIf="$readonly() &amp;&amp; (emailAddress.address || mobilePhone || employeeAddress.addressL4)">
         <field name="$contactDetails" showIf="$readonly()" showTitle="false">
-          <viewer depends="emailAddress.address, mobilePhone, employeeAddress.streetName">
+          <viewer depends="emailAddress.address, mobilePhone, employeeAddress.addressL4">
             <![CDATA[
             <>
             	{emailAddress.address &&
@@ -100,10 +100,10 @@
             			<Link href={`tel:${mobilePhone}`}> {mobilePhone} </Link>
             		</Box>
             	}
-            	{employeeAddress?.streetName &&
+            	{employeeAddress?.addressL4 &&
             		<Box d="flex" alignItems="center">
             			<Icon icon="geo-alt-fill" fontSize="15px"/>
-            			<Link href={`http://maps.google.com/?q=${employeeAddress.streetName}`}> {employeeAddress.streetName} </Link>
+            			<Link href={`http://maps.google.com/?q=${employeeAddress.addressL4}`}> {employeeAddress.addressL4} </Link>
             		</Box>
             	}
             </>

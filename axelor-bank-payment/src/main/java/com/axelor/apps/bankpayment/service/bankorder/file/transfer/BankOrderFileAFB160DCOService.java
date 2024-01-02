@@ -943,6 +943,6 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
               BankPaymentExceptionMessage.BANK_ORDER_RECEIVER_BANK_DETAILS_MISSING_PARTNER_ADDRESS),
           partner.getFullName());
     }
-    return address.getStreetName();
+    return address.getAddressL4();
   }
 }

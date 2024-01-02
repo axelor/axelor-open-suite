@@ -301,7 +301,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
     if (partnerMap != null) {
       Address primaryAddress = this.createPrimaryAddress(lead);
-      if (primaryAddress != null && (primaryAddress.getCountry() == null)) {
+      if (primaryAddress != null
+          && (primaryAddress.getAddressL6() == null || primaryAddress.getCountry() == null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(CrmExceptionMessage.LEAD_PARTNER_MISSING_ADDRESS));
@@ -330,7 +331,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     if (contactPartnerMap != null) {
       Partner contactPartner = null;
       Address primaryAddress = this.createPrimaryAddress(lead);
-      if (primaryAddress != null && (primaryAddress.getCountry() == null)) {
+      if (primaryAddress != null
+          && (primaryAddress.getAddressL6() == null || primaryAddress.getCountry() == null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(CrmExceptionMessage.LEAD_CONTACT_MISSING_ADDRESS));

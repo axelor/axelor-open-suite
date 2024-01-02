@@ -101,10 +101,11 @@ public class AddressController {
       String addL1;
       List<AddressLineType> addressLineType = address.getAddressLine();
       addL1 = addressLineType.get(0).getLine();
-      response.setValue("room", addressLineType.get(1).getLine());
-      response.setValue("floor", addressLineType.get(2).getLine());
-      response.setValue("streetName", addressLineType.get(3).getLine());
-      response.setValue("postBox", addressLineType.get(4).getLine());
+      response.setValue("addressL2", addressLineType.get(1).getLine());
+      response.setValue("addressL3", addressLineType.get(2).getLine());
+      response.setValue("addressL4", addressLineType.get(3).getLine());
+      response.setValue("addressL5", addressLineType.get(4).getLine());
+      response.setValue("addressL6", addressLineType.get(5).getLine());
       response.setValue("inseeCode", addressLineType.get(6).getLine());
       response.setValue("certifiedOk", true);
       response.setValue("pickList", new ArrayList<QAPicklistType>());
@@ -171,21 +172,23 @@ public class AddressController {
             Beans.get(AddressService.class)
                 .select(Beans.get(AppBaseService.class).getAppBase().getQasWsdlUrl(), moniker);
         LOG.debug("select address = {}", address);
-        // streetName: title="N° et Libellé de la voie"
+        // addressL4: title="N° et Libellé de la voie"
         // addressL6: title="Code Postal - Commune"/>
-        response.setValue("room", address.getQAAddress().getAddressLine().get(1));
-        response.setValue("floor", address.getQAAddress().getAddressLine().get(2));
-        response.setValue("streetName", address.getQAAddress().getAddressLine().get(3));
-        response.setValue("postBox", address.getQAAddress().getAddressLine().get(4));
+        response.setValue("addressL2", address.getQAAddress().getAddressLine().get(1));
+        response.setValue("addressL3", address.getQAAddress().getAddressLine().get(2));
+        response.setValue("addressL4", address.getQAAddress().getAddressLine().get(3));
+        response.setValue("addressL5", address.getQAAddress().getAddressLine().get(4));
+        response.setValue("addressL6", address.getQAAddress().getAddressLine().get(5));
         response.setValue("inseeCode", address.getQAAddress().getAddressLine().get(6));
         response.setValue("certifiedOk", true);
         response.setValue("pickList", new ArrayList<QAPicklistType>());
       } else {
         LOG.debug("missing fields for pickedEntry: {}", pickedEntry);
-        response.setValue("room", pickedEntry.getL2());
-        response.setValue("floor", pickedEntry.getL3());
-        response.setValue("streetName", pickedEntry.getPartialAddress());
-        response.setValue("postBox", pickedEntry.getL5());
+        response.setValue("addressL2", pickedEntry.getL2());
+        response.setValue("addressL3", pickedEntry.getL3());
+        response.setValue("addressL4", pickedEntry.getPartialAddress());
+        response.setValue("addressL5", pickedEntry.getL5());
+        response.setValue("addressL6", pickedEntry.getPostcode());
         response.setValue("inseeCode", pickedEntry.getInseeCode());
         response.setValue("pickList", new ArrayList<QAPicklistType>());
         response.setValue("certifiedOk", true);

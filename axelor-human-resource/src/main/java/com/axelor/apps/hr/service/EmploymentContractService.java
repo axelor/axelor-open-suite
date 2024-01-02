@@ -92,8 +92,8 @@ public class EmploymentContractService {
 
       Address mainAddress = contactPartner.getMainAddress();
       if (mainAddress != null) {
-        item[6] = mainAddress.getStreetName();
-        item[7] = mainAddress.getRoom();
+        item[6] = mainAddress.getAddressL4();
+        item[7] = mainAddress.getAddressL2();
         item[8] = mainAddress.getZip();
         if (mainAddress.getCity() != null) {
           item[9] = mainAddress.getCity().getName();

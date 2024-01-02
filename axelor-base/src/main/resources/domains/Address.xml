@@ -45,8 +45,8 @@
     <one-to-many name="pickList" ref="com.axelor.apps.base.db.PickListEntry"
       title="QAS Proposal lists" mappedBy="address"/>
 
-    <string name="fullName" namecolumn="true" search="room,floor,streetName,postBox"
-      title="Address"/>
+    <string name="fullName" namecolumn="true"
+      search="addressL2,addressL3,addressL4,addressL5,addressL6" title="Address"/>
     <string name="formattedFullName" multiline="true" large="true" title="Address"/>
   </entity>
 
