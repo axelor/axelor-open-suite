@@ -171,7 +171,7 @@
         <field name="localization" title="Localization"
           onChange="action-base-user-record-change-language" form-view="localization-form"
           grid-view="localization-grid"/>
-        <field name="language"/>
+        <field name="language" hidden="true"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
           <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
@@ -320,7 +320,7 @@
       <field name="image" showTitle="false"/>
       <field name="localization" title="Localization" grid-view="localization-grid"
         form-view="localization-form"/>
-      <field name="language"/>
+      <field name="language" hidden="true"/>
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
         widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
       <field name="tradingName"

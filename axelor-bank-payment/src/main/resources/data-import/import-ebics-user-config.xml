@@ -24,7 +24,7 @@
           <bind node="url" to="url"/>
           <bind node="fax" to="fax"/>
           <bind node="emailAddress" to="emailAddress"/>
-          <bind node="language" to="language" search="self.code = :code"/>
+          <bind node="localization" to="localization" search="self.code = :code"/>
           <bind node="bank" to="bank" search="self.code = :code" update="false">
             <bind node="code" to="code"/>
             <bind node="bankDetailsTypeSelect" to="bankDetailsTypeSelect"/>

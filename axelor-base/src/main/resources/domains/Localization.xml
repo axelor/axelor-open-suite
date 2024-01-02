@@ -8,9 +8,9 @@
   <entity name="Localization">
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
     <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
-    <string name="name" title="Name" required="true" search="country,language"/>
-    <string name="code" title="Code" required="true" search="country,language">
-            <![CDATA[
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true" search="language,country">
+     <![CDATA[
      String code = "";
      if (language == null && country != null) {
      code = country.getAlpha2Code();

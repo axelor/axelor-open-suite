@@ -856,17 +856,17 @@
 
   <action-attrs name="action-stock-move-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.partner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: __parent__?.partner?.localization?.code?.equals(__user__.getLocalization().getCode())"
       if="__parent__ &amp;&amp; __parent__.partner"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.partner?.language?.code?.toUpperCase()"
+      expr="eval: __parent__?.partner?.localization?.code?"
       if="__parent__ &amp;&amp; __parent__.partner"/>
 
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: stockMove?.partner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: stockMove?.partner?.localization?.code?.equals(__user__.getLocalization().getCode())"
       if="stockMove &amp;&amp; stockMove.partner"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: stockMove?.partner?.language?.code?.toUpperCase()"
+      expr="eval: stockMove?.partner?.localization?.code?"
       if="stockMove &amp;&amp; stockMove.partner"/>
   </action-attrs>
 

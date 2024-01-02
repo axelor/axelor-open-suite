@@ -26,6 +26,7 @@
         colSpan="6"/>
       <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"/>
       <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"/>
+      <field name="country.alpha2Code" hidden="true"/>
     </panel>
   </form>
 </object-views>
