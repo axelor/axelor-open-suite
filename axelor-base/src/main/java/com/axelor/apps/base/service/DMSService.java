@@ -19,11 +19,19 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.interfaces.PdfViewer;
+import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.db.MetaFile;
+import java.util.List;
 
 public interface DMSService {
   DMSFile setDmsFile(MetaFile metaFile, PdfViewer pdfViewer);
 
   String getInlineUrl(DMSFile dmsFile);
+
+  void addLinkedDMSFiles(List<? extends Model> entityList, Model entityMerged);
+
+  DMSFile getDMSRoot(Model related);
+
+  DMSFile getDMSHome(Model related, DMSFile dmsRoot);
 }
