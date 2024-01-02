@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-grid"
-    orderBy="company,product,productCategory,startDate,name">
+    groupBy="concernedModel" orderBy="company,product,productCategory,startDate,name">
     <field name="company"/>
     <field name="product"/>
     <field name="productCategory"/>
+    <field name="concernedModel" hidden="true"/>
     <field name="startDate"/>
+    <field name="endDate"/>
     <field name="name"/>
   </grid>
 
+  <grid model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-history-grid"
+    orderBy="-id">
+    <field name="name"/>
+    <field name="startDate"/>
+    <field name="endDate"/>
+  </grid>
+
   <form model="com.axelor.apps.base.db.Pricing" title="Pricing" name="pricing-form"
+    onNew="action-pricing-attrs-linked-pricing-title"
     onLoad="action-pricing-group-attrs-pricing-line-list" width="large">
-    <panel name="mainPanel">
+    <toolbar>
+      <button name="historizePricingBtn" title="Historize"
+        onClick="save,action-pricing-method-historize-pricing"/>
+    </toolbar>
+    <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="overviewPanel" colSpan="12">
         <field name="name"/>
-        <field name="startDate" required="true"/>
+        <field name="startDate" required="true" onChange="action-pricing-method-check-dates"/>
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
+        <field name="endDate" onChange="action-pricing-method-check-dates"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
           required="true" domain="self.name = 'SaleOrderLine'"/>
       </panel>
@@ -54,16 +69,30 @@
         <field name="product" onSelect="action-pricing-attrs-set-product-domain"
           readonlyIf="productCategory" requiredIf="!productCategory"/>
         <field name="productCategory" readonlyIf="product" requiredIf="!product"/>
-        <field name="previousPricing"
+        <field name="linkedPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
       </panel>
       <panel-related field="pricingLineList" name="pricingLineListPanel" colSpan="12"
         grid-view="pricing-line-grid" form-view="pricing-line-form"
         showIf="class1PricingRule || result1PricingRule"
-        orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"
-        editable="true"/>
+        orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
+      <panel-dashlet name="historizedPricingPanel" colSpan="12"
+        title="Historized pricings" action="action-pricing-view-historized-pricing"
+        hideIf="$popup()"/>
     </panel>
+  </form>
 
+  <form name="pricing-history-form" title="Pricing" model="com.axelor.apps.base.db.Pricing"
+    width="large" onLoad="action-pricing-group-attrs-pricing-line-list">
+    <panel-include view="pricing-form"/>
+    <panel name="actionPanel" colSpan="4" sidebar="true" showIf="$popup()">
+      <field name="$isHistorizeCurrentPricing" type="boolean"
+        title="Historize the current pricing?"
+        help="If you select this option, the current pricing will be historized before retrieving the historized pricing."
+        widget="boolean-switch"/>
+      <button name="recoveringScaleBtn" title="Recovering the scale"
+        onClick="action-pricing-method-recover-pricing"/>
+    </panel>
   </form>
 
   <action-attrs name="action-pricing-attrs-clear-classification-fields">
@@ -160,24 +189,81 @@
       expr="eval: result4PricingRule?.name"/>
   </action-attrs>
 
+  <action-attrs name="action-pricing-attrs-pricing-line-list-set-scale">
+    <attribute name="scale" for="pricingLineList.classificationDecParam1"
+      expr="eval: class1PricingRule?.scale" if="class1PricingRule?.fieldTypeSelect == 1"/>
+    <attribute name="scale" for="pricingLineList.classificationDecParam2"
+      expr="eval: class2PricingRule?.scale" if="class2PricingRule?.fieldTypeSelect == 1"/>
+    <attribute name="scale" for="pricingLineList.classificationDecParam3"
+      expr="eval: class3PricingRule?.scale" if="class3PricingRule?.fieldTypeSelect == 1"/>
+    <attribute name="scale" for="pricingLineList.classificationDecParam4"
+      expr="eval: class4PricingRule?.scale" if="class4PricingRule?.fieldTypeSelect == 1"/>
+
+    <attribute name="scale" for="pricingLineList.resultParam1"
+      expr="eval: result1PricingRule?.scale"/>
+    <attribute name="scale" for="pricingLineList.resultParam2"
+      expr="eval: result2PricingRule?.scale"/>
+    <attribute name="scale" for="pricingLineList.resultParam3"
+      expr="eval: result3PricingRule?.scale"/>
+    <attribute name="scale" for="pricingLineList.resultParam4"
+      expr="eval: result4PricingRule?.scale"/>
+  </action-attrs>
+
+  <action-attrs name="action-pricing-attrs-linked-pricing-title">
+    <attribute name="title" for="linkedPricing"
+      expr="eval: com.axelor.i18n.I18n.get('Previous pricing')"
+      if="__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+    <attribute name="title" for="linkedPricing"
+      expr="eval: com.axelor.i18n.I18n.get('Next pricing')"
+      if="!__config__.app.getApp('sale')?.isPricingComputingOrder"/>
+  </action-attrs>
+
   <action-group name="action-pricing-group-attrs-pricing-line-list">
     <action name="action-pricing-attrs-pricing-line-list-hide-fields"/>
     <action name="action-pricing-attrs-pricing-line-list-change-titles"/>
+    <action name="action-pricing-attrs-pricing-line-list-set-scale"/>
+    <action name="action-pricing-attrs-linked-pricing-title"/>
   </action-group>
 
   <action-attrs name="action-pricing-attrs-set-product-domain">
     <attribute name="domain" for="product"
-      expr="eval: __config__.app.getApp('base').getManageProductVariants() ? (&quot;self.dtype = 'Product'&quot;) : (&quot;self.dtype = 'Product' AND self.isModel = false&quot;) "/>
+      expr="eval: __config__.app.getApp('base')?.getManageProductVariants() ? (&quot;self.dtype = 'Product'&quot;) : (&quot;self.dtype = 'Product' AND self.isModel = false&quot;) "/>
   </action-attrs>
 
   <action-attrs name="action-pricing-attrs-concerned-model-onchange">
     <attribute name="value"
-      for="class1PricingRule,class2PricingRule,class3PricingRule,class4PricingRule,result1PricingRule,result2PricingRule,result3PricingRule,result4PricingRule,previousPricing"
+      for="class1PricingRule,class2PricingRule,class3PricingRule,class4PricingRule,result1PricingRule,result2PricingRule,result3PricingRule,result4PricingRule,linkedPricing"
       expr="eval: null" if="!concernedModel"/>
   </action-attrs>
 
   <action-attrs name="action-pricing-attrs-company-onchange">
-    <attribute name="value" for="previousPricing" expr="eval: null"/>
+    <attribute name="value" for="linkedPricing" expr="eval: null"/>
   </action-attrs>
 
+  <action-method name="action-pricing-method-historize-pricing">
+    <call class="com.axelor.apps.base.web.PricingController" method="historizePricing"/>
+  </action-method>
+
+  <action-view name="action-pricing-view-historized-pricing" title="Historized Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-history-grid"/>
+    <view type="form" name="pricing-history-form"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="showArchived" value="true"/>
+    <domain>self.currentPricing = :id </domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-pricing-method-check-dates">
+    <call class="com.axelor.apps.base.web.PricingController" method="checkDates"/>
+  </action-method>
+
+  <action-attrs name="action-pricing-attrs-null-start-date">
+    <attribute name="value" for="startDate" expr="eval: null"/>
+  </action-attrs>
+
+  <action-method name="action-pricing-method-recover-pricing">
+    <call class="com.axelor.apps.base.web.PricingController" method="recoverPricing"/>
+  </action-method>
 </object-views>

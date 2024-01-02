@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="MoveLineQuery">
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
+      required="true"/>
+    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
+      title="MoveLineQuery.tradingName"/>
+    <date name="fromDate" title="From Date" required="true"
+      help="First day included of the period in which moveLines will be retrieved"/>
+    <date name="toDate" title="AnalyticMoveLineQuery.toDate" required="true"
+      help="Last day included of the period in which moveLines will be retrieved"/>
+    <integer name="processSelect" title="Process" required="true"
+      selection="account.move.line.query.process.select" default="0"/>
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <many-to-one name="account" ref="Account" required="true" title="Accounting.Account"/>
+    <one-to-many ref="MoveLineQueryLine" name="moveLineQueryLineList"
+      title="Move lines to process" mappedBy="moveLineQuery"/>
+
+    <extra-code><![CDATA[
+
+		// PROCESS
+		public static final int PROCESS_RECONCILE = 0;
+		public static final int PROCESS_UNRECONCILE = 1;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

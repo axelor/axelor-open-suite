@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form name="app-base-config-form" title="App base" model="com.axelor.apps.base.db.AppBase"
+  <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
     onSave="action-base-method-model-email-link-onsave">
     <toolbar>
@@ -16,14 +16,16 @@
     </toolbar>
     <panel name="testingPanel" title="Testing"
       if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
-      <field name="today"/>
+      <field name="todayDateT"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="configurationPanel" title="Configuration" colSpan="12">
         <field name="defaultPartnerLanguage"/>
         <field name="enableTradingNamesManagement" widget="boolean-switch"/>
-        <field name="activateSendingEmail" widget="boolean-switch"/>
-        <field name="emailAccountByUser" widget="boolean-switch"/>
+        <field name="activateSendingEmail" widget="boolean-switch" colSpan="4"/>
+        <field name="emailAccountByUser" widget="boolean-switch" colSpan="4"/>
+        <field name="emailAccountByCompany" widget="boolean-switch" colSpan="4"/>
+        <field name="nbDecimalDigitForTaxRate"/>
         <field name="productInAtiSelect"/>
         <field name="nbDecimalDigitForUnitPrice" colSpan="3"/>
         <field name="nbDecimalDigitForQty" colSpan="3"/>
@@ -35,7 +37,11 @@
         <field name="unitMinutes" form-view="unit-form" grid-view="unit-grid"/>
         <field name="teamManagement" widget="boolean-switch"/>
         <field name="manageSubsidiaryPartner" widget="boolean-switch"/>
-        <panel name="productBarCodePanel" title="Product BarCode">
+        <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
+        <field name="draftPrefix" colSpan="3"/>
+
+
+        <panel name="productBarCodePanel" title="Product BarCode" colSpan="12">
           <field name="activateBarCodeGeneration" widget="Boolean-switch"/>
           <field name="editProductBarcodeType" showIf="activateBarCodeGeneration==true"
             widget="boolean-switch"/>
@@ -43,7 +49,10 @@
             requiredIf="activateBarCodeGeneration &amp;&amp; !editProductBarcodeType"/>
         </panel>
         <field name="generatePartnerSequence" widget="boolean-switch"/>
+        <field name="checkRegistrationCode" widget="boolean-switch"/>
         <field name="manageProductVariants" widget="boolean-switch"/>
+        <field name="activatePartnerRelations" widget="boolean-switch"
+          if="['supplychain','account'].any{module -> __config__.app.isApp(module)}"/>
         <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
           <field name="generateProductSequence" widget="boolean-switch"/>
           <field name="productSequenceTypeSelect" showIf="generateProductSequence"/>
@@ -62,25 +71,10 @@
           onChange="action-base-validate-multi-company-boolean"/>
         <field name="storeStreets" widget="boolean-switch"/>
         <field name="isSharedAddress" widget="boolean-switch"/>
-        <panel name="printingsPanel" title="Printings" colSpan="12">
-          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
-            colSpan="3"
-            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
-          <field name="regroupProductsTypeSelect" widget="MultiSelect"
-            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
-            colSpan="3"/>
-          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
-            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
-          <field name="regroupProductsLabelServices"
-            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
-            colspan="6"/>
-          <field name="regroupProductsLabelProducts"
-            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
-            colspan="6"/>
-        </panel>
         <panel-related field="companySpecificProductFieldsSet"
-          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product'" canNew="false"
-          canEdit="false" grid-view="meta-field-details-grid" form-view="meta-field-form"/>
+          domain="self.metaModel.fullName = 'com.axelor.apps.base.db.Product' AND self.name IN ('sellable','purchasable','procurementMethodSelect','salePrice','saleCurrency','purchasePrice','purchaseCurrency','costPrice','costTypeSelect','managPriceCoef','avgPrice','autoUpdateSalePrice','lastPurchasePrice','defaultBillOfMaterial','controlOnReceipt','customsCodeNomenclature')"
+          canNew="false" canEdit="false" grid-view="meta-field-details-grid"
+          form-view="meta-field-form"/>
         <panel itemSpan="12" colSpan="6">
           <field name="defaultMailMessageTemplate"/>
           <field name="manageCcBccRelatedTo" widget="boolean-switch"/>
@@ -100,10 +94,6 @@
             onClick="save,com.axelor.apps.base.web.AppBaseController:checkMapApi"
             hideIf="mapApiSelect == 2"/>
           <field name="googleMapsApiKey" widget="password" hideIf="mapApiSelect == 2"/>
-          <spacer hidden="true" colSpan="6"/>
-          <field name="osmRoutingServiceApiSelect" hideIf="mapApiSelect == 1"
-            requiredIf="mapApiSelect == 2"
-            help="Use YOUR navigation (http://www.yournavigation.org/api/1.0/gosmore.php) or OSRM (https://router.project-osrm.org/route/v1/driving) Open source routing APIs to get routing information based upon a given start/end location."/>
         </panel>
         <panel name="qasPanel" title="Addresses validation" colSpan="12">
           <field name="qasWsdlUrl"/>
@@ -132,7 +122,7 @@
         <button name="updateCurrencyConversionBtn"
           title="Update &amp; Historize conversion rate"
           onClick="save,action-base-method-update-currency-conversion"
-          readonlyIf="!currencyConversionLineList"/>
+          readonlyIf="!(currencyConversionLineList &amp;&amp; currencyConversionLineList.length > 0)"/>
         <field name="currencyConversionLineList" colSpan="12"
           grid-view="currency-conversion-line-grid" form-view="currency-conversion-line-form"/>
       </panel>
@@ -146,7 +136,39 @@
         <panel-related title="Global tracking configuration lines"
           field="globalTrackingConfigurationLines" colSpan="12"
           form-view="global-tracking-configuration-line-form"
-          grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"/>
+          grid-view="global-tracking-configuration-line-grid" canNew="true" canEdit="true"
+          x-can-copy="true"/>
+      </panel>
+      <panel name="printingsPanel" title="Printings" colSpan="12">
+        <panel name="productPrintingsPanel" colSpan="12">
+          <field name="isRegroupProductsOnPrintings" widget="boolean-switch" required="true"
+            colSpan="3"
+            help="Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)"/>
+          <field name="regroupProductsTypeSelect" widget="MultiSelect"
+            showIf="isRegroupProductsOnPrintings" requiredIf="isRegroupProductsOnPrintings"
+            colSpan="3"/>
+          <field name="regroupProductsLevelSelect" showIf="isRegroupProductsOnPrintings"
+            requiredIf="isRegroupProductsOnPrintings" colSpan="3"/>
+          <field name="regroupProductsLabelServices"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('services') !== -1"
+            colspan="6"/>
+          <field name="regroupProductsLabelProducts"
+            showIf="isRegroupProductsOnPrintings &amp;&amp; regroupProductsLevelSelect == 'global' &amp;&amp; regroupProductsTypeSelect.indexOf('products') !== -1"
+            colspan="6"/>
+        </panel>
+        <panel name="printingTemplatesPanel" colSpan="12">
+          <field name="clientSituationBirtTemplate"/>
+          <field name="companyPhoneBookBirtTemplate"/>
+          <field name="contactPhoneBookBirtTemplate"/>
+          <field name="productCatalogPGQLBirtTemplate"/>
+        </panel>
+        <panel-related name="birtTemplateConfigLineListPanel" colSpan="12"
+          field="birtTemplateConfigLineList" grid-view="birt-template-config-line-grid"
+          form-view="birt-template-config-line-form"/>
+      </panel>
+      <panel name="signaturePanel" title="Signature">
+        <field name="pfxCertificate" canNew="true" canEdit="true"
+          form-view="pfx-certificate-form"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
@@ -187,7 +209,7 @@
 
   <!-- ACTION RECORD -->
   <action-record name="action-base-record-set-enable-multi-company"
-    model="com.axelor.apps.base.db.AppBase">
+    model="com.axelor.studio.db.AppBase">
     <field if="!enableMultiCompany &amp;&amp; __repo__(Company).all().count() &gt; 1"
       name="enableMultiCompany" expr="eval: true"/>
   </action-record>

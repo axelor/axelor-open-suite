@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.db.repo;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.db.MrpLine;
@@ -32,22 +34,57 @@ public class MrpLineManagementRepository extends MrpLineRepository {
     MrpLine mrpLine = find(mrpLineId);
 
     Map<String, Object> mrpLineMap = super.populate(json, context);
+    if (mrpLine.getEstimatedDeliveryMrpLine() != null
+        && mrpLine.getMaturityDate() != null
+        && !mrpLine.getMaturityDate().isEqual(mrpLine.getDeliveryDelayDate())) {
+      json.put("respectDeliveryDelayDate", mrpLine.getDeliveryDelayDate());
+    } else if (mrpLine.getMrpLineType().getElementSelect()
+            == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL_ESTIMATED_DELIVERY
+        && mrpLine.getMaturityDate() != null
+        && !mrpLine.getMaturityDate().isEqual(mrpLine.getEstimatedDeliveryDate())) {
+      json.put("respectDeliveryDelayDate", mrpLine.getEstimatedDeliveryDate());
+    }
     if (PurchaseOrder.class.getName().equals(mrpLine.getProposalSelect())) {
       PurchaseOrder purchaseOrder =
           Beans.get(PurchaseOrderRepository.class).find(mrpLine.getProposalSelectId());
-      mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(
-          mrpLine.getProduct() != null
-              && mrpLine.getMaturityDate() != null
-              && (purchaseOrder.getDeliveryDate() == null
-                  || mrpLine.getProduct().getMrpFamily() == null
-                  || Math.abs(
-                          mrpLine.getMaturityDate().toEpochDay()
-                              - purchaseOrder.getDeliveryDate().toEpochDay())
-                      > mrpLine.getProduct().getMrpFamily().getDayNbBetweenPurchaseAndProposal()));
-      json.put(
-          "isOutDayNbBetweenPurchaseAndProposal",
-          mrpLine.getIsOutDayNbBetweenPurchaseAndProposal());
+      if (purchaseOrder != null) {
+        mrpLine.setIsOutDayNbBetweenPurchaseAndProposal(
+            mrpLine.getProduct() != null
+                && mrpLine.getMaturityDate() != null
+                && (purchaseOrder.getEstimatedReceiptDate() == null
+                    || mrpLine.getProduct().getMrpFamily() == null
+                    || Math.abs(
+                            mrpLine.getMaturityDate().toEpochDay()
+                                - purchaseOrder.getEstimatedReceiptDate().toEpochDay())
+                        > mrpLine
+                            .getProduct()
+                            .getMrpFamily()
+                            .getDayNbBetweenPurchaseAndProposal()));
+        json.put(
+            "isOutDayNbBetweenPurchaseAndProposal",
+            mrpLine.getIsOutDayNbBetweenPurchaseAndProposal());
+      } else {
+        json.put("proposalSelectId", null);
+      }
     }
     return mrpLineMap;
+  }
+
+  @Override
+  public MrpLine save(MrpLine entity) {
+    if (entity.getIsEditedByUser()
+        && entity.getMaturityDate() != null
+        && entity.getEstimatedDeliveryMrpLine() != null) {
+      Product product = entity.getProduct();
+      MrpLine mrpLine = entity.getEstimatedDeliveryMrpLine();
+      mrpLine.setMaturityDate(entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
+      mrpLine.setQty(entity.getQty());
+      mrpLine.setIsEditedByUser(true);
+      mrpLine.setEstimatedDeliveryDate(
+          entity.getMaturityDate().plusDays(product.getSupplierDeliveryTime()));
+      entity.setDeliveryDelayDate(
+          mrpLine.getMaturityDate().minusDays(product.getSupplierDeliveryTime()));
+    }
+    return super.save(entity);
   }
 }

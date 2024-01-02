@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="helpdesk" package="com.axelor.apps.helpdesk.db"/>
 
@@ -9,8 +9,17 @@
 
     <string name="ticketSeq" title="Ticket Number" readonly="true"/>
     <string name="subject" title="Subject" required="true"/>
+    <string name="fullName" title="Full name" namecolumn="true" search="ticketSeq,subject">
+    <![CDATA[
+    	String fullName = "";
+    	if(ticketSeq != null){
+    		fullName = ticketSeq + " - ";
+    	}
+    	return fullName + subject;
+    ]]></string>
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
-    <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="customerPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Customer"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Customer contact"/>
     <many-to-one name="slaPolicy" ref="com.axelor.apps.helpdesk.db.Sla"

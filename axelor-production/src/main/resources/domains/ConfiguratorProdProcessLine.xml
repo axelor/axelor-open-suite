@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ConfiguratorProdProcessLine" lang="java">
+  <entity name="ConfiguratorProdProcessLine">
     <many-to-one name="configuratorProdProcess" title="Production process"
       ref="com.axelor.apps.production.db.ConfiguratorProdProcess"/>
     <string name="name" title="Label"/>
@@ -44,14 +44,13 @@
     <string name="maxCapacityPerCycleFormula" title="Max. capacity / cycle" large="true"/>
     <boolean name="defMaxCapacityFormula" title="Define with a script"/>
 
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
-    <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm:ss)" large="true"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <string name="durationPerCycleFormula" title="Duration / cycle (hhh:mm:ss)" large="true"/>
     <boolean name="defDurationFormula" title="Define with a script"/>
 
-    <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
-    <string name="timingOfImplementationFormula" title="Timing of implementation (hh:mm:ss)"
-      large="true"/>
-    <boolean name="defTimingOfImplementationFormula" title="Define with a script"/>
+    <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
+    <string name="humanDurationFormula" title="Human Duration (hh:mm:ss)" large="true"/>
+    <boolean name="defHrDurationFormula" title="Define with a script"/>
 
     <string name="useCondition" title="Condition" large="true"/>
 

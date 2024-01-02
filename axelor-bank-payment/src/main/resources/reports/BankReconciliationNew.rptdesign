@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -53,6 +53,32 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="BankReconciliationFromDate" id="11">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="BankReconciliationToDate" id="12">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
         <scalar-parameter name="Locale" id="5">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -74,7 +100,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -88,9 +114,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -199,7 +222,6 @@
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/</property>
-            <property name="odaUser">axelor</property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -311,6 +333,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 </model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="BankReconciliationDS" id="4676">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">company</property>
@@ -429,6 +452,30 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">iban</text-property>
                     <text-property name="heading">iban</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">name</text-property>
+                    <text-property name="heading">name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">corrected_date_time</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">corrected_date_time</text-property>
+                    <text-property name="heading">corrected_date_time</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">corrected_user_full_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">corrected_user_full_name</text-property>
+                    <text-property name="heading">corrected_user_full_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">comments</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">comments</text-property>
+                    <text-property name="heading">comments</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -534,6 +581,26 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="name">iban</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">19</property>
+                        <property name="name">name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
+                        <property name="name">corrected_date_time</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">21</property>
+                        <property name="name">corrected_user_full_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">22</property>
+                        <property name="name">comments</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -543,126 +610,132 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">bank_reconciliation_id</property>
                     <property name="nativeName">bank_reconciliation_id</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">from_date</property>
                     <property name="nativeName">from_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">to_date</property>
                     <property name="nativeName">to_date</property>
                     <property name="dataType">date</property>
-                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">starting_balance</property>
                     <property name="nativeName">starting_balance</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">moves_reconciled_line_balance</property>
                     <property name="nativeName">moves_reconciled_line_balance</property>
                     <property name="dataType">decimal</property>
-                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">header</property>
                     <property name="nativeName">header</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">footer</property>
                     <property name="nativeName">footer</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">logoPosition</property>
                     <property name="nativeName">logoPosition</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">cash_account</property>
                     <property name="nativeName">cash_account</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">account</property>
                     <property name="nativeName">account</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">iban</property>
                     <property name="nativeName">iban</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">name</property>
+                    <property name="nativeName">name</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">20</property>
+                    <property name="name">corrected_date_time</property>
+                    <property name="nativeName">corrected_date_time</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">21</property>
+                    <property name="name">corrected_user_full_name</property>
+                    <property name="nativeName">corrected_user_full_name</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">22</property>
+                    <property name="name">comments</property>
+                    <property name="nativeName">comments</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
@@ -683,7 +756,11 @@ PrintingSettings.logo_position_select as "logoPosition",
 concat( account.code  ,' - ' , account.name) AS cash_account , 
 metaFile.file_path AS logo_path ,
 bankDetails.full_name AS account,
-bankDetails.iban AS iban 
+bankDetails.iban AS iban,
+bankReconciliation.name as name,
+bankReconciliation.corrected_date_time as corrected_date_time,
+AuthUser.full_name as corrected_user_full_name,
+bankReconciliation.comments as comments
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.base_company AS company ON company.id = bankReconciliation.company
 LEFT JOIN public.base_currency AS currency ON currency.id = bankReconciliation.currency
@@ -692,6 +769,7 @@ LEFT JOIN public.account_account AS account ON account.id = bankReconciliation.c
 LEFT JOIN public.base_bank_details AS bankDetails ON bankDetails.id = bankReconciliation.bank_details
 LEFT JOIN public.meta_file AS metaFile ON (metaFile.id = company.logo)
 LEFT JOIN base_printing_settings as PrintingSettings on (company.printing_settings = PrintingSettings.id)
+LEFT JOIN public.auth_user as AuthUser on (bankReconciliation.corrected_user = AuthUser.id)
 WHERE bankReconciliation.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1157,35 +1235,30 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">account_balance</property>
-                    <property name="alias">account_balance</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">account_balance</text-property>
                     <text-property name="heading">account_balance</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">code</property>
-                    <property name="alias">code</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">code</text-property>
                     <text-property name="heading">code</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">origin_date</property>
-                    <property name="alias">origin_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">origin_date</text-property>
                     <text-property name="heading">origin_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">move_date</property>
-                    <property name="alias">move_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">move_date</text-property>
                     <text-property name="heading">move_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">posted_nbr</property>
-                    <property name="alias">posted_nbr</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">posted_nbr</text-property>
                     <text-property name="heading">posted_nbr</text-property>
@@ -1198,28 +1271,24 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="columnName">to_date</property>
-                    <property name="alias">to_date</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">to_date</text-property>
                     <text-property name="heading">to_date</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reference</property>
-                    <property name="alias">reference</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">reference</text-property>
                     <text-property name="heading">reference</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">name</property>
-                    <property name="alias">name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">name</text-property>
                     <text-property name="heading">name</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">type</property>
-                    <property name="alias">type</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">type</text-property>
                     <text-property name="heading">type</text-property>
@@ -1232,21 +1301,24 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="columnName">debit</property>
-                    <property name="alias">debit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">debit</text-property>
                     <text-property name="heading">debit</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">credit</property>
-                    <property name="alias">credit</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">credit</text-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
-                    <property name="alias">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
                     <text-property name="heading">amount</text-property>
@@ -1260,6 +1332,46 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">BankReconciliationFromDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">BankReconciliationFromDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">3</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">BankReconciliationToDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">4</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">BankReconciliationToDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">5</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -1333,6 +1445,11 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                     </structure>
                     <structure>
                         <property name="position">14</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">15</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1433,6 +1550,13 @@ ORDER BY bankReconciliationLine.id, LENGTH(bankReconciliationLine.posted_nbr), b
                 </structure>
                 <structure>
                     <property name="position">14</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">15</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
@@ -1453,12 +1577,22 @@ bankReconciliationLine.type_select  AS type ,
 bankReconciliationLine.is_posted  AS is_posted , 
 moveLine.debit AS debit , 
 moveLine.credit AS credit ,
+abs(moveLine.currency_amount) AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
-LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON moveLine.account=bankReconciliation.cash_account
+LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON (bankReconciliation.journal IS null OR move.journal=bankReconciliation.journal) AND (bankReconciliation.cash_account IS null OR moveLine.account=bankReconciliation.cash_account) AND move.company=bankReconciliation.company
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
-WHERE bankReconciliation.id = ? AND (((moveLine.posted_nbr is null OR moveLine.posted_nbr='') AND (moveLine.date_val >= bankReconciliation.from_date AND moveLine.date_val <= bankReconciliation.to_date)) OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
+LEFT JOIN public.base_company AS company ON bankReconciliation.company = company.id
+LEFT JOIN public.account_account AS account ON moveLine.account = account.id
+LEFT JOIN public.account_account_type AS accountType ON account.account_type = accountType.id
+WHERE bankReconciliation.id = ?
+AND NOT (((company.currency = bankReconciliation.currency AND moveLine.bank_reconciled_amount = (moveLine.debit + moveLine.credit))
+        OR (company.currency != bankReconciliation.currency AND moveLine.bank_reconciled_amount = moveLine.currency_amount))
+        AND bankReconciliationLine IS NULL)
+AND accountType.technical_type_select = 'cash'
+AND (move.status_select = 2 OR move.status_select = 3)
+AND (((moveLine.posted_nbr is null OR moveLine.posted_nbr='') AND (bankReconciliation.include_other_bank_statements IS true OR ((moveLine.date_val >= ? OR moveLine.due_date >= ?) AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)))) OR bankReconciliationLine.posted_nbr = ANY (regexp_split_to_array(moveLine.posted_nbr, ',')))
 ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1646,7 +1780,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
             <property name="headerHeight">0in</property>
-            <property name="footerHeight">2.4cm</property>
+            <property name="footerHeight">1cm</property>
             <page-header>
                 <grid id="3692">
                     <property name="height">1.825625cm</property>
@@ -1834,7 +1968,8 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <page-footer>
                 <grid id="7634">
                     <property name="fontFamily">sans-serif</property>
-                    <property name="height">1.826cm</property>
+                    <property name="height">0.5208333333333334in</property>
+                    <property name="width">11.03125in</property>
                     <property name="dataSet">BankReconciliationDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
@@ -1849,15 +1984,42 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">bank_reconciliation_name</property>
+                            <text-property name="displayName">bank_reconciliation_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["name"]</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">corrected_date_time</property>
+                            <text-property name="displayName">corrected_date_time</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["corrected_date_time"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">corrected_user_full_name</property>
+                            <text-property name="displayName">corrected_user_full_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["corrected_user_full_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
-                    <column id="7635"/>
+                    <column id="7635">
+                        <property name="width">4.3in</property>
+                    </column>
+                    <column id="7704">
+                        <property name="width">15%</property>
+                    </column>
+                    <column id="7708">
+                        <property name="width">15%</property>
+                    </column>
                     <column id="7636">
                         <property name="textAlign">right</property>
                         <property name="width">3.88cm</property>
                     </column>
                     <row id="7637">
                         <cell id="7638">
-                            <property name="colSpan">2</property>
+                            <property name="colSpan">4</property>
                             <property name="rowSpan">1</property>
                             <property name="borderBottomStyle">none</property>
                             <property name="borderLeftStyle">none</property>
@@ -1874,11 +2036,130 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                             <property name="borderLeftStyle">none</property>
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
-                            <text id="7641">
-                                <property name="fontSize">xx-small</property>
+                            <text id="7712">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">8pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="marginTop">2pt</property>
+                                <property name="marginBottom">2pt</property>
                                 <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["corrected_date_time"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'BankReconciliationStatementNew.correctedDateTimeLabel'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["footer"]</VALUE-OF>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                            <data id="7717">
+                                <property name="fontSize">8pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="display">inline</property>
+                                <property name="resultSetColumn">corrected_date_time</property>
+                            </data>
+                            <text id="7718">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">8pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="marginTop">2pt</property>
+                                <property name="marginBottom">2pt</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["corrected_date_time"] == null || row._outer["corrected_user_full_name"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'BankReconciliationStatementNew.correctedUserLabel'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                            <data id="7719">
+                                <property name="fontSize">8pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="display">inline</property>
+                                <property name="resultSetColumn">corrected_user_full_name</property>
+                            </data>
+                        </cell>
+                        <cell id="7702">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <text id="7700">
+                                <property name="fontSize">8pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["bank_reconciliation_name"]</VALUE-OF>]]></text-property>
+                            </text>
+                        </cell>
+                        <cell id="7706">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                            <text id="7709">
+                                <property name="fontSize">8pt</property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<value-of>new Date()</value-of>]]></text-property>
                             </text>
                         </cell>
                         <cell id="7642">
@@ -1938,6 +2219,19 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                         </cell>
                     </row>
                     <row id="7654">
+                        <property name="height">0.010416666666666666in</property>
+                        <cell id="7703">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
+                        <cell id="7707">
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderTopStyle">none</property>
+                        </cell>
                         <cell id="7655">
                             <property name="colSpan">1</property>
                             <property name="rowSpan">1</property>
@@ -2022,6 +2316,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <property name="fontSize">6pt</property>
             <property name="masterPage">NewSimpleMasterPage</property>
             <property name="pageBreakBefore">always</property>
+            <property name="height">4.739583333333333in</property>
             <property name="width">11.09375in</property>
             <property name="dataSet">BankReconciliationDS</property>
             <list-property name="visibility"/>
@@ -2129,21 +2424,27 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["moves_reconciled_line_balance"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">comments</property>
+                    <text-property name="displayName">comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="5141">
                 <property name="width">0.19791666666666666in</property>
             </column>
             <column id="5142">
-                <property name="width">0.7in</property>
+                <property name="width">2.4in</property>
             </column>
             <column id="5143">
-                <property name="width">1.6in</property>
+                <property name="width">1in</property>
             </column>
             <column id="5144">
-                <property name="width">1.6in</property>
+                <property name="width">1.125in</property>
             </column>
             <column id="5145">
-                <property name="width">0.3in</property>
+                <property name="width">2.7in</property>
             </column>
             <column id="5146">
                 <property name="textAlign">left</property>
@@ -2153,37 +2454,6 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                 <property name="repeat">1</property>
                 <property name="width">0.19791666666666666in</property>
             </column>
-            <row id="7614">
-                <property name="borderBottomStyle">solid</property>
-                <property name="borderBottomWidth">thin</property>
-                <cell id="7615">
-                    <property name="colSpan">7</property>
-                    <property name="rowSpan">1</property>
-                    <property name="textAlign">center</property>
-                    <text id="7613">
-                        <property name="fontSize">8pt</property>
-                        <property name="textAlign">left</property>
-                        <structure name="toc"/>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></td>"
-		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD/><TD>"+row["header"]+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD>"+row["header"]+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/>"
-		}else {
-		"<TD/><TD/><TD>"+row["header"]+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
-                </cell>
-            </row>
             <row id="5148">
                 <property name="height">0.3020833333333333in</property>
                 <cell id="5149">
@@ -2227,6 +2497,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                     </text>
                     <data id="6421">
+                        <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="paddingLeft">5pt</property>
@@ -2252,15 +2523,18 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
             <row id="5167">
                 <cell id="5168"/>
                 <cell id="5169">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
                     <text id="5175">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2287,12 +2561,12 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="5171">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
                     <text id="5177">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["company"]</VALUE-OF>]]></text-property>
                     </text>
@@ -2301,12 +2575,13 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <text id="5194">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2333,28 +2608,34 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="5176">
                     <text id="5196">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="5176"/>
                 <cell id="5178"/>
             </row>
             <row id="5179">
                 <cell id="5180"/>
                 <cell id="5181">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
                     <text id="5170">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2381,12 +2662,12 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="5183">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
                     <text id="5172">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["account"]</VALUE-OF>]]></text-property>
                     </text>
@@ -2396,12 +2677,13 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <text id="6431">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -2428,13 +2710,15 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="5188">
                     <data id="6434">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="display">inline</property>
                         <property name="resultSetColumn">iban</property>
                     </data>
                 </cell>
+                <cell id="5188"/>
                 <cell id="5190"/>
             </row>
             <row id="5191">
@@ -2446,12 +2730,12 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <text id="6021">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
-                        <property name="textAlign">left</property>
+                        <property name="textAlign">right</property>
                         <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
@@ -2477,10 +2761,12 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                     <data id="6436">
-                        <property name="paddingLeft">20pt</property>
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">from_date</property>
                     </data>
@@ -2491,7 +2777,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                     <text id="6433">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
@@ -2522,16 +2808,70 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                     <data id="6437">
-                        <property name="paddingLeft">20pt</property>
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">to_date</property>
                     </data>
                 </cell>
                 <cell id="6435"/>
-                <cell id="5198"/>
+                <cell id="5198">
+                    <text id="7696">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">right</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["journal"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BankReconciliationStatement.journal'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <data id="7697">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">journal</property>
+                    </data>
+                </cell>
                 <cell id="5199"/>
                 <cell id="5200">
                     <property name="textAlign">left</property>
@@ -2562,6 +2902,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                 <table id="7234">
                                     <property name="fontSize">6pt</property>
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">BankReconciliationLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -2801,7 +3142,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7241">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -2844,7 +3185,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7243">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -2887,7 +3228,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7245">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -2930,7 +3271,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7247">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -2973,7 +3314,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7249">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3016,7 +3357,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7251">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3060,6 +3401,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                 <table id="7426">
                                     <property name="fontSize">6pt</property>
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">MoveLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -3215,24 +3557,25 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="allowExport">true</property>
                                         </structure>
                                     </list-property>
+                                    <structure name="toc"/>
                                     <column id="7482">
-                                        <property name="width">12%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7483">
-                                        <property name="width">14%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7484">
-                                        <property name="width">14%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7485">
                                         <property name="suppressDuplicates">true</property>
-                                        <property name="width">30%</property>
+                                        <property name="width">46%</property>
                                     </column>
                                     <column id="7486">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <column id="7487">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <header>
                                         <row id="7427">
@@ -3306,7 +3649,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7433">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3349,7 +3692,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7435">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3392,7 +3735,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7437">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3435,7 +3778,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7439">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3478,7 +3821,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7441">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3521,7 +3864,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7443">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -3580,6 +3923,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                 <table id="7298">
                                     <property name="fontSize">6pt</property>
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">BankReconciliationLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -3778,7 +4122,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7318">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -3815,6 +4159,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 </text>
                                                 <data id="7319">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="paddingLeft">5pt</property>
                                                     <property name="display">inline</property>
@@ -3842,6 +4187,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
                                                 <data id="7677">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -3914,7 +4260,6 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
-                                                        <property name="locale">af_ZA</property>
                                                     </structure>
                                                     <structure name="stringFormat">
                                                         <property name="category">Unformatted</property>
@@ -3953,6 +4298,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                 <table id="7488">
                                     <property name="fontSize">6pt</property>
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">MoveLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -3995,14 +4341,26 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                         <structure>
                                             <property name="name">debit</property>
                                             <text-property name="displayName">debit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit</property>
                                             <text-property name="displayName">credit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">sum_debit</property>
@@ -4119,25 +4477,36 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">currency_amount</property>
+                                            <text-property name="displayName">currency_amount</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7544">
-                                        <property name="width">12%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7545">
-                                        <property name="width">14%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7546">
-                                        <property name="width">14%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7547">
-                                        <property name="suppressDuplicates">true</property>
-                                        <property name="width">30%</property>
+                                        <property name="width">46%</property>
                                     </column>
                                     <column id="7548">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <column id="7549">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <header>
                                         <row id="7506">
@@ -4190,7 +4559,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7511">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -4227,6 +4596,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                 </text>
                                                 <data id="7512">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="paddingLeft">5pt</property>
                                                     <property name="display">inline</property>
@@ -4264,7 +4634,6 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
-                                                        <property name="locale">af_ZA</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
                                                     <property name="resultSetColumn">debit</property>
@@ -4280,7 +4649,6 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
-                                                        <property name="locale">af_ZA</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
                                                     <property name="resultSetColumn">credit</property>
@@ -4349,6 +4717,7 @@ ORDER BY LENGTH(moveLine.posted_nbr), moveLine.posted_nbr]]></xml-property>
                                 <table id="7362">
                                     <property name="fontSize">6pt</property>
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">BankReconciliationLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -4562,7 +4931,7 @@ else {0};</expression>
                                                 <property name="textAlign">center</property>
                                                 <text id="7404">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -4599,6 +4968,7 @@ else {0};</expression>
                                             </cell>
                                             <cell id="7405">
                                                 <data id="7661">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -4609,6 +4979,8 @@ else {0};</expression>
                                             </cell>
                                             <cell id="7407">
                                                 <data id="7662">
+                                                    <property name="fontFamily">sans-serif</property>
+                                                    <property name="fontSize">6pt</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -4646,7 +5018,7 @@ else {0};</expression>
                                                 <property name="rowSpan">1</property>
                                                 <text id="7414">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -4741,6 +5113,7 @@ else {0};</expression>
                                 <table id="7550">
                                     <property name="fontSize">6pt</property>
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">MoveLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -4931,23 +5304,23 @@ else {0};</expression>
                                         </structure>
                                     </list-property>
                                     <column id="7606">
-                                        <property name="width">12%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7607">
-                                        <property name="width">14%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7608">
-                                        <property name="width">14%</property>
+                                        <property name="width">10%</property>
                                     </column>
                                     <column id="7609">
                                         <property name="suppressDuplicates">true</property>
-                                        <property name="width">30%</property>
+                                        <property name="width">46%</property>
                                     </column>
                                     <column id="7610">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <column id="7611">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <footer>
                                         <row id="7588">
@@ -4959,6 +5332,7 @@ else {0};</expression>
                                             </cell>
                                             <cell id="7590">
                                                 <data id="7665">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -4969,6 +5343,7 @@ else {0};</expression>
                                             </cell>
                                             <cell id="7592">
                                                 <data id="7667">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -4982,7 +5357,7 @@ else {0};</expression>
                                                 <property name="rowSpan">1</property>
                                                 <text id="7595">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -5097,7 +5472,7 @@ else {0};</expression>
                                                 <property name="rowSpan">1</property>
                                                 <text id="7605">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -5138,6 +5513,69 @@ else {0};</expression>
                         </row>
                     </grid>
                 </cell>
+            </row>
+            <row id="7726">
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <property name="height">0.2708333333333333in</property>
+                <cell id="7727">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <text id="7734">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["comments"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BankReconciliationStatementNew.comment'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <data id="7735">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">2pt</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">comments</property>
+                    </data>
+                </cell>
+                <cell id="7731"/>
+                <cell id="7732"/>
+                <cell id="7733"/>
             </row>
         </grid>
         <grid id="6489">
@@ -5253,21 +5691,27 @@ else {0};</expression>
                     <expression name="expression" type="javascript">dataSetRow["moves_reconciled_line_balance"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">comments</property>
+                    <text-property name="displayName">comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
             </list-property>
             <column id="6490">
                 <property name="width">0.19791666666666666in</property>
             </column>
             <column id="6491">
-                <property name="width">0.7in</property>
+                <property name="width">2.4in</property>
             </column>
             <column id="6492">
-                <property name="width">1.6in</property>
+                <property name="width">1in</property>
             </column>
             <column id="6493">
-                <property name="width">1.6in</property>
+                <property name="width">1.125in</property>
             </column>
             <column id="6494">
-                <property name="width">0.3in</property>
+                <property name="width">2.7in</property>
             </column>
             <column id="6495">
                 <property name="textAlign">left</property>
@@ -5277,37 +5721,6 @@ else {0};</expression>
                 <property name="repeat">1</property>
                 <property name="width">0.19791666666666666in</property>
             </column>
-            <row id="7622">
-                <cell id="7623">
-                    <property name="colSpan">7</property>
-                    <property name="rowSpan">1</property>
-                    <property name="borderBottomStyle">solid</property>
-                    <property name="borderBottomWidth">thin</property>
-                    <property name="textAlign">center</property>
-                    <text id="7630">
-                        <property name="fontSize">8pt</property>
-                        <property name="textAlign">left</property>
-                        <structure name="toc"/>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE >
-	<TR>
-		<VALUE-OF format="HTML">if(row["logoPosition"] == 3) {
-		"<TD>"+row["header"]+"</TD><TD/><TD align='right' valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></td>"
-		} else if(row["logoPosition"] == 1) {
-		"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD/><TD>"+row["header"]+"</TD>"
-		} else if(row["logoPosition"] == 2) {
-			"<TD/><TD align='center' valign='middle'><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD><TD>"+row["header"]+"</TD>"
-		}else if(row["logoPosition"] == null) {
-			"<TD valign='middle'> <IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/>"
-		}else {
-		"<TD/><TD/><TD>"+row["header"]+"</TD>"
-		}
- 		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
-                </cell>
-            </row>
             <row id="6497">
                 <property name="height">0.3020833333333333in</property>
                 <cell id="6498">
@@ -5351,6 +5764,7 @@ else {0};</expression>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                     </text>
                     <data id="6500">
+                        <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="paddingLeft">5pt</property>
@@ -5376,15 +5790,18 @@ else {0};</expression>
             <row id="6509">
                 <cell id="6510"/>
                 <cell id="6511">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
                     <text id="6512">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -5411,12 +5828,11 @@ else {0};</expression>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="6513">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
                     <text id="6514">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["company"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5425,12 +5841,13 @@ else {0};</expression>
                     <text id="6516">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -5457,28 +5874,34 @@ else {0};</expression>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="6517">
                     <text id="6518">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["currency"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="6517"/>
                 <cell id="6519"/>
             </row>
             <row id="6520">
                 <cell id="6521"/>
                 <cell id="6522">
+                    <property name="colSpan">3</property>
+                    <property name="rowSpan">1</property>
                     <text id="6523">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -5505,12 +5928,11 @@ else {0};</expression>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="6524">
-                    <property name="colSpan">2</property>
-                    <property name="rowSpan">1</property>
                     <text id="6525">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="display">inline</property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["account"]</VALUE-OF>]]></text-property>
                     </text>
@@ -5520,12 +5942,13 @@ else {0};</expression>
                     <text id="6527">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
                         <property name="borderTopStyle">none</property>
                         <property name="textAlign">left</property>
+                        <property name="display">inline</property>
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
                             <structure>
@@ -5552,13 +5975,15 @@ else {0};</expression>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
-                </cell>
-                <cell id="6528">
                     <data id="6529">
                         <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="display">inline</property>
                         <property name="resultSetColumn">iban</property>
                     </data>
                 </cell>
+                <cell id="6528"/>
                 <cell id="6530"/>
             </row>
             <row id="6531">
@@ -5570,7 +5995,7 @@ else {0};</expression>
                     <text id="6534">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
@@ -5601,10 +6026,12 @@ else {0};</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                     <data id="6535">
-                        <property name="paddingLeft">20pt</property>
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">from_date</property>
                     </data>
@@ -5615,7 +6042,7 @@ else {0};</expression>
                     <text id="6537">
                         <property name="fontFamily">sans-serif</property>
                         <property name="fontSize">8pt</property>
-                        <property name="fontWeight">normal</property>
+                        <property name="fontWeight">bold</property>
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
                         <property name="borderRightStyle">none</property>
@@ -5646,16 +6073,70 @@ else {0};</expression>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                     <data id="6538">
-                        <property name="paddingLeft">20pt</property>
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
                         <property name="display">inline</property>
                         <property name="resultSetColumn">to_date</property>
                     </data>
                 </cell>
                 <cell id="6539"/>
-                <cell id="6540"/>
+                <cell id="6540">
+                    <text id="7710">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["journal"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BankReconciliationStatement.journal'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <data id="7711">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">5pt</property>
+                        <property name="textAlign">left</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">journal</property>
+                    </data>
+                </cell>
                 <cell id="6541"/>
                 <cell id="6542">
                     <property name="textAlign">left</property>
@@ -5685,6 +6166,7 @@ else {0};</expression>
                             <cell id="6778">
                                 <table id="6780">
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">BankReconciliationLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -5933,7 +6415,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6787">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -5976,7 +6458,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6789">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6019,7 +6501,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6791">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6062,7 +6544,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6793">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6105,7 +6587,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6795">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6148,6 +6630,7 @@ else {0};</expression>
                             <cell id="6779">
                                 <table id="6836">
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">MoveLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -6292,20 +6775,20 @@ else {0};</expression>
                                         </structure>
                                     </list-property>
                                     <column id="6885">
-                                        <property name="width">10%</property>
+                                        <property name="width">15%</property>
                                     </column>
                                     <column id="6886">
-                                        <property name="width">10%</property>
+                                        <property name="width">15%</property>
                                     </column>
                                     <column id="6887">
                                         <property name="suppressDuplicates">true</property>
-                                        <property name="width">30%</property>
+                                        <property name="width">46%</property>
                                     </column>
                                     <column id="6888">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <column id="6889">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <header>
                                         <row id="6837">
@@ -6379,7 +6862,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6843">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6422,7 +6905,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6845">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6465,7 +6948,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6847">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6508,7 +6991,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6849">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6551,7 +7034,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6851">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -6609,6 +7092,7 @@ else {0};</expression>
                             <cell id="6894">
                                 <table id="6896">
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">BankReconciliationLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -6812,7 +7296,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="6914">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -6849,6 +7333,7 @@ else {0};</expression>
                                                 </text>
                                                 <data id="6915">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="paddingLeft">5pt</property>
                                                     <property name="display">inline</property>
@@ -6876,6 +7361,7 @@ else {0};</expression>
                                                 <property name="borderRightStyle">none</property>
                                                 <property name="borderTopStyle">none</property>
                                                 <data id="7686">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -6942,7 +7428,6 @@ else {0};</expression>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
-                                                        <property name="locale">af_ZA</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
                                                     <property name="resultSetColumn">debit</property>
@@ -6970,6 +7455,7 @@ else {0};</expression>
                             <cell id="6895">
                                 <table id="7020">
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">MoveLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -7012,14 +7498,26 @@ else {0};</expression>
                                         <structure>
                                             <property name="name">debit</property>
                                             <text-property name="displayName">debit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">credit</property>
                                             <text-property name="displayName">credit</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                            <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	row["currency_amount"];
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                             <property name="dataType">decimal</property>
+                                            <property name="allowExport">true</property>
                                         </structure>
                                         <structure>
                                             <property name="name">sum_debit</property>
@@ -7130,22 +7628,39 @@ else {0};</expression>
                                             <property name="dataType">decimal</property>
                                             <property name="allowExport">true</property>
                                         </structure>
+                                        <structure>
+                                            <property name="name">amount_remaining</property>
+                                            <text-property name="displayName">amount_remaining</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["amount_remaining"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">is_posted_1</property>
+                                            <text-property name="displayName">is_posted</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["is_posted"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">currency_amount</property>
+                                            <text-property name="displayName">currency_amount</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
                                     </list-property>
                                     <column id="7069">
-                                        <property name="width">10%</property>
+                                        <property name="width">15%</property>
                                     </column>
                                     <column id="7070">
-                                        <property name="width">10%</property>
+                                        <property name="width">15%</property>
                                     </column>
                                     <column id="7071">
-                                        <property name="suppressDuplicates">true</property>
-                                        <property name="width">30%</property>
+                                        <property name="width">46%</property>
                                     </column>
                                     <column id="7072">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <column id="7073">
-                                        <property name="width">15%</property>
+                                        <property name="width">12%</property>
                                     </column>
                                     <header>
                                         <row id="7036">
@@ -7192,7 +7707,7 @@ else {0};</expression>
                                                 <property name="borderTopStyle">none</property>
                                                 <text id="7040">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -7229,6 +7744,7 @@ else {0};</expression>
                                                 </text>
                                                 <data id="7041">
                                                     <property name="fontFamily">sans-serif</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="paddingLeft">5pt</property>
                                                     <property name="display">inline</property>
@@ -7255,7 +7771,6 @@ else {0};</expression>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
-                                                        <property name="locale">af_ZA</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
                                                     <property name="resultSetColumn">debit</property>
@@ -7271,7 +7786,6 @@ else {0};</expression>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
-                                                        <property name="locale">af_ZA</property>
                                                     </structure>
                                                     <property name="textAlign">right</property>
                                                     <property name="resultSetColumn">credit</property>
@@ -7339,6 +7853,7 @@ else {0};</expression>
                             <cell id="7018">
                                 <table id="6952">
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">BankReconciliationLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -7552,7 +8067,7 @@ else {0};</expression>
                                                 <property name="textAlign">center</property>
                                                 <text id="6989">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -7589,6 +8104,7 @@ else {0};</expression>
                                             </cell>
                                             <cell id="6990">
                                                 <data id="7687">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -7599,6 +8115,7 @@ else {0};</expression>
                                             </cell>
                                             <cell id="6992">
                                                 <data id="7670">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -7635,7 +8152,7 @@ else {0};</expression>
                                                 <property name="rowSpan">1</property>
                                                 <text id="6998">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -7730,6 +8247,7 @@ else {0};</expression>
                             <cell id="7019">
                                 <table id="7074">
                                     <property name="display">inline</property>
+                                    <property name="width">5.45in</property>
                                     <property name="dataSet">MoveLineDS</property>
                                     <list-property name="boundDataColumns">
                                         <structure>
@@ -7902,20 +8420,20 @@ else {0};</expression>
                                         </structure>
                                     </list-property>
                                     <column id="7123">
-                                        <property name="width">10%</property>
+                                        <property name="width">15%</property>
                                     </column>
                                     <column id="7124">
-                                        <property name="width">10%</property>
+                                        <property name="width">15%</property>
                                     </column>
                                     <column id="7125">
                                         <property name="suppressDuplicates">true</property>
-                                        <property name="width">30%</property>
+                                        <property name="width">25%</property>
                                     </column>
                                     <column id="7126">
-                                        <property name="width">15%</property>
+                                        <property name="width">20%</property>
                                     </column>
                                     <column id="7127">
-                                        <property name="width">15%</property>
+                                        <property name="width">20%</property>
                                     </column>
                                     <footer>
                                         <row id="7107">
@@ -7923,6 +8441,7 @@ else {0};</expression>
                                             <property name="borderTopWidth">thin</property>
                                             <cell id="7108">
                                                 <data id="7671">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -7933,6 +8452,7 @@ else {0};</expression>
                                             </cell>
                                             <cell id="7110">
                                                 <data id="7672">
+                                                    <property name="fontFamily">sans-serif</property>
                                                     <structure name="numberFormat">
                                                         <property name="category">Custom</property>
                                                         <property name="pattern">###,##0.00</property>
@@ -7946,7 +8466,7 @@ else {0};</expression>
                                                 <property name="rowSpan">1</property>
                                                 <text id="7113">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="fontStyle">normal</property>
                                                     <property name="borderBottomStyle">none</property>
@@ -8062,7 +8582,7 @@ else {0};</expression>
                                                 <property name="rowSpan">1</property>
                                                 <text id="7122">
                                                     <property name="fontFamily">sans-serif</property>
-                                                    <property name="fontSize">8pt</property>
+                                                    <property name="fontSize">7pt</property>
                                                     <property name="fontWeight">bold</property>
                                                     <property name="borderBottomStyle">none</property>
                                                     <property name="borderLeftStyle">none</property>
@@ -8103,6 +8623,69 @@ else {0};</expression>
                         </row>
                     </grid>
                 </cell>
+            </row>
+            <row id="7736">
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <property name="height">0.271in</property>
+                <cell id="7737">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <text id="7744">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["comments"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BankReconciliationStatementNew.comment'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <data id="7746">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="paddingLeft">2pt</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">comments</property>
+                    </data>
+                </cell>
+                <cell id="7741"/>
+                <cell id="7742"/>
+                <cell id="7743"/>
             </row>
         </grid>
     </body>

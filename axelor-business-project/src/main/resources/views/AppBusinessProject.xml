@@ -1,33 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-business-project-config-form" title="App business project"
-    model="com.axelor.apps.base.db.AppBusinessProject" canDelete="false" canNew="false"
-    width="large">
-    <panel name="mainPanel">
-      <field name="generateProjectOrder" widget="boolean-switch"/>
+    model="com.axelor.studio.db.AppBusinessProject" canDelete="false" canNew="false" width="large">
+    <panel name="mainPanel" title="Project generation from sale orders" colSpan="12">
+      <field name="generateProjectOrder" widget="boolean-switch"
+        onChange="action-app-business-project-attrs-generate-project-onchange"/>
       <field name="automaticProject" widget="boolean-switch"/>
-      <field name="generatedElementTypeSelect"/>
+    </panel>
+    <panel name="referencesPanel" title="References" colSpan="12">
       <field name="projectSaleOrderLines" widget="boolean-switch"/>
       <field name="projectPurchaseOrderLines" widget="boolean-switch"/>
       <field name="projectInvoiceLines" widget="boolean-switch"/>
-      <field name="productInvoicingProject" canEdit="false"/>
-      <field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
+    </panel>
+    <panel name="displayPanel" title="Display" colSpan="12">
       <field name="showSaleOrderLineRelatedToProject" widget="boolean-switch"/>
-      <field name="showProductionOrderRelatedToProject" widget="boolean-switch"/>
-      <field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
-      <field name="showPurchaseInvoiceLineRelatedToProject" widget="boolean-switch"/>
+      <field name="showPurchaseOrderLineRelatedToProject" widget="boolean-switch"/>
       <field name="showSaleInvoiceLineRelatedToProject" widget="boolean-switch"/>
+      <field name="showPurchaseInvoiceLineRelatedToProject" widget="boolean-switch"/>
+      <field name="showExpenseLineRelatedToProject" widget="boolean-switch"/>
+      <field name="showProductionOrderRelatedToProject" widget="boolean-switch"/>
+    </panel>
+    <panel name="invoicingPanel" title="Invoicing" colSpan="12">
+      <field name="productInvoicingProject" canEdit="false"/>
       <field name="enableToInvoiceTimesheet" widget="boolean-switch"/>
       <field name="enableToInvoiceExpense" widget="boolean-switch"/>
-      <field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
       <field name="automaticInvoicing" widget="boolean-switch"/>
-      <field name="preTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
-      <field name="postTaskStatusSet" widget="TagSelect" domain="self.relatedToSelect = 2"/>
-      <field name="exculdeTaskInvoicing"/>
-      <field name="generateProjectSequence" widget="boolean-switch"/>
+      <field name="preTaskStatusSet" widget="TagSelect"/>
+      <field name="postTaskStatusSet" widget="TagSelect"/>
+      <field name="excludeTaskInvoicing"/>
+    </panel>
+    <panel name="productPanel" title="Product" colSpan="12">
+      <field name="enableTaskTemplatesByProduct" widget="boolean-switch"/>
+    </panel>
+    <panel name="serviceManagementPanel" title="Service management" colSpan="12">
+      <field name="daysUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="hoursUnit" domain="self.unitTypeSelect = 3"/>
+      <field name="defaultHoursADay"
+        help="The days to hours conversion can be set for each project. This will determine the default value."/>
+    </panel>
+    <panel name="printingsPanel" title="Printings" colSpan="12">
+      <field name="invoicingProjectAnnexBirtTemplate"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -36,6 +51,12 @@
     </panel-mail>
 
   </form>
+
+  <action-attrs name="action-app-business-project-attrs-generate-project-onchange">
+    <attribute for="automaticProject" name="hidden" expr="eval: !generateProjectOrder"/>
+    <attribute for="automaticProject" name="value" expr="eval: false"
+      if="!generateProjectOrder"/>
+  </action-attrs>
 
 
 </object-views>

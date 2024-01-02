@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -21,12 +22,16 @@ import com.axelor.apps.account.db.AccountChart;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.repo.AccountChartRepository;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -49,22 +54,42 @@ public class AccountChartService {
   protected AccountConfigRepository accountConfigRepo;
   protected CompanyRepository companyRepo;
   protected AccountChartRepository accountChartRepository;
+  protected AccountRepository accountRepository;
 
   @Inject
   public AccountChartService(
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo,
-      AccountChartRepository accountChartRepository) {
+      AccountChartRepository accountChartRepository,
+      AccountRepository accountRepository) {
 
     this.accountConfigRepo = accountConfigRepo;
     this.companyRepo = companyRepo;
     this.accountChartRepository = accountChartRepository;
+    this.accountRepository = accountRepository;
   }
 
-  public Boolean installAccountChart(AccountChart act, Company company, AccountConfig accountConfig)
+  public boolean installAccountChart(AccountConfig accountConfig) throws AxelorException {
+
+    AccountChart act = accountConfig.getAccountChart();
+    Company company = accountConfig.getCompany();
+    long accountCounter =
+        accountRepository
+            .all()
+            .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
+            .count();
+
+    if (accountCounter > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.ACCOUNT_CHART_3));
+    }
+
+    return installProcess(accountConfig, act, company);
+  }
+
+  protected boolean installProcess(AccountConfig accountConfig, AccountChart act, Company company)
       throws AxelorException {
     try {
-
       if (act.getMetaFile() == null) {
         return false;
       }
@@ -92,7 +117,8 @@ public class AccountChartService {
     }
   }
 
-  private File createConfigFile(InputStream inputStream) throws IOException, FileNotFoundException {
+  protected File createConfigFile(InputStream inputStream)
+      throws IOException, FileNotFoundException {
 
     File configFile = File.createTempFile("input-config", ".xml");
 
@@ -113,13 +139,14 @@ public class AccountChartService {
 
     accountConfig = accountConfigRepo.find(accountConfig.getId());
     accountConfig.setHasChartImported(true);
-    accountConfigRepo.save(accountConfig);
     act = accountChartRepository.find(act.getId());
+    accountConfig.setAccountChart(act);
     company = companyRepo.find(company.getId());
     Set<Company> companySet = act.getCompanySet();
     companySet.add(company);
     act.setCompanySet(companySet);
     accountChartRepository.save(act);
+    accountConfigRepo.save(accountConfig);
   }
 
   public void importAccountChartData(

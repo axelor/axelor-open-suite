@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center groups"
     name="work-center-group-grid">
@@ -45,11 +45,6 @@
 
   </form>
 
-  <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
-    name="work-center-group-model-form">
-    <panel-include view="work-center-group-form"/>
-  </form>
-
   <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"
     name="work-center-group-form-from-menu" onNew="action-production-work-center-record-on-new">
 
@@ -74,8 +69,8 @@
 
   </form>
 
-  <form model="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group model"
-    name="work-center-group-model-form-from-menu"
+  <form name="work-center-group-model-form" title="Model of work center group"
+    model="com.axelor.apps.production.db.WorkCenterGroup"
     onNew="action-production-work-center-record-on-new">
     <panel-include view="work-center-group-form-from-menu"/>
   </form>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AssetDisposalReason" cacheable="true">
+
+    <string name="name" title="Name" required="true" namecolumn="true"/>
+    <string name="code" title="Code" required="true" unique="true"/>
+    <integer name="disposalTypeSelect" title="Disposal Type"
+      selection="account.fixed.asset.disposal.type.select" default="1"/>
+
+    <extra-code><![CDATA[
+
+      	// DISPOSAL TYPE SELECT
+      	public static final int DISPOSABLE_TYPE_SELECT_SCRAPPING = 1;
+        public static final int DISPOSABLE_TYPE_SELECT_CESSION = 2;
+        public static final int DISPOSABLE_TYPE_SELECT_ONGOING_CESSION = 3;
+
+    ]]></extra-code>
+
+    <track>
+      <field name="name"/>
+      <field name="code"/>
+      <field name="disposalTypeSelect"/>
+    </track>
+
+  </entity>
+</domain-models>

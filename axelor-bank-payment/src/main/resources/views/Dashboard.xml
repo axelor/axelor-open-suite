@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <dashboard title="Accounting Dashboard" name="accounting.dashboard.sample" width="large"
+    id="bank.payment.accounting.dashboard.sample">
+    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.nbr"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.amount"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
+    <dashlet colSpan="6" height="350"
+      action="accounting-dashboard-company-bank-details-action" canSearch="true"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"/>
+    <dashlet colSpan="6" height="350"
+      action="action-dashboard-accounting-bank-detail-to-validate" canSearch="true"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-purchases-invoice-per-month-pie"/>
+    <dashlet colSpan="12" height="350" action="invoice.root.pfp.awaiting.pfp"
+      canSearch="true"/>
+    <dashlet colSpan="12" height="350" action="action-pfp-disputed-invoice" canSearch="true"/>
+    <dashlet colSpan="4" height="175" action="action-accounting-dashboard-report-delay-rate"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-report-supplier-amount-remaining"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-report-top-3-suppliers"/>
+    <dashlet colSpan="12" height="350" action="action-daf-dashboard-customer-late-invoice"/>
+  </dashboard>
+
+  <dashboard title="Accounting Dashboard with invoice terms"
+    name="accounting.dashboard.invoice.terms.sample"
+    id="bank.payment.accounting.dashboard.invoice.terms.sample" width="large">
+    <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.nbr"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.amount"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
+    <dashlet colSpan="6" height="350"
+      action="accounting-dashboard-company-bank-details-action" canSearch="true"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"/>
+    <dashlet colSpan="6" height="350"
+      action="action-dashboard-accounting-bank-detail-to-validate" canSearch="true"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-purchases-invoice-term-per-month-pie"/>
+    <dashlet colSpan="12" height="350" action="invoice.root.pfp.awaiting.pfp"
+      canSearch="true"/>
+    <dashlet colSpan="12" height="350" action="action-pfp-disputed-invoice-term"
+      canSearch="true"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-invoice-terms-report-delay-rate"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-invoice-terms-report-supplier-amount-remaining"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-report-invoice-terms-top-3-suppliers"/>
+    <dashlet colSpan="12" height="350"
+      action="action-daf-dashboard-customer-late-invoice-terms"/>
+  </dashboard>
+
+  <action-view name="accounting-dashboard-company-bank-details-action"
+    title="Bank Balance" model="com.axelor.apps.base.db.BankDetails">
+    <view type="grid" name="bank-details-bank-order-company-grid"/>
+    <view type="form" name="bank-details-form"/>
+    <domain>self.company is not null</domain>
+  </action-view>
+
+  <action-view name="action-dashboard-accounting-bank-detail-to-validate"
+    title="Bank details not validated" model="com.axelor.apps.base.db.BankDetails">
+    <view type="grid" name="bank-details-grid"/>
+    <view type="form" name="bank-details-form"/>
+    <domain>self.active is false or self.active is null</domain>
+  </action-view>
+
+</object-views>

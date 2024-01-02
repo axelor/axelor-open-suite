@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockRules" lang="java">
+  <entity name="StockRules">
 
     <string name="name" title="Name"/>
 
@@ -29,8 +29,8 @@
     <many-to-one name="user" column="user_id" ref="com.axelor.auth.db.User"
       title="User to alert"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team to alert"/>
-    <many-to-one name="stockRuleMessageTemplate"
-      ref="com.axelor.apps.message.db.Template" title="Message template for stock rules"/>
+    <many-to-one name="stockRuleMessageTemplate" ref="com.axelor.message.db.Template"
+      title="Message template for stock rules"/>
     <boolean name="alert" title="Alert" default="false"/>
     <string name="comments" title="Comments" large="true"/>
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://axelor.com/xml/ns/object-views"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="account-config-form" title="Account configuration"
+    model="com.axelor.apps.account.db.AccountConfig" id="supplychain-account-config-form"
+    extension="true">
+
+    <extend target="//field[@name='deferredIncomesAccount']">
+      <insert position="after">
+        <field name="forecastedInvCustAccount"
+          domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+          form-view="account-form"/>
+        <field name="forecastedInvSuppAccount"
+          domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+          form-view="account-form"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

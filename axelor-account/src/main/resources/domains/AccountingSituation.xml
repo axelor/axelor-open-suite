@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountingSituation" lang="java">
+  <entity name="AccountingSituation">
 
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"
@@ -50,20 +50,27 @@
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
       default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate"
       default="false"/>
     <many-to-one name="invoiceMessageTemplateOnValidate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
-
-    <!-- Reported Balance -->
-    <one-to-many name="reportedBalanceLineList"
-      ref="com.axelor.apps.account.db.ReportedBalanceLine" mappedBy="accountingSituation"
-      title="Reported balance lines"/>
+    <!-- Holdback -->
+    <many-to-one name="holdBackCustomerAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Customer account"/>
+    <many-to-one name="holdBackSupplierAccount" ref="com.axelor.apps.account.db.Account"
+      title="Holdback Supplier account"/>
 
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
+
+    <integer name="vatSystemSelect" title="VAT System"
+      selection="iaccount.vat.system.partner.select" default="0"/>
+
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
 
     <string name="name">
 			<![CDATA[
@@ -84,9 +91,22 @@
 			return name;
 	    ]]>
     </string>
+
+    <finder-method name="findByCompanyAndPartner" using="company,partner"/>
+
+    <extra-code><![CDATA[
+
+      	// VAT SYSTEM
+      	public static final int VAT_SYSTEM_DEFAULT = 0;
+      	public static final int VAT_COMMON_SYSTEM = 1;
+      	public static final int VAT_DELIVERY = 2;
+
+    ]]></extra-code>
+
     <track>
       <field name="defaultExpenseAccount"/>
       <field name="defaultIncomeAccount"/>
+      <field name="vatSystemSelect"/>
     </track>
 
   </entity>

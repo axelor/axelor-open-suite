@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,40 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.repo.AccountAnalyticRulesRepository;
+import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.AnalyticAccount;
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.AnalyticRulesRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.utils.StringTool;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,17 +64,17 @@ public class AccountService {
   public static final int MAX_LEVEL_OF_ACCOUNT = 20;
 
   protected AccountRepository accountRepository;
-  protected AccountAnalyticRulesRepository accountAnalyticRulesRepository;
   protected AccountConfigService accountConfigService;
+  protected AnalyticRulesRepository analyticRulesRepository;
 
   @Inject
   public AccountService(
       AccountRepository accountRepository,
-      AccountAnalyticRulesRepository accountAnalyticRulesRepository,
-      AccountConfigService accountConfigService) {
+      AccountConfigService accountConfigService,
+      AnalyticRulesRepository analyticRulesRepository) {
     this.accountRepository = accountRepository;
-    this.accountAnalyticRulesRepository = accountAnalyticRulesRepository;
     this.accountConfigService = accountConfigService;
+    this.analyticRulesRepository = analyticRulesRepository;
   }
 
   /**
@@ -72,14 +87,34 @@ public class AccountService {
    * @return The balance (debit balance or credit balance)
    */
   public BigDecimal computeBalance(Account account, int balanceType) {
+    return this.computeBalance(account, null, null, balanceType);
+  }
 
+  public BigDecimal computeBalance(AccountType accountType, Year year, int balanceType) {
+    return this.computeBalance(null, accountType, year, balanceType);
+  }
+
+  protected BigDecimal computeBalance(
+      Account account, AccountType accountType, Year year, int balanceType) {
     Query balanceQuery =
         JPA.em()
             .createQuery(
-                "select sum(self.debit - self.credit) from MoveLine self where self.account = :account "
-                    + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (2, 3)");
+                String.format(
+                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
+                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
+                        + Joiner.on(',')
+                            .join(
+                                Lists.newArrayList(
+                                    MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK))
+                        + ") %s",
+                    account == null ? ".accountType" : "",
+                    year != null ? " and self.move.period.year = :year" : ""));
 
-    balanceQuery.setParameter("account", account);
+    balanceQuery.setParameter("account", account != null ? account : accountType);
+
+    if (year != null) {
+      balanceQuery.setParameter("year", year);
+    }
 
     BigDecimal balance = (BigDecimal) balanceQuery.getSingleResult();
 
@@ -129,44 +164,52 @@ public class AccountService {
         .collect(Collectors.toList());
   }
 
-  public void checkAnalyticAxis(Account account) throws AxelorException {
+  public void checkAnalyticAxis(
+      Account account,
+      AnalyticDistributionTemplate analyticDistributionTemplate,
+      boolean isRequiredOnMoveLine,
+      boolean isRequiredOnInvoiceLine)
+      throws AxelorException {
     if (account != null && account.getAnalyticDistributionAuthorized()) {
-      if (account.getAnalyticDistributionTemplate() == null
+      if (analyticDistributionTemplate == null
           && account.getCompany() != null
           && accountConfigService
                   .getAccountConfig(account.getCompany())
                   .getAnalyticDistributionTypeSelect()
-              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE) {
+              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE
+          && (isRequiredOnInvoiceLine || isRequiredOnMoveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get("Please put AnalyticDistribution Template"));
 
       } else {
-        if (account.getAnalyticDistributionTemplate() != null) {
-          if (account.getAnalyticDistributionTemplate().getAnalyticDistributionLineList() == null) {
+        if (analyticDistributionTemplate != null) {
+          if (analyticDistributionTemplate.getAnalyticDistributionLineList() == null) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
                 I18n.get(
                     "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
           } else {
-            List<Long> rulesAnalyticAccountList = getRulesIds(account);
-            if (rulesAnalyticAccountList != null && !rulesAnalyticAccountList.isEmpty()) {
-              List<Long> accountAnalyticAccountList = new ArrayList<Long>();
-              account
-                  .getAnalyticDistributionTemplate()
-                  .getAnalyticDistributionLineList()
-                  .forEach(
-                      analyticDistributionLine ->
-                          accountAnalyticAccountList.add(
-                              analyticDistributionLine.getAnalyticAccount().getId()));
-              for (Long analyticAccount : accountAnalyticAccountList) {
-                if (!rulesAnalyticAccountList.contains(analyticAccount)) {
-                  throw new AxelorException(
-                      TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                      I18n.get(
-                          "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account."));
-                }
-              }
+            List<Long> analyticAccountIdList = getAnalyticAccountsIds(account);
+
+            if (CollectionUtils.isNotEmpty(analyticAccountIdList)
+                && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
+                    .map(
+                        analyticDistributionLine -> {
+                          AnalyticAccount analyticAccount =
+                              analyticDistributionLine.getAnalyticAccount();
+                          if (analyticAccount != null) {
+                            return analyticAccount.getId();
+                          }
+                          return null;
+                        })
+                    .filter(Objects::nonNull)
+                    .anyMatch(it -> !analyticAccountIdList.contains(it))) {
+              throw new AxelorException(
+                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+                  I18n.get(
+                      AccountExceptionMessage
+                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
             }
           }
         }
@@ -174,14 +217,87 @@ public class AccountService {
     }
   }
 
-  public List<Long> getRulesIds(Account account) {
+  @Transactional
+  public void toggleStatusSelect(Account account) {
+    if (account != null) {
+      if (account.getStatusSelect() == AccountRepository.STATUS_INACTIVE) {
+        account = activate(account);
+      } else {
+        account = desactivate(account);
+      }
+      accountRepository.save(account);
+    }
+  }
+
+  public Account fillAccountCode(Account account) throws AxelorException {
+    String code = account.getCode();
+    if (StringUtils.notEmpty(code) && account.getCompany() != null) {
+      int accountCodeNbrCharSelect =
+          accountConfigService.getAccountConfig(account.getCompany()).getAccountCodeNbrCharSelect();
+      int accountCodeLength = code.length();
+      if (accountCodeLength > accountCodeNbrCharSelect) {
+        account.setCode(code.substring(0, accountCodeNbrCharSelect));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED),
+            accountCodeLength,
+            accountCodeNbrCharSelect);
+      } else if (accountCodeLength < accountCodeNbrCharSelect
+          && !account.getIsRegulatoryAccount()
+          && account.getAccountType() != null
+          && !AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
+        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+      }
+    }
+    return account;
+  }
+
+  public Account fillAccountCodeOnImport(Account account, int lineNo) throws AxelorException {
+    String code = account.getCode();
+    if (StringUtils.notEmpty(code) && account.getCompany() != null) {
+      int accountCodeNbrCharSelect =
+          accountConfigService.getAccountConfig(account.getCompany()).getAccountCodeNbrCharSelect();
+      int accountCodeLength = code.length();
+      if (accountCodeLength > accountCodeNbrCharSelect) {
+        account.setCode(code.substring(0, accountCodeNbrCharSelect));
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(AccountExceptionMessage.ACCOUNT_CODE_CHAR_EXCEEDED_IMPORT),
+            lineNo,
+            account.getCode());
+      } else if (accountCodeLength < accountCodeNbrCharSelect
+          && !account.getIsRegulatoryAccount()
+          && account.getAccountType() != null
+          && !AccountTypeRepository.TYPE_VIEW.equals(
+              account.getAccountType().getTechnicalTypeSelect())) {
+        account.setCode(StringTool.fillStringRight(code, '0', accountCodeNbrCharSelect));
+      }
+    }
+    return account;
+  }
+
+  public List<Long> getAnalyticAccountsIds(Account account) {
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT analyticAccount.id FROM AnalyticRules "
-                    + "self JOIN self.analyticAccountSet analyticAccount "
-                    + "WHERE self.fromAccount.code <= :account AND self.toAccount.code >= :account");
+                "SELECT DISTINCT analyticAccount.id FROM AnalyticRules analyticRules "
+                    + "JOIN analyticRules.analyticAccountSet analyticAccount "
+                    + "WHERE analyticRules.fromAccount.code <= :account "
+                    + "AND analyticRules.toAccount.code >= :account "
+                    + "AND analyticRules.company = :company");
     query.setParameter("account", account.getCode());
+    query.setParameter("company", account.getCompany());
     return query.getResultList();
+  }
+
+  protected Account activate(Account account) {
+    account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
+    return account;
+  }
+
+  protected Account desactivate(Account account) {
+    account.setStatusSelect(AccountRepository.STATUS_INACTIVE);
+    return account;
   }
 }

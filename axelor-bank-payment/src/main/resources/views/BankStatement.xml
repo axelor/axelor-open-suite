@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-statement-grid" title="Bank Statements"
-    model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name">
+    model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name" canDelete="false">
     <toolbar>
       <button name="showBankStatementLinesBtn" title="See bank statement lines"
         onClick="account-bank-statement-view-bank-statement-lines"/>
+      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+        onClick="action-bank-statement-method-delete-multiple-statement"/>
     </toolbar>
     <field name="id" hidden="false" width="120"/>
     <field name="ebicsPartner.ebicsBank" width="250"
@@ -22,13 +24,15 @@
 
 
   <form name="bank-statement-form" title="Bank Statement"
-    model="com.axelor.apps.bankpayment.db.BankStatement" width="large">
+    model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
-        onClick="action-bank-statement-method-print"/>
+        onClick="action-bank-statement-validate-file-format,action-method-print-birt"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>
+      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+        onClick="action-bank-statement-method-delete-statement"/>
     </toolbar>
 
     <panel name="bankStatementPanel" colSpan="12" readonlyIf="statusSelect == 2">
@@ -121,14 +125,25 @@
     <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="runImport"/>
   </action-method>
 
-  <action-method name="action-bank-statement-method-print">
-    <call class="com.axelor.apps.bankpayment.web.BankStatementController" method="print"/>
-  </action-method>
-
   <action-method name="action-bank-statement-method-run-bank-reconciliation">
     <call class="com.axelor.apps.bankpayment.web.BankStatementController"
       method="runBankReconciliation"/>
   </action-method>
+
+  <action-method name="action-bank-statement-method-delete-multiple-statement">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementController"
+      method="deleteMultipleStatements"/>
+  </action-method>
+
+  <action-method name="action-bank-statement-method-delete-statement">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementController"
+      method="deleteStatement"/>
+  </action-method>
+
+  <action-validate name="action-bank-statement-validate-file-format">
+    <error message="Unknown format for file import process"
+      if="['camt.xxx.cfonb120.stm','camt.xxx.cfonb120.rep'].indexOf(bankStatementFileFormat.statementFileFormatSelect) == -1"/>
+  </action-validate>
 
   <!-- SEARCH FILTERS -->
 

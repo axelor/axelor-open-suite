@@ -1,0 +1,34 @@
+"importId";"name";"replyToRecipients";"toRecipients";"ccRecipients";"subject";"content";"metaModel.name";"metaModel.packageName";"isSystem";"mediaTypeSelect"
+1;"Expense sent";;;"$Expense.employee.contactPartner.emailAddress.address$";"Expense submission by $Expense.employee.name$";"<p>Hello,</p>
+<p><br></p>
+<p>An expense has been submitted to you by $Expense.employee.name$.</p>
+<a href=S""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+
+<div>
+<br><p>You may reject or validate it.</p>
+<p><br></p>
+<p>Best regards</p>
+</div>";"Expense";"com.axelor.apps.hr.db";"true";2
+2;"Expense refused";;"$Expense.employee.contactPartner.emailAddress.address$";;"Expense rejection";"<p>Hello,</p>
+<p><br></p>
+<p>Your expense $Expense.fullName$ is unfortunately not congruent and can not be validated as is.</p>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+
+<div>
+<br><p>In order to know the missing information for this expense to be validated, please reply to this e-mail.</p>
+<p><br></p>
+<p>Best regards</p>
+<p><br></p>
+<p>$Expense.refusedBy.name$</p>
+</div>";"Expense";"com.axelor.apps.hr.db";"true";2
+3;"Expense validated";;"$Expense.employee.contactPartner.emailAddress.address$";;"Expense validation";"<p>Hello,</p>
+<p><br></p>
+<p>Your expense ($Expense.employee.name$) has been validated and will be payed as soon as possible.</p>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Please log in to consult it.</a>
+
+<div>
+<p><br></p>
+<p>Best regards</p>
+<p><br></p>
+<p>$Expense.validatedBy.name$</p>
+</div>";"Expense";"com.axelor.apps.hr.db";"true";2

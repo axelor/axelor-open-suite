@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="InvoiceTermPayment">
+
+    <many-to-one name="invoicePayment" ref="com.axelor.apps.account.db.InvoicePayment"
+      title="Payment"/>
+    <many-to-one name="invoiceTerm" ref="com.axelor.apps.account.db.InvoiceTerm"
+      title="Invoice term"/>
+    <decimal name="paidAmount" title="Paid amount"/>
+    <decimal name="companyPaidAmount" title="Paid amount (company currency)"/>
+    <many-to-one name="financialDiscount"
+      ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
+    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <many-to-many name="reconcileList" ref="com.axelor.apps.account.db.Reconcile"
+      readonly="true" title="Reconciliations"/>
+
+    <finder-method name="findByReconcileId" using="Long:reconcileId"
+      filter="(:reconcileId) MEMBER OF self.reconcileList " all="true"/>
+
+  </entity>
+
+</domain-models>

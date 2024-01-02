@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="false" groupBy="user" orderBy="user,-fromDate">
+    canNew="false" groupBy="employee" orderBy="employee,-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem"
@@ -15,16 +15,17 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="sentDateTime"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <grid name="all-timesheet-grid" title="All timesheets"
-    model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="user" orderBy="user,-fromDate">
+    model="com.axelor.apps.hr.db.Timesheet" canNew="false" groupBy="employee"
+    orderBy="employee,-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-method-all-timesheet-line"
@@ -35,16 +36,16 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="sentDateTime"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
-    canNew="false" orderBy="-fromDate">
+    canNew="true" orderBy="-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines"
@@ -55,15 +56,15 @@
     <hilite color="success" if="statusSelect == 3"/>
     <hilite color="warning" if="statusSelect == 2"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
+    <field name="sentDateTime"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-validate-grid" title="Timesheet"
-    model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="user,-fromDate">
+    model="com.axelor.apps.hr.db.Timesheet" canNew="false" orderBy="employee,-fromDate">
     <menubar>
       <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="timesheetValidatedBySubordinatesItem"
@@ -75,24 +76,23 @@
     </menubar>
     <hilite background="danger" if="$moment(fromDate).diff(todayDate,'days') &lt;= 0"/>
     <hilite background="warning"
-      if="$moment(todayDate).diff(sentDate,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
+      if="$moment(todayDate).diff(sentDateTime,'days') &gt;= 7 || $moment(todayDate).diff(fromDate,'days') &gt;= 15"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="sentDate"/>
+    <field name="sentDateTime"/>
     <field name="periodTotal"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet').needValidation"/>
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
   </grid>
 
   <form name="timesheet-form" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
-    cols="12" width="large" onNew="action-group-timesheet-onnew"
-    onLoad="action-timesheet-group-onload" canNew="false" onSave="action-timesheet-group-onsave"
-    canCopy="false">
+    width="large" onNew="action-group-timesheet-onnew" onLoad="action-timesheet-group-onload"
+    canNew="false" onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
       <menu name="timesheetToolsMenu" title="Reports" icon="fa-files-o">
-        <item name="printTimesheetItem" title="Print" action="save,action-print-timesheet"/>
+        <item name="printTimesheetItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
       <menu title="Tools" icon="fa-wrench">
         <item title="Lines Generation Wizard" showIf="statusSelect == 1"
@@ -101,66 +101,69 @@
           action="save,action-timesheet-method-generate-lines-from-expected-planning"/>
       </menu>
     </menubar>
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <panel name="detailsPanel" colSpan="9">
         <panel name="headPanel" colSpan="12">
           <field name="statusSelect" colSpan="10" widget="NavSelect" showTitle="false"
-            if="__config__.app.getApp('timesheet').needValidation"/>
+            if="__config__.app.getApp('timesheet')?.needValidation"/>
           <field name="showEditor" colSpan="2" title="Editor" widget="boolean-switch"
             onChange="action-timesheet-attrs-refresh-editor"
-            if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+            if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
         </panel>
         <field name="company" colSpan="5" form-view="company-form" grid-view="company-grid"
           onChange="action-hr-record-empty-user"/>
-        <field name="user" colSpan="5" form-view="user-form"
-          onChange="action-timesheet-group-user-onchange" onSelect="action-hr-attrs-set-user-domain"
-          grid-view="user-grid" canNew="false" canEdit="false" canView="false"/>
+        <field name="employee" colSpan="5" form-view="employee-form"
+          onChange="action-timesheet-group-employee-onchange"
+          onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
+          canEdit="false" canView="false"/>
         <field name="timeLoggingPreferenceSelect" readonly="true" hidden="true"/>
-        <field name="user.employee" hidden="true"/>
+        <field name="employee" hidden="true"/>
         <field if-module="axelor-business-production"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
-          name="user.employee.timesheetImputationSelect" hidden="true"/>
+          name="employee.timesheetImputationSelect" hidden="true"/>
         <field name="fromDate"
           onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
         <field name="toDate" onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
-          if="__config__.app.getApp('timesheet').getTimesheetEditor()"
+          if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
-        <field name="isCompleted" if="!__config__.app.getApp('timesheet').needValidation"
+        <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"
           readonly="true"/>
+        <field name="employee.user" hidden="true"/>
+        <field name="employee.user.code" hidden="true"/>
       </panel>
 
       <panel name="actionsPanel" colSpan="3" itemSpan="12">
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="continueBtn" onClick="action-timesheet-group-continue,close"
           title="Continue"
-          showIf="statusSelect == 2 &amp;&amp; user != null &amp;&amp; user.code == $user"
-          icon="fa-arrow-right" if="__config__.app.getApp('timesheet').needValidation"/>
+          showIf="statusSelect == 2 &amp;&amp; employee != null &amp;&amp; employee.user != null &amp;&amp; employee.user.code == $user"
+          icon="fa-arrow-right" if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="confirmContinueBtn"
           onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
           title="Validate" icon="fa-check" css="btn-success"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
           title="Refuse" icon="fa-times" css="btn-danger"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="cancelBtn" hidden="true"
           onClick="save,action-timesheet-method-cancel,action-timesheet-group-buttons"
           title="Cancel" icon="fa-times-circle" css="btn-danger"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="draftBtn"
           onClick="save,action-timesheet-method-draft,action-timesheet-group-buttons"
           title="Return to draft status" showIf="statusSelect &gt; 3"
-          if="__config__.app.getApp('timesheet').needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="startStopFormBtn" title="Start&amp;Stop Timer"
           onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
-          if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getEnableTimer()"/>
+          if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"/>
         <button name="completeBtn" onClick="save,action-timesheet-method-complete"
-          title="Complete" if="!__config__.app.getApp('timesheet').needValidation"
+          title="Complete" if="!__config__.app.getApp('timesheet')?.needValidation"
           icon="fa-arrow-right"/>
       </panel>
     </panel>
@@ -171,8 +174,8 @@
       <field name="$toGenerationDate" title="To generation date" widget="Date"
         onChange="action-hr-condition-automatic-to-generation-date"/>
       <field name="$project" title="Project" target="com.axelor.apps.project.db.Project"
-        domain="self.imputable=true and self." type="many-to-one" form-view="project-form"
-        grid-view="project-grid" onSelect="action-hr-timesheet-attrs-domain-project"
+        type="many-to-one" form-view="project-form" grid-view="project-grid"
+        onSelect="action-hr-timesheet-attrs-domain-project"
         onChange="action-hr-timesheet-record-empty-product"/>
       <field name="$product" title="Activity" type="many-to-one"
         target="com.axelor.apps.base.db.Product" Select="action-hr-timesheet-attrs-domain-product"
@@ -189,31 +192,32 @@
         canMove="true" orderBy="sequence" colSpan="12" height="20"
         grid-view="timesheet-line-timesheet-grid" editable="true"
         form-view="timesheet-line-timesheet-form" hidden="true"
-        showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)"
+        showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2)"
         x-can-copy="true"/>
       <panel-related name="timesheetLineListPanel" field="timesheetLineList"
         colSpan="12" height="20" grid-view="timesheet-line-timesheet-manuf-order-grid"
         editable="true" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true"
-        showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2"
+        showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2"
         x-can-copy="true" if-module="axelor-business-production"
         if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
       <panel-related name="timesheetLineListPanel" field="timesheetLineList"
         canMove="true" orderBy="sequence" colSpan="12" height="20"
         grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form"
         hidden="true"
-        showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2)"
+        showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2)"
         x-can-copy="true"/>
       <panel-related name="timesheetLineListPanel" field="timesheetLineList"
         colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-manuf-order-grid"
         form-view="timesheet-line-timesheet-manuf-order-form" hidden="true"
-        showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; user.employee.timesheetImputationSelect == 2"
+        showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2"
         x-can-copy="true" if-module="axelor-business-production"
         if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
       <button name="fullScreenEditorBtn" colSpan="3" title="Fullscreen Editor"
         showIf="id != null &amp;&amp; showEditor"
-        if="__config__.app.getApp('timesheet').getTimesheetEditor()"
+        if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
         onClick="save,action-timesheet-method-open-timesheet-editor"/>
       <field name="$showActivity" hidden="true" type="boolean"/>
+      <field name="$dailyLimit" hidden="true" type="boolean"/>
       <field name="$enableTimesheetManufOrder" hidden="true" type="boolean"/>
     </panel>
     <panel name="totalsPanel" title="Totals on period">
@@ -221,17 +225,17 @@
       <field name="$periodTotalConvert" type="decimal" readonly="true" hidden="true"/>
     </panel>
     <panel-dashlet name="totalHoursPerDayPanel" title="Total Hours per Day"
-      hidden="true" showIf="id &amp;&amp; user.employee.timesheetImputationSelect != 2"
+      hidden="true" showIf="id &amp;&amp; employee.timesheetImputationSelect != 2"
       action="action-timesheet-view-total-hours-per-day"/>
-    <panel name="validationInfoPanel" showIf="sentDate != null"
-      if="__config__.app.getApp('timesheet').needValidation">
-      <field name="sentDate"/>
+    <panel name="validationInfoPanel" showIf="sentDateTime != null"
+      if="__config__.app.getApp('timesheet')?.needValidation">
+      <field name="sentDateTime"/>
       <field name="validatedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="validatedBy != null"/>
       <field name="refusedBy" canEdit="false" form-view="user-form" grid-view="user-grid"
         showIf="refusedBy != null"/>
-      <field name="validationDate" showIf="validationDate != null"/>
-      <field name="refusalDate" showIf="refusalDate != null"/>
+      <field name="validationDateTime" showIf="validationDateTime != null"/>
+      <field name="refusalDateTime" showIf="refusalDateTime != null"/>
       <field name="groundForRefusal" showIf="statusSelect == 4" colSpan="12"/>
     </panel>
     <panel name="attrsPanel">
@@ -245,18 +249,22 @@
 
   <form name="popup-timesheet-refusal-form" title="Ground for refusal"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="groundForRefusal" showTitle="false"/>
+    <panel name="mainPanel">
+      <field name="groundForRefusal" showTitle="false"/>
+    </panel>
   </form>
 
   <form name="popup-timesheet-form" title="Select the timesheet you want to edit"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
-    <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
-      target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>
-    <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
-      onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
+    model="com.axelor.utils.db.Wizard" onNew="action-timesheet-attrs-domain-timesheet-select">
+    <panel name="mainPanel">
+      <field name="$timesheetSelect" title="Select Timesheet" type="many-to-one"
+        target="com.axelor.apps.hr.db.Timesheet" widget="SuggestBox"/>
+      <button name="editTimesheetSelectedBtn" title="Edit Timesheet Selected"
+        onClick="action-timesheet-validate-timesheet-selected,action-timesheet-method-edit-timesheet-selected,close"/>
+    </panel>
   </form>
 
-  <action-group name="action-timesheet-group-user-onchange">
+  <action-group name="action-timesheet-group-employee-onchange">
     <action name="action-timesheet-method-update-time-logging-preference"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
   </action-group>
@@ -328,7 +336,7 @@
     <action name="action-timesheet-record-from-period-date"/>
     <action name="action-timesheet-record-to-date" if="fromDate != null"/>
     <action name="action-timesheet-prefill-lines"
-      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
+      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-title-project"/>
     <action name="action-timesheet-attrs-from-date-on-new"/>
     <action name="action-timesheet-attrs-panels"/>
@@ -339,7 +347,7 @@
     <action name="action-timesheet-method-remove-after-to-date-timesheetlines"
       if="id &amp;&amp; toDate != null"/>
     <action name="action-timesheet-prefill-lines"
-      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet').getCreateLinesForLeaves() || __config__.app.getApp('timesheet').getCreateLinesForHolidays())"/>
+      if="toDate != null &amp;&amp; (__config__.app.getApp('timesheet')?.getCreateLinesForLeaves() || __config__.app.getApp('timesheet')?.getCreateLinesForHolidays())"/>
     <action name="action-timesheet-attrs-refresh-editor" if="showEditor"/>
   </action-group>
 
@@ -365,7 +373,7 @@
 
   <action-record name="action-timesheet-record-default"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="user" expr="eval:__user__"/>
+    <field name="employee" expr="eval:__user__.employee"/>
     <field name="timeLoggingPreferenceSelect"
       expr="eval: __user__?.employee?.timeLoggingPreferenceSelect"/>
     <field name="company"
@@ -386,9 +394,9 @@
   <action-record name="action-timesheet-record-to-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="toDate" expr="eval:fromDate.with(java.time.DayOfWeek.FRIDAY)"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 1"/>
+      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 1"/>
     <field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet').getDefaultEndFormat() == 2"/>
+      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 2"/>
   </action-record>
 
   <action-validate name="action-timesheet-validate-timesheet-selected">
@@ -407,55 +415,55 @@
 
   <action-attrs name="action-hr-timesheet-attrs-domain-project">
     <attribute name="domain" for="$project"
-      expr="eval: &quot; (${user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${user?.id}) AND self.isShowTimeSpent = true &quot;"/>
+      expr="eval: &quot; (${employee?.user?.id} MEMBER OF self.membersUserSet OR self.assignedTo.id = ${employee?.user?.id}) AND self.isShowTimeSpent = true &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-title-project">
     <attribute name="title" for="$project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
     <attribute name="title" for="timesheetLineList.project"
-      expr="eval: __config__.app.getApp('project').getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project').getProjectLabel())"/>
+      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
+      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-domain-timesheet-select">
     <attribute name="domain" for="$timesheetSelect"
-      expr="eval: &quot; self.statusSelect = 1 AND self.user = ${__user__.id} &quot;"/>
+      expr="eval: &quot; self.statusSelect = 1 AND self.employee.user.id = ${__user__.id} &quot;"/>
   </action-attrs>
 
   <action-group name="action-timesheet-group-buttons">
     <action name="action-timesheet-attrs-buttons"
-      if="__config__.app.getApp('timesheet').needValidation"/>
+      if="__config__.app.getApp('timesheet')?.needValidation"/>
     <action name="action-timesheet-attrs-need-validation-false"
-      if="!__config__.app.getApp('timesheet').needValidation"/>
+      if="!__config__.app.getApp('timesheet')?.needValidation"/>
     <action name="action-timesheet-attrs-product-visibility"/>
   </action-group>
 
   <action-attrs name="action-timesheet-attrs-buttons">
     <attribute name="hidden" for="validateBtn"
-      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="cancelBtn"
-      expr="eval: !(statusSelect == 1) &amp;&amp; !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+      expr="eval: !(statusSelect == 1) &amp;&amp; !((statusSelect == 2 || statusSelect == 3) &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
-      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager))"/>
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager))"/>
     <attribute name="readonly" for="headPanel"
-      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
+      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
     <attribute name="readonly" for="timesheetLineList"
-      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
+      expr="eval: (statusSelect == 2 &amp;&amp; !(__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null)|| __user__.employee?.hrManager)) || statusSelect &gt; 2"/>
     <attribute name="readonly" for="company" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="user" expr="eval: true"
+    <attribute name="readonly" for="employee" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
-    <attribute name="readonly" for="user" expr="eval: statusSelect &gt; 2"
+    <attribute name="readonly" for="employee" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-need-validation-false">
     <attribute name="hidden" for="completeBtn"
-      expr="eval: !(__user__ == user?.employee?.managerUser || (__user__ == user &amp;&amp; user?.employee?.managerUser == null) || __user__.employee?.hrManager) || isCompleted"/>
+      expr="eval: !(__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__.employee?.hrManager) || isCompleted"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-product-visibility">
@@ -486,7 +494,7 @@
 
   <action-attrs name="action-timesheet-attrs-from-date-on-new">
     <attribute name="readonly" for="fromDate"
-      expr="eval: __repo__(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
+      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne() != null"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-attrs-from-date">
@@ -500,29 +508,24 @@
 
   <action-attrs name="action-timesheet-attrs-panels">
     <attribute name="hidden" for="actionsPanel" expr="eval:id == null"
-      if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+      if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
     <attribute name="hidden" for="linesPanel" expr="eval:id == null"
-      if="__config__.app.getApp('timesheet').getTimesheetEditor()"/>
+      if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
   </action-attrs>
 
   <action-attrs name="action-timesheet-set-show-editor">
     <attribute name="value" for="showEditor" expr="eval:true"/>
   </action-attrs>
 
-
-  <action-attrs name="action-timesheet-attrs-set-user-domain">
-    <attribute name="domain" for="user" expr="eval: &quot;self.employee.&quot;"/>
-  </action-attrs>
-
   <action-attrs name="action-timesheet-attrs-enable-timesheet-manuforder">
     <attribute for="$enableTimesheetManufOrder" name="value"
-      expr="eval: __config__.app.getApp('production').getEnableTimesheetOnManufOrder()"/>
+      expr="eval: __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
   </action-attrs>
 
   <action-record name="action-timesheet-record-from-period-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="fromDate"
-      expr="eval: __repo__(Timesheet).all().filter('self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
+      expr="eval: __repo__(Timesheet).all().filter('self.employee.user.id = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC', __user__.id, TimesheetRepository.STATUS_CANCELED).fetchOne()?.toDate?.plusDays(1)"/>
   </action-record>
 
   <action-record name="action-timesheet-null-fromDate"
@@ -577,10 +580,6 @@
       method="editTimesheetSelected"/>
   </action-method>
 
-  <action-method name="action-print-timesheet">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="printTimesheet"/>
-  </action-method>
-
   <action-method name="action-timesheet-method-set-show-activity">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="setShowActivity"/>
   </action-method>
@@ -612,14 +611,15 @@
 
   <action-view name="action-timesheet-show-timesheet-line-editor"
     title="Timesheet lines">
-    <view type="html" name="hr/timesheet?timesheetId={{id}}&amp;showActivity={{$showActivity}}"/>
+    <view type="html"
+      name="hr/timesheet/?timesheetId={{id}}&amp;showActivity={{$showActivity}}&amp;dailyLimit={{$dailyLimit}}"/>
   </action-view>
 
   <action-view name="action-timesheet-see-timesheet-lines" title="See timesheet lines"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <view type="grid" name="timesheet-line-grid"/>
     <view type="form" name="timesheet-line-form"/>
-    <domain>self.timesheet.user = :user_id AND self.timesheet.company = :company_id</domain>
+    <domain>self.timesheet.employee.user.id = :user_id AND self.timesheet.company = :company_id</domain>
     <context name="user_id" expr="eval: user_id"/>
     <context name="company_id" expr="eval: company_id"/>
   </action-view>
@@ -639,21 +639,17 @@
       method="historicTimesheetLine"/>
   </action-method>
 
-  <action-attrs name="action-hr-attrs-set-user-domain">
-    <attribute for="user" name="domain"
+  <action-attrs name="action-hr-attrs-set-employee-domain">
+    <attribute for="$configDate" name="value" expr="eval: __config__.date"/>
+    <attribute for="employee" name="domain"
       if="company &amp;&amp; __user__?.employee?.hrManager"
-      expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId AND self.status != 3').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
-    <attribute for="user" name="domain"
+      expr="eval: &quot; (self.leavingDate is NULL OR self.leavingDate &gt; :$configDate) AND self.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId AND self.status != 3').bind('companyId', company.id).fetch().collect{it -> it?.employee?.id ?: 0}+[0]).join(',')}) &quot;"/>
+    <attribute for="employee" name="domain"
       if="company &amp;&amp; !__user__?.employee?.hrManager"
-      expr="eval: &quot; self.employee.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
-    <attribute for="user" name="domain" if="!company"
-      expr="eval: &quot; self.employee.id IN (0) &quot;"/>
+      expr="eval: &quot; (self.leavingDate is NULL OR self.leavingDate &gt; :$configDate) AND self.id IN (${(__repo__(EmploymentContract).all().filter('self.payCompany.id = :companyId').bind('companyId', company.id).fetch().collect{it -> it.employee}.findAll{it -> it?.managerUser?.id == __user__.id || it?.id == __user__?.employee?.id}.collect{it -> it.id}+[0]).join(',')}) &quot;"/>
+    <attribute for="employee" name="domain" if="!company"
+      expr="eval: &quot; self.id IN (0) &quot;"/>
   </action-attrs>
-
-  <action-record name="action-hr-record-empty-user"
-    model="com.axelor.apps.hr.db.Timesheet">
-    <field name="user" expr="eval: null"/>
-  </action-record>
 
   <action-condition name="action-hr-condition-automatic-from-generation-date">
     <check
@@ -675,10 +671,10 @@
   <search-filters name="timesheet-filters" model="com.axelor.apps.hr.db.Timesheet"
     title="Timesheet filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="showEditor" hidden="true"
-      if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet').getTimesheetEditor())"/>
-    <field name="user.employee.timesheetImputationSelect" hidden="true"
+      if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getTimesheetEditor())"/>
+    <field name="employee.timesheetImputationSelect" hidden="true"
       if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
     <field name="timesheetLineList" hidden="true"
       if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>

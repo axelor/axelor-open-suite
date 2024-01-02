@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,75 +14,68 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.web;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
-import com.axelor.apps.base.db.PrintingSettings;
-import com.axelor.apps.base.db.Wizard;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.exception.HandleExceptionResponse;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.ResponseMessageType;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.team.db.Team;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,35 +115,30 @@ public class SaleOrderController {
   }
 
   /**
-   * Method that print the sale order as a Pdf
+   * Print the sale order as a PDF.
    *
    * @param request
    * @param response
-   * @return
-   * @throws BirtException
-   * @throws IOException
    */
-  public void showSaleOrder(ActionRequest request, ActionResponse response) throws AxelorException {
-
+  public void showSaleOrder(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_PDF);
   }
 
-  /** Method that prints a proforma invoice as a PDF */
-  public void printProformaInvoice(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  /**
+   * Print a proforma invoice as a PDF.
+   *
+   * @param request
+   * @param response
+   */
+  public void printProformaInvoice(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, true, ReportSettings.FORMAT_PDF);
   }
 
-  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderExcel(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_XLSX);
   }
 
-  public void exportSaleOrderWord(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
+  public void exportSaleOrderWord(ActionRequest request, ActionResponse response) {
     this.exportSaleOrder(request, response, false, ReportSettings.FORMAT_DOC);
   }
 
@@ -189,7 +178,7 @@ public class SaleOrderController {
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.SALE_ORDER_PRINT));
+            I18n.get(SaleExceptionMessage.SALE_ORDER_PRINT));
       }
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {
@@ -207,7 +196,7 @@ public class SaleOrderController {
               saleOrder.getCancelReason(),
               saleOrder.getCancelReasonStr());
 
-      response.setFlash(I18n.get("The sale order was canceled"));
+      response.setInfo(I18n.get("The sale order was canceled"));
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -262,7 +251,7 @@ public class SaleOrderController {
     SaleOrder context = Beans.get(SaleOrderRepository.class).find(Long.valueOf(saleOrderId));
 
     response.setView(
-        ActionView.define("Sale order")
+        ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-form-wizard")
             .context("_idCopy", context.getId().toString())
@@ -276,7 +265,7 @@ public class SaleOrderController {
   public void generateViewTemplate(ActionRequest request, ActionResponse response) {
     SaleOrder context = request.getContext().asType(SaleOrder.class);
     response.setView(
-        ActionView.define("Template")
+        ActionView.define(I18n.get("Template"))
             .model(SaleOrder.class.getName())
             .add("form", "sale-order-template-form-wizard")
             .context("_idCopy", context.getId().toString())
@@ -288,7 +277,7 @@ public class SaleOrderController {
     Partner clientPartner = saleOrderTemplate.getClientPartner();
 
     response.setView(
-        ActionView.define("Create the quotation")
+        ActionView.define(I18n.get("Create the quotation"))
             .model(Wizard.class.getName())
             .add("form", "sale-order-template-wizard-form")
             .param("popup", "reload")
@@ -353,235 +342,6 @@ public class SaleOrderController {
     }
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public void mergeSaleOrder(ActionRequest request, ActionResponse response) {
-    List<SaleOrder> saleOrderList = new ArrayList<SaleOrder>();
-    List<Long> saleOrderIdList = new ArrayList<Long>();
-    boolean fromPopup = false;
-    String lineToMerge;
-    if (request.getContext().get("saleQuotationToMerge") != null) {
-      lineToMerge = "saleQuotationToMerge";
-    } else {
-      lineToMerge = "saleOrderToMerge";
-    }
-
-    if (request.getContext().get(lineToMerge) != null) {
-
-      if (request.getContext().get(lineToMerge) instanceof List) {
-        // No confirmation popup, sale orders are content in a parameter list
-        List<Map> saleOrderMap = (List<Map>) request.getContext().get(lineToMerge);
-        for (Map map : saleOrderMap) {
-          saleOrderIdList.add(new Long((Integer) map.get("id")));
-        }
-      } else {
-        // After confirmation popup, sale order's id are in a string separated by ","
-        String saleOrderIdListStr = (String) request.getContext().get(lineToMerge);
-        for (String saleOrderId : saleOrderIdListStr.split(",")) {
-          saleOrderIdList.add(new Long(saleOrderId));
-        }
-        fromPopup = true;
-      }
-    }
-
-    // Check if currency, clientPartner and company are the same for all selected sale orders
-    Currency commonCurrency = null;
-    Partner commonClientPartner = null;
-    Company commonCompany = null;
-    Partner commonContactPartner = null;
-    Team commonTeam = null;
-    TaxNumber commonTaxNumber = null;
-    // Useful to determine if a difference exists between tax number of all sale orders
-    boolean existTaxNumberDiff = false;
-    FiscalPosition commonFiscalPosition = null;
-    // Useful to determine if a difference exists between fiscal positions of all sale orders
-    boolean existFiscalPositionDiff = false;
-    // Useful to determine if a difference exists between teams of all sale orders
-    boolean existTeamDiff = false;
-    // Useful to determine if a difference exists between contact partners of all sale orders
-    boolean existContactPartnerDiff = false;
-    PriceList commonPriceList = null;
-    // Useful to determine if a difference exists between price lists of all sale orders
-    boolean existPriceListDiff = false;
-
-    SaleOrder saleOrderTemp;
-    int count = 1;
-    for (Long saleOrderId : saleOrderIdList) {
-      saleOrderTemp = JPA.em().find(SaleOrder.class, saleOrderId);
-      saleOrderList.add(saleOrderTemp);
-      if (count == 1) {
-        commonCurrency = saleOrderTemp.getCurrency();
-        commonClientPartner = saleOrderTemp.getClientPartner();
-        commonCompany = saleOrderTemp.getCompany();
-        commonContactPartner = saleOrderTemp.getContactPartner();
-        commonTeam = saleOrderTemp.getTeam();
-        commonPriceList = saleOrderTemp.getPriceList();
-        commonTaxNumber = saleOrderTemp.getTaxNumber();
-        commonFiscalPosition = saleOrderTemp.getFiscalPosition();
-      } else {
-        if (commonCurrency != null && !commonCurrency.equals(saleOrderTemp.getCurrency())) {
-          commonCurrency = null;
-        }
-        if (commonClientPartner != null
-            && !commonClientPartner.equals(saleOrderTemp.getClientPartner())) {
-          commonClientPartner = null;
-        }
-        if (commonCompany != null && !commonCompany.equals(saleOrderTemp.getCompany())) {
-          commonCompany = null;
-        }
-        if (commonContactPartner != null
-            && !commonContactPartner.equals(saleOrderTemp.getContactPartner())) {
-          commonContactPartner = null;
-          existContactPartnerDiff = true;
-        }
-        if (commonTeam != null && !commonTeam.equals(saleOrderTemp.getTeam())) {
-          commonTeam = null;
-          existTeamDiff = true;
-        }
-        if (commonPriceList != null && !commonPriceList.equals(saleOrderTemp.getPriceList())) {
-          commonPriceList = null;
-          existPriceListDiff = true;
-        }
-        if ((commonTaxNumber == null ^ saleOrderTemp.getTaxNumber() == null)
-            || (commonTaxNumber != saleOrderTemp.getTaxNumber()
-                && !commonTaxNumber.equals(saleOrderTemp.getTaxNumber()))) {
-          commonTaxNumber = null;
-          existTaxNumberDiff = true;
-        }
-        if ((commonFiscalPosition == null ^ saleOrderTemp.getFiscalPosition() == null)
-            || (commonFiscalPosition != saleOrderTemp.getFiscalPosition()
-                && !commonFiscalPosition.equals(saleOrderTemp.getFiscalPosition()))) {
-          commonFiscalPosition = null;
-          existFiscalPositionDiff = true;
-        }
-      }
-      count++;
-    }
-
-    StringBuilder fieldErrors = new StringBuilder();
-    if (commonCurrency == null) {
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CURRENCY));
-    }
-    if (commonClientPartner == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_CLIENT_PARTNER));
-    }
-    if (commonCompany == null) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(I18n.get(IExceptionMessage.SALE_ORDER_MERGE_ERROR_COMPANY));
-    }
-
-    if (existTaxNumberDiff) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage.SALE_ORDER_MERGE_ERROR_TAX_NUMBER));
-    }
-
-    if (existFiscalPositionDiff) {
-      if (fieldErrors.length() > 0) {
-        fieldErrors.append("<br/>");
-      }
-      fieldErrors.append(
-          I18n.get(
-              com.axelor.apps.sale.exception.IExceptionMessage
-                  .SALE_ORDER_MERGE_ERROR_FISCAL_POSITION));
-    }
-
-    if (fieldErrors.length() > 0) {
-      response.setFlash(fieldErrors.toString());
-      return;
-    }
-
-    // Check if priceList or contactPartner are content in parameters
-    if (request.getContext().get("priceList") != null) {
-      commonPriceList =
-          JPA.em()
-              .find(
-                  PriceList.class,
-                  new Long((Integer) ((Map) request.getContext().get("priceList")).get("id")));
-    }
-    if (request.getContext().get("contactPartner") != null) {
-      commonContactPartner =
-          JPA.em()
-              .find(
-                  Partner.class,
-                  new Long((Integer) ((Map) request.getContext().get("contactPartner")).get("id")));
-    }
-    if (request.getContext().get("team") != null) {
-      commonTeam =
-          JPA.em()
-              .find(
-                  Team.class,
-                  new Long((Integer) ((Map) request.getContext().get("team")).get("id")));
-    }
-
-    if (!fromPopup && (existContactPartnerDiff || existPriceListDiff || existTeamDiff)) {
-      // Need to display intermediate screen to select some values
-      ActionViewBuilder confirmView =
-          ActionView.define("Confirm merge sale order")
-              .model(Wizard.class.getName())
-              .add("form", "sale-order-merge-confirm-form")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("popup-save", "false")
-              .param("forceEdit", "true");
-
-      if (existPriceListDiff) {
-        confirmView.context("contextPriceListToCheck", "true");
-      }
-      if (existContactPartnerDiff) {
-        confirmView.context("contextContactPartnerToCheck", "true");
-        confirmView.context("contextPartnerId", commonClientPartner.getId().toString());
-      }
-      if (existTeamDiff) {
-        confirmView.context("contextTeamToCheck", "true");
-      }
-
-      confirmView.context(lineToMerge, Joiner.on(",").join(saleOrderIdList));
-
-      response.setView(confirmView.map());
-
-      return;
-    }
-
-    try {
-      SaleOrder saleOrder =
-          Beans.get(SaleOrderCreateService.class)
-              .mergeSaleOrders(
-                  saleOrderList,
-                  commonCurrency,
-                  commonClientPartner,
-                  commonCompany,
-                  commonContactPartner,
-                  commonPriceList,
-                  commonTeam,
-                  commonTaxNumber,
-                  commonFiscalPosition);
-      if (saleOrder != null) {
-        // Open the generated sale order in a new tab
-        response.setView(
-            ActionView.define("Sale order")
-                .model(SaleOrder.class.getName())
-                .add("grid", "sale-order-grid")
-                .add("form", "sale-order-form")
-                .param("search-filters", "sale-order-filters")
-                .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(saleOrder.getId()))
-                .map());
-        response.setCanClose(true);
-      }
-    } catch (Exception e) {
-      response.setFlash(e.getLocalizedMessage());
-    }
-  }
-
   /**
    * Set the address string with their values.
    *
@@ -631,7 +391,7 @@ public class SaleOrderController {
           Beans.get(SaleOrderService.class).enableEditOrder(saleOrder);
       response.setReload(true);
       if (checkAvailabiltyRequest) {
-        response.setNotify(I18n.get(IExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
+        response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_EDIT_ORDER_NOTIFY));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -651,30 +411,6 @@ public class SaleOrderController {
       SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderView.getId());
       Beans.get(SaleOrderService.class).validateChanges(saleOrder);
       response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  /**
-   * Called on printing settings select. Set the domain for {@link SaleOrder#printingSettings}
-   *
-   * @param request
-   * @param response
-   */
-  public void filterPrintingSettings(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      List<PrintingSettings> printingSettingsList =
-          Beans.get(TradingNameService.class)
-              .getPrintingSettingsList(saleOrder.getTradingName(), saleOrder.getCompany());
-      String domain =
-          String.format(
-              "self.id IN (%s)",
-              !printingSettingsList.isEmpty()
-                  ? StringTool.getIdListString(printingSettingsList)
-                  : "0");
-      response.setAttr("printingSettings", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -793,7 +529,9 @@ public class SaleOrderController {
           Beans.get(SaleOrderDomainService.class).getPartnerBaseDomain(saleOrder.getCompany());
 
       if (!(saleOrderLineList == null || saleOrderLineList.isEmpty())) {
-        domain = Beans.get(PricedOrderDomainService.class).getPartnerDomain(saleOrder, domain);
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(saleOrder, domain, PriceListRepository.TYPE_SALE);
       }
 
       response.setAttr("clientPartner", "domain", domain);
@@ -806,9 +544,9 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder.setSaleOrderLineList(
-          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
-      response.setValues(saleOrder);
+      List<SaleOrderLine> saleOrderLineList =
+          Beans.get(SaleOrderOnLineChangeService.class).handleComplementaryProducts(saleOrder);
+      response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -822,33 +560,34 @@ public class SaleOrderController {
       return;
     }
     try {
-      Beans.get(SaleOrderService.class).updateProductQtyWithPackHeaderQty(saleOrder);
+      Beans.get(SaleOrderOnLineChangeService.class).updateProductQtyWithPackHeaderQty(saleOrder);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
   }
 
-  public void seperateInNewQuotation(ActionRequest request, ActionResponse response)
+  @HandleExceptionResponse
+  public void separateInNewQuotation(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
     Set<Entry<String, Object>> contextEntry = request.getContext().entrySet();
-    Optional<Entry<String, Object>> SOLinesEntry =
+    Optional<Entry<String, Object>> saleOrderLineEntries =
         contextEntry.stream()
             .filter(entry -> entry.getKey().equals("saleOrderLineList"))
             .findFirst();
-    if (!SOLinesEntry.isPresent()) {
+    if (!saleOrderLineEntries.isPresent()) {
       return;
     }
 
-    Entry<String, Object> entry = SOLinesEntry.get();
+    Entry<String, Object> entry = saleOrderLineEntries.get();
     @SuppressWarnings("unchecked")
-    ArrayList<LinkedHashMap<String, Object>> SOLines =
+    ArrayList<LinkedHashMap<String, Object>> saleOrderLines =
         (ArrayList<LinkedHashMap<String, Object>>) entry.getValue();
 
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
-        Beans.get(SaleOrderService.class).seperateInNewQuotation(saleOrder, SOLines);
+        Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
@@ -894,8 +633,7 @@ public class SaleOrderController {
   /**
    * Called from sale order form view upon changing the fiscalPosition (directly or via changing the
    * taxNumber) Updates taxLine, taxEquiv and prices by calling {@link
-   * SaleOrderLineService#computeProductInformation(SaleOrderLine, SaleOrder)} and {@link
-   * SaleOrderLineService#computeValues(SaleOrder, SaleOrderLine)}.
+   * SaleOrderLineService#fillPrice(SaleOrderLine, SaleOrder)}.
    *
    * @param request
    * @param response
@@ -903,15 +641,81 @@ public class SaleOrderController {
   public void updateLinesAfterFiscalPositionChange(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
       if (saleOrder.getSaleOrderLineList() != null) {
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineService.updateLinesAfterFiscalPositionChange(saleOrder);
-        }
-        response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
+        Beans.get(SaleOrderLineService.class).updateLinesAfterFiscalPositionChange(saleOrder);
       }
+      response.setValue("saleOrderLineList", saleOrder.getSaleOrderLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void isIncotermRequired(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    response.setAttr(
+        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+  }
+
+  public void onLineChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+    response.setValues(saleOrder);
+    response.setAttr(
+        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+  }
+
+  public void createNewVersion(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    if (saleOrder.getSaleOrderLineList().isEmpty()) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_NO_DETAIL_LINE));
+    }
+    Beans.get(SaleOrderVersionService.class).createNewVersion(saleOrder);
+    response.setReload(true);
+  }
+
+  public void getLastVersion(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = saleOrder.getVersionNumber() - 1;
+    versionNumber =
+        Beans.get(SaleOrderVersionService.class)
+            .getCorrectedVersionNumber(saleOrder.getVersionNumber(), versionNumber);
+    response.setValue("$previousVersionNumber", versionNumber);
+    response.setAttr("pastVersionsPanel", "refresh", true);
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void getPreviousVersionNumberOnChange(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    versionNumber =
+        Beans.get(SaleOrderVersionService.class)
+            .getCorrectedVersionNumber(saleOrder.getVersionNumber(), versionNumber);
+    response.setValue("$previousVersionNumber", versionNumber);
+    response.setAttr("pastVersionsPanel", "refresh", true);
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void recoverVersion(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    boolean saveActualVersion = (Boolean) request.getContext().get("saveActualVersion");
+    if (Beans.get(SaleOrderVersionService.class)
+        .recoverVersion(saleOrder, versionNumber, saveActualVersion)) {
+      response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NEW_VERSION));
+    } else {
+      response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
+    }
+    response.setReload(true);
   }
 }

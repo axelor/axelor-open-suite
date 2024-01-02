@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.common.ObjectUtils;
+import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,7 +34,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateService {
+
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected MoveLineToolService moveLineToolService;
+  protected MoveToolService moveToolService;
+
+  @Inject
+  public MoveLineConsolidateServiceImpl(
+      MoveLineToolService moveLineToolService, MoveToolService moveToolService) {
+    this.moveLineToolService = moveLineToolService;
+    this.moveToolService = moveToolService;
+  }
 
   @Override
   public MoveLine findConsolidateMoveLine(
@@ -42,6 +58,14 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
         if (map.containsKey(keys)) {
 
           MoveLine moveLineIt = map.get(keys);
+
+          // Check cut off dates
+          if (moveLineToolService.isCutOffActive(moveLine)
+              && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+                  || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+            return null;
+          }
+
           int count = 0;
           if (moveLineIt.getAnalyticMoveLineList() == null
               && moveLine.getAnalyticMoveLineList() == null) {
@@ -56,23 +80,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
           if (list1.size() == list2.size()) {
             for (AnalyticMoveLine analyticDistributionLine : list2) {
               for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
-                if (analyticDistributionLine
-                        .getAnalyticAxis()
-                        .equals(analyticDistributionLineIt.getAnalyticAxis())
-                    && analyticDistributionLine
-                        .getAnalyticAccount()
-                        .equals(analyticDistributionLineIt.getAnalyticAccount())
-                    && analyticDistributionLine
-                        .getAccount()
-                        .equals(analyticDistributionLineIt.getAccount())
-                    && analyticDistributionLine
-                        .getPercentage()
-                        .equals(analyticDistributionLineIt.getPercentage())
-                    && ((analyticDistributionLine.getAnalyticJournal() == null
-                            && analyticDistributionLineIt.getAnalyticJournal() == null)
-                        || analyticDistributionLine
-                            .getAnalyticJournal()
-                            .equals(analyticDistributionLineIt.getAnalyticJournal()))) {
+                if (checkAnalyticDistributionLine(
+                    analyticDistributionLine, analyticDistributionLineIt)) {
                   copyList.remove(analyticDistributionLineIt);
                   count++;
                   break;
@@ -100,32 +109,44 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   @Override
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines) {
 
-    Map<List<Object>, MoveLine> map = new HashMap<List<Object>, MoveLine>();
+    Map<List<Object>, MoveLine> map = new HashMap<>();
     MoveLine consolidateMoveLine = null;
+    boolean haveHoldBack =
+        moveLines.stream()
+            .anyMatch(
+                ml ->
+                    ObjectUtils.notEmpty(ml.getMove().getPaymentCondition())
+                        && ml.getMove().getPaymentCondition().getPaymentConditionLineList().stream()
+                            .anyMatch(PaymentConditionLine::getIsHoldback));
 
     for (MoveLine moveLine : moveLines) {
 
-      List<Object> keys = new ArrayList<Object>();
+      List<Object> keys = new ArrayList<>();
 
       keys.add(moveLine.getAccount());
       keys.add(moveLine.getTaxLine());
       keys.add(moveLine.getAnalyticDistributionTemplate());
+      keys.add(moveLine.getCutOffStartDate());
+      keys.add(moveLine.getCutOffEndDate());
 
-      consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
+      if (!haveHoldBack) {
+        consolidateMoveLine = this.findConsolidateMoveLine(map, moveLine, keys);
+      }
+
       if (consolidateMoveLine != null) {
 
-        BigDecimal consolidateCurrencyAmount = BigDecimal.ZERO;
+        BigDecimal consolidateCurrencyAmount;
 
         log.debug(
             "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
             moveLine.getDebit(),
             moveLine.getCredit(),
-            moveLine.getCurrencyAmount());
+            moveLine.getCurrencyAmount().abs());
         log.debug(
             "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
             consolidateMoveLine.getDebit(),
             consolidateMoveLine.getCredit(),
-            consolidateMoveLine.getCurrencyAmount());
+            consolidateMoveLine.getCurrencyAmount().abs());
 
         if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
             != consolidateMoveLine
@@ -133,37 +154,33 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
                 .subtract(consolidateMoveLine.getCredit())
                 .compareTo(BigDecimal.ZERO)) {
           consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().subtract(moveLine.getCurrencyAmount());
+              consolidateMoveLine
+                  .getCurrencyAmount()
+                  .abs()
+                  .subtract(moveLine.getCurrencyAmount().abs());
         } else {
           consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().add(moveLine.getCurrencyAmount());
+              consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
         }
-        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount.abs());
+
         consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
         consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+
+        boolean isDebit =
+            consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
+
+        consolidateCurrencyAmount =
+            moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
+
+        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
 
         if (consolidateMoveLine.getAnalyticMoveLineList() != null
             && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
           for (AnalyticMoveLine analyticDistributionLine :
               consolidateMoveLine.getAnalyticMoveLineList()) {
             for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
-              if (analyticDistributionLine
-                      .getAnalyticAxis()
-                      .equals(analyticDistributionLineIt.getAnalyticAxis())
-                  && analyticDistributionLine
-                      .getAnalyticAccount()
-                      .equals(analyticDistributionLineIt.getAnalyticAccount())
-                  && analyticDistributionLine
-                      .getAccount()
-                      .equals(analyticDistributionLineIt.getAccount())
-                  && analyticDistributionLine
-                      .getPercentage()
-                      .equals(analyticDistributionLineIt.getPercentage())
-                  && ((analyticDistributionLine.getAnalyticJournal() == null
-                          && analyticDistributionLineIt.getAnalyticJournal() == null)
-                      || analyticDistributionLine
-                          .getAnalyticJournal()
-                          .equals(analyticDistributionLineIt.getAnalyticJournal()))) {
+              if (checkAnalyticDistributionLine(
+                  analyticDistributionLine, analyticDistributionLineIt)) {
                 analyticDistributionLine.setAmount(
                     analyticDistributionLine
                         .getAmount()
@@ -178,8 +195,7 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       }
     }
 
-    BigDecimal credit = null;
-    BigDecimal debit = null;
+    BigDecimal credit, debit;
 
     int moveLineId = 1;
     moveLines.clear();
@@ -189,28 +205,54 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
       credit = moveLine.getCredit();
       debit = moveLine.getDebit();
 
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().abs());
+      boolean isDebit = debit.compareTo(credit) > 0;
+      moveLine.setCurrencyAmount(
+          moveToolService.computeCurrencyAmountSign(moveLine.getCurrencyAmount(), isDebit));
 
-      if (debit.compareTo(BigDecimal.ZERO) == 1 && credit.compareTo(BigDecimal.ZERO) == 1) {
+      if (debit.compareTo(BigDecimal.ZERO) > 0 && credit.compareTo(BigDecimal.ZERO) > 0) {
 
-        if (debit.compareTo(credit) == 1) {
+        if (debit.compareTo(credit) > 0) {
           moveLine.setDebit(debit.subtract(credit));
           moveLine.setCredit(BigDecimal.ZERO);
           moveLine.setCounter(moveLineId++);
           moveLines.add(moveLine);
-        } else if (credit.compareTo(debit) == 1) {
+        } else if (credit.compareTo(debit) > 0) {
           moveLine.setCredit(credit.subtract(debit));
           moveLine.setDebit(BigDecimal.ZERO);
           moveLine.setCounter(moveLineId++);
           moveLines.add(moveLine);
         }
 
-      } else if (debit.compareTo(BigDecimal.ZERO) == 1 || credit.compareTo(BigDecimal.ZERO) == 1) {
+      } else if (debit.compareTo(BigDecimal.ZERO) > 0 || credit.compareTo(BigDecimal.ZERO) > 0) {
         moveLine.setCounter(moveLineId++);
         moveLines.add(moveLine);
       }
     }
 
     return moveLines;
+  }
+
+  protected boolean checkAnalyticDistributionLine(
+      AnalyticMoveLine analyticDistributionLine, AnalyticMoveLine analyticDistributionLineIt) {
+    return analyticDistributionLine.getAnalyticAxis() != null
+        && analyticDistributionLine
+            .getAnalyticAxis()
+            .equals(analyticDistributionLineIt.getAnalyticAxis())
+        && analyticDistributionLine.getAnalyticAccount() != null
+        && analyticDistributionLine
+            .getAnalyticAccount()
+            .equals(analyticDistributionLineIt.getAnalyticAccount())
+        && analyticDistributionLine.getAccount() != null
+        && analyticDistributionLine.getAccount().equals(analyticDistributionLineIt.getAccount())
+        && analyticDistributionLine.getPercentage() != null
+        && analyticDistributionLine
+            .getPercentage()
+            .equals(analyticDistributionLineIt.getPercentage())
+        && ((analyticDistributionLine.getAnalyticJournal() == null
+                && analyticDistributionLineIt.getAnalyticJournal() == null)
+            || (analyticDistributionLine.getAnalyticJournal() != null
+                && analyticDistributionLine
+                    .getAnalyticJournal()
+                    .equals(analyticDistributionLineIt.getAnalyticJournal())));
   }
 }

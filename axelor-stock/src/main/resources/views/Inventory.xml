@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -11,14 +11,14 @@
     <field name="plannedStartDateT"/>
     <field name="plannedEndDateT"/>
     <field name="statusSelect"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory"
     width="large" onNew="action-inventory-record-new">
     <menubar>
       <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-        <item name="showStockMoveItem" action="action-inventory-method-show-stockmoves"
+        <item name="showStockMoveItem" action="save,action-inventory-method-show-stockmoves"
           title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
       </menu>
     </menubar>
@@ -191,7 +191,7 @@
     <field name="formatSelect" expr="pdf"/>
     <field name="stockLocation" expr="eval:_location"/>
     <field name="company"
-      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
+      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company :__user__.activeCompany"/>
   </action-record>
 
   <action-method name="action-inventory-method-show-inventory">
@@ -281,7 +281,7 @@
   <search-filters name="inventories-filters"
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>

@@ -1,17 +1,18 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Project">
 
     <string name="name"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <string name="description" multiline="true" large="true"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>
     <one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project"
-      title="Child Projects" mappedBy="parentProject"/>
+      title="Sub-Projects" mappedBy="parentProject"/>
     <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
     <many-to-one name="projectStatus" title="Status"
       ref="com.axelor.apps.project.db.ProjectStatus"/>
@@ -41,13 +42,11 @@
 
     <decimal name="estimatedTimeHrs" title="Estimated time (in hours)"/>
 
-    <decimal name="timeSpent" title="Time Spent"/>
-
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
 
-    <boolean name="imputable" default="true" massUpdate="true"
-      help="If this option is disabled this project cannot be selected on a timesheet."/>
+    <boolean name="imputable" title="Imputable to HR timesheets" default="true"
+      massUpdate="true"/>
 
     <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project"
       title="Finish tasks to start"/>
@@ -61,11 +60,9 @@
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>
 
-    <boolean name="excludePlanning" title="Exclude planning"/>
-
     <string name="fullName" namecolumn="true" title="Name"/>
 
-    <boolean name="isShowPhasesElements" title="Show phases elements" default="true"/>
+    <boolean name="isShowPhasesElements" title="Show sub-projects"/>
     <enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine"
       default="BUSINESS_PROJECT"/>
     <integer name="nextProjectTaskSequence" title="Next project sequence" hidden="true"
@@ -74,16 +71,16 @@
     <!-- Configuration fields -->
     <boolean name="isShowStatus" title="Status?" default="true"/>
     <many-to-many name="projectTaskStatusSet"
-      ref="com.axelor.apps.project.db.ProjectStatus" title="Type of authorized status"/>
+      ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
     <boolean name="isShowPriority" title="Priorities?" default="true"/>
     <many-to-many name="projectTaskPrioritySet"
       ref="com.axelor.apps.project.db.ProjectPriority" title="Type of authorized priorities"/>
     <boolean name="isShowTaskCategory" title="Categories?" default="true"/>
     <many-to-many name="projectTaskCategorySet"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Type of authorized categories"/>
-    <boolean name="isShowProgress" title="Progress?" default="true"/>
-    <boolean name="isShowPlanning" title="Planning?" default="true"/>
-    <boolean name="isShowFrequency" title="Frequency?"/>
+    <boolean name="isShowProgress" title="Task progress" default="true"/>
+    <boolean name="isShowPlanning" title="Task planning" default="true"/>
+    <boolean name="isShowFrequency" title="Task recurrence"/>
     <boolean name="isShowTimeSpent" title="Time Spent?"/>
     <boolean name="isShowSection" title="Section?" default="true"/>
     <boolean name="isShowTopic" title="Topic?"/>

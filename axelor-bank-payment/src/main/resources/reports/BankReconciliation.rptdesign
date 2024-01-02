@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -53,6 +53,32 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
+        <scalar-parameter name="BankReconciliationFromDate" id="11">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
+        <scalar-parameter name="BankReconciliationToDate" id="12">
+            <property name="valueType">static</property>
+            <property name="isRequired">true</property>
+            <property name="dataType">date</property>
+            <property name="distinct">true</property>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="concealValue">false</property>
+            <property name="controlType">text-box</property>
+            <structure name="format">
+                <property name="category">Unformatted</property>
+            </structure>
+        </scalar-parameter>
         <scalar-parameter name="Locale" id="5">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
@@ -74,7 +100,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -88,9 +114,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -232,8 +255,8 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
 where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -328,6 +351,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">account</text-property>
                     <text-property name="heading">account</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">corrected_date_time</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">corrected_date_time</text-property>
+                    <text-property name="heading">corrected_date_time</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">corrected_user_full_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">corrected_user_full_name</text-property>
+                    <text-property name="heading">corrected_user_full_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">comments</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">comments</text-property>
+                    <text-property name="heading">comments</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -388,6 +429,21 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <property name="name">account</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">10</property>
+                        <property name="name">corrected_date_time</property>
+                        <property name="dataType">date-time</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">corrected_user_full_name</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">comments</property>
+                        <property name="dataType">string</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -397,75 +453,87 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
-                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date-time</property>
-                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">journal</property>
                     <property name="nativeName">journal</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">cash_account</property>
                     <property name="nativeName">cash_account</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">account</property>
                     <property name="nativeName">account</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
+                    <property name="name">corrected_date_time</property>
+                    <property name="nativeName">corrected_date_time</property>
+                    <property name="dataType">date-time</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">corrected_user_full_name</property>
+                    <property name="nativeName">corrected_user_full_name</property>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">comments</property>
+                    <property name="nativeName">comments</property>
+                    <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
+            <xml-property name="queryText"><![CDATA[SELECT
 company.name AS company,
 company.height as logo_height,
 company.width as logo_width,
 bankReconciliation.created_on AS report_date ,
-currency.code AS currency ,  
-journal.name AS journal , 
-concat( account.code  ,' - ' , account.name) AS cash_account , 
+currency.code AS currency ,
+journal.name AS journal ,
+concat( account.code  ,' - ' , account.name) AS cash_account ,
 metaFile.file_path AS logo_path ,
-bankDetails.full_name AS account 
+bankDetails.full_name AS account,
+bankReconciliation.corrected_date_time as corrected_date_time,
+AuthUser.full_name as corrected_user_full_name,
+bankReconciliation.comments as comments
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.base_company AS company ON company.id = bankReconciliation.company
 LEFT JOIN public.base_currency AS currency ON currency.id = bankReconciliation.currency
@@ -473,6 +541,7 @@ LEFT JOIN public.account_journal AS journal ON journal.id = bankReconciliation.j
 LEFT JOIN public.account_account AS account ON account.id = bankReconciliation.cash_account
 LEFT JOIN public.base_bank_details AS bankDetails ON bankDetails.id = bankReconciliation.bank_details
 LEFT JOIN public.meta_file AS metaFile ON (metaFile.id = company.logo)
+LEFT JOIN public.auth_user as AuthUser on (bankReconciliation.corrected_user = AuthUser.id)
 WHERE bankReconciliation.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -805,27 +874,27 @@ WHERE bankReconciliation.id = ?]]></xml-property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankStatement.name AS code , 
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-bankReconciliationLine.debit AS debit , 
-bankReconciliationLine.credit AS credit , 
-(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankStatement.name AS code ,
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+bankReconciliationLine.name AS name ,
+bankReconciliationLine.type_select  AS type ,
+bankReconciliationLine.debit AS debit ,
+bankReconciliationLine.credit AS credit ,
+(bankReconciliationLine.credit - bankReconciliationLine.debit) AS amount ,
 (SUM(bankStatementLine.credit) - SUM(bankStatementLine.debit)) AS account_balance
 FROM public.bankpayment_bank_reconciliation AS bankReconciliation
 LEFT JOIN public.bankpayment_bank_statement_line AS bankStatementLine ON bankStatementLine.bank_statement = bankReconciliation.bank_statement
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation
 LEFT JOIN public.bankpayment_bank_statement AS bankStatement ON bankReconciliation.bank_statement = bankStatement.id
 WHERE bankReconciliation.id = ?
-GROUP BY bankStatement.name , 
-bankReconciliation.to_date , 
-bankReconciliationLine.reference , 
-bankReconciliationLine.name , 
-bankReconciliationLine.type_select , 
-bankReconciliationLine.debit , 
+GROUP BY bankStatement.name ,
+bankReconciliation.to_date ,
+bankReconciliationLine.reference ,
+bankReconciliationLine.name ,
+bankReconciliationLine.type_select ,
+bankReconciliationLine.debit ,
 bankReconciliationLine.credit ;]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineDS" id="5284">
@@ -879,6 +948,12 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <text-property name="heading">credit</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">currency_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">currency_amount</text-property>
+                    <text-property name="heading">currency_amount</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">amount</property>
                     <property name="analysis">measure</property>
                     <text-property name="displayName">amount</text-property>
@@ -893,6 +968,46 @@ bankReconciliationLine.credit ;]]></xml-property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">-5</property>
                     <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">BankReconciliationFromDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">BankReconciliationFromDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">3</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">BankReconciliationToDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">4</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">BankReconciliationToDate</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
+                    <property name="position">5</property>
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
@@ -941,6 +1056,11 @@ bankReconciliationLine.credit ;]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
+                        <property name="name">currency_amount</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">10</property>
                         <property name="name">amount</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -1006,27 +1126,44 @@ bankReconciliationLine.credit ;]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
+                    <property name="name">currency_amount</property>
+                    <property name="nativeName">currency_amount</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
+                <structure>
+                    <property name="position">10</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
-bankReconciliation.account_balance AS account_balance , 
-moveLine.name AS code , 
-bankReconciliation.to_date AS to_date , 
-bankReconciliationLine.reference AS reference , 
-bankReconciliationLine.name AS name , 
-bankReconciliationLine.type_select  AS type , 
-moveLine.debit AS debit , 
+            <xml-property name="queryText"><![CDATA[SELECT
+bankReconciliation.account_balance AS account_balance ,
+moveLine.name AS code ,
+bankReconciliation.to_date AS to_date ,
+bankReconciliationLine.reference AS reference ,
+moveLine.description AS name ,
+bankReconciliationLine.type_select  AS type ,
+moveLine.debit AS debit ,
 moveLine.credit AS credit ,
+moveLine.currency_amount AS currency_amount,
 (moveLine.credit - moveLine.debit) AS amount
 FROM public.account_move_line AS moveLine
 LEFT JOIN public.account_move AS move ON moveLine.move=move.id
-LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON move.journal=bankReconciliation.journal AND moveLine.account=bankReconciliation.cash_account
+LEFT JOIN public.bankpayment_bank_reconciliation AS bankReconciliation ON (bankReconciliation.journal IS null OR move.journal=bankReconciliation.journal) AND (bankReconciliation.cash_account IS null OR moveLine.account=bankReconciliation.cash_account) AND move.company=bankReconciliation.company
 LEFT JOIN public.bankpayment_bank_reconciliation_line AS bankReconciliationLine ON bankReconciliation.id = bankReconciliationLine.bank_reconciliation AND bankReconciliationLine.move_line=moveLine.id
-WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit))
+LEFT JOIN public.base_company AS company ON bankReconciliation.company = company.id
+LEFT JOIN public.account_account AS account ON moveLine.account = account.id
+LEFT JOIN public.account_account_type AS accountType ON account.account_type = accountType.id
+WHERE bankReconciliation.id = ?
+AND accountType.technical_type_select = 'cash'
+AND (move.status_select = 2 OR move.status_select = 3)
+AND (company.currency = bankReconciliation.currency AND ((moveLine.debit > 0 AND moveLine.bank_reconciled_amount < moveLine.debit) OR (moveLine.credit > 0 AND moveLine.bank_reconciled_amount < moveLine.credit)) OR (company.currency != bankReconciliation.currency AND abs(moveLine.currency_amount) > 0 AND moveLine.bank_reconciled_amount < abs(moveLine.currency_amount)))
+AND (bankReconciliation.include_other_bank_statements IS true
+OR ((moveLine.date_val >= ? OR moveLine.due_date >= ?)
+AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1214,6 +1351,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
             <property name="headerHeight">0in</property>
+            <property name="footerHeight">0.5in</property>
             <page-header>
                 <grid id="3809">
                     <column id="3810">
@@ -1304,7 +1442,20 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
-                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">corrected_date_time</property>
+                            <text-property name="displayName">corrected_date_time</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["corrected_date_time"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">corrected_user_full_name</property>
+                            <text-property name="displayName">corrected_user_full_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["corrected_user_full_name"]</expression>
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
@@ -1312,27 +1463,32 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     <column id="6199">
                         <property name="suppressDuplicates">true</property>
                         <property name="textAlign">center</property>
-                        <property name="width">18.469cm</property>
+                        <property name="width">12.469cm</property>
+                    </column>
+                    <column id="6423">
+                        <property name="suppressDuplicates">true</property>
+                        <property name="textAlign">right</property>
+                        <property name="width">3.5in</property>
                     </column>
                     <column id="6200">
                         <property name="suppressDuplicates">true</property>
                         <property name="textAlign">right</property>
-                        <property name="width">1.5in</property>
+                        <property name="width">0.7in</property>
                     </column>
                     <column id="6201">
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">6%</property>
+                        <property name="width">3%</property>
                     </column>
                     <column id="6202">
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">3%</property>
+                        <property name="width">1.5%</property>
                     </column>
                     <column id="6203">
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">6%</property>
+                        <property name="width">3%</property>
                     </column>
                     <row id="6204">
                         <property name="height">0.026458333333333334cm</property>
@@ -1343,6 +1499,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">center</property>
                         </cell>
+                        <cell id="6421"/>
                         <cell id="6206"/>
                         <cell id="6207"/>
                         <cell id="6208"/>
@@ -1358,28 +1515,126 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <property name="borderRightStyle">none</property>
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">left</property>
+                            <image id="6890">
+                                <expression name="altText">""</expression>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
+                        </cell>
+                        <cell id="6422">
                             <property name="verticalAlign">middle</property>
-                            <text id="6409">
-                                <property name="fontSize">8pt</property>
+                            <text id="7712">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="marginTop">2pt</property>
+                                <property name="marginBottom">2pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                        <expression name="valueExpr" type="javascript">row._outer["corrected_date_time"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'BankReconciliationStatementNew.correctedDateTimeLabel'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
                                     </structure>
                                 </list-property>
                                 <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                             </text>
+                            <data id="7720">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="display">inline</property>
+                                <property name="resultSetColumn">corrected_date_time</property>
+                            </data>
+                            <text id="7718">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="marginTop">2pt</property>
+                                <property name="marginBottom">2pt</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["corrected_date_time"] == null || row._outer["corrected_user_full_name"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'BankReconciliationStatementNew.correctedUserLabel'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                            <data id="7721">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="display">inline</property>
+                                <property name="resultSetColumn">corrected_user_full_name</property>
+                            </data>
                         </cell>
                         <cell id="6213">
                             <property name="verticalAlign">middle</property>
                             <data id="6414">
+                                <property name="fontFamily">sans-serif</property>
                                 <property name="fontSize">9pt</property>
                                 <structure name="dateTimeFormat">
                                     <property name="category">Short Date</property>
@@ -1418,6 +1673,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
             <property name="type">a4</property>
             <property name="orientation">landscape</property>
             <property name="headerHeight">0in</property>
+            <property name="footerHeight">0.5in</property>
             <page-footer>
                 <grid id="6047">
                     <property name="height">0.625in</property>
@@ -1466,12 +1722,50 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <expression name="expression" type="javascript">dataSetRow["account"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">corrected_date_time</property>
+                            <text-property name="displayName">corrected_date_time</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["corrected_date_time"]</expression>
+                            <property name="dataType">date-time</property>
+                        </structure>
+                        <structure>
+                            <property name="name">corrected_user_full_name</property>
+                            <text-property name="displayName">corrected_user_full_name</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["corrected_user_full_name"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_height</property>
+                            <text-property name="displayName">logo_height</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_width</property>
+                            <text-property name="displayName">logo_width</text-property>
+                            <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'154px'}</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">comments</property>
+                            <text-property name="displayName">comments</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
                     </list-property>
                     <column id="6048">
                         <property name="suppressDuplicates">true</property>
                         <property name="textAlign">center</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">18.469cm</property>
+                        <property name="width">10.469cm</property>
+                    </column>
+                    <column id="7749">
+                        <property name="suppressDuplicates">true</property>
+                        <property name="textAlign">right</property>
+                        <property name="verticalAlign">middle</property>
+                        <property name="width">3.5in</property>
                     </column>
                     <column id="6049">
                         <property name="suppressDuplicates">true</property>
@@ -1482,17 +1776,17 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     <column id="6050">
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">6%</property>
+                        <property name="width">3%</property>
                     </column>
                     <column id="6143">
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">3%</property>
+                        <property name="width">1.5%</property>
                     </column>
                     <column id="6146">
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
-                        <property name="width">6%</property>
+                        <property name="width">3%</property>
                     </column>
                     <row id="6051">
                         <property name="height">0.026458333333333334cm</property>
@@ -1503,6 +1797,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <property name="borderTopStyle">none</property>
                             <property name="textAlign">center</property>
                         </cell>
+                        <cell id="7747"/>
                         <cell id="6053"/>
                         <cell id="6054"/>
                         <cell id="6141"/>
@@ -1520,59 +1815,121 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <property name="textAlign">left</property>
                             <image id="6057">
                                 <property name="overflow">hidden</property>
-                                <property name="height">35px</property>
-                                <property name="width">154px</property>
-                                <property name="dataSet">BankReconciliationDS</property>
-                                <list-property name="boundDataColumns">
-                                    <structure>
-                                        <property name="name">company</property>
-                                        <text-property name="displayName">company</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["company"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">report_date</property>
-                                        <text-property name="displayName">report_date</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["report_date"]</expression>
-                                        <property name="dataType">date-time</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">currency</property>
-                                        <text-property name="displayName">currency</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">journal</property>
-                                        <text-property name="displayName">journal</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["journal"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">cash_account</property>
-                                        <text-property name="displayName">cash_account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                    <structure>
-                                        <property name="name">account</property>
-                                        <text-property name="displayName">account</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["account"]</expression>
-                                        <property name="dataType">string</property>
-                                    </structure>
-                                </list-property>
+                                <expression name="altText">""</expression>
                                 <structure name="toc"/>
+                                <method name="onCreate"><![CDATA[this.width = row["logo_width"];
+this.height = row["logo_height"];]]></method>
                                 <property name="source">file</property>
                                 <property name="proportionalScale">true</property>
                                 <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
-                                <expression name="altText">""</expression>
                             </image>
+                        </cell>
+                        <cell id="7748">
+                            <text id="7750">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="marginTop">2pt</property>
+                                <property name="marginBottom">2pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["corrected_date_time"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'BankReconciliationStatementNew.correctedDateTimeLabel'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                            <data id="7751">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="display">inline</property>
+                                <property name="resultSetColumn">corrected_date_time</property>
+                            </data>
+                            <text id="7752">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="borderBottomStyle">none</property>
+                                <property name="borderLeftStyle">none</property>
+                                <property name="borderRightStyle">none</property>
+                                <property name="borderTopStyle">none</property>
+                                <property name="marginTop">2pt</property>
+                                <property name="marginBottom">2pt</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="textAlign">left</property>
+                                <property name="display">inline</property>
+                                <property name="dataSet">TranslateDS</property>
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">row._outer["corrected_date_time"] == null || row._outer["corrected_user_full_name"] == null</expression>
+                                    </structure>
+                                </list-property>
+                                <list-property name="paramBindings">
+                                    <structure>
+                                        <property name="paramName">param_1</property>
+                                        <simple-property-list name="expression">
+                                            <value type="javascript">'BankReconciliationStatementNew.correctedUserLabel'</value>
+                                        </simple-property-list>
+                                    </structure>
+                                </list-property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">message_key</property>
+                                        <text-property name="displayName">message_key</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                    <structure>
+                                        <property name="name">translation</property>
+                                        <text-property name="displayName">translation</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                        <property name="dataType">string</property>
+                                    </structure>
+                                </list-property>
+                                <property name="contentType">html</property>
+                                <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                            </text>
+                            <data id="7755">
+                                <property name="fontFamily">sans-serif</property>
+                                <property name="fontSize">9pt</property>
+                                <property name="fontWeight">bold</property>
+                                <property name="paddingLeft">2pt</property>
+                                <property name="display">inline</property>
+                                <property name="resultSetColumn">corrected_user_full_name</property>
+                            </data>
                         </cell>
                         <cell id="6058">
                             <text id="6059">
@@ -1657,6 +2014,12 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     <property name="name">account</property>
                     <text-property name="displayName">account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["account"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">comments</property>
+                    <text-property name="displayName">comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -2080,14 +2443,26 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <structure>
                                 <property name="name">debit</property>
                                 <text-property name="displayName">debit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["debit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["debit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">credit</property>
                                 <text-property name="displayName">credit</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["credit"]</expression>
+                                <expression name="expression" type="javascript">if(dataSetRow["credit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                 <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
                             </structure>
                             <structure>
                                 <property name="name">sum_debit</property>
@@ -2102,7 +2477,12 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["debit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["debit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["debit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2114,7 +2494,12 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["credit"]</expression>
+                                        <expression name="value" type="javascript">if(dataSetRow["credit"] > 0){
+	Math.abs(row["currency_amount"]);
+}
+else{
+	dataSetRow["credit"];
+}</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
@@ -2138,10 +2523,16 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                 <list-property name="arguments">
                                     <structure>
                                         <property name="name">Expression</property>
-                                        <expression name="value" type="javascript">row["amount"]</expression>
+                                        <expression name="value" type="javascript">row["currency_amount"]</expression>
                                     </structure>
                                 </list-property>
                                 <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">currency_amount</property>
+                                <text-property name="displayName">currency_amount</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["currency_amount"]</expression>
+                                <property name="dataType">decimal</property>
                             </structure>
                         </list-property>
                         <column id="4751">
@@ -2154,7 +2545,6 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                             <property name="width">1.375in</property>
                         </column>
                         <column id="4754">
-                            <property name="suppressDuplicates">true</property>
                             <property name="width">3.5in</property>
                         </column>
                         <column id="4755">
@@ -2605,7 +2995,7 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                                         <property name="fontFamily">sans-serif</property>
                                         <property name="textAlign">right</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["amount"]</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["currency_amount"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
@@ -2748,6 +3138,68 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     </table>
                 </cell>
             </row>
+            <row id="7722">
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <property name="height">0.271in</property>
+                <cell id="7723">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <text id="7734">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["comments"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BankReconciliationStatementNew.comment'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <data id="7735">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="paddingLeft">2pt</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">comments</property>
+                    </data>
+                </cell>
+                <cell id="7727"/>
+                <cell id="7728"/>
+                <cell id="7729"/>
+            </row>
         </grid>
         <grid id="5140">
             <property name="fontSize">8pt</property>
@@ -2798,6 +3250,12 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                     <property name="name">account</property>
                     <text-property name="displayName">account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["account"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">comments</property>
+                    <text-property name="displayName">comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
@@ -3849,6 +4307,68 @@ WHERE bankReconciliation.id = ? AND ((moveLine.debit > 0 AND moveLine.bank_recon
                         </footer>
                     </table>
                 </cell>
+            </row>
+            <row id="7736">
+                <property name="pageBreakAfter">auto</property>
+                <property name="pageBreakBefore">auto</property>
+                <property name="pageBreakInside">auto</property>
+                <property name="height">0.271in</property>
+                <cell id="7737">
+                    <property name="colSpan">4</property>
+                    <property name="rowSpan">1</property>
+                    <text id="7744">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="fontSize">8pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="fontStyle">normal</property>
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">inline</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">row._outer["comments"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'BankReconciliationStatementNew.comment'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
+                    <data id="7746">
+                        <property name="fontFamily">sans-serif</property>
+                        <property name="paddingLeft">2pt</property>
+                        <property name="display">inline</property>
+                        <property name="resultSetColumn">comments</property>
+                    </data>
+                </cell>
+                <cell id="7741"/>
+                <cell id="7742"/>
+                <cell id="7743"/>
             </row>
         </grid>
     </body>

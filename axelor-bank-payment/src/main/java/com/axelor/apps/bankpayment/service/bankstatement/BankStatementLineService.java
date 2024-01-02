@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,40 +14,46 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankstatement;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
-import com.axelor.apps.bankpayment.report.IReport;
+import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Currency;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class BankStatementLineService {
 
   protected BankPaymentBankStatementLineAFB120Repository
       bankPaymentBankStatementLineAFB120Repository;
+  protected BankPaymentConfigService bankPaymentConfigService;
+  protected BirtTemplateService birtTemplateService;
 
   @Inject
   public BankStatementLineService(
-      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository) {
+      BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
+      BankPaymentConfigService bankPaymentConfigService,
+      BirtTemplateService birtTemplateService) {
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
+    this.bankPaymentConfigService = bankPaymentConfigService;
+    this.birtTemplateService = birtTemplateService;
   }
 
   public BankStatementLine createBankStatementLine(
@@ -107,19 +114,19 @@ public class BankStatementLineService {
             bankDetails);
     if (ObjectUtils.notEmpty(initalBankStatementLine)
         && ObjectUtils.notEmpty(finalBankStatementLine)) {
+      BirtTemplate bankStatementLinesBirtTemplate =
+          bankPaymentConfigService.getBankStatementLineBirtTemplate(bankDetails.getCompany());
       fromDate = initalBankStatementLine.getOperationDate();
       toDate = finalBankStatementLine.getOperationDate();
+
       fileLink =
-          ReportFactory.createReport(
-                  IReport.BANK_STATEMENT_LINES,
-                  "Bank statement lines - " + fromDate + " to " + toDate)
-              .addParam("FromDate", Date.valueOf(fromDate))
-              .addParam("ToDate", Date.valueOf(toDate))
-              .addParam("BankDetails", bankDetails.getId())
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat(exportType)
-              .generate()
-              .getFileLink();
+          birtTemplateService.generateBirtTemplateLink(
+              bankStatementLinesBirtTemplate,
+              null,
+              Map.of("FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId()),
+              "Bank statement lines - " + fromDate + " to " + toDate,
+              bankStatementLinesBirtTemplate.getAttach(),
+              exportType);
     }
     return fileLink;
   }

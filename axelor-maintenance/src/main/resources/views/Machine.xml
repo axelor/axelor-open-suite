@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form id="maintenance-machine-form" name="machine-form" title="Machine"
-    model="com.axelor.apps.production.db.Machine" width="large" extension="true">
-    <panel-dashlet action="dashlet.maintenance.machine.maintenance.requests"
-      showIf="id != null"/>
+  <form name="maintenance-machine-form" title="Machine"
+    model="com.axelor.apps.production.db.Machine" width="large"
+    onLoad="action-record-machine-set-operating-duration">
+    <panel-include view="machine-form"/>
+    <panel-dashlet showIf="id != null"
+      action="dashlet.maintenance.machine.maintenance.requests"/>
   </form>
 
   <action-view name="dashlet.maintenance.machine.maintenance.requests"
@@ -16,7 +18,7 @@
     <view type="calendar" name="maintenance-request-calendar-per-user"/>
     <view type="form" name="maintenance-request-form"/>
     <domain>self.equipementMaintenance.machine.id = :id</domain>
-    <context name="_todayDate" expr="eval:__config__.app.getTodayDate()"/>
+    <context name="_todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 </object-views>

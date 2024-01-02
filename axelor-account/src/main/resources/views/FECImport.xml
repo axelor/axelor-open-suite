@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="fec-import-grid" title="FEC import" model="com.axelor.apps.account.db.FECImport">
     <field name="name"/>
@@ -19,7 +19,8 @@
         onSelect="action-fec-import-attr-set-data-meta-file-domain"
         onChange="action-groupd-account-fec-import-set-company-on-change" canNew="true"
         form-view="meta-files-form" grid-view="meta-files-grid"/>
-      <field name="importFECType"/>
+      <field name="importFECType"
+        onChange="action-fec-import-record-set-valid-generated-move-on-change"/>
       <field name="validGeneratedMove"/>
       <field name="moveDescription"/>
       <field name="company"/>
@@ -67,7 +68,7 @@
   </action-validate>
 
   <action-view name="action-view-account-fec-import-anomalies-panel-dashlet"
-    title="Anomalies" model="com.axelor.exception.db.TraceBack">
+    title="Anomalies" model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-lite-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.refId = :id AND self.ref = 'com.axelor.apps.account.db.FECImport'</domain>
@@ -81,5 +82,10 @@
     <context name="fecImport" expr="eval: __this__"/>
 
   </action-view>
+
+  <action-record name="action-fec-import-record-set-valid-generated-move-on-change"
+    model="com.axelor.apps.account.db.FECImport">
+    <field name="validGeneratedMove" expr="eval:importFECType?.isDefaultForValidGeneratedMove"/>
+  </action-record>
 
 </object-views>

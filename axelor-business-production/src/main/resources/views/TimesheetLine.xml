@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="timesheet-line-timesheet-manuf-order-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
@@ -29,8 +29,7 @@
     onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
     <hilite if="$get('timesheet.statusSelect') == 5" color="danger"/>
     <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
-    <field name="user" form-view="user-form" grid-view="user-grid" canEdit="false"
-      canView="false"/>
+    <field name="employee" canEdit="false" canView="false"/>
     <field name="duration" width="100"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
@@ -39,7 +38,7 @@
     <field name="enableEditor" hidden="true"/>
     <field name="comments" width="400"/>
     <field name="timesheet.statusSelect"
-      if="__config__.app.getApp('timesheet').needValidation"/>
+      if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-line-timesheet-readonly-manuf-order-grid" title="Timesheet Lines"
@@ -62,13 +61,13 @@
     <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
       canEdit="false" canView="false"/>
     <field name="timesheet.statusSelect"
-      if="__config__.app.getApp('timesheet').needValidation"/>
+      if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <form name="timesheet-line-timesheet-manuf-order-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-set-visible-duration-title,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="date" onChange="action-timesheet-line-validate-date"/>
@@ -83,7 +82,7 @@
       <label name="durationLabel" colSpan="1"/>
       <field name="hoursDuration" hidden="true"/>
       <field name="toInvoice"/>
-      <field name="enableEditor"/>
+      <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
       <field name="user" form-view="user-form" grid-view="user-grid" hidden="true"
         canEdit="false" canView="false"/>
@@ -99,7 +98,7 @@
     <alert message="Warning, this manuforder is from another company."
       if="manufOrder &amp;&amp; manufOrder?.company != __parent__.company"/>
     <alert message="Warning, this manuforder is finished"
-      if="manufOrder &amp;&amp; manufOrder?.statusSelect == __repo__(ManufOrder).STATUS_FINISHED &amp;&amp; __config__.app.getApp('timesheet').getIsAlertManufOrderFinish()"/>
+      if="manufOrder &amp;&amp; manufOrder?.statusSelect == __repo__(ManufOrder).STATUS_FINISHED &amp;&amp; __config__.app.getApp('timesheet')?.getIsAlertManufOrderFinish()"/>
   </action-validate>
 
   <action-record name="action-timesheet-line-record-manuf-order-onchange"

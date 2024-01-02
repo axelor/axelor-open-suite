@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
@@ -33,12 +35,10 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -55,6 +55,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   protected AccountConfigService accountConfigService;
   protected SaleOrderRepository saleOrderRepository;
   protected AppBaseService appBaseService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
@@ -65,13 +66,15 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
-      SaleOrderRepository saleOrderRepository) {
+      SaleOrderRepository saleOrderRepository,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
 
     super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
     this.appBaseService = appBaseService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -80,7 +83,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       PriceList priceList,
@@ -97,7 +100,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
           company,
           contactPartner,
           currency,
-          deliveryDate,
+          estimatedShippingDate,
           internalReference,
           externalReference,
           priceList,
@@ -112,7 +115,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         company,
         contactPartner,
         currency,
-        deliveryDate,
+        estimatedShippingDate,
         internalReference,
         externalReference,
         null,
@@ -121,7 +124,10 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         team,
         taxNumber,
         fiscalPosition,
-        tradingName);
+        tradingName,
+        null,
+        null,
+        null);
   }
 
   public SaleOrder createSaleOrder(
@@ -129,7 +135,43 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Company company,
       Partner contactPartner,
       Currency currency,
-      LocalDate deliveryDate,
+      LocalDate estimatedShippingDate,
+      String internalReference,
+      String externalReference,
+      StockLocation stockLocation,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+
+    return createSaleOrder(
+        salespersonUser,
+        company,
+        contactPartner,
+        currency,
+        estimatedShippingDate,
+        internalReference,
+        externalReference,
+        stockLocation,
+        priceList,
+        clientPartner,
+        team,
+        taxNumber,
+        fiscalPosition,
+        null,
+        null,
+        null,
+        null);
+  }
+
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate estimatedShippingDate,
       String internalReference,
       String externalReference,
       StockLocation stockLocation,
@@ -138,11 +180,14 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       Team team,
       TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
-      TradingName tradingName)
+      TradingName tradingName,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
       throws AxelorException {
 
     logger.debug(
-        "Création d'une commande fournisseur : Société = {},  Reference externe = {}, Client = {}",
+        "Creation of a sale order : Company = {},  External reference = {}, Customer = {}",
         company.getName(),
         externalReference,
         clientPartner.getFullName());
@@ -153,7 +198,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             company,
             contactPartner,
             currency,
-            deliveryDate,
+            estimatedShippingDate,
             internalReference,
             externalReference,
             priceList,
@@ -164,13 +209,16 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             tradingName);
 
     if (stockLocation == null) {
-      stockLocation = Beans.get(StockLocationService.class).getPickupDefaultStockLocation(company);
+      stockLocation = saleOrderSupplychainService.getStockLocation(clientPartner, company);
     }
 
     saleOrder.setStockLocation(stockLocation);
 
     saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
     saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
+    saleOrder.setIncoterm(incoterm);
+    saleOrder.setInvoicedPartner(invoicedPartner);
+    saleOrder.setDeliveredPartner(deliveredPartner);
 
     if (saleOrder.getPaymentMode() == null) {
       saleOrder.setPaymentMode(
@@ -199,21 +247,25 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       PriceList priceList,
       Team team,
       TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      Incoterm incoterm,
+      Partner invoicedPartner,
+      Partner deliveredPartner)
       throws AxelorException {
-    String numSeq = "";
-    String externalRef = "";
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
 
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
+    StringBuilder numSeq = new StringBuilder();
+    StringBuilder externalRef = new StringBuilder();
+    for (SaleOrder saleOrderLocal : saleOrderList) {
+      if (numSeq.length() > 0) {
+        numSeq.append("-");
+      }
+      numSeq.append(saleOrderLocal.getSaleOrderSeq());
+
+      if (externalRef.length() > 0) {
+        externalRef.append("|");
       }
       if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
+        externalRef.append(saleOrderLocal.getExternalReference());
       }
     }
 
@@ -224,15 +276,18 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             contactPartner,
             currency,
             null,
-            numSeq,
-            externalRef,
+            numSeq.toString(),
+            externalRef.toString(),
             stockLocation,
             priceList,
             clientPartner,
             team,
             taxNumber,
             fiscalPosition,
-            null);
+            null,
+            incoterm,
+            invoicedPartner,
+            deliveredPartner);
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);

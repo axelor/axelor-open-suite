@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,10 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.PayVoucherDueElement;
@@ -25,23 +25,22 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
-import com.axelor.apps.account.report.IReport;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherConfirmService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherControlService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherLoadService;
 import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherSequenceService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
@@ -71,7 +70,7 @@ public class PaymentVoucherController {
   }
 
   // Loading move lines of the selected partner (1st O2M)
-  public void loadMoveLines(ActionRequest request, ActionResponse response) {
+  public void loadInvoiceTerms(ActionRequest request, ActionResponse response) {
 
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
@@ -90,10 +89,15 @@ public class PaymentVoucherController {
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
 
     try {
-      Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
+      boolean generateAll =
+          Beans.get(PaymentVoucherLoadService.class).loadSelectedLines(paymentVoucher);
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+
+      if (!generateAll) {
+        response.setInfo(I18n.get(AccountExceptionMessage.PAYMENT_VOUCHER_NOT_GENERATE_ALL));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -106,9 +110,11 @@ public class PaymentVoucherController {
 
     try {
       Beans.get(PaymentVoucherLoadService.class).resetImputation(paymentVoucher);
+
       response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
       response.setValue(
           "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+      response.setValue("remainingAmount", paymentVoucher.getPaidAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -128,6 +134,11 @@ public class PaymentVoucherController {
         if (journal.getExcessPaymentOk()) {
           response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
         }
+        if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {
+          response.setError(
+              I18n.get(
+                  "Some move amounts have been changed since the imputation. Please remake the imputation."));
+        }
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }
@@ -146,32 +157,6 @@ public class PaymentVoucherController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void printPaymentVoucher(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-
-    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
-
-    String name = I18n.get("Payment voucher");
-    if (!Strings.isNullOrEmpty(paymentVoucher.getReceiptNo())) {
-      name += " " + paymentVoucher.getReceiptNo();
-    }
-
-    String fileLink =
-        ReportFactory.createReport(IReport.PAYMENT_VOUCHER, name + "-${date}")
-            .addParam("PaymentVoucherId", paymentVoucher.getId())
-            .addParam(
-                "Timezone",
-                paymentVoucher.getCompany() != null
-                    ? paymentVoucher.getCompany().getTimezone()
-                    : null)
-            .generate()
-            .getFileLink();
-
-    logger.debug("Printing " + name);
-
-    response.setView(ActionView.define(name).add("html", fileLink).map());
   }
 
   /**

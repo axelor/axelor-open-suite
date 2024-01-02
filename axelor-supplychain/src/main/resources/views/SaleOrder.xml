@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
@@ -22,7 +22,11 @@
     </extend>
     <extend target="//panel-related[@name='detailLinesPanel']">
       <attribute name="onChange"
-        value="action-sale-order-line-change-group,supplychain-action-create-shipment-cost-line"/>
+        value="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"/>
+    </extend>
+    <extend target="//field[@name='saleOrderLineList']">
+      <attribute name="onChange"
+        value="action-sale-order-method-on-line-change,supplychain-action-create-shipment-cost-line"/>
     </extend>
   </form>
 
@@ -42,16 +46,18 @@
         target="com.axelor.apps.base.db.Partner"
         onSelect="action-supplychain-so-generate-supplier-partner-domain" required="true"/>
       <button name="generatePOConfirmBtn" title="Confirm Purchase order generation"
-        onClick="action-supplychain-so-generate-po-check-supplier-partner,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+        onClick="action-sale-order-group-generate-po-select-supplierpartner"/>
     </panel>
   </form>
 
   <form name="sale-order-form-client" id="supplychain-sale-order-form-client"
-    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder" cols="4"
+    title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     onNew="action-group-supplychain-saleorder-onnew"
     onSave="save,action-sale-order-method-compute,save"
     onLoad="action-group-supplychain-saleorder-onload" width="large">
-    <panel-include view="sale-order-form-client" from="axelor-sale"/>
+    <panel name="mainPanel" colSpan="4">
+      <panel-include view="sale-order-form-client" from="axelor-sale"/>
+    </panel>
   </form>
 
   <form name="sale-order-template-form" title="Template"
@@ -106,7 +112,7 @@
     <action name="save"/>
     <action name="action-method-sale-order-validate-changes"/>
     <action name="action-sale-order-method-notify-stock-move-created"
-      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').customerStockMoveGenerationAuto "/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto "/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onnew">
@@ -133,6 +139,12 @@
   <action-group name="action-group-supplychain-saleorder-onload">
     <action name="action-group-sale-saleorder-onload"/>
     <action name="action-sale-order-attrs-interco"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-generate-po-select-supplierpartner">
+    <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
+    <action
+      name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
   </action-group>
 
   <action-method name="action-supplychain-sale-order-method-get-stock-location">
@@ -247,13 +259,13 @@
   <action-attrs name="action-sale-order-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = false&quot;"/>
+      expr="eval: &quot;self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="!tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; !directOrderLocation"
-      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true AND self.directOrderLocation = false) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
+      expr="eval: &quot;self.company = :company AND ((self.typeSelect != 3 and self.usableOnSaleOrder = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')}))&quot;"/>
     <attribute name="domain" for="stockLocation"
       if="tradingName?.stockLocationList &amp;&amp; directOrderLocation"
       expr="eval: &quot;(self.typeSelect != 3 and self.usableOnSaleOrder = true and self.directOrderLocation = true) OR self.id IN (${tradingName?.stockLocationList?.collect{it.id+[0]}.join(',')})&quot;"/>
@@ -306,18 +318,6 @@
     <field name="incoterm"
       expr="eval: __repo__(PartnerStockSettings).all().filter('self.company = ? AND self.partner = ?', company, clientPartner).fetchOne()?.incoterm"
       if="company != null &amp;&amp; clientPartner != null"/>
-    <field name="stockLocation" if="stockLocation == null"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultStockLocation(clientPartner, company)"/>
-    <field name="toStockLocation"
-      expr="call: com.axelor.apps.stock.service.PartnerStockSettingsService:getDefaultExternalStockLocation(clientPartner, company)"/>
-
-  </action-record>
-
-  <action-record name="action-sale-order-record-update-timetable-amounts"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="timetableList"
-      expr="eval: timetableList.collect{it -> it.amount = (exTaxTotal * it.percentage / 100).setScale(__config__.app.getApp('base').nbDecimalDigitForUnitPrice, java.math.RoundingMode.HALF_UP); it}"
-      if="timetableList != null"/>
   </action-record>
 
   <action-attrs name="action-sale-order-attrs-set-is-ispm-required">
@@ -378,6 +378,21 @@
     name="action-sale-order-supplychain-method-set-default-invoiced-delivered-partners-and-addresses">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="setDefaultInvoicedAndDeliveredPartnersAndAddresses"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-method-get-to-stock-location">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="getToStockLocation"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-set-advance-payment">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setAdvancePayment"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-update-timetable-amounts">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="updateTimetableAmounts"/>
   </action-method>
 
 </object-views>

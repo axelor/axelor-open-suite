@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,25 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.web;
 
-import com.axelor.apps.ReportFactory;
 import com.axelor.apps.base.callable.ControllerCallableTool;
-import com.axelor.apps.report.engine.ReportSettings;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.report.IReport;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
+import com.axelor.apps.supplychain.service.MrpProposalService;
 import com.axelor.apps.supplychain.service.MrpService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class MrpController {
@@ -58,7 +58,7 @@ public class MrpController {
     MrpRepository mrpRepository = Beans.get(MrpRepository.class);
     try {
       if (mrpService.isOnGoing(mrpRepository.find(mrp.getId()))) {
-        response.setFlash(I18n.get(IExceptionMessage.MRP_ALREADY_STARTED));
+        response.setInfo(I18n.get(SupplychainExceptionMessage.MRP_ALREADY_STARTED));
         return;
       }
       mrpService.setMrp(Beans.get(MrpRepository.class).find(mrp.getId()));
@@ -81,78 +81,46 @@ public class MrpController {
       Mrp mrp = request.getContext().asType(Mrp.class);
       Boolean isProposalsPerSupplier =
           (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
-      Beans.get(MrpService.class)
-          .generateProposals(
+      Beans.get(MrpProposalService.class)
+          .generateAllProposals(
               Beans.get(MrpRepository.class).find(mrp.getId()),
               isProposalsPerSupplier != null && isProposalsPerSupplier);
-      response.setFlash(I18n.get("Proposals have been generated successfully."));
-    } catch (AxelorException e) {
+      response.setInfo(I18n.get("Proposals have been generated successfully."));
+    } catch (Exception e) {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
     }
   }
 
-  /**
-   * Prints the weekly breakdown MRP birt report and shows it to the user.
-   *
-   * @param request
-   * @param response
-   */
-  public void printWeeks(ActionRequest request, ActionResponse response) {
-    Mrp mrp = request.getContext().asType(Mrp.class);
-    mrp = Beans.get(MrpRepository.class).find(mrp.getId());
-    String name = I18n.get("MRP") + "-" + mrp.getId();
-
+  public void generateSelectedProposals(ActionRequest request, ActionResponse response) {
     try {
-      String fileLink =
-          ReportFactory.createReport(IReport.MRP_WEEKS, name)
-              .addParam("mrpId", mrp.getId())
-              .addParam("Timezone", getTimezone(mrp))
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addParam(
-                  "endDate",
-                  Beans.get(MrpService.class).findMrpEndDate(mrp).atStartOfDay().toString())
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
-
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
+      Mrp mrp = request.getContext().asType(Mrp.class);
+      Boolean isProposalsPerSupplier =
+          (Boolean) request.getContext().get("consolidateProposalsPerSupplier");
+      Beans.get(MrpProposalService.class)
+          .generateSelectedProposals(
+              Beans.get(MrpRepository.class).find(mrp.getId()),
+              isProposalsPerSupplier != null && isProposalsPerSupplier);
+      response.setInfo(I18n.get("Proposals have been generated successfully."));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      response.setReload(true);
     }
   }
 
-  private String getTimezone(Mrp mrp) {
-    if (mrp.getStockLocation() == null || mrp.getStockLocation().getCompany() == null) {
-      return null;
-    }
-    return mrp.getStockLocation().getCompany().getTimezone();
-  }
-
-  /**
-   * Prints the list MRP birt report and shows it to the user.
-   *
-   * @param request
-   * @param response
-   */
-  public void printList(ActionRequest request, ActionResponse response) {
+  public void setSaleOrderLineSetDomain(ActionRequest request, ActionResponse response) {
     Mrp mrp = request.getContext().asType(Mrp.class);
-    String name = I18n.get("MRP") + "-" + mrp.getId();
 
     try {
-      String fileLink =
-          ReportFactory.createReport(IReport.MRP_LIST, name)
-              .addParam("mrpId", mrp.getId())
-              .addParam("Timezone", getTimezone(mrp))
-              .addParam("Locale", ReportSettings.getPrintingLocale(null))
-              .addFormat(ReportSettings.FORMAT_PDF)
-              .generate()
-              .getFileLink();
+      List<Long> idList =
+          Beans.get(MrpFilterSaleOrderLineService.class)
+              .getSaleOrderLinesComplyingToMrpLineTypes(mrp);
 
-      response.setView(ActionView.define(name).add("html", fileLink).map());
+      String idListStr = idList.stream().map(Object::toString).collect(Collectors.joining(","));
 
+      response.setAttr("saleOrderLineSet", "domain", "self.id IN (" + idListStr + ")");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

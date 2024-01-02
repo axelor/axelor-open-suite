@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="training-register-grid" title="Training registers"
     model="com.axelor.apps.talent.db.TrainingRegister">
@@ -47,14 +47,15 @@
       expr="eval: trainingSession.statusSelect != 1" if="trainingSession != null"/>
   </action-attrs>
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Mass training register"
+  <form model="com.axelor.utils.db.Wizard" title="Mass training register"
     name="mass-training-register-wizard-form">
     <panel name="mainPanel">
       <field name="employeeList" grid-view="employee-lite-grid"
         domain="NOT EXISTS (SELECT 1 from TrainingRegister tr WHERE tr.trainingSession.id = :_trainingSessionId AND tr.employee.id = self.id)"
         canNew="false" canSelect="true" canEdit="false" target="com.axelor.apps.hr.db.Employee"
         type="one-to-many" colSpan="12"/>
-      <button name="registerBtn" readonlyIf="!employeeList" title="Register"
+      <button name="registerBtn"
+        readonlyIf="!(employeeList &amp;&amp; employeeList.length > 0)" title="Register"
         onClick="action-mass-training-register-method"/>
     </panel>
   </form>

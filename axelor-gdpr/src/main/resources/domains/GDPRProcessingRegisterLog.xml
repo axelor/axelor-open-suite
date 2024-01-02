@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRProcessingRegisterLog">
+    <many-to-one ref="com.axelor.apps.gdpr.db.GDPRProcessingRegister"
+      name="gdprProcessingRegister" title="Processing register"/>
+    <datetime name="processingDateT" title="Processing date"/>
+    <integer name="nbProcessed" title="Data processed"/>
+
+  </entity>
+
+</domain-models>

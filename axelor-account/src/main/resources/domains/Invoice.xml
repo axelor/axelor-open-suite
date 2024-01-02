@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity sequential="true" name="Invoice" lang="java"
+  <entity sequential="true" name="Invoice"
     implements="com.axelor.apps.base.interfaces.PricedOrder">
 
     <!-- NOT DISPLAY -->
@@ -27,6 +27,8 @@
       title="Partner"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
       title="Contact"/>
+    <many-to-one name="subrogationPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Subrogation"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
     <many-to-one name="paymentCondition"
@@ -48,8 +50,9 @@
     <boolean name="hideDiscount" title="Hide Discount on prints"/>
 
     <!-- Dates -->
-    <date name="invoiceDate" title="Invoice Date"/>
-    <date name="dueDate" title="Due Date"/>
+    <date name="invoiceDate" title="Invoice date"/>
+    <date name="dueDate" title="Due date"/>
+    <date name="nextDueDate" title="Next due date" readonly="true"/>
     <date name="originDate" title="Origin date"/>
     <date name="paymentDate" title="Payment date"/>
 
@@ -67,7 +70,7 @@
       title="Currency"/>
     <one-to-many name="invoicePaymentList"
       ref="com.axelor.apps.account.db.InvoicePayment" title="Payments" mappedBy="invoice"/>
-    <date name="ventilatedDate" readonly="true" title="Ventilated Date"/>
+    <datetime name="ventilatedDateTime" readonly="true" title="Ventilated Date"/>
     <many-to-one name="ventilatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Ventilated by"/>
     <many-to-one name="fiscalPosition" title="Fiscal position"
@@ -94,25 +97,40 @@
     <!-- Blocking information -->
     <boolean name="debitBlockingOk" title="Direct debit blocking"/>
     <many-to-one name="debitBlockingReason" ref="com.axelor.apps.base.db.StopReason"
-      title="Blocking reason"/>
-    <date name="debitBlockingToDate" title="Blocking until"/>
+      title="Debit blocking reason"/>
+    <date name="debitBlockingToDate" title="Debit blocking until"/>
     <many-to-one name="debitBlockingByUser" ref="com.axelor.auth.db.User"
-      title="Blocking done by"/>
+      title="Debit blocking done by"/>
+    <string name="commentOnDebitBlocking" title="Blocking comment for Direct debit"
+      large="true"/>
 
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
     <many-to-one name="debtRecoveryBlockingReason"
-      ref="com.axelor.apps.base.db.StopReason" title="Blocking reason"/>
-    <date name="debtRecoveryBlockingToDate" title="Blocking until"/>
+      ref="com.axelor.apps.base.db.StopReason" title="Debt recovery blocking reason"/>
+    <date name="debtRecoveryBlockingToDate" title="Debt recovery blocking until"/>
     <many-to-one name="debtRecoveryBlockingByUser" ref="com.axelor.auth.db.User"
-      title="Blocking done by"/>
+      title="Debt recovery blocking done by"/>
+    <string name="commentOnRecoveryBlocking" title="Blocking comment for Debt recovery"
+      large="true"/>
+
+    <boolean name="billOfExchangeBlockingOk" title="Bill of exchange blocking"/>
+    <many-to-one name="billOfExchangeBlockingReason"
+      ref="com.axelor.apps.base.db.StopReason" title="Bill of exchange blocking reason"/>
+    <date name="billOfExchangeBlockingToDate" title="Bill of exchange blocking until"/>
+    <many-to-one name="billOfExchangeBlockingByUser" ref="com.axelor.auth.db.User"
+      title="Bill of exchange blocking done by"/>
+    <string name="commentOnExchangeBlocking" title="Blocking comment for Bills of exchange"
+      large="true"/>
+
 
     <!-- Payments -->
     <string name="debitNumber" title="Direct Debit N°"/>
     <many-to-one name="rejectMoveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Rejection move line"/>
     <boolean name="usherPassageOk" title="Transfer(ed) to usher"/>
+    <boolean name="lcrAccounted" title="LCR accounted"/>
     <decimal name="amountRejected" title="Rejected amount"/>
-    <date name="rejectDate" title="Rejection date"/>
+    <datetime name="rejectDateTime" title="Rejection date"/>
     <many-to-one name="interbankCodeLine"
       ref="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"/>
     <decimal name="directDebitAmount" title="Debited amount" readonly="true"/>
@@ -125,6 +143,7 @@
     <string name="specificNotes" title="Specific notes" large="true"/>
     <many-to-one name="printedPDF" ref="com.axelor.meta.db.MetaFile"/>
     <boolean name="groupProductsOnPrintings" title="Group products on printings"/>
+    <string name="invoiceProductStatement" title="Print statement for products"/>
 
     <!-- Totals & Status -->
 
@@ -150,7 +169,7 @@
 
     <many-to-one name="validatedByUser" ref="com.axelor.auth.db.User" readonly="true"
       title="Validated by"/>
-    <date name="validatedDate" readonly="true" title="Validated Date"/>
+    <datetime name="validatedDateTime" readonly="true" title="Validated Date"/>
 
     <boolean name="inAti" title="In ATI"/>
 
@@ -163,11 +182,11 @@
     <boolean name="invoiceAutomaticMail" title="Send email on invoice ventilation"
       default="false"/>
     <many-to-one name="invoiceMessageTemplate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
     <boolean name="invoiceAutomaticMailOnValidate" title="Send email on invoice validate"
       default="false"/>
     <many-to-one name="invoiceMessageTemplateOnValidate" title="Message template"
-      ref="com.axelor.apps.message.db.Template"/>
+      ref="com.axelor.message.db.Template"/>
 
     <many-to-many name="advancePaymentInvoiceSet"
       ref="com.axelor.apps.account.db.Invoice" title="Advance payments"/>
@@ -183,7 +202,7 @@
     <many-to-one name="subrogationReleaseMove" ref="com.axelor.apps.account.db.Move"
       title="Subrogation release Move"/>
 
-    <date name="decisionPfpTakenDate" readonly="true" title="PFP decision date"/>
+    <datetime name="decisionPfpTakenDateTime" readonly="true" title="PFP decision date"/>
     <many-to-one name="pfpValidatorUser" ref="com.axelor.auth.db.User"
       title="PFP Validator"/>
     <integer name="pfpValidateStatusSelect" title="Status"
@@ -217,9 +236,25 @@
       help="Legal notice displayed on invoices where a discount was granted"/>
     <date name="financialDiscountDeadlineDate" title="Financial Discount Deadline Date"/>
 
+    <integer name="paymentDelay" title="Payment delay (days)" formula="true">
+      <![CDATA[
+	      SELECT CASE WHEN
+	      ((DATE(NOW())::DATE - inv.due_date::DATE) > 0 AND inv.amount_remaining != 0) THEN
+	      (DATE(NOW())::DATE - inv.due_date::DATE) ELSE 0 END from account_invoice inv WHERE inv.id =
+	      id]]>
+    </integer>
+
+
+    <!-- Invoice terms -->
+    <integer name="paymentProgress" title="Payment progress" default="0"/>
+    <one-to-many name="invoiceTermList" ref="com.axelor.apps.account.db.InvoiceTerm"
+      mappedBy="invoice" title="Invoice terms"/>
+
     <unique-constraint columns="invoiceId,company"/>
 
     <finder-method name="findByMove" using="move"/>
+
+    <finder-method name="findByOldMove" using="oldMove"/>
 
     <extra-code><![CDATA[
 
@@ -285,6 +320,9 @@
       <field name="irrecoverableStatusSelect" on="UPDATE"/>
       <field name="debitBlockingOk" on="UPDATE"/>
       <field name="debtRecoveryBlockingOk" on="UPDATE"/>
+      <field name="commentOnDebitBlocking" on="UPDATE"/>
+      <field name="commentOnRecoveryBlocking" on="UPDATE"/>
+      <field name="commentOnExchangeBlocking" on="UPDATE"/>
       <field name="usherPassageOk" on="UPDATE"/>
       <field name="exTaxTotal" on="UPDATE"/>
       <field name="taxTotal" on="UPDATE"/>

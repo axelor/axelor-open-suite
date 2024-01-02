@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,16 +14,16 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractVersion;
-import com.axelor.apps.tool.date.DateTool;
-import com.axelor.exception.AxelorException;
-import com.google.inject.persist.Transactional;
+import com.axelor.utils.date.DateTool;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public interface ContractVersionService {
 
@@ -31,7 +32,6 @@ public interface ContractVersionService {
    *
    * @param version of the contract will be waiting.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void waiting(ContractVersion version) throws AxelorException;
 
   /**
@@ -40,7 +40,6 @@ public interface ContractVersionService {
    * @param version of the contract will be waiting.
    * @param date of waiting.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void waiting(ContractVersion version, LocalDate date) throws AxelorException;
 
   /**
@@ -48,7 +47,6 @@ public interface ContractVersionService {
    *
    * @param version of te contract will be ongoing.
    */
-  @Transactional(rollbackOn = {Exception.class})
   void ongoing(ContractVersion version) throws AxelorException;
 
   /**
@@ -57,15 +55,13 @@ public interface ContractVersionService {
    * @param version of the contract will be ongoing.
    * @param date of activation.
    */
-  @Transactional(rollbackOn = {Exception.class})
-  void ongoing(ContractVersion version, LocalDate date) throws AxelorException;
+  void ongoing(ContractVersion version, LocalDateTime dateTime) throws AxelorException;
 
   /**
    * Terminate version at the today date.
    *
    * @param version of the contract will be terminate.
    */
-  @Transactional
   void terminate(ContractVersion version) throws AxelorException;
 
   /**
@@ -74,8 +70,7 @@ public interface ContractVersionService {
    * @param version of the contract will be terminate.
    * @param date of terminate.
    */
-  @Transactional
-  void terminate(ContractVersion version, LocalDate date) throws AxelorException;
+  void terminate(ContractVersion version, LocalDateTime dateTime) throws AxelorException;
 
   /**
    * Create new version from contract but don't save it. There will be use for set values from form
@@ -86,19 +81,20 @@ public interface ContractVersionService {
    */
   ContractVersion newDraft(Contract contract);
 
+  void computeTotals(ContractVersion contractVersion);
+
   default ContractVersion getContractVersion(Contract contract, LocalDate date) {
     for (ContractVersion version : contract.getVersionHistory()) {
-      if (version.getActivationDate() == null || version.getEndDate() == null) {
+      if (version.getActivationDateTime() == null || version.getEndDateTime() == null) {
         continue;
       }
-      if (DateTool.isBetween(version.getActivationDate(), version.getEndDate(), date)) {
+      if (DateTool.isBetween(
+          version.getActivationDateTime().toLocalDate(),
+          version.getEndDateTime().toLocalDate(),
+          date)) {
         return version;
       }
     }
-    ContractVersion version = contract.getCurrentContractVersion();
-    if (DateTool.isBetween(version.getActivationDate(), version.getEndDate(), date)) {
-      return version;
-    }
-    return null;
+    return contract.getCurrentContractVersion();
   }
 }

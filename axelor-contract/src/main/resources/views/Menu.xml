@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <menuitem title="Contracts" name="contracts-root" order="-104"
+  <menuitem title="Contracts" name="contracts-root" order="-1500"
     if="__config__.app.isApp('contract')" icon="fa-briefcase" icon-background="blue"/>
 
   <menuitem title="Customer contracts" name="contracts-root-customer-all"
-    action="contracts.root.customer.all" parent="contracts-root"/>
+    action="contracts.root.customer.all" parent="contracts-root" order="100"/>
 
   <action-view name="contracts.root.customer.all" title="Customer contracts"
     model="com.axelor.apps.contract.db.Contract">
@@ -19,7 +19,7 @@
   </action-view>
 
   <menuitem title="Supplier contracts" name="contracts-root-supplier-all"
-    action="contracts.root.supplier.all" parent="contracts-root"/>
+    action="contracts.root.supplier.all" parent="contracts-root" order="200"/>
 
   <action-view name="contracts.root.supplier.all" title="Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
@@ -31,10 +31,10 @@
   </action-view>
 
   <menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"
-    icon="fa-cog"/>
+    icon="fa-cog" order="300"/>
 
   <menuitem title="Terminated contracts" name="contracts-root-conf-terminated"
-    action="contracts.root.conf.terminated" parent="contracts-root-conf-all"/>
+    action="contracts.root.conf.terminated" parent="contracts-root-conf-all" order="100"/>
 
   <action-view name="contracts.root.conf.terminated" title="Terminated contracts"
     model="com.axelor.apps.contract.db.Contract">
@@ -45,7 +45,7 @@
   </action-view>
 
   <menuitem name="contract-template-all" title="Contract templates"
-    parent="contracts-root-conf-all" action="contract.templates.all"/>
+    parent="contracts-root-conf-all" action="contract.templates.all" order="200"/>
 
   <action-view name="contract.templates.all" title="Contract templates"
     model="com.axelor.apps.contract.db.ContractTemplate">
@@ -55,7 +55,7 @@
   </action-view>
 
   <menuitem name="duration-all" title="Durations" parent="contracts-root-conf-all"
-    action="duration.all"/>
+    action="duration.all" order="300"/>
 
   <action-view name="duration.all" title="Duration"
     model="com.axelor.apps.base.db.Duration">
@@ -65,9 +65,27 @@
     <context name="_applicatioTypeSelect" expr="2"/>
   </action-view>
 
+  <menuitem name="index-revaluation-all" title="Indexes revaluation"
+    parent="contracts-root-conf-all" action="index.revaluation.all" order="400"/>
+
+  <action-view name="index.revaluation.all" title="Index revaluation"
+    model="com.axelor.apps.contract.db.IndexRevaluation">
+    <view type="grid" name="index-revaluation-grid"/>
+    <view type="form" name="index-revaluation-form"/>
+  </action-view>
+
+  <menuitem name="revaluation-formula-all" title="Revaluation formulas"
+    parent="contracts-root-conf-all" action="revaluation.formula.all" order="500"/>
+
+  <action-view name="revaluation.formula.all" title="Revaluation formula"
+    model="com.axelor.apps.contract.db.RevaluationFormula">
+    <view type="grid" name="revaluation-formula-grid"/>
+    <view type="form" name="revaluation-formula-form"/>
+  </action-view>
+
   <menuitem name="admin-root-batch-contract" parent="admin-root-batch"
     title="Contract batches" action="admin.root.batch.contract"
-    if="__config__.app.isApp('contract')"/>
+    if="__config__.app.isApp('contract')" order="1200"/>
 
   <action-view name="admin.root.batch.contract" title="Contract batches"
     model="com.axelor.apps.contract.db.ContractBatch">

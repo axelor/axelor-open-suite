@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,32 +14,37 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
-import com.axelor.apps.ReportFactory;
-import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
-import com.axelor.apps.stock.report.IReport;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
@@ -111,25 +117,34 @@ public class StockLocationController {
         }
 
         if (stockLocationService.isConfigMissing(stockLocation, Integer.parseInt(printType))) {
-          response.setNotify(I18n.get(IExceptionMessage.STOCK_CONFIGURATION_MISSING));
+          response.setNotify(I18n.get(StockExceptionMessage.STOCK_CONFIGURATION_MISSING));
         }
 
+        BirtTemplate stockLocationBirtTemplate =
+            Beans.get(StockConfigService.class)
+                .getStockConfig(stockLocation.getCompany())
+                .getStockLocationBirtTemplate();
+        if (ObjectUtils.isEmpty(stockLocationBirtTemplate)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
+        }
         String fileLink =
-            ReportFactory.createReport(IReport.STOCK_LOCATION, title + "-${date}")
-                .addParam("StockLocationId", locationIds)
-                .addParam("Timezone", null)
-                .addParam("Locale", language)
-                .addFormat(exportType)
-                .addParam("PrintType", printType)
-                .generate()
-                .getFileLink();
+            Beans.get(BirtTemplateService.class)
+                .generateBirtTemplateLink(
+                    stockLocationBirtTemplate,
+                    null,
+                    Map.of("StockLocationId", locationIds, "PrintType", printType),
+                    title + "-${date}",
+                    stockLocationBirtTemplate.getAttach(),
+                    exportType);
 
         logger.debug("Printing " + title);
 
         response.setView(ActionView.define(title).add("html", fileLink).map());
 
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.LOCATION_2));
+        response.setInfo(I18n.get(StockExceptionMessage.LOCATION_2));
       }
       response.setCanClose(true);
     } catch (Exception e) {
@@ -154,7 +169,7 @@ public class StockLocationController {
     List<Integer> lstSelectedLocations = (List<Integer>) request.getContext().get("_ids");
 
     response.setView(
-        ActionView.define(I18n.get(IExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
+        ActionView.define(I18n.get(StockExceptionMessage.STOCK_LOCATION_PRINT_WIZARD_TITLE))
             .model(Wizard.class.getName())
             .add("form", "stock-location-print-wizard-form")
             .param("popup", "true")

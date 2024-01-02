@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="message-form" id="base-message-form" title="Email"
-    model="com.axelor.apps.message.db.Message" onNew="action-group-base-message-onnew">
+    model="com.axelor.message.db.Message" onNew="action-group-base-message-onnew">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-message-method-print-pdf-email" readonlyIf="id == null"/>
@@ -14,20 +14,20 @@
         onClick="action-group-message-message-delete-click" showIf="statusSelect != 4 "/>
     </toolbar>
     <panel name="informationsPanel" title="Information" readonlyIf="statusSelect != 1">
-      <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>
-      <field name="statusSelect" colSpan="4"/>
-      <field name="$statusSelectTag" colSpan="2" css="label-bold bold" showTitle="false"
+      <field name="$statusSelectTag" colSpan="12" css="label-bold bold" showTitle="false"
         readonly="true">
         <viewer><![CDATA[
-					<h5>
+					<h5 class="pull-right text-right">
 						<span class='label label-info' ng-show="record.statusSelect == 1 &amp;&amp; record.sentDateT == null" x-translate>Not sent</span>
 						<span class='label label-success' ng-show="record.statusSelect == 3 &amp;&amp; record.sentDateT != null" x-translate>Successful send</span>
 						<span class='label label-important' ng-show="record.statusSelect == 2 &amp;&amp; record.sentDateT == null" x-translate>In progress</span>
 					</h5>
 				]]></viewer>
       </field>
+      <field name="mediaTypeSelect" readonlyIf="statusSelect != 1"/>
+      <field name="statusSelect"/>
       <field name="senderUser" canNew="false" canEdit="false" canView="false"/>
-      <field name="sentDateT" colSpan="4"/>
+      <field name="sentDateT" showIf="sentDateT"/>
       <panel name="emailDetailsPanel" colSpan="12" showIf="mediaTypeSelect == 2">
         <field name="fromEmailAddress" widget="SuggestBox" form-view="email-address-form"
           grid-view="email-address-grid"/>
@@ -35,8 +35,9 @@
           onChange="action-message-record-get-signature"
           onSelect="action-message-attribute-mail-account" requiredIf="mediaTypeSelect == 2"
           form-view="mail-account-form" grid-view="mail-account-grid"/>
-        <field name="replyToEmailAddressSet" widget="TagSelect" x-create="address"
-          form-view="email-address-form" colSpan="12" grid-view="email-address-grid"/>
+        <field name="replyToEmailAddressSet" hidden="true" widget="TagSelect"
+          x-create="address" form-view="email-address-form" colSpan="12"
+          grid-view="email-address-grid"/>
       </panel>
     </panel>
     <panel name="recipientAddressPanel" title="Recipient address"
@@ -62,7 +63,10 @@
     </panel>
     <panel name="contentPanel" title="Content" readonlyIf="statusSelect != 1">
       <field name="subject" title="Subject" colSpan="12" required="true"/>
-      <field name="content" colSpan="12" showTitle="false" widget="html"/>
+      <field name="content" colSpan="12" showTitle="false" widget="html"
+        showIf="mediaTypeSelect != 5"/>
+      <field name="content" colSpan="12" showTitle="false" widget="html" x-lite="true"
+        showIf="mediaTypeSelect == 5"/>
     </panel>
     <panel name="relatedToPanel" title="Related to" sidebar="true" colSpan="12"
       readonlyIf="statusSelect == 4">
@@ -79,22 +83,24 @@
   </form>
 
   <action-group name="action-group-base-message-onnew">
-    <action name="action-message-method-display-generate-message" if="_message != null"/>
-    <action name="action-message-record-default"/>
-    <action name="action-message-record-mail-account"/>
-    <action name="action-message-record-get-signature"/>
-    <action name="action-message-record-active-company"/>
-    <action name="action-message-record-default-media-type"/>
+    <action name="action-group-message-message-onnew"/>
+    <action name="action-message-record-active-company" if="_message == null"/>
   </action-group>
 
   <action-attrs name="action-message-attribute-mail-account">
     <attribute name="domain" for="mailAccount" expr="self.isValid IS TRUE"/>
     <attribute name="domain" for="mailAccount"
+      expr="self.isValid IS TRUE AND self.company = :company"
+      if="eval: __config__.app.getApp('base')?.getEmailAccountByCompany() &amp;&amp; company != null"/>
+    <attribute name="domain" for="mailAccount"
       expr="self.isValid IS TRUE AND self.user = :__user__"
-      if="eval: __config__.app.getApp('base').getEmailAccountByUser()"/>
+      if="eval: __config__.app.getApp('base')?.getEmailAccountByUser()"/>
+    <attribute name="domain" for="mailAccount"
+      expr="self.isValid IS TRUE AND (self.user IS NULL OR self.user = :__user__) AND (self.company IS NULL OR self.company = :company)"
+      if="eval: __config__.app.getApp('base').getEmailAccountByUser() &amp;&amp; __config__.app.getApp('base').getEmailAccountByCompany() &amp;&amp; company != null"/>
   </action-attrs>
 
-  <action-record model="com.axelor.apps.message.db.Message"
+  <action-record model="com.axelor.message.db.Message"
     name="action-message-record-active-company">
     <field name="company" expr="eval:__user__.activeCompany"
       if="__user__.activeCompany != null"/>

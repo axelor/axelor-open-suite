@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name="forecast.opportunities.type.select">
     <option value="1">No</option>
-    <option value="2">Base</option>
+    <option value="2">ForecastOpportunitiesType.base</option>
     <option value="3">Worst</option>
     <option value="4">Best</option>
   </selection>
@@ -31,18 +31,14 @@
       data-form="opportunity-form">Opportunity</option>
     <option value="com.axelor.apps.cash.management.db.Forecast" data-grid="forecast-grid"
       data-form="forecast-form">Manual Forecast</option>
+    <option value="com.axelor.apps.account.db.Move" data-grid="move-grid"
+      data-form="move-form">Move</option>
   </selection>
 
   <selection name="sequence.generic.code.select"
     id="cash.management.sequence.generic.code.select">
     <option value="forecastRecap">Forecast Recap</option>
     <option value="forecast">Forecast</option>
-  </selection>
-
-  <selection name="forecast.recap.report.type.select">
-    <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
-    <option value="ods">ODS</option>
   </selection>
 
   <selection name="forecast.recap.line.type.element.select">
@@ -53,6 +49,7 @@
     <option value="5">Forecast</option>
     <option value="6">Opportunity</option>
     <option value="7">Salary</option>
+    <option value="8">Move</option>
   </selection>
 
   <selection name="forecast.recap.line.type.pay.day.select">

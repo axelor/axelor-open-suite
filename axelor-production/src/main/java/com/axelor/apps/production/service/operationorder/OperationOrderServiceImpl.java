@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,36 +14,41 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.operationorder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.DayPlanning;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdHumanResource;
+import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -52,24 +58,41 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OperationOrderServiceImpl implements OperationOrderService {
+  protected BarcodeGeneratorService barcodeGeneratorService;
 
-  @Inject protected BarcodeGeneratorService barcodeGeneratorService;
+  protected AppProductionService appProductionService;
 
-  @Inject protected AppProductionService appProductionService;
+  protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected ProdProcessLineService prodProcessLineService;
+  protected OperationOrderRepository operationOrderRepository;
 
-  private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-  private static final DateTimeFormatter DATE_TIME_FORMAT =
-      DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+  @Inject
+  public OperationOrderServiceImpl(
+      BarcodeGeneratorService barcodeGeneratorService,
+      AppProductionService appProductionService,
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      ProdProcessLineService prodProcessLineService,
+      OperationOrderRepository operationOrderRepository) {
+    this.barcodeGeneratorService = barcodeGeneratorService;
+    this.appProductionService = appProductionService;
+    this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.prodProcessLineService = prodProcessLineService;
+    this.operationOrderRepository = operationOrderRepository;
+  }
+
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Transactional(rollbackOn = {Exception.class})
@@ -79,7 +102,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (prodProcessLine.getWorkCenter() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
           prodProcessLine.getProdProcess() != null
               ? prodProcessLine.getProdProcess().getCode()
               : "null",
@@ -97,18 +120,19 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
+  @Transactional
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
       WorkCenter workCenter,
       Machine machine,
       MachineTool machineTool,
-      ProdProcessLine prodProcessLine)
-      throws AxelorException {
+      ProdProcessLine prodProcessLine) {
 
     logger.debug(
-        "Création d'une opération {} pour l'OF {}", priority, manufOrder.getManufOrderSeq());
+        "Creation of an operation {} for the manufacturing order {}",
+        priority,
+        manufOrder.getManufOrderSeq());
 
     String operationName = prodProcessLine.getName();
 
@@ -124,30 +148,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             prodProcessLine,
             machineTool);
 
-    this._createHumanResourceList(operationOrder, workCenter);
-
     operationOrder.setUseLineInGeneratedPurchaseOrder(
         prodProcessLine.getUseLineInGeneratedPurchaseOrder());
 
     operationOrder.setOutsourcing(prodProcessLine.getOutsourcing());
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
-  }
-
-  protected void _createHumanResourceList(OperationOrder operationOrder, WorkCenter workCenter) {
-
-    if (workCenter != null && workCenter.getProdHumanResourceList() != null) {
-
-      for (ProdHumanResource prodHumanResource : workCenter.getProdHumanResourceList()) {
-
-        operationOrder.addProdHumanResourceListItem(this.copyProdHumanResource(prodHumanResource));
-      }
-    }
-  }
-
-  protected ProdHumanResource copyProdHumanResource(ProdHumanResource prodHumanResource) {
-
-    return new ProdHumanResource(prodHumanResource.getProduct(), prodHumanResource.getDuration());
   }
 
   public String computeName(ManufOrder manufOrder, int priority, String operationName) {
@@ -168,14 +174,19 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  public void createToConsumeProdProductList(OperationOrder operationOrder) {
+  public void createToConsumeProdProductList(OperationOrder operationOrder) throws AxelorException {
 
     BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
     BigDecimal bomQty = operationOrder.getManufOrder().getBillOfMaterial().getQty();
     ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
 
-    if (prodProcessLine.getToConsumeProdProductList() != null) {
+    if (prodProcessLine == null) {
 
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.PRODUCTION_PROCESS_IS_EMPTY));
+    }
+    if (prodProcessLine.getToConsumeProdProductList() != null) {
       for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
 
         BigDecimal qty =
@@ -214,7 +225,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Duration.between(fromDateTime, toDateTime).toDays() > 20) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
 
     List<OperationOrder> operationOrderListTemp =
@@ -277,16 +288,17 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
+      String dateTime = L10n.getInstance().format(itDateTime);
       for (String key : machineNameList) {
         if (keyList.contains(key)) {
           Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+          dataMap.put("dateTime", (Object) dateTime);
           dataMap.put("charge", (Object) map.get(key));
           dataMap.put("machine", (Object) key);
           dataList.add(dataMap);
         } else {
           Map<String, Object> dataMap = new HashMap<String, Object>();
-          dataMap.put("dateTime", (Object) itDateTime.format(DATE_TIME_FORMAT));
+          dataMap.put("dateTime", (Object) dateTime);
           dataMap.put("charge", (Object) BigDecimal.ZERO);
           dataMap.put("machine", (Object) key);
           dataList.add(dataMap);
@@ -300,7 +312,6 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
   public List<Map<String, Object>> chargeByMachineDays(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
-
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
     fromDateTime = fromDateTime.withHour(0).withMinute(0);
     toDateTime = toDateTime.withHour(23).withMinute(59);
@@ -309,7 +320,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Duration.between(fromDateTime, toDateTime).toDays() > 500) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CHARGE_MACHINE_DAYS));
+          I18n.get(ProductionExceptionMessage.CHARGE_MACHINE_DAYS));
     }
 
     List<OperationOrder> operationOrderListTemp =
@@ -410,11 +421,12 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         }
       }
       Set<String> keyList = map.keySet();
+      String itDate = L10n.getInstance().format(itDateTime.toLocalDate());
       for (String key : machineNameList) {
         if (keyList.contains(key)) {
           int found = 0;
           for (Map<String, Object> mapIt : dataList) {
-            if (mapIt.get("dateTime").equals((Object) itDateTime.format(DATE_FORMAT))
+            if (mapIt.get("dateTime").equals((Object) itDate)
                 && mapIt.get("machine").equals((Object) key)) {
               mapIt.put("charge", new BigDecimal(mapIt.get("charge").toString()).add(map.get(key)));
               found = 1;
@@ -424,7 +436,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           if (found == 0) {
             Map<String, Object> dataMap = new HashMap<String, Object>();
 
-            dataMap.put("dateTime", (Object) itDateTime.format(DATE_FORMAT));
+            dataMap.put("dateTime", (Object) itDate);
             dataMap.put("charge", (Object) map.get(key));
             dataMap.put("machine", (Object) key);
             dataList.add(dataMap);
@@ -465,7 +477,13 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {
     this.updateDiffProdProductList(operationOrder);
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    Company company = manufOrder.getCompany();
     List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+    StockLocation fromStockLocation =
+        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
+    StockLocation virtualStockLocation =
+        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
     if (consumedStockMoveLineList == null) {
       return;
     }
@@ -480,7 +498,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       stockMove =
           Beans.get(ManufOrderStockMoveService.class)
               ._createToConsumeStockMove(
-                  operationOrder.getManufOrder(), operationOrder.getManufOrder().getCompany());
+                  manufOrder, company, fromStockLocation, virtualStockLocation);
       operationOrder.addInStockMoveListItem(stockMove);
       Beans.get(StockMoveService.class).plan(stockMove);
     }
@@ -507,5 +525,162 @@ public class OperationOrderServiceImpl implements OperationOrderService {
         operationOrder.setBarCode(barcodeFile);
       }
     }
+  }
+
+  @Override
+  public long computeEntireCycleDuration(OperationOrder operationOrder, BigDecimal qty)
+      throws AxelorException {
+    ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+
+    return prodProcessLineService.computeEntireCycleDuration(operationOrder, prodProcessLine, qty);
+  }
+
+  /**
+   * Computes the duration of all the {@link OperationOrderDuration} of {@code operationOrder}
+   *
+   * @param operationOrder An operation order
+   * @return Real duration of {@code operationOrder}
+   */
+  @Override
+  public Duration computeRealDuration(OperationOrder operationOrder) {
+    Duration totalDuration = Duration.ZERO;
+
+    List<OperationOrderDuration> operationOrderDurations =
+        operationOrder.getOperationOrderDurationList();
+    if (operationOrderDurations != null) {
+      for (OperationOrderDuration operationOrderDuration : operationOrderDurations) {
+        if (operationOrderDuration.getStartingDateTime() != null
+            && operationOrderDuration.getStoppingDateTime() != null) {
+          totalDuration =
+              totalDuration.plus(
+                  Duration.between(
+                      operationOrderDuration.getStartingDateTime(),
+                      operationOrderDuration.getStoppingDateTime()));
+        }
+      }
+    }
+
+    return totalDuration;
+  }
+
+  @Override
+  public LocalDateTime getNextOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    OperationOrder nextOperationOrder =
+        operationOrderRepository
+            .all()
+            .filter(
+                "self.manufOrder = :manufOrder AND self.priority >= :priority AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("operationOrderId", operationOrder.getId())
+            .order("priority")
+            .order("plannedStartDateT")
+            .fetchOne();
+
+    LocalDateTime manufOrderPlannedEndDateT = manufOrder.getPlannedEndDateT();
+    if (nextOperationOrder == null) {
+      return manufOrderPlannedEndDateT;
+    }
+
+    LocalDateTime plannedStartDateT = nextOperationOrder.getPlannedStartDateT();
+
+    if (Objects.equals(nextOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedEndDateT = nextOperationOrder.getPlannedEndDateT();
+      if (plannedEndDateT != null && plannedEndDateT.isBefore(manufOrderPlannedEndDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(nextOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedStartDateT : plannedEndDateT;
+      }
+
+    } else if (plannedStartDateT != null && plannedStartDateT.isBefore(manufOrderPlannedEndDateT)) {
+      return plannedStartDateT;
+    }
+
+    return manufOrderPlannedEndDateT;
+  }
+
+  @Override
+  public LocalDateTime getLastOperationDate(OperationOrder operationOrder) {
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    OperationOrder lastOperationOrder =
+        operationOrderRepository
+            .all()
+            .filter(
+                "self.manufOrder = :manufOrder AND ((self.priority = :priority AND self.machine = :machine) OR self.priority < :priority) AND self.statusSelect BETWEEN :statusPlanned AND :statusStandby AND self.id != :operationOrderId")
+            .bind("manufOrder", manufOrder)
+            .bind("priority", operationOrder.getPriority())
+            .bind("statusPlanned", OperationOrderRepository.STATUS_PLANNED)
+            .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
+            .bind("machine", operationOrder.getMachine())
+            .bind("operationOrderId", operationOrder.getId())
+            .order("-priority")
+            .order("-plannedEndDateT")
+            .fetchOne();
+
+    LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
+    if (lastOperationOrder == null) {
+      return manufOrderPlannedStartDateT;
+    }
+
+    LocalDateTime plannedEndDateT = lastOperationOrder.getPlannedEndDateT();
+
+    if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
+      LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
+      if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        boolean isOnSameMachine =
+            Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
+        return isOnSameMachine ? plannedEndDateT : plannedStartDateT;
+      }
+
+    } else if (plannedEndDateT != null && plannedEndDateT.isAfter(manufOrderPlannedStartDateT)) {
+      return plannedEndDateT;
+    }
+
+    return manufOrderPlannedStartDateT;
+  }
+
+  @Override
+  public long getDuration(OperationOrder operationOrder) throws AxelorException {
+    if (operationOrder.getWorkCenter() != null) {
+      return computeEntireCycleDuration(operationOrder, operationOrder.getManufOrder().getQty());
+    }
+    return 0;
+  }
+
+  /**
+   * Sort operationOrders list by priority and id.
+   *
+   * @param operationOrders
+   * @return
+   */
+  @Override
+  public List<OperationOrder> getSortedOperationOrderList(List<OperationOrder> operationOrders) {
+
+    Comparator<OperationOrder> byPriority =
+        Comparator.comparing(
+            OperationOrder::getPriority, Comparator.nullsFirst(Comparator.naturalOrder()));
+    Comparator<OperationOrder> byId =
+        Comparator.comparing(
+            OperationOrder::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
+
+    return operationOrders.stream()
+        .sorted(byPriority.thenComparing(byId))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Reverse sort operationOrders list by priority and id.
+   *
+   * @param operationOrders
+   * @return
+   */
+  @Override
+  public List<OperationOrder> getReversedSortedOperationOrderList(
+      List<OperationOrder> operationOrders) {
+
+    return Lists.reverse(getSortedOperationOrderList(operationOrders));
   }
 }

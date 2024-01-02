@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <!-- Account Invoice Dashboard -->
 
@@ -31,6 +31,8 @@
     <dashlet action="dashlet.prod.qty.suppl.invoices.last.12m" height="350" canSearch="true"/>
     <dashlet action="dashlet.prod.turnover.suppl.invoices.last.12m" height="350"
       canSearch="true"/>
+    <dashlet colSpan="12" height="350" action="invoice.root.my.awaiting.pfp"
+      canSearch="true"/>
     <dashlet action="dashlet.supplier.invoices.per.month" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.purchase.situation" height="350" canSearch="true"/>
     <dashlet action="dashlet.invoice.purchase.amount.by.month" height="350" canSearch="true"/>
@@ -49,10 +51,131 @@
       height="350" canSearch="true"/>
     <dashlet action="dashlet.paymentVoucher.customer.paymentMode.distribution.amount"
       height="350" canSearch="true"/>
-    <dashlet action="dashlet.paymentVoucher.customer.paymentMode.by.amount" height="350"
-      canSearch="true"/>
     <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-purchases-invoice-per-month-pie"/>
+    <dashlet colSpan="12" height="350" action="invoice.root.pfp.awaiting.pfp"
+      canSearch="true"/>
+    <dashlet colSpan="12" height="350" action="action-pfp-disputed-invoice" canSearch="true"/>
+    <dashlet colSpan="4" height="175" action="action-accounting-dashboard-report-delay-rate"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-report-supplier-amount-remaining"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-report-top-3-suppliers"/>
+    <dashlet colSpan="12" height="350" action="action-daf-dashboard-customer-late-invoice"/>
   </dashboard>
+
+  <dashboard title="Accounting Dashboard with invoice terms"
+    name="accounting.dashboard.invoice.terms.sample" width="large">
+    <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.nbr"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.invoice.terms.customer.paymentMode.distribution.amount"
+      height="350" canSearch="true"/>
+    <dashlet action="dashlet.moveLines.revenues.vs.expenses" height="350"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"/>
+    <dashlet colSpan="6" height="350"
+      action="action-accounting-dashboard-chart-purchases-invoice-term-per-month-pie"/>
+    <dashlet colSpan="12" height="350" action="invoice.root.pfp.awaiting.pfp"
+      canSearch="true"/>
+    <dashlet colSpan="12" height="350" action="action-pfp-disputed-invoice-term"
+      canSearch="true"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-invoice-terms-report-delay-rate"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-invoice-terms-report-supplier-amount-remaining"/>
+    <dashlet colSpan="4" height="175"
+      action="action-accounting-dashboard-report-invoice-terms-top-3-suppliers"/>
+    <dashlet colSpan="12" height="350"
+      action="action-daf-dashboard-customer-late-invoice-terms"/>
+  </dashboard>
+
+  <action-view name="action-daf-dashboard-customer-late-invoice"
+    title="Customer late invoices" model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.amountRemaining &gt; 0 AND self.dueDate &lt; :todayDate AND self.statusSelect
+      = 3</domain>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+  <action-view name="action-daf-dashboard-customer-late-invoice-terms"
+    title="Customer late invoice terms" model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-grid"/>
+    <view type="form" name="invoice-term-form"/>
+    <domain>self.amountRemaining &gt; 0 AND self.dueDate &lt; :todayDate AND
+      ((self.invoice.statusSelect = 3 AND self.invoice.operationTypeSelect = 3)
+      OR
+      (self.moveLine.move.statusSelect = 3 AND self.moveLine.account.accountType.technicalTypeSelect
+      =
+      'receivable' AND self.moveLine.credit = 0))</domain>
+    <context name="todayDate"
+      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+  </action-view>
+
+
+  <action-view name="action-accounting-dashboard-report-supplier-amount-remaining"
+    title="Supplier amount in progress">
+    <view type="custom" name="report-supplier-amount-remaining"/>
+    <context name="_company" expr="eval:__user__.activeCompany"/>
+  </action-view>
+
+  <action-view
+    name="action-accounting-dashboard-invoice-terms-report-supplier-amount-remaining"
+    title="Supplier amount in progress">
+    <view type="custom" name="report-invoice-terms-supplier-amount-remaining"/>
+    <context name="_company" expr="eval:__user__.activeCompany"/>
+  </action-view>
+
+  <action-view name="action-accounting-dashboard-report-top-3-suppliers"
+    title="Top 3 supplier">
+    <view type="custom" name="report-top-3-suppliers"/>
+    <context name="_company" expr="eval:__user__.activeCompany"/>
+  </action-view>
+
+  <action-view name="action-accounting-dashboard-report-invoice-terms-top-3-suppliers"
+    title="Top 3 supplier">
+    <view type="custom" name="invoice-terms-report-top-3-suppliers"/>
+    <context name="_company" expr="eval:__user__.activeCompany"/>
+  </action-view>
+
+  <action-view name="action-pfp-disputed-invoice" title="Supplier invoices in dispute"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-supplier-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>self.pfpValidateStatusSelect = 3</domain>
+  </action-view>
+
+  <action-view name="action-pfp-disputed-invoice-term" title="Invoice term in dispute"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="grid" name="invoice-term-grid"/>
+    <view type="form" name="invoice-term-form"/>
+    <domain>self.pfpValidateStatusSelect = 3</domain>
+  </action-view>
+
+  <action-view name="action-accounting-dashboard-report-delay-rate"
+    title="Supplier's delay on payment">
+    <view type="custom" name="report-delay-rate"/>
+  </action-view>
+
+  <action-view name="action-accounting-dashboard-invoice-terms-report-delay-rate"
+    title="Supplier's delay on payment">
+    <view type="custom" name="invoice-terms-report-delay-rate"/>
+  </action-view>
+
+  <action-view name="action-accounting-dashboard-chart-purchases-invoice-per-month-pie"
+    title="Supplier invoices by reason of refusal to pay">
+    <view type="chart" name="chart.purchases.invoice.per.month.pie"/>
+  </action-view>
+
+  <action-view
+    name="action-accounting-dashboard-chart-purchases-invoice-term-per-month-pie"
+    title="Supplier invoice terms by reason of refusal to pay">
+    <view type="chart" name="chart.purchases.invoice.terms.per.month.pie"/>
+  </action-view>
 
   <action-view name="dashlet.account.invoice.summary" title="Account Invoice Summary"
     model="com.axelor.apps.account.db.Invoice">
@@ -71,8 +194,7 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="chart" name="chart.invoice.turnover.cust.history"/>
 
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.invoice.prod.qty.sold.history"
@@ -80,23 +202,20 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="chart" name="chart.invoice.prod.qty.sold.history"/>
 
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.invoice.total.revenue.by.product"
     title="Total Revenue Distribution by Product" model="com.axelor.apps.account.db.Invoice">
     <view type="chart" name="chart.invoice.total.revenue.by.product"/>
 
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.total.revenue.by.geo.region"
     title="Reveue generated by country" model="com.axelor.apps.account.db.Invoice">
     <view type="chart" name="chart.total.revenue.by.geo.region"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.prod.qty.suppl.invoices.last.12m"
@@ -136,6 +255,13 @@
     title="Customer Payment mode distribution by transactions"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <view type="chart" name="chart.paymentVoucher.customer.paymentMode.distribution.nbr"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
+  </action-view>
+
+  <action-view name="dashlet.invoice.terms.customer.paymentMode.distribution.nbr"
+    title="Customer Payment mode distribution by transactions"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="chart" name="chart.invoice.terms.customer.paymentMode.distribution.nbr"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
@@ -144,13 +270,13 @@
     title="Customer Payment mode distribution by amount"
     model="com.axelor.apps.account.db.PaymentVoucher">
     <view type="chart" name="chart.paymentVoucher.customer.paymentMode.distribution.amount"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
-  <action-view name="dashlet.paymentVoucher.customer.paymentMode.by.amount"
-    title="Customer Payment mode by amount" model="com.axelor.apps.account.db.PaymentVoucher">
-    <view type="chart" name="chart.paymentVoucher.customer.paymentMode.by.amount"/>
+  <action-view name="dashlet.invoice.terms.customer.paymentMode.distribution.amount"
+    title="Customer Payment mode distribution by amount"
+    model="com.axelor.apps.account.db.InvoiceTerm">
+    <view type="chart" name="chart.invoice.terms.customer.paymentMode.distribution.amount"/>
     <context name="todayDate"
       expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
   </action-view>
@@ -159,81 +285,77 @@
     title="Revenues vs Expenses" model="com.axelor.apps.account.db.MoveLine">
     <view type="chart" name="chart.moveLines.revenues.vs.expenses"/>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view title="Invoice Sale by month (tax excl.)"
     name="dashlet.invoice.sale.amount.by.month">
     <view type="chart" name="chart.invoice.sale.amount.by.month"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
 
   </action-view>
 
   <action-view title="Invoice Sale by currency (tax excl.)"
     name="dashlet.invoice.sale.amount.by.currency">
     <view type="chart" name="chart.invoice.sale.amount.by.currency"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
 
   </action-view>
 
   <action-view title="Invoice Sale Payment Condition distribution"
     name="dashlet.invoice.sale.paymentCondition.distribution">
     <view type="chart" name="chart.invoice.sale.paymentCondition.distribution"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
 
   </action-view>
 
   <action-view title="Invoice Purchase by month (tax excl.)"
     name="dashlet.invoice.purchase.amount.by.month">
     <view type="chart" name="chart.invoice.purchase.amount.by.month"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
 
   </action-view>
 
   <action-view title="Invoice Purchase by currency (tax excl.)"
     name="dashlet.invoice.purchase.amount.by.currency">
     <view type="chart" name="chart.invoice.purchase.amount.by.currency"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
 
   </action-view>
 
   <action-view title="Invoice Purchase Payment Condition distribution"
     name="dashlet.invoice.purchase.paymentCondition.distribution">
     <view type="chart" name="chart.invoice.purchase.paymentCondition.distribution"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
 
   </action-view>
 
   <action-view name="dashlet.invoice.sale.refund.situation"
     title="Invoice and Refunds Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.refund.situation"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view name="dashlet.invoice.sale.situation"
     title="Invoice Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.situation"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view name="dashlet.invoice.purchase.situation"
     title="Invoice Purchase situation (tax incl.)">
     <view type="chart" name="chart.invoice.purchase.situation"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_language" expr="eval: __user__.getLanguage()"/>
+  </action-view>
+
+  <action-view
+    name="action-accounting-dashboard-chart-sales-turnover-per-analytic-account-per-month"
+    title="Turnover invoiced for an Analytic Axis by Month">
+    <view type="chart" name="chart.sales.turnover.per.analytic.account.per.month"/>
   </action-view>
 
 </object-views>

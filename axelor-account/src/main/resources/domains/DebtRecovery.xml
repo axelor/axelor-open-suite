@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="DebtRecovery" lang="java">
+  <entity name="DebtRecovery">
 
     <one-to-one name="accountingSituation"
-      ref="com.axelor.apps.account.db.AccountingSituation"/>
+      ref="com.axelor.apps.account.db.AccountingSituation" unique="true"/>
     <many-to-one name="tradingNameAccountingSituation"
       ref="com.axelor.apps.account.db.AccountingSituation"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
@@ -36,9 +36,12 @@
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Trading Name"/>
+      title="Trading name"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
     <date name="respiteDateBeforeAccountBlocking" title="Respite date before account blocking"/>
+    <many-to-many name="invoiceTermDebtRecoverySet"
+      ref="com.axelor.apps.account.db.InvoiceTerm"
+      title="Invoice term concerned by the debt recovery"/>
 
     <string name="name" namecolumn="true" search="referenceDate,id" title="Name">
 	   	<![CDATA[

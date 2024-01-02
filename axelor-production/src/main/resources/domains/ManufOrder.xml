@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ManufOrder" lang="java">
+  <entity name="ManufOrder">
 
     <many-to-one name="manufOrderMergeResult"
       ref="com.axelor.apps.production.db.ManufOrder" title="Manufacturing order merge result"/>
@@ -58,7 +58,8 @@
     <boolean name="planOnlyMissingQuantities"
       title="Plan only product with missing quantities"/>
 
-    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"
+      initParam="true"/>
     <many-to-one name="billOfMaterial"
       ref="com.axelor.apps.production.db.BillOfMaterial" title="BoM" initParam="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
@@ -114,6 +115,7 @@
 
     <!-- Added this field to identify unsaved manufacturing orders in multi-level planning -->
     <string name="manualMOSeq" transient="true"/>
+    <integer name="operationOrderMaxPriority" title="Operation orders maximum priority"/>
 
     <unique-constraint columns="manufOrderSeq,company"/>
 

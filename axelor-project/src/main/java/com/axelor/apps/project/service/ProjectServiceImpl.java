@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Wizard;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
@@ -30,18 +32,18 @@ import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectStatusRepository;
+import com.axelor.apps.project.db.repo.ProjectTemplateRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.project.translation.ITranslation;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -61,15 +63,18 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
   protected AppProjectService appProjectService;
+  protected ProjectTemplateRepository projTemplateRepo;
 
   @Inject
   public ProjectServiceImpl(
       ProjectRepository projectRepository,
       ProjectStatusRepository projectStatusRepository,
-      AppProjectService appProjectService) {
+      AppProjectService appProjectService,
+      ProjectTemplateRepository projTemplateRepo) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
+    this.projTemplateRepo = projTemplateRepo;
   }
 
   @Inject WikiRepository wikiRepo;
@@ -120,7 +125,7 @@ public class ProjectServiceImpl implements ProjectService {
     return projectRepository.save(project);
   }
 
-  private String getUniqueProjectName(Partner partner) {
+  protected String getUniqueProjectName(Partner partner) {
     String baseName = String.format(I18n.get("%s project"), partner.getName());
     long count =
         projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();
@@ -186,7 +191,6 @@ public class ProjectServiceImpl implements ProjectService {
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");
-      builder.param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
     }
 
     if (ObjectUtils.notEmpty(context)) {
@@ -198,6 +202,20 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public Map<String, Object> createProjectFromTemplateView(ProjectTemplate projectTemplate)
       throws AxelorException {
+    if (appProjectService.getAppProject().getGenerateProjectSequence()
+        && !projectTemplate.getIsBusinessProject()) {
+      projectTemplate = projTemplateRepo.find(projectTemplate.getId());
+      Project project =
+          Beans.get(ProjectService.class).createProjectFromTemplate(projectTemplate, null, null);
+      return ActionView.define(I18n.get("Project"))
+          .model(Project.class.getName())
+          .add("form", "project-form")
+          .add("grid", "project-grid")
+          .param("search-filters", "project-filters")
+          .context("_showRecord", project.getId())
+          .map();
+    }
+
     return ActionView.define(I18n.get("Create project from this template"))
         .model(Wizard.class.getName())
         .add("form", "project-template-wizard-form")
@@ -237,7 +255,6 @@ public class ProjectServiceImpl implements ProjectService {
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
     project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
-    project.setExcludePlanning(projectTemplate.getExcludePlanning());
     project.setProjectStatus(getDefaultProjectStatus());
     project.setProjectTaskStatusSet(
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
@@ -257,8 +274,7 @@ public class ProjectServiceImpl implements ProjectService {
             .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
             .add("form", "project-task-form")
-            .domain("self.typeSelect = :_typeSelect AND self.project = :_project")
-            .param("kanban-hide-columns", getStatusColumnsTobeExcluded(project));
+            .domain("self.typeSelect = :_typeSelect AND self.project = :_project");
 
     if (ObjectUtils.notEmpty(context)) {
       context.forEach(builder::context);
@@ -294,29 +310,9 @@ public class ProjectServiceImpl implements ProjectService {
     return task;
   }
 
-  protected String getStatusColumnsTobeExcluded(Project project) {
-    return projectStatusRepository
-        .all()
-        .filter("self not in :allowedProjectTaskStatus")
-        .bind("allowedProjectTaskStatus", project.getProjectTaskStatusSet())
-        .fetchStream()
-        .map(ProjectStatus::getId)
-        .map(String::valueOf)
-        .collect(Collectors.joining(","));
-  }
-
-  @Override
-  public String getTimeZone(Project project) {
-    return null;
-  }
-
   @Override
   public ProjectStatus getDefaultProjectStatus() {
-    return projectStatusRepository
-        .all()
-        .filter("self.relatedToSelect = ?1", ProjectStatusRepository.PROJECT_STATUS_PROJECT)
-        .order("sequence")
-        .fetchOne();
+    return projectStatusRepository.all().order("sequence").fetchOne();
   }
 
   public boolean checkIfResourceBooked(Project project) {

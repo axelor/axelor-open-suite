@@ -1,0 +1,8 @@
+"importId";"codeSelect";"name";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+163;"bankOrder";"SEPA Credit Transfers";1;4;"SCT%YY%FM";;1;1
+164;"bankOrder";"SEPA Direct Debits";1;4;"SDD%YY%FM";;1;1
+165;"bankOrder";"International Credit Transfers";1;4;"ICT%YY%FM";;1;1
+166;"bankOrder";"International Direct Debits";1;4;"IDD%YY%FM";;1;1
+167;"bankOrder";"International Treasury Transfers";1;4;"ITT%YY%FM";;1;1
+168;"bankOrder";"SEPA Treasury Transfers";1;4;"STT%YY%FM";;1;1
+220;"bankOrder";"LCR Ordre bancaire";1;4;"OBLCR%YY";;1;1

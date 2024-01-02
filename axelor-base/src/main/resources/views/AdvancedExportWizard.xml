@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name='base.advanced.export.wizard.export.format.select'>
     <option value="PDF">PDF</option>
@@ -9,7 +9,7 @@
     <option value="CSV">CSV</option>
   </selection>
 
-  <form name="advanced-export-wizard-form" model="com.axelor.apps.base.db.Wizard"
+  <form name="advanced-export-wizard-form" model="com.axelor.utils.db.Wizard"
     title="Advanced export" onNew="action-advanced-export-wizard-record-on-new">
     <panel name="mainPanel">
       <field name="_xAdvancedExport" title="Advanced export" widget="SuggestBox"

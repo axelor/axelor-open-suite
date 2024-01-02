@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,13 +14,17 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.service.configurator;
 
+import static com.axelor.utils.MetaJsonFieldType.ONE_TO_MANY;
+
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
@@ -30,17 +35,14 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.sale.exception.IExceptionMessage;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
-import com.axelor.apps.tool.MetaTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
@@ -49,6 +51,7 @@ import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
+import com.axelor.utils.MetaTool;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
@@ -60,26 +63,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ConfiguratorServiceImpl implements ConfiguratorService {
 
   protected AppBaseService appBaseService;
-
-  private ConfiguratorFormulaService configuratorFormulaService;
-
-  private ProductRepository productRepository;
-
-  private SaleOrderLineService saleOrderLineService;
-
-  private SaleOrderLineRepository saleOrderLineRepository;
-
-  private SaleOrderComputeService saleOrderComputeService;
-
-  private MetaFieldRepository metaFieldRepository;
-
-  private ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
+  protected ConfiguratorFormulaService configuratorFormulaService;
+  protected ProductRepository productRepository;
+  protected SaleOrderLineService saleOrderLineService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
+  protected SaleOrderComputeService saleOrderComputeService;
+  protected MetaFieldRepository metaFieldRepository;
+  protected ConfiguratorMetaJsonFieldService configuratorMetaJsonFieldService;
 
   @Inject
   public ConfiguratorServiceImpl(
@@ -151,7 +148,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
   protected Boolean isOneToManyNotAttr(
       List<ConfiguratorFormula> formulas, MetaJsonField metaJsonField) {
 
-    return "one-to-many".equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
+    return ONE_TO_MANY.equals(metaJsonField.getType()) && !metaJsonField.getName().contains("$");
   }
 
   @Override
@@ -180,7 +177,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (!areCompatible(wantedClassName, calculatedValueClassName)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CONFIGURATOR_ON_GENERATING_TYPE_ERROR),
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_ON_GENERATING_TYPE_ERROR),
           indicator
               .getName()
               .substring(
@@ -212,8 +209,8 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
         jsonIndicators,
         Product.class,
         product);
-    for (String key : jsonIndicators.keySet()) {
-      mapper.set(product, key, jsonIndicators.get(key));
+    for (Entry<String, Object> entry : jsonIndicators.entrySet()) {
+      mapper.set(product, entry.getKey(), entry.getValue());
     }
 
     fixRelationalFields(product);
@@ -227,13 +224,13 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throw new AxelorException(
           configurator,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_CODE));
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_CODE));
     }
     if (product.getName() == null) {
       throw new AxelorException(
           configurator,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_NAME));
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_PRODUCT_MISSING_NAME));
     }
 
     configurator.setProduct(product);
@@ -412,7 +409,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
       throw new AxelorException(
           configurator,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_SALE_ORDER_LINE_MISSING_PRODUCT_NAME));
     }
     saleOrderLine = saleOrderLineRepository.save(saleOrderLine);
     saleOrderLineService.computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
@@ -488,7 +485,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     if (mappedBy == null || "".equals(mappedBy)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED));
+          I18n.get(SaleExceptionMessage.CONFIGURATOR_ONE_TO_MANY_WITHOUT_MAPPED_BY_UNSUPPORTED));
     }
     return Mapper.of(Class.forName(MetaTool.computeFullClassName(metaField))).getSetter(mappedBy);
   }

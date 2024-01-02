@@ -1,0 +1,7 @@
+"importId";"name";"typeSelect";"label";"code";"elementSelect";"archived";"sequence";"statusSelect";"applicationFieldSelect"
+1;"STO - Available stock";1;"Available stock";"STO";1;;"0";;1
+2;"PPR - Purchase proposal";1;"Purchase proposal";"PPR";5;;"1";;1
+4;"POR - Purchase order";1;"Purchase order";"POR";2;;"3";3;1
+7;"NSF - Need / sales forecast";2;"Need / sales forecast";"NSF";4;;"6";;1
+8;"NSO - Need / sale order";2;"Need / sale order";"NSO";3;;"7";3;1
+9;"PPD - Purchase proposal / Estimated delivery";1;"Purchase proposal / Estimated delivery";"LPA";11;;"3";;1

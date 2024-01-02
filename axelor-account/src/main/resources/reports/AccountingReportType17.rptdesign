@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
@@ -60,9 +61,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -324,6 +322,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <text-property name="heading">currency</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -387,6 +391,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <structure>
                         <property name="position">10</property>
                         <property name="name">currency</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
                 </list-property>
@@ -463,6 +472,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 	Company.name as company_name,
@@ -474,7 +490,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	AcYear.name as year_name, 
 	MetaFile.file_path as logo_path,
 	Period.name as period_name, 
-	Currency.code as currency
+	Currency.code as currency,
+	AccountingReport.ref
 	
 from public.account_accounting_report as AccountingReport
 
@@ -843,6 +860,12 @@ where AccountingReport.id = ?
                     <text-property name="displayName">year_end_value2</text-property>
                     <text-property name="heading">year_end_value2</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">accounting_value</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">accounting_value</text-property>
+                    <text-property name="heading">accounting_value</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -976,6 +999,11 @@ where AccountingReport.id = ?
                     <structure>
                         <property name="position">24</property>
                         <property name="name">year_end_value2</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">25</property>
+                        <property name="name">accounting_value</property>
                         <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
@@ -1150,6 +1178,13 @@ where AccountingReport.id = ?
                     <property name="dataType">decimal</property>
                     <property name="nativeDataType">2</property>
                 </structure>
+                <structure>
+                    <property name="position">25</property>
+                    <property name="name">accounting_value</property>
+                    <property name="nativeName">accounting_value</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 	Asset.id AS asset_id,
@@ -1158,7 +1193,7 @@ where AccountingReport.id = ?
 	Asset.computation_method_select AS computation_method,
 	Asset.duration_in_month AS duration,
 	Asset.acquisition_date AS acquisition_date,
-	Asset.gross_value AS gross_value,
+	Asset.gross_value,
 	Asset.residual_value AS residual_value,
 	Asset.disposal_value AS disposal_value,
 	Asset.disposal_date AS disposal_date,
@@ -1171,12 +1206,12 @@ where AccountingReport.id = ?
 	AnalyticDistributionTemplate.name AS analytic_distribution_template_name,
 	CASE 
 		WHEN acquisition_date <= date_from 
-		THEN gross_value 
+		THEN Asset.gross_value 
 		ELSE 0
 	END AS original_value,
 	CASE 
 		WHEN acquisition_date >= date_from AND acquisition_date <= date_to
-		THEN gross_value 
+		THEN Asset.gross_value 
 		ELSE 0
 	END AS acquisition,
 	CASE 
@@ -1184,15 +1219,15 @@ where AccountingReport.id = ?
 		THEN disposal_value
 		ELSE 0
 	END AS asset_disposal,
-	gross_value - disposal_value AS year_end_value,
-	gross_value - COALESCE(SUM(
+	Asset.gross_value - disposal_value AS year_end_value,
+	COALESCE(SUM(
 		CASE 
 			WHEN 
 				AccountingReport.date_from IS NULL 
-				OR AssetLine.depreciation_date <= AccountingReport.date_from
+				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
+   	), 0) + Asset.already_depreciated_amount AS year_start_value,
 	SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
@@ -1200,20 +1235,22 @@ where AccountingReport.id = ?
    			THEN depreciation 
    		END
    	) AS depreciation_charge,
-   	gross_value - SUM(
+    COALESCE(SUM(
+		CASE 
+			WHEN 
+				AccountingReport.date_from IS NULL 
+				OR AssetLine.depreciation_date < AccountingReport.date_from
+   			THEN assetLine.depreciation 
+   		END
+   	), 0) + Asset.already_depreciated_amount + SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
 				AND (date_to IS NULL OR depreciation_date <= date_to)
    			THEN depreciation 
    		END
-   	) - COALESCE(SUM(
-		CASE 
-			WHEN 
-				AccountingReport.date_from IS NULL 
-				OR AssetLine.depreciation_date <= AccountingReport.date_from
-   			THEN assetLine.depreciation 
-   		END
-   	), 0) AS year_end_value2
+   	) AS year_end_value2,
+    MIN(assetLine.accounting_value)
+    as accounting_value
 	
 FROM public.account_accounting_report as AccountingReport
 
@@ -1230,7 +1267,7 @@ LEFT JOIN public.account_accounting_report_account_set AS AccountSet
 ON AccountSet.account_accounting_report = AccountingReport.id
 
 LEFT JOIN public.account_fixed_asset_line AS AssetLine
-ON AssetLine.fixed_asset = Asset.id
+ON AssetLine.fixed_asset = Asset.id OR AssetLine.fiscal_fixed_asset = Asset.id OR AssetLine.ifrs_fixed_asset = Asset.id
    	
 WHERE
 	(
@@ -1245,11 +1282,16 @@ WHERE
    	AND Asset.company = AccountingReport.company
    	AND (AccountingReport.analytic_distribution_template IS NULL OR Asset.analytic_distribution_template = AccountingReport.analytic_distribution_template)
    	AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+   	AND AssetLine.type_select = AccountingReport.fixed_asset_line_type_select
+   	AND (AccountingReport.date_to IS NULL OR AssetLine.depreciation_date <= AccountingReport.date_to)
    	
 GROUP BY Asset.id, Account.code, Account.name, AccountingReport.date_from, AccountingReport.date_to, 
 		 AccountingReport.subtotal_by_analytic_distribution, AnalyticDistributionTemplate.name 
    	
-ORDER BY Account.code]]></xml-property>
+ORDER BY Account.code
+
+
+]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1517,6 +1559,12 @@ ORDER BY Account.code]]></xml-property>
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
+                        <structure>
+                            <property name="name">accountingReport.ref</property>
+                            <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                            <property name="dataType">string</property>
+                            <property name="allowExport">true</property>
+                        </structure>
                     </list-property>
                     <column id="4732">
                         <property name="width">1.6in</property>
@@ -1544,27 +1592,25 @@ ORDER BY Account.code]]></xml-property>
                         <property name="fontSize">9pt</property>
                         <cell id="4731">
                             <property name="verticalAlign">middle</property>
-                            <text id="5496">
-                                <property name="fontSize">8pt</property>
+                            <image id="5923">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4636">
                             <property name="textAlign">center</property>
                             <property name="verticalAlign">middle</property>
+                            <data id="5915">
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
                         </cell>
                         <cell id="4637">
                             <property name="verticalAlign">middle</property>
@@ -2530,6 +2576,54 @@ ORDER BY Account.code]]></xml-property>
                                 </list-property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">accounting_value</property>
+                                <text-property name="displayName">accounting_value</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["accounting_value"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                            <structure>
+                                <property name="name">accounting_value_sum2</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>TableGroup</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["accounting_value"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">accounting_value_sum1</property>
+                                <property name="dataType">decimal</property>
+                                <simple-property-list name="aggregateOn">
+                                    <value>NewTableGroup1</value>
+                                </simple-property-list>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["accounting_value"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">accounting_value_sum</property>
+                                <property name="dataType">decimal</property>
+                                <property name="aggregateFunction">SUM</property>
+                                <list-property name="arguments">
+                                    <structure>
+                                        <property name="name">Expression</property>
+                                        <expression name="value" type="javascript">row["accounting_value"]</expression>
+                                    </structure>
+                                </list-property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="5553"/>
@@ -3248,14 +3342,14 @@ else {
                                         </data>
                                     </cell>
                                     <cell id="5836">
-                                        <data id="5904">
+                                        <data id="5921">
                                             <property name="fontSize">9pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
                                                 <property name="pattern">#,##0.00</property>
                                             </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_end_value2_sum1</property>
+                                            <property name="resultSetColumn">accounting_value_sum1</property>
                                         </data>
                                     </cell>
                                 </row>
@@ -3462,14 +3556,14 @@ else {
                                         </data>
                                     </cell>
                                     <cell id="5865">
-                                        <data id="5903">
+                                        <data id="5919">
                                             <property name="fontSize">9pt</property>
                                             <structure name="numberFormat">
                                                 <property name="category">Custom</property>
                                                 <property name="pattern">#,##0.00</property>
                                             </structure>
                                             <property name="textAlign">right</property>
-                                            <property name="resultSetColumn">year_end_value2_sum2</property>
+                                            <property name="resultSetColumn">accounting_value_sum2</property>
                                         </data>
                                     </cell>
                                 </row>
@@ -3622,14 +3716,14 @@ else {
                                     </data>
                                 </cell>
                                 <cell id="5603">
-                                    <data id="5621">
+                                    <data id="5917">
                                         <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">#,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_end_value2</property>
+                                        <property name="resultSetColumn">accounting_value</property>
                                     </data>
                                 </cell>
                             </row>
@@ -3758,14 +3852,14 @@ else {
                                     </data>
                                 </cell>
                                 <cell id="5879">
-                                    <data id="5905">
+                                    <data id="5922">
                                         <property name="fontSize">9pt</property>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">#,##0.00</property>
                                         </structure>
                                         <property name="textAlign">right</property>
-                                        <property name="resultSetColumn">year_end_value2_sum</property>
+                                        <property name="resultSetColumn">accounting_value_sum</property>
                                     </data>
                                 </cell>
                             </row>

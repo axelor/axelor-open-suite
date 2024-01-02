@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="tracking-number-configuration-grid" title="Tracking Number Configuration"
     model="com.axelor.apps.stock.db.TrackingNumberConfiguration">
@@ -29,12 +29,12 @@
       <field name="name" onChange="action-tracking-number-config-record-compute-fullname"/>
     </panel>
     <panel name="barCodePanel" title="Barcode"
-      if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
+      if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
       <field name="useTrackingNumberSeqAsSerialNbr"
         onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"/>
       <field name="barcodeTypeConfig"
         onChange="action-tracking-number-config-method-check-sequence-and-barcode-type-config-consistency"
-        if="__config__.app.getApp('stock').getEditTrackingNumberBarcodeType()"/>
+        if="__config__.app.getApp('stock')?.getEditTrackingNumberBarcodeType()"/>
     </panel>
     <panel name="purchaseTrackingPanel">
       <field name="isPurchaseTrackingManaged"

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="gdpr" package="com.axelor.apps.gdpr.db"/>
+
+  <entity name="GDPRProcessingRegisterRule">
+    <many-to-one ref="com.axelor.apps.gdpr.db.GDPRProcessingRegister"
+      name="gdprProcessingRegister" title="Processing register"/>
+    <many-to-one ref="com.axelor.meta.db.MetaModel" name="metaModel" title="Model"/>
+    <string name="rule" large="true" title="Rule" required="true"
+      help="Indicate which date should be verified. If one of the date is after the retention date, the data will not be archived."/>
+  </entity>
+
+</domain-models>

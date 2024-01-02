@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="account-management-payment-mode-grid" title="Account Managements"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
@@ -9,15 +9,15 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="cashAccount" form-view="account-form" grid-view="account-grid"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
-      canEdit="false"/>
-    <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false"
-      domain="self.company = :company AND self.statusSelect = 1"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails" form-view="bank-details-form" grid-view="bank-details-grid"
       canEdit="false" onSelect="action-account-management-attrs-bank-details-domain"
       onChange="action-account-management-attrs-bank-details-on-change"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+      domain="self.company = :company AND self.statusSelect = 1"/>
+    <field name="cashAccount" form-view="account-form" grid-view="account-grid"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'cash'"
+      canEdit="false"/>
     <field name="sequence"
       domain="self.company = :company  AND self.codeSelect ='paymentVoucher'"
       form-view="sequence-form" grid-view="sequence-grid"/>
@@ -29,35 +29,128 @@
     <field name="typeSelect" hidden="true"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       onChange="action-group-account-account-management-onchange-common" canEdit="false"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="purchaseAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
-    <field name="purchFixedAssetsAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
-    <field name="saleAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid" if="__config__.app.isApp('account')"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
-    <field name="financialDiscountAccount" if-module="axelor-account" form-view="account-form"
-      grid-view="account-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="purchaseTaxVatSystem1Account"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="purchFixedAssetsTaxVatSystem1Account"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="saleTaxVatSystem1Account"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="allowedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
+      form-view="account-form" grid-view="account-grid"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-      domain="self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+      canEdit="false"/>
+    <field name="obtainedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
+      form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFinancialDiscount()"
+      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       canEdit="false"/>
   </grid>
 
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    groupBy="company,bankDetails">
+    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
     <field name="company"/>
     <field name="bankDetails"/>
-    <field name="journal"/>
+    <field name="journal"
+      domain="self.statusSelect = 1 AND (:company IS NULL OR self.company = :company)"
+      onChange="action-account-management-fill-company"/>
     <field name="interbankCodeLine" domain="self.interbankCode.typeSelect = 1"/>
     <field name="paymentMode"/>
   </grid>
+
+  <form name="account-management-form" title="Account management"
+    id="account-account-management-form" model="com.axelor.apps.account.db.AccountManagement"
+    extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-account-management-group-onNew,action-account-management-attrs-global-accounting-cash-account-title"/>
+      <attribute name="onLoad"
+        value="action-account-management-group-on-load,action-account-management-attrs-global-accounting-cash-account-title"/>
+    </extend>
+    <extend
+      target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
+      <attribute name="showIf"
+        value="paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
+      <attribute name="requiredIf"
+        value="typeSelect == 3 &amp;&amp; (paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
+      <insert position="after">
+        <field name="chequeDepositJournal"
+          domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
+          form-view="journal-form" grid-view="journal-grid" canEdit="false" hidden="true"
+          showIf="paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"
+          requiredIf="typeSelect == 3 &amp;&amp; paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5"/>
+      </insert>
+    </extend>
+    <extend
+      target="//panel[@name='paymentConfigPanel']/field[@name='paymentMode.accountingMethodSelect']">
+      <insert position="after">
+        <field name="paymentMode.typeSelect" hidden="true"/>
+        <field name="paymentMode.inOutSelect" hidden="true"/>
+        <field name="paymentMode.accountingTriggerSelect" hidden="true"/>
+        <field name="paymentMode.canSelectInPaymentSession" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='purchaseConfig2Panel']/field[@name='purchaseAccount']">
+      <insert position="after">
+        <spacer colSpan="6"/>
+        <field name="purchaseTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+        <field name="purchaseTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+      </insert>
+      <attribute name="hideIf" value="tax != null"/>
+    </extend>
+    <extend
+      target="//panel[@name='fixedAssetsConfig2Panel']/field[@name='purchFixedAssetsAccount']">
+      <insert position="after">
+        <spacer colSpan="6"/>
+        <field name="purchFixedAssetsTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+        <field name="purchFixedAssetsTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+      </insert>
+      <attribute name="hideIf" value="tax != null"/>
+    </extend>
+    <extend target="//panel[@name='saleConfig2Panel']/field[@name='saleAccount']">
+      <insert position="after">
+        <spacer colSpan="6"/>
+        <field name="saleTaxVatSystem1Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+        <field name="saleTaxVatSystem2Account"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
+          if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+          if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-attrs
+    name="action-account-management-attrs-global-accounting-cash-account-title">
+    <attribute name="title" for="globalAccountingCashAccount"
+      expr="eval:com.axelor.i18n.I18n.get('Value for collection account')"
+      if="__parent__?._model == 'com.axelor.apps.account.db.PaymentMode' &amp;&amp; __parent__.typeSelect == 7 &amp;&amp; __parent__.inOutSelect == 1"/>
+    <attribute name="title" for="globalAccountingCashAccount"
+      expr="eval:com.axelor.i18n.I18n.get('Value for collection account')"
+      if="__parent__?._model != 'com.axelor.apps.account.db.PaymentMode' &amp;&amp; paymentMode?.typeSelect == 7 &amp;&amp; paymentMode?.inOutSelect == 1"/>
+  </action-attrs>
 
   <action-group name="action-group-account-account-management-onchange-common">
     <action name="action-account-management-clean-company"/>
@@ -92,5 +185,22 @@
     <attribute for="bankDetails" name="value" expr="eval: company?.defaultBankDetails"
       if="company?.defaultBankDetails?.active"/>
   </action-attrs>
+
+  <action-attrs name="action-account-management-attrs-bank-details-on-change">
+    <attribute name="value" for="cashAccount" expr="eval: bankDetails?.bankAccount"
+      if="__config__.app.isApp('account')"/>
+    <attribute name="value" for="journal" expr="eval: bankDetails?.journal"
+      if="__config__.app.isApp('account')"/>
+  </action-attrs>
+
+  <action-record name="action-account-management-fill-company"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="company" expr="eval: journal.company" if="journal != null"/>
+  </action-record>
+
+  <action-record name="action-record-account-management-new-account-management"
+    model="com.axelor.apps.account.db.AccountManagement">
+    <field name="typeSelect" expr="eval: 3"/>
+  </action-record>
 
 </object-views>

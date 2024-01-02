@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,64 +14,32 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.purchase.web;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
-import com.axelor.apps.purchase.exception.IExceptionMessage;
+import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.StringTool;
 import com.google.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseRequestController {
-
-  public void confirmCart(ActionRequest request, ActionResponse response) {
-    try {
-      Beans.get(PurchaseRequestService.class).confirmCart();
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void acceptRequest(ActionRequest request, ActionResponse response) {
-    try {
-      if (request.getContext().get("_ids") == null) {
-        return;
-      }
-      List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
-
-      if (!requestIds.isEmpty()) {
-        List<PurchaseRequest> purchaseRequests =
-            Beans.get(PurchaseRequestRepository.class)
-                .all()
-                .filter("self.id in (?1)", requestIds)
-                .fetch();
-
-        Beans.get(PurchaseRequestService.class).acceptRequest(purchaseRequests);
-
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 
   public void generatePo(ActionRequest request, ActionResponse response) {
     @SuppressWarnings("unchecked")
@@ -94,7 +63,7 @@ public class PurchaseRequestController {
         if (purchaseRequestSeqs != null && !purchaseRequestSeqs.isEmpty()) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.PURCHASE_REQUEST_MISSING_SUPPLIER_USER),
+              I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_MISSING_SUPPLIER_USER),
               purchaseRequestSeqs.toString());
         }
         response.setCanClose(true);
@@ -115,7 +84,7 @@ public class PurchaseRequestController {
                         "self.id in (%s)", StringTool.getIdListString(purchaseOrderList)));
         response.setView(actionViewBuilder.map());
       } catch (AxelorException e) {
-        response.setFlash(e.getMessage());
+        response.setInfo(e.getMessage());
       }
     }
   }

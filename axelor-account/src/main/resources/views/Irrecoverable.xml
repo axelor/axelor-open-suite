@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="irrecoverable-grid" title="Irrecoverables"
     model="com.axelor.apps.account.db.Irrecoverable">
     <field name="name" width="120"/>
     <field name="dateTime"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -47,9 +47,6 @@
       <button name="createIrrecoverableReportBtn" title="Generate irrecoverable report"
         onClick="save,com.axelor.apps.account.web.IrrecoverableController:createIrrecoverableReport"
         showIf="statusSelect == 1"/>
-      <field name="exportTypeSelect" colSpan="4"/>
-      <button name="printReportBtn" title="Print" icon="fa-print"
-        onClick="save,com.axelor.apps.account.web.IrrecoverableController:printIrrecoverable"/>
     </panel>
     <panel-related sidebar="true" name="irrecoverableCustomerLineListPanel"
       field="irrecoverableCustomerLineList" title="Report execution" colSpan="12"/>
@@ -87,7 +84,7 @@
   </action-record>
 
   <action-view name="action-irrecoverable-show-trace-back" title="Anomalies"
-    model="com.axelor.exception.db.TraceBack">
+    model="com.axelor.apps.base.db.TraceBack">
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id and self.origin = 'irrecoverable'</domain>
@@ -115,7 +112,7 @@
   <search-filters name="irrecoverable-filters"
     model="com.axelor.apps.account.db.Irrecoverable" title="Irrecoverable filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

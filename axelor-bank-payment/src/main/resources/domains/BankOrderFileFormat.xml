@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankOrderFileFormat" lang="java" sequential="true">
+  <entity name="BankOrderFileFormat" sequential="true">
 
     <integer name="orderTypeSelect" title="Order Type"
       selection="bankpayment.bank.order.type.select"/>
@@ -62,6 +62,15 @@
       ref="com.axelor.apps.bankpayment.db.BankOrderFileFormatCountry" title="Config. per country"
       mappedBy="bankOrderFileFormat"/>
 
+    <!-- Exchanges -->
+    <integer name="entryCodeSelect" title="Entry code"
+      selection="bankpayment.bank.order.entry.code.select"/>
+    <integer name="dailyCodeSelect" title="Dailly code"
+      selection="bankpayment.bank.order.daily.code.select"/>
+    <integer name="acceptPerLineCodeSelect" title="Acceptance code per recipient line"
+      selection="bankpayment.bank.order.accept.per.line.code.select"/>
+
+
 
     <extra-code><![CDATA[
 
@@ -106,6 +115,11 @@
         public static final String QUALIFYING_AMOUNT_SENDER_BANK_DETAILS_CURRENCY = "D";
 	]]></extra-code>
 
+    <track>
+      <field name="entryCodeSelect" on="UPDATE"/>
+      <field name="dailyCodeSelect" on="UPDATE"/>
+      <field name="acceptPerLineCodeSelect" on="UPDATE"/>
+    </track>
   </entity>
 
 </domain-models>

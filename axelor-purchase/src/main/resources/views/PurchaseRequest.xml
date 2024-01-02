@@ -1,37 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-
-  <grid name="accepted-purchase-request-grid" title="All requests accepted"
-    model="com.axelor.apps.purchase.db.PurchaseRequest" edit-icon="true">
-    <toolbar>
-      <button name="generatePoBtn" title="Generate PO"
-        onClick="action-purchase-request-open-generate-po-wizard"/>
-    </toolbar>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="statusSelect"/>
-  </grid>
-
-  <grid name="sent-purchase-request-grid" title="All requests sent"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <toolbar>
-      <button name="acceptRequestBtn" title="Accept and generate PO"
-        onClick="action-purchase-request-method-accept-request"/>
-    </toolbar>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="statusSelect"/>
-  </grid>
-
-  <grid name="my-current-cart-purchase-request-grid" title="My Purchase request"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
-    <toolbar>
-      <button name="confirmMyCartBtn" title="Confirm my cart"
-        onClick="action-purchase-request-method-confirm-cart"/>
-    </toolbar>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-    <field name="statusSelect"/>
-  </grid>
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="purchase-request-grid" title="Purchase request"
     model="com.axelor.apps.purchase.db.PurchaseRequest">
@@ -189,14 +159,6 @@
   </action-method>
   <!-- update status end -->
 
-  <action-method name="action-purchase-request-method-confirm-cart">
-    <call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="confirmCart"/>
-  </action-method>
-
-  <action-method name="action-purchase-request-method-accept-request">
-    <call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="acceptRequest"/>
-  </action-method>
-
   <action-method name="action-purchase-request-method-generate-po">
     <call class="com.axelor.apps.purchase.web.PurchaseRequestController" method="generatePo"/>
   </action-method>
@@ -268,7 +230,7 @@
   <search-filters name="purchase-request-filters"
     model="com.axelor.apps.purchase.db.PurchaseRequest" title="Purchase request filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="stockLocation" hidden="true" if="!__config__.app.isApp('supplychain')"/>
   </search-filters>
 

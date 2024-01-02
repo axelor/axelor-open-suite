@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="FixedAssetDerogatoryLine" cacheable="true">
+    <date name="depreciationDate" title="Depreciation date"/>
+    <decimal name="depreciationAmount" title="Depreciation Amount"/>
+    <decimal name="derogatoryAmount" title="Derogatory Amount"/>
+    <decimal name="derogatoryBalanceAmount" title="Derogatory Balance Amount"/>
+    <decimal name="derogatoryDepreciationAmount" title="Derogatory Depreciation Amount"/>
+    <decimal name="fiscalDepreciationAmount" title="Fiscal Depreciation Amount"/>
+    <decimal name="incomeDepreciationAmount" title="Income Depreciation Amount"/>
+    <many-to-one ref="com.axelor.apps.account.db.Move" name="derogatoryDepreciationMove"
+      title="Derogatory Depreciation Move"/>
+    <many-to-one ref="com.axelor.apps.account.db.FixedAsset" name="fixedAsset"
+      title="Fixed Asset"/>
+    <integer name="statusSelect" title="Status"
+      selection="account.fixed.asset.line.status.select"/>
+    <many-to-one name="fixedAssetLine" ref="com.axelor.apps.account.db.FixedAssetLine"
+      title="Income fixed asset line"/>
+    <many-to-one name="fiscalFixedAssetLine"
+      ref="com.axelor.apps.account.db.FixedAssetLine" title="Fiscal fixed asset line"/>
+    <boolean name="isSimulated" title="Is Simulated ?"
+      help="If ticked, this means a depreciation move has been generated at the state Simulated."/>
+  </entity>
+</domain-models>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice;
 
-import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
@@ -34,33 +34,15 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
-import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
 import com.axelor.meta.CallMethod;
-import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 
 /** InvoiceService est une classe implémentant l'ensemble des services de facturations. */
 public interface InvoiceService {
-
-  public Map<Invoice, List<Alarm>> getAlarms(Invoice... invoices);
-
-  /**
-   * Fetches suitable account for partner bound to the invoice, depending in the partner and the
-   * type of invoice.
-   *
-   * @param invoice Invoice to fetch the partner account for
-   * @return null if the invoice does not contains enough information to determine the partner
-   *     account.
-   * @throws AxelorException
-   */
-  Account getPartnerAccount(Invoice invoice) throws AxelorException;
 
   /**
    * Fetches the journal to apply to an invoice, based on the operationType and A.T.I amount
@@ -70,14 +52,6 @@ public interface InvoiceService {
    * @throws AxelorException If operationTypeSelect is empty
    */
   Journal getJournal(Invoice invoice) throws AxelorException;
-
-  /**
-   * Lever l'ensemble des alarmes d'une facture.
-   *
-   * @param invoice Une facture.
-   * @throws Exception
-   */
-  public void raisingAlarms(Invoice invoice, String alarmEngineCode);
 
   /**
    * Fonction permettant de calculer l'intégralité d'une facture :
@@ -126,7 +100,6 @@ public interface InvoiceService {
    * @param invoice Une facture.
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public void cancel(Invoice invoice) throws AxelorException;
 
   /**
@@ -135,7 +108,6 @@ public interface InvoiceService {
    *
    * @param invoice Une facture
    */
-  @Transactional
   public void usherProcess(Invoice invoice);
 
   String checkNotImputedRefunds(Invoice invoice) throws AxelorException;
@@ -149,7 +121,6 @@ public interface InvoiceService {
    * @return
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   public Invoice createRefund(Invoice invoice) throws AxelorException;
 
   public void setDraftSequence(Invoice invoice) throws AxelorException;
@@ -317,40 +288,37 @@ public interface InvoiceService {
 
   public String checkNotLetteredAdvancePaymentMoveLines(Invoice invoice) throws AxelorException;
 
-  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
   public void refusalToPay(
       Invoice invoice, CancelReason reasonOfRefusalToPay, String reasonOfRefusalToPayStr);
 
-  public User getPfpValidatorUser(Invoice invoice);
-
-  public String getPfpValidatorUserDomain(Invoice invoice);
-
-  public boolean getIsDuplicateInvoiceNbr(Invoice invoice);
-
-  public BigDecimal calculateFinancialDiscountTaxAmount(Invoice invoice, BigDecimal amount)
-      throws AxelorException;
-
-  public BigDecimal calculateFinancialDiscountAmount(Invoice invoice, BigDecimal amount)
-      throws AxelorException;
-
-  public BigDecimal calculateFinancialDiscountTotalAmount(Invoice invoice, BigDecimal amount)
-      throws AxelorException;
-
   @CallMethod
-  public BigDecimal calculateAmountRemainingInPayment(
-      Invoice invoice, boolean apply, BigDecimal amount) throws AxelorException;
+  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice, FinancialDiscount financialDiscount);
 
-  public boolean applyFinancialDiscount(Invoice invoice);
+  boolean checkInvoiceLinesAnalyticDistribution(Invoice invoice);
 
-  @CallMethod
-  public String setAmountTitle(boolean applyFinancialDiscount);
+  boolean checkInvoiceLinesCutOffDates(Invoice invoice);
 
-  public InvoicePayment computeDatasForFinancialDiscount(
-      InvoicePayment invoicePayment, Invoice invoice, Boolean applyDiscount) throws AxelorException;
+  boolean checkManageCutOffDates(Invoice invoice);
 
-  public InvoicePayment changeAmount(InvoicePayment invoicePayment, Invoice invoice)
-      throws AxelorException;
+  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
 
-  @CallMethod
-  LocalDate getFinancialDiscountDeadlineDate(Invoice invoice);
+  boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
+
+  public void validatePfp(Long invoiceId) throws AxelorException;
+
+  void updateUnpaidInvoiceTerms(Invoice invoice);
+
+  /**
+   * Check invoice terms before opening payment wizard
+   *
+   * @param invoice
+   * @return true if there would be at least one invoice term in the invoice payment
+   */
+  boolean checkInvoiceTerms(Invoice invoice) throws AxelorException;
+
+  void updateInvoiceTermsParentFields(Invoice invoice);
+
+  Invoice computeEstimatedPaymentDate(Invoice invoice);
+
+  void updateSubrogationPartner(Invoice invoice);
 }

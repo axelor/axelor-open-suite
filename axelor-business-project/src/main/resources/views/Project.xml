@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
@@ -15,9 +15,137 @@
 
   <grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
     <field name="fullName"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner"/>
   </grid>
+
+  <form id="business-project-project-form" name="project-form" title="Project"
+    model="com.axelor.apps.project.db.Project" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-business-project-project-group-on-new"/>
+      <attribute name="onLoad" value="action-business-project-project-group-on-load"/>
+    </extend>
+    <extend target="//field[@name='projectFolderSet']">
+      <insert position="after">
+        <field name="numberHoursADay" if="__config__.app.isApp('business-project')"/>
+        <field name="projectTimeUnit" if="__config__.app.isApp('business-project')"/>
+        <field name="spentTimeCostComputationMethod"
+          if="__config__.app.isApp('business-project')"/>
+      </insert>
+    </extend>
+    <extend target="//menu[@name='projectToolsMenu']">
+      <insert position="inside">
+        <item title="Compute project totals"
+          action="save,action-project-method-compute-project-totals"
+          if="__config__.app.isApp('business-project')" showIf="id &amp;&amp;isBusinessProject"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='salesPanel']">
+      <insert position="before">
+        <panel name="reportingPanel" title="Reporting" if-module="axelor-business-project"
+          if="__config__.app.isApp('business-project')" hidden="true" showIf="isBusinessProject">
+          <panel title="Time follow-up" colSpan="12">
+            <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
+              showTitle="false"/>
+            <panel-dashlet action="action-project-view-updated-time-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-planned-time-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
+              showTitle="false"/>
+
+            <panel-dashlet action="action-project-view-percentage-progress-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-percentage-consumption-custom"
+              colSpan="3" showTitle="false"/>
+            <panel-dashlet action="action-project-view-remaining-to-do-custom"
+              colSpan="3" showTitle="false"/>
+          </panel>
+
+          <panel title="Financial follow-up" colSpan="12">
+            <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
+              <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"/>
+              <panel-dashlet action="action-project-view-initial-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-initial-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-initial-markup-custom"
+                colSpan="3"/>
+              <field name="turnover" hidden="true"/>
+              <field name="initialCosts" hidden="true"/>
+              <field name="initialMargin" hidden="true"/>
+              <field name="initialMarkup" hidden="true"/>
+            </panel>
+            <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
+              <panel-dashlet action="action-project-view-forecast-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-forecast-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-forecast-markup-custom"
+                colSpan="3"/>
+              <field name="forecastCosts" hidden="true"/>
+              <field name="forecastMargin" hidden="true"/>
+              <field name="forecastMarkup" hidden="true"/>
+            </panel>
+            <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
+              <panel-dashlet action="action-project-view-real-turnover-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-real-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-real-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-real-markup-custom"
+                colSpan="3"/>
+              <field name="realTurnover" hidden="true"/>
+              <field name="realCosts" hidden="true"/>
+              <field name="realMargin" hidden="true"/>
+              <field name="realMarkup" hidden="true"/>
+            </panel>
+            <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
+              <panel-dashlet action="action-project-view-landing-costs-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-landing-margin-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-landing-markup-custom"
+                colSpan="3"/>
+              <field name="landingCosts" hidden="true"/>
+              <field name="landingMargin" hidden="true"/>
+              <field name="landingMarkup" hidden="true"/>
+            </panel>
+            <panel name="invoicingPanel" title="Invoicing (excl. VAT)" colSpan="12">
+              <panel-dashlet action="action-project-view-total-invoiced-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-invoiced-this-month-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-invoiced-last-month-custom"
+                colSpan="3"/>
+              <panel-dashlet action="action-project-view-total-paid-custom"
+                colSpan="3"/>
+              <field name="totalInvoiced" hidden="true"/>
+              <field name="invoicedThisMonth" hidden="true"/>
+              <field name="invoicedLastMonth" hidden="true"/>
+              <field name="totalPaid" hidden="true"/>
+            </panel>
+          </panel>
+          <panel name="projectHistoryPanel" title="Project history" colSpan="12">
+            <field name="projectHistoryLineList" colSpan="12" canNew="false" canEdit="false"
+              canRemove="false" title=""/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-group name="action-business-project-project-group-on-new">
+    <action name="action-project-group-on-new-project"/>
+    <action name="action-business-project-project-attrs-defaults"/>
+    <action name="action-project-attrs-set-time-unit-domain"/>
+  </action-group>
+
+  <action-group name="action-business-project-project-group-on-load">
+    <action name="action-project-on-load-group"/>
+    <action name="action-project-attrs-set-time-unit-domain"/>
+  </action-group>
 
   <action-method name="action-project-method-generate-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
@@ -27,15 +155,6 @@
   <action-method name="action-project-method-generate-purchase-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="generatePurchaseQuotation"/>
-  </action-method>
-
-  <action-method name="action-project-method-print-project">
-    <call class="com.axelor.apps.businessproject.web.ProjectController" method="printProject"/>
-  </action-method>
-
-  <action-method name="action-project-method-print-planif-and-cost">
-    <call class="com.axelor.apps.businessproject.web.ProjectController"
-      method="printPlannifAndCost"/>
   </action-method>
 
   <action-validate name="action-validate-unset-project">
@@ -51,11 +170,15 @@
     <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
   </action-attrs>
 
-  <action-attrs id="business-project-action-project-defaults"
-    name="action-project-defaults" model="com.axelor.apps.project.db.Project">
+  <action-attrs name="action-business-project-project-attrs-defaults"
+    model="com.axelor.apps.project.db.Project">
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __config__.date"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
+    <attribute name="value" for="numberHoursADay"
+      expr="eval: __config__.app.getApp('business-project')?.defaultHoursADay"/>
+    <attribute name="value" for="projectTimeUnit"
+      expr="eval: __config__.app.getApp('business-project')?.daysUnit"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
@@ -580,6 +703,16 @@
   <action-method name="action-project-view-show-invoicing-projects">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="showInvoicingProjects"/>
+  </action-method>
+
+  <action-attrs name="action-project-attrs-set-time-unit-domain">
+    <attribute name="domain" for="projectTimeUnit"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('business-project')?.daysUnit?.id} OR self.id = ${__config__.app.getApp('business-project')?.hoursUnit?.id}&quot;"/>
+  </action-attrs>
+
+  <action-method name="action-project-method-compute-project-totals">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="computeProjectTotals"/>
   </action-method>
 
 </object-views>

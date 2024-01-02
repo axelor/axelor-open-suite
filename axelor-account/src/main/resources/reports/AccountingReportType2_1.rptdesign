@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,6 +19,7 @@
         </structure>
     </list-property>
     <property name="units">in</property>
+    <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="layoutPreference">fixed layout</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -44,7 +45,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -58,9 +59,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -137,7 +135,85 @@
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="MoveLineDS" id="210">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">account_id</property>
+                    <property name="alias">account_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">account_id</text-property>
+                    <text-property name="heading">account_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_code</property>
+                    <property name="alias">account_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">account_code</text-property>
+                    <text-property name="heading">account_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">account_name</property>
+                    <property name="alias">account_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">account_name</text-property>
+                    <text-property name="heading">account_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">parent_account_id</property>
+                    <property name="alias">parent_account_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">parent_account_id</text-property>
+                    <text-property name="heading">parent_account_id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">debit</property>
+                    <property name="alias">debit</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">debit</text-property>
+                    <text-property name="heading">debit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">credit</property>
+                    <property name="alias">credit</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">credit</text-property>
+                    <text-property name="heading">credit</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">balance</property>
+                    <property name="alias">balance</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">balance</text-property>
+                    <text-property name="heading">balance</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">prev_year_balance</property>
+                    <property name="alias">prev_year_balance</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">prev_year_balance</text-property>
+                    <text-property name="heading">prev_year_balance</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">variation</property>
+                    <property name="alias">variation</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">variation</text-property>
+                    <text-property name="heading">variation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">variation_balance</property>
+                    <property name="alias">variation_balance</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">variation_balance</text-property>
+                    <text-property name="heading">variation_balance</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">showProvisionTitle</property>
+                    <property name="alias">showProvisionTitle</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">showProvisionTitle</text-property>
+                    <text-property name="heading">showProvisionTitle</text-property>
+                </structure>
+            </list-property>
             <list-property name="parameters">
                 <structure>
                     <property name="name">param_1</property>
@@ -214,9 +290,18 @@
                         <property name="name">variation_balance</property>
                         <property name="dataType">decimal</property>
                     </structure>
+                    <structure>
+                        <property name="position">11</property>
+                        <property name="name">showProvisionTitle</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="rowFetchLimit">0</property>
+            <method name="onFetch"><![CDATA[if(dataSetRow["showProvisionTitle"])
+{
+	vars["showProvisionTitle"] = dataSetRow["showProvisionTitle"];
+}]]></method>
             <property name="dataSource">Data Source</property>
             <list-property name="resultSet">
                 <structure>
@@ -224,70 +309,89 @@
                     <property name="name">account_id</property>
                     <property name="nativeName">account_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">account_code</property>
                     <property name="nativeName">account_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">account_name</property>
                     <property name="nativeName">account_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">parent_account_id</property>
                     <property name="nativeName">parent_account_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">debit</property>
                     <property name="nativeName">debit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">credit</property>
                     <property name="nativeName">credit</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">balance</property>
                     <property name="nativeName">balance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">prev_year_balance</property>
                     <property name="nativeName">prev_year_balance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">variation</property>
                     <property name="nativeName">variation</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">variation_balance</property>
                     <property name="nativeName">variation_balance</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
+                </structure>
+                <structure>
+                    <property name="position">11</property>
+                    <property name="name">showProvisionTitle</property>
+                    <property name="nativeName">showProvisionTitle</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT data.account_id,data.account_code,data.account_name,data.parent_account_id,SUM(data.debit) as debit,SUM(data.credit) as credit,SUM(data.balance) as balance,SUM(data.prev_year_balance) as prev_year_balance,SUM(data.balance) - SUM(data.prev_year_balance) as variation,
 (CASE
     WHEN COALESCE(SUM(data.prev_year_balance), 0) = 0 THEN -1
-    ELSE (((SUM(data.balance) - COALESCE(SUM(data.prev_year_balance),0))/SUM(data.prev_year_balance))*100)
-END) as variation_balance
+    ELSE (((SUM(data.balance) - COALESCE(SUM(data.prev_year_balance),0))/SUM(data.prev_year_balance)))
+END) as variation_balance,
+data.show_provision_title as "showProvisionTitle"
 FROM
 ((select Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
-SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit - MoveLine.credit) as balance, 0 as prev_year_balance
+SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, SUM(MoveLine.debit - MoveLine.credit) as balance, 0 as prev_year_balance,
+CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "show_provision_title"
 
 from public.account_accounting_report as AccountingReport
 
@@ -309,7 +413,7 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR MoveLine.date_val <= AccountingReport.date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
@@ -325,7 +429,7 @@ AND
 (AccountingReport.period IS NULL OR AccountingReport.period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
-AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -338,7 +442,8 @@ order by account_code
 UNION
 (
 SELECT Account.id as account_id, MoveLine.account_code as account_code, MoveLine.account_name as account_name, Account.parent_account as parent_account_id,
-SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, 0 as current_year_balance, SUM(MoveLine.debit - MoveLine.credit) as prev_year_balance
+SUM(MoveLine.debit) as debit, SUM(MoveLine.credit) as credit, 0 as current_year_balance, SUM(MoveLine.debit - MoveLine.credit) as prev_year_balance,
+CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "show_provision_title"
 
 from public.account_accounting_report as AccountingReport
 
@@ -360,9 +465,9 @@ left outer join public.account_account as ParentAccount5 on (ParentAccount4.pare
 left outer join public.account_account as ParentAccount6 on (ParentAccount5.parent_account  = ParentAccount6.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 where
-(AccountingReport.currency = Move.company_currency) AND
-(AccountingReport.previous_date_from IS NULL OR MoveLine.date_val >= AccountingReport.previous_date_from) AND
-(AccountingReport.previous_date_to IS NULL OR MoveLine.date_val <= AccountingReport.previous_date_to) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
+(AccountingReport.other_date_from IS NULL OR MoveLine.date_val >= AccountingReport.other_date_from) AND
+(AccountingReport.other_date_to IS NULL OR MoveLine.date_val <= AccountingReport.other_date_to) AND
 MoveLine.date_val <= AccountingReport.date_val AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id or AccountSet.account_set = ParentAccount.id 
@@ -371,10 +476,10 @@ or AccountSet.account_set = ParentAccount4.id or AccountSet.account_set = Parent
 or AccountSet.account_set = ParentAccount6.id or AccountSet.account_set = ParentAccount6.parent_account)
 AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
-(AccountingReport.previous_period IS NULL OR AccountingReport.previous_period  = Move.period) AND
+(AccountingReport.other_period IS NULL OR AccountingReport.other_period  = Move.period) AND
 (AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal) AND
 (AccountingReport.payment_mode IS  NULL OR (AccountingReport.payment_mode = Move.payment_mode))
-AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND  Move.ignore_in_accounting_ok = false AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -384,33 +489,9 @@ AND (AccountingReport.display_opening_accounting_moves is true
 group by Account.id, MoveLine.account_code, MoveLine.account_name
 order by account_code
 )) as data
-GROUP BY account_id,data.account_code,account_name,parent_account_id
+GROUP BY account_id,data.account_code,account_name,parent_account_id,show_provision_title
 ORDER BY data.account_code
 ]]></xml-property>
-            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
-  <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>2</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-        <design:inputAttributes>
-          <design:elementAttributes/>
-        </design:inputAttributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
-</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>
@@ -450,25 +531,25 @@ ORDER BY data.account_code
                     <text-property name="heading">year_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_period_name</property>
+                    <property name="columnName">other_period_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">previous_period_name</text-property>
-                    <text-property name="heading">previous_period_name</text-property>
+                    <text-property name="displayName">other_period_name</text-property>
+                    <text-property name="heading">other_period_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_year_name</property>
+                    <property name="columnName">other_year_name</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">previous_year_name</text-property>
-                    <text-property name="heading">previous_year_name</text-property>
+                    <text-property name="displayName">other_year_name</text-property>
+                    <text-property name="heading">other_year_name</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_date_from</property>
-                    <property name="alias">previous_date_from</property>
+                    <property name="columnName">other_date_from</property>
+                    <property name="alias">other_date_from</property>
                     <property name="analysis">dimension</property>
                 </structure>
                 <structure>
-                    <property name="columnName">previous_date_to</property>
-                    <property name="alias">previous_date_to</property>
+                    <property name="columnName">other_date_to</property>
+                    <property name="alias">other_date_to</property>
                     <property name="analysis">dimension</property>
                 </structure>
                 <structure>
@@ -549,9 +630,10 @@ ORDER BY data.account_code
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="alias">display_simulated_move</property>
-                    <property name="analysis">measure</property>
+                    <property name="columnName">ref</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">ref</text-property>
+                    <text-property name="heading">ref</text-property>
                 </structure>
             </list-property>
             <list-property name="parameters">
@@ -596,22 +678,22 @@ ORDER BY data.account_code
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">previous_period_name</property>
+                        <property name="name">other_period_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
-                        <property name="name">previous_year_name</property>
+                        <property name="name">other_year_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">previous_date_from</property>
+                        <property name="name">other_date_from</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">previous_date_to</property>
+                        <property name="name">other_date_to</property>
                         <property name="dataType">date</property>
                     </structure>
                     <structure>
@@ -671,8 +753,8 @@ ORDER BY data.account_code
                     </structure>
                     <structure>
                         <property name="position">21</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
+                        <property name="name">ref</property>
+                        <property name="dataType">string</property>
                     </structure>
                 </list-property>
             </structure>
@@ -683,146 +765,167 @@ ORDER BY data.account_code
                     <property name="name">company_name</property>
                     <property name="nativeName">company_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">is_comparative_balance</property>
                     <property name="nativeName">is_comparative_balance</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">year_name</property>
                     <property name="nativeName">year_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">previous_period_name</property>
-                    <property name="nativeName">previous_period_name</property>
+                    <property name="name">other_period_name</property>
+                    <property name="nativeName">other_period_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">previous_year_name</property>
-                    <property name="nativeName">previous_year_name</property>
+                    <property name="name">other_year_name</property>
+                    <property name="nativeName">other_year_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">previous_date_from</property>
-                    <property name="nativeName">previous_date_from</property>
+                    <property name="name">other_date_from</property>
+                    <property name="nativeName">other_date_from</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">previous_date_to</property>
-                    <property name="nativeName">previous_date_to</property>
+                    <property name="name">other_date_to</property>
+                    <property name="nativeName">other_date_to</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">date_from</property>
                     <property name="nativeName">date_from</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">date_to</property>
                     <property name="nativeName">date_to</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">report_date</property>
                     <property name="nativeName">report_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">report_date_edition</property>
                     <property name="nativeName">report_date_edition</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">period_name</property>
                     <property name="nativeName">period_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">journal_name</property>
                     <property name="nativeName">journal_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">global</property>
                     <property name="nativeName">global</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">global_by_date</property>
                     <property name="nativeName">global_by_date</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">payment_mode</property>
                     <property name="nativeName">payment_mode</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">20</property>
                     <property name="name">currency</property>
                     <property name="nativeName">currency</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">21</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">ref</property>
+                    <property name="nativeName">ref</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as company_name,
 Company.height as logo_height,
 Company.width as logo_width,
 AccountingReport.is_comparative_balance as is_comparative_balance, CurrentYear.name as year_name,
-PreviousPeriod.name as previous_period_name,PreviousYear.name as previous_year_name,AccountingReport.previous_date_from,AccountingReport.previous_date_to,
+OtherPeriod.name as other_period_name,OtherYear.name as other_year_name,AccountingReport.other_date_from,AccountingReport.other_date_to,
 AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path,
 Period.name as period_name, Journal.name as journal_name, AccountingReport.global, AccountingReport.global_by_date,
-PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.display_simulated_move as display_simulated_move
+PaymentMode.name as payment_mode, Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.company = Company.id)
 left outer join meta_file as MetaFile on (MetaFile.id = Company.logo)
 left outer join public.account_payment_mode as PaymentMode on (AccountingReport.payment_mode = PaymentMode.id)
 left outer join public.account_journal as Journal on (AccountingReport.journal = Journal.id)
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
-left outer join public.base_period as PreviousPeriod on (AccountingReport.previous_period = PreviousPeriod.id)
+left outer join public.base_period as OtherPeriod on (AccountingReport.other_period = OtherPeriod.id)
 left outer join base_year as CurrentYear on (AccountingReport.year = CurrentYear.id)
-left outer join base_year as PreviousYear on (AccountingReport.previous_year = PreviousYear.id)
+left outer join base_year as OtherYear on (AccountingReport.other_year = OtherYear.id)
 left outer join base_currency as Currency on AccountingReport.currency = Currency.id
 where AccountingReport.id = ?]]></xml-property>
         </oda-data-set>
@@ -1049,14 +1152,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
                             <property name="name">logo_width</property>
                             <text-property name="displayName">logo_width</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100px'}</expression>
-                            <property name="dataType">integer</property>
+                            <property name="dataType">string</property>
                             <property name="allowExport">true</property>
                         </structure>
                         <structure>
@@ -1078,23 +1181,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <row id="3120">
                         <property name="height">36px</property>
                         <cell id="4157">
-                            <text id="4220">
-                                <property name="fontSize">8pt</property>
+                            <image id="6284">
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
                                         <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="3121">
                             <property name="verticalAlign">top</property>
@@ -1120,15 +1218,34 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
             </page-header>
             <page-footer>
                 <grid id="3098">
-                    <property name="width">11.033333333333333in</property>
+                    <property name="width">11.104166666666666in</property>
                     <column id="3099">
-                        <property name="width">10.022222222222222in</property>
+                        <property name="width">5.541666666666667in</property>
+                    </column>
+                    <column id="4327">
+                        <property name="width">4.15625in</property>
                     </column>
                     <column id="3100">
-                        <property name="width">1.011111111111111in</property>
+                        <property name="width">1.40625in</property>
                     </column>
                     <row id="3101">
                         <cell id="3102">
+                            <data id="4324">
+                                <property name="fontSize">9pt</property>
+                                <property name="textAlign">right</property>
+                                <property name="dataSet">AccountingReportDS</property>
+                                <list-property name="boundDataColumns">
+                                    <structure>
+                                        <property name="name">accountingReport.ref</property>
+                                        <expression name="expression" type="javascript">dataSetRow["ref"]</expression>
+                                        <property name="dataType">string</property>
+                                        <property name="allowExport">true</property>
+                                    </structure>
+                                </list-property>
+                                <property name="resultSetColumn">accountingReport.ref</property>
+                            </data>
+                        </cell>
+                        <cell id="4326">
                             <label id="3115">
                                 <property name="fontSize">9pt</property>
                                 <property name="textAlign">right</property>
@@ -1280,33 +1397,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">previous_period_name</property>
-                    <text-property name="displayName">previous_period_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["previous_period_name"]</expression>
+                    <property name="name">other_period_name</property>
+                    <text-property name="displayName">other_period_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["other_period_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
-                    <property name="name">previous_date_from</property>
-                    <text-property name="displayName">previous_date_from</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["previous_date_from"]</expression>
+                    <property name="name">other_date_from</property>
+                    <text-property name="displayName">other_date_from</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["other_date_from"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">previous_date_to</property>
-                    <text-property name="displayName">previous_date_to</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["previous_date_to"]</expression>
+                    <property name="name">other_date_to</property>
+                    <text-property name="displayName">other_date_to</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["other_date_to"]</expression>
                     <property name="dataType">date</property>
                 </structure>
                 <structure>
-                    <property name="name">previous_year_name</property>
-                    <text-property name="displayName">previous_year_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["previous_year_name"]</expression>
+                    <property name="name">other_year_name</property>
+                    <text-property name="displayName">other_year_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["other_year_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -1343,6 +1454,29 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <property name="colSpan">7</property>
                     <property name="rowSpan">1</property>
                     <property name="textAlign">center</property>
+                    <table id="6273">
+                        <property name="dataSet">MoveLineDS</property>
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">true</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">showProvisionTitle</property>
+                                <text-property name="displayName">showProvisionTitle</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["showProvisionTitle"]</expression>
+                                <property name="dataType">integer</property>
+                            </structure>
+                        </list-property>
+                        <column id="6282"/>
+                        <detail>
+                            <row id="6277">
+                                <cell id="6278"/>
+                            </row>
+                        </detail>
+                    </table>
                     <text id="4001">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
@@ -1393,7 +1527,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!row._outer["display_simulated_move"]</expression>
+                                <expression name="valueExpr" type="javascript">!vars["showProvisionTitle"]</expression>
                             </structure>
                         </list-property>
                         <list-property name="paramBindings">
@@ -1851,7 +1985,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <cell id="4271">
                                 <text id="4273">
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["previous_period_name"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["other_period_name"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -1901,7 +2035,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <cell id="4286">
                                 <text id="4287">
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["previous_year_name"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["other_year_name"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>
@@ -1949,7 +2083,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="category">Short Date</property>
                             <property name="pattern">Short Date</property>
                         </structure>
-                        <property name="resultSetColumn">previous_date_from</property>
+                        <property name="resultSetColumn">other_date_from</property>
                     </data>
                 </cell>
                 <cell id="4318">
@@ -1994,7 +2128,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                             <property name="category">Short Date</property>
                             <property name="pattern">Short Date</property>
                         </structure>
-                        <property name="resultSetColumn">previous_date_to</property>
+                        <property name="resultSetColumn">other_date_to</property>
                     </data>
                 </cell>
             </row>
@@ -2321,7 +2455,7 @@ else  {  0.00 }</expression>
                         <structure name="toc"/>
                         <property name="pageBreakInterval">0</property>
                         <column id="4147">
-                            <property name="width">0.5in</property>
+                            <property name="width">0.6in</property>
                         </column>
                         <column id="4090">
                             <property name="width">3.5in</property>
@@ -2811,26 +2945,35 @@ else  {  0.00 }</expression>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="4255">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["balance"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4321">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="resultSetColumn">balance</property>
+                                    </data>
                                 </cell>
                                 <cell id="4080">
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="4257">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["prev_year_balance"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4322">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="resultSetColumn">prev_year_balance</property>
+                                    </data>
                                 </cell>
                                 <cell id="4230">
                                     <property name="textAlign">right</property>
-                                    <text id="4248">
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["variation"]</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="4323">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00</property>
+                                        </structure>
+                                        <property name="resultSetColumn">variation</property>
+                                    </data>
                                 </cell>
                                 <cell id="4235">
                                     <property name="borderLeftStyle">solid</property>
@@ -2838,16 +2981,13 @@ else  {  0.00 }</expression>
                                     <property name="borderRightStyle">solid</property>
                                     <property name="borderRightWidth">thin</property>
                                     <property name="textAlign">right</property>
-                                    <text id="4247">
-                                        <list-property name="visibility">
-                                            <structure>
-                                                <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["variation_balance"] == -1</expression>
-                                            </structure>
-                                        </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["variation_balance"]</VALUE-OF>&amp;nbsp;&amp;nbsp;<VALUE-OF>"%"</VALUE-OF>]]></text-property>
-                                    </text>
+                                    <data id="6285">
+                                        <structure name="numberFormat">
+                                            <property name="category">Custom</property>
+                                            <property name="pattern">###,##0.00%</property>
+                                        </structure>
+                                        <property name="resultSetColumn">variation_balance</property>
+                                    </data>
                                 </cell>
                             </row>
                         </detail>
@@ -2929,4 +3069,10 @@ else  {  0.00 }</expression>
             </row>
         </grid>
     </body>
+    <property name="pageVariables">
+        <variable-element name="showProvisionTitle">
+            <expression name="value" type="javascript">false</expression>
+            <property name="type">report</property>
+        </variable-element>
+    </property>
 </report>

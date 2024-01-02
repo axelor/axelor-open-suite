@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="advanced-import-grid" title="Advanced imports"
     model="com.axelor.apps.base.db.AdvancedImport">
@@ -38,8 +38,12 @@
       </panel>
       <field name="fileExtension" hidden="true"/>
     </panel>
-    <panel-related colSpan="12" field="fileTabList" form-view="file-tab-form"
-      grid-view="file-tab-grid" readonlyIf="statusSelect == 1" canMove="true" orderBy="sequence"/>
+    <panel-tabs name="mainPanelTab">
+      <panel-related colSpan="12" field="fileTabList" form-view="file-tab-form"
+        grid-view="file-tab-grid" readonlyIf="statusSelect == 1" canMove="true" orderBy="sequence"/>
+      <panel-related field="importHistoryList" form-view="import-history-form"
+        grid-view="import-history-grid" readonly="true"/>
+    </panel-tabs>
     <panel sidebar="true">
       <button name="applyBtn" title="Apply"
         onClick="action-advanced-import-validate-filetab,save,action-advanced-import-method-apply"

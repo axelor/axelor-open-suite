@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <action-group name="action-group-logistical-form-print-packing-list">
     <action name="save"/>
-    <action name="action-logistical-form-method-print-packing-list"/>
+    <action name="action-method-print-birt"/>
   </action-group>
 
-  <action-method name="action-logistical-form-method-print-packing-list">
-    <call class="com.axelor.apps.supplychain.web.LogisticalFormController" method="print"/>
-  </action-method>
 
 </object-views>

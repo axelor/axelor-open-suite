@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="tracking-number-grid" title="Tracking Number"
+  <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
     <hilite
-      if="$moment(perishableExpirationDate).isBefore(__config__.date) || $moment(warrantyExpirationDate).isBefore(__config__.date)"
+      if="$moment(perishableExpirationDate).isBefore($moment()) || $moment(warrantyExpirationDate).isBefore($moment())"
       color="danger"/>
     <hilite
       if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))"
@@ -22,13 +22,14 @@
     <field name="origin"/>
   </grid>
 
-  <form name="tracking-number-form" title="Tracking Number"
-    model="com.axelor.apps.stock.db.TrackingNumber" onNew="action-tracking-number-attrs-set-scale"
-    onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale">
+  <form name="tracking-number-form" title="Tracking number"
+    model="com.axelor.apps.stock.db.TrackingNumber"
+    onNew="action-tracking-number-attrs-set-scale,action-tracking-number-record-product"
+    onLoad="action-tracking-number-attrs-set-scale,action-tracking-number-attrs-set-product-readonly">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
-      <field name="product" hidden="true" onChange="action-tracking-number-attrs-hide-fields"
-        form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"/>
+      <field name="product" form-view="product-form" grid-view="product-grid"
+        domain="self.dtype = 'Product'"/>
       <field name="warrantyExpirationDate"/>
       <field name="perishableExpirationDate"/>
       <field name="counter"/>
@@ -36,22 +37,20 @@
       <field name="note" colSpan="12"/>
     </panel>
     <panel name="barcodePanel" title="Barcode"
-      if="__config__.app.getApp('stock').getActivateTrackingNumberBarCodeGeneration()">
+      if="__config__.app.getApp('stock')?.getActivateTrackingNumberBarCodeGeneration()">
       <field name="barCode" showTitle="false" widget="Image" colSpan="4"/>
       <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
       <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
     </panel>
   </form>
 
-  <form name="tracking-number-stock-move-line-form" title="Tracking Number"
-    model="com.axelor.apps.stock.db.TrackingNumber"
-    onLoad="action-tracking-number-attrs-hide-fields,action-tracking-number-attrs-set-scale"
+  <form name="tracking-number-stock-move-line-form" title="Tracking number"
+    model="com.axelor.apps.stock.db.TrackingNumber" onLoad="action-tracking-number-attrs-set-scale"
     onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line,action-tracking-number-attrs-set-scale">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
-      <field name="product" onChange="action-tracking-number-attrs-hide-fields"
-        form-view="product-form" grid-view="product-grid" domain="self.dtype = 'Product'"
-        readonlyIf="$popup() || id != null"/>
+      <field name="product" form-view="product-form" grid-view="product-grid"
+        domain="self.dtype = 'Product'" readonlyIf="$popup() || id != null"/>
       <field name="warrantyExpirationDate" readonly="false"/>
       <field name="perishableExpirationDate" readonly="false"/>
       <field name="counter" hidden="true"/>
@@ -82,26 +81,25 @@
 
     <select model="com.axelor.apps.stock.db.StockMove" title="Stock move"
       form-view="stock-move-form">
-      <field name="stockMoveLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="stockMoveLineList[].product.fullName" as="product"/>
-      <field name="stockMoveLineList[].productName" as="moveLine"/>
-      <field name="stockMoveLineList[].realQty" as="currentQty"/>
-      <field name="stockMoveLineList[].qty" as="futureQty"/>
-      <field name="stockMoveLineList[].stockMove.realDate" as="date"/>
+      <field name="stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="stockMoveLineList.product.fullName" as="product"/>
+      <field name="stockMoveLineList.productName" as="moveLine"/>
+      <field name="stockMoveLineList.realQty" as="currentQty"/>
+      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.stockMove.realDate" as="date"/>
       <where>
-        <input name="trackingNumber" field="stockMoveLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
       </where>
     </select>
     <select model="com.axelor.apps.stock.db.StockLocation" title="Stock location"
       form-view="stock-location-form">
-      <field name="detailsStockLocationLineList[].trackingNumber" as="trackingNumber"/>
-      <field name="detailsStockLocationLineList[].product.name" as="product"/>
-      <field name="detailsStockLocationLineList[].detailsStockLocation.name"
-        as="stockLocation"/>
-      <field name="detailsStockLocationLineList[].currentQty" as="currentQty"/>
-      <field name="detailsStockLocationLineList[].futureQty" as="futureQty"/>
+      <field name="detailsStockLocationLineList.trackingNumber" as="trackingNumber"/>
+      <field name="detailsStockLocationLineList.product.name" as="product"/>
+      <field name="detailsStockLocationLineList.detailsStockLocation.name" as="stockLocation"/>
+      <field name="detailsStockLocationLineList.currentQty" as="currentQty"/>
+      <field name="detailsStockLocationLineList.futureQty" as="futureQty"/>
       <where>
-        <input name="trackingNumber" field="detailsStockLocationLineList[].trackingNumber"/>
+        <input name="trackingNumber" field="detailsStockLocationLineList.trackingNumber"/>
       </where>
     </select>
   </search>
@@ -110,6 +108,11 @@
     <action name="action-tracking-number-record-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-from-stock-move-line"/>
   </action-group>
+
+  <action-record name="action-tracking-number-record-product"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field name="product" expr="eval: __parent__?.product"/>
+  </action-record>
 
   <action-record name="action-tracking-number-record-from-stock-move-line"
     model="com.axelor.apps.stock.db.TrackingNumber">
@@ -135,6 +138,12 @@
   <action-attrs name="action-tracking-number-attrs-set-scale">
     <attribute name="scale" for="counter"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-tracking-number-attrs-set-product-readonly">
+    <attribute name="readonly" for="product"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
+      if="id != null"/>
   </action-attrs>
 
 </object-views>

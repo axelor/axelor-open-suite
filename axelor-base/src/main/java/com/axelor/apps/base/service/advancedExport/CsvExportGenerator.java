@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,29 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.advancedExport;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.AdvancedExportLine;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.csv.CSVFile;
 import com.axelor.i18n.I18n;
-import com.opencsv.CSVWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.csv.CSVPrinter;
 
 public class CsvExportGenerator extends AdvancedExportGenerator {
 
-  private CSVWriter csvWriter;
+  private CSVFile csvFormat;
+
+  private CSVPrinter printer;
 
   private String[] totalCols;
 
@@ -47,7 +51,8 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
     exportFileName = advancedExport.getMetaModel().getName() + ".csv";
     try {
       exportFile = File.createTempFile(advancedExport.getMetaModel().getName(), ".csv");
-      csvWriter = new CSVWriter(new FileWriter(exportFile, true), ';');
+      csvFormat = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().withFirstRecordAsHeader();
+      printer = csvFormat.write(exportFile);
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
@@ -56,35 +61,45 @@ public class CsvExportGenerator extends AdvancedExportGenerator {
   }
 
   @Override
-  public void generateHeader() {
-    int index = 0;
-    for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
-      totalCols[index++] = I18n.get(advancedExportLine.getTitle());
+  public void generateHeader() throws AxelorException {
+    try {
+      int index = 0;
+      for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
+        totalCols[index++] = I18n.get(advancedExportLine.getTitle());
+      }
+      printer.printRecord(Arrays.asList(totalCols));
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
-    csvWriter.writeNext(totalCols);
   }
 
   @SuppressWarnings("rawtypes")
   @Override
-  public void generateBody(List<List> dataList) {
-    for (List listObj : dataList) {
-      for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
-        Object value = listObj.get(colIndex);
-        String columnValue = null;
-        if (!(value == null || value.equals(""))) {
-          if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
-          else columnValue = value.toString();
+  public void generateBody(List<List> dataList) throws AxelorException {
+    try {
+      for (List listObj : dataList) {
+        for (int colIndex = 0; colIndex < listObj.size(); colIndex++) {
+          Object value = listObj.get(colIndex);
+          String columnValue = null;
+          if (!(value == null || value.equals(""))) {
+            if (value instanceof BigDecimal) columnValue = convertDecimalValue(value);
+            else columnValue = value.toString();
+          }
+          totalCols[colIndex] = columnValue;
         }
-        totalCols[colIndex] = columnValue;
+        printer.printRecord(Arrays.asList(totalCols));
       }
-      csvWriter.writeNext(totalCols);
+    } catch (IOException e) {
+      TraceBackService.trace(e);
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
   }
 
   @Override
   public void close() throws AxelorException {
     try {
-      csvWriter.close();
+      printer.close();
     } catch (IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);

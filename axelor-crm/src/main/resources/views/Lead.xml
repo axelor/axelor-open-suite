@@ -1,40 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <kanban columnBy="leadStatus" model="com.axelor.apps.crm.db.Lead" sequenceBy="sequence"
+    title="Leads" name="lead-kanban" draggable="true" limit="10"
+    onMove="action-lead-method-kanban-onmove">
+    <field name="simpleFullName"/>
+    <field name="name"/>
+    <field name="firstName"/>
+    <field name="leadStatus"/>
+    <field name="enterpriseName"/>
+    <field name="nextScheduledEventDateT"/>
+    <field name="leadScoringSelect"/>
+    <field name="user"/>
+    <field name="description"/>
+    <hilite color="default" if="leadScoringSelect == 0.00"/>
+    <hilite color="danger" if="leadScoringSelect == 1.00"/>
+    <hilite color="warning" if="leadScoringSelect == 2.00"/>
+    <hilite color="primary" if="leadScoringSelect == 3.00"/>
+    <hilite color="info" if="leadScoringSelect == 4.00"/>
+    <hilite color="success" if="leadScoringSelect == 5.00"/>
+    <template> <![CDATA[
+  <h4>{{record.simpleFullName}}</h4>
+          <img ng-if="user" ng-src="{{$image('user', 'image')}}">
+          <div class="card-body">
+              <dl>
+                  <dt ng-show="record.enterpriseName" x-translate>Enterprise Name</dt><dd ng-show="record.enterpriseName">{{record.enterpriseName}}</dd>
+                  <dt ng-show="record.nextScheduledEventDateT"><i class='fa fa-clock-o'></i> <span>{{nextScheduledEventDateT|date:'yyyy-MM-dd HH:mm:ss'}}</span></dt>
+                  <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
+              </dl>
+          </div>
+          <div class="card-summary popover">
+	  <p style="margin:2px;">
+            	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
+            </p>
+         </div>
+]]>
+    </template>
+  </kanban>
 
   <grid name="lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
-    orderBy="-contactDate,statusSelect">
+    orderBy="-contactDate">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o">
-        <item name="printItem" title="Print" action="action-crm-lead-method-print"/>
+        <item name="printItem" title="Print" action="action-method-print-birt-list"/>
       </menu>
       <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
         <item name="assignToMeItem" title="Assign to me"
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
           action="action-general-check-duplicate-records"/>
-        <item name="importLeadsItem" title="Import leads"
-          action="action-crm-method-lead-import-leads"/>
       </menu>
     </menubar>
     <hilite color="warning"
-      if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
-    <hilite color="primary" if="statusSelect == 1"/>
-    <hilite color="danger"
-      if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
-    <hilite color="success" if="statusSelect == 4"/>
+      if="(user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
+    <hilite color="danger" if="$moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
     <field name="createdOn" hidden="true"/>
     <field name="updatedOn" hidden="true"/>
-    <field name="name"/>
-    <field name="firstName"/>
+    <field name="simpleFullName"/>
     <field name="enterpriseName"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
-    <field name="statusSelect"/>
+    <field name="leadStatus" title="Status"/>
+    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
     <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
       help="Take charge" onClick="action-lead-method-assign-to-me"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -45,44 +82,36 @@
 
   <form name="lead-form" title="Lead" model="com.axelor.apps.crm.db.Lead"
     onLoad="action-group-crm-lead-onload" onNew="action-group-crm-lead-onnew"
-    onSave="action-crm-lead-method-check-name">
+    onSave="action-crm-lead-method-check-name,action-lead-method-show-duplicate-records-fullname">
 
     <menubar>
       <menu name="leadReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
-        <item name="printItem" title="Print" action="save,action-crm-lead-method-print"/>
-      </menu>
-      <menu name="leadToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="scheduleEventItem" title="Schedule Event"
-          action="save,action-lead-view-schedule-event"/>
-        <item name="createOpportunityItem" title="Create opportunity"
-          action="save,action-lead-view-create-opportunity"/>
-        <item name="sendEmailItem" title="Send email"
-          readonlyIf="statusSelect == 4 || statusSelect == 5"
-          action="save,action-send-by-email-with-template"/>
+        <item name="printItem" title="Print" action="save,action-method-print-birt"/>
       </menu>
     </menubar>
     <panel name="mainPanel">
       <panel name="statusPanel" colSpan="12">
-        <field name="statusSelect" colSpan="8" widget="NavSelect" showTitle="false"
-          readonly="true"/>
-        <panel name="isRecycledPanel" colSpan="4">
-          <field name="isRecycled" showTitle="false" widget="boolean-switch" readonly="true">
-            <viewer>
-							<![CDATA[
-								<h4>
-									<span class="label label-default" style="background-color: #0285D8;" ng-show="record.isRecycled" x-translate>Recycled</span>
-								<h4>
-							]]>
+        <field name="$isLost" type="boolean" hidden="true"/>
+        <field name="leadStatus" showTitle="false" colSpan="12" widget="NavSelect"
+          x-order="sequence" onChange="action-lead-group-lead-status-onchange"
+          readonlyIf="!id || isConverted || $isLost"/>
+        <panel name="viewerDetailsPanel" colSpan="12" showIf="$readonly()">
+          <field name="$viewerTagsLeft" showTitle="false">
+            <viewer depends="industrySector">
+				<![CDATA[
+					<h4>
+						<span class="label label-default" style="background-color: #0285D8;" ng-show="record.industrySector"> {{ record.industrySector.name }} </span>
+					<h4>
+				]]>
             </viewer>
           </field>
-          <field name="industrySector" showTitle="false"
-            showIf="industrySector &amp;&amp; $readonly()">
-            <viewer>
-							<![CDATA[
-								<h4>
-									<span class="label label-default" style="background-color: #0285D8;"> {{ record.name }} </span>
-     							</h4>
-							]]>
+          <field name="$viewerTagsRight" showTitle="false">
+            <viewer depends="isConverted">
+				<![CDATA[
+					<h4 class="text-right">
+						<span class="label label-info" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isConverted" x-translate>Converted</span>
+					<h4>
+				]]>
             </viewer>
           </field>
         </panel>
@@ -94,24 +123,15 @@
           <label name="googleLabel"
             title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
             colSpan="2"/>
-          <label name="facebookLabel"
-            title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
-            colSpan="2"/>
-          <label name="twitterLabel"
-            title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
-            colSpan="2"/>
           <label name="linkedinLabel"
             title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
-            colSpan="2"/>
-          <label name="youtubeLabel"
-            title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
             colSpan="2"/>
         </panel>
       </panel>
 
       <panel colSpan="9" name="generalInfoPanel">
         <field name="$firstNameAndName" showTitle="false" colSpan="12"
-          readonlyIf="statusSelect == 4 || statusSelect == 5" css="label-bold bold large">
+          css="label-bold bold large">
           <viewer depends="firstName,name">
                         <![CDATA[
                             {{record.firstName}} {{record.name}}
@@ -119,38 +139,35 @@
           </viewer>
           <editor x-show-titles="false">
             <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
-            <field name="name" showTitle="false" css="highlight" placeholder="Name"
+            <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
               colSpan="5"
               onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
-            <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
+            <field name="name" showTitle="false" css="highlight" placeholder="Name"
               colSpan="5"
               onChange="action-crm-lead-method-check-name,action-lead-method-set-social-network-url"/>
           </editor>
         </field>
         <static name="duplicateLeadText" hidden="true" colSpan="12"><![CDATA[<span class='label label-warning'>There is already a lead with this name.</span>]]></static>
-        <field name="fullName" showTitle="false" colSpan="12"
-          readonlyIf="statusSelect == 4 || statusSelect == 5">
+        <field name="fullName" showTitle="false" colSpan="12">
           <editor x-show-titles="false">
             <field name="enterpriseName" css="label-bold bold large" colSpan="12"
               showIf="partner == null" placeholder="Enterprise name"
-              onChange="action-lead-method-set-social-network-url"/>
+              onChange="action-lead-method-set-social-network-url" required="true"/>
             <field name="industrySector" colSpan="6" form-view="industry-sector-form"
-              grid-view="industry-sector-grid" canEdit="false"/>
-            <field name="partner" colSpan="12" showIf="statusSelect == 4"
-              domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"/>
+              grid-view="industry-sector-grid" canEdit="false" canNew="true"/>
+            <field name="partner" colSpan="12" domain="self.isContact = false"
+              form-view="partner-form" grid-view="partner-grid"/>
           </editor>
         </field>
-        <field name="jobTitleFunction" colSpan="6" placeholder="Function" showTitle="false"
-          canNew="true"/>
       </panel>
     </panel>
 
     <panel-tabs name="mainPanelTab">
       <panel name="contactPanel" title="Contact" colSpan="12">
-        <panel name="contactDetailPanel" title="Contact details"
-          readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
-          <field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
-          <field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
+        <field name="jobTitleFunction" colSpan="6" placeholder="Function" canNew="true"/>
+        <field name="companyDepartment" grid-view="company-department-grid"
+          form-view="company-department-form"/>
+        <panel name="contactDetailPanel" title="Contact details" colSpan="12">
           <field name="$viewerCallAndEmail" showIf="$readonly()" colSpan="12"
             showTitle="false">
             <viewer>
@@ -162,18 +179,20 @@
 							]]>
             </viewer>
           </field>
+          <field name="fixedPhone" widget="phone" colSpan="4"
+            x-placeholder-number-type="FIXED_LINE"/>
           <field name="mobilePhone" widget="phone" colSpan="4"/>
           <field name="emailAddress" colSpan="4" canSelect="false"
             form-view="email-address-simple-form" x-show-icons="false">
-            <editor x-show-titles="false">
+            <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="12" placeholder="whatever@example.com"
-                pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
+                widget="email"/>
             </editor>
           </field>
-          <field name="fixedPhone" widget="phone" colSpan="4"
-            x-placeholder-number-type="FIXED_LINE"/>
-          <field name="webSite" colSpan="6" placeholder="http://www.url.com" widget="url"
-            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+          <field name="webSite" colSpan="6" placehosetLeadStatuslder="http://www.url.com"
+            widget="url" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+          <field name="isDoNotCall" colSpan="3" hideIf="$readonly()"/>
+          <field name="isDoNotSendEmail" colSpan="3" hideIf="$readonly()"/>
         </panel>
 
         <panel name="addressPanel" title="Primary address" showIf="$readonly()" colSpan="12">
@@ -189,74 +208,92 @@
           </field>
         </panel>
 
-        <panel name="primaryAddress" title="Primary address"
-          readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12" hideIf="$readonly()">
+        <panel name="primaryAddress" title="Primary address" colSpan="12" hideIf="$readonly()">
           <field name="primaryAddress" colSpan="12"/>
-          <field name="primaryPostalCode" colSpan="6"/>
           <field name="primaryCity" colSpan="6" form-view="city-form" grid-view="city-grid"
             onChange="action-attrs-lead-set-primary-state-country-postal-code" canNew="true"/>
+          <field name="primaryPostalCode" colSpan="6"/>
           <field name="primaryState" colSpan="6" form-view="region-form"
             grid-view="region-grid" canNew="true"/>
           <field name="primaryCountry" colSpan="6" form-view="country-form"
             grid-view="country-grid"/>
         </panel>
-
         <panel name="descriptionPanel" title="Description" colSpan="12">
           <field name="description" colSpan="12" showTitle="false" widget="html" height="200"/>
         </panel>
       </panel>
 
-      <panel name="activitiesPanel" title="Activities" itemSpan="12">
+      <panel name="eventPanel" title="Events">
+        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+          onClick="save,action-lead-view-meeting-event" colSpan="3"/>
+        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+          onClick="save,action-lead-view-call-event" colSpan="3"/>
+        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+          onClick="save,action-lead-view-task-event" colSpan="3"/>
+        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+          onClick="save,action-lead-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" readonlyIf="id == null" onClick="action-lead-view-events"/>
-        <panel-related name="eventListPanel" colSpan="12" field="eventList"
-          form-view="event-form" grid-view="lead-event-grid"
-          readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-        <panel-related name="opportunitiesListPanel" colSpan="12"
-          field="opportunitiesList" form-view="opportunity-form"
-          grid-view="opportunity-dashlet-grid" readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-        <panel-dashlet name="leadEmailsPanel" action="action-lead-view-emails"/>
-        <panel-dashlet name="leadMarketingCampaignPanel"
-          if="__config__.app.isApp('marketing')" if-module="axelor-marketing"
-          action="action-lead-view-marketing-campaigns"/>
+          icon="fa-tasks" onClick="action-lead-view-all-events" readonlyIf="id == null"/>
+        <field name="lastEventDateT" readonly="true" colSpan="3"/>
+        <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
+        <panel-dashlet name="eventPanelDashlet" action="action-lead-view-events"
+          title="Events" height="550" colSpan="12"/>
       </panel>
+      <panel name="emailPanel" title="Emails">
+        <button name="emailBtn" title="Create an email" link="" icon="fa-envelope-o"
+          onClick="save,action-send-by-email-with-template" colSpan="3"/>
+        <panel-dashlet name="leadSentEmailsPanel" title="Sent emails"
+          action="action-lead-view-sent-emails" colSpan="12" height="550"/>
+        <panel-dashlet name="leadReceivedEmailsPanel" title="Received emails"
+          action="action-lead-view-received-emails" colSpan="12" height="550"/>
+      </panel>
+      <panel-dashlet name="leadMarketingCampaignPanel" title="Marketing campaign"
+        if="__config__.app.isApp('marketing')" if-module="axelor-marketing"
+        action="action-lead-view-marketing-campaigns" colSpan="12" height="500"/>
     </panel-tabs>
 
-    <panel name="actionsPanel" sidebar="true">
-      <button name="grabLeadBtn" title="Assign to me"
-        hideIf="user.id == _internalUserId || statusSelect == 4 || statusSelect == 5"
+    <panel name="actionsPanel" sidebar="true"
+      hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted || $isLost) &amp;&amp; !partner">
+      <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
         icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
-      <button name="startBtn" title="Start" hideIf="statusSelect >= 3" icon="fa-play"
-        onClick="save,action-lead-method-start,save"/>
-      <button name="convertBtn" title="Convert" hideIf="statusSelect >= 4 || !id"
-        icon="fa-exchange" onClick="save,action-lead-view-convert-lead"/>
-      <button name="recycleBtn" title="Recycle" hideIf="statusSelect != 5" icon="fa-recycle"
-        onClick="save,action-lead-method-recycle,save"/>
-      <button name="loseBtn" title="Lose" hideIf="statusSelect == 5" icon="fa-times"
-        onClick="save,action-lead-view-lose,save" css="btn-danger"/>
-      <button name="showPartnerBtn" title="Show Partner" showIf="partner" colSpan="6"
+      <button name="convertBtn" title="Convert" hideIf="!id || isConverted || $isLost"
+        icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
+      <button name="showPartnerBtn" title="Show Partner" hideIf="!partner"
         onClick="action-lead-view-show-partner"/>
+      <button name="loseBtn" title="Lose" hideIf="!id || isConverted || $isLost"
+        onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
+    </panel>
+
+    <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
+      <panel-dashlet action="action-lead-view-lead-activity-custom" height="550"/>
     </panel>
 
     <panel sidebar="true" name="followUpPanel" title="Follow-up" colSpan="12">
       <field name="user" canNew="false" canEdit="false" canView="false" colSpan="6"
-        form-view="user-form" grid-view="user-grid"
-        readonlyIf="statusSelect == 4 || statusSelect == 5"/>
+        form-view="user-form" grid-view="user-grid"/>
       <field name="team" canEdit="false" colSpan="6" form-view="team-form"
-        grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"
-        readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-      <field name="contactDate" colSpan="6"
-        readonlyIf="statusSelect == 4 || statusSelect == 5"/>
-      <field name="lostReason" colSpan="12" readonlyIf="statusSelect == 5"
-        requiredIf="statusSelect == 5" showIf="statusSelect == 5"/>
+        grid-view="team-grid" if="__config__.app.getApp('base').getTeamManagement()"/>
+      <field name="company" colSpan="6" form-view="company-form" grid-view="company-grid"
+        if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+      <field name="agency" colSpan="6" form-view="agency-form" grid-view="agency-grid"
+        if="__config__.app.getApp('crm')?.getAgenciesManagement()"/>
+      <field name="contactDate" colSpan="6"/>
+      <field name="lostReason" hidden="true" colSpan="6"/>
+      <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
+      <field name="lostReason.freeText" hidden="true"/>
     </panel>
 
-    <panel sidebar="true" name="marketingPanel" title="Marketing"
-      readonlyIf="statusSelect == 4 || statusSelect == 5" colSpan="12">
+    <panel sidebar="true" name="marketingPanel" title="Marketing" colSpan="12">
+      <field name="leadScoringSelect" widget="ImageSelect" x-labels="false" colSpan="6"/>
+      <field name="sizeSelect" colSpan="6"/>
+      <field name="isKeyAccount" colSpan="6"/>
+      <field name="isNurturing" colSpan="6"/>
       <field name="source" canEdit="false" colSpan="6" form-view="source-form"
         grid-view="source-grid" canNew="true"/>
-      <field name="referredBy" colSpan="6"/>
-      <field name="estimatedBudget" colSpan="6"/>
+      <field name="type" grid-view="partner-category-grid" form-view="partner-category-form"
+        colSpan="6"/>
+      <field name="leadTagSet" widget="TagSelect" x-color-field="colorSelect"
+        grid-view="lead-tag-grid" form-view="lead-tag-form"/>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -279,6 +316,17 @@
     </panel>
   </form>
 
+  <form model="com.axelor.apps.crm.db.Lead" title="Lead with same domain name"
+    name="lead-with-same-domain-name-form" onLoad="action-lead-record-init-same-domain-lead">
+    <panel name="mainPanel">
+      <label title="We found these other leads that may be linked to your partner."
+        colSpan="12"/>
+      <panel-related name="leadSet" field="$leadSet" title="Leads"
+        target="com.axelor.apps.crm.db.Lead" grid-view="lead-grid" form-view="lead-form"
+        type="one-to-many" canNew="false" canEdit="false" canSelect="false" colSpan="12" height="10"/>
+    </panel>
+  </form>
+
   <grid name="event-lead-grid" title="Leads" model="com.axelor.apps.crm.db.Lead"
     orderBy="enterpriseName">
     <field name="name"/>
@@ -288,18 +336,14 @@
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
-    <field name="statusSelect"/>
     <button name="addBtn" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
   </grid>
 
   <grid name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead"
-    orderBy="-contactDate,statusSelect">
+    orderBy="-contactDate">
     <hilite color="warning"
-      if="statusSelect == 1 &amp;&amp; (user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
-    <hilite color="primary" if="statusSelect == 1"/>
-    <hilite color="danger"
-      if="(statusSelect == 2 || statusSelect == 3) &amp;&amp; $moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
-    <hilite color="success" if="statusSelect == 4"/>
+      if="(user == null || contactDate == null) &amp;&amp; $moment(todayDate).diff(createdOn,'days') &gt;= 15"/>
+    <hilite color="danger" if="$moment(todayDate).diff(updatedOn,'days') &gt;= 15"/>
     <field name="createdOn" hidden="true"/>
     <field name="updatedOn" hidden="true"/>
     <field name="name"/>
@@ -308,7 +352,6 @@
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address"/>
-    <field name="statusSelect"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-lead-view-schedule-event"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -324,33 +367,55 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="loseLead"/>
   </action-method>
 
+  <action-group name="action-lead-group-lead-status-onchange">
+    <action name="action-lead-validate-lead-convert-error"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.convertedLeadStatus?.id"/>
+    <action name="action-lead-validate-lead-lose-error"
+      if="eval: __this__?.leadStatus?.id == __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="action-lead-record-clear-lost-reason"
+      if="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="action-lead-group-lead-convert">
+    <action name="save"/>
+    <action name="action-lead-view-convert-lead"/>
+    <action name="action-lead-method-view-lead-with-same-domain-name"/>
+  </action-group>
+
   <action-group name="action-group-crm-lead-onnew">
+    <action name="action-lead-validate-default-status"/>
+    <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
   </action-group>
 
   <action-group name="action-group-crm-lead-onload">
     <action name="action-lead-method-set-social-network-url"/>
     <action name="action-crm-lead-method-check-name"/>
+    <action name="action-lead-method-compute-is-lost"/>
+    <action name="action-lead-attrs-display-lost-reason"/>
   </action-group>
+
+  <action-method name="action-lead-method-compute-is-lost">
+    <call class="com.axelor.apps.crm.web.LeadController" method="computeIsLost"/>
+  </action-method>
+
+  <action-attrs name="action-lead-attrs-display-lost-reason">
+    <attribute name="hidden" for="lostReason"
+      expr="eval: __this__?.leadStatus?.id != __config__.app.getApp('crm')?.lostLeadStatus?.id"/>
+  </action-attrs>
+
+  <action-record name="action-lead-record-clear-lost-reason"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="lostReason" expr="eval: null"/>
+  </action-record>
 
   <action-method name="action-lead-event-add-attendee">
     <call class="com.axelor.apps.crm.web.EventController" method="addLeadAttendee"/>
   </action-method>
 
-  <action-method name="action-crm-lead-method-print">
-    <call method="print" class="com.axelor.apps.crm.web.LeadController"/>
-  </action-method>
-
   <action-method name="action-crm-lead-method-check-name">
     <call class="com.axelor.apps.crm.web.LeadController" method="checkLeadName"/>
-  </action-method>
-
-  <action-method name="action-lead-method-start">
-    <call class="com.axelor.apps.crm.web.LeadController" method="startLead"/>
-  </action-method>
-
-  <action-method name="action-lead-method-recycle">
-    <call class="com.axelor.apps.crm.web.LeadController" method="recycleLead"/>
   </action-method>
 
   <action-method name="action-lead-method-assign-to-me">
@@ -361,14 +426,24 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="assignToMeMultipleLead"/>
   </action-method>
 
+  <action-method name="action-lead-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.LeadController" method="kanbanLeadOnMove"/>
+  </action-method>
+
   <action-record name="action-lead-default-record-new"
     model="com.axelor.apps.crm.db.Lead">
     <field name="statusSelect" expr="1"/>
-    <field name="contactDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"
-      if="contactDate == null"/>
+    <field name="contactDate" expr="eval:__config__.date" if="contactDate == null"/>
     <field name="user" expr="eval:__user__"/>
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.leadDefaultStatus"/>
+    <field name="agency" expr="eval:__user__.activeAgency"/>
+  </action-record>
+
+  <action-record name="action-lead-record-init-same-domain-lead"
+    model="com.axelor.apps.crm.db.Lead">
+    <field name="$leadSet" expr="eval: _leadList"/>
   </action-record>
 
   <action-attrs name="action-attrs-lead-set-primary-state-country-postal-code">
@@ -376,11 +451,13 @@
       expr="eval: primaryCity.department.region" for="primaryState"/>
     <attribute if="eval: primaryCity?.country" name="value"
       expr="eval: primaryCity.country" for="primaryCountry"/>
+    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
     <attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false"
       for="primaryState"/>
     <attribute name="readonly" expr="eval: primaryCity?.country ? true: false"
       for="primaryCountry"/>
-    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
+    <attribute name="readonly" expr="eval: primaryCity?.zip ? true: false"
+      for="primaryPostalCode"/>
   </action-attrs>
 
   <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
@@ -395,8 +472,12 @@
   </action-view>
 
   <action-view name="action-lead-view-convert-lead" title="Convert lead (${ fullName })"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="convert-lead-wizard-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
     <context name="_lead" expr="eval: __self__"/>
     <context name="_primaryAddress" expr="eval: primaryAddress"/>
   </action-view>
@@ -413,34 +494,90 @@
     title="Schedule Event(${ fullName})" model="com.axelor.apps.crm.db.Event">
     <view type="form" name="event-form"/>
     <view type="grid" name="event-grid"/>
-    <context name="_lead" expr="eval: __this__"/>
+    <context name="_eventLead" expr="eval: __this__"/>
   </action-view>
 
-  <action-view name="action-lead-view-create-opportunity"
-    title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
-    <view type="form" name="opportunity-form"/>
-    <context name="_lead" expr="eval: __self__"/>
+  <action-view name="action-lead-view-meeting-event" title="Meeting Event(${ fullName})"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_eventLead" expr="eval: __this__"/>
+    <context name="_meeting" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-lead-view-call-event" title="Call Event(${ fullName})"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_eventLead" expr="eval: __this__"/>
+    <context name="_call" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-lead-view-task-event" title="Task Event(${ fullName})"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_eventLead" expr="eval: __this__"/>
+    <context name="_task" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-lead-view-note-event" title="Note Event(${ fullName})"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_eventLead" expr="eval: __this__"/>
+    <context name="_note" expr="eval: true"/>
   </action-view>
 
   <!-- PORTLET -->
 
-  <action-view name="action-lead-view-emails" title="Emails"
-    model="com.axelor.apps.message.db.Message">
+  <action-view name="action-lead-view-sent-emails" title="Sent emails"
+    model="com.axelor.message.db.Message">
+    <view type="cards" name="message-cards"/>
     <view type="grid" name="message-grid"/>
     <view type="form" name="message-form"/>
     <domain>self.mediaTypeSelect = 2 AND (self.id IN (SELECT message.id FROM MultiRelated as related
       WHERE related.relatedToSelect = 'com.axelor.apps.crm.db.Lead' AND
       related.relatedToSelectId =
-      :id) OR (self.fromEmailAddress.id = :idEmail))</domain>
+      :id) OR (:email IN (SELECT em.address FROM EmailAddress em WHERE em member of
+      self.toEmailAddressSet)))</domain>
     <context name="id" expr="eval: id"/>
-    <context name="idEmail" expr="eval: emailAddress?.id"/>
+    <context name="email" expr="eval: emailAddress?.address"/>
+  </action-view>
+
+  <action-view name="action-lead-view-received-emails" title="Received emails"
+    model="com.axelor.message.db.Message">
+    <view type="cards" name="message-cards"/>
+    <view type="grid" name="message-grid"/>
+    <view type="form" name="message-form"/>
+    <domain>self.mediaTypeSelect = 2 AND ((self.multiRelatedList.relatedToSelect =
+      'com.axelor.apps.crm.db.Lead' AND self.multiRelatedList.relatedToSelectId = :id)
+      OR
+      (self.fromEmailAddress.address = :email))</domain>
+    <context name="id" expr="eval: id"/>
+    <context name="email" expr="eval: emailAddress?.address"/>
   </action-view>
 
   <action-view name="action-lead-view-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
+    <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.lead.id = :_id</domain>
+    <view-param name="forceEdit" value="true"/>
+    <domain>self.eventLead.id = :_leadId </domain>
+    <context name="_leadId" expr="eval: __id__"/>
+  </action-view>
+
+  <action-view name="action-lead-view-all-events" title="Events"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="grid" name="list-event-grid"/>
+    <view type="form" name="event-form"/>
+    <domain>self.eventLead.id = :_leadId </domain>
+    <context name="_leadId" expr="eval: __id__"/>
   </action-view>
 
   <action-method name="action-show-leads-on-map-page">
@@ -451,22 +588,50 @@
     <call class="com.axelor.apps.crm.web.LeadController" method="setSocialNetworkUrl"/>
   </action-method>
 
-  <action-method name="action-crm-method-lead-import-leads">
-    <call class="com.axelor.apps.crm.web.LeadController" method="getLeadImportConfig"/>
+  <action-method name="action-lead-method-view-lead-with-same-domain-name">
+    <call class="com.axelor.apps.crm.web.LeadController" method="viewLeadWithSameDomainName"/>
+  </action-method>
+
+  <action-method name="action-lead-method-show-duplicate-records-fullname">
+    <call class="com.axelor.apps.crm.web.LeadController" method="showDuplicateRecordsFullName"/>
   </action-method>
 
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
     title="Lead filters">
-    <field name="team" hidden="true" if="!__config__.app.getApp('base').getTeamManagement()"/>
-    <filter title="My Leads">
+    <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
+    <filter title="My Leads" name="my-leads-filter">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="Unassigned Leads">
+    <filter title="Unassigned Leads" name="unassigned-leads-filter">
       <domain>self.user IS NULL</domain>
     </filter>
-    <filter title="My Team Leads">
+    <filter title="My Team Leads" name="my-team-leads-filter">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
 
+  <action-validate name="action-lead-validate-default-status">
+    <error message="Please fill default lead status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.leadDefaultStatus"/>
+  </action-validate>
+
+  <action-validate name="action-lead-validate-lead-convert-error">
+    <error message="To convert lead, please use the Convert button."
+      action="action-lead-method-rollback-lead-status, save"/>
+  </action-validate>
+
+  <action-validate name="action-lead-validate-lead-lose-error">
+    <error message="To lose lead, please use the Lose button."
+      action="action-lead-group-lead-lose-error"/>
+  </action-validate>
+
+  <action-group name="action-lead-group-lead-lose-error">
+    <action name="action-lead-method-rollback-lead-status"/>
+    <action name="action-lead-method-compute-is-lost"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-lead-method-rollback-lead-status">
+    <call class="com.axelor.apps.crm.web.LeadController" method="rollbackLeadStatus"/>
+  </action-method>
 </object-views>
