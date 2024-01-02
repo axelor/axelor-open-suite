@@ -630,4 +630,6 @@ public final class BaseExceptionMessage {
       "An error occurred while generating the address template: '%s'" /*)*/;
   public static final String PRICING_BUTTON_ERROR = /*$$(*/
       "There was an error while trying to add the pricing button : %s" /*)*/;
+  public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
+      "Registration code must be required for companies" /*)*/;
 }

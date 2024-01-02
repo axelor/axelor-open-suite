@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-    <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="base" package="com.axelor.apps.base.db"/>
 
-    <entity name="RegistrationNumberTemplate">
-        <boolean name="isRequiredForCompanies" title="Required for companies" required="true"/>
-        <integer name="titleToDisplay" required="true"/>
-        <integer name="requiredSize" min="1"/>
-        <string name="validationMethodSelect" selection="product.procurement.method.select"   />
+  <entity name="RegistrationNumberTemplate">
+    <boolean name="isRequiredForCompanies" title="Required for companies" required="true"/>
+    <string name="titleToDisplay" required="true"/>
+    <integer name="requiredSize" min="1"/>
+    <string name="validationMethodSelect"
+      selection="base.registration.number.template.validation.method.select"/>
 
-        <boolean name="useSiren" title = "Use short registration number" />
-        <integer name="sirenPos" title="Starting position in the registration number"/>
-        <integer name="sirenLength"  title="Length" />
+    <boolean name="useSiren" title="Use short registration number"/>
+    <integer name="sirenPos" title="Starting position in the registration number"/>
+    <integer name="sirenLength" title="Length"/>
 
-        <boolean name="useNic" title="Use internal classification number"/>
-        <integer name="nicPos" title="Starting position in the registration number"/>
-        <integer name="nicLength" title="Length"/>
-    </entity>
+    <boolean name="useNic" title="Use internal classification number"/>
+    <integer name="nicPos" title="Starting position in the registration number"/>
+    <integer name="nicLength" title="Length"/>
+  </entity>
 
 </domain-models>

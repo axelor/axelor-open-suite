@@ -331,6 +331,9 @@
           form-view="partner-category-form" grid-view="partner-category-grid"/>
         <field name="industrySector" colSpan="6" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
+
+        <field name="businessCountry" colSpan="6" widget="SuggestBox"
+          hideIf="partnerTypeSelect== 2"/>
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -1502,6 +1505,10 @@
     <field name="paymentCondition"
       expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
   </action-record>
+
+  <!-- <action-method name="action-method-base-partner-business-country-change"> -->
+  <!-- <call class="com.axelor.apps.base.web.PartnerController" method="changeBusinessCountry"/> -->
+  <!-- </action-method> -->
 
   <action-method name="action-print-company-phonebook">
     <call class="com.axelor.apps.base.web.PartnerController" method="printCompanyPhonebook"/>

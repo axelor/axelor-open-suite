@@ -152,6 +152,8 @@ import com.axelor.apps.base.service.ProductUpdateService;
 import com.axelor.apps.base.service.ProductUpdateServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.ProductVariantServiceImpl;
+import com.axelor.apps.base.service.RegistrationNumberValidation;
+import com.axelor.apps.base.service.RegistrationNumberValidationFRA;
 import com.axelor.apps.base.service.TeamTaskService;
 import com.axelor.apps.base.service.TeamTaskServiceImpl;
 import com.axelor.apps.base.service.TradingNameService;
@@ -421,5 +423,6 @@ public class BaseModule extends AxelorModule {
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
+    bind(RegistrationNumberValidation.class).to(RegistrationNumberValidationFRA.class);
   }
 }
