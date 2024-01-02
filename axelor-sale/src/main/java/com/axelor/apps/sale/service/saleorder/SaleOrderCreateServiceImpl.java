@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.PriceListRepository;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -56,6 +57,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected AppSaleService appSaleService;
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
+  protected DMSService dmsService;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -63,13 +65,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       SaleOrderRepository saleOrderRepo,
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
-      SaleOrderComputeService saleOrderComputeService) {
+      SaleOrderComputeService saleOrderComputeService,
+      DMSService dmsService) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
     this.appSaleService = appSaleService;
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
+    this.dmsService = dmsService;
   }
 
   @Override
@@ -176,6 +180,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     String numSeq = "";
     String externalRef = "";
+    StringBuilder internalNote = new StringBuilder();
     for (SaleOrder saleOrderLocal : saleOrderList) {
       if (!numSeq.isEmpty()) {
         numSeq += "-";
@@ -187,6 +192,12 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       }
       if (saleOrderLocal.getExternalReference() != null) {
         externalRef += saleOrderLocal.getExternalReference();
+      }
+      if (internalNote.length() > 0) {
+        internalNote.append("<br>");
+      }
+      if (saleOrderLocal.getInternalNote() != null) {
+        internalNote.append(saleOrderLocal.getInternalNote());
       }
     }
 
@@ -205,11 +216,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             taxNumber,
             fiscalPosition);
 
+    saleOrderMerged.setInternalNote(internalNote.toString());
+
     this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
 
     saleOrderRepo.save(saleOrderMerged);
+
+    dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
 
     this.removeOldSaleOrders(saleOrderList);
 

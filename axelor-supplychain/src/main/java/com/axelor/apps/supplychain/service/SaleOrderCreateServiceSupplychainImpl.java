@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -67,9 +68,16 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
       SaleOrderRepository saleOrderRepository,
-      SaleOrderSupplychainService saleOrderSupplychainService) {
+      SaleOrderSupplychainService saleOrderSupplychainService,
+      DMSService dmsService) {
 
-    super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
+    super(
+        partnerService,
+        saleOrderRepo,
+        appSaleService,
+        saleOrderService,
+        saleOrderComputeService,
+        dmsService);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
@@ -255,6 +263,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
+    StringBuilder internalNote = new StringBuilder();
     for (SaleOrder saleOrderLocal : saleOrderList) {
       if (numSeq.length() > 0) {
         numSeq.append("-");
@@ -266,6 +275,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       }
       if (saleOrderLocal.getExternalReference() != null) {
         externalRef.append(saleOrderLocal.getExternalReference());
+      }
+      if (internalNote.length() > 0) {
+        internalNote.append("<br>");
+      }
+      if (saleOrderLocal.getInternalNote() != null) {
+        internalNote.append(saleOrderLocal.getInternalNote());
       }
     }
 
@@ -288,11 +303,16 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             incoterm,
             invoicedPartner,
             deliveredPartner);
+
+    saleOrderMerged.setInternalNote(internalNote.toString());
+
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
 
     saleOrderRepository.save(saleOrderMerged);
+
+    dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
 
     super.removeOldSaleOrders(saleOrderList);
 
