@@ -390,13 +390,8 @@ public class PartnerController {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
       if (partnerService.isRegistrationCodeValid(partner)) {
-        String taxNbr = partnerService.getTaxNbrFromRegistrationCode(partner);
-        String nic = partnerService.getNicFromRegistrationCode(partner);
-        String siren = partnerService.getSirenFromRegistrationCode(partner);
-
-        response.setValue("taxNbr", taxNbr);
-        response.setValue("nic", nic);
-        response.setValue("siren", siren);
+        Map<String, Map<String, Object>> attrsMap =  partnerService.getRegistrationCodeValidationAttrs(partner);
+        response.setAttrs(attrsMap);
       }
 
     } catch (Exception e) {
@@ -418,9 +413,7 @@ public class PartnerController {
       PartnerService partnerService = Beans.get(PartnerService.class);
 
       String registrationCodeTitle = partnerService.getRegistrationCodeTitleFromTemplate(partner);
-      if(registrationCodeTitle != null){
-        response.setAttr("registrationCode", "title", registrationCodeTitle);
-      }
+      response.setAttr("registrationCode", "title", registrationCodeTitle != null ? registrationCodeTitle : "Registration Number");
 
     } catch (Exception e) {
       TraceBackService.trace(e);

@@ -152,12 +152,8 @@ public interface PartnerService {
 
   String computeCompanyStr(Partner partner);
 
-  String getTaxNbrFromRegistrationCode(Partner partner);
-
-  String getNicFromRegistrationCode(Partner partner);
-
-  String getSirenFromRegistrationCode(Partner partner);
-
   boolean isRegistrationCodeValid(Partner partner);
   String getRegistrationCodeTitleFromTemplate(Partner partner);
+
+  Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner);
 }

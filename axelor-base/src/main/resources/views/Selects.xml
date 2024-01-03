@@ -752,7 +752,6 @@
     <option value="empty" hidden="true"/> <!-- unused value, the select is completed in other modules -->
   </selection>
 
-
   <selection name="base.registration.number.template.validation.method.select">
     <option value="com.axelor.apps.base.service.RegistrationNumberValidationFRA">RegistrationNumberValidationFRA</option>
   </selection>
