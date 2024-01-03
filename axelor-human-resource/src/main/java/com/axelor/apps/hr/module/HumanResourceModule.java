@@ -35,6 +35,8 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractHRRepository;
 import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineHRRepository;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
@@ -61,6 +63,8 @@ import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowServiceImpl;
+import com.axelor.apps.hr.service.SchedulerCreationService;
+import com.axelor.apps.hr.service.SchedulerCreationServiceImpl;
 import com.axelor.apps.hr.service.analytic.AnalyticMoveLineGenerateRealServiceHrImpl;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.app.AppHumanResourceServiceImpl;
@@ -201,6 +205,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(LunchVoucherAdvanceService.class).to(LunchVoucherAdvanceServiceImpl.class);
     bind(UserHrService.class).to(UserHrServiceImpl.class);
     bind(ExpenseRepository.class).to(ExpenseHRRepository.class);
+    bind(ExpenseLineRepository.class).to(ExpenseLineHRRepository.class);
     bind(EmployeeRepository.class).to(EmployeeHRRepository.class);
     bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
     bind(BankOrderServiceImpl.class).to(BankOrderServiceHRImpl.class);
@@ -266,6 +271,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(IncrementLeaveService.class).to(IncrementLeaveServiceImpl.class);
     bind(LeaveValueProrataService.class).to(LeaveValueProrataServiceImpl.class);
     bind(LeaveReasonService.class).to(LeaveReasonServiceImpl.class);
+    bind(SchedulerCreationService.class).to(SchedulerCreationServiceImpl.class);
     bind(EmployeeFetchService.class).to(EmployeeFetchServiceImpl.class);
   }
 }

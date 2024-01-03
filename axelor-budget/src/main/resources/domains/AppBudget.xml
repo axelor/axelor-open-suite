@@ -17,6 +17,8 @@
     <integer name="orderBudgetExceedSelect" title="Budget exceed alert for orders"
       default="0" selection="app.budget.check.exceed.order.select"
       help="Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or an error ('Required') if one of the budget exceed the budget value."/>
+    <boolean name="enableProject" title="Enable the link to projects"
+      help="By activating this option, you will be able to select projects inside a global budget and inversely, select global budgets inside a project."/>
 
     <extra-code>
       <![CDATA[

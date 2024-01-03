@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PayVoucherElementToPayRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -40,14 +41,12 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,6 +64,7 @@ public class PaymentVoucherLoadService {
   protected PayVoucherElementToPayRepository payVoucherElementToPayRepo;
   protected InvoiceTermService invoiceTermService;
   protected PfpService pfpService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public PaymentVoucherLoadService(
@@ -75,7 +75,8 @@ public class PaymentVoucherLoadService {
       PayVoucherElementToPayService payVoucherElementToPayService,
       PayVoucherElementToPayRepository payVoucherElementToPayRepo,
       InvoiceTermService invoiceTermService,
-      PfpService pfpService) {
+      PfpService pfpService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.currencyService = currencyService;
     this.paymentVoucherToolService = paymentVoucherToolService;
     this.paymentVoucherRepository = paymentVoucherRepository;
@@ -84,6 +85,7 @@ public class PaymentVoucherLoadService {
     this.payVoucherElementToPayRepo = payVoucherElementToPayRepo;
     this.invoiceTermService = invoiceTermService;
     this.pfpService = pfpService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -176,9 +178,12 @@ public class PaymentVoucherLoadService {
 
     payVoucherDueElement.setMoveLine(invoiceTerm.getMoveLine());
 
-    payVoucherDueElement.setDueAmount(invoiceTerm.getAmount());
+    payVoucherDueElement.setDueAmount(
+        currencyScaleServiceAccount.getScaledValue(invoiceTerm, invoiceTerm.getAmount()));
 
-    payVoucherDueElement.setAmountRemaining(this.getAmountRemaining(paymentVoucher, invoiceTerm));
+    payVoucherDueElement.setAmountRemaining(
+        currencyScaleServiceAccount.getScaledValue(
+            invoiceTerm, this.getAmountRemaining(paymentVoucher, invoiceTerm)));
 
     payVoucherDueElement.setCurrency(
         invoiceTerm.getMoveLine().getMove().getCurrency() != null
@@ -288,25 +293,25 @@ public class PaymentVoucherLoadService {
     payVoucherElementToPay.setCurrency(payVoucherDueElement.getCurrency());
 
     BigDecimal amountRemainingInElementCurrency =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
+        currencyScaleServiceAccount.getScaledValue(
+            paymentVoucher,
+            currencyService.getAmountCurrencyConvertedAtDate(
                 paymentVoucher.getCurrency(),
                 payVoucherElementToPay.getCurrency(),
                 amountRemaining,
-                paymentDate)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+                paymentDate));
 
     BigDecimal amountImputedInElementCurrency =
         amountRemainingInElementCurrency.min(payVoucherElementToPay.getRemainingAmount());
 
     BigDecimal amountImputedInPayVouchCurrency =
-        currencyService
-            .getAmountCurrencyConvertedAtDate(
+        currencyScaleServiceAccount.getScaledValue(
+            paymentVoucher,
+            currencyService.getAmountCurrencyConvertedAtDate(
                 payVoucherElementToPay.getCurrency(),
                 paymentVoucher.getCurrency(),
                 amountImputedInElementCurrency,
-                paymentDate)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+                paymentDate));
 
     payVoucherElementToPay.setAmountToPay(amountImputedInElementCurrency);
     payVoucherElementToPay.setAmountToPayCurrency(amountImputedInPayVouchCurrency);
