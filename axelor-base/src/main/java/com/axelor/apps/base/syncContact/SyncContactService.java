@@ -313,7 +313,7 @@ public class SyncContactService {
             + googleAddr.getPostalCode()
             + "' AND self.country.alpha2Code = '"
             + googleAddr.getCountryCode()
-            + "' AND self.streetName = '"
+            + "' AND self.addressL4 = '"
             + googleAddr.getStreetAddress()
             + "'";
     if (!Strings.isNullOrEmpty(googleAddr.getCity())) {

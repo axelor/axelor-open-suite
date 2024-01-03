@@ -324,8 +324,8 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
     if (!Strings.isNullOrEmpty(addressL2L3)) {
       lines.add(setN4DSLine("S20.G01.00.009.001", addressL2L3));
     }
-    if (!Strings.isNullOrEmpty(address.getStreetName())) {
-      lines.add(setN4DSLine("S20.G01.00.009.006", compileAddressValue(address.getStreetName())));
+    if (!Strings.isNullOrEmpty(address.getAddressL4())) {
+      lines.add(setN4DSLine("S20.G01.00.009.006", compileAddressValue(address.getAddressL4())));
     }
     if (alpha2code.equals("FR")) {
       lines.add(setN4DSLine("S20.G01.00.009.010", compileAddressValue(address.getCity().getZip())));

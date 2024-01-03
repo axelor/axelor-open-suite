@@ -1,6 +1,8 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.AddressTemplateLine;
+import com.axelor.common.StringUtils;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,20 +55,37 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
   public void addHiddenAndTitle(
       List<AddressTemplateLine> addressTemplateLineList,
       Map<String, Map<String, Object>> attrsMap) {
-    List<String> addressFormFieldsList =
-        List.of(
-            "room", "floor", "buildingNumber", "street", "streetName", "postBox", "city", "zip");
+      List<String> addressFormFieldsList =
+          List.of(
+                  "department",
+                  "subDepartment",
+                  "buildingName",
+                  "townName",
+                  "townLocationName",
+                  "districtName",
+                  "countrySubDivision",
+                  "room",
+                  "floor",
+                  "buildingNumber",
+                  "street",
+                  "streetName",
+                  "postBox",
+                  "city",
+                  "zip");
 
-    if (addressTemplateLineList.isEmpty()) {
-      addressFormFieldsList.forEach(field -> addFieldUnhide(field, attrsMap));
-    } else {
-      addressFormFieldsList.forEach(field -> addFieldHide(field, attrsMap));
-    }
+      if (addressTemplateLineList.isEmpty()) {
+        addressFormFieldsList.forEach(field -> addFieldUnhide(field, attrsMap));
+      } else {
+        addressFormFieldsList.forEach(field -> addFieldHide(field, attrsMap));
+      }
 
-    // Iterate through addressTemplateLineList and call addFieldTitle for each MetaField
+      // Iterate through addressTemplateLineList and call addFieldTitle for each MetaField
     addressTemplateLineList.stream()
-        .map(AddressTemplateLine::getMetaField)
-        .forEach(metaField -> addFieldTitle(metaField.getName(), metaField.getLabel(), attrsMap));
+            .filter(line -> !StringUtils.isBlank(line.getTitle()))
+            .forEach(line -> addFieldTitle(line.getMetaField().getName(), line.getTitle(), attrsMap));
+
+    addressTemplateLineList
+            .forEach(line -> addFieldUnhide(line.getMetaField().getName(), attrsMap));
   }
 
   @Override

@@ -24,11 +24,4 @@
       method="setDomainForMetaField"/>
   </action-method>
 
-
-  <action-attrs name="action-address-template-line-attrs-on-meta-field-domain-address">
-    <attribute name="domain" for="metaField"
-      expr="eval:&quot;self.metaModel.name = 'Address' AND (self.relationship IS NULL OR self.relationship != 'OneToMany') AND self.typeName != 'byte[]'&quot;"/>
-  </action-attrs>
-
-
 </object-views>

@@ -1,6 +1,7 @@
 "importId";"name";"engineSelect";"templateStr";"addressL2Str";"addressL3Str";"addressL4Str";"addressL5Str";"addressL6Str"
-"1";"DEFAULT";"2";"${(Address.room == null) ? '' : Address.room}
-${(Address.floor == null) ? '' : Address.floor}
-${(Address.streetName == null) ? '' : Address.streetName}
-${(Address.postBox == null) ? '' : Address.postBox}
+"1";"DEFAULT";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
 ${(Address.country == null) ? '' : Address.country.name}";"${(Address.room == null) ? '' : Address.room}";"${(Address.floor == null) ? '' : Address.floor}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.zip == null) ? '' : Address.zip}"
