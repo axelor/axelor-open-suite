@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="tax-equiv-grid" title="Taxes equivalences"
     model="com.axelor.apps.account.db.TaxEquiv" orderBy="fromTax">
@@ -13,11 +13,14 @@
   <form name="tax-equiv-form" title="Tax equivalence"
     model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
     <panel name="mainPanel">
-      <field name="fromTax" form-view="tax-form" grid-view="tax-grid" required="true"/>
-      <field name="toTax" form-view="tax-form" grid-view="tax-grid" required="true"/>
-      <field name="reverseCharge"/>
+      <field name="fromTax" form-view="tax-form" grid-view="tax-grid" required="true"
+        onSelect="action-tax-equiv-attrs-from-tax-domain"/>
+      <field name="toTax" form-view="tax-form" grid-view="tax-grid" required="true"
+        onSelect="action-tax-equiv-attrs-to-tax-domain"/>
+      <field name="reverseCharge" onChange="action-tax-equiv-record-empty-taxes"/>
       <field name="reverseChargeTax" form-view="tax-form" grid-view="tax-grid"
-        showIf="reverseCharge" requiredIf="reverseCharge"/>
+        showIf="reverseCharge" requiredIf="reverseCharge"
+        onSelect="action-tax-equiv-attrs-reverse-charge-tax-domain"/>
       <field name="specificNote" colSpan="12" hidden="true"/>
     </panel>
   </form>
@@ -26,9 +29,34 @@
     <action name="action-tax-equiv-attrs-hide-specific-note"/>
   </action-group>
 
+  <action-record name="action-tax-equiv-record-empty-taxes"
+    model="com.axelor.apps.account.db.TaxEquiv">
+    <field name="toTax" expr="eval: null"
+      if="reverseCharge &amp;&amp; (fromTax?.activeTaxLine?.value != toTax?.activeTaxLine?.value)"/>
+    <field name="reverseChargeTax" expr="eval: null" if="!reverseCharge"/>
+  </action-record>
+
   <action-attrs name="action-tax-equiv-attrs-hide-specific-note">
     <attribute for="specificNote" name="hidden"
       expr="eval: __parent__?.customerSpecificNote"/>
+  </action-attrs>
+
+  <action-attrs name="action-tax-equiv-attrs-from-tax-domain">
+    <attribute name="domain" for="fromTax" if="reverseCharge"
+      expr="call: com.axelor.apps.base.service.tax.TaxEquivService:getTaxDomain(__this__, true, false)"/>
+    <attribute name="domain" for="fromTax" expr="eval: null" if="!reverseCharge"/>
+  </action-attrs>
+
+  <action-attrs name="action-tax-equiv-attrs-to-tax-domain">
+    <attribute name="domain" for="toTax" if="reverseCharge"
+      expr="call: com.axelor.apps.base.service.tax.TaxEquivService:getTaxDomain(__this__, false, true)"/>
+    <attribute name="domain" for="toTax" expr="eval: null" if="!reverseCharge"/>
+  </action-attrs>
+
+  <action-attrs name="action-tax-equiv-attrs-reverse-charge-tax-domain">
+    <attribute name="domain" for="reverseChargeTax" if="reverseCharge"
+      expr="call: com.axelor.apps.base.service.tax.TaxEquivService:getTaxDomain(__this__, false, false)"/>
+    <attribute name="domain" for="reverseChargeTax" expr="eval: null" if="!reverseCharge"/>
   </action-attrs>
 
 </object-views>

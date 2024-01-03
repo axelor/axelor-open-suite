@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <grid name="ebics-certificate-grid" title="Ebics certificate"
@@ -44,7 +44,8 @@
     model="com.axelor.apps.bankpayment.db.EbicsCertificate" editable="false"
     onNew="action-ebics-certificate-confirmation-set-default">
     <panel name="mainPanel">
-      <field name="url" type="string" title="URL"/>
+      <field name="url" type="string" title="URL" widget="url"
+        pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
       <field name="hostId" type="string" title="Host Id"/>
       <field name="e002Hash" type="string" widget="text" title="Hash E002"/>
       <field name="x002Hash" type="string" widget="text" title="Hash X002"/>

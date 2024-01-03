@@ -1,0 +1,54 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+.crm-activity-dashlet .dashlet-header{
+    display: none;
+}
+.crm-activity-dashlet .dashlet-body{
+    border: 0;
+}
+.crm-activity-dashlet .crm-activity-card {
+    border:1px solid #0285D8;
+    border-radius:5px;
+    margin:10px;
+    padding:10px;
+}
+.crm-activity-dashlet hr {
+    margin: 2px 0;
+}
+
+.crm-activity-dashlet .crm-activity-title {
+    margin-left:16px;
+    font-weight:bold;
+    font-size:16px;
+}
+
+.crm-activity-card .crm-activity-date {
+    font-weight:bold;
+    font-size:16px;
+}
+
+.crm-activity-card .crm-activity-content {
+    margin:5px 1px;
+    display:flex;
+    justify-content: space-between;
+}
+.crm-activity-card .crm-activity-icon .fa {
+    font-size:28px;
+    color:#0285D8;
+}

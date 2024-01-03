@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="product-variant-config-grid" title="Product variant configurations"
     model="com.axelor.apps.base.db.ProductVariantConfig">
@@ -13,6 +13,8 @@
       form-view="product-variant-attr-form"/>
     <field name="productVariantAttr4" grid-view="product-variant-attr-grid"
       form-view="product-variant-attr-form"/>
+    <field name="productVariantAttr5" grid-view="product-variant-attr-grid"
+      form-view="product-variant-attr-form"/>
     <field name="productVariantValue1Set" form-view="product-variant-value-form"
       grid-view="product-variant-value-grid"/>
     <field name="productVariantValue2Set" form-view="product-variant-value-form"
@@ -20,6 +22,8 @@
     <field name="productVariantValue3Set" form-view="product-variant-value-form"
       grid-view="product-variant-value-grid"/>
     <field name="productVariantValue4Set" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+    <field name="productVariantValue5Set" form-view="product-variant-value-form"
       grid-view="product-variant-value-grid"/>
   </grid>
 
@@ -52,6 +56,12 @@
       <field name="productVariantValue4Set" widget="TagSelect" canNew="false"
         showIf="productVariantAttr4" colSpan="12" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid"/>
+      <field name="productVariantAttr5" canNew="true"
+        onChange="action-product-variant-config-attrs-domain" showIf="productVariantAttr4"
+        grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
+      <field name="productVariantValue5Set" widget="TagSelect" canNew="false"
+        showIf="productVariantAttr5" colSpan="12" form-view="product-variant-value-form"
+        grid-view="product-variant-value-grid"/>
     </panel>
   </form>
 
@@ -66,6 +76,8 @@
       expr="eval: (productVariantAttr3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     <attribute name="domain" for="productVariantValue4Set"
       expr="eval: (productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantValue5Set"
+      expr="eval: (productVariantAttr5?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantAttr5?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-product-nested-product-variant-config-attrs-domain">
@@ -77,6 +89,8 @@
       expr="eval: (productVariantConfig?.productVariantAttr3?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr3?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     <attribute name="domain" for="productVariantConfig?.productVariantValue4Set"
       expr="eval: (productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr4?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantConfig?.productVariantValue5Set"
+      expr="eval: (productVariantConfig?.productVariantAttr5?.productVariantValueList?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${productVariantConfig?.productVariantAttr5?.productVariantValueList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
   </action-attrs>
 
   <action-record name="action-product-variant-config-record-reset-variant-value1"
@@ -97,6 +111,11 @@
   <action-record name="action-product-variant-config-record-reset-variant-value4"
     model="com.axelor.apps.base.db.ProductVariantConfig">
     <field name="productVariantValue4Set" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-product-variant-config-record-reset-variant-value5"
+    model="com.axelor.apps.base.db.ProductVariantConfig">
+    <field name="productVariantValue5Set" expr="eval: null"/>
   </action-record>
 
 </object-views>

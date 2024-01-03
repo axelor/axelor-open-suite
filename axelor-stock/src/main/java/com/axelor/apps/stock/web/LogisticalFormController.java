@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
@@ -25,7 +27,6 @@ import com.axelor.apps.stock.exception.LogisticalFormError;
 import com.axelor.apps.stock.exception.LogisticalFormWarning;
 import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.db.mapper.Mapper;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -134,6 +135,30 @@ public class LogisticalFormController {
       logisticalFormService.updateProductNetMass(logisticalForm);
       response.setValue("logisticalFormLineList", logisticalForm.getLogisticalFormLineList());
       response.setValue("totalNetMass", logisticalForm.getTotalNetMass());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void carrierValidate(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+      logisticalFormService.carrierValidate(logisticalForm);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void backToProvision(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      LogisticalFormService logisticalFormService = Beans.get(LogisticalFormService.class);
+      logisticalFormService.backToProvision(logisticalForm);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

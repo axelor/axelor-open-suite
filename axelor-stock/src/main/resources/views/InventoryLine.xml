@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="inventory-line-grid" title="Inventory lines"
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
     <field name="product" canEdit="false"
-      onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
+      onChange="action-inventory-line-group-update-inventory-line"
       domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
       form-view="product-form"/>
+    <field name="stockLocation"
+      onSelect="action-inventory-line-method-set-stock-location-domain"
+      onChange="action-inventory-line-group-update-inventory-line"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
       width="120" x-scale="2"/>
@@ -16,7 +19,7 @@
     <field name="description"/>
     <field name="rack" width="150"/>
     <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"
-      onChange="action-inventory-line-method-on-change-tracking-number"/>
+      onChange="action-inventory-line-group-update-inventory-line"/>
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
@@ -28,15 +31,20 @@
     onLoad="action-inventory-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
-        onChange="action-inventory-line-method-on-change-product,action-inventory-line-method-compute"
+        onChange="action-inventory-line-group-update-inventory-line"
         domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
         form-view="product-form" grid-view="product-grid"/>
-      <field name="currentQty" readonly="true"/>
+      <field name="stockLocation"
+        onSelect="action-inventory-line-method-set-stock-location-domain"
+        onChange="action-inventory-line-group-update-inventory-line"/>
+      <field name="currentQty" readonly="true"
+        help="Does not include quantities from sub stock locations"/>
       <field name="realQty" onChange="action-inventory-line-method-compute"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
       <field name="description"/>
       <field name="rack"/>
-      <field name="trackingNumber" canNew="true" domain="self.product = :product"/>
+      <field name="trackingNumber" canNew="true" domain="self.product = :product"
+        onChange="action-inventory-line-group-update-inventory-line"/>
     </panel>
   </form>
 
@@ -50,12 +58,27 @@
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="updateInventoryLine"/>
   </action-method>
-  <action-method name="action-inventory-line-method-on-change-product">
+
+  <action-group name="action-inventory-line-group-update-inventory-line">
+    <action name="action-inventory-line-method-update-inventory-line"/>
+    <action name="action-inventory-line-method-compute"/>
+  </action-group>
+
+  <action-method name="action-inventory-line-method-update-inventory-line">
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="updateInventoryLine"/>
   </action-method>
 
   <action-method name="action-inventory-line-method-compute">
     <call class="com.axelor.apps.stock.web.InventoryLineController" method="compute"/>
+  </action-method>
+
+  <action-method name="action-inventory-line-method-set-stock-location-domain">
+    <call class="com.axelor.apps.stock.web.InventoryLineController"
+      method="setStockLocationDomain"/>
+  </action-method>
+
+  <action-method name="action-inventory-line-method-update-current-qty">
+    <call class="com.axelor.apps.stock.web.InventoryLineController" method="updateCurrentQty"/>
   </action-method>
 </object-views>

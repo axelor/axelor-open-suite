@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
+    name="closure-assistant-grid" orderBy="progress">
+    <field name="fiscalYear.code" title="Fiscal Year" width="300"/>
+    <field name="fiscalYear.company.code" title="Company" width="300"/>
+    <field name="progress" title="Progress" widget="Progress" width="600"/>
+    <field name="statusSelect"/>
+  </grid>
+
+
+  <form model="com.axelor.apps.account.db.ClosureAssistant" title="Year closure"
+    name="closure-assistant-form" onNew="account-closure-assistant-group-on-new"
+    onSave="account-closure-assistant-group-on-save" width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="company" colSpan="6" title="Company" readonlyIf="progress &gt; 0"
+        grid-view="company-form" form-view="company-grid"/>
+      <field name="fiscalYear"
+        domain="self.company = :company and self.typeSelect = 1 and self.statusSelect != 2"
+        colSpan="6" title="Fiscal Year" readonlyIf="progress &gt; 0" grid-view="year-account-grid"
+        form-view="year-account-form"/>
+      <panel-related name="closureAssistantLineListPanel"
+        field="closureAssistantLineList" colSpan="12" height="8" title="Closure steps"
+        grid-view="closure-assistant-line-grid" form-view="closure-assistant-line-form"
+        x-can-reload="true" canEdit="false" canMove="false" canRemove="false" canSelect="false"
+        canNew="false" orderBy="sequence" onChange="reload"/>
+      <field name="progress" title="Progress" widget="Progress" colSpan="8" colOffset="2"
+        readonly="true"/>
+    </panel>
+  </form>
+
+  <action-group name="account-closure-assistant-group-on-new">
+    <action name="account-closure-assistant-method-set-fields-on-new"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-group name="account-closure-assistant-group-on-save">
+    <action
+      name="account-closure-assistant-method-check-no-existing-closure-assistant-for-same-year"/>
+  </action-group>
+
+  <action-method
+    name="account-closure-assistant-method-check-no-existing-closure-assistant-for-same-year">
+    <call class="com.axelor.apps.account.web.ClosureAssistantController"
+      method="checkNoExistingClosureAssistantForSameYear"/>
+  </action-method>
+
+  <action-method name="account-closure-assistant-method-set-fields-on-new">
+    <call class="com.axelor.apps.account.web.ClosureAssistantController"
+      method="setClosureAssistantFields"/>
+  </action-method>
+
+
+</object-views>

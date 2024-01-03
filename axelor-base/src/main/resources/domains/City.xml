@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="City" lang="java">
+  <entity name="City">
 
     <string name="name" title="Name" required="true"/>
     <string name="artmin" title="Artmin" selection="iterritory.artmin.select"/>
@@ -16,6 +16,15 @@
     <string name="zip" title="Zip code"/>
     <boolean name="hasZipOnRight" title="Zip On Right"/>
     <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <string name="fullName" namecolumn="true" title="Concatenation of city name and zip code"
+      search="name,zip">
+      <![CDATA[
+            String fullName = "";
+            if(name != null) { fullName = name; }
+            if(zip != null) { fullName += (" - " + zip); }
+            return fullName;
+       ]]>
+    </string>
 
     <finder-method name="findByZipAndCountry" using="zip,country" all="true"/>
 

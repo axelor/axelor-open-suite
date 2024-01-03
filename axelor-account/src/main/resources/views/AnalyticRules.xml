@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="analytic-rules-grid" title="Analytic Rules"
+    model="com.axelor.apps.account.db.AnalyticRules">
+    <field name="name"/>
+    <field name="company"/>
+    <field name="fromAccount"/>
+    <field name="toAccount"/>
+    <field name="analyticAccountSet"/>
+  </grid>
+
+  <form name="analytic-rules-form" title="Analytic Rule"
+    model="com.axelor.apps.account.db.AnalyticRules">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="company" required="true"/>
+      <field name="fromAccount" domain="self.company = :company" requiredIf="company != null"
+        readonlyIf="company == null"/>
+      <field name="toAccount" onSelect="action-on-select-to-account-set-domain"
+        requiredIf="company != null" readonlyIf="company == null"/>
+      <field name="analyticAccountSet" colSpan="12" readonlyIf="company == null"
+        domain="((self.analyticAxis.company IS NULL AND (self.company = :company OR self.company IS NULL)) OR (self.analyticAxis.company IS NOT NULL AND self.analyticAxis.company = :company  AND (self.company = :company OR self.company IS NULL))) AND self.statusSelect = 1"
+        canNew="false" canEdit="false"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-on-select-to-account-set-domain">
+    <attribute name="domain" for="toAccount"
+      expr="eval: &quot;self.code &gt;= &apos;${fromAccount?.code}&apos; AND self.company.id = ${company?.id}&quot;"
+      if="fromAccount"/>
+  </action-attrs>
+
+</object-views>

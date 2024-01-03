@@ -1,0 +1,7 @@
+importId;name;parentStockLocation.importId;company.importId;partner.importId;typeSelect;address.importId;usableOnSaleOrder;usableOnPurchaseOrder;usableOnProduction;isValued
+1;Main Warehouse;;1;;1;90000;true;true;true;true
+2;Customer;;1;;3;;true;false;false;false
+3;Supplier;;1;;3;;false;true;false;false
+4;Inventory;;1;;3;;false;false;false;false
+5;Production;;1;;3;;false;false;true;false
+6;Waste;;1;;1;;false;false;true;true

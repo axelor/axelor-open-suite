@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -168,7 +168,141 @@
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ManufOrderDS" id="3692">
             <property name="nullsOrdering">nulls lowest</property>
-            <list-property name="columnHints"/>
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">id</property>
+                    <property name="alias">id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">id</text-property>
+                    <text-property name="heading">id</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">note</property>
+                    <property name="alias">note</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">note</text-property>
+                    <text-property name="heading">note</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_path</property>
+                    <property name="alias">logo_path</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">logo_path</text-property>
+                    <text-property name="heading">logo_path</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_height</property>
+                    <property name="alias">logo_height</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_height</text-property>
+                    <text-property name="heading">logo_height</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">logo_width</property>
+                    <property name="alias">logo_width</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_width</text-property>
+                    <text-property name="heading">logo_width</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">manuf_order_seq</property>
+                    <property name="alias">manuf_order_seq</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">manuf_order_seq</text-property>
+                    <text-property name="heading">manuf_order_seq</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bom_name</property>
+                    <property name="alias">bom_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">bom_name</text-property>
+                    <text-property name="heading">bom_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_name</property>
+                    <property name="alias">product_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_name</text-property>
+                    <text-property name="heading">product_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">product_code</property>
+                    <property name="alias">product_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">product_code</text-property>
+                    <text-property name="heading">product_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">qty</property>
+                    <property name="alias">qty</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">qty</text-property>
+                    <text-property name="heading">qty</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">unit_code</property>
+                    <property name="alias">unit_code</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">unit_code</text-property>
+                    <text-property name="heading">unit_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">prod_process</property>
+                    <property name="alias">prod_process</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">prod_process</text-property>
+                    <text-property name="heading">prod_process</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">planned_start_datet</property>
+                    <property name="alias">planned_start_datet</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">planned_start_datet</text-property>
+                    <text-property name="heading">planned_start_datet</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">bar_code</property>
+                    <property name="alias">bar_code</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">bar_code</text-property>
+                    <text-property name="heading">bar_code</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">barcode_picture</property>
+                    <property name="alias">barcode_picture</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">barcode_picture</text-property>
+                    <text-property name="heading">barcode_picture</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">status_select</property>
+                    <property name="alias">status_select</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">status_select</text-property>
+                    <text-property name="heading">status_select</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">is_cons_pro_on_operation</property>
+                    <property name="alias">is_cons_pro_on_operation</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_cons_pro_on_operation</text-property>
+                    <text-property name="heading">is_cons_pro_on_operation</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">mo_comment_from_sale_order</property>
+                    <property name="analysis">dimension</property>
+                </structure>
+                <structure>
+                    <property name="columnName">manuf_barcode</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">manuf_barcode</text-property>
+                    <text-property name="heading">manuf_barcode</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">sale_order</property>
+                    <property name="analysis">dimension</property>
+                </structure>
+            </list-property>
             <list-property name="filter">
                 <structure>
                     <property name="operator">in</property>
@@ -274,6 +408,11 @@
                     </structure>
                     <structure>
                         <property name="position">19</property>
+                        <property name="name">manuf_barcode</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">20</property>
                         <property name="name">sale_order</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -287,114 +426,140 @@
                     <property name="name">id</property>
                     <property name="nativeName">id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">note</property>
                     <property name="nativeName">note</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">logo_path</property>
                     <property name="nativeName">logo_path</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">logo_height</property>
                     <property name="nativeName">logo_height</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">logo_width</property>
                     <property name="nativeName">logo_width</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">manuf_order_seq</property>
                     <property name="nativeName">manuf_order_seq</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">bom_name</property>
                     <property name="nativeName">bom_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">product_name</property>
                     <property name="nativeName">product_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">product_code</property>
                     <property name="nativeName">product_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">qty</property>
                     <property name="nativeName">qty</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">unit_code</property>
                     <property name="nativeName">unit_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">prod_process</property>
                     <property name="nativeName">prod_process</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">planned_start_datet</property>
                     <property name="nativeName">planned_start_datet</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">bar_code</property>
                     <property name="nativeName">bar_code</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">barcode_picture</property>
                     <property name="nativeName">barcode_picture</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">status_select</property>
                     <property name="nativeName">status_select</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">is_cons_pro_on_operation</property>
                     <property name="nativeName">is_cons_pro_on_operation</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">mo_comment_from_sale_order</property>
                     <property name="nativeName">mo_comment_from_sale_order</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
+                    <property name="name">manuf_barcode</property>
+                    <property name="nativeName">manuf_barcode</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">sale_order</property>
                     <property name="nativeName">sale_order</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -416,13 +581,15 @@ BarCodeFile.file_path as barcode_picture,
 ManufOrder.status_select,
 ManufOrder.is_cons_pro_on_operation,
 ManufOrder.mo_comment_from_sale_order,
-STRING_AGG(SaleOrder.full_name, ', ') as sale_order
+STRING_AGG(SaleOrder.full_name, ', ') as sale_order,
+ManufBarCodeFile.file_path as manuf_barcode
 FROM production_manuf_order AS ManufOrder
 LEFT JOIN base_company AS Company ON (Company.id = ManufOrder.company)
 LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = Company.logo)
 LEFT JOIN production_bill_of_material AS BOM ON (BOM.id = ManufOrder.bill_of_material) 
 LEFT JOIN base_product as Product ON (Product.id = BOM.product)
 left join meta_file as BarCodeFile on (BarCodeFile.id = Product.bar_code)
+left join meta_file as ManufBarCodeFile on (ManufBarCodeFile.id = ManufOrder.bar_code)
 LEFT JOIN base_unit AS Unit ON (Unit.id = BOM.unit)
 LEFT JOIN production_prod_process AS ProdProcess ON (ProdProcess.id = BOM.prod_process)
 LEFT JOIN production_manuf_order_sale_order_set AS SaleOrderSet ON (SaleOrderSet.production_manuf_order = ManufOrder.id)
@@ -445,28 +612,11 @@ Product.bar_code,
 BarCodeFile.file_path,
 ManufOrder.status_select,
 ManufOrder.is_cons_pro_on_operation,
-ManufOrder.mo_comment_from_sale_order
-]]></xml-property>
+ManufOrder.mo_comment_from_sale_order,
+ManufBarCodeFile.file_path]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -838,7 +988,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
 	OperationOrderLine.planned_start_datet, OperationOrderLine.planned_end_datet, OperationOrderLine.real_start_datet,
     OperationOrderLine.real_end_datet, 
     (CASE WHEN TranslatedSelect.message_value = '' THEN TranslatedSelect.message_key ELSE TranslatedSelect.message_value END) as status_select,
-    Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM base_app_production) as print_planned_date_on_manuf_order
+    Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM studio_app_production) as print_planned_date_on_manuf_order
 FROM
 	production_operation_order as OperationOrderLine 
 INNER JOIN 
@@ -1658,8 +1808,42 @@ WHERE manufOrder.id = ?;]]></xml-property>
             <property name="topMargin">0.47625cm</property>
             <property name="leftMargin">0.4in</property>
             <property name="rightMargin">0.396875cm</property>
-            <property name="headerHeight">0in</property>
+            <property name="headerHeight">0.2in</property>
             <property name="footerHeight">0.2in</property>
+            <page-header>
+                <grid id="4851">
+                    <property name="dataSet">ManufOrderDS</property>
+                    <list-property name="boundDataColumns">
+                        <structure>
+                            <property name="name">manuf_barcode</property>
+                            <text-property name="displayName">manuf_barcode</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["manuf_barcode"]</expression>
+                            <property name="dataType">string</property>
+                        </structure>
+                    </list-property>
+                    <column id="4852"/>
+                    <column id="4856"/>
+                    <column id="4858">
+                        <list-property name="visibility">
+                            <structure>
+                                <property name="format">all</property>
+                                <expression name="valueExpr" type="javascript">!row["manuf_barcode"]</expression>
+                            </structure>
+                        </list-property>
+                    </column>
+                    <row id="4853">
+                        <cell id="4854"/>
+                        <cell id="4855"/>
+                        <cell id="4857">
+                            <property name="textAlign">center</property>
+                            <image id="4859">
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["manuf_barcode"]</expression>
+                            </image>
+                        </cell>
+                    </row>
+                </grid>
+            </page-header>
             <page-footer>
                 <grid id="4631">
                     <property name="width">27.887083333333333cm</property>
@@ -1698,7 +1882,7 @@ WHERE manufOrder.id = ?;]]></xml-property>
                         <property name="fontSize">9pt</property>
                         <cell id="4731">
                             <property name="verticalAlign">middle</property>
-                            <text id="4827">
+                            <image id="4924">
                                 <property name="dataSet">ManufOrderDS</property>
                                 <list-property name="boundDataColumns">
                                     <structure>
@@ -1722,15 +1906,11 @@ WHERE manufOrder.id = ?;]]></xml-property>
                                         <property name="allowExport">true</property>
                                     </structure>
                                 </list-property>
-                                <property name="contentType">html</property>
-                                <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                            </text>
+                                <method name="onCreate"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                                <property name="source">file</property>
+                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                            </image>
                         </cell>
                         <cell id="4636">
                             <property name="textAlign">center</property>
@@ -2269,7 +2449,7 @@ WHERE manufOrder.id = ?;]]></xml-property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : &amp;nbsp;]]></text-property>
                                                 </text>
-                                                <text id="4851">
+                                                <text id="4923">
                                                     <property name="display">inline</property>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>row["sale_order"]</VALUE-OF>]]></text-property>
@@ -3740,9 +3920,9 @@ WHERE manufOrder.id = ?;]]></xml-property>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4578">
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="4173">
@@ -4305,12 +4485,12 @@ else dataSetRow["planned_end_datet"]</expression>
                                             <property name="backgroundColor">#FFFFFF</property>
                                             <property name="textAlign">center</property>
                                             <image id="4531">
+                                                <expression name="altText">""</expression>
                                                 <structure name="toc"/>
                                                 <property name="source">file</property>
                                                 <property name="fitToContainer">true</property>
                                                 <property name="proportionalScale">true</property>
                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["bar_code_path"]</expression>
-                                                <expression name="altText">""</expression>
                                             </image>
                                         </cell>
                                     </row>
@@ -4719,9 +4899,9 @@ else dataSetRow["planned_end_datet"]</expression>
                                                             <property name="borderTopWidth">thin</property>
                                                             <property name="textAlign">center</property>
                                                             <image id="4586">
+                                                                <expression name="altText">""</expression>
                                                                 <property name="source">file</property>
                                                                 <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                                                <expression name="altText">""</expression>
                                                             </image>
                                                         </cell>
                                                         <cell id="4509">

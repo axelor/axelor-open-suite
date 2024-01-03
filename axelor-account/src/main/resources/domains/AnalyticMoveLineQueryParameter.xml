@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AnalyticMoveLineQueryParameter">
+    <many-to-one name="analyticMoveLineSearch"
+      ref="com.axelor.apps.account.db.AnalyticMoveLineQuery"
+      title="Analytic move line search/reverse"/>
+    <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis"
+      title="Analytic Axis" required="true"/>
+    <many-to-many name="analyticAccountSet"
+      ref="com.axelor.apps.account.db.AnalyticAccount"
+      title="AnalyticMoveLineQueryParameter.analyticAccounts"/>
+    <many-to-one name="analyticAccount" ref="com.axelor.apps.account.db.AnalyticAccount"
+      title="Analytic Acc."/>
+    <integer name="typeSelect" title="Type"
+      selection="account.analytic.move.line.query.parameter.type.select" required="true" default="1"/>
+
+    <extra-code><![CDATA[
+
+		// QUERY PARAMETER TYPE SELECT
+      	public static final int PARAMETER_TYPE_SEARCH = 1;
+      	public static final int PARAMETER_TYPE_REVERSE = 2;
+
+    ]]></extra-code>
+  </entity>
+
+</domain-models>

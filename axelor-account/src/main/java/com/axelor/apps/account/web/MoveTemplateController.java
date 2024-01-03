@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.web;
 
@@ -23,9 +24,11 @@ import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveTemplateService;
-import com.axelor.exception.service.TraceBackService;
+import com.axelor.apps.account.service.move.MoveViewHelperService;
+import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -40,6 +43,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +61,7 @@ public class MoveTemplateController {
     if (valid) {
       response.setReload(true);
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_1));
+      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_1));
     }
   }
 
@@ -101,12 +105,17 @@ public class MoveTemplateController {
 
       if ((dataList != null && !dataList.isEmpty())
           || (moveTemplateList != null && !moveTemplateList.isEmpty())) {
+        MoveTemplateService moveTemplateService = Beans.get(MoveTemplateService.class);
         List<Long> moveList =
-            Beans.get(MoveTemplateService.class)
-                .generateMove(moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
-        if (moveList != null && !moveList.isEmpty()) {
+            moveTemplateService.generateMove(
+                moveTemplateType, moveTemplate, dataList, moveDate, moveTemplateList);
+        List<String> exceptionsList = moveTemplateService.getExceptionsList();
+        if (!CollectionUtils.isEmpty(exceptionsList)) {
+          response.setInfo(Joiner.on("<br>").join(exceptionsList));
+        }
+        if (!CollectionUtils.isEmpty(moveList)) {
           response.setView(
-              ActionView.define(I18n.get(IExceptionMessage.MOVE_TEMPLATE_3))
+              ActionView.define(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_3))
                   .model(Move.class.getName())
                   .add("grid", "move-grid")
                   .add("form", "move-form")
@@ -115,10 +124,10 @@ public class MoveTemplateController {
                   .map());
         }
       } else {
-        response.setFlash(I18n.get(IExceptionMessage.MOVE_TEMPLATE_4));
+        response.setInfo(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_4));
       }
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 
@@ -142,6 +151,20 @@ public class MoveTemplateController {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
       Map<String, Object> values = Beans.get(MoveTemplateService.class).computeTotals(moveTemplate);
       response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void filterPartner(ActionRequest request, ActionResponse response) {
+    try {
+      MoveTemplate moveTemplate = request.getContext().getParent().asType(MoveTemplate.class);
+      if (moveTemplate != null) {
+        String domain =
+            Beans.get(MoveViewHelperService.class)
+                .filterPartner(moveTemplate.getCompany(), moveTemplate.getJournal());
+        response.setAttr("partner", "domain", domain);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

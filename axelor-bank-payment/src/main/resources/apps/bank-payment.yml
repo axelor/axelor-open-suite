@@ -1,0 +1,13 @@
+---
+name: Bank payment
+code: bank-payment
+typeSelect: standard
+installOrder: 2050
+description: |
+   Bank payment configuration
+image: app-bank-payment.png
+modules: 
+   axelor-bank-payment
+dependsOn: 
+   - account
+sequence: 8

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="product-variant-grid" title="Product variants"
     model="com.axelor.apps.base.db.ProductVariant">
@@ -13,6 +13,8 @@
       form-view="product-variant-attr-form"/>
     <field name="productVariantAttr4" grid-view="product-variant-attr-grid"
       form-view="product-variant-attr-form"/>
+    <field name="productVariantAttr5" grid-view="product-variant-attr-grid"
+      form-view="product-variant-attr-form"/>
     <field name="productVariantValue1" form-view="product-variant-value-form"
       grid-view="product-variant-value-grid"/>
     <field name="productVariantValue2" form-view="product-variant-value-form"
@@ -20,6 +22,8 @@
     <field name="productVariantValue3" form-view="product-variant-value-form"
       grid-view="product-variant-value-grid"/>
     <field name="productVariantValue4" form-view="product-variant-value-form"
+      grid-view="product-variant-value-grid"/>
+    <field name="productVariantValue5" form-view="product-variant-value-form"
       grid-view="product-variant-value-grid"/>
   </grid>
 
@@ -50,6 +54,12 @@
       <field name="productVariantValue4" showTitle="false" widget="SuggestBox"
         showIf="productVariantAttr4" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid"/>
+      <field name="productVariantAttr5" showTitle="false" readonly="true"
+        showIf="productVariantAttr4" grid-view="product-variant-attr-grid"
+        form-view="product-variant-attr-form"/>
+      <field name="productVariantValue5" showTitle="false" widget="SuggestBox"
+        showIf="productVariantAttr5" form-view="product-variant-value-form"
+        grid-view="product-variant-value-grid"/>
     </panel>
   </form>
 
@@ -64,6 +74,8 @@
       expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue3Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
     <attribute name="domain" for="productVariantValue4"
       expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue4Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+    <attribute name="domain" for="productVariantValue5"
+      expr="eval: (__parent__?.parentProduct?.productVariantConfig?.productVariantValue5Set?.collect{it.id}?.size() &gt; 0) ? &quot;self.id IN (${__parent__?.parentProduct?.productVariantConfig?.productVariantValue5Set?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
   </action-attrs>
 
 
@@ -79,6 +91,8 @@
       expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr3"/>
     <field name="productVariantAttr4"
       expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr4"/>
+    <field name="productVariantAttr5"
+      expr="eval: __parent__?.parentProduct?.productVariantConfig?.productVariantAttr5"/>
   </action-record>
 
 </object-views>

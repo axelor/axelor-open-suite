@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="topic-grid" title="Topics" model="com.axelor.apps.project.db.Topic"
+    orderBy="updatedOn">
+    <field name="title"/>
+    <field name="project"/>
+    <field name="isClosed"/>
+    <field name="createdBy" title="Topic created by"/>
+    <field name="updatedOn" title="Last updated on"/>
+  </grid>
+
+  <form name="topic-form" title="Topic" model="com.axelor.apps.project.db.Topic"
+    onNew="action-topic-record-on-new">
+    <panel name="mainPanel">
+      <field name="title"/>
+      <field name="message"/>
+      <field name="project" form-view="project-form" grid-view="project-grid"
+        domain="self.isShowTopic = true"/>
+      <field name="isClosed"/>
+      <field name="createdBy" title="Topic created by"/>
+      <field name="updatedOn" title="Last updated on"/>
+      <button name="closeTopicBtn" title="Close topic" hidden="true"
+        readonlyIf="createdBy.id != userId" onClick="action-topic-record-close-topic,save"
+        showIf="!isClosed"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+    </panel-mail>
+  </form>
+
+  <action-record name="action-topic-record-close-topic"
+    model="com.axelor.apps.project.db.Topic">
+    <field name="isClosed" expr="eval: true"/>
+  </action-record>
+
+  <action-record name="action-topic-record-on-new"
+    model="com.axelor.apps.project.db.Topic">
+    <field name="project" expr="eval: _project" if="_project"/>
+  </action-record>
+
+</object-views>

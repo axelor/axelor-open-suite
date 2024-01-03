@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="payment-mode-form" title="Payment Mode"
+    model="com.axelor.apps.account.db.PaymentMode" id="account-payment-mode-form" extension="true">
+    <extend target="//panel[@name='mainPanel']/field[@name='typeSelect']">
+      <attribute name="onChange"
+        value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']/field[@name='inOutSelect']">
+      <attribute name="onChange"
+        value="action-payment-mode-group-empty,action-payment-mode-record-accounting-trigger-init-cheque-in"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <insert position="after">
+        <panel-tabs name="mainPanelTab">
+          <panel name="mainAccountingSettingsTab" title="General accounting config.">
+            <panel name="accountingTriggerPanel" stacked="true">
+              <field name="accountingTriggerSelect" hidden="true"
+                hideIf="typeSelect == 7 &amp;&amp; inOutSelect == 1"/>
+              <field name="accountingTriggerSelect" hidden="true"
+                showIf="typeSelect == 7 &amp;&amp; inOutSelect == 1" selection-in="[1,5]"/>
+            </panel>
+            <panel-related name="accountManagementListPanel"
+              field="accountManagementList" grid-view="account-management-payment-mode-grid"
+              form-view="account-management-form" domain="self.typeSelect = 3" colSpan="12"/>
+          </panel>
+          <panel name="paymentProcessesSettingsPanel" title="Payment processes settings">
+            <field name="canSelectInPaymentSession"
+              readonlyIf="typeSelect != 2 &amp;&amp; typeSelect != 9"/>
+            <panel name="paymentSessionPanel" colSpan="12" showIf="canSelectInPaymentSession">
+              <field name="daysMarginOnPaySession" requiredIf="canSelectInPaymentSession"
+                min="0"/>
+              <panel name="accountingMethodPanel" stacked="true">
+                <field name="accountingMethodSelect" requiredIf="canSelectInPaymentSession"
+                  showIf="moveAccountingDateSelect != 3"/>
+                <field name="accountingMethodSelect" requiredIf="canSelectInPaymentSession"
+                  showIf="moveAccountingDateSelect == 3" selection-in="[1,2]"/>
+              </panel>
+              <panel name="moveAccountingDatePanel" stacked="true">
+                <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
+                  showIf="accountingMethodSelect != 3"
+                  onChange="action-payment-mode-validate-check-bank-order-file-format"/>
+                <field name="moveAccountingDateSelect" requiredIf="canSelectInPaymentSession"
+                  showIf="accountingMethodSelect == 3" selection-in="[1,2]"
+                  onChange="action-payment-mode-validate-check-bank-order-file-format"/>
+              </panel>
+            </panel>
+          </panel>
+        </panel-tabs>
+      </insert>
+    </extend>
+  </form>
+
+  <action-record name="action-payment-mode-record-accounting-trigger-init-cheque-in"
+    model="com.axelor.apps.account.db.PaymentMode">
+    <field name="accountingTriggerSelect" expr="1"
+      if="typeSelect == 7 &amp;&amp; inOutSelect == 1 &amp;&amp; (accountingTriggerSelect != 1 || accountingTriggerSelect != 5)"/>
+    <field name="accountingTriggerSelect" expr="0"
+      if="(typeSelect != 7 || typeSelect != 1) &amp;&amp; accountingTriggerSelect == 5"/>
+  </action-record>
+
+  <action-method name="action-method-account-set-read-only-if-in-move">
+    <call class="com.axelor.apps.account.web.PaymentModeController" method="setReadOnly"/>
+  </action-method>
+
+  <action-validate name="action-payment-mode-validate-check-bank-order-file-format">
+    <error
+      message="The bank order file format which was selected was not compatible with multidate. Please reselect a bank order file format which is supporting the multidate (among those proposed)."
+      if="moveAccountingDateSelect == 2 &amp;&amp; accountingTriggerSelect == 1 &amp;&amp; generateBankOrder &amp;&amp; !bankOrderFileFormat?.isMultiDate"
+      action="action-payment-mode-record-reset-bank-order-file-format"/>
+  </action-validate>
+
+  <action-record name="action-payment-mode-record-reset-bank-order-file-format"
+    model="com.axelor.apps.account.db.PaymentMode">
+    <field name="bankOrderFileFormat" expr="eval: null"/>
+  </action-record>
+
+</object-views>

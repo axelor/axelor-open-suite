@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="reimbursement-grid" title="Reimbursements"
     model="com.axelor.apps.account.db.Reimbursement">
@@ -23,8 +23,8 @@
     <panel name="reimbursementDetailsPanel" title="Reimbursement details">
       <field name="amountToReimburse"/>
       <field name="amountReimbursed"/>
-      <field name="bankDetails" domain="self.active = true" form-view="bank-details-form"
-        grid-view="bank-details-grid"/>
+      <field name="bankDetails" domain="self.active = true and self.partner = :partner"
+        form-view="bank-details-form" grid-view="bank-details-grid"/>
     </panel>
 
     <panel name="reasonPanel" title="Reason">
@@ -40,7 +40,8 @@
     </panel>
 
     <panel-related name="moveLineSetPanel" field="moveLineSet"
-      hideIf="statusSelect == 1" colSpan="12" grid-view="move-line-grid" form-view="move-line-form"/>
+      hideIf="statusSelect == 1" domain="self.move.partner = :partner" colSpan="12"
+      grid-view="move-line-grid" form-view="move-line-form"/>
 
     <panel sidebar="true" name="infoPanel" title="Info">
       <field name="statusSelect"/>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,33 +14,45 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
-import com.axelor.apps.message.service.TemplateMessageService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.auth.db.User;
+import com.axelor.apps.project.service.ProjectService;
 import com.axelor.auth.db.repo.UserRepository;
-import com.axelor.exception.AxelorException;
-import com.axelor.inject.Beans;
+import com.axelor.common.ObjectUtils;
+import com.axelor.message.service.TemplateMessageService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,10 +75,20 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       UserHrService userHrService,
       TimesheetLineService timesheetLineService,
       ProjectPlanningTimeRepository projectPlanningTimeRepository,
-      ProjectTaskRepository projectTaskRepository,
+      ProjectTaskRepository projectTaskRepo,
       ProductCompanyService productCompanyService,
-      TimesheetLineRepository timesheetLineRepo,
-      TimesheetRepository timeSheetRepository) {
+      TimesheetLineRepository timesheetlineRepo,
+      TimesheetRepository timeSheetRepository,
+      ProjectService projectService,
+      LeaveRequestService leaveRequestService,
+      PublicHolidayHrService publicHolidayHrService,
+      PublicHolidayService publicHolidayService,
+      PartnerPriceListService partnerPriceListService,
+      UnitConversionService unitConversionService,
+      WeeklyPlanningService weeklyPlanningService,
+      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      EmployeeService employeeService,
+      AppBaseService appBaseService) {
     super(
         priceListService,
         appHumanResourceService,
@@ -76,17 +99,27 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
         userHrService,
         timesheetLineService,
         projectPlanningTimeRepository,
-        projectTaskRepository,
+        projectTaskRepo,
         productCompanyService,
-        timesheetLineRepo,
-        timeSheetRepository);
+        timesheetlineRepo,
+        timeSheetRepository,
+        projectService,
+        leaveRequestService,
+        publicHolidayHrService,
+        publicHolidayService,
+        partnerPriceListService,
+        unitConversionService,
+        weeklyPlanningService,
+        leaveRequestComputeDurationService,
+        employeeService,
+        appBaseService);
   }
 
   @Override
   public List<InvoiceLine> createInvoiceLines(
       Invoice invoice, List<TimesheetLine> timesheetLineList, int priority) throws AxelorException {
 
-    if (!Beans.get(AppHumanResourceService.class).isApp("business-project")) {
+    if (!appHumanResourceService.isApp("business-project")) {
       return super.createInvoiceLines(invoice, timesheetLineList, priority);
     }
 
@@ -99,8 +132,9 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
       Object[] tabInformations = new Object[6];
-      tabInformations[0] = timesheetLine.getProduct();
-      tabInformations[1] = timesheetLine.getUser();
+      Product product = timesheetLine.getProduct();
+      tabInformations[0] = product;
+      tabInformations[1] = timesheetLine.getEmployee();
       // Start date
       tabInformations[2] = timesheetLine.getDate();
       // End date, useful only for consolidation
@@ -114,9 +148,8 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
       String key = null;
       if (consolidate) {
         key =
-            timesheetLine.getProduct().getId()
-                + "|"
-                + timesheetLine.getUser().getId()
+            (product != null ? product.getId() + "|" : "")
+                + timesheetLine.getEmployee().getId()
                 + "|"
                 + timesheetLine.getProject().getId();
         if (timeSheetInformationsMap.containsKey(key)) {
@@ -148,7 +181,7 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
       String strDate = null;
       Product product = (Product) timesheetInformations[0];
-      User user = (User) timesheetInformations[1];
+      Employee employee = (Employee) timesheetInformations[1];
       LocalDate startDate = (LocalDate) timesheetInformations[2];
       LocalDate endDate = (LocalDate) timesheetInformations[3];
       BigDecimal hoursDuration = (BigDecimal) timesheetInformations[4];
@@ -166,7 +199,13 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
 
       invoiceLineList.addAll(
           this.createInvoiceLine(
-              invoice, product, user, strDate, hoursDuration, priority * 100 + count, priceList));
+              invoice,
+              product,
+              employee,
+              strDate,
+              hoursDuration,
+              priority * 100 + count,
+              priceList));
       invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
       count++;
     }
@@ -178,5 +217,17 @@ public class TimesheetProjectServiceImpl extends TimesheetServiceImpl
   public BigDecimal computeDurationForCustomer(TimesheetLine timesheetLine) throws AxelorException {
     return timesheetLineService.computeHoursDuration(
         timesheetLine.getTimesheet(), timesheetLine.getDurationForCustomer(), true);
+  }
+
+  @Override
+  protected TimesheetLine createTimeSheetLineFromPPT(
+      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
+    TimesheetLine line = super.createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
+    if (ObjectUtils.notEmpty(projectPlanningTime.getProjectTask())
+        && projectPlanningTime.getProjectTask().getInvoicingType()
+            == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {
+      line.setToInvoice(projectPlanningTime.getProjectTask().getToInvoice());
+    }
+    return line;
   }
 }

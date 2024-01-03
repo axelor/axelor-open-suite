@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <action-method name="action-configurator-formula-method-check-script">
     <call class="com.axelor.apps.sale.web.ConfiguratorFormulaController"
@@ -13,7 +13,7 @@
     <panel name="helpPanel" title="Help">
       <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
         <viewer><![CDATA[
-<h3 id="the-script-must-be-written-in-groovy"><span x-translate>The script must be written in</span> <a href="http://docs.groovy-lang.org/latest/html/documentation/">Groovy</a></h3>
+<h3 id="the-script-must-be-written-in-groovy"><span x-translate>The script must be written in</span> <a href="http://docs.groovy-lang.org/latest/html/documentation/" target="_blank">Groovy</a></h3>
 <h4 id="string">String</h4>
 <p><code>+</code> <span x-translate>is used for concatenation</span>:</p>
 <pre><code>v = &quot;def&quot;
@@ -26,8 +26,10 @@
 <h4 id="current-user" x-translate>Current User</h4>
 <p><code>__user__</code> <span x-translate>gives access to connected user.</span> <br>
 <span x-translate>Example: accessing the name of the user</span>: <code>__user__.name</code>.</p>
-<h4 id="date">Date</h2>
+<h4 id="date">Date</h4>
 <p><code>__date__</code> <span x-translate>gives access to today date and</span> <code>__datetime__</code> <span x-translate>to current date time.</span></p>
+<h4 id="parentsaleorder" x-translate>Access to parent sale order</h4>
+<p><code>parentSaleOrderId</code> <span x-translate>gives access to the id of parent sale order (when adding a sale order line with this configurator)</span></p>
 <h4 id="query-to-database" x-translate>Query to database</h4>
 <p><code>__repo__</code> <span x-translate>gives access to a repository with the same syntax as the repositories in java</span>.<br>
 <span x-translate>Examples</span>:
@@ -41,5 +43,12 @@
       </field>
     </panel>
   </form>
+
+  <action-attrs name="action-configurator-formula-attr-display-meta-json-field">
+    <attribute name="hidden" for="metaJsonField"
+      expr="eval:__this__?.metaField.json == false" if="eval:__this__?.metaField != null"/>
+    <attribute name="value" for="metaJsonField" expr="eval:null"
+      if="eval:__this__?.metaField == null || __this__?.metaField.json == false"/>
+  </action-attrs>
 
 </object-views>

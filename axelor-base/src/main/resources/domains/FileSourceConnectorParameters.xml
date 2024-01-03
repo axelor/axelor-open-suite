@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="FileSourceConnectorParameters">
+
+    <string name="name" title="Name"/>
+    <many-to-one ref="com.axelor.apps.base.db.FileSourceConnector"
+      name="fileSourceConnector" title="File source connector" required="true"/>
+    <string name="sourceFolder" title="Source folder"
+      help="Source folder of the REMOTE server for download"/>
+    <string name="destinationFolder" title="Destination folder"
+      help="Destination folder of the REMOTE server for upload."/>
+    <string name="fileNamingRule" title="File naming rule"
+      help="This field allows to filter files and download only those that respect specified naming without sensitive case. Example : 'ABCD' will filter on files that contain 'ABCD' in their name."/>
+
+  </entity>
+
+</domain-models>

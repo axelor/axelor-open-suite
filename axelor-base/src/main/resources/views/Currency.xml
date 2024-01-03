@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="currency-grid" title="Currencies" model="com.axelor.apps.base.db.Currency">
     <field name="name"/>
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="code"/>
     <field name="symbol"/>
+    <field name="codeISO" x-bind="{{unaccent|uppercase}}"/>
   </grid>
 
   <form name="currency-form" title="Currency" model="com.axelor.apps.base.db.Currency">
-    <panel name="mainPanel">
-      <field name="name"/>
-      <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"/>
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" colSpan="3"/>
+      <field name="code" colSpan="3"/>
       <field name="symbol" colSpan="3"/>
+      <field name="codeISO" colSpan="3" x-bind="{{unaccent|uppercase}}"/>
     </panel>
   </form>
 

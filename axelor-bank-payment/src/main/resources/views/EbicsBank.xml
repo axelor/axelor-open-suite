@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="ebics-bank-grid" title="Ebics bank"
     model="com.axelor.apps.bankpayment.db.EbicsBank">
@@ -17,12 +17,11 @@
         hideIf="!fullName" readonly="true"/>
       <field name="bank" canNew="true" onChange="action-ebics-bank-record-onchange-bank"/>
       <field name="hostId"/>
-      <field name="fax" placeholder="+33000000000" pattern="^\+?([\s()-.]*\d){7,}$"
-        onChange="action-partner-method-normalize-fax"/>
+      <field name="fax" widget="phone"/>
       <field name="emailAddress" placeholder="whatever@example.com"
         pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
       <field name="protocolSelect" required="true"/>
-      <field name="url" colSpan="12" pattern="http(s)?://.+"/>
+      <field name="url" colSpan="12" widget="url" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
       <field name="language" canEdit="false"/>
       <field name="certValidityPeriodSelect"/>
       <panel name="x509ExtensionForAutoSignedCertPanel"

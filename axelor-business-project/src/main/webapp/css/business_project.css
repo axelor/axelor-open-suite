@@ -1,0 +1,47 @@
+/**
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+.dashlet-no-dropdown .dashlet-header li.dropdown {
+    display: none;
+}
+.report-box .icon-equal:before{
+    content: "\003D";
+    font-size: 24px;
+    font-weight: bold;
+}
+.dashlet-no-dropdown .fa-level-up{
+    color: #079d07;
+}
+
+.dashlet-no-dropdown .fa-level-down{
+    color: #cb2c2c;
+}
+
+.dashlet-no-dropdown.small .dashlet-body{
+    zoom: 80%;
+}
+
+.report-box.dashlet-no-dropdown .report-icon{
+    font-size:30px;
+    top:40px;
+}
+
+.report-box.dashlet-no-dropdown.small .report-icon{
+    font-size:30px;
+    top:48px;
+}

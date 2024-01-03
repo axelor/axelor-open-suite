@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <!-- GRIDS -->
+
+  <grid name="configurator-prod-product-grid" title="Configurator prod products"
+    model="com.axelor.apps.production.db.ConfiguratorProdProduct">
+    <field name="product"/>
+    <field name="qty"/>
+    <field name="unit"/>
+  </grid>
+
+
+  <!-- FORMS -->
+
+  <form name="configurator-prod-product-form" title="Configurator prod product"
+    model="com.axelor.apps.production.db.ConfiguratorProdProduct">
+    <panel name="mainPanel">
+      <panel name="conditionPanel" title="Condition" colSpan="12">
+        <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+          x-code-syntax="groovy"/>
+      </panel>
+      <panel name="productPanel" title="Product">
+        <field name="defProductAsFormula" colSpan="6"/>
+        <field name="product" colSpan="12" showIf="!defProductAsFormula"
+          requiredIf="!defProductAsFormula"/>
+        <field name="productFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defProductAsFormula"
+          requiredIf="defProductAsFormula"/>
+      </panel>
+      <panel name="qtyPanel" title="Qty">
+        <field name="defQtyAsFormula" colSpan="6"/>
+        <field name="qty" colSpan="12" showIf="!defQtyAsFormula" requiredIf="!defQtyAsFormula"/>
+        <field name="qtyFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defQtyAsFormula"
+          requiredIf="defQtyAsFormula"/>
+      </panel>
+      <panel name="unitPanel" title="Unit">
+        <field name="defUnitAsFormula" colSpan="6"/>
+        <field name="unit" colSpan="12" showIf="!defUnitAsFormula"
+          requiredIf="!defUnitAsFormula"/>
+        <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defUnitAsFormula"
+          requiredIf="defUnitAsFormula"/>
+      </panel>
+    </panel>
+  </form>
+
+
+</object-views>

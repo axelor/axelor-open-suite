@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,29 +14,32 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.workflow.ventilate;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.AccountingSituationService;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.fixedasset.FixedAssetService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.workflow.WorkflowInvoice;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateFromInvoiceService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.user.UserService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
@@ -56,7 +60,7 @@ public class VentilateState extends WorkflowInvoice {
 
   protected SequenceService sequenceService;
 
-  protected MoveService moveService;
+  protected MoveCreateFromInvoiceService moveCreateFromInvoiceService;
 
   protected AccountConfigService accountConfigService;
 
@@ -68,26 +72,34 @@ public class VentilateState extends WorkflowInvoice {
 
   protected UserService userService;
 
-  protected FixedAssetService fixedAssetService;
+  protected FixedAssetGenerationService fixedAssetGenerationService;
+
+  protected InvoiceTermService invoiceTermService;
+
+  protected AccountingSituationService accountingSituationService;
 
   @Inject
   public VentilateState(
       SequenceService sequenceService,
-      MoveService moveService,
+      MoveCreateFromInvoiceService moveCreateFromInvoiceService,
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       InvoiceRepository invoiceRepo,
       WorkflowVentilationService workflowService,
       UserService userService,
-      FixedAssetService fixedAssetService) {
+      FixedAssetGenerationService fixedAssetGenerationService,
+      InvoiceTermService invoiceTermService,
+      AccountingSituationService accountingSituationService) {
     this.sequenceService = sequenceService;
-    this.moveService = moveService;
+    this.moveCreateFromInvoiceService = moveCreateFromInvoiceService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.invoiceRepo = invoiceRepo;
     this.workflowService = workflowService;
     this.userService = userService;
-    this.fixedAssetService = fixedAssetService;
+    this.fixedAssetGenerationService = fixedAssetGenerationService;
+    this.invoiceTermService = invoiceTermService;
+    this.accountingSituationService = accountingSituationService;
   }
 
   @Override
@@ -114,7 +126,8 @@ public class VentilateState extends WorkflowInvoice {
   }
 
   protected void setVentilatedLog() {
-    invoice.setVentilatedDate(appAccountService.getTodayDate(invoice.getCompany()));
+    invoice.setVentilatedDateTime(
+        appAccountService.getTodayDateTime(invoice.getCompany()).toLocalDateTime());
     invoice.setVentilatedByUser(userService.getUser());
   }
 
@@ -128,27 +141,23 @@ public class VentilateState extends WorkflowInvoice {
   protected void setPartnerAccount() throws AxelorException {
     // Partner account is actually set upon validation but we keep this for backward compatibility
     if (invoice.getPartnerAccount() == null) {
-      Account account = Beans.get(InvoiceService.class).getPartnerAccount(invoice);
+      Account account = accountingSituationService.getPartnerAccount(invoice, false);
 
-      if (account == null) {
+      if (account == null
+          && invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_5));
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_5));
       }
 
       if (invoice.getPartner() != null) {
-        account =
-            Beans.get(FiscalPositionAccountService.class)
-                .getAccount(invoice.getPartner().getFiscalPosition(), account);
+        FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+        account = Beans.get(FiscalPositionAccountService.class).getAccount(fiscalPosition, account);
       }
       invoice.setPartnerAccount(account);
     }
-    Account partnerAccount = invoice.getPartnerAccount();
-    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
-    }
+
+    InvoiceToolService.checkUseForPartnerBalanceAndReconcileOk(invoice);
   }
 
   protected void setJournal() throws AxelorException {
@@ -168,7 +177,7 @@ public class VentilateState extends WorkflowInvoice {
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_FUTURE_DATE),
           invoice.getInvoiceId());
     }
 
@@ -176,18 +185,19 @@ public class VentilateState extends WorkflowInvoice {
     if (isPurchase && invoice.getOriginDate() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_MISSING_ORIGIN_DATE));
     }
     if (isPurchase && invoice.getOriginDate().isAfter(todayDate)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_FUTURE_ORIGIN_DATE));
     }
-
+    this.setInvoiceTermDueDates();
     if ((invoice.getPaymentCondition() != null && !invoice.getPaymentCondition().getIsFree())
         || invoice.getDueDate() == null) {
-      invoice.setDueDate(this.getDueDate());
+      invoice.setDueDate(InvoiceToolService.getDueDate(invoice));
     }
+    invoice.setNextDueDate(InvoiceToolService.getNextDueDate(invoice));
   }
 
   /**
@@ -226,32 +236,33 @@ public class VentilateState extends WorkflowInvoice {
         throw new AxelorException(
             sequence,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_2),
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_2),
             lastInvoice.getInvoiceDate().getMonth().toString());
       }
       if (sequence.getYearlyResetOk()) {
         throw new AxelorException(
             sequence,
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.VENTILATE_STATE_3),
+            I18n.get(AccountExceptionMessage.VENTILATE_STATE_3),
             Integer.toString(lastInvoice.getInvoiceDate().getYear()));
       }
       throw new AxelorException(
           invoice,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.VENTILATE_STATE_1),
+          I18n.get(AccountExceptionMessage.VENTILATE_STATE_1),
           lastInvoice.getInvoiceDate().toString());
     }
   }
 
-  protected LocalDate getDueDate() throws AxelorException {
+  protected void setInvoiceTermDueDates() throws AxelorException {
 
     if (InvoiceToolService.isPurchase(invoice)) {
 
-      return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getOriginDate());
-    }
+      invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
+    } else {
 
-    return InvoiceToolService.getDueDate(invoice.getPaymentCondition(), invoice.getInvoiceDate());
+      invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
+    }
   }
 
   protected void setMove() throws AxelorException {
@@ -262,10 +273,10 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("In Set Move");
     // Création de l'écriture comptable
-    Move move = moveService.createMove(invoice);
+    Move move = moveCreateFromInvoiceService.createMove(invoice);
     if (move != null) {
 
-      moveService.createMoveUseExcessPaymentOrDue(invoice);
+      moveCreateFromInvoiceService.createMoveUseExcessPaymentOrDue(invoice);
     }
   }
 
@@ -277,7 +288,7 @@ public class VentilateState extends WorkflowInvoice {
 
     log.debug("Generate fixed asset");
     // Create fixed asset
-    fixedAssetService.createFixedAssets(invoice);
+    fixedAssetGenerationService.createFixedAssets(invoice);
   }
 
   /**
@@ -306,7 +317,9 @@ public class VentilateState extends WorkflowInvoice {
       this.checkInvoiceDate(sequence);
     }
 
-    invoice.setInvoiceId(sequenceService.getSequenceNumber(sequence, invoice.getInvoiceDate()));
+    invoice.setInvoiceId(
+        sequenceService.getSequenceNumber(
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
 
     if (invoice.getInvoiceId() != null) {
       return;
@@ -315,7 +328,7 @@ public class VentilateState extends WorkflowInvoice {
     throw new AxelorException(
         invoice,
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        I18n.get(IExceptionMessage.VENTILATE_STATE_4),
+        I18n.get(AccountExceptionMessage.VENTILATE_STATE_4),
         invoice.getCompany().getName());
   }
 
@@ -340,7 +353,7 @@ public class VentilateState extends WorkflowInvoice {
         throw new AxelorException(
             invoice,
             TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(IExceptionMessage.JOURNAL_1),
+            I18n.get(AccountExceptionMessage.JOURNAL_1),
             invoice.getInvoiceId());
     }
   }

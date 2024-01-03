@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="asset-disposal-reason-grid" title="Asset disposal reasons"
+    model="com.axelor.apps.account.db.AssetDisposalReason" orderBy="disposalTypeSelect,name"
+    edit-icon="true">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="disposalTypeSelect"/>
+  </grid>
+
+  <form name="asset-disposal-reason-form" title="Asset disposal reason"
+    model="com.axelor.apps.account.db.AssetDisposalReason" width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="code"/>
+      <field name="disposalTypeSelect"/>
+    </panel>
+    <panel-mail>
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+</object-views>

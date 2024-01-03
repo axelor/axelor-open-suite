@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.bankpayment.service.bankreconciliation.load.afb120;
 
@@ -26,9 +27,12 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconciliationLoadService;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
 public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadService {
 
@@ -47,7 +51,6 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
-
     BankStatementLine initialBalanceBankStatementLine =
         getInitialBalanceBankStatementLine(bankReconciliation, includeBankStatement);
     BankStatementLine finalBalanceBankStatementLine =
@@ -65,6 +68,7 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
               .getCredit()
               .subtract(finalBalanceBankStatementLine.getDebit()));
     }
+
     this.loadBankStatementLines(bankReconciliation, includeBankStatement);
   }
 
@@ -77,9 +81,10 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
 
     if (bankStatementLineList != null) {
       for (BankStatementLine bankStatementLine : bankStatementLineList) {
-
-        bankReconciliation.addBankReconciliationLineListItem(
-            bankReconciliationLineService.createBankReconciliationLine(bankStatementLine));
+        if (bankStatementLine.getAmountRemainToReconcile().compareTo(BigDecimal.ZERO) != 0) {
+          bankReconciliation.addBankReconciliationLineListItem(
+              bankReconciliationLineService.createBankReconciliationLine(bankStatementLine));
+        }
       }
     }
   }
@@ -94,9 +99,12 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
    * @return the filter.
    */
   protected String getBankStatementLinesFilter(
-      boolean includeOtherBankStatements, boolean includeBankStatement) {
+      boolean includeOtherBankStatements,
+      boolean includeBankStatement,
+      boolean isLineTypeMovement) {
 
-    return super.getBankStatementLinesFilter(includeOtherBankStatements, includeBankStatement)
+    return super.getBankStatementLinesFilter(
+            includeOtherBankStatements, includeBankStatement, isLineTypeMovement)
         + " and self.lineTypeSelect = :lineTypeSelect";
   }
 
@@ -104,19 +112,25 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
 
     BankStatement bankStatement = bankReconciliation.getBankStatement();
-    return JPA.all(BankStatementLineAFB120.class)
-        .filter(
-            getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
-        .bind("bankDetails", bankReconciliation.getBankDetails())
-        .bind("currency", bankReconciliation.getCurrency())
-        .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
-        .bind("bankStatement", bankStatement)
-        .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
-        .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT)
-        .order("valueDate")
-        .order("sequence")
-        .fetch();
+    String queryFilter =
+        getBankStatementLinesFilter(
+            bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, true);
+    Query<BankStatementLineAFB120> bankStatementLinesQuery =
+        JPA.all(BankStatementLineAFB120.class)
+            .bind("bankDetails", bankReconciliation.getBankDetails())
+            .bind("currency", bankReconciliation.getCurrency())
+            .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
+            .bind("bankStatement", bankStatement)
+            .bind("bankStatementFileFormat", bankStatement.getBankStatementFileFormat())
+            .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT)
+            .order("valueDate")
+            .order("sequence");
+    List<Long> existingBankStatementLineIds = getExistingBankStatementLines(bankReconciliation);
+    if (!CollectionUtils.isEmpty(existingBankStatementLineIds)) {
+      queryFilter += " AND self.id NOT IN (:existingBankStatementLines)";
+      bankStatementLinesQuery.bind("existingBankStatementLines", existingBankStatementLineIds);
+    }
+    return bankStatementLinesQuery.filter(queryFilter).fetch();
   }
 
   protected BankStatementLine getInitialBalanceBankStatementLine(
@@ -127,7 +141,7 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
     return JPA.all(BankStatementLineAFB120.class)
         .filter(
             getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
+                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, false))
         .bind("bankDetails", bankReconciliation.getBankDetails())
         .bind("currency", bankReconciliation.getCurrency())
         .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)
@@ -147,7 +161,7 @@ public class BankReconciliationLoadAFB120Service extends BankReconciliationLoadS
     return JPA.all(BankStatementLineAFB120.class)
         .filter(
             getBankStatementLinesFilter(
-                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement))
+                bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement, false))
         .bind("bankDetails", bankReconciliation.getBankDetails())
         .bind("currency", bankReconciliation.getCurrency())
         .bind("statusImported", BankStatementRepository.STATUS_IMPORTED)

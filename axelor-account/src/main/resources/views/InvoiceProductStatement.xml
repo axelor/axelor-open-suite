@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Invoice product statements" name="invoice-product-statement-grid"
+    model="com.axelor.apps.account.db.InvoiceProductStatement">
+    <field name="typeList"/>
+    <field name="statement"/>
+  </grid>
+
+  <form title="Invoice product statement" name="invoice-product-statement-form"
+    model="com.axelor.apps.account.db.InvoiceProductStatement">
+    <panel name="mainPanel">
+      <field name="typeList" widget="MultiSelect"/>
+      <field name="statement"/>
+    </panel>
+  </form>
+
+</object-views>

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form model="com.axelor.apps.base.db.Wizard" title="Import demo data"
+  <form model="com.axelor.utils.db.Wizard" title="Import demo data"
     name="import-demo-data-wizard-form">
     <panel name="mainPanel">
       <field name="$importFile" title="File" type="many-to-one" widget="binary-link"
         target="com.axelor.meta.db.MetaFile"/>
       <field name="$logFile" title="Log" type="many-to-one" readonly="true"
         widget="binary-link" target="com.axelor.meta.db.MetaFile" hidden="true"/>
-      <button name="importBtn" title="Import" onClick="action-method-import-demo-data"
+      <button name="importBtn" title="import.verb" onClick="action-method-import-demo-data"
         readonlyIf="$importFile == null"/>
     </panel>
   </form>

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="ForecastRecap" lang="java">
+  <entity name="ForecastRecap">
 
     <string name="forecastRecapSeq" readonly="true" title="Seq."/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
       title="Company"/>
-    <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
-      title="Bank"/>
+    <many-to-many name="bankDetailsSet" ref="com.axelor.apps.base.db.BankDetails"
+      title="Bank details"/>
+    <many-to-one ref="com.axelor.auth.db.User" name="userRecap" title="User"/>
     <decimal name="startingBalance" title="Starting Balance" required="true"/>
     <decimal name="endingBalance" title="Ending Balance"/>
     <decimal name="currentBalance"/>
@@ -27,7 +28,7 @@
     <many-to-one name="salesMan" ref="com.axelor.auth.db.User" title="Salesperson"/>
     <integer name="displayTypeSelect" title="Display" selection="display.type.select"
       default="3"/>
-    <boolean name="isReport"/>
+    <boolean name="isReport" title="Use for report"/>
     <boolean name="isComplete" default="false"/>
     <date name="calculationDate" title="Calculation Date" readonly="true"/>
 

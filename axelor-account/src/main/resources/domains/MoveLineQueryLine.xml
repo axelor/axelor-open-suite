@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="MoveLineQueryLine">
+
+    <many-to-one name="moveLine" ref="MoveLine" title="Move line" initParam="true"/>
+    <many-to-one name="moveLineQuery" ref="MoveLineQuery" title="Reconcile manager"
+      initParam="true"/>
+    <boolean name="isSelected" title="Selected" default="false"/>
+
+  </entity>
+
+</domain-models>

@@ -1,129 +1,168 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="job-application-grid" title="Job applications"
     model="com.axelor.apps.talent.db.JobApplication">
     <field name="lastName"/>
     <field name="firstName"/>
     <field name="emailAddress"/>
-    <field name="fixedPhone"/>
-    <field name="mobilePhone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="mobilePhone" widget="phone"/>
     <field name="jobPosition"/>
-    <field name="statusSelect"/>
     <button name="resume" onClick="action-job-application-method-show-resume"
       icon="fa-file-text-o"/>
   </grid>
 
-  <form name="job-application-form" title="Job application"
+  <form title="Job application" name="job-application-form"
     model="com.axelor.apps.talent.db.JobApplication" width="large"
-    onNew="action-job-application-defaults" onLoad="action-talent-method-set-social-network-url">
+    onNew="action-job-application-defaults" onLoad="action-job-application-group-onload">
     <menubar>
       <menu name="jobApplicationToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="scheduleEventItem" title="Schedule Event"
           action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
       </menu>
     </menubar>
-    <panel name="mainPanel" readonlyIf="statusSelect == 3">
-      <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="8"
-        readonly="true"/>
-      <field name="hiringStage" colSpan="4" widget="SuggestBox" canEdit="false"/>
-      <panel name="imagePanel" colSpan="4">
-        <field name="picture" widget="Image" colSpan="12" showTitle="false">
-          <viewer>
-						<![CDATA[
-							<img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}" />
-							<img ng-show="!record.picture" src="img/partner-default.png" />
-						]]>
+
+    <panel name="candidatePanel" itemSpan="12" sidebar="true">
+      <field name="hiringStage.name" showIf="$readonly()" showTitle="false">
+        <viewer depends="hiringStage.name">
+          <![CDATA[
+            <span class='label label-info' style="font-size: medium;">{{$fmt('hiringStage')}}</span>
+          ]]>
+        </viewer>
+      </field>
+
+      <field name="picture" widget="Image" showTitle="false">
+        <viewer>
+          <![CDATA[
+              <div style="text-align: center;">
+                <img ng-show="record.picture" ng-src="{{$image('picture', 'content')}}"/>
+                <img ng-show="!record.picture" src="img/partner-default.png" />
+              </div>
+          ]]>
+        </viewer>
+      </field>
+      <field name="fullName" showTitle="false">
+        <viewer depends="fullName">
+          <![CDATA[
+              <div style="text-align: center; font-weight: bold;">{{record.fullName}}</div>
+          ]]>
+        </viewer>
+        <editor>
+          <field name="titleSelect" colSpan="3"/>
+          <field name="firstName" colSpan="5"/>
+          <field name="lastName" colSpan="4"/>
+        </editor>
+      </field>
+
+      <field name="creationDate" showIf="$readonly()" showTitle="false">
+        <viewer depends="creationDate">
+          <![CDATA[
+              <div ng-show="record.creationDate" style="text-align: center; font-weight: bold;"><span x-translate>Applied :</span> {{record.creationDate}}</div>
+          ]]>
+        </viewer>
+      </field>
+      <field name="jobPosition" onChange="action-job-application-record-fill-responsible"/>
+      <field name="responsible" canEdit="false"/>
+      <field name="hiringStage" showIf="!$readonly()"/>
+      <button name="hireButton" onClick="action-job-application-method-hire"
+        title="Hire candidate" hidden="true"/>
+
+      <panel name="contactPanel" title="Contact details" itemSpan="12"
+        showIf="$readonly() &amp;&amp; (emailAddress.address || mobilePhone || employeeAddress.addressL4)">
+        <field name="$contactDetails" showIf="$readonly()" showTitle="false">
+          <viewer depends="emailAddress.address, mobilePhone, employeeAddress.addressL4">
+            <![CDATA[
+            <div ng-show="record.emailAddress.address"><i class="fa fa-envelope"></i> <a href="mailto:{{record.emailAddress.address}}">{{record.emailAddress.address}}</a></div>
+            <div ng-show="record.mobilePhone"><i class="fa fa-phone"></i> <a href="tel:{{record.mobilePhone}}">{{record.mobilePhone}}</a></div>
+            <div ng-show="record.employeeAddress.addressL4"><i class="fa fa-map-marker"></i> <a href="http://maps.google.com/?q={{record.employeeAddress.addressL4}}">{{record.employeeAddress.addressL4}}</a></div>
+          ]]>
           </viewer>
         </field>
+        <field name="emailAddress.address" hidden="true"/>
       </panel>
-      <panel name="namePanel" colSpan="8">
-        <field name="titleSelect" selection-in="[1,2]"/>
-        <spacer/>
-        <field name="firstName" onChange="action-talent-method-set-social-network-url"/>
-        <field name="lastName" required="true"
-          onChange="action-talent-method-set-social-network-url"/>
-        <field name="employee" showIf="statusSelect == 1"/>
+      <panel name="employeePanel" title="Employee" colSpan="12" itemSpan="12"
+        showIf="employee">
+        <field name="employee" showIf="employee" readonly="true" showTitle="false"/>
       </panel>
-    </panel>
-    <panel sidebar="true" name="actionsPanel">
-      <button name="openBtn" title="Open"
-        onClick="save,action-job-application-status-open,save" colSpan="12"
-        hideIf="statusSelect == 0"/>
-      <button name="rejectBtn" title="Rejected"
-        onClick="save,action-job-application-status-reject,save" colSpan="12"
-        showIf="statusSelect == 0"/>
-      <button name="hireBtn" title="Hire"
-        onClick="save,action-job-application-confirmation,action-job-application-method-hire"
-        colSpan="12" showIf="statusSelect == 0"/>
-      <button name="cancelBtn" title="Cancel"
-        onClick="save,action-job-application-status-cancel,save" colSpan="12" icon="fa-times-circle"
-        css="btn-danger" hideIf="statusSelect == 1 || statusSelect == 3"/>
-    </panel>
-    <panel sidebar="true" name="JobOfferInformationPanel" title="Job Offer Information"
-      readonlyIf="statusSelect == 3">
-      <field name="jobPosition" colSpan="6" canEdit="false"/>
-      <field name="jobPosition.statusSelect" colSpan="6"/>
-      <field name="responsible" colSpan="6" canEdit="false"/>
-      <field name="jobPosition.companyDepartment" colSpan="6"/>
-      <field name="jobPosition.publicationDate" colSpan="6"/>
-    </panel>
-    <panel sidebar="true" name="applicationInformationPanel" title="Application Information"
-      readonlyIf="statusSelect == 3">
-      <field name="educationLevel" colSpan="6"/>
-      <field name="experienceSelect" colSpan="6"/>
-      <field name="industrySectorSet" widget="TagSelect" colSpan="6"/>
-      <field name="talentSource" title="Source" colSpan="6"/>
-      <field name="skillSet" widget="TagSelect" colSpan="6"/>
-      <field name="referredBy" colSpan="6"/>
-      <field name="creationDate" colSpan="6"/>
-      <field name="appreciation" widget="SelectProgress" colSpan="6"/>
     </panel>
 
-    <panel-tabs name="mainPanelTab" readonlyIf="statusSelect == 3">
-      <panel name="descriptionPanel" title="Description">
-        <field name="description" widget="html" colSpan="12"/>
-      </panel>
-      <panel name="contactPanel" title="Contact" colSpan="12">
-        <panel name="contactDetailsPanel" title="Contact details" colSpan="12">
-          <field name="mobilePhone" colSpan="3"/>
-          <field name="emailAddress" canRemove="false" canSelect="false" canSuggest="false"
-            colSpan="3" canNew="true" canEdit="true">
-            <editor x-show-titles="false">
-              <field name="address" colSpan="12"
-                pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
-                widget="Email" placeholder="user@mydomain.com"/>
-            </editor>
-          </field>
-          <field name="fixedPhone" colSpan="3"/>
-          <field name="fax" colSpan="3"/>
-          <field name="linkedInProfile" colSpan="3" widget="url"/>
-          <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
-            colSpan="2"/>
+    <panel-tabs name="tabsPanel" colSpan="6" height="550">
+
+      <panel name="profilePanel" title="Profile details">
+
+        <panel name="applicationPanel" title="Application Information" canCollapse="true"
+          collapseIf="false" colSpan="12">
+          <field name="educationLevel" colSpan="6"/>
+          <field name="experienceSelect" colSpan="6"/>
+          <field name="industrySectorSet" widget="TagSelect" colSpan="6"/>
+          <field name="talentSource" title="Source" colSpan="6"/>
+          <field name="skillSet" widget="TagSelect" colSpan="6"/>
+          <field name="referredBy" colSpan="6"/>
+          <field name="creationDate" colSpan="6"/>
+          <field name="appreciation" widget="SelectProgress" colSpan="6"/>
         </panel>
-        <panel name="primaryAddressPanel" title="Primary Address" colSpan="12">
-          <field name="employeeAddress" colSpan="12" form-view="address-form"
-            grid-view="address-grid" canNew="true" canEdit="false"/>
+
+        <panel name="contactPanel" title="Contact" canCollapse="true" collapseIf="true"
+          colSpan="12">
+          <panel name="contactDetailsPanel" title="Contact details" showTitle="false"
+            colSpan="12">
+            <field name="mobilePhone" widget="phone" colSpan="3"/>
+            <field name="fixedPhone" widget="phone" colSpan="3"
+              x-placeholder-number-type="FIXED_LINE"/>
+            <field name="fax" widget="phone" colSpan="3"/>
+            <field name="emailAddress" canRemove="false" canSelect="true" canSuggest="false"
+              colSpan="3" canNew="true" canEdit="true">
+              <editor x-show-titles="false">
+                <field name="address" colSpan="12"
+                  pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
+                  widget="Email" placeholder="user@mydomain.com"/>
+              </editor>
+            </field>
+            <field name="linkedInProfile" colSpan="3" widget="url"
+              pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
+            <label name="linkedinLabel"
+              title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+              colSpan="2"/>
+          </panel>
+          <panel name="primaryAddressPanel" title="Primary Address" colSpan="12">
+            <field name="employeeAddress" colSpan="12" form-view="address-form"
+              grid-view="address-grid" canNew="true" canEdit="false"/>
+          </panel>
         </panel>
-        <field name="fullName" hidden="true"/>
+
+        <panel name="notePanel" title="Note" canCollapse="true" collapseIf="true" colSpan="12"
+          itemSpan="12">
+          <field name="description" colSpan="12" widget="html"/>
+          <field name="reasonNotHired" colSpan="12" widget="html"/>
+        </panel>
       </panel>
+
       <panel name="contractPanel" title="Contract" colSpan="12">
         <field name="jobPosition.contractType"/>
         <field name="expectedSalary"/>
         <field name="proposedSalary"/>
         <field name="availabilityFrom"/>
       </panel>
+
       <panel-dashlet name="eventsPanel" title="Events"
         action="action-job-application-events" colSpan="12"/>
-      <panel name="reasonNotHiredPanel" title="Reason not hired">
-        <field name="reasonNotHired" colSpan="12" showTitle="false"/>
-      </panel>
-      <panel name="resumePanel" title="JobApplication.resume" colSpan="12">
+
+      <panel name="resumePanel" title="JobApplication.resume" height="500"
+        showIf="($readonly() &amp;&amp; resume) || !$readonly()">
         <field name="resume" widget="binary-link"
-          onChange="save,action-job-application-method-set-dms-file"/>
+          onChange="save,action-job-application-method-set-dms-file, action-job-application-method-set-inline-url"
+          showTitle="false"/>
+        <field name="$inlineUrl" hidden="true"/>
+        <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
+          <viewer depends="$inlineUrl">
+            <![CDATA[
+              <iframe ng-src="{{record.$inlineUrl}}" frameborder="0" height="900" scrolling="auto"/>
+            ]]>
+          </viewer>
+        </field>
       </panel>
     </panel-tabs>
 
@@ -135,13 +174,12 @@
 
   <kanban title="Job applications" name="job-application-kanban"
     model="com.axelor.apps.talent.db.JobApplication" columnBy="hiringStage"
-    sequenceBy="statusSelect">
+    sequenceBy="appreciation">
     <field name="fullName"/>
     <field name="emailAddress.address"/>
     <field name="fixedPhone"/>
     <field name="mobilePhone"/>
     <field name="jobPosition"/>
-    <field name="statusSelect"/>
     <field name="resumeId"/>
     <template><![CDATA[
 			<h4>{{ fullName }}</h4>
@@ -155,6 +193,12 @@
 			</div>
 		]]></template>
   </kanban>
+
+  <action-group name="action-job-application-group-onload">
+    <action name="action-talent-method-set-social-network-url"/>
+    <action name="action-job-application-method-set-inline-url"/>
+    <action name="action-job-application-attrs-hide-hire-button"/>
+  </action-group>
 
   <action-view name="action-job-application-schedule-event" title="Schedule Event"
     model="com.axelor.apps.crm.db.Event">
@@ -173,25 +217,15 @@
 
   <action-record name="action-job-application-defaults"
     model="com.axelor.apps.talent.db.JobApplication">
-    <field name="jobPosition" expr="eval:__repo__(JobPosition).find(_jobPositionId)"/>
-    <field name="responsible" expr="eval:__repo__(Employee).find(_responsibleId)"/>
+    <field name="jobPosition" expr="eval:__repo__(JobPosition).find(_jobPositionId)"
+      if="eval: _jobPositionId"/>
+    <field name="responsible" expr="eval:__repo__(Employee).find(_responsibleId)"
+      if="eval: _responsibleId"/>
   </action-record>
 
   <action-method name="action-job-application-method-hire">
     <call class="com.axelor.apps.talent.web.JobApplicationController" method="hire"/>
   </action-method>
-
-  <action-attrs name="action-job-application-status-cancel">
-    <attribute name="value" for="statusSelect" expr="eval: 3"/>
-  </action-attrs>
-
-  <action-attrs name="action-job-application-status-open">
-    <attribute name="value" for="statusSelect" expr="eval: 0"/>
-  </action-attrs>
-
-  <action-attrs name="action-job-application-status-reject">
-    <attribute name="value" for="statusSelect" expr="eval: 2"/>
-  </action-attrs>
 
   <action-validate name="action-job-application-confirmation">
     <alert message="A new employee form will be created. Do you confirm the creation ?"/>
@@ -210,11 +244,17 @@
     <call class="com.axelor.apps.talent.web.JobApplicationController" method="setDMSFile"/>
   </action-method>
 
-  <search-filters name="job-application-filters"
-    model="com.axelor.apps.talent.db.JobApplication" title="Job Application Filters">
-    <filter title="Current applications">
-      <domain>self.statusSelect = 0</domain>
-    </filter>
-  </search-filters>
+  <action-method name="action-job-application-method-set-inline-url">
+    <call class="com.axelor.apps.talent.web.JobApplicationController" method="setInlineUrl"/>
+  </action-method>
 
+  <action-attrs name="action-job-application-attrs-hide-hire-button">
+    <attribute for="hireButton" name="hidden"
+      expr="eval: employee || __self__.hiringStage != __config__.app.getApp('recruitment')?.getHiringStatus() || !firstName || !fullName"
+      if="hiringStage"/>
+  </action-attrs>
+
+  <action-attrs name="action-job-application-record-fill-responsible">
+    <attribute for="responsible" name="value" expr="eval: jobPosition?.employee"/>
+  </action-attrs>
 </object-views>

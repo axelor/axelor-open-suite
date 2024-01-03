@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -16,8 +16,18 @@
     <decimal name="grossMass" nullable="true" precision="19" scale="2"/>
     <string name="dimensions" title="Dimensions (cm)" nullable="true"/>
     <decimal name="unitNetMass" readonly="true" nullable="true" precision="20" scale="10"/> <!-- Workaround to be nullable in grid -->
+    <long name="stockMoveId" title="Stock move">
+        <![CDATA[
+            if(stockMoveLine != null && stockMoveLine.getStockMove() != null) {
+              return stockMoveLine.getStockMove().getId();
+            } else {
+              return 0l;
+            }
+        ]]>
+    </long>
 
-    <unique-constraint columns="typeSelect,parcelPalletNumber,logisticalForm"/>
+    <unique-constraint
+      columns="typeSelect,parcelPalletNumber,logisticalForm,stockMoveId"/>
 
     <extra-code>
         <![CDATA[

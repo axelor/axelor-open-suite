@@ -1,0 +1,183 @@
+"importId";"isTemplate";"appraisalType.importId";"description"
+1;true;1;"
+    <img style=""margin-bottom: 30px; margin-top: 20px;"" src=""img/axelor.png"" alt="""">
+    <div style=""color: #010165; display: grid; grid-template-columns: 20% 20%; grid-template-rows: 20% 20%; justify-content: space-between; gap: 40px; padding-left: 6px;"" class=""header"">
+        <div>
+            <h5>Evaluation type</h5>
+            <input style="" border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""label-head"" type=""text"" placeholder=""Write your text here"">
+        </div>
+        <div>
+            <h5>Company</h5>
+            <input style="" border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""label-head"" type=""text"" placeholder=""Write your text here"" type=""text"" placeholder=""Write your text here"">
+        </div>
+        <div>
+            <h5>Limit date</h5>
+            <input style="" border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""label-head"" type=""text"" placeholder=""Write your text here"" type=""text"" placeholder=""Write your text here"">
+        </div>
+        <div>
+            <h5>In charge of evaluation</h5>
+            <input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""label-head"" type=""text"" placeholder=""Write your text here"" type=""text"" placeholder=""Write your text here"">
+        </div>
+       <div>
+            <h5>Description</h5>
+            <input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""label-head"" type=""text"" placeholder=""Write your text here"" type=""text"" placeholder=""Write your text here"">
+       </div>
+    </div>
+
+    <div class=""paragraph1"">
+        <h1 style=""color: #3ECF8E;"" class=""title"">Annual appraisal</h1>
+        <p style=""margin-top: 10px"">Axelor wants to offer the best possible employee experience, and to do this we want to facilitate exchanges, in particular through the annual performance review. This interview will enable each employee to discuss 
+        positive and negative points, as well as areas for improvement.</p>
+    </div>
+
+<h2 class=""title2"">Interview date:</h2>
+<input input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" type=""text"" placeholder=""Write your text here"">
+<h2 class=""title3"">Job position:</h2>
+<input input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 5vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" type=""text"" placeholder=""Write your text here"">
+
+<h4 class=""question1"" style=""margin-top: 40px;"">How did you experience the past year at Axelor?</h4>
+<input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 20vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""input-experience"" type=""text"" placeholder=""Write your text here"">
+
+<div class=""paragraph2"">
+    <h2>Self-evaluation:</h2>
+    <h4>Grading:</h4>
+    <li style=""font-size: small; color: #5D6B90;"">Insufficient:  The objective has not been achieved, and we'll need to focus on this point as a priority.</li>
+    <li style=""font-size: small; color: #5D6B90;"">Needs improvement: The mission has been partially achieved, but there are still points to be improved or completed to make it a complete success.</li>
+    <li style=""font-size: small; color: #5D6B90;"">Objective achieved: The mission has been achieved. The objective has been fully achieved.</li>
+    <li style=""font-size: small; color: #5D6B90;"">Objective exceeded: the mission has been completely fulfilled, and the employee has even gone beyond expectations by carrying out optimizations that were not initially included in the mission.</li>
+</div>
+
+
+<h3 style="" margin-top: 20px"" class=""title1"">Quality of work:</h3>
+    <table style=""margin-bottom: 70px; width: 98%;"">
+        <tr style=""text-align: center;"">
+             <td class=""colonne1"" style="" border: 1px solid black; height: 5vh; width: 8vw; width: 60%;""></td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">insufficient</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">To improve</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Goal reached</td>
+        </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Deadlines</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Work quality</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Ability to work independently</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+    </table>
+
+<h3>Work interest:</h3>
+    <table style=""margin-bottom: 70px; width: 98%;"">
+        <tr style=""text-align: center;"">
+             <td class=""colonne1"" style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">insufficient</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">To improve</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Goal reached</td>
+        </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Implication / Motivaton for the position</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Ajustment</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Rigor / Organization</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+    </table>
+
+<h3>Communication:</h3>
+    <table style=""margin-bottom: 70px; width: 98%;"">
+        <tr style=""text-align: center;"">
+             <td class=""colonne1"" style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">insufficient</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">To improve</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Goal reached</td>
+        </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Knowledge transfer</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Suggest solution & improvements</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+    </table>
+
+<h3>Work behaviour:</h3>
+    <table style=""margin-bottom: 70px; width: 98%;"">
+        <tr style=""text-align: center;"">
+             <td class=""colonne1"" style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">insufficient</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">To improve</td>
+             <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Goal reached</td>
+        </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Disponibility / Adaptability </td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Ponctuality</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+            <tr>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Capacity to work in group</td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+                <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            </tr>
+    </table>
+    
+   <h4>Are you experiencing any difficulties in your job? If so, how can you overcome them?</h4>
+    <input class=""input-experience"" style=""margin-bottom: 70px;border: solid 1px black;border-radius: 5px;width: 98%;height: 20vh;margin-top: 10px;font-size: medium;"" type=""text"" placeholder=""Write your text here"">
+
+    <table style=""margin-bottom: 70px; width: 98%;"" class=""columns1"">
+        <tr style=""text-align: center;"">
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Goals</td>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;"">Action plan</td>
+        </tr>
+        <tr>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+        </tr>
+        <tr>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+        </tr>
+        <tr>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+            <td style="" border: 1px solid black; height: 5vh; width: 8vw;""></td>
+        </tr>
+    </table>
+    
+    <h4>Would you like to see any changes in your work (organization, missions, methods, etc.)? If so, please specify:</h4>
+    <input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 20vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""input-experience"" type=""text"" placeholder=""Write your text here"">
+
+    <h4>Are there any other points you'd like to raise during the interview? If so, which ones?</h4>
+    <input style=""border: solid 1px black;border-radius: 5px;width: 98%;height: 20vh;margin-top: 10px;margin-bottom: 20px;font-size:medium;"" class=""input-experience"" type=""text"" placeholder=""Write your text here"">"

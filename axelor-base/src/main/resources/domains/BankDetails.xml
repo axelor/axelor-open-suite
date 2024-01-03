@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="BankDetails" lang="java">
+  <entity name="BankDetails">
 
     <many-to-one name="partner" ref="Partner" title="Partner"/>
     <string name="ownerName" title="Owner name" max="255"/>
@@ -23,38 +23,41 @@
     <string name="ibanBic" title="IBAN / BBAN + BIC" max="255"/>
     <string name="label" title="Label"/>
     <boolean name="isDefault" title="Default"/>
-    <string name="fullName" title="Bank Details" search="ownerName" namecolumn="true">
-        <![CDATA[
-            String str = "";
-            if (!(ownerName == null || ownerName.isEmpty())) {
-                str = ownerName;
-                if (!(ibanBic == null || ibanBic.isEmpty())) {
-                    str = str.concat(" - ").concat(ibanBic);
-                } else if (!(iban == null || iban.isEmpty())) {
-                    str = str.concat(" - ").concat(iban);
-                } else if (!(bankCode == null || bankCode.isEmpty())
-                        && !(sortCode == null || sortCode.isEmpty())
-                        && !(accountNbr == null || accountNbr.isEmpty())
-                        && !(bbanKey == null || bbanKey.isEmpty())) {
-                    str = str.concat(" - ").concat(bankCode)
-                                           .concat(sortCode)
-                                           .concat(accountNbr)
-                                           .concat(bbanKey);
-                }
-                if (!(code == null || code.isEmpty())) {
-                    str = str.concat(" - ").concat(code);
-                }
-            }
-            return str;
-        ]]>
-    </string>
     <boolean name="active" title="Active" default="true" massUpdate="true"/>
     <string name="code"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+    <string name="fullName" title="Bank Details" search="code,label" namecolumn="true">
+      <![CDATA[
+            String bankFullName = "";
+            if(bank != null) {
+                bankFullName = bank.getFullName();
+            }
+            return Beans.get(BankDetailsFullNameComputeService.class).computeBankDetailsFullName
+            (code, label, iban, bankFullName);
+        ]]>
+    </string>
 
     <finder-method name="findDefaultByPartner" using="partner"
       filter="self.partner = :partner AND self.isDefault = TRUE"/>
     <finder-method name="findActivesByPartner" using="partner,active" all="true"/>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.base.service.BankDetailsFullNameComputeService;
+      ]]>
+    </extra-imports>
+
+    <track>
+      <field name="partner" on="UPDATE"/>
+      <field name="ownerName" on="UPDATE"/>
+      <field name="label" on="UPDATE"/>
+      <field name="currency" on="UPDATE"/>
+      <field name="iban" on="UPDATE"/>
+      <field name="bank" on="UPDATE"/>
+      <field name="bankAddress" on="UPDATE"/>
+      <field name="active" on="UPDATE"/>
+    </track>
 
     <entity-listener class="com.axelor.apps.base.db.repo.BankDetailsListener"/>
   </entity>

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -9,10 +9,11 @@
 
     <string name="name" title="Name" required="true"/>
     <many-to-one name="assignedTo" title="Assigned to" ref="com.axelor.auth.db.User"/>
-    <date name="taskDate" title="Task date"/>
-    <string name="status" title="Status" selection="project.task.status"/>
-    <string name="statusBeforeComplete" title="Last status" selection="project.task.status"/>
-    <string name="priority" title="Priority" selection="project.task.priority"/>
+    <date name="taskDate" title="Start date"/>
+    <many-to-one name="status" title="Status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
+    <many-to-one name="priority" title="Priority"
+      ref="com.axelor.apps.project.db.ProjectPriority"/>
     <date name="taskDeadline" title="Task deadline"/>
     <integer name="taskDuration" title="Task duration"/>
     <integer name="sequence" title="Sequence"/>
@@ -34,19 +35,21 @@
 
     <string name="fullName" namecolumn="true" title="Name" search="id,name"/>
 
+    <many-to-one name="statusBeforeComplete" title="Last status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
     <many-to-one name="parentTask" ref="com.axelor.apps.project.db.ProjectTask"
       title="Parent task"/>
     <many-to-one name="projectTaskCategory"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Category"/>
     <integer name="progressSelect" title="Progress" selection="project.task.progress.select"/>
-    <many-to-one name="team" ref="com.axelor.team.db.Team" title="Team"/>
     <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
       mappedBy="parentTask"/>
 
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Followers"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
-    <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <many-to-one name="invoicingUnit" ref="com.axelor.apps.base.db.Unit"
+      title="Invoicing unit"/>
     <decimal name="quantity" title="Quantity"/>
     <decimal name="unitPrice" title="Unit price"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
@@ -62,7 +65,7 @@
     <many-to-many name="finishToFinishSet" title="Tasks to finish before finish"
       ref="com.axelor.apps.project.db.ProjectTask"/>
     <decimal name="durationHours" title="Duration hours"/>
-    <date name="taskEndDate" title="Task end"/>
+    <date name="taskEndDate" title="Due Date"/>
 
     <one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
 
@@ -74,24 +77,15 @@
     <many-to-one name="projectTaskSection"
       ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
 
-    <extra-code>
-      <![CDATA[
-      // STATUS SELECT
-      public static final String STATUS_NEW = "new";
-      public static final String STATUS_IN_PROGRESS = "in-progress";
-      public static final String STATUS_CLOSED = "closed";
-      public static final String STATUS_CANCELED = "canceled";
+    <string name="ticketNumber" title="Ticker number" readonly="true"/>
 
-      // PRIORITY SELECT
-      public static final String PRIORITY_LOW = "low";
-      public static final String PRIORITY_NORMAL = "normal";
-      public static final String PRIORITY_HIGHT = "high";
-      public static final String PRIORITY_URGENT = "urgent";
+    <extra-code>
 
       // TYPE SELECT
       public static final String TYPE_TASK = "task";
-      public static final String TYPE_TICKET = "ticket";
-	        ]]>
+      public static final
+      String TYPE_TICKET
+      = "ticket";
     </extra-code>
 
     <track replace="true">
@@ -103,7 +97,6 @@
       <field name="projectTaskCategory"/>
       <field name="progressSelect"/>
       <field name="assignedTo"/>
-      <message if="true" on="UPDATE">Task updated</message>
     </track>
 
   </entity>

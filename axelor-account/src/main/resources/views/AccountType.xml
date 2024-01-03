@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="account-type-grid" title="Account types"
     model="com.axelor.apps.account.db.AccountType">
     <field name="name"/>
     <field name="technicalTypeSelect"/>
+    <field name="isManageSubsidiaryAccount"/>
   </grid>
 
 
@@ -15,18 +16,11 @@
     <panel name="overviewPanel" title="Overview">
       <field name="name"/>
       <field name="technicalTypeSelect"/>
+      <field name="isManageSubsidiaryAccount"/>
       <panel-dashlet name="accountListPanel" action="action-dashlet-account-list"
         colSpan="12"/>
     </panel>
-    <panel-dashlet name="accountTypePanel" title="Accounting.Accounts"
-      action="action-account-type-view-account" colSpan="12"/>
   </form>
-
-  <action-view name="action-account-type-view-account" title="Accounting.Accounts">
-    <view type="grid" name="account-grid"/>
-    <view type="form" name="account-form"/>
-    <domain>self.accountType.id = :id</domain>
-  </action-view>
 
   <action-view name="action-dashlet-account-list" title="Account List"
     model="com.axelor.apps.account.db.Account">

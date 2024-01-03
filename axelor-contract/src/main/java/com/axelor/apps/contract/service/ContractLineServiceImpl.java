@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,71 +14,92 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.contract.service;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.service.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.DurationService;
+import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.exception.IExceptionMessage;
-import com.axelor.exception.AxelorException;
+import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.db.repo.ContractVersionRepository;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
+import java.util.Map;
 
 public class ContractLineServiceImpl implements ContractLineService {
   protected AppBaseService appBaseService;
   protected AccountManagementService accountManagementService;
   protected CurrencyService currencyService;
   protected ProductCompanyService productCompanyService;
+  protected ContractVersionRepository contractVersionRepo;
+  protected PriceListService priceListService;
+  protected DurationService durationService;
+  protected AnalyticLineModelService analyticLineModelService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public ContractLineServiceImpl(
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
       CurrencyService currencyService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      PriceListService priceListService,
+      ContractVersionRepository contractVersionRepo,
+      DurationService durationService,
+      AnalyticLineModelService analyticLineModelService,
+      AppAccountService appAccountService) {
     this.appBaseService = appBaseService;
     this.accountManagementService = accountManagementService;
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
+    this.priceListService = priceListService;
+    this.contractVersionRepo = contractVersionRepo;
+    this.durationService = durationService;
+    this.analyticLineModelService = analyticLineModelService;
+    this.appAccountService = appAccountService;
   }
 
   @Override
-  public ContractLine reset(ContractLine contractLine) {
+  public Map<String, Object> reset(ContractLine contractLine) {
     if (contractLine == null) {
-      return new ContractLine();
+      return (Map<String, Object>) new ContractLine();
     }
-    contractLine.setTaxLine(null);
-    contractLine.setProductName(null);
-    contractLine.setUnit(null);
-    contractLine.setPrice(null);
-    contractLine.setExTaxTotal(null);
-    contractLine.setInTaxTotal(null);
-    contractLine.setDescription(null);
-    return contractLine;
+
+    Map<String, Object> contractLineMap = Mapper.toMap(new ContractLine());
+    contractLineMap.put("inTaxTotal", null);
+    contractLineMap.put("taxLine", null);
+    contractLineMap.put("productName", null);
+    contractLineMap.put("unit", null);
+    contractLineMap.put("price", null);
+    contractLineMap.put("exTaxTotal", null);
+    contractLineMap.put("description", null);
+    return contractLineMap;
   }
 
   @Override
   public ContractLine fill(ContractLine contractLine, Product product) throws AxelorException {
-    Preconditions.checkNotNull(product, I18n.get(IExceptionMessage.CONTRACT_EMPTY_PRODUCT));
     Company company =
         contractLine.getContractVersion() != null
             ? contractLine.getContractVersion().getContract() != null
@@ -94,6 +116,12 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     contractLine.setDescription(
         (String) productCompanyService.get(product, "description", company));
+    return contractLine;
+  }
+
+  @Override
+  public ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion) {
+    contractLine.setFromDate(contractVersion.getSupposedActivationDate());
     return contractLine;
   }
 
@@ -120,7 +148,11 @@ public class ContractLineServiceImpl implements ContractLineService {
     if (taxLine != null
         && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
       BigDecimal price = contractLine.getPrice();
-      price = price.divide(taxLine.getValue().add(BigDecimal.ONE), 2, BigDecimal.ROUND_HALF_UP);
+      price =
+          price.divide(
+              taxLine.getValue().divide(new BigDecimal(100)).add(BigDecimal.ONE),
+              2,
+              BigDecimal.ROUND_HALF_UP);
       contractLine.setPrice(price);
     }
 
@@ -138,21 +170,33 @@ public class ContractLineServiceImpl implements ContractLineService {
   @Override
   public ContractLine fillAndCompute(ContractLine contractLine, Contract contract, Product product)
       throws AxelorException {
-    contractLine = fill(contractLine, product);
-    contractLine = compute(contractLine, contract, product);
+    if (product != null) {
+      contractLine = fill(contractLine, product);
+      contractLine = compute(contractLine, contract, product);
+    }
+    computeAnalytic(contract, contractLine);
     return contractLine;
   }
 
   @Override
-  public ContractLine computeTotal(ContractLine contractLine) {
+  public ContractLine computeTotal(ContractLine contractLine) throws AxelorException {
     BigDecimal taxRate = BigDecimal.ZERO;
 
     if (contractLine.getTaxLine() != null) {
-      taxRate = contractLine.getTaxLine().getValue();
+      taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
     }
 
-    BigDecimal exTaxTotal =
-        contractLine.getQty().multiply(contractLine.getPrice()).setScale(2, RoundingMode.HALF_UP);
+    if (contractLine.getContractVersion() != null) {
+      contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
+    }
+
+    BigDecimal price =
+        priceListService.computeDiscount(
+            contractLine.getPrice(),
+            contractLine.getDiscountTypeSelect(),
+            contractLine.getDiscountAmount());
+    contractLine.setPriceDiscounted(price);
+    BigDecimal exTaxTotal = contractLine.getQty().multiply(price).setScale(2, RoundingMode.HALF_UP);
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal = exTaxTotal.add(exTaxTotal.multiply(taxRate));
     contractLine.setInTaxTotal(inTaxTotal);
@@ -161,20 +205,57 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   @Override
-  public ContractLine createAnalyticDistributionWithTemplate(
-      ContractLine contractLine, Contract contract) {
+  @Transactional
+  public void updateContractLinesFromContractVersion(ContractVersion contractVersion) {
+    for (ContractLine line : contractVersion.getContractLineList()) {
+      if (line.getFromDate() == null) {
+        line.setFromDate(contractVersion.getSupposedActivationDate());
+      }
+    }
+    contractVersionRepo.save(contractVersion);
+  }
 
-    AppAccountService appAccountService = Beans.get(AppAccountService.class);
+  @Override
+  public ContractLine computePricesPerYear(
+      ContractLine contractLine, ContractVersion contractVersion) throws AxelorException {
+    Duration duration = contractVersion.getInvoicingDuration();
 
-    List<AnalyticMoveLine> analyticMoveLineList =
-        Beans.get(AnalyticMoveLineService.class)
-            .generateLines(
-                contractLine.getAnalyticDistributionTemplate(),
-                contractLine.getExTaxTotal(),
-                AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT,
-                appAccountService.getTodayDate(contract.getCompany()));
+    if (duration != null) {
+      BigDecimal initialUnitPrice = contractLine.getInitialUnitPrice();
+      BigDecimal qty = contractLine.getQty();
+      BigDecimal exTaxTotal = contractLine.getExTaxTotal();
+      int durationType = duration.getTypeSelect();
+      Integer durationValue = duration.getValue();
+      BigDecimal ratio =
+          durationService
+              .getFactor(durationType)
+              .divide(
+                  BigDecimal.valueOf(durationValue),
+                  AppBaseService.COMPUTATION_SCALING,
+                  RoundingMode.HALF_UP);
+      if (initialUnitPrice != null && qty != null) {
+        contractLine.setInitialPricePerYear(
+            initialUnitPrice
+                .multiply(qty)
+                .multiply(ratio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      }
+      if (exTaxTotal != null) {
+        contractLine.setYearlyPriceRevalued(
+            exTaxTotal
+                .multiply(ratio)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      }
+    }
 
-    contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
+  }
+
+  public void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException {
+    if (appAccountService.isApp("supplychain")) {
+      AnalyticLineModel analyticLineModel =
+          new AnalyticLineContractModel(contractLine, null, contract);
+      analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
+    }
   }
 }

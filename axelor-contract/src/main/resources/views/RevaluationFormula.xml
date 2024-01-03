@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="revaluation-formula-grid" title="Revaluation formulas"
+    model="com.axelor.apps.contract.db.RevaluationFormula">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="revaluation-formula-form" title="Revaluation formula"
+    model="com.axelor.apps.contract.db.RevaluationFormula"
+    onSave="action-revaluation-formula-method-check-formula">
+    <panel name="mainPanel">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="formula" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"
+        help="Available variables :\n
+        ind1i = value for the contract's index1 for date 1 \n ind2i = value for the contract's index 2 for date
+        2 \n ind1f : value for the contract's index 1 for the next revaluation date \n ind2f :
+        value for the contract's index 2 for the next revaluation date \n ind1py :
+        value for the contract's index 1 for the next revaluation - 1 year \n ind2py :
+        value for the contract's index 2 for the next revaluation - 1 year \n P0 : original price of the contract line
+        \n Pf : last revaluated price of the contract line"/>
+      <field name="invoiceComment" colSpan="12" widget="CodeEditor" x-code-syntax="groovy"
+        help="Available variables :\n
+        ind1i = value for the contract's index1 for date 1 \n ind2i = value for the contract's index 2 for date
+        2 \n ind1f : value for the contract's index 1 for the next revaluation date \n ind2f :
+        value for the contract's index 2 for the next revaluation date \n ind1py :
+        value for the contract's index 1 for the next revaluation - 1 year \n ind2py :
+        value for the contract's index 2 for the next revaluation - 1 year \n P0 : original price of the contract line
+        \n Pf : last revaluated price of the contract line"/>
+      <field name="description" widget="html" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method name="action-revaluation-formula-method-check-formula">
+    <call class="com.axelor.apps.contract.web.RevaluationFormulaController"
+      method="checkFormula"/>
+  </action-method>
+
+</object-views>

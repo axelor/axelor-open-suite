@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.supplychain.service;
 
@@ -25,8 +26,11 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -38,17 +42,14 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.exception.IExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceGeneratorSupplyChain;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
-import com.axelor.apps.tool.StringTool;
 import com.axelor.common.ObjectUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.StringTool;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -65,16 +66,16 @@ import java.util.stream.Collectors;
 
 public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
-  private SaleOrderInvoiceService saleOrderInvoiceService;
-  private PurchaseOrderInvoiceService purchaseOrderInvoiceService;
-  private StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
-  private InvoiceRepository invoiceRepository;
-  private SaleOrderRepository saleOrderRepo;
-  private PurchaseOrderRepository purchaseOrderRepo;
-  private StockMoveLineRepository stockMoveLineRepository;
-  private InvoiceLineRepository invoiceLineRepository;
-  private SupplyChainConfigService supplyChainConfigService;
-  private AppSupplychainService appSupplychainService;
+  protected SaleOrderInvoiceService saleOrderInvoiceService;
+  protected PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected InvoiceRepository invoiceRepository;
+  protected SaleOrderRepository saleOrderRepo;
+  protected PurchaseOrderRepository purchaseOrderRepo;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public StockMoveInvoiceServiceImpl(
@@ -87,7 +88,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       StockMoveLineRepository stockMoveLineRepository,
       InvoiceLineRepository invoiceLineRepository,
       SupplyChainConfigService supplyChainConfigService,
-      AppSupplychainService appSupplychainService) {
+      AppBaseService appBaseService) {
     this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
@@ -97,7 +98,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.invoiceLineRepository = invoiceLineRepository;
     this.supplyChainConfigService = supplyChainConfigService;
-    this.appSupplychainService = appSupplychainService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -128,14 +129,19 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       qtyToInvoiceMap = null;
     }
 
-    Long origin = stockMove.getOriginId();
+    invoice = createInvoiceFromStockMove(stockMove, qtyToInvoiceMap);
+    return invoice;
+  }
 
-    if (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())) {
-      invoice = createInvoiceFromSaleOrder(stockMove, saleOrderRepo.find(origin), qtyToInvoiceMap);
-    } else if (StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())) {
+  @Override
+  public Invoice createInvoiceFromStockMove(
+      StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
+    Invoice invoice;
+    if (stockMove.getSaleOrder() != null) {
+      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
+    } else if (stockMove.getPurchaseOrder() != null) {
       invoice =
-          createInvoiceFromPurchaseOrder(
-              stockMove, purchaseOrderRepo.find(origin), qtyToInvoiceMap);
+          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -155,7 +161,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR),
           stockMove.getStockMoveSeq());
     }
 
@@ -181,6 +187,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       invoice.setDeliveryAddress(stockMove.getToAddress());
       invoice.setDeliveryAddressStr(stockMove.getToAddressStr());
       invoice.setAddressStr(saleOrder.getMainInvoicingAddressStr());
+      invoice.setIncoterm(saleOrder.getIncoterm());
 
       // fill default advance payment invoice
       if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
@@ -228,7 +235,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
             > 1) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(IExceptionMessage.BLOCK_SPLIT_OUTGOING_STOCK_MOVE_LINES));
+              I18n.get(SupplychainExceptionMessage.BLOCK_SPLIT_OUTGOING_STOCK_MOVE_LINES));
         }
       }
     }
@@ -246,7 +253,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         && computeNonCanceledInvoiceQty(stockMove).signum() > 0) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_PARTIAL_INVOICE_ERROR));
     }
 
     InvoiceGenerator invoiceGenerator =
@@ -310,7 +317,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
       }
     }
     // do not use invoiced partner if the option is disabled
-    if (!appSupplychainService.getAppSupplychain().getActivatePartnerRelations()) {
+    if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       stockMove.setInvoicedPartner(null);
     }
 
@@ -377,11 +384,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((StockMoveRepository.ORIGIN_PURCHASE_ORDER.equals(stockMove.getOriginTypeSelect())
+    if ((stockMove.getPurchaseOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (StockMoveRepository.ORIGIN_SALE_ORDER.equals(stockMove.getOriginTypeSelect())
+        || (stockMove.getSaleOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {
@@ -409,6 +416,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
         invoiceLineList.add(invoiceLineCreated);
       }
     }
+
     return invoiceLineList;
   }
 
@@ -440,7 +448,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     if (product == null && !isTitleLine) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.STOCK_MOVE_INVOICE_1),
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_1),
           stockMoveLine.getStockMove().getStockMoveSeq());
     }
 
@@ -531,7 +539,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
    * @return
    * @throws AxelorException
    */
-  private List<StockMoveLine> getConsolidatedStockMoveLineList(
+  protected List<StockMoveLine> getConsolidatedStockMoveLineList(
       List<StockMoveLine> stockMoveLineList) throws AxelorException {
 
     Map<SaleOrderLine, List<StockMoveLine>> stockMoveLineSaleMap = new LinkedHashMap<>();

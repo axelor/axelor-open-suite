@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form title="Stock history" name="stock-history-form" model="com.axelor.apps.base.db.Wizard"
+  <form title="Stock history" name="stock-history-form" model="com.axelor.utils.db.Wizard"
     canSave="false" width="large" canNew="false" canCopy="false"
     onNew="action-stock-history-line-group-onnew">
     <panel name="parameterPanel">
@@ -24,19 +24,23 @@
       <field name="$stockHistoryLineList" type="one-to-many"
         target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12" readonly="true"
         x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
+      <button name="exportStockHistoryLineListBtn"
+        onClick="action-stock-history-line-method-export-stock-history-line-list" title="Export"/>
     </panel>
   </form>
 
   <form title="Stock history line" name="stock-history-line-form"
     model="com.axelor.apps.stock.db.StockHistoryLine" onNew="action-stock-history-line-attrs-scale"
     onLoad="action-stock-history-line-attrs-scale">
-    <field name="label"/>
-    <field name="countIncMvtStockPeriod"/>
-    <field name="sumIncQtyPeriod"/>
-    <field name="priceIncStockMovePeriod"/>
-    <field name="countOutMvtStockPeriod"/>
-    <field name="sumOutQtyPeriod"/>
-    <field name="priceOutStockMovePeriod"/>
+    <panel name="mainPanel">
+      <field name="label"/>
+      <field name="countIncMvtStockPeriod"/>
+      <field name="sumIncQtyPeriod"/>
+      <field name="priceIncStockMovePeriod"/>
+      <field name="countOutMvtStockPeriod"/>
+      <field name="sumOutQtyPeriod"/>
+      <field name="priceOutStockMovePeriod"/>
+    </panel>
   </form>
 
   <grid title="Stock history line" name="stock-history-line-grid" width="large"
@@ -49,6 +53,39 @@
     <field name="sumOutQtyPeriod"/>
     <field name="priceOutStockMovePeriod"/>
   </grid>
+
+  <grid title="Stock history" name="stock-history-line-all-grid" width="large"
+    model="com.axelor.apps.stock.db.StockHistoryLine" groupBy="company" orderBy="-period.fromDate">
+    <field name="company" hidden="true"/>
+    <field name="product"/>
+    <field name="label" colSpan="3" showTitle="false"/>
+    <field name="countIncMvtStockPeriod"/>
+    <field name="sumIncQtyPeriod" x-scale="2"/>
+    <field name="priceIncStockMovePeriod"/>
+    <field name="countOutMvtStockPeriod"/>
+    <field name="sumOutQtyPeriod" x-scale="2"/>
+    <field name="sumOneoffSaleOutQtyPeriod" if-module="axelor-supplychain" x-scale="2"/>
+    <field name="avgOutQtyOn12PastMonth" x-scale="2"/>
+    <field name="priceOutStockMovePeriod"/>
+  </grid>
+
+  <form title="Stock history line" name="stock-history-line-all-form"
+    model="com.axelor.apps.stock.db.StockHistoryLine" onNew="action-stock-history-line-attrs-scale"
+    onLoad="action-stock-history-line-attrs-scale">
+    <panel name="mainPanel">
+      <field name="company"/>
+      <field name="product"/>
+      <field name="label"/>
+      <field name="countIncMvtStockPeriod"/>
+      <field name="sumIncQtyPeriod"/>
+      <field name="priceIncStockMovePeriod"/>
+      <field name="countOutMvtStockPeriod"/>
+      <field name="sumOutQtyPeriod"/>
+      <field name="sumOneoffSaleOutQtyPeriod" if-module="axelor-supplychain"/>
+      <field name="avgOutQtyOn12PastMonth"/>
+      <field name="priceOutStockMovePeriod"/>
+    </panel>
+  </form>
 
   <action-group name="action-stock-history-line-group-onnew">
     <action name="action-stock-history-line-attrs-onnew"/>
@@ -79,11 +116,19 @@
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
     <attribute name="scale" for="sumOutQtyPeriod"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="sumOneoffSaleOutQtyPeriod"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
 
   <action-method name="action-stock-history-line-method-fill-stock-history-line-list">
     <call class="com.axelor.apps.stock.web.StockHistoryController"
       method="fillStockHistoryLineList"/>
+  </action-method>
+
+  <action-method
+    name="action-stock-history-line-method-export-stock-history-line-list">
+    <call class="com.axelor.apps.stock.web.StockHistoryController"
+      method="exportStockHistoryLineList"/>
   </action-method>
 
 </object-views>

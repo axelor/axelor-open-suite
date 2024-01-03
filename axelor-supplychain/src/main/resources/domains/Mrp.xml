@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="Mrp" lang="java">
+  <entity name="Mrp">
 
+    <string name="name" title="Name"/>
+    <string name="fullName" title="Full name" namecolumn="true">
+      <![CDATA[
+		  return MrpTool.computeFullName(this);
+		]]>
+    </string>
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location" required="true"/>
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
@@ -24,13 +30,21 @@
       default="0"/>
     <datetime name="startDateTime" title="Calculation Start Date"/>
     <datetime name="endDateTime" title="Calculation End Date"/>
-    <string name="mrpSeq" title="MRP number" readonly="true"/>
+    <string name="mrpSeq" title="MRP number" readonly="true" unique="true"/>
     <boolean name="displayProductWithoutProposal" title="Display product without proposal"
       default="false"/>
     <integer name="mrpTypeSelect" title="MRP Type"
       selection="supplychain.mrp.mrp.type.select"/>
     <string name="errorLog" title="Error that happened during the computation"
       readonly="true" large="true"/>
+    <boolean name="computeWithSubStockLocation" title="Compute sub stock locations"/>
+    <boolean name="takeInAccountSubCategories" title="Take in account sub categories"/>
+    <boolean name="validateScenario" title="Validate scenario" default="false"/>
+    <finder-method name="findByMrpSeq" using="mrpSeq"/>
+
+    <extra-imports>
+      import com.axelor.apps.supplychain.service.MrpTool;
+    </extra-imports>
 
     <extra-code><![CDATA[
 

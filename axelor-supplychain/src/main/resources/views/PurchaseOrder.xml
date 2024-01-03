@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
 
   <form name="purchase-order-form" title="Purchase order"
     model="com.axelor.apps.purchase.db.PurchaseOrder" id="supplychain-purchase-order-form"
     extension="true">
+
     <extend target="/">
       <attribute name="onNew"
-        value="action-group-purchase-order-on-new-actions,supplychain-action-create-shipment-cost-line-purchase"/>
+        value="action-supplychain-group-purchase-order-on-new-actions"/>
     </extend>
+
     <extend target="//field[@name='shipmentMode']">
       <attribute name="onChange"
         value="action-purchase-order-record-empty-freight-carrier-mode,supplychain-action-create-shipment-cost-line-purchase"/>
@@ -21,9 +24,14 @@
     </extend>
   </form>
 
+  <action-group name="action-supplychain-group-purchase-order-on-new-actions">
+    <action name="action-group-purchase-order-on-new-actions"/>
+    <action name="supplychain-action-create-shipment-cost-line-purchase"/>
+  </action-group>
+
   <action-method name="action-purchase-order-method-generate-control-invoice">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
-      method="generateInvoice"/>
+      method="showPopUpInvoicingWizard"/>
   </action-method>
 
   <action-method name="action-purchase-order-create-stock-move">
@@ -40,7 +48,6 @@
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="cancelReceipt"/>
   </action-method>
-
 
   <action-attrs name="action-purchase-order-attrs-interco">
     <attribute for="interco" name="hidden"
@@ -71,6 +78,13 @@
   <action-method name="supplychain-action-create-shipment-cost-line-purchase">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
       method="createShipmentCostLine"/>
+  </action-method>
+
+
+
+  <action-method name="action-purchase-order-method-get-from-stock-location">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
+      method="getFromStockLocation"/>
   </action-method>
 
 </object-views>

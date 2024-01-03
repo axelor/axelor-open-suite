@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
-  <entity name="StockMoveLine" lang="java">
+  <entity name="StockMoveLine">
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sales order line"/>
@@ -27,11 +27,11 @@
 
     <finder-method name="findAllBySaleOrder"
       using="com.axelor.apps.sale.db.SaleOrder:saleOrder" all="true"
-      filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id"/>
+      filter="self.stockMove.saleOrder.id = :saleOrder.id"/>
 
     <finder-method name="findAllBySaleOrderAndStatusSelect"
       using="com.axelor.apps.sale.db.SaleOrder:saleOrder,Integer:statusSelect" all="true"
-      filter="self.stockMove.originTypeSelect LIKE 'com.axelor.apps.sale.db.SaleOrder' AND self.stockMove.originId = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
+      filter="self.stockMove.saleOrder.id = :saleOrder.id AND self.stockMove.statusSelect = :statusSelect"/>
 
 
     <finder-method name="findForDeclarationOfExchanges"
@@ -43,12 +43,15 @@
 	        AND self.stockMove.typeSelect = :stockMoveTypeSelect
 	        AND self.stockMove.statusSelect = 3
 	        AND self.stockMove.company = :company
-	        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country) = :country
-	        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country) = :country)
-	        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.stockMove.fromStockLocation.address.addressL7Country)
-	        != COALESCE(self.stockMove.toAddress.addressL7Country, self.stockMove.toStockLocation.address.addressL7Country)
+	        AND (COALESCE(self.stockMove.fromAddress.addressL7Country, self.fromStockLocation.address.addressL7Country) = :country
+	        OR COALESCE(self.stockMove.toAddress.addressL7Country, self.toStockLocation.address.addressL7Country) = :country)
+	        AND COALESCE(self.stockMove.fromAddress.addressL7Country, self.fromStockLocation.address.addressL7Country)
+	        != COALESCE(self.stockMove.toAddress.addressL7Country, self.toStockLocation.address.addressL7Country)
 	        AND COALESCE(self.stockMove.fromAddress.addressL7Country.economicArea, self.stockMove.fromStockLocation.address.addressL7Country.economicArea)
-	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.stockMove.toStockLocation.address.addressL7Country.economicArea)"
+	        = COALESCE(self.stockMove.toAddress.addressL7Country.economicArea, self.toStockLocation.address.addressL7Country.economicArea)
+	        AND ((self.saleOrderLine IS NULL AND self.purchaseOrderLine IS NULL)
+	          OR (self.saleOrderLine IS NOT NULL AND (self.saleOrderLine.saleOrder.taxNumber IS NULL OR self.saleOrderLine.saleOrder.taxNumber.includeInDEB = true))
+	          OR (self.purchaseOrderLine IS NOT NULL AND (self.purchaseOrderLine.purchaseOrder.taxNumber IS NULL OR self.purchaseOrderLine.purchaseOrder.taxNumber.includeInDEB = true)))"
       orderBy="stockMove.realDate,id" all="true"/>
 
     <track on="UPDATE">
@@ -57,4 +60,5 @@
     </track>
 
   </entity>
+
 </domain-models>

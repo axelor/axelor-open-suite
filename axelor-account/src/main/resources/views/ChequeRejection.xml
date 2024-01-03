@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="cheque-rejection-grid" title="Cheque Rejections"
     model="com.axelor.apps.account.db.ChequeRejection">
     <field name="name" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="dateTime"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="move"/>
@@ -19,32 +19,32 @@
 
   <form name="cheque-rejection-form" title="Cheque Rejection"
     model="com.axelor.apps.account.db.ChequeRejection" onNew="default-cheque-rejection-record">
-    <panel name="mainPanel">
-      <field name="statusSelect"/>
-      <field name="move" form-view="move-form" grid-view="move-grid" readonly="true"/>
+    <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="name"/>
-      <field name="dateTime"/>
       <field name="company" canEdit="false" form-view="company-form" grid-view="company-grid"
         widget="SuggestBox"/>
       <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
-      <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        domain="self.isContact = false AND :company member of self.companySet"/>
     </panel>
-    <panel name="rejectInformationPanel" title="Reject Information">
-      <field name="rejectionDate"/>
+    <panel name="rejectInformationPanel" title="Reject Information"
+      readonlyIf="statusSelect == 2">
+      <field name="rejectionDate"
+        onChange="action-account-chaque-rejection-validate-if-rejection-date-is-not-from-the-future"/>
       <field name="interbankCodeLine" domain="self.chequeOk = 't'"
         form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
       <field name="description"/>
       <field name="amountRejected"/>
     </panel>
 
-    <panel name="paymentRejectedPanel" title="Payment Rejected">
+    <panel name="paymentRejectedPanel" title="Payment Rejected" readonlyIf="statusSelect == 2">
       <!-- TODO:check whether this Editor is working or not -->
-      <field readonlyIf="partner == null" name="paymentVoucher"
+      <field name="paymentVoucher"
         onChange="action-group-account-cheque-rejection-paymentvoucher-onchange"
         onSelect="action-cheque-rejection-attrs-domain-payment-voucher"
-        domain="self.company=:company" form-view="payment-voucher-form"
-        grid-view="payment-voucher-grid"/>
+        form-view="payment-voucher-form" grid-view="payment-voucher-grid" required="true"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid"
+        domain="self.isContact = false AND :company member of self.companySet" required="true"
+        onChange="action-account-cheque-rejection-record-reset-payment-voucher-on-change"/>
+
       <field name="paymentVoucher.ref" readonly="true"/>
       <field name="paymentVoucher.user" form-view="user-form" grid-view="user-grid"
         readonly="true"/>
@@ -59,7 +59,14 @@
     </panel>
     <panel sidebar="true" name="actionPanel" title="Action">
       <button name="validateChequeRejectionBtn" title="Validate reject"
-        onClick="save,action-method-account-cheque-rejection-validate" hideIf="statusSelect == 2"/>
+        onClick="save,action-method-account-cheque-rejection-validate"
+        hideIf="statusSelect == 2 || paymentVoucher == null || interbankCodeLine == null || rejectionDate == null"/>
+    </panel>
+
+    <panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
+      <field name="statusSelect"/>
+      <field name="move" form-view="move-form" grid-view="move-grid" readonly="true"/>
+      <field name="dateTime"/>
     </panel>
   </form>
 
@@ -76,8 +83,12 @@
 
   <action-attrs name="action-cheque-rejection-attrs-domain-payment-voucher">
     <attribute name="domain" for="paymentVoucher"
-      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode.id = ${paymentMode?.id} and self.partner.id = ${partner?.id}&quot;"
+      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 2 and self.partner.id = ${partner?.id}&quot;"
       if="partner != null"/>
+    <attribute name="domain" for="paymentVoucher"
+      expr="eval: &quot;self.company.id = ${company?.id} and self.paidAmount > 0 and self.paymentMode != null and self.paymentMode.typeSelect = 7 and self.statusSelect = 2 &quot;"
+      if="partner == null"/>
+
   </action-attrs>
 
   <action-record name="default-cheque-rejection-record"
@@ -92,8 +103,7 @@
 
   <action-record name="action-cheque-rejection-record-amount-rejected"
     model="com.axelor.apps.account.db.ChequeRejection">
-    <field name="amountRejected" expr="eval: paymentVoucher?.paidAmount"
-      if="eval: paymentVoucher != null"/>
+    <field name="amountRejected" expr="eval: __this__?.paymentVoucher?.paidAmount"/>
   </action-record>
 
   <action-record name="action-cheque-rejection-record-partner"
@@ -102,10 +112,21 @@
       if="eval: paymentVoucher != null"/>
   </action-record>
 
+  <action-record
+    name="action-account-cheque-rejection-record-reset-payment-voucher-on-change"
+    model="com.axelor.apps.account.db.ChequeRejection">
+    <field name="paymentVoucher" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-account-cheque-rejection-reset-rejection-date"
+    model="com.axelor.apps.account.db.ChequeRejection">
+    <field name="rejectionDate" expr="eval: null"/>
+  </action-record>
+
   <search-filters name="cheque-rejection-filters"
     model="com.axelor.apps.account.db.ChequeRejection" title="Cheque rejection filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Recent rejects">
       <domain>self.rejectionDate &gt;= :_newDate1</domain>
     </filter>
@@ -113,5 +134,12 @@
       <domain>self.rejectionDate &gt;= :_newDate2</domain>
     </filter>
   </search-filters>
+
+  <action-validate
+    name="action-account-chaque-rejection-validate-if-rejection-date-is-not-from-the-future">
+    <error action="action-account-cheque-rejection-reset-rejection-date"
+      message="Rejection date can't be in the future"
+      if="rejectionDate &amp;&amp; rejectionDate &gt; __config__.app.getTodayDate(company)"/>
+  </action-validate>
 
 </object-views>

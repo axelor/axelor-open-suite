@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
 
   <grid name="bank-order-line-bank-to-bank-grid" title="Bank Order lines"
@@ -47,25 +47,24 @@
     model="com.axelor.apps.bankpayment.db.BankOrderLine" width="large" canNew="false"
     canEdit="false" canDelete="false">
     <panel name="bankOrderDetailsPanel" title="Bank Order Details" showIf="bankOrder != null">
-      <field name="bankOrder" readonly="true" colSpan="6"/>
-      <field name="bankOrder.orderTypeSelect" readonly="true" colSpan="6"/>
-      <field name="bankOrder.partnerTypeSelect" readonly="true" colSpan="6"/>
-      <field name="bankOrder.senderCompany" title="Sender Company" readonly="true" colSpan="6"/>
-      <field name="bankOrder.senderBankDetails" title="Sender Bank details" readonly="true"
-        colSpan="6"/>
-      <field name="bankOrder.bankOrderTotalAmount" readonly="true" colSpan="6"/>
+      <field name="bankOrder" readonly="true"/>
+      <field name="bankOrder.orderTypeSelect" readonly="true"/>
+      <field name="bankOrder.partnerTypeSelect" readonly="true"/>
+      <field name="bankOrder.senderCompany" title="Sender Company" readonly="true"/>
+      <field name="bankOrder.senderBankDetails" title="Sender Bank details" readonly="true"/>
+      <field name="bankOrder.bankOrderTotalAmount" readonly="true"/>
     </panel>
     <panel name="receiverInfoPanel" title="Receiver Info.">
       <field name="sequence"/>
       <field name="receiverCompany" canEdit="false" showIf="bankOrder.partnerTypeSelect == 4"
-        colSpan="6" form-view="company-form" grid-view="company-grid"/>
+        form-view="company-form" grid-view="company-grid"/>
       <field name="partner" hideIf="bankOrder.partnerTypeSelect != 4" form-view="partner-form"
-        grid-view="partner-grid" colSpan="6"/>
-      <field name="receiverBankDetails" colSpan="6" form-view="bank-details-form"
+        grid-view="partner-grid"/>
+      <field name="receiverBankDetails" form-view="bank-details-form"
         grid-view="bank-details-grid"/>
       <field name="bankOrderAmount"/>
-      <field name="receiverReference" colSpan="6"/>
-      <field name="receiverLabel" colSpan="6"/>
+      <field name="receiverReference"/>
+      <field name="receiverLabel"/>
       <field name="receiverCountry" colSpan="4"/>
       <field name="receiverCountry.alpha2Code" colSpan="2"/>
       <field name="receiverAddressStr" colSpan="12" max="105"/>
@@ -88,5 +87,17 @@
         form-view="move-form" grid-view="move-grid"/>
     </panel>
   </form>
+
+  <action-group name="action-bank-order-line-group-receiver-company-onchange">
+    <action name="action-bank-order-line-group-receiver-company-change"/>
+    <action name="action-bank-order-line-record-receiver-bank-details-onchange"/>
+    <action name="action-bank-order-line-method-fill-receiver-address"/>
+  </action-group>
+
+  <action-group name="action-bank-order-line-group-partner-onchange">
+    <action name="action-bank-order-line-method-fill-bank-details"/>
+    <action name="action-bank-order-line-record-receiver-bank-details-onchange"/>
+    <action name="action-bank-order-line-method-fill-receiver-address"/>
+  </action-group>
 
 </object-views>

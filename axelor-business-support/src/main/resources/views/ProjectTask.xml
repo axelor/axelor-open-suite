@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-support-version-project-task-grid" orderBy="-taskDate">
@@ -10,32 +10,33 @@
     <field name="status"/>
     <field name="progressSelect" widget="SelectProgress"/>
     <field name="projInvTypeSelect"/>
-    <button name="updateToInvoiceBtn" title="Update to invoice" readonlyIf="invoiced"
+    <button name="updateToInvoiceBtn" title="Update to invoice"
+      if="__config__.app.getApp('business-project').automaticInvoicing" readonlyIf="invoiced"
       icon="fa-check-circle" onClick="action-project-task-method-update-to-invoice"/>
   </grid>
 
   <grid name="project-task-client-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" orderBy="taskDate">
-    <hilite if="status == 'closed'" color="success"/>
+    <hilite if="$get('status.isCompleted') == true" color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
-    <hilite if="priority == 'urgent'" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
     <field name="name"/>
     <field name="taskDate"/>
-    <field name="priority" hidden="true"/>
-    <field name="taskEndDate" hidden="true"/>
     <field name="status"/>
     <field name="projectTaskCategory"/>
     <field name="customerReferral"/>
     <field name="targetVersion"/>
+    <field name="taskEndDate" hidden="true"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="status.isCompleted" hidden="true"/>
   </grid>
 
   <form name="project-task-client-form" title="Ticket"
     model="com.axelor.apps.project.db.ProjectTask" onNew="action-project-task-group-onnew"
     onLoad="action-project-task-group-timer-process" width="large">
     <panel name="mainPanel">
-      <panel name="statusSelectPanel" colSpan="8">
-        <field name="status" colSpan="12" required="true" widget="NavSelect" readonly="true"
-          showTitle="false"/>
+      <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
+        <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
       </panel>
       <field name="$viewerTags" showTitle="false" readonly="true"
         showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">
@@ -73,6 +74,7 @@
           onSelect="action-project-task-attrs-parent-task-configurations"/>
         <field name="isOrderAccepted" hidden="true" showIf="typeSelect == 'ticket'"/>
         <field name="isOrderProposed" hidden="true"/>
+        <field name="project.isShowStatus" hidden="true"/>
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="acceptOrderBtn" title="Accept Order" hidden="true"
@@ -86,8 +88,8 @@
           showIf="assignment == 2 &amp;&amp; typeSelect == 'ticket'"/>
       </panel>
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
-        <field name="taskDate" title="Task date"
-          onChange="action-project-task-attrs-set-task-duration" required="true" readonlyIf="id"/>
+        <field name="taskDate" onChange="action-project-task-attrs-set-task-duration"
+          required="true" readonlyIf="id"/>
         <field name="projectTaskCategory"
           onSelect="action-project-task-attrs-project-task-category-configurations" readonlyIf="id"/>
         <field name="targetVersion" domain=":project member of self.projectSet"
@@ -117,15 +119,20 @@
           if-module="axelor-business-project"/>
         <panel name="pricingPanel" showIf="invoicingType == 2" colSpan="12">
           <field name="quantity" colSpan="4" onChange="action-project-task-group-qty-onchange"/>
-          <field name="unit" colSpan="4" domain="self.unitTypeSelect=3" form-view="unit-form"
-            grid-view="unit-grid" canEdit="false"/>
+          <field name="invoicingUnit" colSpan="4" domain="self.unitTypeSelect=3"
+            form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
           <field name="unitPrice" colSpan="4"
             onChange="action-project-task-group-unit-price-onchange"/>
           <field name="exTaxTotal" readonly="true" colSpan="4"/>
         </panel>
-        <panel-dashlet name="validatedTimesheetLinesPanel" showIf="invoicingType == 1"
+        <panel-dashlet name="validatedTimesheetLinesPanel"
+          if="__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
           action="action-project-task-dashlet-validated-timesheet-lines"
           title="Validated Timesheet lines" colSpan="12" canSearch="true" readonly="true"/>
+        <panel-dashlet name="allTimesheetLinesPanel"
+          if="!__config__.app.getApp('timesheet')?.needValidation" showIf="invoicingType == 1"
+          action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
+          colSpan="12" canSearch="true" readonly="true"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">

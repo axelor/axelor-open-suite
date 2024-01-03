@@ -1,16 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
     canNew="false">
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
+      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
+    <button onClick="save,action-bank-reconciliation-line-method-set-selected"
+      name="unselect" title="Select / Unselect" icon="fa-minus-circle"
+      showIf="isSelectedBankReconciliation"/>
+    <field name="postedNbr"/>
+    <field name="confidenceIndex" readonly="true">
+      <hilite if="confidenceIndex == 1" color="green"/>
+      <hilite if="confidenceIndex == 2" color="orange"/>
+      <hilite if="confidenceIndex == 3" color="red"/>
+    </field>
+    <field name="bankStatementQuery"/>
     <field name="effectDate"/>
     <field name="name"/>
     <field name="reference"/>
-    <field name="debit" aggregate="sum"/>
-    <field name="credit" aggregate="sum"/>
+    <field name="debit" aggregate="sum">
+      <hilite if="debit > 0" color="green"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite if="credit > 0" color="red"/>
+    </field>
     <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
     <field name="account" canEdit="false"
@@ -21,13 +37,15 @@
       onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form"
       grid-view="partner-grid"/>
     <field name="moveLine" width="135" canEdit="false"
-      onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form"
+      onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected"
+      onSelect="action-bank-reconciliation-line-method-move-line-domain" form-view="move-line-form"
       grid-view="move-line-grid"/>
     <field name="isPosted" readonly="true"/>
+    <field name="isSelectedBankReconciliation" hidden="true"/>
   </grid>
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
-    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large">
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large" canNew="false">
     <panel name="bankStatementPanel" title="Bank statement details">
       <field name="bankStatementLine" canEdit="false"
         onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>
@@ -50,8 +68,8 @@
     </panel>
     <panel name="associatedMoveLinePanel" title="Associated MoveLine">
       <field name="moveLine" canEdit="false"
-        onSelect="action-bank-reconciliation-line-attrs-move-line-domain" form-view="move-line-form"
-        grid-view="move-line-grid"/>
+        onSelect="action-bank-reconciliation-line-method-move-line-domain"
+        form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="isPosted" readonly="true"/>
     </panel>
   </form>
@@ -70,15 +88,6 @@
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
       method="setAccountDomain"/>
   </action-method>
-
-  <action-attrs name="action-bank-reconciliation-line-attrs-move-line-domain">
-    <attribute name="domain" for="moveLine"
-      expr="eval: &quot;(self.bankReconciledAmount &lt; self.debit or self.bankReconciledAmount &lt; self.credit) and ((self.debit &gt; 0 and ${credit} &gt; 0) or (self.credit &gt; 0 and ${debit} &gt; 0)) and self.move.company.id = ${__parent__?.company?.id} AND self.account.id = ${__parent__?.cashAccount?.id} AND self.move.journal.id = ${__parent__?.journal?.id}&quot;"
-      if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
-    <attribute name="domain" for="moveLine"
-      expr="eval: &quot;(self.bankReconciledAmount &lt; self.debit or self.bankReconciledAmount &lt; self.credit) and ((self.debit &gt; 0 and ${credit} &gt; 0) or (self.credit &gt; 0 and ${debit} &gt; 0)) and self.move.company.id = ${bankReconciliation?.company?.id} AND self.account.id = ${bankReconciliation?.cashAccount?.id} AND self.move.journal.id = ${bankReconciliation?.journal?.id}&quot;"
-      if="__parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
-  </action-attrs>
 
   <action-attrs
     name="action-bank-payment-attrs-bank-reconciliation-line-partner-domain">
@@ -105,4 +114,24 @@
       if="typeSelect == 3 &amp;&amp; __parent__?._model != 'com.axelor.apps.bankpayment.db.BankReconciliation'"/>
   </action-record>
 
+  <action-record name="action-bank-reconciliation-line-record-set-selected"
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <field name="isSelectedBankReconciliation" expr="eval: !isSelectedBankReconciliation"/>
+  </action-record>
+
+  <action-method name="action-bank-reconciliation-line-method-set-selected">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setSelected"/>
+  </action-method>
+
+  <action-method
+    name="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="unreconcileUnselectedReconcileSelected"/>
+  </action-method>
+
+  <action-method name="action-bank-reconciliation-line-method-move-line-domain">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setMoveLineDomain"/>
+  </action-method>
 </object-views>

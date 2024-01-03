@@ -16,3 +16,4 @@ The amount of customer credit accepted can also be configured per customer, in t
 It allows you to group the invoice movelines into accounting accounts and analytical axes."
 "axelor-account";"AppInvoice";"app-invoice-config-form";"isVentilationSkipped";"Removes the invoice ventilation step to keep only the validation step. Once an invoice has been validated, it can then be processed in accounting without having to go through a ventilation step."
 "axelor-account";"Invoice";"invoice-form";"priceList";"Enables to specify a price list to be specifically used for this order. This field is automatically filled in if a price list is attached to the partner. "
+"axelor-account";"AnalyticAccount";"analytic-account-form";"analyticLevel";"This field defines the level in the tree of the analytic account. If the value is set to 1, this means this analytic account is at the bottom level."

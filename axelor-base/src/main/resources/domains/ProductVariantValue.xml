@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ProductVariantValue" lang="java">
+  <entity name="ProductVariantValue">
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code" required="true"/>
@@ -20,6 +20,8 @@
       // APPLICATION PRICE SELECT
       public static final int APPLICATION_SALE_PRICE = 0;
       public static final int APPLICATION_COST_PRICE = 1;
+      public static final int
+      APPLICATION_PURCHASE_PRICE = 2;
     </extra-code>
 
   </entity>

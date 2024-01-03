@@ -1,0 +1,101 @@
+"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"addSignature";"signature"
+"Facture Client";"Invoice";2;;;;"true";;"Votre facture N° $Invoice.invoiceId$";"<p>Bonjour,</p>
+
+<p>Vous trouverez ci-joint la facture N° $Invoice.invoiceId$.</p>
+
+<p>Nous vous remercions pour votre fidélité et nous espérons que vous avez été pleinement satisfait.</p>
+
+<p>En espérant que vous nous renouvellerez votre confiance, </p>
+
+<p>Cordialement<br/>
+L'équipe Axelor</p>
+
+";"$Invoice.partner.emailAddress.address$";;;2;;
+"Customer Invoice";"Invoice";1;;;;"true";;"Invoice N° $Invoice.invoiceId$";"<p>Good morning,</p> 
+
+<p>Please find attached the invoice N° $Invoice.invoiceId$.</p>
+
+<p>We are glad to count you as one of our customers and we hope you have been completely satisfied with our products and services.</p>
+
+<p>Best regards<br/>
+Axelor Team</p>";"$Invoice.partner.emailAddress.address$";;;2;;
+"Envoi avis de paiement";"PaymentSession";2;;;;"true";"invoiceTermList";"$PaymentSession.company.name$ - Avis de règlement";"<p>Madame, Monsieur,</p>
+
+<p>Nous vous informons que nous avons émis un $PaymentSession.paymentMode.name$ en la faveur de votre société $PaymentSession.partnerForEmail.name$ en règlement des opérations ci-dessous en date du $PaymentSession.paymentDate; format=""dd/MM/yyyy""$:<br>
+$invoiceTermList : { it |<br>
+$it.name$ - $it.dueDate; format=""dd/MM/yyyy""$ - $it.paymentAmount$$it.paymentSession.currency.code$<br>
+}$</p>
+
+<p>Vous en souhaitant bonne réception.</p>
+
+<p>Cordialement,<br>
+Le service comptabilité.<br>
+Société $PaymentSession.company.name$</p>";"$PaymentSession.partnerForEmail.emailAddress.address$";;;2;;
+"Releve facture";"NoteBills";2;;"31";;"true";;"Votre relevé de facture";"<p>Bonjour,</p>
+
+<p>Vous trouverez ci-joint votre relevé de facture</p>
+
+<p>Nous vous remercions pour votre fidélité et nous espérons que vous avez été pleinement satisfait.</p>
+
+<p>En espérant que vous nous renouvellerez votre confiance, </p>
+
+<p>Cordialement<br/>
+L'équipe Axelor</p>
+
+";"$NoteBills.emailAddress.address$";;;2;;
+"Note Bills";"NoteBills";1;;"31";;"true";;"Your note bills";"<p>Hi,</p>
+
+<p>Please find attached the note bills</p>
+
+<p>We are glad to count you as one of our customers and we hope you have been completely satisfied with our products and services.</p>
+
+<p>Best regards<br/>
+Axelor Team</p>";"$NoteBills.emailAddress.address$";;;2;;
+"Email relance clients particuliers";"DebtRecoveryHistory";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Relance de paiement sur facture(s) de $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$";"Cher/Chère $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+Nous sommes heureux de vous compter parmi nos meilleur(e)s client(e)s. Cependant, après une analyse détaillée de votre compte, il ressort que la/les facture(s) suivante(s) demeure(nt) non soldée(s) :<br/>
+<table style=""border-collapse: collapse"" border=""1"">
+<tr>
+<td><b>N° Facture</b></td>
+<td><b>Montant dû</b></td>
+<td><b>Date de facture</b></td>
+<td><b>Echéance</b></td>
+<td><b>N° de commande</b></td>
+</tr>
+$DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
+<tr>
+<td>$list.invoiceId$</td>
+<td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
+<td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
+<td>$list.dueDate; format=""dd/MM/yyy""$</td>
+<td>$list.externalReference$</td>
+</tr>
+}$
+</table>
+<br/><br/>
+Dans le cas où un paiement aurait déjà été réalisé pendant le temps de transit de ce message, veuillez ne pas en tenir compte. Si jamais vous aviez des questions relatives au paiement de cette(ces) facture(s), veuillez nous contacter en répondant à cet email.<br/><br/>
+Cordialement<br/>
+Pour le département comptable de $DebtRecoveryHistory.debtRecovery.company.name$";"$DebtRecoveryHistory.debtRecovery.accountingSituation.partner.emailAddress.address$";;;2;"true";"$__user__.emailSignature$"
+"Email relance clients professionnels";"DebtRecoveryHistory";2;;30;;"true";;"$DebtRecoveryHistory.debtRecovery.company.name$ : Relance de paiement sur facture(s) de $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$";"Cher/Chère responsable de la société $DebtRecoveryHistory.debtRecovery.accountingSituation.partner.simpleFullName$,<br/><br/>
+Nous sommes heureux de vous compter parmi nos meilleur(e)s client(e)s. Cependant, après une analyse détaillée de votre compte, il ressort que la/les facture(s) suivante(s) demeure(nt) non soldée(s) :<br/>
+<table style=""border-collapse: collapse"" border=""1"">
+<tr>
+<td><b>N° Facture</b></td>
+<td><b>Montant dû</b></td>
+<td><b>Date de facture</b></td>
+<td><b>Echéance</b></td>
+<td><b>N° de commande</b></td>
+</tr>
+$DebtRecoveryHistory.debtRecovery.invoiceDebtRecoverySet:{list |
+<tr>
+<td>$list.invoiceId$</td>
+<td>$list.amountRemaining; format=""%,10.2f""$ $list.currency.symbol$ ($list.currency.name$)</td>
+<td>$list.invoiceDate; format=""dd/MM/yyy""$</td>
+<td>$list.dueDate; format=""dd/MM/yyy""$</td>
+<td>$list.externalReference$</td>
+</tr>
+}$
+</table>
+<br/><br/>
+Dans le cas où un paiement aurait déjà été réalisé pendant le temps de transit de ce message, veuillez ne pas en tenir compte.<br/><br/>
+Cordialement<br/>
+Pour le département comptable de $DebtRecoveryHistory.debtRecovery.company.name$";"$DebtRecoveryHistory.debtRecovery.accountingSituation.partner.emailAddress.address$";;;2;"true";"$__user__.emailSignature$"

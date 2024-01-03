@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.account.db"/>
+
+  <entity name="FinancialDiscount">
+
+    <string name="name" title="Label" namecolumn="true" required="true" translatable="true"/>
+    <integer name="discountDelay" title="Discount delay" required="true"
+      help="Application's time limit in days for the discount based on due date"/>
+    <integer name="discountBaseSelect" title="Discount base"
+      selection="account.financial.discount.discount.base.select" required="true" default="0"/>
+    <decimal name="discountRate" title="Discount rate (%)" required="true"
+      help="Discount amount in % on discount base if the payment of an invoice is made before due date"/>
+    <string name="legalNotice" title="Legal notice" large="true" required="true"
+      help="Legal notice displayed on invoices where a discount was granted"/>
+
+    <extra-code><![CDATA[
+
+		// DISCOUNT BASE SELECT
+	    public static final int DISCOUNT_BASE_HT = 0;
+	    public static final int DISCOUNT_BASE_VAT = 1;
+
+		]]></extra-code>
+
+  </entity>
+
+</domain-models>

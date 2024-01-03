@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Product" lang="java">
+  <entity name="Product">
 
     <boolean name="expense" title="Expense"/>
     <boolean name="isActivity" title="Activity"/>
@@ -13,6 +13,7 @@
     <boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
     <boolean name="personalExpense" title="Personal expense"/>
     <boolean name="unavailableToUsers" title="Unavailable to users" default="false"/>
+    <decimal name="amountLimit" title="Amount limit" min="0"/>
   </entity>
 
 </domain-models>

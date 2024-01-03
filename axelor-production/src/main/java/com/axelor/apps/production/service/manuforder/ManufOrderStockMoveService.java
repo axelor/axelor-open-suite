@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,12 +14,14 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.production.service.manuforder;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
@@ -27,7 +30,7 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
-import com.axelor.apps.production.exceptions.IExceptionMessage;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -40,7 +43,6 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -70,6 +72,7 @@ public class ManufOrderStockMoveService {
   protected SupplyChainConfigService supplyChainConfigService;
   protected ReservedQtyService reservedQtyService;
   protected ProductCompanyService productCompanyService;
+  protected StockConfigProductionService stockConfigProductionService;
 
   @Inject
   public ManufOrderStockMoveService(
@@ -78,27 +81,39 @@ public class ManufOrderStockMoveService {
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      StockConfigProductionService stockConfigProductionService) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.reservedQtyService = reservedQtyService;
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
+    this.stockConfigProductionService = stockConfigProductionService;
   }
 
   public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
 
     Company company = manufOrder.getCompany();
     SupplyChainConfig supplyChainConfig = supplyChainConfigService.getSupplyChainConfig(company);
+    StockLocation fromStockLocation = getFromStockLocationForConsumedStockMove(manufOrder, company);
+    StockLocation virtualStockLocation =
+        getVirtualStockLocationForConsumedStockMove(manufOrder, company);
 
     if (manufOrder.getToConsumeProdProductList() != null && company != null) {
 
-      StockMove stockMove = this._createToConsumeStockMove(manufOrder, company);
+      StockMove stockMove =
+          this._createToConsumeStockMove(
+              manufOrder, company, fromStockLocation, virtualStockLocation);
 
       for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
 
-        this._createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS);
+        this._createStockMoveLine(
+            prodProduct,
+            stockMove,
+            StockMoveLineService.TYPE_IN_PRODUCTIONS,
+            fromStockLocation,
+            virtualStockLocation);
       }
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -126,21 +141,12 @@ public class ManufOrderStockMoveService {
     }
   }
 
-  public StockMove _createToConsumeStockMove(ManufOrder manufOrder, Company company)
+  public StockMove _createToConsumeStockMove(
+      ManufOrder manufOrder,
+      Company company,
+      StockLocation fromStockLocation,
+      StockLocation virtualStockLocation)
       throws AxelorException {
-
-    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockConfig stockConfig = stockConfigService.getStockConfig(company);
-    StockLocation virtualStockLocation =
-        manufOrder.getOutsourcing()
-            ? manufOrder.getProdProcess().getProducedProductStockLocation()
-            : stockConfigService.getProductionVirtualStockLocation(
-                stockConfig, manufOrder.getProdProcess().getOutsourcing());
-
-    StockLocation fromStockLocation =
-        manufOrder.getOutsourcing()
-            ? company.getStockConfig().getOutsourcingReceiptStockLocation()
-            : getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
 
     StockMove stockMove =
         stockMoveService.createStockMove(
@@ -154,8 +160,7 @@ public class ManufOrderStockMoveService {
             null,
             StockMoveRepository.TYPE_INTERNAL);
 
-    stockMove.setOriginId(manufOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    stockMove.setManufOrder(manufOrder);
     stockMove.setOrigin(manufOrder.getManufOrderSeq());
 
     return stockMove;
@@ -176,16 +181,18 @@ public class ManufOrderStockMoveService {
   public StockLocation getDefaultStockLocation(ManufOrder manufOrder, Company company, int inOrOut)
       throws AxelorException {
     if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+      throw new IllegalArgumentException(
+          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
-    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
     StockLocation stockLocation = getDefaultStockLocation(manufOrder.getProdProcess(), inOrOut);
     if (stockLocation == null) {
       stockLocation =
           inOrOut == STOCK_LOCATION_IN
-              ? stockConfigService.getComponentDefaultStockLocation(stockConfig)
-              : stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
+              ? stockConfigProductionService.getComponentDefaultStockLocation(
+                  manufOrder.getWorkshopStockLocation(), stockConfig)
+              : stockConfigProductionService.getFinishedProductsDefaultStockLocation(
+                  manufOrder.getWorkshopStockLocation(), stockConfig);
     }
     return stockLocation;
   }
@@ -201,7 +208,8 @@ public class ManufOrderStockMoveService {
    */
   protected StockLocation getDefaultStockLocation(ProdProcess prodProcess, int inOrOut) {
     if (inOrOut != STOCK_LOCATION_IN && inOrOut != STOCK_LOCATION_OUT) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+      throw new IllegalArgumentException(
+          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
     if (prodProcess == null) {
       return null;
@@ -217,9 +225,17 @@ public class ManufOrderStockMoveService {
 
     Company company = manufOrder.getCompany();
 
+    StockLocation virtualStockLocation =
+        getVirtualStockLocationForProducedStockMove(manufOrder, company);
+
+    StockLocation producedProductStockLocation =
+        getProducedProductStockLocation(manufOrder, company);
+
     if (manufOrder.getToProduceProdProductList() != null && company != null) {
 
-      StockMove stockMove = this._createToProduceStockMove(manufOrder, company);
+      StockMove stockMove =
+          this._createToProduceStockMove(
+              manufOrder, company, virtualStockLocation, producedProductStockLocation);
 
       for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
 
@@ -234,7 +250,9 @@ public class ManufOrderStockMoveService {
             stockMove,
             StockMoveLineService.TYPE_OUT_PRODUCTIONS,
             prodProduct.getQty(),
-            productCostPrice);
+            productCostPrice,
+            virtualStockLocation,
+            producedProductStockLocation);
       }
 
       if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -264,26 +282,15 @@ public class ManufOrderStockMoveService {
     }
   }
 
-  protected StockMove _createToProduceStockMove(ManufOrder manufOrder, Company company)
+  protected StockMove _createToProduceStockMove(
+      ManufOrder manufOrder,
+      Company company,
+      StockLocation virtualStockLocation,
+      StockLocation producedProductStockLocation)
       throws AxelorException {
-
-    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockConfig stockConfig = stockConfigService.getStockConfig(company);
-
-    StockLocation virtualStockLocation =
-        stockConfigService.getProductionVirtualStockLocation(
-            stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     LocalDateTime plannedEndDateT = manufOrder.getPlannedEndDateT();
     LocalDate plannedEndDate = plannedEndDateT != null ? plannedEndDateT.toLocalDate() : null;
-
-    StockLocation producedProductStockLocation =
-        manufOrder.getProdProcess().getProducedProductStockLocation();
-    if (producedProductStockLocation == null) {
-      producedProductStockLocation =
-          stockConfigService.getFinishedProductsDefaultStockLocation(stockConfig);
-    }
-
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
@@ -295,20 +302,35 @@ public class ManufOrderStockMoveService {
             plannedEndDate,
             null,
             StockMoveRepository.TYPE_INTERNAL);
-    stockMove.setOriginId(manufOrder.getId());
-    stockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
+    stockMove.setManufOrder(manufOrder);
     stockMove.setOrigin(manufOrder.getManufOrderSeq());
     return stockMove;
   }
 
   protected StockMoveLine _createStockMoveLine(
-      ProdProduct prodProduct, StockMove stockMove, int inOrOutType) throws AxelorException {
+      ProdProduct prodProduct,
+      StockMove stockMove,
+      int inOrOutType,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
+      throws AxelorException {
 
-    return _createStockMoveLine(prodProduct, stockMove, inOrOutType, prodProduct.getQty());
+    return _createStockMoveLine(
+        prodProduct,
+        stockMove,
+        inOrOutType,
+        prodProduct.getQty(),
+        fromStockLocation,
+        toStockLocation);
   }
 
   public StockMoveLine _createStockMoveLine(
-      ProdProduct prodProduct, StockMove stockMove, int inOrOutType, BigDecimal qty)
+      ProdProduct prodProduct,
+      StockMove stockMove,
+      int inOrOutType,
+      BigDecimal qty,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     BigDecimal productCostPrice =
         prodProduct.getProduct() != null
@@ -316,7 +338,14 @@ public class ManufOrderStockMoveService {
                 productCompanyService.get(
                     prodProduct.getProduct(), "costPrice", stockMove.getCompany())
             : BigDecimal.ZERO;
-    return _createStockMoveLine(prodProduct, stockMove, inOrOutType, qty, productCostPrice);
+    return _createStockMoveLine(
+        prodProduct,
+        stockMove,
+        inOrOutType,
+        qty,
+        productCostPrice,
+        fromStockLocation,
+        toStockLocation);
   }
 
   protected StockMoveLine _createStockMoveLine(
@@ -324,7 +353,9 @@ public class ManufOrderStockMoveService {
       StockMove stockMove,
       int inOrOutType,
       BigDecimal qty,
-      BigDecimal costPrice)
+      BigDecimal costPrice,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
 
     return stockMoveLineService.createStockMoveLine(
@@ -341,7 +372,9 @@ public class ManufOrderStockMoveService {
         stockMove,
         inOrOutType,
         false,
-        BigDecimal.ZERO);
+        BigDecimal.ZERO,
+        fromStockLocation,
+        toStockLocation);
   }
 
   public void finish(ManufOrder manufOrder) throws AxelorException {
@@ -421,12 +454,12 @@ public class ManufOrderStockMoveService {
   protected void partialFinish(ManufOrder manufOrder, int inOrOut) throws AxelorException {
 
     if (inOrOut != PART_FINISH_IN && inOrOut != PART_FINISH_OUT) {
-      throw new IllegalArgumentException(I18n.get(IExceptionMessage.IN_OR_OUT_INVALID_ARG));
+      throw new IllegalArgumentException(
+          I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
 
     Company company = manufOrder.getCompany();
-    StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
     StockLocation fromStockLocation;
     StockLocation toStockLocation;
@@ -436,13 +469,13 @@ public class ManufOrderStockMoveService {
       stockMoveList = manufOrder.getInStockMoveList();
       fromStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
       toStockLocation =
-          stockConfigService.getProductionVirtualStockLocation(
+          stockConfigProductionService.getProductionVirtualStockLocation(
               stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
     } else {
       stockMoveList = manufOrder.getOutStockMoveList();
       fromStockLocation =
-          stockConfigService.getProductionVirtualStockLocation(
+          stockConfigProductionService.getProductionVirtualStockLocation(
               stockConfig, manufOrder.getProdProcess().getOutsourcing());
       toStockLocation = getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_OUT);
     }
@@ -470,9 +503,8 @@ public class ManufOrderStockMoveService {
 
     newStockMove.setStockMoveLineList(new ArrayList<>());
     newStockMove.setOrigin(manufOrder.getManufOrderSeq());
-    newStockMove.setOriginId(manufOrder.getId());
-    newStockMove.setOriginTypeSelect(StockMoveRepository.ORIGIN_MANUF_ORDER);
-    createNewStockMoveLines(manufOrder, newStockMove, inOrOut);
+    newStockMove.setManufOrder(manufOrder);
+    createNewStockMoveLines(manufOrder, newStockMove, inOrOut, fromStockLocation, toStockLocation);
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
@@ -510,7 +542,12 @@ public class ManufOrderStockMoveService {
    * @param inOrOut can be {@link ManufOrderStockMoveService#PART_FINISH_IN} or {@link
    *     ManufOrderStockMoveService#PART_FINISH_OUT}
    */
-  public void createNewStockMoveLines(ManufOrder manufOrder, StockMove stockMove, int inOrOut)
+  public void createNewStockMoveLines(
+      ManufOrder manufOrder,
+      StockMove stockMove,
+      int inOrOut,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     int stockMoveLineType;
     List<ProdProduct> diffProdProductList;
@@ -532,7 +569,8 @@ public class ManufOrderStockMoveService {
           Beans.get(ManufOrderService.class)
               .createDiffProdProductList(manufOrder, outProdProductList, stockMoveLineList);
     }
-    createNewStockMoveLines(diffProdProductList, stockMove, stockMoveLineType);
+    createNewStockMoveLines(
+        diffProdProductList, stockMove, stockMoveLineType, fromStockLocation, toStockLocation);
   }
 
   /**
@@ -544,12 +582,17 @@ public class ManufOrderStockMoveService {
    * @throws AxelorException
    */
   public void createNewStockMoveLines(
-      List<ProdProduct> diffProdProductList, StockMove stockMove, int stockMoveLineType)
+      List<ProdProduct> diffProdProductList,
+      StockMove stockMove,
+      int stockMoveLineType,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
       throws AxelorException {
     diffProdProductList.forEach(prodProduct -> prodProduct.setQty(prodProduct.getQty().negate()));
     for (ProdProduct prodProduct : diffProdProductList) {
       if (prodProduct.getQty().signum() >= 0) {
-        _createStockMoveLine(prodProduct, stockMove, stockMoveLineType);
+        _createStockMoveLine(
+            prodProduct, stockMove, stockMoveLineType, fromStockLocation, toStockLocation);
       }
     }
   }
@@ -607,7 +650,13 @@ public class ManufOrderStockMoveService {
     // create a new list
     for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
       BigDecimal qty = getFractionQty(manufOrder, prodProduct, qtyToUpdate);
-      _createStockMoveLine(prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty);
+      _createStockMoveLine(
+          prodProduct,
+          stockMove,
+          StockMoveLineService.TYPE_IN_PRODUCTIONS,
+          qty,
+          stockMove.getFromStockLocation(),
+          stockMove.getToStockLocation());
 
       // Update consumed StockMoveLineList with created stock move lines
       stockMove.getStockMoveLineList().stream()
@@ -615,6 +664,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addConsumedStockMoveLineListItem);
     }
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 
@@ -653,7 +703,13 @@ public class ManufOrderStockMoveService {
                       prodProduct.getProduct(), "costPrice", manufOrder.getCompany())
               : BigDecimal.ZERO;
       _createStockMoveLine(
-          prodProduct, stockMove, StockMoveLineService.TYPE_OUT_PRODUCTIONS, qty, productCostPrice);
+          prodProduct,
+          stockMove,
+          StockMoveLineService.TYPE_OUT_PRODUCTIONS,
+          qty,
+          productCostPrice,
+          stockMove.getFromStockLocation(),
+          stockMove.getToStockLocation());
 
       // Update produced StockMoveLineList with created stock move lines
       stockMove.getStockMoveLineList().stream()
@@ -661,6 +717,7 @@ public class ManufOrderStockMoveService {
               stockMoveLine1 -> !manufOrder.getProducedStockMoveLineList().contains(stockMoveLine1))
           .forEach(manufOrder::addProducedStockMoveLineListItem);
     }
+    stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
   }
 
@@ -683,5 +740,61 @@ public class ManufOrderStockMoveService {
         .multiply(prodProductQty)
         .setScale(scale, RoundingMode.HALF_UP)
         .divide(manufOrderQty, scale, RoundingMode.HALF_UP);
+  }
+
+  public StockLocation getFromStockLocationForConsumedStockMove(
+      ManufOrder manufOrder, Company company) throws AxelorException {
+    StockLocation fromStockLocation =
+        getDefaultStockLocation(manufOrder, company, STOCK_LOCATION_IN);
+
+    if (fromStockLocation == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              ProductionExceptionMessage.MANUF_ORDER_STOCK_MOVE_MISSING_SOURCE_STOCK_LOCATION));
+    }
+    return fromStockLocation;
+  }
+
+  public StockLocation getVirtualStockLocationForConsumedStockMove(
+      ManufOrder manufOrder, Company company) throws AxelorException {
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
+
+    StockLocation virtualStockLocation =
+        manufOrder.getOutsourcing()
+            ? manufOrder.getProdProcess().getProducedProductStockLocation()
+            : stockConfigProductionService.getProductionVirtualStockLocation(
+                stockConfig, manufOrder.getProdProcess().getOutsourcing());
+
+    if (virtualStockLocation == null && manufOrder.getOutsourcing()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(
+              ProductionExceptionMessage
+                  .MANUF_ORDER_STOCK_MOVE_MISSING_OUTSOURCING_DEST_STOCK_LOCATION));
+    }
+    return virtualStockLocation;
+  }
+
+  public StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
+      throws AxelorException {
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
+
+    StockLocation producedProductStockLocation =
+        manufOrder.getProdProcess().getProducedProductStockLocation();
+    if (producedProductStockLocation == null) {
+      producedProductStockLocation =
+          stockConfigProductionService.getFinishedProductsDefaultStockLocation(
+              manufOrder.getWorkshopStockLocation(), stockConfig);
+    }
+    return producedProductStockLocation;
+  }
+
+  public StockLocation getVirtualStockLocationForProducedStockMove(
+      ManufOrder manufOrder, Company company) throws AxelorException {
+    StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
+
+    return stockConfigProductionService.getProductionVirtualStockLocation(
+        stockConfig, manufOrder.getProdProcess().getOutsourcing());
   }
 }

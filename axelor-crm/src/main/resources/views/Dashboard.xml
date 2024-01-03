@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <action-view name="dashlet.closed.opportunities" title="Closed Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (5, 6)</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
 
@@ -16,16 +18,20 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect not in (5, 6)</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.unassigned.opportunities" title="Unassigned Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.user is null and self.salesStageSelect = 1</domain>
+    <domain>self.user is null and self.opportunityStatus.id NOT IN :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
 
@@ -33,23 +39,26 @@
     title="My Team Closed Opportunities" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (5,6) AND self.team = :active_team</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList AND self.team =
+      :active_team</domain>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.team.open.opportunities" title="My Team Open Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect not in (5,6) AND self.team = :active_team</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList AND self.team = :active_team</domain>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
-
-
 
   <action-view name="dashlet.opportunities.won.by.partner"
     title="Opportunities By Partner" model="com.axelor.apps.crm.db.Opportunity">
@@ -63,52 +72,64 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect not in (6)</domain>
+    <domain>self.opportunityStatus.id != :_closedLostOpportunityStatusId</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_closedLostOpportunityStatusId"
+      expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.top.deals" title="My Best Open Deals"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect not in (9, 10) and self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList and self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.team.top.deals"
     title="My Team Best Open Deals" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect not in (9, 10) and self.team =:active_team</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList and self.team =:active_team</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.key.account" title="Key accounts"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-key-account-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (5, 6)</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.key.account" title="My Key accounts"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-key-account-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (5, 6) and self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList and self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.team.key.account"
     title="My Team Key accounts" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-key-account-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (5, 6) and self.team =:active_team</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList and self.team =:active_team</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="active_team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.recent.opps"
@@ -123,23 +144,31 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.updatedOn &gt; date(now())-30 and self.salesStageSelect = 6</domain>
+    <domain>self.updatedOn &gt; date(now())-30 and self.opportunityStatus.id =
+      :_closedLostOpportunityStatusId</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_closedLostOpportunityStatusId"
+      expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
   </action-view>
+
   <action-view title="My Closed Opportunities"
     model="com.axelor.apps.crm.db.Opportunity" name="dashlet.my.closed.opportunities">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect in (5, 6) AND self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id in :_opportunityStatusIdList AND self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
   <action-view title="My Open Opportunities" model="com.axelor.apps.crm.db.Opportunity"
     name="dashlet.my.open.opportunities">
     <view type="grid" name="my-opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.salesStageSelect NOT in (5, 6) AND self.user =:__user__</domain>
+    <domain>self.opportunityStatus.id NOT IN :_opportunityStatusIdList AND self.user =:__user__</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_opportunityStatusIdList"
+      expr="call:com.axelor.apps.crm.service.OpportunityService:getClosedOpportunityStatusIdList()"/>
   </action-view>
 
 
@@ -156,8 +185,6 @@
       colSpan="12"/>
     <dashlet action="dashlet.opportunities.by.saletage" height="350" canSearch="true"
       colSpan="12"/>
-    <dashlet action="dashlet.opportunities.by.type" title="Opportunities by type of needs"
-      height="350" colSpan="12"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.opportunities.dashboard.2">
@@ -172,7 +199,6 @@
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.opportunities.manager">
-    <dashlet action="dashlet.opportunities.by.type" height="350"/>
     <dashlet action="dashlet.opportunities.byStage.byType" height="350"/>
     <dashlet action="dashlet.opportunities.won.by.partner" height="350" canSearch="true"/>
     <dashlet action="dashlet.opportunities.won.by.leadsource" height="350"/>
@@ -210,11 +236,6 @@
   <action-view name="dashlet.opportunities.by.saletage.funnel"
     title="Opportunities By Sale Stage">
     <view type="chart" name="chart.dashboard.opportunities.sale.stage.amount.funnel"/>
-  </action-view>
-
-
-  <action-view name="dashlet.opportunities.by.type" title="Opportunities By Type">
-    <view type="chart" name="chart.dashboard.opportunities.type.amount.bar"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.byStage.byType"
@@ -256,9 +277,6 @@
     <dashlet action="dashlet.team.leads" height="350" colSpan="12"/>
     <dashlet action="dashlet.created.leads.per.month" height="350" colSpan="12"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350" colSpan="12"/>
-    <dashlet action="dashlet.created.leads.average.duration.first.opportunity" colSpan="12"
-      title="Average duration between lead creation and first opportunity creation (days)"
-      height="350"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.lead.manager">
@@ -271,9 +289,7 @@
     <dashlet action="dashlet.team.leads" height="350"/>
     <dashlet action="dashlet.created.leads.per.month" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.with.opportunity" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.lead.salesman">
@@ -284,41 +300,35 @@
     <dashlet action="dashlet.unassigned.leads" height="350"/>
     <dashlet action="dashlet.created.leads.per.month" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.with.opportunity" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.average.duration.first.opportunity" height="350"/>
   </dashboard>
 
   <action-view name="dashlet.salesman.dashboard.leads" title="My Current Leads"
     model="com.axelor.apps.crm.db.Lead">
     <view type="grid" name="my-lead-grid"/>
     <view type="form" name="lead-form"/>
-    <domain>self.user= :__user__ AND (self.statusSelect = 2 OR self.statusSelect = 3)</domain>
+    <domain>self.user= :__user__</domain>
   </action-view>
 
   <action-view name="dashlet.leads.by.source" title="Leads by Source">
     <view type="chart" name="chart.leads.by.source.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.leads.by.country" title="Leads by Country">
     <view type="chart" name="chart.leads.by.country.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.leads.by.team.by.status" title="Leads by Team by Status">
     <view type="chart" name="chart.leads.by.team.by.status.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.leads.by.saleman.by.status"
     title="Leads by Salesperson by Status">
     <view type="chart" name="chart.leads.by.saleman.by.status.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.my.leads" title="My Leads"
@@ -350,31 +360,14 @@
   <action-view name="dashlet.created.leads.per.month" title="Created leads per month"
     model="com.axelor.apps.crm.db.Lead">
     <view type="chart" name="chart.created.leads.per.month"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
 
   <action-view name="dashlet.created.leads.by.industry.sector"
     title="Created leads by industry sector" model="com.axelor.apps.crm.db.Lead">
     <view type="chart" name="chart.created.leads.by.industry.sector"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-  </action-view>
-
-  <action-view name="dashlet.created.leads.with.opportunity"
-    title="Created leads with at least one opportunity" model="com.axelor.apps.crm.db.Lead">
-    <view type="chart" name="chart.created.leads.with.opportunity"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
-  </action-view>
-
-  <action-view name="dashlet.created.leads.average.duration.first.opportunity"
-    title="Average duration between lead and first opportunity (days)"
-    model="com.axelor.apps.crm.db.Lead">
-    <view type="chart" name="chart.created.leads.average.duration.first.opportunity"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <!-- Event Call Dashboard -->
@@ -414,14 +407,12 @@
 
   <action-view name="dashlet.calls.types.by.user" title="Calls type by user">
     <view type="chart" name="chart.calls.types.by.user.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.calls.types.by.team" title="Calls type by team">
     <view type="chart" name="chart.calls.types.by.team.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view name="dashlet.events.by.team" title="Events by team">
@@ -434,168 +425,26 @@
 
   <action-view name="dashlet.calls.by.team.by.user" title="Calls by team by user">
     <view type="chart" name="chart.calls.types.by.team.by.user.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
   <action-view name="dashlet.held.calls.types.by.user"
     title="Calls held by type by user">
     <view type="chart" name="chart.held.calls.types.by.user.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
   <action-view name="dashlet.held.calls.types.by.team"
     title="Calls held by team by type">
     <view type="chart" name="chart.held.calls.types.by.team.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
   <action-view name="dashlet.daily.team.calls.summary.by.user"
     title="portal.daily.team.calls.summary.by.user">
     <view type="chart" name="chart.daily.team.calls.summary.by.user.bar"/>
-    <context name="todayDate"
-      expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
   <action-view title="Open Cases by Agents" name="dashlet.user.by.open.cases">
     <view type="chart" name="chart.user.by.open.cases.bar"/>
-  </action-view>
-
-  <!-- Target User Graph Dashboard -->
-  <dashboard title="Target User Dashboard" name="crm.target.user.dashboard">
-    <dashlet action="dashlet.user.call.target.gauge" height="350"/>
-    <dashlet action="dashlet.user.call.target.bar" height="350"/>
-    <dashlet action="dashlet.user.meeting.target.gauge" height="350"/>
-    <dashlet action="dashlet.user.meeting.target.bar" height="350"/>
-    <dashlet action="dashlet.user.opportunity.amount.won.target.gauge" height="350"/>
-    <dashlet action="dashlet.user.opportunity.amount.won.target.bar" height="350"/>
-    <dashlet action="dashlet.user.opportunity.created.number.target.gauge" height="350"/>
-    <dashlet action="dashlet.user.opportunity.created.number.target.bar" height="350"/>
-    <dashlet action="dashlet.user.opportunity.created.won.target.gauge" height="350"/>
-    <dashlet action="dashlet.user.opportunity.created.won.target.bar" height="350"/>
-    <!-- <dashlet action="chart:chart.user.sale.order.amount.won.target.gauge" height="350"/> -->
-    <!-- <dashlet action="chart:chart.user.sale.order.amount.won.target.bar" height="350"/> -->
-    <!-- <dashlet action="chart:chart.user.sale.order.created.number.target.gauge" height="350"/> -->
-    <!-- <dashlet action="chart:chart.user.sale.order.created.number.target.bar" height="350"/> -->
-    <!-- <dashlet action="chart:chart.user.sale.order.created.won.target.gauge" height="350"/> -->
-    <!-- <dashlet action="chart:chart.user.sale.order.created.won.target.bar" height="350"/> -->
-  </dashboard>
-
-  <action-view name="dashlet.user.call.target.gauge"
-    title="Calls emitted target completed (%)" model="com.axelor.apps.crm.db.Target">
-    <view type="chart" name="chart.user.call.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.user.call.target.bar" title="Call emitted historical">
-    <view type="chart" name="chart.user.call.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.user.meeting.target.gauge"
-    title="Meetings number target completed (%)">
-    <view type="chart" name="chart.user.meeting.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.user.meeting.target.bar" title="Meetings number historical">
-    <view type="chart" name="chart.user.meeting.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.user.opportunity.amount.won.target.gauge"
-    title="Opportunities amount won target completed (%)">
-    <view type="chart" name="chart.user.opportunity.amount.won.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.user.opportunity.amount.won.target.bar"
-    title="Opportunities amount won historical">
-    <view type="chart" name="chart.user.opportunity.amount.won.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.user.opportunity.created.number.target.gauge"
-    title="Opportunities created number target completed (%)">
-    <view type="chart" name="chart.user.opportunity.created.number.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.user.opportunity.created.number.target.bar"
-    title="Opportunities created number historical">
-    <view type="chart" name="chart.user.opportunity.created.number.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.user.opportunity.created.won.target.gauge"
-    title="Opportunities created won target completed (%)">
-    <view type="chart" name="chart.user.opportunity.created.won.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.user.opportunity.created.won.target.bar"
-    title="Opportunities created won historical">
-    <view type="chart" name="chart.user.opportunity.created.won.target.bar"/>
-  </action-view>
-
-  <!-- Target Team Graph Dashboard -->
-
-  <dashboard title="Target team Dashboard" name="crm.target.team.dashboard">
-    <dashlet action="dashlet.team.call.target.gauge" height="350"/>
-    <dashlet action="dashlet.team.call.target.bar" height="350"/>
-    <dashlet action="dashlet.team.meeting.target.gauge" height="350"/>
-    <dashlet action="dashlet.team.meeting.target.bar" height="350"/>
-    <dashlet action="dashlet.team.opportunity.amount.won.target.gauge" height="350"/>
-    <dashlet action="dashlet.team.opportunity.amount.won.target.bar" height="350"/>
-    <dashlet action="dashlet.team.opportunity.created.number.target.gauge" height="350"/>
-    <dashlet action="dashlet.team.opportunity.created.number.target.bar" height="350"/>
-    <dashlet action="dashlet.team.opportunity.created.won.target.gauge" height="350"/>
-    <dashlet action="dashlet.team.opportunity.created.won.target.bar" height="350"/>
-    <!-- <dashlet action="chart:chart.team.sale.order.amount.won.target.gauge" height="350"/> -->
-    <!-- <dashlet action="chart:chart.team.sale.order.amount.won.target.bar" height="350"/> -->
-    <!-- <dashlet action="chart:chart.team.sale.order.created.number.target.gauge" height="350"/> -->
-    <!-- <dashlet action="chart:chart.team.sale.order.created.number.target.bar" height="350"/> -->
-    <!-- <dashlet action="chart:chart.team.sale.order.created.won.target.gauge" height="350"/> -->
-    <!-- <dashlet action="chart:chart.team.sale.order.created.won.target.bar" height="350"/> -->
-  </dashboard>
-
-
-  <action-view name="dashlet.team.call.target.gauge"
-    title="Calls emitted target completed (%)">
-    <view type="chart" name="chart.team.call.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.team.call.target.bar" title="Calls emitted historical">
-    <view type="chart" name="chart.team.call.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.team.meeting.target.gauge"
-    title="Meetings number target completed (%)">
-    <view type="chart" name="chart.team.meeting.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.team.meeting.target.bar" title="Meeting number historical">
-    <view type="chart" name="chart.team.meeting.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.team.opportunity.amount.won.target.gauge"
-    title="Opportunities amount won target competed (%)">
-    <view type="chart" name="chart.team.opportunity.amount.won.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.team.opportunity.amount.won.target.bar"
-    title="Opportunities amount won historical">
-    <view type="chart" name="chart.team.opportunity.amount.won.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.team.opportunity.created.number.target.gauge"
-    title="Opportunities created number target completed (%)">
-    <view type="chart" name="chart.team.opportunity.created.number.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.team.opportunity.created.number.target.bar"
-    title="Opportunities created number historical">
-    <view type="chart" name="chart.team.opportunity.created.number.target.bar"/>
-  </action-view>
-
-  <action-view name="dashlet.team.opportunity.created.won.target.gauge"
-    title="Opportunities created won target completed (%)">
-    <view type="chart" name="chart.team.opportunity.created.won.target.gauge"/>
-  </action-view>
-
-  <action-view name="dashlet.team.opportunity.created.won.target.bar"
-    title="Opportunities created won historical">
-    <view type="chart" name="chart.team.opportunity.created.won.target.bar"/>
   </action-view>
 
   <!-- CRM EVENTS REPORT FOR PARTNER called from partner-form axelor-base and axelor-account -->

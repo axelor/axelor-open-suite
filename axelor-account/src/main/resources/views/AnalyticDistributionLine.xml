@@ -1,28 +1,119 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="analytic-distribution-line-grid" title="Analytic distribution lines"
     model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis">
-    <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="analyticAccount" grid-view="analytic-account-grid"
       form-view="analytic-account-form"/>
+    <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+      hidden="true"/>
     <field name="percentage"/>
     <field name="analyticJournal" grid-view="analytic-journal-grid"
       form-view="analytic-journal-form"/>
   </grid>
 
+  <grid name="analytic-distribution-line-editable-grid" title="Analytic distribution lines"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine" groupBy="analyticAxis"
+    editable="true" onNew="action-group-analytic-distribution-line-set-on-new">
+    <field name="analyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form" required="true"
+      onSelect="action-method-domain-account-distribution-line"
+      onChange="action-analytic-distribution-account-on-change"/>
+    <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+      hidden="true"/>
+    <field name="percentage"/>
+    <field name="analyticJournal" grid-view="analytic-journal-grid"
+      form-view="analytic-journal-form" onSelect="action-attrs-domain-journal-distribution-line"/>
+  </grid>
+
+  <grid name="analytic-distribution-line-personalized-grid" title="Analytic distribution lines"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine" editable="true"
+    groupBy="analyticAxis">
+    <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
+    <field name="analyticAccount" required="true" grid-view="analytic-account-grid"
+      form-view="analytic-account-form" onSelect="action-method-domain-account-distribution-line"
+      onChange="action-analytic-distribution-account-on-change"/>
+    <field name="percentage"/>
+    <field name="analyticJournal" grid-view="analytic-journal-grid"
+      form-view="analytic-journal-form" onSelect="action-attrs-domain-journal-distribution-line"/>
+  </grid>
+
   <form name="analytic-distribution-line-form" title="Analytic distribution line"
-    model="com.axelor.apps.account.db.AnalyticDistributionLine">
+    model="com.axelor.apps.account.db.AnalyticDistributionLine"
+    onNew="action-group-analytic-distribution-line-set-on-new">
     <panel name="mainPanel">
-      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form"/>
-      <field name="percentage"/>
+        form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
+        required="true" onSelect="action-method-domain-account-distribution-line"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-method-domain-axis-distribution-line"
+        onChange="action-axis-change-remove-account" required="true"/>
+      <field name="percentage" required="true"/>
       <field name="analyticJournal" grid-view="analytic-journal-grid"
-        form-view="analytic-journal-form"/>
+        form-view="analytic-journal-form" required="true"
+        onSelect="action-attrs-domain-journal-distribution-line"/>
     </panel>
   </form>
+
+  <form name="analytic-distribution-line-personalized-form" title="Analytic distribution line"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine"
+    onNew="action-group-analytic-distribution-line-set-on-new"
+    onLoad="action-group-analytic-distribution-line-set-on-new">
+    <panel name="mainPanel">
+      <field name="analyticAccount" grid-view="analytic-account-grid"
+        form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
+        required="true" onSelect="action-method-domain-account-distribution-line"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        onSelect="action-method-domain-axis-distribution-line"
+        onChange="action-axis-change-remove-account" required="true" readonly="true"/>
+      <field name="percentage" required="true"/>
+      <field name="analyticJournal" grid-view="analytic-journal-grid"
+        form-view="analytic-journal-form" required="true"
+        onSelect="action-attrs-domain-journal-distribution-line"/>
+    </panel>
+  </form>
+
+  <action-record name="action-analytic-distribution-account-on-change"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine">
+    <field name="analyticAxis" expr="eval: analyticAccount.analyticAxis"
+      if="analyticAccount != null &amp;&amp; analyticAccount.analyticAxis != null"/>
+  </action-record>
+
+  <action-attrs name="action-axis-change-remove-account">
+    <attribute name="value" for="analyticAccount" expr="eval: null"/>
+  </action-attrs>
+
+  <action-group name="action-group-analytic-distribution-line-set-on-new">
+    <action name="action-record-set-journal-by-default-distribution-line"/>
+  </action-group>
+
+  <action-method name="action-method-domain-axis-distribution-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="setAnalyticAxisDomain"/>
+  </action-method>
+
+  <action-method name="action-method-domain-account-distribution-line">
+    <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
+      method="setAnalyticAccountDomain"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-domain-journal-distribution-line">
+    <attribute name="domain" for="analyticJournal"
+      expr="eval: &quot;self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} &quot;"
+      if="__parent__ &amp;&amp; __parent__.company"/>
+    <attribute name="domain" for="analyticJournal" expr="eval: null"
+      if="!(__parent__ &amp;&amp; __parent__.company)"/>
+  </action-attrs>
+
+  <action-record name="action-record-set-journal-by-default-distribution-line"
+    model="com.axelor.apps.account.db.AnalyticDistributionLine">
+    <field name="analyticJournal"
+      expr="eval: __repo__(AccountConfig).findByCompany(__parent__.company).analyticJournal"
+      if="__parent__?.company &amp;&amp;
+__repo__(AccountConfig).findByCompany(__parent__.company)?.analyticJournal?.statusSelect
+ == 1"/>
+  </action-record>
 
 </object-views>

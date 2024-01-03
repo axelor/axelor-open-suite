@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="city-grid" title="Cities" model="com.axelor.apps.base.db.City">
     <toolbar>
@@ -33,7 +33,7 @@
   </form>
 
   <action-view name="action-base-view-import-city-popup" title="Import city"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <view type="form" name="wizard-import-city-form"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="width" value="800"/>
@@ -43,8 +43,8 @@
     <view-param name="popup" value="reload"/>
   </action-view>
 
-  <form name="wizard-import-city-form" title="Import city"
-    model="com.axelor.apps.base.db.Wizard" onNew="action-wizard-import-city-record-preload">
+  <form name="wizard-import-city-form" title="Import city" model="com.axelor.utils.db.Wizard"
+    onNew="action-wizard-import-city-record-preload">
     <panel name="typeSelectPanel" colSpan="12">
       <field name="typeSelect" type="string" title="Type"
         selection="iterritory.city.type.select"/>
@@ -59,7 +59,7 @@
       <field name="autoImportTypeSelect" title="Auto import"
         selection="base.city.auto.import.type.select"
         showIf="importTypeSelect == 'auto' &amp;&amp; typeSelect=='geonames'"/>
-      <button name="importBtn" title="Import"
+      <button name="importBtn" title="import.verb"
         readonlyIf="(typeSelect == null || metaFile == null) &amp;&amp; autoImportTypeSelect == null"
         onClick="action-base-method-import-city"/>
       <field name="$importHistoryList" type="one-to-many"
@@ -71,7 +71,7 @@
   </form>
 
   <action-record name="action-wizard-import-city-record-preload"
-    model="com.axelor.apps.base.db.Wizard">
+    model="com.axelor.utils.db.Wizard">
     <field name="typeSelect" expr="eval: __repo__(City).TYPE_SELECT_GEONAMES"/>
     <field name="importTypeSelect" expr="eval: __repo__(City).IMPORT_TYPE_SELECT_AUTO"/>
   </action-record>

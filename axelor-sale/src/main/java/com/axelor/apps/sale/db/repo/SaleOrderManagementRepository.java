@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,31 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.sale.db.repo;
 
-import com.axelor.apps.base.db.AppSale;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSale;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
-
-  @Inject SaleOrderComputeService saleOrderComputeService;
 
   @Override
   public SaleOrder copy(SaleOrder entity, boolean deep) {
@@ -57,8 +55,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setTotalCostPrice(null);
     copy.setTotalGrossMargin(null);
     copy.setMarginRate(null);
-    copy.setEndOfValidityDate(null);
-    copy.setDeliveryDate(null);
+    copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
       copy.setAdvancePaymentAmountNeeded(BigDecimal.ZERO);
@@ -68,11 +65,12 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setDesiredDelivDate(null);
-        saleOrderLine.setEstimatedDelivDate(null);
+        saleOrderLine.setDesiredDeliveryDate(null);
+        saleOrderLine.setEstimatedShippingDate(null);
         saleOrderLine.setDiscountDerogation(null);
       }
     }
+    Beans.get(SaleOrderService.class).computeEndOfValidityDate(copy);
 
     return copy;
   }
@@ -81,6 +79,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   public SaleOrder save(SaleOrder saleOrder) {
     try {
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+      SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
+
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
       } else {
@@ -133,11 +133,11 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     }
   }
 
-  public void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
-
-    if (saleOrder.getSaleOrderLineList() != null) {
+  protected void computeSubMargin(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (saleOrderLineList != null) {
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        Beans.get(SaleOrderLineService.class).computeSubMargin(saleOrder, saleOrderLine);
+        Beans.get(SaleOrderMarginService.class).computeSubMargin(saleOrder, saleOrderLine);
       }
     }
   }

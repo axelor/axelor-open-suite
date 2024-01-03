@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_6.1.xsd">
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
@@ -12,26 +12,8 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
-  <input file="base_appCrm.csv" separator=";" type="com.axelor.apps.base.db.App"
-    call="com.axelor.csv.script.ImportApp:importApp">
-    <bind column="dependsOn" to="dependsOnSet" search="self.code in :dependsOn"
-      eval="dependsOn.split(',') as List"/>
-  </input>
-
-  <input file="base_appCrm.csv" separator=";" type="com.axelor.apps.base.db.AppCrm"
-    search="self.app.code = :code">
-    <bind to="app" column="code" search="self.code = :code"/>
-  </input>
-
   <input file="crm_eventCategory.csv" separator=";"
     type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
-
-  <input file="crm_opportunityType.csv" separator=";"
-    type="com.axelor.apps.crm.db.OpportunityType" search="self.code = :code"/>
-
-  <input file="base_importConfiguration.csv" separator=";"
-    type="com.axelor.apps.base.db.ImportConfiguration"
-    call="com.axelor.csv.script.ImportLeadConfiguration:importFiles"/>
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
@@ -51,5 +33,20 @@
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true"/>
+
+  <input file="base_birtTemplate.csv" separator=";"
+    call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
+    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind to="metaModel" search="self.fullName = :modelName"/>
+  </input>
+
+  <input file="base_birtTemplateParameter.csv" separator=";"
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+  </input>
 
 </csv-inputs>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.bankorder.file.cfonb;
 
@@ -26,19 +27,20 @@ import com.axelor.apps.account.db.Reimbursement;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.config.CfonbConfigService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.tool.StringTool;
-import com.axelor.apps.tool.file.FileTool;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.StringTool;
+import com.axelor.utils.file.FileTool;
 import com.google.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -75,7 +77,7 @@ public class CfonbExportService {
     this.partnerService = partnerService;
   }
 
-  private void init(CfonbConfig cfonbConfig) {
+  protected void init(CfonbConfig cfonbConfig) {
 
     this.cfonbConfig = cfonbConfig;
   }
@@ -306,7 +308,7 @@ public class CfonbExportService {
    * @return Un enregistrement 'emetteur'
    * @throws AxelorException
    */
-  private String createSenderReimbursementCFONB(
+  protected String createSenderReimbursementCFONB(
       ZonedDateTime zonedDateTime, BankDetails bankDetails) throws AxelorException {
 
     DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
@@ -378,7 +380,7 @@ public class CfonbExportService {
    * @return Un enregistrement 'emetteur'
    * @throws AxelorException
    */
-  private String createSenderMonthlyExportCFONB(LocalDate localDate, BankDetails bankDetails)
+  protected String createSenderMonthlyExportCFONB(LocalDate localDate, BankDetails bankDetails)
       throws AxelorException {
 
     DateFormat ddmmFormat = new SimpleDateFormat("ddMM");
@@ -442,14 +444,14 @@ public class CfonbExportService {
    * @return Un enregistrement 'destinataire'
    * @throws AxelorException
    */
-  private String createRecipientCFONB(Reimbursement reimbursement) throws AxelorException {
+  protected String createRecipientCFONB(Reimbursement reimbursement) throws AxelorException {
     BankDetails bankDetails = reimbursement.getBankDetails();
 
     if (bankDetails == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "%s :\n " + I18n.get(IExceptionMessage.CFONB_EXPORT_1) + " %s",
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          "%s :\n " + I18n.get(AccountExceptionMessage.CFONB_EXPORT_1) + " %s",
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           reimbursement.getRef());
     }
 
@@ -472,7 +474,7 @@ public class CfonbExportService {
    * @return Un enregistrement 'destinataire'
    * @throws AxelorException
    */
-  private String createRecipientCFONB(PaymentScheduleLine paymentScheduleLine, boolean mensu)
+  protected String createRecipientCFONB(PaymentScheduleLine paymentScheduleLine, boolean mensu)
       throws AxelorException {
     PaymentSchedule paymentSchedule = paymentScheduleLine.getPaymentSchedule();
     Partner partner = paymentSchedule.getPartner();
@@ -498,14 +500,14 @@ public class CfonbExportService {
    * @return Un enregistrement 'destinataire'
    * @throws AxelorException
    */
-  private String createRecipientCFONB(Company company, Invoice invoice) throws AxelorException {
+  protected String createRecipientCFONB(Company company, Invoice invoice) throws AxelorException {
     Partner partner = invoice.getPartner();
     BankDetails bankDetails = partnerService.getDefaultBankDetails(partner);
     if (bankDetails == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PAYMENT_SCHEDULE_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           partner.getName());
     }
 
@@ -532,7 +534,7 @@ public class CfonbExportService {
    * @return L'enregistrement 'destinataire'
    * @throws AxelorException
    */
-  private String createRecipientCFONB(
+  protected String createRecipientCFONB(
       BigDecimal amount, String ref, String partner, BankDetails bankDetails, String operationCode)
       throws AxelorException {
     this.testBankDetailsField(bankDetails);
@@ -586,7 +588,7 @@ public class CfonbExportService {
    * @param amount Le montant total des enregistrements 'destinataire'
    * @return
    */
-  private String createReimbursementTotalCFONB(BigDecimal amount) {
+  protected String createReimbursementTotalCFONB(BigDecimal amount) {
 
     // Code opération
     String operationCode = this.cfonbConfig.getTransferOperationCodeExportCFONB();
@@ -601,7 +603,7 @@ public class CfonbExportService {
    * @param amount Le montant total des enregistrements 'destinataire'
    * @return L'enregistrement 'total'
    */
-  private String createPaymentScheduleTotalCFONB(Company company, BigDecimal amount) {
+  protected String createPaymentScheduleTotalCFONB(Company company, BigDecimal amount) {
 
     // Code opération
     String operationCode = this.cfonbConfig.getDirectDebitOperationCodeExportCFONB();
@@ -622,7 +624,7 @@ public class CfonbExportService {
    *
    * @return L'enregistrement 'total'
    */
-  private String createTotalCFONB(BigDecimal amount, String operationCode) {
+  protected String createTotalCFONB(BigDecimal amount, String operationCode) {
     String totalAmount = amount.setScale(2).toString().replace(".", "");
 
     // Récupération des valeurs
@@ -671,7 +673,7 @@ public class CfonbExportService {
    * @param prefix Le préfix utilisé
    * @throws AxelorException
    */
-  private void createCFONBFile(
+  protected void createCFONBFile(
       List<String> cFONB, ZonedDateTime zonedDateTime, String destinationFolder, String prefix)
       throws AxelorException {
     DateFormat yyyyMMddHHmmssFormat = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -684,8 +686,8 @@ public class CfonbExportService {
       throw new AxelorException(
           e.getCause(),
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_2),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           e);
     }
   }
@@ -696,7 +698,7 @@ public class CfonbExportService {
    * @param memory Un mémoire
    * @return Civilité + Nom + Prénom si c'est une personne physique Civilité + Nom sinon
    */
-  private String getPayeurPartnerName(Partner partner) {
+  protected String getPayeurPartnerName(Partner partner) {
 
     if (partner.getTitleSelect() != null) {
       return String.format("%s %s", partner.getTitleSelect(), partner.getName());
@@ -711,7 +713,7 @@ public class CfonbExportService {
    * @param reimbursementList Une liste de remboursement
    * @return Le montant total
    */
-  private BigDecimal getTotalAmountReimbursementExport(List<Reimbursement> reimbursementList) {
+  protected BigDecimal getTotalAmountReimbursementExport(List<Reimbursement> reimbursementList) {
     BigDecimal totalAmount = BigDecimal.ZERO;
     for (Reimbursement reimbursement : reimbursementList) {
       reimbursement = reimbursementRepo.find(reimbursement.getId());
@@ -726,7 +728,7 @@ public class CfonbExportService {
    * @param paymentScheduleLineList Une liste d'échéance de mensu
    * @return Le montant total à prélever
    */
-  private BigDecimal getTotalAmountPaymentSchedule(
+  protected BigDecimal getTotalAmountPaymentSchedule(
       List<PaymentScheduleLine> paymentScheduleLineList) {
     BigDecimal totalAmount = BigDecimal.ZERO;
 
@@ -745,7 +747,7 @@ public class CfonbExportService {
    * @param paymentScheduleLineList Une liste d'échéance de mensu
    * @return Le montant total à prélever
    */
-  private BigDecimal getTotalAmountInvoice(List<Invoice> invoiceList) {
+  protected BigDecimal getTotalAmountInvoice(List<Invoice> invoiceList) {
     BigDecimal totalAmount = BigDecimal.ZERO;
 
     for (Invoice invoice : invoiceList) {
@@ -791,24 +793,24 @@ public class CfonbExportService {
     if (bankDetails.getSortCode() == null || bankDetails.getSortCode().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_3),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_3),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
     if (bankDetails.getAccountNbr() == null || bankDetails.getAccountNbr().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_4),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_4),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
     if (bankDetails.getBankCode() == null || bankDetails.getBankCode().isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_5),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_5),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }
@@ -816,8 +818,8 @@ public class CfonbExportService {
     if (bankAddress == null || bankAddress.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.CFONB_EXPORT_6),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION),
+          I18n.get(AccountExceptionMessage.CFONB_EXPORT_6),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
           bankDetails.getIban(),
           bankDetails.getPartner().getName());
     }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankStatement" lang="java">
+  <entity name="BankStatement">
 
     <string name="name" title="Label" namecolumn="true"/>
     <date name="fromDate" title="From Date"/>
@@ -18,7 +18,7 @@
       ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="File format"/>
     <many-to-one name="bankStatementFile" ref="com.axelor.meta.db.MetaFile" title="File"/>
     <datetime name="getDateTime" title="Get date"/>
-
+    <boolean name="isFullyReconciled" default="false" title="Fully reconciled ?"/>
 
     <extra-code><![CDATA[
 

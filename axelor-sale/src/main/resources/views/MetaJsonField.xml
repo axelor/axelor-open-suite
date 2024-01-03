@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-json-field-form" onLoad="action-configurator-json-field-onload"
     title="Custom field" model="com.axelor.meta.db.MetaJsonField"
@@ -68,6 +68,10 @@
         <field name="showIf"/>
         <field name="hideIf"/>
         <field name="requiredIf"/>
+        <field name="readonlyIf"/>
+      </panel>
+      <panel name="attributesHelpPanel" title="Help" itemSpan="12">
+        <panel-include view="incl-help-meta-json-field"/>
       </panel>
     </panel-tabs>
     <panel name="attrOptionsPanel" title="Options" sidebar="true" itemSpan="6">
@@ -87,6 +91,34 @@
     <field name="title"/>
     <field name="type"/>
   </grid>
+
+  <form name="incl-help-meta-json-field" model="com.axelor.meta.db.MetaJsonField" title="Help">
+    <panel name="helpPanel" title="Help" showTitle="false">
+      <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
+        <viewer><![CDATA[
+					<h4 id="tab">tab</h4>
+					<p><span x-translate>Specify whether given custom field is panel-tab or not. Default value is false (true or false).</span></p>
+					<h4 id="width">width</h4>
+					<p><span x-translate>The width can be specified as percentage or fixed value.The fix width can be either in 'px' or 'em', 'px' is assumed if not specified.</span></p>
+					<h4 id="colSpan">colSpan</h4>
+					<p><span x-translate>Specify the number of columns taken by the widget (1,2,..12). Default value is 6.</span></p>
+					<h4 id="validIf">validIf</h4>
+					<p><span x-translate>A JavaScript boolean expression against the current form values.</span></p>
+					<h4 id="itemSpan">itemSpan</h4>
+					<p><span x-translate>Specify the default span for child items. Default value is 6.</span></p>
+					<h4 id="collapseIf">collapseIf</h4>
+					<p><span x-translate>Specify a boolean expression to collapse/expend this panel.</span></p>
+					<h4 id="canCollapse">canCollapse</h4>
+					<p><span x-translate>Specify whether the panel is collapsible. Default value is false (true or false).</span></p>
+					<h4 id="showTitle">showTitle</h4>
+					<p><span x-translate>Specify whether to show the title. Default value is true (true or false).</span></p>
+					<h4 id="css">css</h4>
+					<p><span x-translate>Custom css class to apply.</span></p>
+					]]>
+        </viewer>
+      </field>
+    </panel>
+  </form>
 
   <action-attrs name="action-configurator-set-json-field-default">
     <attribute name="value" for="model" expr="eval:'com.axelor.apps.sale.db.Configurator'"

@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppProject" lang="java">
+  <entity name="AppProject" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <string name="projectLabel" title="Project Label"/>
     <boolean name="resourceManagement" title="Resource management"/>
     <boolean name="checkResourceAvailibility" title="Check availability of resources"/>
     <boolean name="isEnableSignature" title="Enable task signature"/>
+    <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"/>
+    <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
+      title="Task fields" orphanRemoval="true"/>
+    <one-to-many name="projectCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
+      title="Project fields" orphanRemoval="true"/>
+    <many-to-many name="defaultTaskStatusSet" title="Default task status"
+      ref="com.axelor.apps.project.db.TaskStatus"/>
+    <many-to-many name="defaultPrioritySet" title="Default priorities"
+      ref="com.axelor.apps.project.db.ProjectPriority"/>
     <boolean name="generateProjectSequence" title="Generate sequence for project"/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
+      <field name="checkResourceAvailibility" on="UPDATE"/>
+      <field name="isEnableSignature" on="UPDATE"/>
+      <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
+      <field name="generateProjectSequence" on="UPDATE"/>
     </track>
   </entity>
 

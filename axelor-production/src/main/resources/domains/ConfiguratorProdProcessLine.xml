@@ -1,32 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ConfiguratorProdProcessLine" lang="java">
+  <entity name="ConfiguratorProdProcessLine">
     <many-to-one name="configuratorProdProcess" title="Production process"
       ref="com.axelor.apps.production.db.ConfiguratorProdProcess"/>
     <string name="name" title="Label"/>
+    <string name="nameFormula" title="Label" large="true"/>
+    <boolean name="defNameAsFormula" title="Define with a script" default="false"/>
+
     <integer name="priority" title="Priority"/>
-    <many-to-one required="true" name="workCenter"
-      ref="com.axelor.apps.production.db.WorkCenter" title="Work center"/>
+    <string name="priorityFormula" title="Priority" large="true"/>
+    <boolean name="defPriorityAsFormula" title="Define with a script" default="false"/>
+
+    <many-to-one name="workCenter" ref="com.axelor.apps.production.db.WorkCenter"
+      title="Work center"/>
+    <string name="workCenterFormula" title="Work center" large="true"/>
+    <boolean name="defWorkCenterAsFormula" title="Define with a script" default="false"/>
+
+    <integer name="workCenterTypeSelect" title="Work center type"
+      selection="iproduction.work.center.type.select"/>
+    <many-to-one name="workCenterGroup"
+      ref="com.axelor.apps.production.db.WorkCenterGroup" title="Work center group"/>
+
     <boolean name="outsourcing" title="Outsourcing"/>
+
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>
+    <string name="stockLocationFormula" title="Stock location" large="true"/>
+    <boolean name="defStockLocationAsFormula" title="Define with a script" default="false"/>
+
     <string name="description" title="Description" large="true"/>
+    <string name="descriptionFormula" title="Description" large="true"/>
+    <boolean name="defDescriptionAsFormula" title="Define with a script" default="false"/>
 
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
-    <string name="minCapacityPerCycleFormula" title="Min. capacity / cycle"/>
+    <string name="minCapacityPerCycleFormula" title="Min. capacity / cycle" large="true"/>
     <boolean name="defMinCapacityFormula" title="Define with a script"/>
 
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
-    <string name="maxCapacityPerCycleFormula" title="Max. capacity / cycle"/>
+    <string name="maxCapacityPerCycleFormula" title="Max. capacity / cycle" large="true"/>
     <boolean name="defMaxCapacityFormula" title="Define with a script"/>
 
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm)"/>
-    <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm)"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <string name="durationPerCycleFormula" title="Duration / cycle (hhh:mm:ss)" large="true"/>
     <boolean name="defDurationFormula" title="Define with a script"/>
+
+    <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
+    <string name="humanDurationFormula" title="Human Duration (hh:mm:ss)" large="true"/>
+    <boolean name="defHrDurationFormula" title="Define with a script"/>
+
+    <string name="useCondition" title="Condition" large="true"/>
+
+    <one-to-many name="configuratorProdProductList" title="Products to consume"
+      mappedBy="configuratorProdProcessLine"
+      ref="com.axelor.apps.production.db.ConfiguratorProdProduct"/>
   </entity>
 
 </domain-models>

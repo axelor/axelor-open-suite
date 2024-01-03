@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppCrm" lang="java">
-
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+  <entity name="AppCrm" cacheable="true">
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <integer name="assignableUsers" title="Assignable Users"
       selection="crm.app.crm.assignable.user.select"/>
@@ -15,10 +14,52 @@
       ref="com.axelor.auth.db.Group"/>
     <boolean name="displayCustomerDescriptionInOpportunity"
       title="Display customer description in opportunity"/>
+    <boolean name="isManageRecurrent" title="Manage recurrent on opportunities"/>
+    <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
+    <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
+    <boolean name="agenciesManagement" title="Agencies management"/>
+    <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
+    <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
+      default="false"/>
+    <boolean name="isCorporatePartnerEnabled" title="Enable corporate partner"
+      default="false"/>
+    <many-to-one name="closedWinOpportunityStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
+    <many-to-one name="closedLostOpportunityStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"/>
+    <many-to-one name="salesPropositionStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Sales proposition step"/>
+    <many-to-one name="convertedLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Converted lead status"/>
+    <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Lost lead status"/>
+    <many-to-one name="closedWinPartnerStatus"
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed win partner status"/>
+    <many-to-one name="closedLostPartnerStatus"
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed lost partner status"/>
+    <many-to-one name="leadDefaultStatus" ref="com.axelor.apps.crm.db.LeadStatus"
+      title="Default lead status"/>
+    <many-to-one name="opportunityDefaultStatus"
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Default opportunity status"/>
+    <many-to-one name="partnerDefaultStatus" ref="com.axelor.apps.crm.db.PartnerStatus"
+      title="Default partner status"/>
+
+    <string name="emailDomainToIgnore" title="Email domain to ignore"
+      help="In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com"/>
 
     <track>
       <field name="assignableUsers" on="UPDATE"/>
+      <field name="groupsAssignable" on="UPDATE"/>
       <field name="displayCustomerDescriptionInOpportunity" on="UPDATE"/>
+      <field name="isManageRecurrent" on="UPDATE"/>
+      <field name="defaultRecurringDuration" on="UPDATE"/>
+      <field name="isManageCatalogs" on="UPDATE"/>
+      <field name="agenciesManagement" on="UPDATE"/>
+      <field name="closedWinOpportunityStatus" on="UPDATE"/>
+      <field name="closedLostOpportunityStatus" on="UPDATE"/>
+      <field name="salesPropositionStatus" on="UPDATE"/>
+      <field name="convertedLeadStatus" on="UPDATE"/>
+      <field name="lostLeadStatus" on="UPDATE"/>
     </track>
   </entity>
 

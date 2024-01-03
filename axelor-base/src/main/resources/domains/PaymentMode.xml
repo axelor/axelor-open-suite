@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="PaymentMode" lang="java" cacheable="true">
+  <entity name="PaymentMode" cacheable="true">
 
     <string name="name" required="true" unique="true" title="Label" translatable="true"/>
-    <string name="code" required="true" title="Code"/>
+    <string name="code" required="true" title="Code" unique="true"/>
     <integer name="typeSelect" default="1" title="Type"
       selection="iaccount.payment.mode.type.select"/>
     <integer name="inOutSelect" default="1" title="In / Out"
@@ -26,6 +26,7 @@
 		public static final int TYPE_CHEQUE = 7;
 		public static final int TYPE_WEB = 8;
 		public static final int TYPE_TRANSFER = 9;
+		public static final int TYPE_EXCHANGES = 10;
 
 		// Sales or purchase
 		public static final int SALES = 1;

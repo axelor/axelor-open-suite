@@ -149,6 +149,10 @@
 			if (cf.metaField?.id != null) {
 				configuratorProductFormula += "<metaField>${cf.metaField?.name}</metaField>"
 			}
+            if (cf.metaJsonField != null) {
+	            configuratorProductFormula += """
+	                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
+            }   			
 			configuratorProductFormula += 	"""
 				<formula>"""
 				if (cf.formula != null) {
@@ -172,6 +176,10 @@
 			if (cf.metaField?.id != null) {
 				configuratorSOLineFormula += "<metaField>${cf.metaField?.name}</metaField>"
 			}
+            if (cf.metaJsonField != null) {
+	            configuratorProductFormula += """
+	                <metaJsonField>${cf.metaJsonField?.name}</metaJsonField>"""
+            }   		  			
 			configuratorSOLineFormula += 	"""
 				<formula>"""
 				if (cf.formula != null) {
@@ -205,6 +213,49 @@
 		return authorizedGroup
 	}
 	
+	def retrieveConfiguratorProdProduct = { cpp ->
+		configProdProduct = ""
+		configProdProduct += """
+						<configuratorProdProduct>
+							<product>"""
+							if (cpp.product?.id != null) {
+								configProdProduct += "${cpp.product?.id}"
+							}
+							configProdProduct += """</product>
+							<productFormula>"""
+							if (cpp.productFormula != null) {
+								configProdProduct += "${cpp.productFormula}"
+							}
+							configProdProduct += """</productFormula>
+							<defProductAsFormula>${cpp.defProductAsFormula}</defProductAsFormula>
+							<qty>${cpp.qty}</qty>
+							<qtyFormula>"""
+							if (cpp.qtyFormula != null) {
+								configProdProduct += "${cpp.qtyFormula}"
+							}
+							configProdProduct += """</qtyFormula>
+							<defQtyAsFormula>${cpp.defQtyAsFormula}</defQtyAsFormula>
+							<unit>"""
+							if (cpp.unit?.id != null) {
+								configProdProduct += "${cpp.unit?.id}"
+							}
+							configProdProduct += """</unit>
+							<unitFormula>"""
+							if (cpp.unitFormula != null) {
+								configProdProduct += "${cpp.unitFormula}"
+							}
+							configProdProduct += """</unitFormula>
+							<defUnitAsFormula>${cpp.defUnitAsFormula}</defUnitAsFormula>
+							<useCondition>"""
+							if (cpp.useCondition != null) {
+								configProdProduct += "${cpp.useCondition}"
+							}
+							configProdProduct += """</useCondition>
+						</configuratorProdProduct>
+		"""
+		return configProdProduct
+	}
+	
 	def retrieveConfiguratorProdProcessLine = { cppl ->
 		configProdProcessLine = ""
 		configProdProcessLine += """
@@ -214,19 +265,53 @@
 						configProdProcessLine += "${cppl.name}"
 					}
 					configProdProcessLine += """</name>
+					<nameFormula>"""
+					if (cppl.nameFormula != null) {
+						configProdProcessLine += "${cppl.nameFormula}"
+					}
+					configProdProcessLine += """</nameFormula>
+					<defNameAsFormula>${cppl.defNameAsFormula}</defNameAsFormula>
 					<priority>${cppl.priority}</priority>
-					<workCenter>${cppl.workCenter?.id}</workCenter>
+					<priorityFormula>"""
+					if (cppl.priorityFormula != null) {
+						configProdProcessLine += "${cppl.priorityFormula}"
+					}
+					configProdProcessLine += """</priorityFormula>
+					<defPriorityAsFormula>${cppl.defPriorityAsFormula}</defPriorityAsFormula>
+					<workCenter>"""
+					if (cppl.workCenter?.id != null) {
+						configProdProcessLine += "${cppl.workCenter?.id}"
+					}
+					configProdProcessLine += """</workCenter>
+					<workCenterFormula>"""
+					if (cppl.workCenterFormula != null) {
+						configProdProcessLine += "${cppl.workCenterFormula}"
+					}
+					configProdProcessLine += """</workCenterFormula>
+					<defWorkCenterAsFormula>${cppl.defWorkCenterAsFormula}</defWorkCenterAsFormula>
 					<outsourcing>${cppl.outsourcing}</outsourcing>
 					<stockLocation>"""
 					if (cppl.stockLocation?.id != null) {
 						configProdProcessLine += "${cppl.stockLocation?.id}"
 					}
 					configProdProcessLine += """</stockLocation>
+					<stockLocationFormula>"""
+					if (cppl.stockLocationFormula != null) {
+						configProdProcessLine += "${cppl.stockLocationFormula}"
+					}
+					configProdProcessLine += """</stockLocationFormula>
+					<defStockLocationAsFormula>${cppl.defStockLocationAsFormula}</defStockLocationAsFormula>
 					<description>"""
 					if (cppl.description != null) {
 						configProdProcessLine += "${cppl.description}"
 					}
 					configProdProcessLine += """</description>
+					<descriptionFormula>"""
+					if (cppl.descriptionFormula != null) {
+						configProdProcessLine += "${cppl.descriptionFormula}"
+					}
+					configProdProcessLine += """</descriptionFormula>
+					<defDescriptionAsFormula>${cppl.defDescriptionAsFormula}</defDescriptionAsFormula>
 					<minCapacityPerCycle>${cppl.minCapacityPerCycle}</minCapacityPerCycle>
 					<minCapacityPerCycleFormula>"""
 					if (cppl.minCapacityPerCycleFormula != null) {
@@ -248,6 +333,16 @@
 					}
 					configProdProcessLine += """</durationPerCycleFormula>
 					<defDurationFormula>${cppl.defDurationFormula}</defDurationFormula>
+					<useCondition>"""
+					if (cppl.useCondition != null) {
+						configProdProcessLine += "${cppl.useCondition}"
+					}
+					configProdProcessLine += """</useCondition>
+					<configuratorProdProductList>"""	
+						cppl.configuratorProdProductList?.each( { cpp ->
+							configProdProcessLine += retrieveConfiguratorProdProduct(cpp)
+						})			
+						configProdProcessLine += """			</configuratorProdProductList>
 				</configuratorProdProcessLine>
 		"""
 		return configProdProcessLine
@@ -326,6 +421,17 @@
 		}
 		configBom += """</unitFormula>
 		<defUnitAsFormula>${cb.defUnitAsFormula}</defUnitAsFormula>"""
+			if (cb.workshopStockLocation?.id != null) {
+				configBom += """
+				<workshopStockLocation>${cb.workshopStockLocation?.id}</workshopStockLocation>"""
+			}
+			configBom += """
+		<workshopStockLocationFormula>"""
+		if (cb.workshopStockLocationFormula != null) {
+			configBom += "${cb.workshopStockLocationFormula}"
+		}
+		configBom += """</workshopStockLocationFormula>
+		<defWorkshopStockLocationAsFormula>${cb.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>"""
 			if (cb.prodProcess?.id != null) {
 				configBom += "<prodProcessCode>${cb.prodProcess?.code}</prodProcessCode>"
 			}
@@ -335,6 +441,8 @@
 			<importId>${cb.configuratorProdProcess?.id}</importId>
 			<statusSelect>${cb.configuratorProdProcess?.statusSelect}</statusSelect>
 			<name>${cb.configuratorProdProcess?.name}</name>
+			<nameFormula>${cb.configuratorProdProcess?.nameFormula}</nameFormula>
+			<defNameAsFormula>${cb.configuratorProdProcess?.defNameAsFormula}</defNameAsFormula>
 			<code>${cb.configuratorProdProcess?.code}</code>
 			<codeFormula>${cb.configuratorProdProcess?.codeFormula}</codeFormula>
 			<defCodeAsFormula>${cb.configuratorProdProcess?.defCodeAsFormula}</defCodeAsFormula>
@@ -348,6 +456,9 @@
 			<workshopStockLocation>${cb.configuratorProdProcess?.workshopStockLocation?.id}</workshopStockLocation>
 			<workshopStockLocationFormula>${cb.configuratorProdProcess?.workshopStockLocationFormula}</workshopStockLocationFormula>
 			<defWorkshopStockLocationAsFormula>${cb.configuratorProdProcess?.defWorkshopStockLocationAsFormula}</defWorkshopStockLocationAsFormula>
+			<isConsProOnOperation>${cb.configuratorProdProcess?.isConsProOnOperation}</isConsProOnOperation>
+			<isConsProOnOperationFormula>${cb.configuratorProdProcess?.isConsProOnOperationFormula}</isConsProOnOperationFormula>
+			<defIsConsProOnOperationAsFormula>${cb.configuratorProdProcess?.defIsConsProOnOperationAsFormula}</defIsConsProOnOperationAsFormula>
 			<configuratorProdProcessLineList>"""	
 				cb.configuratorProdProcess?.configuratorProdProcessLineList?.each( { cppl ->
 					configBom += retrieveConfiguratorProdProcessLine(cppl)
@@ -372,7 +483,6 @@
 			configBom += "${cb.useCondition}"
 		}
 		configBom += """</useCondition>
-		<billOfMaterialId>${cb.billOfMaterialId}</billOfMaterialId>
 	</configurator-bom>"""
 			cb.configuratorBomList?.each( { childCb ->
 				configBom = retrieveConfiguratorBomWithChildren2( index+1, childCb )

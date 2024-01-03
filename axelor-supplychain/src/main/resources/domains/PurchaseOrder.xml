@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrder" lang="java">
+  <entity name="PurchaseOrder">
 
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment mode"/>
@@ -25,8 +25,15 @@
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
 
-    <many-to-one name="budget" ref="com.axelor.apps.account.db.Budget" title="Budget"/>
     <long name="generatedSaleOrderId"/>
+    <extra-code>
+            <![CDATA[
+                // INVOICE
+                public static final int INVOICE_ALL = 1;
+                public static final int INVOICE_ADVANCE_PAYMENT = 2;
+
+            ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

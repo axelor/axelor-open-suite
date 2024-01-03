@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,26 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchCreditTransferExpensePayment;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMergeService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.service.expense.ExpenseService;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -49,18 +52,18 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   protected final Logger log = LoggerFactory.getLogger(getClass());
   protected final AppAccountService appAccountService;
   protected final ExpenseRepository expenseRepo;
-  protected final ExpenseService expenseService;
+  protected final ExpensePaymentService expensePaymentService;
   protected final BankOrderMergeService bankOrderMergeService;
 
   @Inject
   public BatchCreditTransferExpensePaymentHR(
       AppAccountService appAccountService,
       ExpenseRepository expenseRepo,
-      ExpenseService expenseService,
+      ExpensePaymentService expensePaymentService,
       BankOrderMergeService bankOrderMergeService) {
     this.appAccountService = appAccountService;
     this.expenseRepo = expenseRepo;
-    this.expenseService = expenseService;
+    this.expensePaymentService = expensePaymentService;
     this.bankOrderMergeService = bankOrderMergeService;
   }
 
@@ -80,22 +83,20 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
   @Override
   protected void stop() {
     StringBuilder sb = new StringBuilder();
-    sb.append(I18n.get(IExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
+    sb.append(I18n.get(AccountExceptionMessage.BATCH_CREDIT_TRANSFER_REPORT_TITLE)).append(" ");
     sb.append(
         String.format(
             I18n.get(
-                    com.axelor.apps.hr.exception.IExceptionMessage
-                        .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
-                    com.axelor.apps.hr.exception.IExceptionMessage
-                        .BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
+                    HumanResourceExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_SINGULAR,
+                    HumanResourceExceptionMessage.BATCH_CREDIT_TRANSFER_EXPENSE_DONE_PLURAL,
                     batch.getDone())
                 + " ",
             batch.getDone()));
     sb.append(
         String.format(
             I18n.get(
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
-                com.axelor.apps.base.exceptions.IExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_SINGULAR,
+                BaseExceptionMessage.ABSTRACT_BATCH_ANOMALY_PLURAL,
                 batch.getAnomaly()),
             batch.getAnomaly()));
     addComment(sb.toString());
@@ -116,7 +117,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
         "self.ventilated = true "
             + "AND self.paymentStatusSelect = :paymentStatusSelect "
             + "AND self.company = :company "
-            + "AND self.user.partner.outPaymentMode = :paymentMode "
+            + "AND self.employee.contactPartner.outPaymentMode = :paymentMode "
             + "AND self.id NOT IN (:anomalyList)";
 
     if (manageMultiBanks) {
@@ -181,7 +182,7 @@ public class BatchCreditTransferExpensePaymentHR extends BatchCreditTransferExpe
         String.format(
             "Credit transfer batch for expense payment: adding payment for expense %s",
             expense.getExpenseSeq()));
-    expenseService.addPayment(expense, bankDetails);
+    expensePaymentService.addPayment(expense, bankDetails);
   }
 
   /**

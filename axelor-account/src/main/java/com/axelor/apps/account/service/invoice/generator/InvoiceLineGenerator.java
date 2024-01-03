@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,37 +14,37 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.generator;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
-import com.axelor.apps.base.db.Alarm;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.UnitConversion;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.lang.invoke.MethodHandles;
@@ -120,8 +121,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
-    this.today = Beans.get(AppAccountService.class).getTodayDate(invoice.getCompany());
-    this.currencyService = new CurrencyService(this.today);
+    this.today = appAccountService.getTodayDate(invoice.getCompany());
+    this.currencyService = new CurrencyService(this.appBaseService, this.today);
   }
 
   protected InvoiceLineGenerator(
@@ -187,7 +188,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
           accountManagementService.getProductAccount(
               product,
               company,
-              partner.getFiscalPosition(),
+              invoice.getFiscalPosition(),
               isPurchase,
               invoiceLine.getFixedAssets());
       invoiceLine.setAccount(account);
@@ -210,7 +211,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (product != null) {
       TaxEquiv taxEquiv =
           Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, company, partner.getFiscalPosition(), isPurchase);
+              .getProductTaxEquiv(product, company, invoice.getFiscalPosition(), isPurchase);
 
       invoiceLine.setTaxEquiv(taxEquiv);
     }
@@ -245,14 +246,11 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
       Company company = invoice.getCompany();
       Partner partner = invoice.getPartner();
+      FiscalPosition fiscalPosition = invoice.getFiscalPosition();
 
       taxLine =
           accountManagementService.getTaxLine(
-              today,
-              product,
-              company,
-              partner.getFiscalPosition(),
-              InvoiceToolService.isPurchase(invoice));
+              today, product, company, fiscalPosition, InvoiceToolService.isPurchase(invoice));
     }
   }
 
@@ -264,7 +262,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     BigDecimal taxRate = BigDecimal.ZERO;
     if (taxLine != null) {
-      taxRate = taxLine.getValue();
+      taxRate = taxLine.getValue().divide(new BigDecimal(100));
     }
 
     if (!invoice.getInAti()) {
@@ -289,7 +287,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     if (companyCurrency == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.INVOICE_LINE_GENERATOR_2),
+          I18n.get(AccountExceptionMessage.INVOICE_LINE_GENERATOR_2),
           company.getName());
     }
 
@@ -315,7 +313,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    */
   protected InvoiceLine refundInvoiceLine(InvoiceLine invoiceLine, boolean daysQty) {
 
-    LOG.debug("Remboursement d'une ligne de facture (quantité = nb jour ? {}).", daysQty);
+    LOG.debug("Reimbursement of an invoice line (quantity = number of day ? {}).", daysQty);
 
     InvoiceLine refundInvoiceLine = JPA.copy(invoiceLine, true);
 
@@ -325,13 +323,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     refundInvoiceLine.setQty(quantity.negate());
 
-    LOG.debug("Quantité remboursée : {}", refundInvoiceLine.getQty());
+    LOG.debug("Quantity reimbursed : {}", refundInvoiceLine.getQty());
 
     refundInvoiceLine.setExTaxTotal(
         computeAmount(refundInvoiceLine.getQty(), refundInvoiceLine.getPrice()));
 
     LOG.debug(
-        "Remboursement de la ligne de facture {} => montant HT: {}",
+        "Reimbursement of the invoice line {} => amount W.T : {}",
         new Object[] {invoiceLine.getId(), refundInvoiceLine.getExTaxTotal()});
 
     return refundInvoiceLine;
@@ -344,7 +342,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     substract.setQty(invoiceLine1.getQty().add(invoiceLine2.getQty()));
     substract.setExTaxTotal(computeAmount(substract.getQty(), substract.getPrice()));
 
-    LOG.debug("Soustraction de deux lignes de factures: {}", substract);
+    LOG.debug("Subtraction of two invoice lines: {}", substract);
 
     return substract;
   }
@@ -362,7 +360,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     BigDecimal convertPrice = convert(startUnit, endUnit, price);
 
     LOG.debug(
-        "Conversion du prix {} {} : {} {}", new Object[] {price, startUnit, convertPrice, endUnit});
+        "Price conversion {} {} : {} {}", new Object[] {price, startUnit, convertPrice, endUnit});
 
     return convertPrice;
   }
@@ -371,7 +369,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
    * Récupérer la bonne unité.
    *
    * @param unit Unité de base.
-   * @param unitDisplay Unité à afficher.
+   * @param displayUnit Unité à afficher.
    * @return L'unité à utiliser.
    */
   protected Unit unit(Unit unit, Unit displayUnit) {
@@ -383,8 +381,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     LOG.debug(
-        "Obtention de l'unité : Unité {}, Unité affichée {} : {}",
-        new Object[] {unit, displayUnit, resUnit});
+        "Get unit : Unit {}, Unit displayed {} : {}", new Object[] {unit, displayUnit, resUnit});
 
     return resUnit;
   }
@@ -427,15 +424,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       return unitConversion.getCoef();
     } else {
       return BigDecimal.ONE;
-    }
-  }
-
-  protected void addAlarm(Alarm alarm, Partner partner) {
-
-    if (alarm != null) {
-
-      alarm.setInvoice(invoice);
-      alarm.setPartner(partner);
     }
   }
 }

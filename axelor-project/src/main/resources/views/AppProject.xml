@@ -1,18 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-project-config-form" title="App project"
-    model="com.axelor.apps.base.db.AppProject" canDelete="false" canNew="false" width="large">
+    model="com.axelor.studio.db.AppProject" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="projectLabel"/>
-      <spacer/>
+      <field name="generateProjectSequence" widget="boolean-switch"/>
       <field name="resourceManagement" widget="boolean-switch"/>
       <field name="checkResourceAvailibility" widget="boolean-switch"
         showIf="resourceManagement"/>
       <field name="isEnableSignature" widget="boolean-switch"/>
-      <field name="generateProjectSequence" widget="boolean-switch"/>
+      <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
+      <field name="defaultTaskStatusSet" widget="TagSelect"/>
+      <field name="defaultPrioritySet" widget="TagSelect"/>
+
+      <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12">
+        <panel-related field="taskCustomFieldsList" colSpan="6"
+          form-view="project-task-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
+        <panel-related field="projectCustomFieldsList" colSpan="6"
+          form-view="project-project-meta-json-field-form" grid-view="project-meta-json-field-grid"/>
+      </panel>
     </panel>
 
     <panel-mail name="mailPanel">

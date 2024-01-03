@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="purchase-order-invoicing-wizard-form" title="Invoicing"
+    model="com.axelor.apps.purchase.db.PurchaseOrder"
+    onLoad="action-method-supplychain-purchase-order-wizard-set-default-values">
+    <panel name="operationSelectPanel">
+      <field name="$operationSelect" title="Operation choice" type="selection"
+        selection="supplychain.purchase.order.invoicing.wizard.select" required="true"/>
+    </panel>
+    <panel name="amountPanel" showIf="$contains([2],$number($operationSelect))">
+      <field name="$isPercent" title="Is amount in %" type="boolean"/>
+      <field name="$amountToInvoice" title="Amount to invoice" type="decimal" min="0"
+        showIf="$contains([2],$number($operationSelect))"/>
+    </panel>
+    <panel name="actionPanel" showIf="$operationSelect &lt; 5">
+      <button name="createInvoiceBtn" title="Generate the invoice"
+        onClick="action-group-purchase-order-invoicing-wizard-generate, close"/>
+    </panel>
+  </form>
+
+  <action-group name="action-group-purchase-order-invoicing-wizard-generate">
+    <action name="action-method-supplychain-purchase-order-invoicing-invoice-all"
+      if="operationSelect == &quot;1&quot;"/>
+    <action
+      name="action-method-supplychain-purchase-order-invoicing-generate-advance-payment"
+      if="operationSelect == &quot;2&quot;"/>
+  </action-group>
+
+  <action-method name="action-method-supplychain-purchase-order-invoicing-invoice-all">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
+      method="generateInvoice"/>
+  </action-method>
+
+  <action-method
+    name="action-method-supplychain-purchase-order-invoicing-generate-advance-payment">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
+      method="generateAdvancePayment"/>
+  </action-method>
+
+  <action-method
+    name="action-method-supplychain-purchase-order-wizard-set-default-values">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
+      method="setWizardDefaultValues"/>
+  </action-method>
+</object-views>

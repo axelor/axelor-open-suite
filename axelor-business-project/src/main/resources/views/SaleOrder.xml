@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="business-project-sale-order-form" extension="true">
     <extend target="/">
-      <attribute name="onLoad" value="action-group-business-project-saleorder-onload"/>
+      <attribute name="onLoad" value="action-group-supplychain-saleorder-onload"/>
     </extend>
   </form>
 
@@ -19,21 +19,25 @@
     </extend>
   </form>
 
-  <action-group name="action-group-business-project-saleorder-onload">
-    <action name="action-group-supplychain-saleorder-onload"/>
-    <action name="action-sale-order-attrs-project"/>
-  </action-group>
+  <form name="sale-order-generate-po-select-supplierpartner-form"
+    id="business-project-sale-order-generate-po-select-supplierpartner-form"
+    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation"
+    onLoad="action-record-load-dummy-supplier-partner" extension="true">
+    <extend target="//button[@name='generatePOConfirmBtn']">
+      <attribute name="onClick"
+        value="action-sale-order-group-generate-po-select-supplierpartner-from-project-task"/>
+    </extend>
+  </form>
 
-  <action-attrs name="action-sale-order-attrs-project">
-    <attribute for="$genProjTypePerOrderLine" name="value"
-      if="eval: __config__.app.getApp('business-project').getGeneratedElementTypeSelect() == 1"
-      expr="eval: com.axelor.apps.project.db.GenProjTypePerOrderLine.TASK_BY_LINE"/>
-    <attribute for="$genProjTypePerOrderLine" name="value"
-      if="eval: __config__.app.getApp('business-project').getGeneratedElementTypeSelect() == 2"
-      expr="eval: com.axelor.apps.project.db.GenProjTypePerOrderLine.PHASE_BY_LINE"/>
-    <attribute for="$genProjTypePerOrderLine" name="readonly"
-      expr="eval: __config__.app.getApp('business-project').getGeneratedElementTypeSelect() != 3"/>
-  </action-attrs>
+  <action-group
+    name="action-sale-order-group-generate-po-select-supplierpartner-from-project-task">
+    <action name="action-supplychain-so-generate-po-check-supplier-partner"/>
+    <action
+      name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"
+      if="eval: !_projectTaskId"/>
+    <action name="action-project-task-method-generate-purchase-order"
+      if="eval: _projectTaskId"/>
+  </action-group>
 
   <action-method
     name="action-business-project-sale-order-method-generate-invoicing-project">
