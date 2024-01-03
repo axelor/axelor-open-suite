@@ -233,7 +233,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator, Year year)
       throws AxelorException {
 
@@ -334,7 +334,6 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
               budgetStructure.getBudgetScenarioVariableSet(),
               budgetScenarioLineOriginList,
               budgetScenarioLineList);
-      ;
     }
 
     return budgetScenarioLineList;

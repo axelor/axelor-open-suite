@@ -84,20 +84,8 @@ public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService 
       List<BudgetScenarioLine> budgetScenarioLineOriginList,
       List<Map<String, Object>> budgetScenarioLineList) {
     if (!ObjectUtils.isEmpty(budgetScenarioVariableSet)) {
-      for (BudgetScenarioVariable budgetScenarioVariable : budgetScenarioVariableSet) {
-        BudgetScenarioLine budgetScenarioLine =
-            budgetScenarioLineOriginList.stream()
-                .filter(line -> budgetScenarioVariable.equals(line.getBudgetScenarioVariable()))
-                .findFirst()
-                .orElse(null);
-        if (budgetScenarioLine != null) {
-          BudgetScenarioLine optLine = budgetScenarioLineRepository.copy(budgetScenarioLine, false);
-
-          Map<String, Object> optLineContext = Mapper.toMap(optLine);
-          optLineContext.put("budgetLevel", section.getCode());
-          budgetScenarioLineList.add(optLineContext);
-        }
-      }
+      fillBudgetScenarioLineList(
+          section, budgetScenarioVariableSet, budgetScenarioLineOriginList, budgetScenarioLineList);
     } else if (section != null && !ObjectUtils.isEmpty(section.getBudgetLevelList())) {
       for (BudgetLevel child : section.getBudgetLevelList()) {
         budgetScenarioLineList =
@@ -109,5 +97,26 @@ public class BudgetScenarioLineServiceImpl implements BudgetScenarioLineService 
       }
     }
     return budgetScenarioLineList;
+  }
+
+  protected void fillBudgetScenarioLineList(
+      BudgetLevel section,
+      Set<BudgetScenarioVariable> budgetScenarioVariableSet,
+      List<BudgetScenarioLine> budgetScenarioLineOriginList,
+      List<Map<String, Object>> budgetScenarioLineList) {
+    for (BudgetScenarioVariable budgetScenarioVariable : budgetScenarioVariableSet) {
+      BudgetScenarioLine budgetScenarioLine =
+          budgetScenarioLineOriginList.stream()
+              .filter(line -> budgetScenarioVariable.equals(line.getBudgetScenarioVariable()))
+              .findFirst()
+              .orElse(null);
+      if (budgetScenarioLine != null) {
+        BudgetScenarioLine optLine = budgetScenarioLineRepository.copy(budgetScenarioLine, false);
+
+        Map<String, Object> optLineContext = Mapper.toMap(optLine);
+        optLineContext.put("budgetLevel", section.getCode());
+        budgetScenarioLineList.add(optLineContext);
+      }
+    }
   }
 }

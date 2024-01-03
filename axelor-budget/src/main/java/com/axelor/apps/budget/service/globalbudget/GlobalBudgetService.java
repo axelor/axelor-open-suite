@@ -24,7 +24,6 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetGenerator;
 import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +42,6 @@ public interface GlobalBudgetService {
 
   void generateBudgetKey(GlobalBudget globalBudget) throws AxelorException;
 
-  @Transactional
   GlobalBudget generateGlobalBudget(BudgetGenerator budgetGenerator, Year year)
       throws AxelorException;
 

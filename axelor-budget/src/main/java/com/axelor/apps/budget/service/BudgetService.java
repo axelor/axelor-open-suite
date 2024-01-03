@@ -32,7 +32,6 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -307,11 +306,9 @@ public interface BudgetService {
 
   void archiveBudget(Budget budget);
 
-  @Transactional(rollbackOn = {Exception.class})
   void generateLineFromGenerator(Budget budget, BudgetLevel parent, GlobalBudget globalBudget)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   void generateLineFromGenerator(
       BudgetScenarioVariable budgetScenarioVariable,
       BudgetLevel parent,
