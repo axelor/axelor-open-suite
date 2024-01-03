@@ -1,6 +1,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.inject.Beans;
 
 import java.util.HashMap;
@@ -69,11 +70,14 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
         String regCode = partner.getRegistrationCode();
         String nic = "";
 
-        if (regCode != null) {
-            regCode = regCode.replaceAll(" ", "");
+        if(partner.getBusinessCountry() != null && partner.getBusinessCountry().getRegistrationNumberTemplate() != null ) {
+            RegistrationNumberTemplate registrationNumberTemplate = partner.getBusinessCountry().getRegistrationNumberTemplate();
+            if (registrationNumberTemplate.getUseNic() && regCode != null) {
+                regCode = regCode.replaceAll(" ", "");
 
-            if (regCode.length() == 14) {
-                nic = regCode.substring(9, 14);
+                if (regCode.length() == registrationNumberTemplate.getRequiredSize()) {
+                    nic = regCode.substring(registrationNumberTemplate.getNicPos() - 1, registrationNumberTemplate.getNicPos() + registrationNumberTemplate.getNicLength() - 1);
+                }
             }
         }
 
@@ -84,26 +88,28 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
         String regCode = partner.getRegistrationCode();
         String siren = "";
 
-        if (regCode != null) {
-            regCode = regCode.replaceAll(" ", "");
+        if(partner.getBusinessCountry() != null && partner.getBusinessCountry().getRegistrationNumberTemplate() != null ) {
+            RegistrationNumberTemplate registrationNumberTemplate = partner.getBusinessCountry().getRegistrationNumberTemplate();
+            if (registrationNumberTemplate.getUseSiren() && regCode != null) {
+                regCode = regCode.replaceAll(" ", "");
 
-            if (regCode.length() == 14) {
-                siren = regCode.substring(0, 9);
+                if (regCode.length() == registrationNumberTemplate.getRequiredSize()) {
+                    siren = regCode.substring(registrationNumberTemplate.getSirenPos() - 1, registrationNumberTemplate.getSirenPos() + registrationNumberTemplate.getSirenLength() - 1);
+                }
             }
         }
-
         return siren;
     }
     @Override
     public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
         Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-        String taxNbr = getTaxNbrFromRegistrationCode(partner);
-        String nic = getNicFromRegistrationCode(partner);
-        String siren = getSirenFromRegistrationCode(partner);
+            String taxNbr = getTaxNbrFromRegistrationCode(partner);
+            String nic = getNicFromRegistrationCode(partner);
+            String siren = getSirenFromRegistrationCode(partner);
 
-        attrsMap.put("taxNbr", Map.of("value", taxNbr));
-        attrsMap.put("nic", Map.of("value", nic));
-        attrsMap.put("siren", Map.of("value", siren));
+            attrsMap.put("taxNbr", Map.of("value", taxNbr));
+            attrsMap.put("nic", Map.of("value", nic));
+            attrsMap.put("siren", Map.of("value", siren));
 
         return attrsMap;
     }
