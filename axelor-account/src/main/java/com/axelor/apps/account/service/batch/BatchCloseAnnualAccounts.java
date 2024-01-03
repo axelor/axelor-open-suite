@@ -54,9 +54,11 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -223,13 +225,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       boolean close,
       boolean open,
       Map<AccountByPartner, Map<Boolean, Boolean>> map) {
-    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
-      Account account = null;
-      Partner partner = null;
-      account = accountRepository.find(accountAndPartnerPair.getLeft());
-      if (accountAndPartnerPair.getRight() != null) {
-        partner = partnerRepository.find(accountAndPartnerPair.getRight());
-      }
+    for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
+      Partner partner = getPartner(accountAndPartnerPairList, account);
+
       Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
         value.put(close, false);
@@ -247,6 +245,28 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       }
     }
     return map;
+  }
+
+  protected List<Account> getSortedAccountList(List<Pair<Long, Long>> accountAndPartnerPairList) {
+    List<Account> sortedAccountList = new ArrayList<>();
+    for (Pair<Long, Long> accountAndPartnerPair : accountAndPartnerPairList) {
+      sortedAccountList.add(accountRepository.find(accountAndPartnerPair.getLeft()));
+    }
+    sortedAccountList.sort(Comparator.comparing(Account::getCode));
+    return sortedAccountList;
+  }
+
+  protected Partner getPartner(List<Pair<Long, Long>> accountAndPartnerPairList, Account account) {
+    Partner partner = null;
+    Optional<Long> partnerId =
+        accountAndPartnerPairList.stream()
+            .filter(pair -> pair.getLeft().equals(account.getId()))
+            .findFirst()
+            .map(Pair::getRight);
+    if (partnerId.isPresent()) {
+      partner = partnerRepository.find(partnerId.get());
+    }
+    return partner;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
