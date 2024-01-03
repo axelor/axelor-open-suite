@@ -286,7 +286,7 @@
     <view type="chart" name="chart.moveLines.revenues.vs.expenses"/>
     <context name="active_company" expr="eval:__user__.activeCompany"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLocalization().getLanguage()"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view title="Invoice Sale by month (tax excl.)"
@@ -335,21 +335,21 @@
     title="Invoice and Credit notes Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.credit.note.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLocalization().getLanguage()"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view name="dashlet.invoice.sale.situation"
     title="Invoice Sale situation (tax incl.)">
     <view type="chart" name="chart.invoice.sale.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLocalization().getLanguage()"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view name="dashlet.invoice.purchase.situation"
     title="Invoice Purchase situation (tax incl.)">
     <view type="chart" name="chart.invoice.purchase.situation"/>
     <context name="todayDate" expr="eval:__config__.date"/>
-    <context name="_language" expr="eval: __user__.getLocalization().getLanguage()"/>
+    <context name="_language" expr="eval: __user__.getLanguage()"/>
   </action-view>
 
   <action-view

@@ -1386,8 +1386,8 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="$positiveBalanceBtn"
       expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization.code)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.localization.code)).format(balance)"
+		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance * -1) :
+		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance)"
       if="balance != null"/>
     <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
   </action-record>

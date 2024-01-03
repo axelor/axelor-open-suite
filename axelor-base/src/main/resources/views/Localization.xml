@@ -16,17 +16,22 @@
   <form name="localization-form" title="Localization"
     model="com.axelor.apps.base.db.Localization">
     <panel name="mainPanel" colSpan="12">
-      <field name="name" title="Name" required="true" colSpan="6"
-        x-bind="{{language.name + ' (' +country.name + ')'}}"/>
+      <field name="name" title="Name" required="true" colSpan="6"/>
       <field name="code" title="Code" required="true" colSpan="6" readonly="true"
         x-bind="{{language.code + '_' + country.alpha2Code}}"/>
       <field name="country" title="Country" grid-view="country-grid" form-view="country-form"
-        colSpan="6"/>
+        colSpan="6" onChange="action-localization-record-generate-name-from-country-and-language"/>
       <field name="language" ref="com.axelor.apps.base.db.Language" title="Language"
-        colSpan="6"/>
+        colSpan="6" onChange="action-localization-record-generate-name-from-country-and-language"/>
       <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"/>
       <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"/>
       <field name="country.alpha2Code" hidden="true"/>
     </panel>
   </form>
+
+  <action-record
+    name="action-localization-record-generate-name-from-country-and-language"
+    model="com.axelor.apps.base.db.Localization">
+    <field name="name" expr="eval:language?.name + ' (' + country?.name + ')'"/>
+  </action-record>
 </object-views>

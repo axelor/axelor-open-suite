@@ -47,7 +47,7 @@
         <field name="localization" title="Localization"
           onChange="action-base-user-record-change-language" form-view="localization-form"
           grid-view="localization-grid"/>
-        <field name="language" hidden="true"/>
+
 
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
@@ -79,6 +79,7 @@
             <field name="sendEmailUponPasswordChange"/>
           </panel>
         </panel>
+        <field name="language" hidden="true"/>
       </panel>
       <panel name="stepContactPanel" showIf="stepStatusSelect == 2" colSpan="12">
         <panel name="contactInformationPanel" title="Contact Information"
@@ -171,7 +172,6 @@
         <field name="localization" title="Localization"
           onChange="action-base-user-record-change-language" form-view="localization-form"
           grid-view="localization-grid"/>
-        <field name="language" hidden="true"/>
         <field name="theme" widget="theme-select"/>
         <panel name="actionsPanel" stacked="true">
           <field name="homeAction" hidden="true" x-bind="{{__actionSelect.name}}"/>
@@ -180,6 +180,7 @@
         </panel>
         <field name="singleTab" widget="inline-checkbox" colSpan="3"/>
         <field name="noHelp" widget="inline-checkbox" colSpan="3"/>
+        <field name="language" hidden="true"/>
       </panel>
       <panel name="authorizationPanel" title="Authorization" colSpan="12">
         <field name="activateOn"
@@ -320,7 +321,6 @@
       <field name="image" showTitle="false"/>
       <field name="localization" title="Localization" grid-view="localization-grid"
         form-view="localization-form"/>
-      <field name="language" hidden="true"/>
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
         widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
       <field name="tradingName"
@@ -358,6 +358,7 @@
       <panel-related name="emailAccountListPanel" field="emailAccountList"
         if="__config__.app.getApp('base')?.getEmailAccountByUser()" colSpan="12"
         form-view="mail-account-form" grid-view="mail-account-grid"/>
+      <field name="language" hidden="true"/>
     </panel>
 
     <panel hidden="true" colSpan="12" name="transientPasswordPanel">
@@ -578,7 +579,7 @@
 
   <action-record name="action-base-user-record-change-language"
     model="com.axelor.auth.db.User">
-    <field name="language" expr="eval:__this__.localization.language.code"/>
+    <field name="language" expr="eval:__this__.localization?.language?.code"/>
   </action-record>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"

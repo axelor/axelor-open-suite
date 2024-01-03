@@ -916,16 +916,18 @@
 
   <action-attrs name="action-sale-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.clientPartner?.localization?.code?.equals(__user__.getLocalization().getCode())"
+      expr="eval: __parent__?.clientPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="__parent__"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.clientPartner?.localization?.code?" if="__parent__"/>
+      expr="eval: __parent__?.clientPartner?.localization?.language?.code?.toUpperCase()"
+      if="__parent__"/>
 
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: saleOrder?.clientPartner?.localization?.code?.equals(__user__.getLocalization().getCode())"
+      expr="eval: saleOrder?.clientPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="saleOrder"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: saleOrder?.clientPartner?.localization?.code?" if="saleOrder"/>
+      expr="eval: saleOrder?.clientPartner?.localization?.language?.code?.toUpperCase()"
+      if="saleOrder"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-hide-ati">

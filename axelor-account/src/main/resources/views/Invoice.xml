@@ -1962,7 +1962,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-set-dummy-field-language"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$language"
-      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.localization.language : partner?.localization.language"
+      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.localization?.language : partner?.localization?.language"
       if="company"/>
   </action-record>
 

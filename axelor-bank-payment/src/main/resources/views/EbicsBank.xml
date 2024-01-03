@@ -22,8 +22,7 @@
         pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
       <field name="protocolSelect" required="true"/>
       <field name="url" colSpan="12" widget="url" pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
-      <field name="localization" canEdit="false" form-view="localization-form"
-        grid-view="localization-grid"/>
+      <field name="language" canEdit="false"/>
       <field name="certValidityPeriodSelect"/>
       <panel name="x509ExtensionForAutoSignedCertPanel"
         title="X509 extensions for auto signed certificates" colSpan="12">
