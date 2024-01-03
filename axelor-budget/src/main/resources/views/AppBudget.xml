@@ -4,12 +4,18 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="app-budget-config-form" title="App budget" model="com.axelor.studio.db.AppBudget"
-    canDelete="false" canNew="false" width="large">
+    canDelete="false" canNew="false" width="large"
+    onLoad="action-app-budget-method-manage-budget-key">
     <panel name="appBudgetPanel" if-module="axelor-supplychain" colSpan="12">
       <field name="manageMultiBudget" widget="boolean-switch"/>
       <field name="missingBudgetCheckSelect"/>
       <field name="checkAvailableBudget" widget="boolean-switch"/>
       <field name="orderBudgetExceedSelect" showIf="checkAvailableBudget"/>
+    </panel>
+    <panel name="projectPanel" if-module="axelor-project" colSpan="12">
+      <field name="enableProject" colSpan="3" readonly="true"/>
+      <static name="$projectDisable" colSpan="9" hidden="true">
+        <![CDATA[<span class='label label-warning'>To activate this option, you need to disable budget key first in account configurations of companies.</span>]]></static>
     </panel>
 
     <panel-mail name="mailPanel">
@@ -17,4 +23,8 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-method name="action-app-budget-method-manage-budget-key">
+    <call class="com.axelor.apps.budget.web.AppBudgetController" method="manageBudgetKey"/>
+  </action-method>
 </object-views>

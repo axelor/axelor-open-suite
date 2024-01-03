@@ -1568,6 +1568,7 @@
 "Pricing computing order","Sens de calcul des barèmes",,
 "Pricing line","Ligne de barème",,
 "Pricing lines","Lignes de barème",,
+"Pricing process unavailable for this class : %s","Barèmes indisponibles pour cette classe : %s",,
 "Pricing rule","Règle de barème",,
 "Pricing rules","Règles de barème",,
 "Pricings","Barèmes",,
