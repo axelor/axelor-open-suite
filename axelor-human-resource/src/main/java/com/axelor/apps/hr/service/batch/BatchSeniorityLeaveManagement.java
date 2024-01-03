@@ -187,12 +187,10 @@ public class BatchSeniorityLeaveManagement extends BatchStrategy {
     BigDecimal quantity = BigDecimal.ZERO;
 
     for (LeaveReason leaveReason : hrBatch.getLeaveReasonSet()) {
-      if (!employee.getLeaveLineList().isEmpty()) {
-        for (LeaveLine line : employee.getLeaveLineList()) {
-          if (line.getLeaveReason().equals(leaveReason)) {
-            count++;
-            leaveLine = line;
-          }
+      for (LeaveLine line : employee.getLeaveLineList()) {
+        if (line.getLeaveReason().equals(leaveReason)) {
+          count++;
+          leaveLine = line;
         }
       }
 
