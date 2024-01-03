@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="currency-conversion-line-grid" groupBy="startCurrency,endCurrency"
     orderBy="-fromDate" title="Currency conversion lines"
@@ -32,8 +32,9 @@
       <field name="toDate" readonlyIf="fromDate == null"
         onChange="action-currency-conversion-line-method-check-date"/>
     </panel>
-    <panel name="ratePanel" title="Rate">
-      <field name="exchangeRate"/>
+    <panel name="ratePanel" title="Rate"
+      readonlyIf="startCurrency == null || endCurrency == null">
+      <field name="exchangeRate" validIf="exchangeRate &gt; 0"/>
       <field name="variations"/>
     </panel>
   </form>

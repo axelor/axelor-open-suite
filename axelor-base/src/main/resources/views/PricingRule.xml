@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.base.db.PricingRule" title="Pricing rules"
+    name="pricing-rule-grid" groupBy="concernedModel,typeSelect" orderBy="name">
+    <field name="name"/>
+    <field name="concernedModel"/>
+    <field name="company"/>
+    <field name="typeSelect"/>
+    <field name="formula"/>
+    <field name="fieldToPopulate"/>
+  </grid>
+
+  <form model="com.axelor.apps.base.db.PricingRule" title="Pricing rule"
+    name="pricing-rule-form" width="large"
+    onLoad="action-pricing-rule-attrs-display-meta-json-field">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="concernedModel"
+        onChange="action-pricing-rule-attrs-field-to-populate-clear"
+        domain="self.name = 'SaleOrderLine'"/>
+      <field name="company"/>
+      <field name="typeSelect" onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
+      <field name="fieldTypeSelect" showIf="typeSelect == 1"/>
+      <field name="operatorSelect" showIf="typeSelect == 1 &amp;&amp; fieldTypeSelect != 0"/>
+      <field name="scale" showIf="typeSelect == 1 &amp;&amp; fieldTypeSelect == 1"/>
+      <field name="formula" widget="CodeEditor" x-code-syntax="groovy" colSpan="12"/>
+      <field name="fieldToPopulate" domain="self.metaModel = :concernedModel"
+        showIf="typeSelect == 2" onChange="action-pricing-rule-attrs-display-meta-json-field"/>
+      <field name="tempVarName" showIf="typeSelect == 2"/>
+      <field name="metaJsonField" title="Custom field"
+        onSelect="action-pricing-rule-attrs-on-select-meta-json-field" hidden="true"/>
+      <field name="scale"
+        showIf="typeSelect == 2 &amp;&amp; (fieldToPopulate.typeName == 'BigDecimal' || (fieldToPopulate.json == true &amp;&amp; metaJsonField != null &amp;&amp; metaJsonField.type == 'decimal'))"/>
+      <field name="fieldToPopulate.typeName" hidden="true"/>
+      <field name="fieldToPopulate.json" hidden="true"/>
+      <field name="metaJsonField.type" hidden="true"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-attrs name="action-pricing-rule-attrs-field-to-populate-clear">
+    <attribute name="value" for="fieldToPopulate" expr="eval: null"/>
+  </action-attrs>
+
+  <action-attrs name="action-pricing-rule-attrs-on-select-meta-json-field">
+    <attribute name="domain" for="metaJsonField"
+      expr="eval:&quot; self.type NOT IN ('panel', 'button', 'label', 'spacer', 'separator') AND self.model = '${concernedModel?.fullName}' AND self.modelField = '${fieldToPopulate?.name}' &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-pricing-rule-attrs-display-meta-json-field">
+    <attribute name="hidden" for="metaJsonField"
+      expr="eval:__this__?.fieldToPopulate.json == false"
+      if="eval:__this__?.fieldToPopulate != null"/>
+    <attribute name="required" for="metaJsonField"
+      expr="eval:__this__?.fieldToPopulate.json == true" if="eval:__this__?.fieldToPopulate != null"/>
+    <attribute name="value" for="metaJsonField" expr="eval:null"
+      if="eval:__this__?.fieldToPopulate== null || __this__?.fieldToPopulate.json == false"/>
+  </action-attrs>
+
+</object-views>

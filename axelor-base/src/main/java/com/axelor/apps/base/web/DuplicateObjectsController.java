@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,24 +14,27 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.Wizard;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.DuplicateObjectsService;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaField;
+import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.db.Wizard;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
@@ -133,7 +137,7 @@ public class DuplicateObjectsController {
       }
     }
     if (!flag) {
-      response.setAlert(I18n.get(IExceptionMessage.GENERAL_11));
+      response.setAlert(I18n.get(BaseExceptionMessage.GENERAL_11));
     }
     duplicateObj.remove(original);
     if (originalObj != null) {
@@ -163,13 +167,15 @@ public class DuplicateObjectsController {
       String filter = findDuplicated(request, fields, modelClass);
 
       if (filter == null) {
-        response.setFlash(I18n.get(IExceptionMessage.GENERAL_1));
+        response.setInfo(I18n.get(BaseExceptionMessage.GENERAL_1));
       } else {
+        String modelNameKebabCase =
+            CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, modelClass.getSimpleName());
         response.setView(
-            ActionView.define(I18n.get(IExceptionMessage.GENERAL_2))
+            ActionView.define(I18n.get(BaseExceptionMessage.GENERAL_2))
                 .model(modelClass.getName())
-                .add("grid")
-                .add("form")
+                .add("grid", modelNameKebabCase + "-grid")
+                .add("form", modelNameKebabCase + "-form")
                 .domain(filter)
                 .context("_domain", filter)
                 .map());
@@ -179,13 +185,13 @@ public class DuplicateObjectsController {
         }
       }
     } else if (context.get("_contextModel") == null) {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_10));
+      response.setInfo(I18n.get(BaseExceptionMessage.GENERAL_10));
     } else {
-      response.setFlash(I18n.get(IExceptionMessage.GENERAL_3));
+      response.setInfo(I18n.get(BaseExceptionMessage.GENERAL_3));
     }
   }
 
-  private String findDuplicated(
+  protected String findDuplicated(
       ActionRequest request, Set<String> fields, Class<? extends Model> modelClass)
       throws AxelorException {
 
@@ -206,6 +212,7 @@ public class DuplicateObjectsController {
 
     Context context = request.getContext();
     String model = (String) context.get("_contextModel");
+    MetaFieldRepository metaFieldRepository = Beans.get(MetaFieldRepository.class);
 
     if (model == null) {
       model = request.getModel();
@@ -219,7 +226,10 @@ public class DuplicateObjectsController {
         List<HashMap<String, Object>> fieldsSet =
             (List<HashMap<String, Object>>) context.get("fieldsSet");
         for (HashMap<String, Object> field : fieldsSet) {
-          fields.add((String) field.get("name"));
+          MetaField metaField = metaFieldRepository.find(((Integer) field.get("id")).longValue());
+          if (metaField != null) {
+            fields.add(metaField.getName());
+          }
         }
       }
     }
@@ -240,7 +250,7 @@ public class DuplicateObjectsController {
     String criteria = getCriteria(request, (Class<? extends Model>) JPA.model(request.getModel()));
 
     response.setView(
-        ActionView.define("Check duplicate")
+        ActionView.define(I18n.get("Check duplicate"))
             .model(Wizard.class.getName())
             .add("form", "wizard-check-duplicate-form")
             .param("popup", "true")
@@ -252,7 +262,7 @@ public class DuplicateObjectsController {
             .map());
   }
 
-  private String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
+  protected String getCriteria(ActionRequest request, Class<? extends Model> modelClass) {
 
     String criteria = (String) (request.getContext().get("_criteria"));
     if (criteria != null) {

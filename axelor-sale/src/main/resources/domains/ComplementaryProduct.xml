@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
-  <entity name="ComplementaryProduct" lang="java">
+  <entity name="ComplementaryProduct">
     <many-to-one name="originalProduct" ref="com.axelor.apps.base.db.Product"
       title="Original product"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Qty" precision="20" scale="10"/>
     <boolean name="optional" title="Optional"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner"/>
+    <integer name="generationTypeSelect" title="Generation type" default="2"
+      selection="sale.complementary.product.generation.type.select"/>
+
+    <extra-code>
+            <![CDATA[
+                public static final int GENERATION_TYPE_SALE_ORDER = 1;
+                public static final int GENERATION_TYPE_SALE_ORDER_LINE = 2;
+            ]]>
+    </extra-code>
   </entity>
 
 </domain-models>

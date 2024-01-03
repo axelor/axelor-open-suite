@@ -1,21 +1,113 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form name="period-moves-to-validate-form" model="com.axelor.apps.base.db.Period"
-    title="Moves to validate">
-    <panel-dashlet action="action-move-view-period-moves-to-validate"/>
-    <panel name="buttonsPanel">
-      <button name="continueBtn" title="Continue"
-        onClick="action-period-method-close-continue"/>
-    </panel>
+  <form id="account-period-form" name="period-form" title="Period"
+    model="com.axelor.apps.base.db.Period" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-period-group-onload"/>
+      <attribute name="onSave"
+        value="action-method-period-show-buttons,action-method-account-period-control-dates"/>
+    </extend>
+    <extend target="//panel-dashlet[@name='linkedAdjustingMovesPanel']">
+      <insert position="after">
+        <panel-dashlet
+          action="action-period-journal-view-get-all-journal-except-closed-journal"
+          showIf="statusSelect == 1"/>
+        <panel-dashlet
+          action="action-period-journal-view-get-all-journal-except-opened-journal"
+          showIf="statusSelect == 4"/>
+      </insert>
+    </extend>
+    <extend target="//button[@name='openBtn']">
+      <attribute name="onClick"
+        value="save,action-method-period-status-open,action-method-period-show-buttons,action-method-account-set-readonly"/>
+      <insert position="after">
+        <field name="closeJournalsOnPeriod" showIf="statusSelect == 1" colSpan="12"
+          onChange="action-account-period-attrs-show-journal-btn"/>
+        <field name="closedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
+          showIf="closeJournalsOnPeriod &amp;&amp; statusSelect == 1" colSpan="12" canEdit="false"
+          canNew="false" onSelect="action-account-period-attrs-set-journal-set-domain"/>
+        <button
+          onClick="action-account-period-record-open-closed-journal,action-account-period-attrs-show-journal-btn"
+          name="openClosedJournalBtn" title="Open closed journals on the period" hidden="true"
+          css="btn-success"
+          showIf="statusSelect == 1 &amp;&amp; closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty()"/>
+        <field name="keepJournalsOpenOnPeriod" showIf="statusSelect == 4" colSpan="12"
+          onChange="action-account-period-attrs-show-journal-btn"/>
+        <field name="openedJournalSet" onChange="action-account-period-attrs-show-journal-btn"
+          showIf="keepJournalsOpenOnPeriod &amp;&amp; statusSelect == 4" colSpan="12"
+          canEdit="false" canNew="false"
+          onSelect="action-account-period-attrs-set-journal-set-domain"/>
+        <button
+          onClick="action-account-period-record-close-journal-still-open,action-account-period-attrs-show-journal-btn"
+          name="closeJournalStillOpenBtn" title="Close journals still open on the period"
+          hidden="true" css="btn-warning"
+          showIf="statusSelect == 4 &amp;&amp; keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty()"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='mainPanel']">
+      <attribute name="readonlyIf" value=""/>
+    </extend>
   </form>
 
-  <action-group name="action-period-group-close" id="action-account-period-group-close">
-    <action name="save"/>
-    <action name="action-period-method-search-moves"/>
+  <form id="account-period-year-form" name="period-year-form" title="Period"
+    model="com.axelor.apps.base.db.Period" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-period-group-onload"/>
+      <attribute name="onSave" value="action-method-account-period-control-dates"/>
+    </extend>
+  </form>
+
+  <action-method name="action-method-account-period-control-dates">
+    <call class="com.axelor.apps.account.web.PeriodController" method="controlDates"/>
+  </action-method>
+
+  <action-method name="action-method-account-set-readonly">
+    <call class="com.axelor.apps.account.web.PeriodController" method="setReadOnly"/>
+  </action-method>
+
+  <action-group name="action-period-group-onload">
+    <action name="action-attrs-period-hide-linked-adjusting-moves-dashlet"/>
+    <action name="action-method-period-show-buttons"/>
+    <action name="action-method-account-set-readonly"/>
+    <action name="action-method-account-readonly-if-period-in-move"/>
   </action-group>
+
+  <action-group id="account-action-period-group-close-temp"
+    name="action-period-group-close-temp">
+    <action name="save"/>
+    <action name="action-method-validate-close-temp-period"/>
+    <action name="action-method-period-close-temp"/>
+    <action name="action-method-period-show-buttons"/>
+  </action-group>
+
+  <action-attrs name="action-account-period-attrs-set-journal-set-domain">
+    <attribute name="domain" for="closedJournalSet"
+      expr="eval: &quot;self.company is null OR self.company.id = ${year?.company?.id} &quot;"/>
+    <attribute name="domain" for="openedJournalSet"
+      expr="eval: &quot;self.company is null OR self.company.id = ${year?.company?.id} &quot;"/>
+  </action-attrs>
+
+  <action-record name="action-account-period-record-open-closed-journal"
+    model="com.axelor.apps.base.db.Period">
+    <field name="closedJournalSet" expr="eval: new java.util.HashSet()"/>
+    <field name="closeJournalsOnPeriod" expr="eval: false"/>
+  </action-record>
+
+  <action-record name="action-account-period-record-close-journal-still-open"
+    model="com.axelor.apps.base.db.Period">
+    <field name="openedJournalSet" expr="eval: new java.util.HashSet()"/>
+    <field name="keepJournalsOpenOnPeriod" expr="eval: false"/>
+  </action-record>
+
+  <action-attrs name="action-account-period-attrs-show-journal-btn">
+    <attribute name="hidden" for="openClosedJournalBtn"
+      expr="eval: !(closeJournalsOnPeriod &amp;&amp; closedJournalSet != null &amp;&amp; !closedJournalSet.isEmpty())"/>
+    <attribute name="hidden" for="closeJournalStillOpenBtn"
+      expr="eval: !(keepJournalsOpenOnPeriod &amp;&amp; openedJournalSet != null &amp;&amp; !openedJournalSet.isEmpty())"/>
+  </action-attrs>
 
   <action-method name="action-period-method-search-moves">
     <call class="com.axelor.apps.account.web.PeriodController" method="searchPeriodMoves"/>
@@ -25,4 +117,43 @@
     <call class="com.axelor.apps.account.web.PeriodController" method="continueClose"/>
   </action-method>
 
+  <action-group name="action-period-group-close" id="account-action-period-group-close">
+    <action name="save"/>
+    <action name="action-account-period-validate-need-confirmation"/>
+    <action name="action-method-validate-close-period"/>
+    <action name="action-method-period-call-service"/>
+  </action-group>
+
+  <action-method name="action-method-period-show-buttons">
+    <call class="com.axelor.apps.account.web.PeriodController" method="showButtons"/>
+  </action-method>
+
+  <action-view name="action-period-journal-view-get-all-journal-except-closed-journal"
+    model="com.axelor.apps.account.db.Journal" title="Opened journals on the period">
+    <view name="journal-grid" type="grid"/>
+    <view name="journal-form" type="form"/>
+    <domain>self.company.id = :_companyId and self.id not in :_closedSet </domain>
+    <context name="_companyId" expr="eval: __this__?.year?.company?.id"/>
+    <context name="_closedSet"
+      expr="eval: __this__?.closedJournalSet?.isEmpty() ? [0] : __this__?.closedJournalSet?.id"/>
+  </action-view>
+
+  <action-view name="action-period-journal-view-get-all-journal-except-opened-journal"
+    model="com.axelor.apps.account.db.Journal" title="Closed journals on the period">
+    <view name="journal-grid" type="grid"/>
+    <view name="journal-form" type="form"/>
+    <domain>self.company.id = :_companyId and self.id not in :_openedSet </domain>
+    <context name="_companyId" expr="eval: __this__?.year?.company?.id"/>
+    <context name="_openedSet"
+      expr="eval:  __this__?.openedJournalSet?.isEmpty() ? [0] : __this__?.openedJournalSet?.id"/>
+  </action-view>
+
+  <action-method name="action-method-period-call-service">
+    <call class="com.axelor.apps.account.web.PeriodController" method="callClosePeriodService"/>
+  </action-method>
+
+  <action-validate name="action-account-period-validate-need-confirmation">
+    <alert
+      message="The closure of a period will block the operations that can be carried out on the accounting journals for this period. The 'New' moves will be deleted, the 'Daybook' moves will be validated and the 'Simulated' moves will no longer be editable."/>
+  </action-validate>
 </object-views>

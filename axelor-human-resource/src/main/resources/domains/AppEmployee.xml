@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
-  <module name="base" package="com.axelor.apps.base.db"/>
+  <module name="studio" package="com.axelor.studio.db"/>
 
-  <entity name="AppEmployee" lang="java">
+  <entity name="AppEmployee" cacheable="true">
 
-    <one-to-one ref="com.axelor.apps.base.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <decimal name="dailyWorkHours" title="Daily work hours"/>
+    <decimal name="dailyWorkHours" title="Daily work hours" hidden="true" readonly="true"/>
     <boolean name="advanceManagement" default="true"/>
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>
     <boolean name="employeeBonus" title="Employee bonus"/>
+    <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
+      help="Activate MyHR enables the HR menu entries for employees."/>
+    <boolean name="isMedicalVisitEnabled" title="Medical visit"/>
 
     <extra-code>
    		<![CDATA[
@@ -23,11 +26,11 @@
     </extra-code>
 
     <track>
-      <field name="dailyWorkHours" on="UPDATE"/>
       <field name="advanceManagement" on="UPDATE"/>
       <field name="payrollPreparation" on="UPDATE"/>
       <field name="lunchVoucher" on="UPDATE"/>
       <field name="employeeBonus" on="UPDATE"/>
+      <field name="isMyHrEnabled" on="UPDATE"/>
     </track>
   </entity>
 

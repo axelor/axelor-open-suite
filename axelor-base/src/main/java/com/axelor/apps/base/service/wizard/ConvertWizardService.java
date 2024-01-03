@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,20 +14,24 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.wizard;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
-import com.axelor.exception.AxelorException;
 import com.google.common.collect.Lists;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +40,10 @@ public class ConvertWizardService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public Object createObject(Map<String, Object> context, Object obj, Mapper mapper)
+  public Object createObject(Map<String, Object> objectMap, Object obj, Mapper mapper)
       throws AxelorException {
 
-    if (context != null) {
+    if (objectMap != null) {
 
       final int random = new Random().nextInt();
       for (final Property p : mapper.getProperties()) {
@@ -47,16 +52,18 @@ public class ConvertWizardService {
           continue;
         }
 
-        LOG.debug("Property name / Context value  : {} / {}", p.getName());
+        LOG.debug("Property name / objectMap value  : {} / {}", p.getName());
 
-        Object value = context.get(p.getName());
+        Object value = objectMap.get(p.getName());
 
-        LOG.debug("Context value : {}", value);
+        LOG.debug("ObjectMap value : {}", value);
 
         if (value != null) {
 
-          if (value instanceof String && p.isUnique()) {
-            value = ((String) value) + " (" + random + ")";
+          if (value instanceof String
+              && p.isUnique()
+              && this.exist(mapper.getBeanClass(), p.getName(), value)) {
+            value += " (" + random + ")";
           }
 
           if (value instanceof Map) {
@@ -90,5 +97,17 @@ public class ConvertWizardService {
     }
 
     return null;
+  }
+
+  protected boolean exist(Class<?> klass, String field, Object value) {
+    EntityManager entityManager = JPA.em();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    criteriaBuilder.createQuery(klass);
+    CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+    Root<?> root = criteriaQuery.from(klass);
+    criteriaQuery.select(criteriaBuilder.count(root));
+    criteriaQuery.where(criteriaBuilder.equal(root.get(field), value));
+
+    return entityManager.createQuery(criteriaQuery).getSingleResult() > 0;
   }
 }

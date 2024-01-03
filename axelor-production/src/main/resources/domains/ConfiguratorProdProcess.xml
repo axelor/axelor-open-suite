@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="ConfiguratorProdProcess" lang="java">
-    <string name="name" title="Label" required="true"/>
+  <entity name="ConfiguratorProdProcess">
+    <string name="name" title="Label"/>
+    <string name="nameFormula" title="Label" large="true"/>
+    <boolean name="defNameAsFormula" title="Define with a script" default="false"/>
+
     <integer name="statusSelect" title="Status"
       selection="production.bill.of.material.status.select" default="2"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
@@ -18,9 +21,8 @@
     <string name="codeFormula" title="Code" large="true"/>
     <boolean name="defCodeAsFormula" title="Define with a script" default="false"/>
 
-
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
-      title="Production stock location" required="true"/>
+      title="Production stock location"/>
     <string name="stockLocationFormula" title="Production stock location" large="true"/>
     <boolean name="defStockLocationAsFormula" title="Define with a script" default="false"/>
 
@@ -36,6 +38,13 @@
     <string name="workshopStockLocationFormula" title="Workshop" large="true"/>
     <boolean name="defWorkshopStockLocationAsFormula" title="Define with a script"
       default="false"/>
+
+    <boolean name="isConsProOnOperation" title="Manage consumed products on phases"/>
+    <string name="isConsProOnOperationFormula" title="Manage consumed products on phases"
+      large="true"/>
+    <boolean name="defIsConsProOnOperationAsFormula" title="Define with a script"
+      default="false"/>
+
   </entity>
 
 </domain-models>

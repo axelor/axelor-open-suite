@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.AppBase;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBase;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import groovy.util.XmlSlurper;
@@ -99,7 +100,7 @@ public class MapService {
     throw new AxelorException(
         appBaseService.getAppBase(),
         TraceBackRepository.CATEGORY_NO_VALUE,
-        I18n.get(IExceptionMessage.MAP_RESPONSE_ERROR),
+        I18n.get(BaseExceptionMessage.MAP_RESPONSE_ERROR),
         restResponse);
 
     /*
@@ -378,7 +379,7 @@ public class MapService {
     getJSON(response);
   }
 
-  private JSONObject getJSON(Response response) throws AxelorException, JSONException {
+  protected JSONObject getJSON(Response response) throws AxelorException, JSONException {
     LOG.debug(
         "Gmap connection status code: {}, message: {}",
         response.getStatusCode(),
@@ -429,7 +430,7 @@ public class MapService {
     }
   }
 
-  private String getErrorURI(String msg) {
+  protected String getErrorURI(String msg) {
     final String uri = "map/error.html";
 
     try {
@@ -447,7 +448,7 @@ public class MapService {
   public String getGoogleMapsApiKey() {
     Preconditions.checkArgument(
         StringUtils.notBlank(appBaseService.getAppBase().getGoogleMapsApiKey()),
-        I18n.get(IExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
+        I18n.get(BaseExceptionMessage.MAP_GOOGLE_MAPS_API_KEY_MISSING));
     return appBaseService.getAppBase().getGoogleMapsApiKey();
   }
 
@@ -469,7 +470,7 @@ public class MapService {
   }
 
   public String getOsmMapURI(String name, Long id) {
-    final String uri = "map/osm-objs.html";
+    final String uri = "osm-objs/index.html";
 
     try {
       UriBuilder ub = UriBuilder.fromUri(uri);

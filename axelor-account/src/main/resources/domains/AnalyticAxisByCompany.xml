@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="AnalyticAxisByCompany">
+
+    <integer name="sequence" title="Seq."/>
+    <string name="fullName" title="Full name" required="true" namecolumn="true"
+      search="analyticAxis,sequence" max="550">
+		<![CDATA[
+		if (analyticAxis != null && sequence != null)
+			return Integer.toString(sequence) + " - " + analyticAxis.getCode();
+		else if (sequence != null)
+			return Integer.toString(sequence);
+		else if (analyticAxis != null)
+			return analyticAxis.getCode();
+		else
+			return "";
+		]]>
+    </string>
+    <many-to-one name="accountConfig" ref="AccountConfig" title="Account Configuration"
+      required="true"/>
+    <many-to-one name="analyticAxis" ref="AnalyticAxis" title="Analytic Axis"
+      required="true"/>
+  </entity>
+
+</domain-models>

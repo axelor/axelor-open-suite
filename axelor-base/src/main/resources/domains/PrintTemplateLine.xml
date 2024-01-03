@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -10,7 +10,7 @@
     <string name="title" title="Title" namecolumn="true" large="true"/>
     <string name="content" title="Content" large="true"/>
     <one-to-many name="templateContextList" title="Context"
-      ref="com.axelor.apps.message.db.TemplateContext" mappedBy="printTemplateLine"/>
+      ref="com.axelor.message.db.TemplateContext" mappedBy="printTemplateLine"/>
     <many-to-one name="printTemplate" title="Print template"
       ref="com.axelor.apps.base.db.PrintTemplate"/>
     <integer name="sequence" title="Seq."/>
@@ -21,12 +21,10 @@
     <one-to-many name="printTemplateLineList" title="Content lines"
       ref="com.axelor.apps.base.db.PrintTemplateLine" mappedBy="parent" orderBy="sequence"/>
     <boolean name="ignoreTheLine" title="Ignore the line"/>
-    <one-to-one name="printTemplateLineTest"
-      ref="com.axelor.apps.base.db.PrintTemplateLineTest" title="Print template line test"/>
     <boolean name="isWithPageBreakAfter" title="With page break"/>
+    <string name="notes" large="true" multiline="true" title="Notes"/>
     <integer name="nbColumns" title="Nb columns"/>
     <boolean name="isSignature" title="Signature"/>
-
   </entity>
 
 </domain-models>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,11 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.portal.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.portal.service.ClientViewService;
 import com.axelor.apps.portal.translation.ITranslation;
@@ -28,7 +30,6 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.auth.db.User;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -157,41 +158,17 @@ public class ClientViewController {
     }
   }
 
-  public void showClientMyNewTasks(ActionRequest request, ActionResponse response) {
+  public void showClientMyTasksInCompleted(ActionRequest request, ActionResponse response) {
     try {
       ClientViewService clientViewService = Beans.get(ClientViewService.class);
       User clientUser = clientViewService.getClientUser();
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        Filter filter = clientViewService.getNewTasksOfUser(clientUser).get(0);
+        Filter filter = clientViewService.getTasksInCompletedOfUser(clientUser).get(0);
         if (filter != null) {
           response.setView(
-              ActionView.define(I18n.get("New tasks"))
-                  .model(ProjectTask.class.getName())
-                  .add("grid", "project-task-grid")
-                  .add("form", "project-task-form")
-                  .param("search-filters", "project-task-filters")
-                  .domain(filter.getQuery())
-                  .map());
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void showClientMyTasksInProgress(ActionRequest request, ActionResponse response) {
-    try {
-      ClientViewService clientViewService = Beans.get(ClientViewService.class);
-      User clientUser = clientViewService.getClientUser();
-      if (clientUser.getPartner() == null) {
-        response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
-      } else {
-        Filter filter = clientViewService.getTasksInProgressOfUser(clientUser).get(0);
-        if (filter != null) {
-          response.setView(
-              ActionView.define(I18n.get("Tasks in progress"))
+              ActionView.define(I18n.get("Tasks incompleted"))
                   .model(ProjectTask.class.getName())
                   .add("grid", "project-task-grid")
                   .add("form", "project-task-form")
@@ -212,7 +189,7 @@ public class ClientViewController {
       if (clientUser.getPartner() == null) {
         response.setError(I18n.get(ITranslation.CLIENT_PORTAL_NO_PARTNER));
       } else {
-        Filter filter = clientViewService.getTasksDueOfUser(clientUser).get(0);
+        Filter filter = Filter.and(clientViewService.getTasksDueOfUser(clientUser));
         if (filter != null) {
           response.setView(
               ActionView.define(I18n.get("Tasks due"))

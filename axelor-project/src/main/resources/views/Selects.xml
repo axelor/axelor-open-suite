@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <selection name="project.type.select">
     <option value="1">Project</option>
     <option value="2">Project Phase</option>
-  </selection>
-
-  <selection name="project.status.select">
-    <option value="1">New</option>
-    <option value="2">In Progress</option>
-    <option value="3">Finished</option>
-    <option value="4">Canceled</option>
   </selection>
 
   <selection name="message.related.to.select" id="project.message.related.to.select">
@@ -37,32 +30,30 @@
     <option value="100">100 %</option>
   </selection>
 
-  <selection name="project.project.project.type.select">
-    <option value="1">Project</option>
-    <option value="2">Project phase</option>
+  <selection name="project.json.field.type">
+    <option value="string">String</option>
+    <option value="integer">Integer</option>
+    <option value="decimal">Decimal</option>
+    <option value="date">Date</option>
+    <option value="select">Select</option>
+    <option value="multiselect">MultiSelect</option>
   </selection>
 
-  <selection name="sequence.generic.code.select" id="project.sequence.generic.code.select">
-    <option value="project">Project</option>
+  <selection name="project.priority.technical.type.select">
+    <option value="1">Low</option>
+    <option value="2">Normal</option>
+    <option value="3">High</option>
+    <option value="4">Urgent</option>
+  </selection>
+
+  <selection name="project.status.related.to.select">
+    <option value="1">Project</option>
+    <option value="2">Task</option>
   </selection>
 
   <selection name="project.task.type.select">
     <option value="task">Task</option>
     <option value="ticket">Ticket</option>
-  </selection>
-
-  <selection name="project.task.status">
-    <option value="new">New</option>
-    <option value="in-progress">In Progress</option>
-    <option value="closed">Closed</option>
-    <option value="canceled">Canceled</option>
-  </selection>
-
-  <selection name="project.task.priority">
-    <option value="low">Low</option>
-    <option value="normal">Normal</option>
-    <option value="high">High</option>
-    <option value="urgent">Urgent</option>
   </selection>
 
 </object-views>

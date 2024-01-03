@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <!-- PAYMENT MOVE LINE DISTRIBUTION -->
+
+  <grid name="payment-move-line-distribution-grid" title="Payment move lines distribution"
+    model="com.axelor.apps.account.db.PaymentMoveLineDistribution">
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="move.journal"/>
+    <field name="move.reference"/>
+    <field name="moveLine.date"/>
+    <field name="moveLine.account.code" title="Account" form-view="account-form"
+      grid-view="account-grid"/>
+    <field name="moveLine.account.serviceType" form-view="service-type-form"
+      grid-view="service-type-grid"/>
+    <field name="operationDate"/>
+    <field name="inTaxProratedAmount"/>
+    <field name="exTaxProratedAmount"/>
+    <field name="taxProratedAmount"/>
+  </grid>
+
+
+  <grid name="payment-move-line-distribution-das2-grid" title="Payment move lines distribution"
+    model="com.axelor.apps.account.db.PaymentMoveLineDistribution" groupBy="partner"
+    orderBy="partner">
+    <hilite color="danger"
+      if="excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
+    <field name="excludeFromDas2Report" hidden="true"/>
+    <field name="moveLine.account.serviceType.n4dsCode" hidden="true"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="move.journal"/>
+    <field name="move.reference"/>
+    <field name="moveLine.date"/>
+    <field name="moveLine.account.code" title="Account" form-view="account-form"
+      grid-view="account-grid"/>
+    <field name="moveLine.account.serviceType" form-view="service-type-form"
+      grid-view="service-type-grid"/>
+    <field name="operationDate"/>
+    <field name="inTaxProratedAmount" aggregate="sum"/>
+    <field name="exTaxProratedAmount"/>
+    <field name="taxProratedAmount"/>
+    <button
+      onClick="action-account-payment-move-line-distribution-method-exclude-line-from-das2"
+      icon="fa-times" help="Exclude from DAS2 report" name="excludeFromDas2Btn"
+      readonlyIf="excludeFromDas2Report"/>
+    <button
+      onClick="action-account-payment-move-line-distribution-method-include-line-in-das2"
+      icon="fa-check" help="Include in DAS2 report" name="includeInDas2Btn"
+      readonlyIf="!excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
+  </grid>
+
+  <form name="payment-move-line-distribution-form" title="Payment move line distribution"
+    model="com.axelor.apps.account.db.PaymentMoveLineDistribution">
+    <panel name="mainPanel" readonly="true">
+      <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+      <field name="operationDate"/>
+      <field name="move" form-view="move-form" grid-view="move-grid"/>
+      <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
+      <field name="reconcile" form-view="reconcile-form" grid-view="reconcile-grid"/>
+      <field name="taxLine" form-view="tax-line-form" grid-view="tax-line-grid"/>
+      <field name="inTaxProratedAmount"/>
+      <field name="exTaxProratedAmount"/>
+      <field name="taxProratedAmount"/>
+    </panel>
+  </form>
+
+  <action-method
+    name="action-account-payment-move-line-distribution-method-exclude-line-from-das2">
+    <call class="com.axelor.apps.account.web.PaymentMoveLineDistributionController"
+      method="excludeLineFromDas2"/>
+  </action-method>
+
+  <action-method
+    name="action-account-payment-move-line-distribution-method-include-line-in-das2">
+    <call class="com.axelor.apps.account.web.PaymentMoveLineDistributionController"
+      method="includeLineInDas2"/>
+  </action-method>
+
+</object-views>

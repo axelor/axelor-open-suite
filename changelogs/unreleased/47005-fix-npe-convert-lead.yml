@@ -1,3 +1,0 @@
----
-title: "Lead: Fix 'NullPointerException' error when an user linked to a lead does not have an active company during lead conversion."
-type: fix

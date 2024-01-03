@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
-  <entity name="SopLine" lang="java">
+  <entity name="SopLine">
 
     <many-to-one name="year" ref="com.axelor.apps.base.db.Year" title="Year"/>
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
@@ -15,15 +15,10 @@
     <decimal name="sopRealSales" title="Real sales"/>
     <decimal name="sopSalesGap" title="% Gap"/>
 
-    <decimal name="sopManufForecast" title="Production forecast"/>
     <decimal name="sopRealManuf" title="Real production"/>
-    <decimal name="sopManufGap" title="% Gap"/>
 
-    <decimal name="sopStockForecast" title="Stock forecast"/>
     <decimal name="sopRealStock" title="Real stock"/>
-    <decimal name="sopStockGap" title="% Gap"/>
     <many-to-one name="sop" ref="com.axelor.apps.production.db.Sop" title="Sop"/>
-    <integer name="status" title="Status" selection="production.sop.line.status"/>
 
   </entity>
 

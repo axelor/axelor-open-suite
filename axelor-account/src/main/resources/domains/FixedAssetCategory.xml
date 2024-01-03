@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="FixedAssetCategory" lang="java" cacheable="true">
+  <entity name="FixedAssetCategory" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
 
-    <many-to-one name="fixedAssetType" ref="com.axelor.apps.account.db.FixedAssetType"
-      title="Fixed asset type"/>
+    <many-to-one name="fixedAssetType" massUpdate="true"
+      ref="com.axelor.apps.account.db.FixedAssetType" title="Fixed asset type"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
 
     <string name="computationMethodSelect" title="Computation method"
@@ -18,12 +18,16 @@
 
     <decimal name="degressiveCoef" title="Degressive coef"/>
 
-    <boolean name="isValidateFixedAsset"
+    <boolean name="isValidateFixedAsset" massUpdate="true"
       title="Validate automatically fixed assets generated from invoice"/>
 
     <integer name="periodicityInMonth" title="Periodicity in month" default="12"/>
     <integer name="numberOfDepreciation" title="Number of depreciation" default="1"/>
     <integer name="durationInMonth" title="Duration in month"/>
+    <string name="depreciationPlanSelect" title="Depreciation Plan"
+      selection="account.fixed.asset.depreciation.plan"/>
+    <integer name="periodicityTypeSelect" title="Periodicity Type"
+      selection="account.fixed.asset.periodicity.type" default="12"/>
 
     <boolean name="isProrataTemporis" title="Prorata temporis"/>
     <boolean name="isUSProrataTemporis" title="Use US prorata temoris" default="false"/>
@@ -31,14 +35,57 @@
     <many-to-one name="journal" ref="com.axelor.apps.account.db.Journal" title="Journal"
       required="true"/>
     <many-to-one name="chargeAccount" ref="com.axelor.apps.account.db.Account"
-      title="Charge account" required="true"/>
+      title="Depreciation expense account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="approExtraordDepreciationExpenseAccount"
+      title="Account for appropriation to extraordinary depreciations"/>
     <many-to-one name="depreciationAccount" ref="com.axelor.apps.account.db.Account"
-      title="Depreciation account" required="true"/>
+      title="Depreciation account"/>
 
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
 
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="expenseDepreciationDerogatoryAccount" title="Expense Depreciation Derogatory Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="capitalDepreciationDerogatoryAccount" title="Capital Depreciation Derogatory Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="incomeDepreciationDerogatoryAccount" title="Income Depreciation Derogatory Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="realisedAssetsValueAccount" title="Realised Assets Value Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="realisedAssetsIncomeAccount" title="Realised Assets Income Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="debtReceivableAccount"
+      title="Debt Receivable Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="provisionFixedAssetAccount" title="Provision Tangible Fixed Asset Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="wbProvisionFixedAssetAccount"
+      title="Written-back provision tangible fixed asset account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsDepreciationAccount"
+      title="IFRS Depreciation Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account" name="ifrsChargeAccount"
+      title="IFRS Charge Account"/>
+    <many-to-one ref="com.axelor.apps.account.db.Account"
+      name="appProvisionFixedAssetAccount"
+      title="Appropriation Provision Tangible Fixed Asset Account"/>
+
+
+    <extra-code><![CDATA[
+
+	   	// Reference Date for first depreciation
+		public static final int REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION = 1;
+		public static final int REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE = 2;
+
+        // Depreciation plan select
+
+        public static final String DEPRECIATION_PLAN_SELECT_NONE = "0";
+        public static final String DEPRECIATION_PLAN_SELECT_FISCAL= "1";
+        public static final String DEPRECIATION_PLAN_SELECT_ECONOMIC = "2";
+        public static final String DEPRECIATION_PLAN_SELECT_DEROGATION = "3";
+        public static final String DEPRECIATION_PLAN_SELECT_IFRS = "4";
+	]]></extra-code>
   </entity>
 
 </domain-models>

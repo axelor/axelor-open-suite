@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.4.2.v201410272105 Build &lt;4.4.2.v20150217-1805></property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -85,9 +85,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -937,8 +934,8 @@ StockConfig.display_barcode_on_picking_printing,
 StockConfig.display_line_details_on_printing,
 StockConfig.display_customer_code_on_picking_printing as "displayCustomerCodeOnPickingPrinting",
 CASE
-	WHEN StockMove.origin_type_select LIKE '%SaleOrder' THEN SaleOrder.sale_order_seq 
-	WHEN StockMove.origin_type_select LIKE '%PurchaseOrder' THEN PurchaseOrder.purchase_order_seq
+	WHEN StockMove.sale_order IS NOT NULL THEN SaleOrder.sale_order_seq 
+	WHEN StockMove.purchase_order IS NOT NULL THEN PurchaseOrder.purchase_order_seq
 END
 as "origin",
 StockMove.picking_order_comments
@@ -953,8 +950,8 @@ left outer join base_country as Country on (DeliveryAddress.addressl7country = C
 left join auth_user as AuthUser on (StockMove.updated_by = AuthUser.id)
 left join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.id)
 left join base_printing_settings as PrintingSetting on (Company.printing_settings = PrintingSetting.id)
-left join sale_sale_order as SaleOrder on (StockMove.origin_id = SaleOrder.id)
-left join purchase_purchase_order as PurchaseOrder on (StockMove.origin_id = PurchaseOrder.id)
+left join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
+left join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
 where StockMove.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1799,23 +1796,18 @@ order by StockMoveLine.sequence]]></xml-property>
                 <cell id="4219">
                     <property name="colSpan">2</property>
                     <property name="rowSpan">1</property>
-                    <text id="4288">
-                        <property name="fontSize">8pt</property>
+                    <image id="5375">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
                                 <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<TABLE>
-	<TR>
-		<VALUE-OF format="HTML">
-			"<TD><IMG src='"+params["AttachmentPath"].value+row["logo_path"]+"' alt='' height='"+row["logo_height"]+"' width='"+row["logo_width"]+"'/></TD>"
-		</VALUE-OF>
-	</TR>
-</TABLE>]]></text-property>
-                    </text>
+                        <method name="onRender"><![CDATA[this.width=row["logo_width"];
+this.height=row["logo_height"];]]></method>
+                        <property name="source">file</property>
+                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                    </image>
                 </cell>
                 <cell id="4221">
                     <property name="colSpan">4</property>
@@ -2300,17 +2292,43 @@ order by StockMoveLine.sequence]]></xml-property>
                     <text id="3426">
                         <property name="fontWeight">bold</property>
                         <property name="marginLeft">2pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">if(row["title_select"] == "1"){'M.'}
+else if(row["title_select"] == "2"){'Ms.'}
+else if(row["title_select"] == "3"){'Dr'}
+else if(row["title_select"] == "4"){'Prof.'}</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["partner_type_select"] != "1"){
-	if(row["title_select"]== "1"){"M."}
-	else if(row["title_select"]=="2"){"Mme"}
-	else if(row["title_select"]=="3"){"Mlle"}
-	else if(row["title_select"]=="4"){"Dr"}
-	else if(row["title_select"]=="5"){"Prof."}
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
+			if(params["Locale"].value != 'en') {
+				row["translation"]
+			} else {
+				row["message_key"]
+			}
 }</VALUE-OF> 
-<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row["name"]</VALUE-OF>
-<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row["partner_type_select"] != "1"){
-row["first_name"]
+<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["name"]</VALUE-OF>
+<VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row._outer["partner_type_select"] != "1"){
+row._outer["first_name"]
 }</VALUE-OF>]]></text-property>
                     </text>
                     <text id="3670">
@@ -3108,9 +3126,9 @@ rowNumD=0;]]></method>
                                         <property name="borderTopWidth">thin</property>
                                         <property name="textAlign">center</property>
                                         <image id="4110">
+                                            <expression name="altText">""</expression>
                                             <property name="source">file</property>
                                             <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                            <expression name="altText">""</expression>
                                         </image>
                                     </cell>
                                     <cell id="3807">
@@ -3996,9 +4014,9 @@ rowNumD=0;]]></method>
                                     <property name="borderTopWidth">thin</property>
                                     <property name="textAlign">center</property>
                                     <image id="4375">
+                                        <expression name="altText">""</expression>
                                         <property name="source">file</property>
                                         <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
-                                        <expression name="altText">""</expression>
                                     </image>
                                 </cell>
                                 <cell id="4290">

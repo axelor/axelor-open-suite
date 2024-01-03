@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="PaymentMoveLineDistribution">
+    <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      required="true" initParam="true"/>
+    <many-to-one name="reconcile" ref="Reconcile" title="Reconcile" required="true"
+      initParam="true"/>
+    <many-to-one name="moveLine" ref="MoveLine" title="Move line" required="true"
+      initParam="true"/>
+    <many-to-one name="move" ref="Move" title="Move" required="true" initParam="true"/>
+    <many-to-one name="taxLine" ref="TaxLine" title="Tax" initParam="true"/>
+
+    <decimal name="inTaxProratedAmount" title="Prorated amount A.T.I." readonly="true"/>
+    <decimal name="taxProratedAmount" title="Prorated tax" readonly="true"/>
+    <decimal name="exTaxProratedAmount" title="Prorated amount W.T." readonly="true"/>
+
+    <date name="operationDate" title="Operation date"/>
+    <boolean name="isAlreadyReverse" default="false" readonly="true" hidden="true"/>
+    <boolean name="excludeFromDas2Report" title="Exclude from DAS2 report" default="false"/>
+
+  </entity>
+</domain-models>

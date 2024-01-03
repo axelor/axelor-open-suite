@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service;
 
@@ -29,16 +30,19 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleLineRepository;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.service.move.MoveService;
+import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveToolService;
+import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
@@ -60,7 +64,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
 
   protected AppBaseService appBaseService;
   protected PaymentScheduleService paymentScheduleService;
-  protected MoveService moveService;
+  protected MoveValidateService moveValidateService;
+  protected MoveCreateService moveCreateService;
   protected PaymentModeService paymentModeService;
   protected SequenceService sequenceService;
   protected AccountingSituationService accountingSituationService;
@@ -68,22 +73,28 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
   protected PaymentService paymentService;
   protected MoveLineRepository moveLineRepo;
   protected PaymentScheduleLineRepository paymentScheduleLineRepo;
+  protected MoveLineCreateService moveLineCreateService;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public PaymentScheduleLineServiceImpl(
       AppBaseService appBaseService,
       PaymentScheduleService paymentScheduleService,
-      MoveService moveService,
+      MoveCreateService moveCreateService,
+      MoveValidateService moveValidateService,
       PaymentModeService paymentModeService,
       SequenceService sequenceService,
       AccountingSituationService accountingSituationService,
       MoveToolService moveToolService,
       PaymentService paymentService,
       MoveLineRepository moveLineRepo,
-      PaymentScheduleLineRepository paymentScheduleLineRepo) {
+      PaymentScheduleLineRepository paymentScheduleLineRepo,
+      MoveLineCreateService moveLineCreateService,
+      MoveLineToolService moveLineToolService) {
     this.appBaseService = appBaseService;
     this.paymentScheduleService = paymentScheduleService;
-    this.moveService = moveService;
+    this.moveCreateService = moveCreateService;
+    this.moveValidateService = moveValidateService;
     this.paymentModeService = paymentModeService;
     this.sequenceService = sequenceService;
     this.accountingSituationService = accountingSituationService;
@@ -91,6 +102,8 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     this.paymentService = paymentService;
     this.moveLineRepo = moveLineRepo;
     this.paymentScheduleLineRepo = paymentScheduleLineRepo;
+    this.moveLineCreateService = moveLineCreateService;
+    this.moveLineToolService = moveLineToolService;
   }
 
   /**
@@ -120,12 +133,10 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     }
 
     log.debug(
-        "Création de la ligne de l'échéancier numéro {} pour la date du {} et la somme de {}",
-        new Object[] {
-          paymentScheduleLine.getScheduleLineSeq(),
-          paymentScheduleLine.getScheduleDate(),
-          paymentScheduleLine.getInTaxAmount()
-        });
+        "Creation of payment schedule line number {} for the date {} and amount {}",
+        paymentScheduleLine.getScheduleLineSeq(),
+        paymentScheduleLine.getScheduleDate(),
+        paymentScheduleLine.getInTaxAmount());
 
     return paymentScheduleLine;
   }
@@ -145,7 +156,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     BigDecimal inTaxAmount = paymentSchedule.getInTaxAmount();
 
     log.debug(
-        "Création de lignes pour l'échéancier numéro {} (nombre d'échéance : {}, montant : {})",
+        "Creation of lines for the payment schedule number {} (number of schedule : {}, amount : {})",
         new Object[] {paymentSchedule.getPaymentScheduleSeq(), nbrTerm, inTaxAmount});
 
     if (nbrTerm > 0 && inTaxAmount.compareTo(BigDecimal.ZERO) == 1) {
@@ -187,40 +198,39 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
     Journal journal =
         paymentModeService.getPaymentModeJournal(paymentMode, company, companyBankDetails);
     BigDecimal amount = paymentScheduleLine.getInTaxAmount();
-    String name = paymentScheduleLine.getName();
+    String origin = paymentScheduleLine.getName();
     LocalDate todayDate = appBaseService.getTodayDate(company);
     Account account = accountingSituationService.getCustomerAccount(partner, company);
 
     Move move =
-        moveService
-            .getMoveCreateService()
-            .createMove(
-                journal,
-                company,
-                null,
-                partner,
-                paymentMode,
-                MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-                MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT);
+        moveCreateService.createMove(
+            journal,
+            company,
+            null,
+            partner,
+            paymentMode,
+            partner != null ? partner.getFiscalPosition() : null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            origin,
+            null,
+            companyBankDetails);
 
     MoveLine creditMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(move, partner, account, amount, false, todayDate, 1, name, null);
+        moveLineCreateService.createMoveLine(
+            move, partner, account, amount, false, todayDate, 1, origin, null);
     move.addMoveLineListItem(creditMoveLine);
     creditMoveLine = moveLineRepo.save(creditMoveLine);
 
     Account paymentModeAccount =
         paymentModeService.getPaymentModeAccount(paymentMode, company, companyBankDetails);
     MoveLine debitMoveLine =
-        moveService
-            .getMoveLineService()
-            .createMoveLine(
-                move, partner, paymentModeAccount, amount, true, todayDate, 2, name, null);
+        moveLineCreateService.createMoveLine(
+            move, partner, paymentModeAccount, amount, true, todayDate, 2, origin, null);
     move.addMoveLineListItem(debitMoveLine);
     debitMoveLine = moveLineRepo.save(debitMoveLine);
 
-    moveService.getMoveValidateService().validate(move);
+    moveValidateService.accounting(move);
 
     // Reconcile
     if (paymentSchedule.getTypeSelect() == PaymentScheduleRepository.TYPE_TERMS
@@ -228,7 +238,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
       List<MoveLine> debitMoveLineList =
           paymentSchedule.getInvoiceSet().stream()
               .sorted(Comparator.comparing(Invoice::getDueDate))
-              .map(invoice -> moveService.getMoveLineService().getDebitCustomerMoveLine(invoice))
+              .map(invoice -> moveLineToolService.getDebitCustomerMoveLine(invoice))
               .collect(Collectors.toList());
 
       if (moveToolService.isSameAccount(debitMoveLineList, account)) {

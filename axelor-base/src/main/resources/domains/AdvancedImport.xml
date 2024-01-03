@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -26,11 +26,21 @@
 
     <one-to-many name="fileTabList" ref="com.axelor.apps.base.db.FileTab"
       title="Tabs configuration" mappedBy="advancedImport"/>
+    <one-to-many name="importHistoryList" title="Historical"
+      ref="com.axelor.apps.base.db.ImportHistory" mappedBy="advanceImport"/>
 
     <many-to-one name="errorLog" ref="com.axelor.meta.db.MetaFile" title="Error logs"/>
 
     <string name="languageSelect" title="Selection language" selection="select.language"/>
     <string name="fileExtension" title="File extension"/>
+
+    <extra-code><![CDATA[
+
+	   	// STATUS SELECT
+		public static final int STATUS_SELECT_DRAFT = 0;
+		public static final int STATUS_SELECT_VALIDATED = 1;
+
+	]]></extra-code>
   </entity>
 
 </domain-models>

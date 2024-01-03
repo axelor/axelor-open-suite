@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,11 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
@@ -27,18 +29,17 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.AppBaseRepository;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -78,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
   @Inject private MetaFiles metaFiles;
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void updateProductPrice(Product product) throws AxelorException {
 
     this.updateSalePrice(product, null);
@@ -94,12 +95,13 @@ public class ProductServiceImpl implements ProductService {
         .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT_CATEGORY)) {
       ProductCategory productCategory = product.getProductCategory();
       if (productCategory.getSequence() != null) {
-        seq = sequenceService.getSequenceNumber(productCategory.getSequence());
+        seq =
+            sequenceService.getSequenceNumber(productCategory.getSequence(), Product.class, "code");
       }
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.CATEGORY_NO_SEQUENCE));
+            I18n.get(BaseExceptionMessage.CATEGORY_NO_SEQUENCE));
       }
     } else if (appBaseService
         .getAppBase()
@@ -107,19 +109,19 @@ public class ProductServiceImpl implements ProductService {
         .equals(AppBaseRepository.SEQUENCE_PER_PRODUCT)) {
       Sequence productSequence = appBaseService.getAppBase().getProductSequence();
       if (productSequence != null) {
-        seq = sequenceService.getSequenceNumber(productSequence);
+        seq = sequenceService.getSequenceNumber(productSequence, Product.class, "code");
       }
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.APP_BASE_NO_SEQUENCE));
+            I18n.get(BaseExceptionMessage.APP_BASE_NO_SEQUENCE));
       }
     }
 
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(IExceptionMessage.PRODUCT_NO_SEQUENCE));
+          I18n.get(BaseExceptionMessage.PRODUCT_NO_SEQUENCE));
     }
 
     return seq;
@@ -144,6 +146,20 @@ public class ProductServiceImpl implements ProductService {
       }
     }
 
+    if ((BigDecimal) productCompanyService.get(product, "purchasePrice", company) != null) {
+
+      if (product.getProductVariant() != null) {
+
+        product.setPurchasePrice(
+            product
+                .getPurchasePrice()
+                .add(
+                    this.getProductExtraPrice(
+                        product.getProductVariant(),
+                        ProductVariantValueRepository.APPLICATION_PURCHASE_PRICE)));
+      }
+    }
+
     if ((BigDecimal) productCompanyService.get(product, "costPrice", company) != null
         && managePriceCoef != null
         && (Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
@@ -155,6 +171,9 @@ public class ProductServiceImpl implements ProductService {
                   .multiply(managePriceCoef))
               .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
           company);
+    }
+
+    if ((BigDecimal) productCompanyService.get(product, "salePrice", company) != null) {
 
       if (product.getProductVariant() != null) {
 
@@ -174,7 +193,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
-  private void updateSalePriceOfVariant(Product product) throws AxelorException {
+  protected void updateSalePriceOfVariant(Product product) throws AxelorException {
 
     List<? extends Product> productVariantList =
         productRepo
@@ -185,9 +204,8 @@ public class ProductServiceImpl implements ProductService {
     for (Product productVariant : productVariantList) {
 
       productVariant.setCostPrice(product.getCostPrice());
-      if (product.getAutoUpdateSalePrice()) {
-        productVariant.setSalePrice(product.getSalePrice());
-      }
+      productVariant.setPurchasePrice(product.getPurchasePrice());
+      productVariant.setSalePrice(product.getSalePrice());
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant, null);
@@ -203,7 +221,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void generateProductVariants(Product productModel) throws AxelorException {
 
     List<ProductVariant> productVariantList =
@@ -278,6 +296,8 @@ public class ProductServiceImpl implements ProductService {
     product.setSalePrice(productModel.getSalePrice());
     product.setManagPriceCoef(productModel.getManagPriceCoef());
 
+    product = productVariantService.copyAdditionalFields(product, productModel);
+
     this.updateSalePrice(product, null);
 
     return product;
@@ -285,7 +305,7 @@ public class ProductServiceImpl implements ProductService {
 
   /**
    * @param productVariant
-   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price
+   * @param applicationPriceSelect - 1 : Sale price - 2 : Cost price - 3 : Purchase price
    * @return
    */
   @Override
@@ -298,6 +318,7 @@ public class ProductServiceImpl implements ProductService {
     ProductVariantValue productVariantValue2 = productVariant.getProductVariantValue2();
     ProductVariantValue productVariantValue3 = productVariant.getProductVariantValue3();
     ProductVariantValue productVariantValue4 = productVariant.getProductVariantValue4();
+    ProductVariantValue productVariantValue5 = productVariant.getProductVariantValue5();
 
     if (productVariantValue1 != null
         && productVariantValue1.getApplicationPriceSelect() == applicationPriceSelect) {
@@ -305,19 +326,28 @@ public class ProductServiceImpl implements ProductService {
       extraPrice = extraPrice.add(productVariantValue1.getPriceExtra());
     }
 
-    if (productVariantValue2 != null) {
+    if (productVariantValue2 != null
+        && productVariantValue2.getApplicationPriceSelect() == applicationPriceSelect) {
 
       extraPrice = extraPrice.add(productVariantValue2.getPriceExtra());
     }
 
-    if (productVariantValue3 != null) {
+    if (productVariantValue3 != null
+        && productVariantValue3.getApplicationPriceSelect() == applicationPriceSelect) {
 
       extraPrice = extraPrice.add(productVariantValue3.getPriceExtra());
     }
 
-    if (productVariantValue4 != null) {
+    if (productVariantValue4 != null
+        && productVariantValue4.getApplicationPriceSelect() == applicationPriceSelect) {
 
       extraPrice = extraPrice.add(productVariantValue4.getPriceExtra());
+    }
+
+    if (productVariantValue5 != null
+        && productVariantValue5.getApplicationPriceSelect() == applicationPriceSelect) {
+
+      extraPrice = extraPrice.add(productVariantValue5.getPriceExtra());
     }
 
     return extraPrice;
@@ -359,7 +389,8 @@ public class ProductServiceImpl implements ProductService {
     } else {
 
       productVariantList.add(
-          this.createProductVariant(productVariantConfig, productVariantValue1, null, null, null));
+          this.createProductVariant(
+              productVariantConfig, productVariantValue1, null, null, null, null));
     }
 
     return productVariantList;
@@ -389,7 +420,7 @@ public class ProductServiceImpl implements ProductService {
 
       productVariantList.add(
           this.createProductVariant(
-              productVariantConfig, productVariantValue1, productVariantValue2, null, null));
+              productVariantConfig, productVariantValue1, productVariantValue2, null, null, null));
     }
 
     return productVariantList;
@@ -409,8 +440,8 @@ public class ProductServiceImpl implements ProductService {
       for (ProductVariantValue productVariantValue4 :
           productVariantConfig.getProductVariantValue4Set()) {
 
-        productVariantList.add(
-            this.createProductVariant(
+        productVariantList.addAll(
+            this.getProductVariantList(
                 productVariantConfig,
                 productVariantValue1,
                 productVariantValue2,
@@ -425,6 +456,46 @@ public class ProductServiceImpl implements ProductService {
               productVariantValue1,
               productVariantValue2,
               productVariantValue3,
+              null,
+              null));
+    }
+
+    return productVariantList;
+  }
+
+  private List<ProductVariant> getProductVariantList(
+      ProductVariantConfig productVariantConfig,
+      ProductVariantValue productVariantValue1,
+      ProductVariantValue productVariantValue2,
+      ProductVariantValue productVariantValue3,
+      ProductVariantValue productVariantValue4) {
+
+    List<ProductVariant> productVariantList = Lists.newArrayList();
+
+    if (productVariantConfig.getProductVariantAttr5() != null
+        && productVariantConfig.getProductVariantValue5Set() != null) {
+
+      for (ProductVariantValue productVariantValue5 :
+          productVariantConfig.getProductVariantValue5Set()) {
+
+        productVariantList.add(
+            this.createProductVariant(
+                productVariantConfig,
+                productVariantValue1,
+                productVariantValue2,
+                productVariantValue3,
+                productVariantValue4,
+                productVariantValue5));
+      }
+    } else {
+
+      productVariantList.add(
+          this.createProductVariant(
+              productVariantConfig,
+              productVariantValue1,
+              productVariantValue2,
+              productVariantValue3,
+              productVariantValue4,
               null));
     }
 
@@ -437,12 +508,14 @@ public class ProductServiceImpl implements ProductService {
       ProductVariantValue productVariantValue1,
       ProductVariantValue productVariantValue2,
       ProductVariantValue productVariantValue3,
-      ProductVariantValue productVariantValue4) {
+      ProductVariantValue productVariantValue4,
+      ProductVariantValue productVariantValue5) {
 
     ProductVariantAttr productVariantAttr1 = null,
         productVariantAttr2 = null,
         productVariantAttr3 = null,
-        productVariantAttr4 = null;
+        productVariantAttr4 = null,
+        productVariantAttr5 = null;
     if (productVariantValue1 != null) {
       productVariantAttr1 = productVariantConfig.getProductVariantAttr1();
     }
@@ -455,16 +528,21 @@ public class ProductServiceImpl implements ProductService {
     if (productVariantValue4 != null) {
       productVariantAttr4 = productVariantConfig.getProductVariantAttr4();
     }
+    if (productVariantValue5 != null) {
+      productVariantAttr5 = productVariantConfig.getProductVariantAttr5();
+    }
 
     return productVariantService.createProductVariant(
         productVariantAttr1,
         productVariantAttr2,
         productVariantAttr3,
         productVariantAttr4,
+        productVariantAttr5,
         productVariantValue1,
         productVariantValue2,
         productVariantValue3,
         productVariantValue4,
+        productVariantValue5,
         false);
   }
 
@@ -484,5 +562,6 @@ public class ProductServiceImpl implements ProductService {
     copy.setPurchasePrice(BigDecimal.ZERO);
     copy.setProductCompanyList(null);
     copy.setLastPurchaseDate(null);
+    copy.setCode(null);
   }
 }

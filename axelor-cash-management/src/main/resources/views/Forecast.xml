@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="forecast-grid" title="Forecasts"
     model="com.axelor.apps.cash.management.db.Forecast">
     <field name="forecastSeq"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="bankDetails"/>
     <field name="amount" aggregate="sum"/>
     <field name="typeSelect"/>
@@ -23,13 +23,36 @@
     <panel name="mainPanel">
       <field name="company" canEdit="false" onChange="action-forecast-record-bank"/>
       <field name="bankDetails" onSelect="action-accounting-batch-attrs-bank-details-domain"
-        if="__config__.app.getApp('base').getManageMultiBanks()"/>
+        if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
       <field name="typeSelect"/>
       <field name="amount"/>
       <field name="estimatedDate"/>
-      <field name="forecastReason"/>
+      <field name="forecastRecapLineType" domain="self.elementSelect = 5"/>
       <field name="realizationDate"/>
       <field name="comments" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form name="forecast-dashboard-form" title="Forecast Dashboard"
+    model="com.axelor.utils.db.Wizard" onNew="action-dashboard-forecast-attrs-set-defaults"
+    width="large" canNew="false" canSave="false">
+    <panel name="detailsPanel">
+      <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
+        onSelect="action-dashboard-forecast-attrs-bank-details-domain" name="$bankDetails"
+        title="Bank details" type="many-to-one"
+        onChange="action-dashboard-forecast-refresh-dashlet-on-change"
+        target="com.axelor.apps.base.db.BankDetails" domain="self.active = true"/>
+      <panel-dashlet name="chartForecastLines" colSpan="12"
+        action="dashlet.all.forecast.lines"/>
+      <label title="&lt;h4>Forecasts in out total&lt;/h4>" colSpan="12"/>
+      <field name="$fromDate" title="From Date" type="date"
+        onChange="action-dashboard-forecast-refresh-dashlet-on-change" required="true"/>
+      <field name="$toDate" title="To Date" type="date"
+        onChange="action-dashboard-forecast-refresh-dashlet-on-change" required="true"/>
+      <panel-dashlet name="chartForecastInOutTotal" title=" " colSpan="12"
+        action="dashlet.forecast.in.out.total"/>
+      <panel-dashlet name="chartCashBalanceOverTime" colSpan="12"
+        action="dashlet.cash.balance.over.time"/>
     </panel>
   </form>
 
@@ -49,6 +72,33 @@
   <search-filters name="forecast-filters"
     model="com.axelor.apps.cash.management.db.Forecast" title="Forecast filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-attrs name="action-dashboard-forecast-attrs-set-defaults">
+    <attribute name="value" for="$fromDate"
+      expr="eval: __repo__(ForecastRecap).all().filter('self.isReport = true').fetchOne()?.getFromDate()"/>
+    <attribute name="value" for="$toDate"
+      expr="eval: __repo__(ForecastRecap).all().filter('self.isReport = true').fetchOne()?.getToDate()"/>
+  </action-attrs>
+
+  <action-attrs name="action-dashboard-forecast-attrs-bank-details-domain">
+    <attribute name="domain"
+      expr="eval: &quot;self.id IN (${__user__.activeCompany.bankDetailsList?.collect{it.id}.join(',')},${__user__.activeCompany.defaultBankDetails?.id}) AND self.active = true&quot;"
+      for="$bankDetails"
+      if="__user__.activeCompany &amp;&amp; ! __user__.activeCompany.bankDetailsList.isEmpty()"/>
+    <attribute name="domain"
+      expr="eval: &quot;self.id = ${__user__.activeCompany?.defaultBankDetails?.id} AND self.active = true&quot;"
+      for="$bankDetails"
+      if="__user__.activeCompany &amp;&amp; __user__.activeCompany.bankDetailsList.isEmpty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-dashboard-forecast-refresh-dashlet-on-change">
+    <attribute name="refresh" expr="eval: true" for="chartForecastLines"/>
+    <attribute if="fromDate &amp;&amp; toDate" name="refresh" expr="eval: true"
+      for="chartForecastInOutTotal"/>
+    <attribute name="refresh" expr="eval: true" for="chartCashBalanceOverTime"/>
+  </action-attrs>
+
+
 </object-views>

@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,10 +14,12 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet.timer;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
@@ -24,15 +27,13 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
-import com.axelor.apps.tool.date.DurationTool;
 import com.axelor.auth.AuthUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.utils.date.DurationTool;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -61,7 +62,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     } else {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.NO_TIMESHEET_CREATED),
+          I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_CREATED),
           timer);
     }
   }
@@ -77,8 +78,8 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     timer.setDuration(secondes);
   }
 
-  @Transactional
-  public TimesheetLine generateTimesheetLine(TSTimer timer) {
+  @Transactional(rollbackOn = {Exception.class})
+  public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException {
 
     BigDecimal durationHours = this.convertSecondDurationInHours(timer.getDuration());
     Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
@@ -91,7 +92,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
             .createTimesheetLine(
                 timer.getProject(),
                 timer.getProduct(),
-                timer.getUser(),
+                timer.getEmployee(),
                 startDateTime,
                 timesheet,
                 durationHours,
@@ -117,7 +118,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   public TSTimer getCurrentTSTimer() {
     return Beans.get(TSTimerRepository.class)
         .all()
-        .filter("self.user = ?1", AuthUtils.getUser())
+        .filter("self.employee.user.id = ?1", AuthUtils.getUser().getId())
         .fetchOne();
   }
 }

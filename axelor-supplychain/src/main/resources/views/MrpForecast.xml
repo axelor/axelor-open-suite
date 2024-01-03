@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="mrp-forecast-grid" model="com.axelor.apps.supplychain.db.MrpForecast"
     title="MRP forecasts" orderBy="-forecastDate,product.code">
@@ -37,13 +37,13 @@
       </panel>
       <panel name="actionsPanel" colSpan="4" itemSpan="12">
         <button name="confirmBtn" title="Confirm" showIf="statusSelect == 1"
-          onClick="save,action-mrp-forecast-attrs-confirm-btn-on-click,save"/>
+          onClick="action-mrp-forecast-group-confirm-button"/>
         <button name="cancelBtn" title="Cancel" hideIf="statusSelect == 3"
-          onClick="save,action-mrp-forecast-attrs-cancel-btn-on-click,save"/>
+          onClick="action-mrp-forecast-group-cancel-button"/>
       </panel>
       <panel name="detailsPanel" colSpan="12">
         <field name="id" title="Ref"/>
-        <field name="forecastDate"/>
+        <field name="forecastDate" onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"
           domain="self.dtype = 'Product'"/>
         <field name="qty"/>
@@ -76,12 +76,22 @@
     <field name="technicalOrigin" expr="eval: 1"/>
   </action-record>
 
-  <action-attrs name="action-mrp-forecast-attrs-confirm-btn-on-click">
-    <attribute name="value" for="statusSelect" expr="eval: 2"/>
-  </action-attrs>
+  <action-method name="action-mrp-forecast-method-confirm">
+    <call class="com.axelor.apps.supplychain.web.MrpForecastController" method="confirm"/>
+  </action-method>
 
-  <action-attrs name="action-mrp-forecast-attrs-cancel-btn-on-click">
-    <attribute name="value" for="statusSelect" expr="eval: 3"/>
-  </action-attrs>
+  <action-method name="action-mrp-forecast-method-cancel">
+    <call class="com.axelor.apps.supplychain.web.MrpForecastController" method="cancel"/>
+  </action-method>
+
+  <action-group name="action-mrp-forecast-group-confirm-button">
+    <action name="save"/>
+    <action name="action-mrp-forecast-method-confirm"/>
+  </action-group>
+
+  <action-group name="action-mrp-forecast-group-cancel-button">
+    <action name="save"/>
+    <action name="action-mrp-forecast-method-cancel"/>
+  </action-group>
 
 </object-views>

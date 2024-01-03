@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="configurator-creator-grid" title="ConfiguratorCreators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
     <toolbar>
       <button name="exportCreatorsBtn" title="Export"
         onClick="action-configurator-creator-export"/>
-      <button name="importCreatorsBtn" title="Import"
+      <button name="importCreatorsBtn" title="import.verb"
         onClick="action-configurator-creator-view-import"/>
     </toolbar>
     <field name="name"/>
@@ -71,10 +71,11 @@
     </panel>
 
     <panel name="configuratorBomPanel" title="Configurator BoM" hideIf="id == null"
-      if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator()"
+      if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableConfigurator()"
       colSpan="12">
-      <field name="configuratorBom" showTitle="false" if-module="axelor-production"
-        colSpan="12" form-view="configurator-bom-form" grid-view="configurator-bom-grid">
+      <field name="configuratorBom" canEdit="true" showTitle="false"
+        if-module="axelor-production" colSpan="12" form-view="configurator-bom-form"
+        grid-view="configurator-bom-grid">
         <editor>
           <panel>
             <field name="company"/>
@@ -110,6 +111,17 @@
             <field name="unitFormula" colSpan="12" height="120" widget="CodeEditor"
               showTitle="false" x-code-syntax="groovy" showIf="defUnitAsFormula"/>
           </panel>
+          <panel name="workshopStockLocationPanel" title="Workshop"
+            if="__config__.app.getApp('production')?.getManageWorkshop()">
+            <field name="defWorkshopStockLocationAsFormula" colSpan="6" type="boolean"/>
+            <field name="workshopStockLocation" colSpan="12"
+              showIf="!defWorkshopStockLocationAsFormula"
+              domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"
+              form-view="stock-location-form" grid-view="stock-location-grid"/>
+            <field name="workshopStockLocationFormula" colSpan="12" height="120"
+              widget="CodeEditor" showTitle="false" x-code-syntax="groovy"
+              showIf="defWorkshopStockLocationAsFormula"/>
+          </panel>
           <panel name="productionProcessPanel" title="Production process">
             <field name="defProdProcessAsFormula" readonlyIf="defProdProcessAsConfigurator"
               colSpan="6" type="boolean"/>
@@ -121,7 +133,7 @@
             <field name="prodProcessFormula" colSpan="12" height="120" widget="CodeEditor"
               showTitle="false" x-code-syntax="groovy"
               showIf="defProdProcessAsFormula &amp;&amp; !defProdProcessAsConfigurator"/>
-            <field name="configuratorProdProcess" colSpan="12" canNew="true"
+            <field name="configuratorProdProcess" colSpan="12" canNew="true" canEdit="true"
               showIf="defProdProcessAsConfigurator"/>
           </panel>
           <panel colSpan="12">
@@ -135,12 +147,12 @@
     </panel>
   </form>
 
-  <form name="import-configurator-creator-form" title="Import Configurator Creator"
+  <form name="import-configurator-creator-form" title="Import configurator creators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
     <panel name="mainPanel">
       <field name="dataFile" type="many-to-one" target="com.axelor.meta.db.MetaFile"
         widget="binary-link" title="Data file"/>
-      <button name="importCreatorsBtn" title="Import Configurator Creators"
+      <button name="importCreatorsBtn" title="import.verb"
         onClick="action-configurator-creator-method-import-configurator-creators"
         showIf="dataFile != null" colSpan="6"/>
       <field name="importLog" type="text" colSpan="12" readonly="true" title="Import log"/>
@@ -211,7 +223,7 @@
   <search-filters name="configurator-creator-filters"
     model="com.axelor.apps.sale.db.ConfiguratorCreator" title="Configurator creator filters">
     <field name="configuratorBom" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production').getEnableConfigurator())"/>
+      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableConfigurator())"/>
   </search-filters>
 
 </object-views>

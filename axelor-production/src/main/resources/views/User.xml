@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <form name="manufacturing-dashboard-user" title="User Dashboard"
     model="com.axelor.auth.db.User" canNew="false" canSave="false" width="large">
     <panel name="mainPanel">
       <field name="$user" title="User" type="many-to-one" target="com.axelor.auth.db.User"
-        required="true"/>
+        required="true" onChange="action-user-attrs-get-user-id"/>
       <spacer name="userSpacer" colSpan="6"/>
       <field name="$dateFrom" title="From" widget="date" required="true"/>
       <field name="$dateTo" title="To" widget="date" required="true"/>
+      <field name="$userId" hidden="true"/>
     </panel>
     <panel-dashlet name="durationOnMOsPanel" title="Duration on MOs"
       showIf="$user &amp;&amp; $dateFrom &amp;&amp; $dateTo"
@@ -19,7 +20,7 @@
 
   <action-view name="action-production-view-duration-on-mos" title="">
     <view name="chart.duration.on.mos" type="chart"/>
-    <context name="userId" expr="eval: user.id"/>
+    <context name="userId" expr="eval: $userId"/>
     <context name="dateFrom" expr="eval: dateFrom"/>
     <context name="dateTo" expr="eval: dateTo"/>
   </action-view>
@@ -27,6 +28,10 @@
   <action-attrs name="action-user-attrs-domain-workshop-stock-location">
     <attribute name="domain" for="workshopStockLocation"
       expr="eval: activeCompany != null ? &quot; self.company = :activeCompany and self.isWorkshop = true &quot; : null"/>
+  </action-attrs>
+
+  <action-attrs name="action-user-attrs-get-user-id">
+    <attribute for="$userId" name="value" expr="user.id"/>
   </action-attrs>
 
 </object-views>

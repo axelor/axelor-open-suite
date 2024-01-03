@@ -1,19 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AnalyticAccount" lang="java">
+  <entity name="AnalyticAccount">
 
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
     <many-to-one name="analyticAxis" ref="com.axelor.apps.account.db.AnalyticAxis"
       title="Analytic axis"/>
     <many-to-one name="parent" ref="com.axelor.apps.account.db.AnalyticAccount"
-      title="Parent Analytic Acc."/>
+      title="Parent Analytic Acc."
+      help="This field allows you to select a parent analytical account. Only analytical accounts with an analytical level higher than one unit and belonging to the same axis will be selectable."/>
+    <many-to-one name="analyticLevel" ref="com.axelor.apps.account.db.AnalyticLevel"
+      title="Analytic level" massUpdate="true"
+      help="This field is used to define the analytical level of the analytical account. The analytical account is identified at level 1."/>
+    <string name="fullName" title="Full name" required="true" namecolumn="true"
+      search="code,name">
+			<![CDATA[
+		return code+" - " + name;
+		]]>
+    </string>
+
+    <many-to-one name="analyticGroupingValue1"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 1"
+      help="This field allows you to select a grouping value among the grouping values ​​1 defined on the axis to which this account is attached."/>
+    <many-to-one name="analyticGroupingValue2"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 2"/>
+    <many-to-one name="analyticGroupingValue3"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 3"/>
+    <many-to-one name="analyticGroupingValue4"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 4"/>
+    <many-to-one name="analyticGroupingValue5"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 5"/>
+    <many-to-one name="analyticGroupingValue6"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 6"/>
+    <many-to-one name="analyticGroupingValue7"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 7"/>
+    <many-to-one name="analyticGroupingValue8"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 8"/>
+    <many-to-one name="analyticGroupingValue9"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 9"/>
+    <many-to-one name="analyticGroupingValue10"
+      ref="com.axelor.apps.account.db.AnalyticGroupingValue" title="Analytic grouping value 10"/>
+
+    <integer name="statusSelect" title="Status" selection="ianalytic.account.status.select"
+      default="0"/>
+
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+
     <unique-constraint columns="code,name,analyticAxis"/>
+
+    <finder-method name="findByAnalyticAxis" using="analyticAxis" all="true"/>
+    <finder-method name="findByParent" using="parent" all="true"/>
+
+    <extra-code>
+      	<![CDATA[
+      		// STATUS SELECT
+      		public static final int STATUS_INACTIVE = 0;
+      		public static final int STATUS_ACTIVE = 1;
+      	]]>
+    </extra-code>
+
+    <track>
+      <field name="statusSelect"/>
+    </track>
+
   </entity>
 
 </domain-models>

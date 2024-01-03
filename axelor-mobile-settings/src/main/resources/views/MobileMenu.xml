@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="mobile-menu-grid" title="Mobile Menus"
+    model="com.axelor.apps.mobilesettings.db.MobileMenu">
+    <field name="technicalName" readonly="true"/>
+    <field name="name" readonly="true"/>
+  </grid>
+
+  <form name="mobile-menu-form" title="Mobile Menu"
+    model="com.axelor.apps.mobilesettings.db.MobileMenu" width="large">
+    <panel name="mainPanel">
+      <field name="name" colSpan="4"/>
+      <field name="technicalName" colSpan="4"/>
+      <spacer colSpan="2"/>
+      <field name="authorizedRoles" placeholder="None" colSpan="6" canNew="false"
+        canEdit="false" widget="TagSelect"/>
+    </panel>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+</object-views>

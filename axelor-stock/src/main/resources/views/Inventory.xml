@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="inventory-grid" title="Inventory" model="com.axelor.apps.stock.db.Inventory">
     <field name="inventorySeq" width="120"/>
@@ -11,14 +11,14 @@
     <field name="plannedStartDateT"/>
     <field name="plannedEndDateT"/>
     <field name="statusSelect"/>
-    <field name="company" if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </grid>
 
   <form name="inventory-form" title="Inventory" model="com.axelor.apps.stock.db.Inventory"
     width="large" onNew="action-inventory-record-new">
     <menubar>
       <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-        <item name="showStockMoveItem" action="action-inventory-method-show-stockmoves"
+        <item name="showStockMoveItem" action="save,action-inventory-method-show-stockmoves"
           title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
       </menu>
     </menubar>
@@ -77,10 +77,10 @@
           </panel>
         </panel>
 
-        <panel name="importPanel" title="Import"
+        <panel name="importPanel" title="import.name"
           showIf="statusSelect == 3 || statusSelect == 4" colSpan="12">
           <field name="importFile" widget="binary-link"/>
-          <button name="importFileBtn" title="Import" readonlyIf="importFile == null"
+          <button name="importFileBtn" title="import.verb" readonlyIf="importFile == null"
             onClick="action-group-stock-inventory-importfile-click" colSpan="3"/>
         </panel>
       </panel>
@@ -98,6 +98,8 @@
           domain="self.dtype = 'Product'"/>
         <field name="excludeOutOfStock" colSpan="3"/>
         <field name="includeObsolete" colSpan="3"/>
+        <spacer name="includeObsoleteSpacer" colSpan="6"/>
+        <field name="includeSubStockLocation"/>
         <panel name="racksRangePanel" title="Racks range">
           <field name="fromRack"/>
           <field name="toRack"/>
@@ -116,6 +118,8 @@
         form-view="product-form" domain="self.dtype = 'Product'"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
+      <spacer name="includeObsoleteSpacer" colSpan="6"/>
+      <field name="includeSubStockLocation"/>
       <panel name="racksRangePanel" title="Racks range">
         <field name="fromRack"/>
         <field name="toRack"/>
@@ -144,30 +148,29 @@
 
   <action-group name="action-group-stock-inventory-plan-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
-    <action name="action-inventory-record-plan"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
+    <action name="action-inventory-method-plan"/>
     <action name="action-set-inventory-seq"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-start-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
-    <action name="action-inventory-record-start"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
+    <action name="action-inventory-method-start"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-complete-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
-    <action name="action-inventory-validate-inventory-line-list"/>
-    <action name="action-inventory-record-complete"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
+    <action name="action-inventory-method-complete"/>
     <action name="save"/>
   </action-group>
 
   <action-group name="action-group-stock-inventory-validate-click">
     <action name="save"/>
-    <action name="action-inventory-method-inventory-line-list-duplicat-product"/>
+    <action name="action-inventory-method-inventory-line-list-duplicate-product"/>
     <action name="action-inventory-method-realize-stock-move"/>
   </action-group>
 
@@ -178,7 +181,7 @@
 
   <action-group name="action-group-stock-inventory-draft-click">
     <action name="save"/>
-    <action name="action-inventory-record-draft"/>
+    <action name="action-inventory-method-draft"/>
     <action name="save"/>
   </action-group>
 
@@ -188,30 +191,7 @@
     <field name="formatSelect" expr="pdf"/>
     <field name="stockLocation" expr="eval:_location"/>
     <field name="company"
-      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company : null"/>
-  </action-record>
-
-  <action-record name="action-inventory-record-draft"
-    model="com.axelor.apps.stock.db.Inventory">
-    <field name="statusSelect" expr="1"/>
-    <field name="validatedBy" expr="eval: null"/>
-    <field name="validatedOn" expr="eval: null"/>
-  </action-record>
-
-  <action-record name="action-inventory-record-plan"
-    model="com.axelor.apps.stock.db.Inventory">
-    <field name="statusSelect" expr="2"/>
-  </action-record>
-
-  <action-record name="action-inventory-record-start"
-    model="com.axelor.apps.stock.db.Inventory">
-    <field name="statusSelect" expr="3"/>
-  </action-record>
-
-  <action-record name="action-inventory-record-complete"
-    model="com.axelor.apps.stock.db.Inventory">
-    <field name="statusSelect" expr="4"/>
-    <field name="completedBy" expr="eval:__user__"/>
+      expr="eval: _location != null ? __repo__(StockLocation).find(_location.id).company :__user__.activeCompany"/>
   </action-record>
 
   <action-method name="action-inventory-method-show-inventory">
@@ -226,10 +206,6 @@
     <call class="com.axelor.apps.stock.web.InventoryController" method="importFile"/>
   </action-method>
 
-  <action-method name="action-inventory-method-realize-stock-move">
-    <call class="com.axelor.apps.stock.web.InventoryController" method="validateInventory"/>
-  </action-method>
-
   <action-method name="action-inventory-method-cancel">
     <call class="com.axelor.apps.stock.web.InventoryController" method="cancel"/>
   </action-method>
@@ -240,6 +216,26 @@
 
   <action-method name="action-set-inventory-seq">
     <call class="com.axelor.apps.stock.web.InventoryController" method="setInventorySequence"/>
+  </action-method>
+
+  <action-method name="action-inventory-method-plan">
+    <call class="com.axelor.apps.stock.web.InventoryController" method="planInventory"/>
+  </action-method>
+
+  <action-method name="action-inventory-method-start">
+    <call class="com.axelor.apps.stock.web.InventoryController" method="startInventory"/>
+  </action-method>
+
+  <action-method name="action-inventory-method-complete">
+    <call class="com.axelor.apps.stock.web.InventoryController" method="completeInventory"/>
+  </action-method>
+
+  <action-method name="action-inventory-method-draft">
+    <call class="com.axelor.apps.stock.web.InventoryController" method="draftInventory"/>
+  </action-method>
+
+  <action-method name="action-inventory-method-realize-stock-move">
+    <call class="com.axelor.apps.stock.web.InventoryController" method="validateInventory"/>
   </action-method>
 
   <action-attrs name="action-inventory-attrs-set-location-domain">
@@ -285,7 +281,7 @@
   <search-filters name="inventories-filters"
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <filter title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>
@@ -298,12 +294,7 @@
     <attribute name="value" for="stockLocation" expr="eval: null"/>
   </action-attrs>
 
-  <action-validate name="action-inventory-validate-inventory-line-list">
-    <error message="Please fill all inventory lines"
-      if="inventoryLineList.any { it?.realQty == null }"/>
-  </action-validate>
-
-  <action-method name="action-inventory-method-inventory-line-list-duplicat-product">
+  <action-method name="action-inventory-method-inventory-line-list-duplicate-product">
     <call class="com.axelor.apps.stock.web.InventoryController" method="checkDuplicateProduct"/>
   </action-method>
 

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <action-record model="com.axelor.apps.base.db.AppBase"
+  <action-record model="com.axelor.studio.db.AppBase"
     name="action.base.chart.set.date.6m">
     <field name="toDate" expr="eval:LocalDate.parse(todayDate)"/>
     <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(6)"/>
     <field name="monthSelect" expr="eval:6"/>
   </action-record>
 
-  <action-record model="com.axelor.apps.base.db.AppBase"
+  <action-record model="com.axelor.studio.db.AppBase"
     name="action.base.default.month.value">
     <field name="monthSelect" expr="eval:12"/>
   </action-record>

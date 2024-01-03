@@ -1,2 +1,0 @@
-"name";"code";"installOrder";"description";"imagePath";"modules";"dependsOn";"sequence"
-"Contract";"contract";25;"Contract configuration";"app-contract.png";"axelor-contract";"account,purchase,sale";10

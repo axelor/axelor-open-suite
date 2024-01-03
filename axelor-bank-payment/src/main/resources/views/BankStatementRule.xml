@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="bank-statement-rule-grid" title="Bank statement rules"
+    model="com.axelor.apps.bankpayment.db.BankStatementRule" edit-icon="true"
+    groupBy="accountManagement.paymentMode">
+    <field name="accountManagement.company"/>
+    <field name="accountManagement.bankDetails"/>
+    <field name="accountManagement.interbankCodeLine"/>
+    <field name="accountManagement.paymentMode"/>
+    <field name="searchLabel"/>
+    <field name="counterpartAccount"/>
+    <field name="partner"/>
+    <field name="ruleTypeSelect"/>
+  </grid>
+
+  <form name="bank-statement-rule-form" title="Bank statement rule"
+    model="com.axelor.apps.bankpayment.db.BankStatementRule">
+    <panel name="accountManagementPanel"
+      title="BankDetails/Payment Mode/Interbank code configuration">
+      <field name="accountManagement"
+        onChange="action-bank-statement-rule-group-onchange-account-management"
+        domain="self.typeSelect = 3" form-view="account-management-form"
+        grid-view="account-management-bank-statement-rule-grid"/>
+      <field name="accountManagement.bankDetails" form-view="bank-details-form"
+        grid-view="bank-details-grid"/>
+      <field name="accountManagement.journal" grid-view="journal-grid"
+        form-view="journal-form"/>
+      <field name="accountManagement.interbankCodeLine" colspan="3"
+        form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+      <field name="accountManagement.interbankCodeLine.code" colspan="3"/>
+      <field name="accountManagement.company" hidden="true"/>
+    </panel>
+    <panel name="bankStatementMainPanel" title="Search and accounting rule Config."
+      readonlyIf="!accountManagement">
+      <field name="ruleTypeSelect" readonlyIf="!accountManagement"
+        requiredIf="ruleTypeSelect == 0"/>
+      <field name="partnerFetchMethodSelect"/>
+      <field name="partner" domain="self.partnerTypeSelect = 1"
+        requiredIf="counterpartAccount.useForPartnerBalance &amp;&amp; ruleTypeSelect == 0 &amp;&amp; partnerFetchMethoSelect == 1"
+        form-view="partner-form" grid-view="partner-grid" showIf="partnerFetchMethodSelect == 1"
+        hidden="true"/>
+      <field name="partnerBankStatementQuery" requiredIf="partnerFetchMethodSelect == 2"
+        showIf="partnerFetchMethodSelect == 2" hidden="true" domain="self.ruleTypeSelect = 2"/>
+      <field name="bankStatementQuery" domain="self.ruleTypeSelect = :ruleTypeSelect"
+        form-view="bank-statement-query-form" grid-view="bank-statement-query-grid"/>
+      <field name="counterpartAccount" requiredIf=""
+        onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
+      <field name="searchLabel"/>
+      <field name="letterToInvoice"/>
+      <field name="specificTax"/>
+      <field name="moveLineBankStatementQuery" requiredIf="letterToInvoice"
+        showIf="letterToInvoice" hidden="true" domain="self.ruleTypeSelect = 3"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-bank-statement-rule-attrs-set-counterpart-account-domain">
+    <attribute name="domain" for="counterpartAccount"
+      expr="eval: &quot; self.company = ${accountManagement.company?.id} AND self.accountType.technicalTypeSelect != &apos;${__repo__(AccountType).TYPE_VIEW}&apos; &quot;"/>
+  </action-attrs>
+
+  <action-group name="action-bank-statement-rule-group-onchange-account-management">
+    <action name="account-bank-statement-rule-record-set-main-panel-fields-nullable"/>
+  </action-group>
+
+  <action-record
+    name="account-bank-statement-rule-record-set-main-panel-fields-nullable"
+    model="com.axelor.apps.bankpayment.db.BankStatementRule">
+    <field name="ruleTypeSelect,partner,bankStatementQuery,counterpartAccount,searchLabel"
+      expr="eval: null" if="counterpartAccount?.company?.id != accountManagement?.company?.id"/>
+  </action-record>
+
+</object-views>

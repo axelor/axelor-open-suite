@@ -1,0 +1,27 @@
+"name","requestLanguage","request","result"
+"Nombre de bons de commande",1,"SELECT COUNT(*) as result FROM PurchaseOrder",9
+"Nombre de bons de livraison",1,"SELECT COUNT(*) as result FROM StockMove WHERE typeSelect = 2",7
+"Nombre de bons de réception",1,"SELECT COUNT(*) as result FROM StockMove WHERE typeSelect = 3",5
+"Nombre de factures client",1,"SELECT COUNT(*) as result FROM Invoice WHERE operationTypeSelect = 3",7
+"Nombre de remboursements client",1,"SELECT COUNT(*) as result FROM Invoice WHERE operationTypeSelect = 4",0
+"Nombre d'utilisateurs",1,"SELECT COUNT(*) as result FROM User",22
+"Nombre de tiers",1,"SELECT COUNT(*) as result FROM Partner",68
+"Nombre d'adresses",1,"SELECT COUNT(*) as result FROM Address",252
+"Nombre de pistes",1,"SELECT COUNT(*) as result FROM Lead",30
+"Nombre d'événements",1,"SELECT COUNT(*) as result FROM Event",51
+"Nombre de factures fournisseur",1,"SSELECT COUNT(*) as result FROM Invoice WHERE operationTypeSelect = 1",6
+"Nombre de remboursements fournisseur",1,"SELECT COUNT(*) as result FROM Invoice WHERE operationTypeSelect = 2",0
+"Nombre d'appels",1,"SELECT COUNT(*) as result FROM Event WHERE typeSelect = 1",14
+"Nombre de réunions",1,"SELECT COUNT(*) as result FROM Event WHERE typeSelect = 2",25
+"Nombre de tâches",1,"SELECT COUNT(*) as result FROM Event WHERE typeSelect = 3",6
+"Nombre de billets",1,"SELECT COUNT(*) as result FROM Event WHERE typeSelect = 6",0
+"Nombre d'ordres de fabrication",1,"SELECT COUNT(*) as result FROM ManufOrder",0
+"Nombre d'ordres d'opération",1,"SELECT COUNT(*) as result FROM OperationOrder",0
+"Nombre de produits",1,"SELECT COUNT(*) as result FROM Product WHERE isModel = false",48
+"Nombre de nomenclatures",1,"SELECT COUNT(*) as result FROM BillOfMaterial",45
+"Nombre de commandes",1,"SELECT COUNT(*) as result FROM SaleOrder",11
+"Nombre de paiements",1,"SELECT COUNT(*) as result FROM PaymentVoucher",10
+"Nombre d'écritures",1,"SELECT COUNT(*) as result FROM Move",12
+"Nombre de lignes d'écriture",1,"SELECT COUNT(*) as result FROM MoveLine",59
+"Nombre de demandes de congés",1,"SELECT COUNT(*) as result FROM LeaveRequest",0
+"Nombre de dépenses",1,"SELECT COUNT(*) as result FROM Expense",0

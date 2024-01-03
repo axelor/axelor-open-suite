@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-statement-line-afb-120-grid" title="Bank Statement lines"
     model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120"
     orderBy="-bankStatement.toDate,bankDetails,-sequence" edit-icon="true">
+    <toolbar>
+      <button name="printBankStatementLinesBtn" title="Print bank statement lines"
+        onClick="action-view-bankpayment-bank-statement-line-print-wizard"/>
+    </toolbar>
     <hilite color="info" if="lineTypeSelect == 1"/>
     <hilite color="primary" if="lineTypeSelect == 3"/>
     <hilite color="danger"

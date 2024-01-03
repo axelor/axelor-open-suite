@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="TaxLine" lang="java" cacheable="true">
+  <entity name="TaxLine" cacheable="true">
 
     <many-to-one name="tax" ref="Tax" title="Tax"/>
     <date name="startDate" title="Application start Date" required="true"/>
     <date name="endDate" title="Run off Date"/>
-    <decimal name="value" title="Rate" scale="3" precision="20" min="0"/>
+    <decimal name="value" title="Rate (%)" scale="10" precision="20" min="0" max="100"/>
 
     <string name="name" namecolumn="true" title="Name">
 	    <![CDATA[

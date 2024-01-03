@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid model="com.axelor.apps.account.db.NoteBills" title="Notes bills" name="note-bills-grid"
+    canNew="false">
+    <field name="createdOn"/>
+    <field name="noteBillsSeq"/>
+    <field name="batch"/>
+    <field name="emailAddress"/>
+    <field name="company"/>
+    <field name="partner"/>
+    <field name="dueDate"/>
+    <field name="billOfExchangeTypeSelect"/>
+  </grid>
+
+  <form name="note-bills-form" title="Note bills" model="com.axelor.apps.account.db.NoteBills"
+    canNew="false" canEdit="false">
+
+    <panel name="mainPanel">
+      <field name="createdOn"/>
+      <field name="noteBillsSeq"/>
+      <field name="batch"/>
+      <field name="emailAddress"/>
+      <field name="company"/>
+      <field name="partner"/>
+      <field name="dueDate"/>
+      <field name="billOfExchangeTypeSelect"/>
+      <field name="message"/>
+      <field name="metaFiles" colSpan="12" canNew="false"
+        grid-view="note-bills-attachments-files-grid" canView="false"/>
+
+    </panel>
+    <panel-dashlet name="invoicesListPanel"
+      action="action-view-account-note-bills-invoice-list" title="Invoices"/>
+
+  </form>
+
+  <grid name="note-bills-attachments-files-grid" model="com.axelor.meta.db.MetaAttachment"
+    title="Attachments">
+    <field name="metaFile.fileName"/>
+    <field name="metaFile.sizeText" width="100"/>
+    <field name="metaFile.mime" width="175"/>
+  </grid>
+
+  <action-view name="action-view-account-note-bills-invoice-list" title="Invoices"
+    model="com.axelor.apps.account.db.Invoice">
+    <view type="grid" name="invoice-grid"/>
+    <view type="form" name="invoice-form"/>
+    <domain>:_batch MEMBER OF self.batchSet AND self.partner = :_partner</domain>
+    <context name="_batch" expr="eval: __this__?.batch"/>
+    <context name="_partner" expr="eval: __this__?.partner"/>
+  </action-view>
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="print-grid" title="Prints" model="com.axelor.apps.base.db.Print">
     <field name="name"/>
@@ -36,10 +36,9 @@
         <field name="footerTextAlignment" colSpan="4"/>
         <field name="footerFontSize" colSpan="4"/>
         <field name="footerFontColor" colSpan="4"/>
-        <field name="isFooterUnderLine" colSpan="4"/>
       </panel>
       <panel-related name="printLineListPanel" field="printLineList"
-        grid-view="print-line-grid" form-view="print-line-form" colSpan="12" orderBy="rank"/>
+        grid-view="print-line-grid" form-view="print-line-form" colSpan="12" orderBy="printLineRank"/>
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"
         hidden="true"/>
       <field name="company" grid-view="company-grid" form-view="company-form" hidden="true"/>

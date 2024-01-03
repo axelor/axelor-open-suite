@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="mobile-config-grid" title="Mobile config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <field name="sequence" title="App"/>
+  </grid>
+
+  <form name="mobile-config-form" title="Mobile config"
+    model="com.axelor.apps.mobilesettings.db.MobileConfig" width="large" editable="true"
+    canEdit="true" canNew="false" canSave="true" canDelete="false">
+    <panel name="mainPanel">
+      <field name="sequence" colSpan="8"/>
+      <field name="isCustomizeMenuEnabled" widget="BooleanSwitch" colSpan="4"/>
+      <field name="authorizedRoles" placeholder="All" colSpan="6" canNew="false"
+        canEdit="false" widget="TagSelect"/>
+    </panel>
+    <panel-tabs hidden="true" hideIf="!isCustomizeMenuEnabled">
+      <panel name="menusConfig" title="Menus config" hidden="true"
+        hideIf="!isCustomizeMenuEnabled">
+        <field name="menus" canSelect="true" canNew="true" canRemove="true" colSpan="12"/>
+      </panel>
+    </panel-tabs>
+
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+</object-views>

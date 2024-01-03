@@ -1,16 +1,78 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
-  <form name="configurator-prod-process-line-form" title="Configurator Phases"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <!-- GRIDS -->
+
+  <grid name="configurator-prod-process-line-grid" title="Configurator Phases"
     model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+    <field name="name"/>
+    <field name="priority"/>
+    <field name="workCenter"/>
+    <field name="outsourcing"/>
+    <field name="stockLocation"/>
+    <field name="description"/>
+  </grid>
+
+
+  <!-- FORMS -->
+
+  <form name="configurator-prod-process-line-form" title="Configurator Phase"
+    model="com.axelor.apps.production.db.ConfiguratorProdProcessLine"
+    onNew="action-configurator-prod-process-line-attrs-default,action-configurator-prod-process-line-record-default-workcenter-type-select"
+    onLoad="action-configurator-prod-process-line-attrs-default">
     <panel name="mainPanel">
-      <field name="name"/>
-      <field name="priority"/>
-      <field name="workCenter"/>
-      <field name="outsourcing"/>
-      <field name="stockLocation"/>
-      <field name="description"/>
+      <field name="useCondition" widget="CodeEditor" height="120" colSpan="12"
+        x-code-syntax="groovy"/>
+      <panel name="namePanel" title="Label">
+        <field name="defNameAsFormula" colSpan="6"/>
+        <field name="name" colSpan="12" showIf="!defNameAsFormula"/>
+        <field name="nameFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defNameAsFormula"/>
+      </panel>
+      <panel name="priorityPanel" title="Priority">
+        <field name="defPriorityAsFormula" colSpan="6"/>
+        <field name="priority" colSpan="12" showIf="!defPriorityAsFormula"/>
+        <field name="priorityFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defPriorityAsFormula"/>
+      </panel>
+      <field name="workCenterTypeSelect" colSpan="6" hidden="true"
+        if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+      <button name="buttonWorkCenterGroupWizard" title="Use a work center group model"
+        onClick="save,action-production-view-configurator-work-center-group-wizard"
+        readonlyIf="workCenterTypeSelect == 0 || workCenterTypeSelect == null" colSpan="6"
+        hidden="true" if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+      <field name="workCenterGroup" canNew="true" canEdit="true" canSelect="false" colSpan="6"
+        form-view="work-center-group-form" grid-view="work-center-group-grid"
+        onChange="action-configurator-prod-process-line-group-work-center-group-onchange"
+        domain="self.template IS NOT TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"
+        hidden="true" if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+      <panel name="workCenterPanel" title="Work center">
+        <field name="defWorkCenterAsFormula" colSpan="12"
+          onChange="action-configurator-prod-process-line-change-work-center-required"/>
+        <field name="workCenter" hidden="true" grid-view="work-center-grid"
+          form-view="work-center-form"
+          onChange="action-configurator-prod-process-line-group-work-center-onchange" colSpan="12"
+          showIf="!defWorkCenterAsFormula"/>
+        <field name="workCenterFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" requiredIf="defWorkCenterAsFormula" showTitle="false"
+          showIf="defWorkCenterAsFormula"/>
+      </panel>
+      <field name="outsourcing"
+        if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
+      <panel name="descriptionPanel" title="Description">
+        <field name="defDescriptionAsFormula" colSpan="6"/>
+        <field name="description" colSpan="12" showIf="!defDescriptionAsFormula"/>
+        <field name="descriptionFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defDescriptionAsFormula"/>
+      </panel>
+      <panel name="stockLocationPanel" title="Stock location">
+        <field name="defStockLocationAsFormula" colSpan="6"/>
+        <field name="stockLocation" colSpan="12" showIf="!defStockLocationAsFormula"/>
+        <field name="stockLocationFormula" colSpan="12" height="120" widget="CodeEditor"
+          x-code-syntax="groovy" showTitle="false" showIf="defStockLocationAsFormula"/>
+      </panel>
     </panel>
     <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12">
       <panel name="minCapacityPanel">
@@ -32,16 +94,141 @@
         <field name="durationPerCycleFormula" widget="CodeEditor" showIf="defDurationFormula"
           x-code-syntax="groovy" height="100" colSpan="12"/>
       </panel>
+      <panel name="hrDurationPanel">
+        <field name="defHrDurationFormula" colSpan="12"/>
+        <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true" showIf="!defHrDurationFormula"/>
+        <field name="humanDurationFormula" widget="CodeEditor" showIf="defHrDurationFormula"
+          x-code-syntax="groovy" height="100" colSpan="12"/>
+      </panel>
+    </panel>
+    <panel name="configuratorProdProductListPanel" colSpan="12" hidden="true">
+      <field name="configuratorProdProductList" colSpan="12"
+        form-view="configurator-prod-product-form" grid-view="configurator-prod-product-grid"/>
     </panel>
   </form>
 
-  <grid name="configurator-prod-process-line-grid" title="Configurator Phases"
+  <form model="com.axelor.apps.production.db.ConfiguratorProdProcessLine"
+    title="Work center group selection"
+    name="configurator-prod-process-line-work-center-group-wizard-form">
+    <panel name="mainPanel">
+      <field canNew="true" canEdit="false" canSelect="true" form-view="work-center-group-form"
+        name="$workCenterGroupWizard" title="Work center group template"
+        target="com.axelor.apps.production.db.WorkCenterGroup" type="many-to-one" required="true"
+        onSelect="action-attrs-production-configurator-set-work-center-group-wizard-domain"/>
+      <button name="workCenterGroupWizardSave" title="Save"
+        onClick="save,action-production-method-configurator-set-work-center-group"/>
+    </panel>
+  </form>
+
+
+  <!-- ACTION ATTRS -->
+
+  <action-attrs name="action-configurator-prod-process-line-attrs-default">
+    <attribute name="required" for="workCenter"
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
+    <attribute name="hidden" for="workCenterGroup"
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    <attribute name="hidden" for="workCenterTypeSelect"
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    <attribute name="hidden" for="buttonWorkCenterGroupWizard"
+      expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+    <attribute name="domain" for="workCenter"
+      expr="eval: &quot; self.id in (${workCenterGroup?.workCenterSet?.collect{it.id}?.join(',')}) &quot;"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+
+    <attribute name="hidden" for="configuratorProdProductListPanel"
+      expr="eval: !(__parent__?._model == 'com.axelor.apps.production.db.ConfiguratorProdProcess' &amp;&amp; (__parent__.defIsConsProOnOperationAsFormula || __parent__.isConsProOnOperation))"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-configurator-prod-process-line-set-default-work-center-attrs">
+    <attribute name="value" for="workCenter"
+      expr="eval: workCenterGroup?.workCenterSet?.first()"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; !defWorkCenterAsFormula"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-configurator-prod-process-line-set-work-center-domain-attrs">
+    <attribute name="domain" for="workCenter"
+      expr="eval: &quot; self.id in (${workCenterGroup?.workCenterSet?.collect{it.id}?.join(',')}) &quot;"
+      if="__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-attrs-production-configurator-set-work-center-group-wizard-domain"
     model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
-    <field name="name"/>
-    <field name="priority"/>
-    <field name="workCenter"/>
-    <field name="outsourcing"/>
-    <field name="stockLocation"/>
-    <field name="description"/>
-  </grid>
+    <attribute name="domain" for="$workCenterGroupWizard"
+      expr="self.template IS TRUE and self.workCenterTypeSelect = :workCenterTypeSelect"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-configurator-prod-process-line-change-work-center-required">
+    <attribute name="required" for="workCenter" expr="eval: !defWorkCenterAsFormula"/>
+  </action-attrs>
+
+  <action-record
+    name="action-configurator-prod-process-line-record-default-workcenter-type-select"
+    model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+    <field name="workCenterTypeSelect" expr="eval: 1"/>
+  </action-record>
+
+
+  <!-- ACTION-GROUP -->
+
+  <action-group name="action-configurator-prod-process-line-group-work-center-onchange">
+    <action name="action-configurator-prod-process-line-method-duration"/>
+    <action name="action-configurator-prod-process-line-method-capacity-settings"/>
+  </action-group>
+
+  <action-group
+    name="action-configurator-prod-process-line-group-work-center-group-onchange">
+    <action name="action-configurator-prod-process-line-set-default-work-center-attrs"/>
+    <action name="action-configurator-prod-process-line-set-work-center-domain-attrs"/>
+    <action
+      name="action-configurator-prod-process-line-method-work-center-group-fill-work-center"/>
+    <action name="action-configurator-prod-process-line-group-work-center-onchange"/>
+  </action-group>
+
+
+  <!-- ACTION-METHOD -->
+
+  <action-method name="action-configurator-prod-process-line-method-duration">
+    <call class="com.axelor.apps.production.web.ConfiguratorProdProcessLineController"
+      method="updateDuration"/>
+  </action-method>
+
+  <action-method name="action-configurator-prod-process-line-method-capacity-settings">
+    <call class="com.axelor.apps.production.web.ConfiguratorProdProcessLineController"
+      method="updateCapacitySettings"/>
+  </action-method>
+
+  <action-method name="action-production-method-configurator-set-work-center-group">
+    <call class="com.axelor.apps.production.web.ConfiguratorProdProcessLineController"
+      method="setWorkCenterGroup"/>
+  </action-method>
+
+  <action-method
+    name="action-configurator-prod-process-line-method-work-center-group-fill-work-center"
+    model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+    <call class="com.axelor.apps.production.web.ConfiguratorProdProcessLineController"
+      method="fillWorkCenter"/>
+  </action-method>
+
+
+  <!-- ACTION-VIEW -->
+
+  <action-view name="action-production-view-configurator-work-center-group-wizard"
+    title="Work center group" model="com.axelor.apps.production.db.ConfiguratorProdProcessLine">
+    <view type="form" name="configurator-prod-process-line-work-center-group-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
+    <context name="workCenterTypeSelect" expr="eval: __this__.workCenterTypeSelect"/>
+    <context name="_template" expr="true"/>
+  </action-view>
+
 </object-views>

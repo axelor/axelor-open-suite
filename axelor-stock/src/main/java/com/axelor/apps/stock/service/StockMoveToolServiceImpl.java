@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,27 +14,25 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.exception.IExceptionMessage;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.common.StringUtils;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -79,10 +78,13 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
         exTaxTotal =
             exTaxTotal.add(
-                stockMoveLine.getRealQty().multiply(stockMoveLine.getUnitPriceUntaxed()));
+                stockMoveLine
+                    .getRealQty()
+                    .multiply(stockMoveLine.getUnitPriceUntaxed())
+                    .setScale(2, RoundingMode.HALF_UP));
       }
     }
-    return exTaxTotal.setScale(2, RoundingMode.HALF_UP);
+    return exTaxTotal;
   }
 
   /**
@@ -100,31 +102,37 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
 
     switch (stockMoveType) {
       case StockMoveRepository.TYPE_INTERNAL:
-        ref = sequenceService.getSequenceNumber(SequenceRepository.INTERNAL, company);
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.INTERNAL, company, StockMove.class, "stockMoveSeq");
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_1),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_1),
               company.getName());
         }
         break;
 
       case StockMoveRepository.TYPE_INCOMING:
-        ref = sequenceService.getSequenceNumber(SequenceRepository.INCOMING, company);
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.INCOMING, company, StockMove.class, "stockMoveSeq");
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_2),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_2),
               company.getName());
         }
         break;
 
       case StockMoveRepository.TYPE_OUTGOING:
-        ref = sequenceService.getSequenceNumber(SequenceRepository.OUTGOING, company);
+        ref =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.OUTGOING, company, StockMove.class, "stockMoveSeq");
         if (ref == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.STOCK_MOVE_3),
+              I18n.get(StockExceptionMessage.STOCK_MOVE_3),
               company.getName());
         }
         break;
@@ -132,7 +140,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(IExceptionMessage.STOCK_MOVE_4),
+            I18n.get(StockExceptionMessage.STOCK_MOVE_4),
             company.getName());
     }
 
@@ -155,35 +163,19 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public int getStockMoveType(StockLocation fromStockLocation, StockLocation toStockLocation) {
-
-    if (fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL
-        && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
-      return StockMoveRepository.TYPE_INTERNAL;
-    } else if (fromStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL
-        && toStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL) {
-      return StockMoveRepository.TYPE_INCOMING;
-    } else if (fromStockLocation.getTypeSelect() == StockLocationRepository.TYPE_INTERNAL
-        && toStockLocation.getTypeSelect() != StockLocationRepository.TYPE_INTERNAL) {
-      return StockMoveRepository.TYPE_OUTGOING;
-    }
-    return 0;
-  }
-
-  @Override
-  public Address getFromAddress(StockMove stockMove) {
+  public Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
     Address fromAddress = stockMove.getFromAddress();
-    if (fromAddress == null && stockMove.getFromStockLocation() != null) {
-      fromAddress = stockMove.getFromStockLocation().getAddress();
+    if (fromAddress == null && stockMoveLine.getFromStockLocation() != null) {
+      fromAddress = stockMoveLine.getFromStockLocation().getAddress();
     }
     return fromAddress;
   }
 
   @Override
-  public Address getToAddress(StockMove stockMove) {
+  public Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
     Address toAddress = stockMove.getToAddress();
-    if (toAddress == null && stockMove.getToStockLocation() != null) {
-      toAddress = stockMove.getToStockLocation().getAddress();
+    if (toAddress == null && stockMoveLine.getToStockLocation() != null) {
+      toAddress = stockMoveLine.getToStockLocation().getAddress();
     }
     return toAddress;
   }
@@ -226,16 +218,19 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public Address getPartnerAddress(StockMove stockMove) throws AxelorException {
+  public Address getPartnerAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
     Address address;
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-      address = getToAddress(stockMove);
-    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-      address = getFromAddress(stockMove);
+    if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      address = getToAddress(stockMove, stockMoveLine);
+    } else if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      address = getFromAddress(stockMove, stockMoveLine);
     } else {
       throw new AxelorException(
-          stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
+          stockMoveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("Bad stock move type"));
     }
 
     if (address.getAddressL7Country() == null) {
@@ -246,16 +241,19 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   }
 
   @Override
-  public Address getCompanyAddress(StockMove stockMove) throws AxelorException {
+  public Address getCompanyAddress(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
     Address address;
 
-    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
-      address = getFromAddress(stockMove);
-    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
-      address = getToAddress(stockMove);
+    if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      address = getFromAddress(stockMove, stockMoveLine);
+    } else if (stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      address = getToAddress(stockMove, stockMoveLine);
     } else {
       throw new AxelorException(
-          stockMove, TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("Bad stock move type"));
+          stockMoveLine,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("Bad stock move type"));
     }
 
     if (address.getAddressL7Country() == null) {

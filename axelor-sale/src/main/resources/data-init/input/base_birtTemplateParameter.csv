@@ -1,0 +1,8 @@
+"importId";"birtTemplate.importId";"name";"value";"type"
+87;26;"Timezone";"${SaleOrder.company?.timezone}";"string"
+88;26;"Locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale(SaleOrder.clientPartner)}";"string"
+89;26;"SaleOrderId";"$SaleOrder.id";"decimal"
+90;26;"HeaderHeight";"${SaleOrder.printingSettings?.pdfHeaderHeight}";"decimal"
+91;26;"FooterHeight";"${SaleOrder.printingSettings?.pdfFooterHeight}";"decimal"
+401;26;"ProformaInvoice";"$ProformaInvoice";"boolean"
+402;26;"AddressPositionSelect";"${SaleOrder.printingSettings?.addressPositionSelect}";"integer"

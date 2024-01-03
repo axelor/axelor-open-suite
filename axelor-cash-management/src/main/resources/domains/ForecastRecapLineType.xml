@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="cash-management" package="com.axelor.apps.cash.management.db"/>
 
-  <entity name="ForecastRecapLineType" lang="java">
+  <entity name="ForecastRecapLineType">
 
     <integer name="sequence" title="Sequence"/>
     <integer name="elementSelect" title="Element"
@@ -18,7 +18,14 @@
     <string name="statusSelect" title="Statuses to take into account"/>
     <integer name="estimatedDuration"
       title="Estimated duration after order creation (in days)" min="0"/>
-    <string name="name" title="Name"/>
+    <string name="name" title="Name" namecolumn="true"/>
+    <many-to-many name="statusSelectSet" ref="com.axelor.apps.crm.db.OpportunityStatus"
+      title="Statuses to take into account"/>
+    <many-to-many ref="com.axelor.apps.account.db.Journal" name="journalSet"
+      title="Journals to take into account"/>
+    <string name="functionalOriginSelect" title="Functional origin"
+      selection="iaccount.move.functional.origin.select"/>
+
     <extra-code><![CDATA[
 
       // ELEMENT SELECT
@@ -29,6 +36,7 @@
       public static final int ELEMENT_FORECAST = 5;  // Forecast
       public static final int ELEMENT_OPPORTUNITY = 6;  // Opportunity
       public static final int ELEMENT_SALARY = 7;  // Salary
+      public static final int ELEMENT_MOVE = 8;  // Move
 
   ]]></extra-code>
     <track>

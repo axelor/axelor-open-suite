@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,18 +14,20 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.invoice.generator.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -47,7 +50,7 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
   @Override
   public Invoice generate() throws AxelorException {
 
-    LOG.debug("Creating a refund for invoice {}", invoice.getInvoiceId());
+    LOG.debug("Creating a refund for invoice {} ", invoice.getInvoiceId());
 
     Invoice refund = JPA.copy(invoice, true);
     InvoiceToolService.resetInvoiceStatusOnCopy(refund);
@@ -59,6 +62,15 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
       refundLines.addAll(refund.getInvoiceLineList());
     }
 
+    if (invoice.getOperationTypeSelect()
+        == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) { // Customer
+      if (invoice.getInvoiceDate() != null) {
+        refund.setOriginDate(invoice.getInvoiceDate());
+      }
+    }
+
+    refund.setInternalReference(invoice.getInvoiceId());
+
     populate(refund, refundLines);
 
     // Payment mode should not be the invoice payment mode. It must come
@@ -68,8 +80,8 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
     if (refund.getPaymentMode() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          I18n.get(IExceptionMessage.REFUND_INVOICE_1),
-          I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.EXCEPTION));
+          I18n.get(AccountExceptionMessage.REFUND_INVOICE_1),
+          I18n.get(BaseExceptionMessage.EXCEPTION));
     }
 
     return refund;
@@ -79,21 +91,5 @@ public class RefundInvoice extends InvoiceGenerator implements InvoiceStrategy {
   public void populate(Invoice invoice, List<InvoiceLine> invoiceLines) throws AxelorException {
 
     super.populate(invoice, invoiceLines);
-  }
-
-  /**
-   * Mets à jour les lignes de facture en appliquant la négation aux prix unitaires et au total hors
-   * taxe.
-   *
-   * @param invoiceLines
-   */
-  @Deprecated
-  protected void refundInvoiceLines(List<InvoiceLine> invoiceLines) {
-
-    for (InvoiceLine invoiceLine : invoiceLines) {
-
-      invoiceLine.setQty(invoiceLine.getQty().negate());
-      invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
-    }
   }
 }

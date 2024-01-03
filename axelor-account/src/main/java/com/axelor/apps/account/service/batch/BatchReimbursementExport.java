@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,7 +14,7 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.account.service.batch;
 
@@ -23,20 +24,20 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReimbursementRepository;
-import com.axelor.apps.account.exception.IExceptionMessage;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.ReimbursementExportService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbExportService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.ExceptionOriginRepository;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -118,7 +119,7 @@ public class BatchReimbursementExport extends BatchStrategy {
         TraceBackService.trace(
             new AxelorException(
                 TraceBackRepository.CATEGORY_INCONSISTENCY,
-                I18n.get(IExceptionMessage.BATCH_PAYMENT_SCHEDULE_1),
+                I18n.get(AccountExceptionMessage.BATCH_PAYMENT_SCHEDULE_1),
                 batch.getAccountingBatch().getActionSelect()),
             ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
@@ -175,7 +176,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
     for (Reimbursement reimbursement : reimbursementList) {
 
-      log.debug("Remboursement n° {}", reimbursement.getRef());
+      log.debug("Reimbursement n° {}", reimbursement.getRef());
 
       updateReimbursement(reimbursementRepo.find(reimbursement.getId()));
     }
@@ -187,23 +188,23 @@ public class BatchReimbursementExport extends BatchStrategy {
       try {
         partner = partnerRepository.find(partner.getId());
 
-        log.debug("Tiers n° {}", partner.getName());
+        log.debug("Partner n° {}", partner.getName());
 
         List<MoveLine> moveLineList =
             moveLineRepo
                 .all()
                 .filter(
                     "self.account.useForPartnerBalance = 'true' "
-                        + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining > 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
+                        + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
                         + "self.reimbursementStatusSelect = ?5 ",
-                    MoveRepository.STATUS_VALIDATED,
                     MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
                     partnerRepository.find(partner.getId()),
                     companyRepo.find(company.getId()),
                     MoveLineRepository.REIMBURSEMENT_STATUS_NULL)
                 .fetch();
 
-        log.debug("Liste des trop perçus : {}", moveLineList);
+        log.debug("Overpayment list : {}", moveLineList);
 
         if (moveLineList != null && !moveLineList.isEmpty()) {
 
@@ -246,7 +247,7 @@ public class BatchReimbursementExport extends BatchStrategy {
         incrementAnomaly();
 
         log.error(
-            "Bug(Anomalie) généré(e) pour le tiers {}",
+            "Anomaly generated for the partner {}",
             partnerRepository.find(partner.getId()).getName());
 
       } finally {
@@ -351,7 +352,7 @@ public class BatchReimbursementExport extends BatchStrategy {
 
       } catch (Exception e) {
 
-      	TraceBackService.trace(new Exception(String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), TraceBackRepository.REIMBURSEMENT, batch.getId());
+      	TraceBackService.trace(new Exception(String.format(I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e), TraceBackRepository.REIMBURSEMENT, batch.getId());
 
       	incrementAnomaly();
 
@@ -372,7 +373,9 @@ public class BatchReimbursementExport extends BatchStrategy {
 
         TraceBackService.trace(
             new Exception(
-                String.format(I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()), e),
+                String.format(
+                    I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_1), batch.getId()),
+                e),
             ExceptionOriginRepository.REIMBURSEMENT,
             batch.getId());
 
@@ -396,27 +399,27 @@ public class BatchReimbursementExport extends BatchStrategy {
     batch = batchRepo.find(batch.getId());
     switch (batch.getAccountingBatch().getReimbursementExportTypeSelect()) {
       case AccountingBatchRepository.REIMBURSEMENT_EXPORT_TYPE_GENERATE:
-        comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
+        comment = I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_2) + "\n";
         comment +=
             String.format(
-                "\t* %s " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_3) + "\n",
+                "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_3) + "\n",
                 batch.getDone());
         comment +=
             String.format(
-                "\t* " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
+                "\t* " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
                 this.totalAmount);
 
         break;
 
       case AccountingBatchRepository.REIMBURSEMNT_EXPORT_TYPE_EXPORT:
-        comment = I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
+        comment = I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_4) + "\n";
         comment +=
             String.format(
-                "\t* %s " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_5) + "\n",
+                "\t* %s " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_5) + "\n",
                 batch.getDone());
         comment +=
             String.format(
-                "\t* " + I18n.get(IExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
+                "\t* " + I18n.get(AccountExceptionMessage.BATCH_REIMBURSEMENT_10) + " : %s \n",
                 this.totalAmount);
 
         comment += String.format("\t* ------------------------------- \n");
@@ -427,11 +430,6 @@ public class BatchReimbursementExport extends BatchStrategy {
       default:
         break;
     }
-
-    comment +=
-        String.format(
-            I18n.get(com.axelor.apps.base.exceptions.IExceptionMessage.ALARM_ENGINE_BATCH_5),
-            batch.getAnomaly());
 
     super.stop();
     addComment(comment);

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="payroll-preparation-grid" title="Payroll preparations"
     model="com.axelor.apps.hr.db.PayrollPreparation">
     <field name="employee"/>
     <field name="company" grid-view="company-grid" form-view="company-form"
-      if="__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="period" grid-view="period-hr-grid" form-view="period-hr-form" canEdit="false"
       canView="false"/>
     <field name="exported"/>
@@ -63,11 +63,11 @@
         <field name="socialCharges"/>
         <field name="total" readonly="true"/>
       </panel>
-      <field name="exportTypeSelect" readonlyIf="exported"/>
+      <field name="exportTypeSelect" readonlyIf="exported" selection-in="[1,2,3]"/>
       <button name="exportBtn" title="Export payroll preparation" hidden="true"
         showIf="id != null &amp;&amp; !exported" onClick="action-payroll-preparation-group-export"/>
       <field name="exported"/>
-      <field name="exportDate" hidden="true" showIf="exported"/>
+      <field name="exportDateTime" hidden="true" showIf="exported"/>
     </panel>
   </form>
 
@@ -142,7 +142,7 @@
   <search-filters name="payroll-preparation-filters"
     model="com.axelor.apps.hr.db.PayrollPreparation" title="Payroll preparation filters">
     <field name="company" hidden="true"
-      if="!__config__.app.getApp('base').getEnableMultiCompany()"/>
+      if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
 </object-views>

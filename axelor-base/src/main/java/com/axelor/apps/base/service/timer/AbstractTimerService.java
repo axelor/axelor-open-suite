@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,19 +14,19 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.service.timer;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.TimerHistory;
 import com.axelor.apps.base.db.repo.TimerHistoryRepository;
 import com.axelor.apps.base.db.repo.TimerRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.db.Model;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
@@ -101,7 +102,7 @@ public abstract class AbstractTimerService implements TimerService {
     } else if (timer.getStatusSelect().equals(TimerRepository.TIMER_STARTED)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.TIMER_IS_NOT_STOPPED));
+          I18n.get(BaseExceptionMessage.TIMER_IS_NOT_STOPPED));
     }
     timer.setStatusSelect(TimerRepository.TIMER_STARTED);
     return timerRepository.save(timer);
@@ -111,13 +112,13 @@ public abstract class AbstractTimerService implements TimerService {
   @Transactional(rollbackOn = {Exception.class})
   public TimerHistory stop(Model model, Timer timer, LocalDateTime dateTime)
       throws AxelorException {
-    Preconditions.checkNotNull(timer, I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+    Preconditions.checkNotNull(timer, I18n.get(BaseExceptionMessage.TIMER_IS_NOT_STARTED));
 
     TimerHistory last = timerHistoryRepository.findByTimer(timer).order("-startDateT").fetchOne();
     if (last == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(IExceptionMessage.TIMER_IS_NOT_STARTED));
+          I18n.get(BaseExceptionMessage.TIMER_IS_NOT_STARTED));
     }
     last.setEndDateT(dateTime);
     timer.setStatusSelect(TimerRepository.TIMER_STOPPED);

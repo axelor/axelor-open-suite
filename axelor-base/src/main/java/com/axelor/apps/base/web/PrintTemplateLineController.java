@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,17 +14,15 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.base.web;
 
-import com.axelor.apps.base.db.PrintTemplateLineTest;
-import com.axelor.apps.base.db.repo.PrintTemplateLineTestRepository;
-import com.axelor.apps.base.exceptions.IExceptionMessage;
-import com.axelor.apps.base.service.PrintTemplateLineService;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.service.TraceBackService;
-import com.axelor.i18n.I18n;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintTemplateLine;
+import com.axelor.apps.base.db.repo.PrintTemplateLineRepository;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.print.PrintTemplateLineService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -31,44 +30,30 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.io.IOException;
-import java.util.LinkedHashMap;
 
 public class PrintTemplateLineController {
 
   public void checkTemplateLineExpression(ActionRequest request, ActionResponse response) {
 
     Context context = request.getContext();
-    PrintTemplateLineTest printTemplateLineTest = context.asType(PrintTemplateLineTest.class);
-    printTemplateLineTest =
-        Beans.get(PrintTemplateLineTestRepository.class).find(printTemplateLineTest.getId());
+    PrintTemplateLine printTemplateLine =
+        Beans.get(PrintTemplateLineRepository.class)
+            .find(Long.valueOf(context.get("_printTemplateLine").toString()));
     MetaModel metaModel =
         Beans.get(MetaModelRepository.class)
             .all()
-            .filter("self.fullName = ?", printTemplateLineTest.getReference())
+            .filter("self.fullName = ?", context.get("reference"))
             .fetchOne();
     try {
-      Beans.get(PrintTemplateLineService.class)
-          .checkExpression(
-              Long.valueOf(printTemplateLineTest.getReferenceId().toString()),
-              metaModel,
-              printTemplateLineTest.getPrintTemplateLine());
+      String result =
+          Beans.get(PrintTemplateLineService.class)
+              .checkExpression(
+                  Long.valueOf(context.get("referenceId").toString()),
+                  metaModel,
+                  printTemplateLine);
+      response.setValue("$contentResult", result);
     } catch (NumberFormatException | ClassNotFoundException | AxelorException | IOException e) {
       TraceBackService.trace(response, e);
     }
-
-    response.setReload(true);
-  }
-
-  @SuppressWarnings("unchecked")
-  public void addItemToReferenceSelection(ActionRequest request, ActionResponse response) {
-    LinkedHashMap<String, Object> metaModelMap =
-        (LinkedHashMap<String, Object>) request.getContext().get("metaModel");
-    if (metaModelMap == null) {
-      return;
-    }
-    Long metaModelId = Long.parseLong(metaModelMap.get("id").toString());
-    MetaModel metaModel = Beans.get(MetaModelRepository.class).find(metaModelId);
-    Beans.get(PrintTemplateLineService.class).addItemToReferenceSelection(metaModel);
-    response.setNotify(I18n.get(IExceptionMessage.PRINT_TEMPLATE_LINE_TEST_REFRESH));
   }
 }

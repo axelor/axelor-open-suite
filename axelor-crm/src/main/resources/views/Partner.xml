@@ -1,24 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
+    title="Contacts">
+    <field name="partnerSeq"/>
+    <field name="simpleFullName"/>
+    <field name="mainPartner.simpleFullName" title="Main company"/>
+    <field name="jobTitleFunction"/>
+    <field name="isMainContact"/>
+  </grid>
 
   <form name="incl-activities-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner">
-    <panel-dashlet name="partnerUpcomingEventsPanel" colSpan="12"
-      action="action-partner-view-upcoming-events"/>
-    <panel-dashlet name="partnerHistoricalEventsPanel" colSpan="12"
-      action="action-partner-view-historical-events-completed"/>
-    <panel-dashlet name="partnerOpportunitiesPanel" colSpan="12"
-      action="action-partner-view-opportunities"/>
+    <panel-dashlet name="partnerEventsPanel" colSpan="12"
+      action="action-partner-view-all-events" height="550"/>
   </form>
 
   <form name="incl-activities-contact-form" title="Contact"
     model="com.axelor.apps.base.db.Partner">
-    <panel-dashlet name="contactUpcomingEventsPanel" colSpan="12"
-      action="action-contact-view-upcoming-events"/>
-    <panel-dashlet name="contactHistoricalEventsPanel" colSpan="12"
-      action="action-contact-view-historical-events-completed"/>
+    <panel-dashlet name="contactEventsPanel" colSpan="12"
+      action="action-contact-view-all-events" height="550"/>
   </form>
 
   <form name="incl-events-partner-form" title="Partner" model="com.axelor.apps.base.db.Partner">
@@ -26,36 +29,507 @@
       showIf="id != null" action="dashlet.customer.crm.activities" height="350"/>
   </form>
 
+  <form name="incl-opportunities-partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner">
+    <panel-dashlet name="partnerOpportunityPanel" colSpan="12"
+      action="action-partner-view-opportunities" height="550"/>
+  </form>
+
   <form name="incl-event-actions-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
       <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
-        <item name="scheduleEventItem" title="Schedule Event"
-          action="save,action-partner-view-schedule-event" readonlyIf="id == null"
-          if="__config__.app.isApp('crm')"/>
-        <item name="createOpportunityItem" title="Create opportunity"
-          action="save,action-partner-view-create-opportunity" readonlyIf="id == null"
-          if="__config__.app.isApp('crm')"/>
-        <item name="createOrderItem" title="Create sale quotation"
-          action="save,action-partner-view-create-order" readonlyIf="id == null || id &lt; 1"
-          if-module="axelor-sale" if="__config__.app.isApp('sale')"
-          showIf="isProspect || isCustomer"/>
-        <item title="Create purchase quotation"
-          action="save,action-partner-view-create-purchase-quotation"
-          readonlyIf="id == null || id &lt; 1" if-module="axelor-purchase"
-          if="__config__.app.isApp('purchase')" showIf="isSupplier"/>
         <item name="generateProjectItem" title="Generate Project"
           action="action-partner-method-generate-project" readonlyIf="id == null || id &lt; 1"
           if-module="axelor-project" if="__config__.app.isApp('project')" hideIf="isContact"/>
-        <item name="sendEmailItem" title="Send email"
-          action="save,action-send-by-email-with-template" readonlyIf="id == null"
-          if-module="axelor-message"/>
         <item title="Customer recovery" name="customerRecoveryItem"
           action="action-partner-view-show-customer-debt-recovery"
           if="__config__.app.isApp('account')"/>
+        <item title="Create sale quotation" name="createSaleQuotationItem"
+          action="save,action-partner-view-create-order" if="__config__.app.isApp('sale')"
+          showIf="isCustomer"/>
+        <item title="Create purchase quotation" name="createPurchaseQuotationItem"
+          action="save,action-partner-view-create-purchase-quotation"
+          if="__config__.app.isApp('purchase')" showIf="isSupplier"/>
       </menu>
-
     </menubar>
+  </form>
+
+  <form id="crm-partner-form" name="partner-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
+      <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
+    </extend>
+    <extend target="//label[@name='facebookLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='twitterLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='youtubeLabel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='simpleFullName']">
+      <replace>
+        <field name="simpleFullName" showTitle="false" colSpan="7" css="label-bold bold large">
+          <hilite color="primary" strong="true" if="true"/>
+          <editor x-show-titles="false">
+            <field name="partnerTypeSelect" showTitle="false" colSpan="12"
+              placeholder="Partner Type" onChange="action-partner-group-type-select-onchange"/>
+            <panel name="companyPartnerNamePanel" showIf="partnerTypeSelect == 1" colSpan="12">
+              <field name="name" showTitle="false" colSpan="12" css="highlight"
+                placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
+            </panel>
+            <panel name="individualPartnerNamePanel" showIf="partnerTypeSelect == 2"
+              colSpan="12">
+              <field name="titleSelect" showTitle="false" colSpan="2" placeholder="Civility"/>
+              <field name="firstName" showTitle="false" colSpan="5" css="highlight"
+                placeholder="First name" onChange="action-group-base-partner-contact-name-onchange"/>
+              <field name="name" showTitle="false" colSpan="5" css="highlight"
+                placeholder="Name" onChange="action-group-base-partner-contact-name-onchange"/>
+            </panel>
+          </editor>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='isSupplier']">
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+    </extend>
+    <extend target="//field[@name='isInternal']">
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+    </extend>
+    <extend target="//field[@name='isSubcontractor']">
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+    </extend>
+    <extend target="//field[@name='isCarrier']">
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+    </extend>
+    <extend target="//field[@name='isFactor']">
+      <attribute name="hideIf" value="_isCustomer || _isProspect"/>
+    </extend>
+    <extend target="//button[@name='$positiveBalanceBtn']">
+      <attribute name="showIf" value="id &amp;&amp; !isProspect"/>
+    </extend>
+    <extend target="//field[@name='isEmployee']">
+      <insert position="before">
+        <field name="leadScoringSelect" showIf="isProspect" widget="ImageSelect"
+          x-labels="false" colSpan="12"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='department']">
+      <insert position="after">
+        <field name="isKeyAccount" colSpan="3"/>
+        <field name="isNurturing" colSpan="3"/>
+        <field name="sizeSelect" colSpan="6"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='source']">
+      <attribute name="canNew" value="true"/>
+    </extend>
+    <extend target="//field[@name='taxNbr']">
+      <attribute name="showIf" value="isCustomer"/>
+    </extend>
+    <extend target="//field[@name='paymentDelay']">
+      <attribute name="showIf" value="isCustomer"/>
+    </extend>
+    <extend target="//panel-dashlet[@name='subsidiaryPartners']">
+      <attribute name="showIf"
+        value="partnerTypeSelect == 1 &amp;&amp; $subsidiaryCount != 0"/>
+      <attribute name="height" value="150"/>
+    </extend>
+    <extend target="//field[@name='webSite']">
+      <insert position="after">
+        <panel colSpan="12">
+          <field name="language" colSpan="6" canEdit="false"/>
+          <field if="__config__.app.getApp('base').getIsRegroupProductsOnPrintings()"
+            name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)" colSpan="12"
+            widget="boolean-switch"/>
+          <panel name="assignedToPanel" title="Assigned to" colSpan="12">
+            <field name="user" hideIf="isEmployee" colSpan="6" canNew="false" canView="false"
+              canEdit="false" onSelect="action-partner-attrs-user-group" form-view="user-form"
+              grid-view="user-grid"/>
+            <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
+              hideIf="isEmployee" colSpan="6" canEdit="false" form-view="team-form"
+              grid-view="team-grid"/>
+            <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+              form-view="company-form" grid-view="company-grid"/>
+            <field if="__config__.app.getApp('crm')?.getAgenciesManagement()" name="agency"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='settingsPanel']">
+      <replace/>
+    </extend>
+    <extend target="//panel[@name='paymentPanel']">
+      <attribute name="hideIf" value="isProspect"/>
+    </extend>
+    <extend target="//panel-related[@name='accountingSituationListPanel']">
+      <attribute name="hideIf" value="isProspect"/>
+    </extend>
+    <extend target="//button[@name='showAllEventsBtn']">
+      <insert position="after">
+        <field name="lastEventDateT" readonly="true" colSpan="3"/>
+        <field name="scheduledEventDateT" colSpan="3" readonly="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='imagePanel']">
+      <insert position="before">
+        <button name="validateConversionFromLeadBtn" title="Validate"
+          onClick="action-partner-group-validate-conversion-from-lead" hidden="true"
+          showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+        <button name="cancelConversionFromLeadBtn" title="Cancel" onClick="close"
+          hidden="true" showIf="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+        <field name="partnerStatus" showTitle="false" colSpan="12" widget="NavSelect"
+          x-order="sequence" onChange="action-partner-group-partner-status-onchange"
+          showIf="$isFromCrm " if=" __config__.app.getApp('crm')?.getCrmProcessOnPartner()"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='sellerCode']">
+      <insert position="after">
+        <field name="lostReason" hidden="true" colSpan="6"/>
+        <field name="lostReasonStr" showIf="lostReason.freeText" colSpan="6"/>
+        <field name="lostReason.freeText" hidden="true"/>
+        <field name="$isFromCrm" hidden="true" readonly="true"/>
+        <field name="isAlreadyConvertFromLead" hidden="true" readonly="true"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='emailAddress']">
+      <replace>
+        <field name="emailAddress">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="address" widget="email" colSpan="12"
+              placeholder="whatever@example.com"/>
+          </editor>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='isInternal']">
+      <insert position="after">
+        <field name="isCorporatePartner" widget="InlineCheckbox"
+          if="__config__.app.getApp('crm')?.isCorporatePartnerEnabled"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='customerPanel']">
+      <insert position="after">
+        <panel name="corporatePanel" title="Corporate partner" showIf="isCorporatePartner">
+          <panel name="mainInformationPanel" title="General information"
+            showIf="isCorporatePartner" colSpan="6">
+            <field name="corporatePartnerDomainSet" widget="TagSelect"/>
+            <field name="workAreaSet" widget="TagSelect"/>
+            <panel-related name="fidelityListPanel" field="fidelityList"
+              form-view="fidelity-form" grid-view="fidelity-grid" colSpan="12"/>
+            <field name="corporatePartnerSince"/>
+          </panel>
+          <panel name="followUpPanel" title="Corporate partner monitoring"
+            showIf="isCorporatePartner" colSpan="6">
+            <field name="takenOpportunities"/>
+            <field name="wonOpportunities"/>
+          </panel>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='deliveryPanel']">
+      <insert position="after">
+        <panel name="activityPanel" title="Activity" showIf="id &amp;&amp; isProspect"
+          hidden="true" if="__config__.app.getApp('crm')?.crmProcessOnPartner">
+          <panel-dashlet action="action-partner-view-prospect-recent-activity-custom"
+            title="Activity" height="550"/>
+          <panel-dashlet action="action-partner-view-prospect-past-activity-custom"
+            title="Activity" height="550"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form id="crm-partner-customer-form" name="partner-customer-form" title="Customer"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad"
+        value="crm-action-group-partner-onload, action-partner-attrs-hide-customer-recovery"/>
+      <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+      <attribute name="onSave" value="crm-action-partner-group-onsave"/>
+    </extend>
+  </form>
+
+  <form id="crm-partner-supplier-form" name="partner-supplier-form" title="Supplier"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
+      <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+    </extend>
+  </form>
+
+  <form id="crm-partner-light-form" name="partner-light-form" title="Partner"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
+      <attribute name="onNew" value="crm-action-group-partner-onnew"/>
+    </extend>
+  </form>
+
+  <form id="crm-partner-contact-form" name="partner-contact-form" title="Contact"
+    model="com.axelor.apps.base.db.Partner" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-group-partner-contact-onNew"/>
+    </extend>
+    <extend target="//label[@name='facebookLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='twitterLabel']">
+      <replace/>
+    </extend>
+    <extend target="//label[@name='youtubeLabel']">
+      <replace/>
+    </extend>
+    <extend target="//field[@name='simpleFullName']">
+      <replace>
+        <field name="simpleFullName" showTitle="false" colSpan="12" css="bold">
+          <editor x-show-titles="false">
+            <field name="titleSelect" colSpan="2" placeholder="Civility" selection-in="[1,2]"/>
+            <field name="firstName" colSpan="5" css="highlight" placeholder="First name"
+              onChange="action-group-base-partner-contact-name-onchange"/>
+            <field name="name" colSpan="5" css="highlight" placeholder="Name"
+              onChange="action-group-base-partner-contact-name-onchange"/>
+          </editor>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='jobTitleFunction']">
+      <attribute name="x-create" value="function"/>
+      <insert position="before">
+        <field name="isMainContact" colSpan="4"/>
+        <field name="isDoNotCall" colSpan="4" hideIf="$readonly()"/>
+        <field name="isDoNotEmail" colSpan="4" hideIf="$readonly()"/>
+        <field name="$viewerCallAndEmail" showTitle="false" showIf="$readonly()" colSpan="12">
+          <viewer><![CDATA[
+			<h4>
+				<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotCall" x-translate>Rejection of calls</span>
+				<span class="label label-default" style="background-color: #0285D8; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isDoNotEmail" x-translate>Rejection of e-mails</span>
+			</h4>
+          ]]></viewer>
+        </field>
+      </insert>
+    </extend>
+    <extend target="//field[@name='mainPartner']">
+      <insert position="after">
+        <field name="companyDepartment"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='language']">
+      <insert position="after">
+        <field name="createdOn" readonly="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='companyPanel']">
+      <insert position="after">
+        <panel-dashlet name="relatedContactPanel"
+          action="action-contact-method-related-contacts" title="Related Contacts" colSpan="12"
+          height="150" showIf="id"/>
+      </insert>
+    </extend>
+    <extend target="//field[@name='emailAddress']">
+      <replace>
+        <field name="emailAddress">
+          <editor x-show-titles="false" x-viewer="true">
+            <field name="address" widget="email" colSpan="12"
+              placeholder="whatever@example.com"/>
+          </editor>
+        </field>
+      </replace>
+    </extend>
+  </form>
+
+  <kanban columnBy="partnerStatus" model="com.axelor.apps.base.db.Partner"
+    sequenceBy="sequence" title="Prospects" name="partner-prospect-kanban" limit="10"
+    draggable="true" onMove="action-partner-method-kanban-onmove">
+    <field name="name"/>
+    <field name="leadScoringSelect"/>
+    <field name="sizeSelect"/>
+    <field name="picture"/>
+    <field name="partnerCategory"/>
+    <hilite color="default" if="leadScoringSelect == 0.00"/>
+    <hilite color="danger" if="leadScoringSelect == 1.00"/>
+    <hilite color="warning" if="leadScoringSelect == 2.00"/>
+    <hilite color="primary" if="leadScoringSelect == 3.00"/>
+    <hilite color="info" if="leadScoringSelect == 4.00"/>
+    <hilite color="success" if="leadScoringSelect == 5.00"/>
+    <template> <![CDATA[
+          <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 25%; height: 25%; object-fit: contain;"/>
+          <div class="card-body">
+              <dl>
+                  <dt ng-show="record.name" x-translate>Enterprise Name</dt><dd ng-show="record.name">{{record.name}}</dd>
+                  <dt ng-show="sizeSelect" x-translate>Size</dt>
+                  <dd ng-if="record.sizeSelect == 1">
+                  	<p><span x-translate>1 to 20</span></p>
+                  </dd>
+                  <dd ng-if="record.sizeSelect == 2">
+                  	<p><span x-translate>20 to 100</span></p>
+                  </dd>
+                  <dd ng-if="record.sizeSelect == 3">
+                  	<p><span x-translate>100 to 500</span></p>
+                  </dd>
+                  <dd ng-if="record.sizeSelect == 4">
+                  	<p><span x-translate>500 to 1000</span></p>
+                  </dd>
+                  <dd ng-if="record.sizeSelect == 5">
+                  	<p><span x-translate> 1000 to 2000 </span></p>
+                  </dd>
+                  <dd ng-if="record.sizeSelect == 6">
+                  	<p><span x-translate>Over 2000</span></p>
+                  </dd>
+                  <dt x-translate>Lead Scoring</dt> <dd ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></dd>
+                  <dd ng-show="record.leadScoringSelect && record.leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></dd>
+              </dl>
+          </div>
+          <div class="card-summary popover">
+	  <p style="margin:2px;">
+            	<span style="word-break:break-all;max-width:250px;" ng-bind-html="description"></span>
+            </p>
+         </div>
+         <br/>
+]]>
+    </template>
+  </kanban>
+
+  <grid name="partner-prospect-grid" title="Prospects" model="com.axelor.apps.base.db.Partner"
+    orderBy="name" edit-icon="true">
+    <menubar>
+      <menu name="partnerReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
+        <item name="contactPhoneBookItem" title="Contact PhoneBook"
+          action="action-print-phonebook"/>
+        <item if="__config__.app.isApp('employee')" name="companyPhoneBookItem"
+          title="Company phoneBook" action="action-print-company-phonebook"/>
+      </menu>
+      <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+        <item name="checkDuplicateItem" title="Check Duplicate"
+          action="action-general-check-duplicate-records"/>
+        <item name="mergeDuplicatedItem" title="Merge duplicated"
+          action="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+      </menu>
+    </menubar>
+    <field name="partnerSeq" width="120"/>
+    <field name="simpleFullName" width="300"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+    <field name="emailAddress.address" title="Email" placeholder="whatever@example.com"/>
+    <field name="partnerCategory" form-view="partner-category-form"
+      grid-view="partner-category-grid"/>
+    <field name="user"/>
+    <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companyStr"/>
+    <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
+    <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
+      title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>
+    <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="sendByEmailBtn"
+      title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+  </grid>
+
+  <grid id="crm-partner-grid" name="partner-grid" title="Partners"
+    model="com.axelor.apps.base.db.Partner" orderBy="name" extension="true">
+    <extend target="//field[@name='companyStr']">
+      <insert position="after">
+        <field name="leadScoringSelect" widget="ImageSelect" x-labels="false"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <cards id="crm-partner-cards" name="partner-cards" model="com.axelor.apps.base.db.Partner"
+    title="Partners" css="rect-image">
+    <toolbar>
+      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
+        onClick="action-print-phonebook"/>
+      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
+        onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
+      <button name="checkDuplicateBtn" title="Check Duplicate"
+        onClick="action-general-check-duplicate-records"/>
+      <button name="replaceDuplicateBtn" title="Merge duplicated"
+        onClick="action-validate-select-object-message,action-duplicate-object-wizard-open"/>
+      <button name="advancedExportBtn" title="Advanced export"
+        onClick="action-method-advanced-export-wizard-view"/>
+    </toolbar>
+    <field name="fullName"/>
+    <field name="picture"/>
+    <field name="fixedPhone"/>
+    <field name="emailAddress.address" title="Email"/>
+    <field name="partnerCategory"/>
+    <field name="partnerTypeSelect"/>
+    <field name="titleSelect"/>
+    <field name="mainAddress"/>
+    <field name="isProspect"/>
+    <field name="isEmployee"/>
+    <field name="isCustomer"/>
+    <field name="isSupplier"/>
+    <field name="isSubcontractor"/>
+    <field name="isFactor"/>
+    <field name="isCarrier"/>
+    <field name="leadScoringSelect"/>
+    <template><![CDATA[
+			<div>
+				<div class="span12"><strong>{{fullName}}</strong></div>
+		 	</div>
+			<div>
+			  <div class="span4 card-image" style="width: 128px; height: 64px;">
+                <img ng-show="picture" ng-src="{{$image('picture', 'content')}}" style="width: 100%; height: 100%; object-fit: contain;"/>
+                <img ng-show="!picture && partnerTypeSelect != 2" src="img/company-default.jpg" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 1" src="img/partner-m-default.png" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && titleSelect == 2" src="img/partner-w-default.png" />
+                <img ng-show="!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect)" src="img/partner-default.png" />
+			  </div>
+			  <div class="span8">
+			  	<address>
+			  	{{mainAddress.fullName}}
+			  	</address>
+			    <span>
+			    {{fixedPhone}}<br/>
+			    {{emailAddress.address}}<br/>
+			    {{partnerCategory.name}}<br/>
+			    <span ng-show="record.isProspect">
+			    	<span ng-show="!record.leadScoringSelect"><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 1.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 2.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 3.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 4.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star-o' style='color:#FFD700; font-size:25px;'></i></span>
+          			<span ng-show="record.leadScoringSelect && leadScoringSelect == 5.00"><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i><i class='fa fa-star' style='color:#FFD700; font-size:25px;'></i></span>
+      			</span><br/>
+			    <h4 style="text-align: right;">
+					<span class="label label-default" style="background-color: #FC6355; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isProspect" x-translate>Prospect</span>
+					<span class="label label-default" style="background-color: #5680FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isEmployee" x-translate>Employee</span>
+					<span class="label label-default" style="background-color: #EF9D3F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCustomer" x-translate>Customer</span>
+					<span class="label label-default" style="background-color: #7D54FC; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSupplier" x-translate>Supplier</span>
+					<span class="label label-default" style="background-color: #000080; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isSubcontractor && record.$isSubcontractor" x-translate>Subcontractor</span>
+					<span class="label label-default" style="background-color: #54FC62; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isFactor" x-translate>Factor</span>
+					<span class="label label-default" style="background-color: #FF0000; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isCarrier" x-translate>Carrier</span>
+				</h4>
+			  </div>
+			</div>
+		]]>
+    </template>
+  </cards>
+
+  <form name="partner-form-lost-popup" model="com.axelor.apps.base.db.Partner"
+    title="Lost reason" width="large">
+    <panel name="mainPanel">
+      <field name="lostReason" canEdit="false" colOffset="4" colSpan="4"/>
+      <field name="lostReasonStr" hideIf="!lostReason.freeText" colOffset="4" colSpan="4"/>
+      <button name="lostReasonConfirmBtn" title="Confirm lost reason"
+        onClick="action-partner-lost-reason-check,action-partner-method-confirm-lost-reason"
+        colOffset="4" colSpan="4"/>
+      <field name="lostReason.freeText" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="partner-form-generate-opporunity-popup" model="com.axelor.apps.base.db.Partner"
+    title="Generate opportunity ?">
+    <panel name="mainPanel" colSpan="12" itemSpan="6">
+      <button name="generateOpporunityConfirmBtn" title="Yes"
+        onClick="action-partner-method-generate-opportunity-from-lead-and-partner"/>
+      <button name="cancelmBtn" title="No" onClick="close"/>
+    </panel>
   </form>
 
   <!-- CREATE CRM OBJECT FROM PARTNER -->
@@ -73,12 +547,49 @@
     <context name="_contactMainPartner" expr="eval: __this__.mainPartner"/>
   </action-view>
 
-
   <action-view name="action-partner-view-create-opportunity"
     title="Create opportunity (${ fullName })" model="com.axelor.apps.crm.db.Opportunity">
     <view type="form" name="opportunity-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
     <context name="_partner" expr="eval: __this__"/>
     <context name="_internalUserId" expr="eval: __user__.id"/>
+  </action-view>
+
+  <action-view name="action-partner-view-meeting-event"
+    title="Meeting Event (${ fullName })" model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_partner" expr="eval: __this__"/>
+    <context name="_meeting" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-partner-view-call-event" title="Call Event (${ fullName })"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_partner" expr="eval: __this__"/>
+    <context name="_call" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-partner-view-task-event" title="Task Event (${ fullName })"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_partner" expr="eval: __this__"/>
+    <context name="_task" expr="eval: true"/>
+  </action-view>
+
+  <action-view name="action-partner-view-note-event" title="Note Event (${ fullName })"
+    model="com.axelor.apps.crm.db.Event">
+    <view type="form" name="event-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_partner" expr="eval: __this__"/>
+    <context name="_note" expr="eval: true"/>
   </action-view>
 
   <!-- CREATE SALE OBJECT FROM PARTNER -->
@@ -99,49 +610,40 @@
 
   <!-- PORTLET -->
 
-  <action-view name="action-partner-view-upcoming-events" title="Upcoming events"
+  <action-view name="action-partner-view-all-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
+    <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.startDateTime &gt;
-      :_todayTime</domain>
+    <view-param name="forceEdit" value="true"/>
+    <domain>self.partner.id = :id</domain>
     <context name="id" expr="eval: id"/>
-    <context name="_todayTime" expr="eval: __datetime__"/>
   </action-view>
 
-  <action-view name="action-contact-view-upcoming-events" title="Upcoming events"
+  <action-view name="action-contact-view-all-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
+    <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>(self.contactPartner.id = :id) and self.startDateTime &gt; :_todayTime</domain>
+    <domain>self.contactPartner.id = :id</domain>
     <context name="id" expr="eval: id"/>
-    <context name="_todayTime" expr="eval: __datetime__"/>
-  </action-view>
-
-  <action-view name="action-partner-view-historical-events-completed"
-    title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-    <view type="grid" name="list-event-grid"/>
-    <view type="form" name="event-form"/>
-    <domain>(self.partner.id = :id OR self.contactPartner.id = :id) and self.endDateTime &lt;
-      :_todayTime</domain>
-    <context name="id" expr="eval: id"/>
-    <context name="_todayTime" expr="eval: __datetime__"/>
-  </action-view>
-
-  <action-view name="action-contact-view-historical-events-completed"
-    title="Historical events completed" model="com.axelor.apps.crm.db.Event">
-    <view type="grid" name="list-event-grid"/>
-    <view type="form" name="event-form"/>
-    <domain>(self.contactPartner.id = :id) and self.endDateTime &lt; :_todayTime</domain>
-    <context name="id" expr="eval: id"/>
-    <context name="_todayTime" expr="eval: __datetime__"/>
   </action-view>
 
   <action-view name="action-partner-view-opportunities" title="Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
+    <view type="cards" name="opportunity-cards"/>
     <view type="grid" name="opportunity-dashlet-grid"/>
     <view type="form" name="opportunity-form"/>
     <domain>self.partner.id = :id</domain>
+    <context name="id" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-contact-view-opportunities" title="Opportunities"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <view type="cards" name="opportunity-cards"/>
+    <view type="grid" name="opportunity-dashlet-grid"/>
+    <view type="form" name="opportunity-form"/>
+    <domain>self.contact.id = :id</domain>
     <context name="id" expr="eval: id"/>
   </action-view>
 
@@ -159,4 +661,166 @@
     <domain>self.contactPartner.id = :_id</domain>
   </action-view>
 
+  <action-attrs name="action-partner-attrs-unset-integrator">
+    <attribute name="value" for="isIntegrator" expr="eval:false"/>
+  </action-attrs>
+
+  <action-method name="action-partner-method-get-subsidiary-partners-count">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController"
+      method="getSubsidiaryPartnersCount"/>
+  </action-method>
+
+  <action-method name="action-partner-method-kanban-onmove">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="kanbanPartnerOnMove"/>
+  </action-method>
+
+  <action-group name="crm-action-group-partner-onload">
+    <action name="action-group-partner-onload" if="__config__.app.isApp('base')"/>
+    <action name="action-partner-method-get-subsidiary-partners-count"/>
+    <action name="action-partner-record-set-is-in-conversion-from-lead"/>
+    <action name="action-partner-record-set-from-crm"/>
+  </action-group>
+
+  <action-group name="action-group-partner-contact-onNew">
+    <action name="action-partner-contact-record-default"/>
+    <action name="action-partner-attrs-partner-seq-editable"/>
+    <action name="action-partner-attrs-set-default"/>
+  </action-group>
+
+  <action-record name="action-partner-record-set-is-prospect"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isProspect" expr="true"
+      if="_isProspect || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
+  </action-record>
+
+  <action-record name="action-partner-record-set-partner-status"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="partnerStatus"
+      expr="eval: __config__.app.getApp('crm')?.partnerDefaultStatus"/>
+  </action-record>
+
+  <action-record name="action-partner-record-set-from-crm"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="$isFromCrm" expr="eval: _isFromCrm"/>
+    <field name="partnerStatus" expr="eval: _partnerStatus"
+      if="_partnerStatus != null &amp;&amp; partnerStatus == null"/>
+  </action-record>
+
+  <action-record name="action-partner-record-set-is-in-conversion-from-lead"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isAlreadyConvertFromLead" expr="eval: false"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+  </action-record>
+
+
+  <action-group name="crm-action-group-partner-onnew">
+    <action name="action-partner-validate-default-status"/>
+    <action name="action-group-base-partner-onnew"/>
+    <action name="action-partner-record-set-is-prospect"/>
+    <action name="action-partner-method-set-fields-for-conversion-from-lead"
+      if="_isInConversionFromLead"/>
+    <action name="action-partner-record-set-is-in-conversion-from-lead"/>
+    <action name="action-partner-record-set-partner-status"/>
+    <action name="action-partner-record-set-from-crm"/>
+  </action-group>
+
+  <action-group name="crm-action-partner-group-onsave">
+    <action name="action-partner-group-onsave"/>
+    <action name="action-partner-validate-alert-convert-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-method-convert-from-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-view-generate-opporunity-popup"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+    <action name="action-partner-record-remove-is-in-conversion-from-lead"
+      if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
+  </action-group>
+
+  <action-record name="action-partner-record-remove-is-in-conversion-from-lead"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isAlreadyConvertFromLead" expr="eval: true"/>
+  </action-record>
+
+  <action-group name="action-partner-group-validate-conversion-from-lead">
+    <action name="save"/>
+    <action name="action-partner-method-convert-from-lead"/>
+    <action name="action-partner-view-generate-opporunity-popup"/>
+    <action name="action-partner-record-remove-is-in-conversion-from-lead"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-method name="action-partner-method-set-fields-for-conversion-from-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="setFieldsForConversionFromLeads"/>
+  </action-method>
+
+  <action-method name="action-partner-method-convert-from-lead">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController"
+      method="convertLeadFromPartner"/>
+  </action-method>
+
+  <action-method
+    name="action-partner-method-generate-opportunity-from-lead-and-partner">
+    <call class="com.axelor.apps.crm.web.ConvertLeadWizardController" method="openOpportunity"/>
+  </action-method>
+
+  <action-validate name="action-partner-validate-alert-convert-lead">
+    <alert message="Saving this partner will convert the lead!"/>
+  </action-validate>
+
+  <action-group name="action-partner-group-partner-status-onchange">
+    <action name="action-partner-view-partner-popup-view"
+      if="eval: __this__?.partnerStatus?.id
+      == __config__.app.getApp('crm')?.closedLostPartnerStatus?.id"/>
+    <action name="action-partner-record-win"
+      if="eval: __this__?.partnerStatus?.id == __config__.app.getApp('crm')?.closedWinPartnerStatus?.id"/>
+    <action name="save"/>
+  </action-group>
+
+  <action-view name="action-partner-view-partner-popup-view"
+    model="com.axelor.apps.base.db.Partner" title="Lost reason">
+    <view type="form" name="partner-form-lost-popup"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: __this__.id"/>
+  </action-view>
+
+  <action-record name="action-partner-record-win"
+    model="com.axelor.apps.base.db.Partner">
+    <field name="isCustomer" expr="eval: true"/>
+    <field name="isProspect" expr="eval: false"/>
+  </action-record>
+
+  <action-condition name="action-partner-lost-reason-check">
+    <check error="A lost reason must be selected" field="lostReason"
+      if="lostReason == null || lostReason == 0"/>
+  </action-condition>
+
+  <action-method name="action-partner-method-confirm-lost-reason">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="losePartner"/>
+  </action-method>
+
+  <action-method name="action-contact-method-related-contacts">
+    <call class="com.axelor.apps.crm.web.PartnerCrmController" method="viewRelatedContacts"/>
+  </action-method>
+
+  <action-view name="action-partner-view-generate-opporunity-popup"
+    title="Generate opportunity ?" model="com.axelor.apps.base.db.Partner">
+    <view type="form" name="partner-form-generate-opporunity-popup"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+    <context name="_lead" expr="eval: _lead"/>
+  </action-view>
+
+  <action-validate name="action-partner-validate-default-status">
+    <error message="Please fill default partner status in App CRM configuration."
+      if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
+  </action-validate>
 </object-views>

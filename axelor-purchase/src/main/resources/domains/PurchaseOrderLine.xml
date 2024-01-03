@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="PurchaseOrderLine" lang="java">
+  <entity name="PurchaseOrderLine">
     <string name="fullName" namecolumn="true">
 	  	<![CDATA[
 	  		String fullName = "";
@@ -27,8 +27,7 @@
     <integer name="sequence" title="Seq."/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"/>
     <decimal name="qty" title="Qty" default="1" precision="20" scale="10"/>
-    <string name="productName" title="Displayed Product name" required="true"
-      translatable="true"/>
+    <string name="productName" title="Displayed Product name" required="true"/>
     <string name="productCode" title="Supplier code"/>
     <decimal name="price" title="Unit price W.T." precision="20" scale="10"/>
     <decimal name="inTaxPrice" title="Unit price A.T.I." precision="20" scale="10"/>
@@ -50,8 +49,9 @@
 
     <decimal name="maxPurchasePrice" title="Max purchase price" precision="20" scale="10"/>
 
-    <date name="estimatedDelivDate" title="Estim. receipt date"/>
-    <date name="desiredDelivDate" title="Desired receipt date"/>
+
+    <date name="desiredReceiptDate" title="Desired receipt date"/>
+    <date name="estimatedReceiptDate" title="Estim. receipt date"/>
     <decimal name="receivedQty" title="Received quantity" precision="20" scale="10"/>
 
     <string name="supplierComment" title="Supplier Comment"/>
@@ -63,6 +63,11 @@
     <boolean name="isTitleLine" title="Title Line"/>
 
     <boolean name="enableFreezeFields" transient="true" title="Freeze fields"/>
+
+    <track>
+      <field name="desiredReceiptDate"/>
+      <field name="estimatedReceiptDate"/>
+    </track>
 
   </entity>
 

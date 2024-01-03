@@ -1,11 +1,12 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2022 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -13,28 +14,28 @@
  * GNU Affero General Public License for more details.
  *
  * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.TimesheetHRRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.exception.IExceptionMessage;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
-import com.axelor.auth.db.User;
-import com.axelor.exception.AxelorException;
-import com.axelor.exception.db.repo.TraceBackRepository;
-import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -49,20 +50,26 @@ import org.slf4j.LoggerFactory;
 public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected TimesheetService timesheetService;
-  protected TimesheetHRRepository timesheetHRRepository;
-  protected TimesheetRepository timesheetRepository;
   protected EmployeeRepository employeeRepository;
+  protected TimesheetRepository timesheetRepo;
+  protected AppHumanResourceService appHumanResourceService;
+  protected UserHrService userHrService;
+  protected DateService dateService;
 
   @Inject
   public TimesheetLineServiceImpl(
       TimesheetService timesheetService,
-      TimesheetHRRepository timesheetHRRepository,
-      TimesheetRepository timesheetRepository,
-      EmployeeRepository employeeRepository) {
+      EmployeeRepository employeeRepository,
+      TimesheetRepository timesheetRepo,
+      AppHumanResourceService appHumanResourceService,
+      UserHrService userHrService,
+      DateService dateService) {
     this.timesheetService = timesheetService;
-    this.timesheetHRRepository = timesheetHRRepository;
-    this.timesheetRepository = timesheetRepository;
     this.employeeRepository = employeeRepository;
+    this.timesheetRepo = timesheetRepo;
+    this.appHumanResourceService = appHumanResourceService;
+    this.userHrService = userHrService;
+    this.dateService = dateService;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -83,12 +90,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         timesheet == null ? "null" : timesheet.getFullName());
 
     if (timesheet != null) {
-      User user = timesheet.getUser();
+      Employee employee = timesheet.getEmployee();
 
       timePref = timesheet.getTimeLoggingPreferenceSelect();
 
-      if (user.getEmployee() != null) {
-        Employee employee = employeeRepository.find(user.getEmployee().getId());
+      if (employee != null) {
+        employee = employeeRepository.find(employee.getId());
 
         log.debug("Employee: {}", employee);
 
@@ -131,7 +138,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
         return duration.multiply(dailyWorkHrs);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
@@ -148,7 +155,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         if (dailyWorkHrs.compareTo(BigDecimal.ZERO) == 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(IExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
+              I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
         return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
@@ -162,7 +169,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   public TimesheetLine createTimesheetLine(
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
@@ -174,7 +181,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setComments(comments);
     timesheetLine.setProduct(product);
     timesheetLine.setProject(project);
-    timesheetLine.setUser(user);
+    timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
@@ -189,8 +196,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public TimesheetLine createTimesheetLine(
-      User user, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
-    return createTimesheetLine(null, null, user, date, timesheet, hours, comments);
+      Employee employee, LocalDate date, Timesheet timesheet, BigDecimal hours, String comments) {
+    return createTimesheetLine(null, null, employee, date, timesheet, hours, comments);
   }
 
   @Override
@@ -198,7 +205,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetLine timesheetLine,
       Project project,
       Product product,
-      User user,
+      Employee employee,
       LocalDate date,
       Timesheet timesheet,
       BigDecimal hours,
@@ -208,7 +215,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     timesheetLine.setComments(comments);
     timesheetLine.setProduct(product);
     timesheetLine.setProject(project);
-    timesheetLine.setUser(user);
+    timesheetLine.setEmployee(employee);
     timesheetLine.setHoursDuration(hours);
     try {
       timesheetLine.setDuration(computeHoursDuration(timesheet, hours, false));
@@ -261,36 +268,49 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return projectTimeSpentMap;
   }
 
-  @Transactional
-  public TimesheetLine setTimesheet(TimesheetLine timesheetLine) {
-    Timesheet timesheet =
-        timesheetRepository
-            .all()
-            .filter(
-                "self.user = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null)) ORDER BY self.id ASC",
-                timesheetLine.getUser(),
-                timesheetLine.getProject().getCompany(),
-                timesheetLine.getDate())
-            .fetchOne();
-    if (timesheet == null) {
-      Timesheet lastTimesheet =
-          timesheetRepository
-              .all()
-              .filter(
-                  "self.user = ?1 AND self.statusSelect != ?2 ORDER BY self.toDate DESC",
-                  timesheetLine.getUser(),
-                  TimesheetRepository.STATUS_CANCELED)
-              .fetchOne();
-      timesheet =
-          timesheetService.createTimesheet(
-              timesheetLine.getUser(),
-              lastTimesheet != null && lastTimesheet.getToDate() != null
-                  ? lastTimesheet.getToDate().plusDays(1)
-                  : timesheetLine.getDate(),
-              null);
-      timesheet = timesheetHRRepository.save(timesheet);
+  public void checkDailyLimit(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
+      throws AxelorException {
+    Integer dailyLimit = getDailyLimitFromApp();
+
+    if (dailyLimit == 0) {
+      return;
     }
-    timesheetLine.setTimesheet(timesheet);
-    return timesheetLine;
+
+    BigDecimal totalHoursDuration = calculateTotalHoursDuration(timesheet, currentTimesheetLine);
+
+    if (isExceedingDailyLimit(totalHoursDuration, hoursDuration, dailyLimit)) {
+      handleExceedingDailyLimit(dailyLimit, currentTimesheetLine.getDate());
+    }
+  }
+
+  protected Integer getDailyLimitFromApp() {
+    return appHumanResourceService.getAppTimesheet().getDailyLimit();
+  }
+
+  protected BigDecimal calculateTotalHoursDuration(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine) {
+    return timesheet.getTimesheetLineList().stream()
+        .filter(
+            l ->
+                !l.equals(currentTimesheetLine)
+                    && l.getDate().equals(currentTimesheetLine.getDate()))
+        .map(TimesheetLine::getHoursDuration)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  protected boolean isExceedingDailyLimit(
+      BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
+    return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
+  }
+
+  protected void handleExceedingDailyLimit(Integer dailyLimit, LocalDate date)
+      throws AxelorException {
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        String.format(
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
+            dailyLimit,
+            date.format(dateService.getDateFormat())));
   }
 }

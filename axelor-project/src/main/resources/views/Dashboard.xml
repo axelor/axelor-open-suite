@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
@@ -17,15 +17,170 @@
       colSpan="12"/>
   </dashboard>
 
+  <form name="project-dashboard-form" title="Project dashboard"
+    model="com.axelor.utils.db.Wizard" onNew="action-project-dashboard-method-on-new" width="large"
+    canNew="false" canEdit="false" canDelete="false">
+    <panel name="overviewPanel" title="Overview" readonly="true">
+      <field name="$description" showTitle="false">
+        <viewer>
+	        <![CDATA[
+	          <p>{{record.$description}}</p>
+	        ]]>
+        </viewer>
+      </field>
+      <spacer/>
+      <panel name="issueTrackingPanel" title="Issue tracking" icon="fa-sticky-note">
+        <field name="$categoryList" showTitle="false" colSpan="12"
+          hideIf="$categoryList.length == 0">
+          <viewer>
+					<![CDATA[
+				   	   <table class="table table-striped">
+				   	     <thead>
+					        <tr>
+					          <th></th>
+					          <th x-translate>Open</th>
+					          <th x-translate>Closed</th>
+					          <th x-translate>Total</th>
+					        </tr>
+					     </thead>
+					     <tbody>
+					       <tr ng-repeat="item in record.$categoryList">
+					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksOpenedPerCategoryView({{item.categoryId}})">{{item.categoryName}}</a></td>
+					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksOpenedPerCategoryView({{item.categoryId}})">{{item.open}}</a></td>
+					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksClosedPerCategoryView({{item.categoryId}})">{{item.closed}}</a></td>
+					         <td><a href="" ui-action-click="com.axelor.apps.project.service.ProjectDashboardService:getTasksPerCategoryView({{item.categoryId}})">{{item.total}}</a></td>
+					       </tr>
+					     </tbody>
+					   </table>
+					   <span><a href="#/ds/all.open.project.tasks" x-translate>View all issues</a><span ng-if="record.$isShowCalendarView"> | <a href="#/ds/action-project-dashboard-view-per-user-calendar" x-translate>Calendar</a></span><span ng-if="record.$isShowGanttView"> | <a href="#/ds/action-project-dashboard-view-open-gantt" x-translate>Gantt</a></span></span>
+			        ]]>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="membersPanel" title="Members" icon="fa-users"
+        hideIf="$membersList.length == 0">
+        <field name="$membersList" showTitle="false" colSpan="12">
+          <viewer>
+						<![CDATA[
+						 <div>
+				           <span ng-repeat="item in record.$membersList"><a href="#/ds/action-auth-users/edit/{{item.id}}">{{item.name}}</a><span ng-if="!$last">, </span></span>
+				         <div>
+				        ]]>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="spentTimePanel" title="Spent time" icon="fa-clock-o"
+        if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource"
+        hideIf="$spentTime == 0" showIf="$isShowTimeSpent">
+        <field name="$spentTime" showTitle="false" colSpan="12">
+          <viewer>
+						<![CDATA[
+				         <p>{{record.$spentTime}} <span x-translate>hours</span></p> <br/>
+				   	     <a href="#/ds/action-timesheet-line-log-time"><span x-translate>Log time</span></a> | <a href="#/ds/project.spent.time"><span x-translate>Details</span></a>
+				        ]]>
+          </viewer>
+        </field>
+      </panel>
+      <panel name="announcementPanel" title="Latest News" icon="fa-newspaper-o"
+        if="__config__.app.isApp('business-support')" if-module="axelor-business-support"
+        hideIf="$announcementList.length == 0">
+        <field name="$announcementList" showTitle="false" colSpan="12">
+          <viewer>
+						<![CDATA[
+						 <p ng-repeat="item in record.$announcementList">
+				         <a href="#/ds/project.announcement/edit/{{item.id}}">{{item.title}}</a><br/>
+				         <span x-translate>Added by</span> <a href="#/ds/action-auth-users/edit/{{item.createdById}}">{{item.createdBy}}</a> <a href="" title="{{$moment(item.announcementDate).format('MM/DD/YYYY')}}" ui-action-click="com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView({{item.id}})">{{$moment(item.announcementDate).fromNow()}}</a>
+					     </p>
+					     <span ng-if="!$last"><br/></span>
+					     <a href="#/ds/project.announcement">View all news</a>
+				        ]]>
+          </viewer>
+        </field>
+      </panel>
+      <spacer/>
+      <panel name="subprojectPanel" title="Suprojects" icon="fa-gg-circle"
+        hideIf="$subprojectList.length == 0">
+        <field name="$subprojectList" showTitle="false" colSpan="12">
+          <viewer>
+					<![CDATA[
+					 <div>
+			           <span ng-repeat="item in record.$subprojectList"><a href="#/ds/project.all/edit/{{item.id}}">{{item.name}}</a><span ng-if="!$last">, </span></span>
+			         </div>
+			        ]]>
+          </viewer>
+        </field>
+      </panel>
+    </panel>
+  </form>
+
+
+  <form name="project-activity-dashboard-form" title="Project Activity"
+    model="com.axelor.utils.db.Wizard" onNew="action-project-activity-dashboard-method-on-new"
+    width="large" canNew="false" canEdit="false" canDelete="false">
+    <panel name="activityPanel" title="Activity">
+      <field name="$dates" showTitle="false" colSpan="12" readonly="true">
+        <viewer>
+			<![CDATA[
+			 <div><i><span x-translate>From</span> {{record.$startDate}} <span x-translate>to</span> {{record.$endDate}}</i></div>
+			]]>
+        </viewer>
+      </field>
+      <spacer hidden="true"/>
+      <label name="$noData" title="No data to display" hideIf="$activityList"/>
+      <field name="$activities" showTitle="false" colSpan="12" readonly="true"
+        showIf="$activityList">
+        <viewer>
+			<![CDATA[
+			  <span ng-repeat="activity in record.$activityList" class="mail-thread" style="border:none !important;">
+			    <span ng-repeat="(key, value) in activity" >
+			      <dt><div style="margin-bottom:10px;">{{key}}</div></dt>
+			      <div ng-repeat="titleList in value">
+			        <div ng-repeat="(title, activityList) in titleList" class="{{activityList.length > 1 && 'mail-message'}}">
+				     <dd style="margin-left: {{($first || activityList.length == 1) ? 0 : 30}}px" ng-repeat="item in activityList">
+					   <div class="{{activityList.length == 1 && 'mail-message'}}">
+					        <div ng-if="$first" class="mail-message-header subject">
+						        <text ng-if="item.subProjectName"> {{item.subProjectName}} - </text> <a href="{{item.objectLink}}">{{item.title}}</a>
+						        <span class="label {{item.utilityClass}}" style="float:right;line-height: initial;margin: 5px 0 !important; display: inline-table;" x-translate>
+				               	  {{item.modelName}}
+				            	</span>
+				            </div>
+				            <div class="mail-message-body">
+			                 <ul>
+					            <li ng-repeat="track in item.activity.tracks">
+					              <strong x-translate>{{track.title}}</strong> : <span ng-if="track.oldDisplayValue"> {{track.oldDisplayValue}} &raquo; </span><span ng-if="track.oldValue &amp;&amp; !track.oldDisplayValue"> {{track.oldValue}} &raquo; </span><span ng-if="track.displayValue">{{track.displayValue}}</span><span ng-if="!track.displayValue">{{track.value}}</span><span ng-if="!$last"><br/></span>
+					            </li>
+				             </ul>
+					         <div class="mail-message-footer">
+					            <a href="#/ds/action-auth-users/edit/{{item.userId}}">{{item.user}}</a> <text x-translate>updated document</text> - <a href="javascript:void(0)" title="{{$moment(item.time).format('MM/DD/YYYY HH:mm')}}">{{$moment(item.time).fromNow()}}</a>
+					         </div>
+				            </div>
+						  </div>
+				        </dd>
+				     </div>
+			      </div>
+			    </span>
+			  </span>
+			]]>
+        </viewer>
+      </field>
+      <button name="previousBtn" title="&lt;&lt; Previous"
+        onClick="action-project-activity-dashboard-method-previous-on-click" colSpan="4"/>
+      <button name="nextBtn" title="Next &gt;&gt;"
+        onClick="action-project-activity-dashboard-method-next-on-click" colSpan="4"
+        hideIf="$moment($endDate).diff(todayDate,'days') == 0"/>
+      <field name="$startDate" hidden="true"/>
+      <field name="$endDate" hidden="true"/>
+    </panel>
+  </form>
+
   <action-view name="action-project-db-my-tasks-to-do" title="My tasks to do"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain><![CDATA[
-      (self.assignedTo = :__user__ AND self.status NOT IN :closed_status) AND
+      (self.assignedTo = :__user__ AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date OR self.taskDate <= current_date)
     ]]></domain>
-    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
   </action-view>
 
   <action-view name="action-project-db-my-tasks-due" title="My tasks due"
@@ -33,24 +188,67 @@
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
     <domain><![CDATA[
-      (self.assignedTo = :__user__  AND self.status NOT IN :closed_status) AND
+      (self.assignedTo = :__user__  AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date)
     ]]></domain>
-    <context name="closed_status" expr="#{['closed', 'canceled']}"/>
   </action-view>
 
   <action-view name="action-project-db-my-today-planning" title="My today planning"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date = :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.startDateTime &lt; :__date__ AND self.endDateTime &gt; :__date__ AND
+      self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
   <action-view name="action-project-db-my-upcomming-planning"
     title="My upcoming planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
     <view type="grid" name="project-planning-db-grid"/>
     <view type="form" name="project-planning-time-form"/>
-    <domain>self.date &gt; :__datetime__ AND self.user = :__user__</domain>
+    <domain>self.startDateTime &gt; :__date__ AND self.employee.id = :_empId</domain>
+    <context name="_empId" expr="eval: __user__.employee?.id"/>
+
   </action-view>
+
+  <action-view name="action-project-dashboard-view-open-gantt" title="Gantt"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="gantt" name="task-gantt"/>
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <domain>self.project.id IN :_projectIds</domain>
+    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+  </action-view>
+
+  <action-view name="action-project-dashboard-view-per-user-calendar"
+    title="Task Calendar" model="com.axelor.apps.project.db.ProjectTask">
+    <view type="calendar" name="project-task-per-user-calendar"/>
+    <view type="form" name="project-task-form"/>
+    <domain>self.project.id IN :_projectIds</domain>
+    <context name="_project" expr="eval: __user__.contextProject"/>
+    <context name="_projectIds"
+      expr="call:com.axelor.apps.project.service.ProjectService:getContextProjectIds()"/>
+  </action-view>
+
+  <action-method name="action-project-dashboard-method-on-new">
+    <call class="com.axelor.apps.project.web.ProjectDashboardController" method="getData"/>
+  </action-method>
+
+  <action-method name="action-project-activity-dashboard-method-on-new">
+    <call class="com.axelor.apps.project.web.ProjectActivityDashboardController"
+      method="getData"/>
+  </action-method>
+
+  <action-method name="action-project-activity-dashboard-method-previous-on-click">
+    <call class="com.axelor.apps.project.web.ProjectActivityDashboardController"
+      method="getPreviousData"/>
+  </action-method>
+
+  <action-method name="action-project-activity-dashboard-method-next-on-click">
+    <call class="com.axelor.apps.project.web.ProjectActivityDashboardController"
+      method="getNextData"/>
+  </action-method>
 
 </object-views>

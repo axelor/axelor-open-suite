@@ -1,0 +1,33 @@
+"importId";"name";"replyToRecipients";"toRecipients";"ccRecipients";"subject";"content";"metaModel.name";"metaModel.packageName";"isSystem";"mediaTypeSelect"
+1;"NDF envoyée";;;"$Expense.employee.contactPartner.emailAddress.address$";"Soumission note de frais par $Expense.employee.name$";"<p>Bonjour,</p>
+<p><br></p>
+<p>Une note de frais vous a été soumise par $Expense.employee.name$.</p>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
+
+<div>
+<br><p>Merci de bien vouloir la valider ou la rejeter.</p>
+<p><br></p>
+<p>Cordialement</p>
+</div>";"Expense";"com.axelor.apps.hr.db";"true";2
+2;"NDF refusée";;"$Expense.employee.contactPartner.emailAddress.address$";;"Rejet de note de frais";"<p>Bonjour,</p>
+<p><br></p>
+<p>Votre note de frais $Expense.fullName$ n'est malheureusement pas conforme et ne pourra pas être validée en l'état.</p>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
+
+<div>
+<br><p>Afin de connaître les informations manquantes pour que cette note de frais soit validée, merci de répondre à cet e-mail.</p>
+<p><br></p>
+<p>Cordialement</p>
+<p><br></p>
+<p>$Expense.refusedBy.name$</p>
+</div>";"Expense";"com.axelor.apps.hr.db";"true";2
+3;"NDF validée";;"$Expense.employee.contactPartner.emailAddress.address$";;"Validation de note de frais";"<p>Bonjour,</p>
+<p><br></p>
+<p>Votre note de frais ($Expense.employee.name$) a été validée et vous sera réglée dans les plus brefs délais.</p>
+<a href=""http://localhost:8080/open-suite-webapp/#/ds/expense.validate/edit/$Expense.id$"">Veuillez vous connecter pour la consulter.</a>
+
+<div>
+<br><p>Cordialement</p>
+<p><br></p>
+<p>$Expense.validatedBy.name$</p>
+</div>";"Expense";"com.axelor.apps.hr.db";"true";2

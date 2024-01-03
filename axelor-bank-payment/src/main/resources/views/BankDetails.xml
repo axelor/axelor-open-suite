@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-details-bank-order-grid" title="Bank details"
     model="com.axelor.apps.base.db.BankDetails">
@@ -12,7 +12,7 @@
   </grid>
 
   <grid name="bank-details-bank-order-company-grid" title="Bank details"
-    model="com.axelor.apps.base.db.BankDetails" groupBy="company">
+    model="com.axelor.apps.base.db.BankDetails" groupBy="company" canNew="false">
     <field name="ownerName"/>
     <field name="bankAddress"/>
     <field name="iban"/>
@@ -20,13 +20,41 @@
     <field name="bank.code"/>
     <field name="company" hidden="true"/>
     <field name="balanceUpdatedDate" if-module="axelor-bank-payment"
-      if="__config__.app.isApp('bank-payment')"/>
+      if="__config__.app.isApp('bank-payment')">
+      <hilite
+        if="$moment().diff(balanceUpdatedDate,'days') &gt; 3 &amp;&amp; $moment().diff(balanceUpdatedDate,'days') &lt; 7"
+        color="warning"/>
+      <hilite if="$moment().diff(balanceUpdatedDate,'days') &gt; 7" color="danger"/>
+    </field>
     <field name="balance" aggregate="sum" if-module="axelor-bank-payment"
-      if="__config__.app.isApp('bank-payment')"/>
+      if="__config__.app.isApp('bank-payment')">
+      <hilite if="balance == 0" color="warning"/>
+      <hilite if="balance &lt; 0" color="danger"/>
+    </field>
     <button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment"
       if="__config__.app.isApp('bank-payment')"
       onClick="action-bank-details-view-show-bank-statement-lines"/>
   </grid>
+
+  <form id="bank-payment-bank-details-form" name="bank-details-form" title="Bank details"
+    model="com.axelor.apps.base.db.BankDetails" extension="true">
+    <extend target="//field[@name='company']">
+      <insert position="after">
+        <field name="balance" hidden="true"/>
+        <field name="balanceUpdatedDate" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//panel[@name='ownerInfoPanel']">
+      <insert position="after">
+        <panel name="balancePanel" hidden="true"
+          showIf="company &amp;&amp; balanceUpdatedDate" colSpan="3">
+          <button name="$balanceBtn" title="Balance" icon="fa-balance-scale"
+            widget="info-button" onClick="action-bank-details-view-show-bank-statement-lines"
+            colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
 
   <tree name="bank-details-bank-payment-tree" title="Bank details tree">
     <column name="company" type="string"/>
@@ -35,6 +63,7 @@
     <column name="balanceUpdatedDate" type="date"/>
     <column name="balance" type="decimal"/>
     <column name="balanceBtn" type="button"/>
+    <column name="finalBalanceBtn" type="button"/>
 
     <node model="com.axelor.apps.base.db.Company" onClick="action-company-form-view">
       <field name="name" as="company"/>
@@ -48,7 +77,57 @@
       <field name="balance" as="balance"/>
       <button name="balanceBtn" icon="fa-search"
         onClick="action-bank-details-view-show-bank-statement-lines"/>
+      <button name="finalBalanceBtn" icon="fa-indent"
+        onClick="action-bank-details-view-show-bank-statement-lines-final-balance"/>
     </node>
   </tree>
+
+  <action-view name="action-bank-details-view-show-bank-statement-lines-final-balance"
+    title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+    <view type="grid" name="bank-statement-line-afb-120-grid"/>
+    <view type="form" name="bank-statement-line-afb-120-form"/>
+    <view-param name="search-filters" value="bank-statement-line-afb-120-filters"/>
+    <view-param name="default-search-filters"
+      value="initial-final-balance-bank-statement-line-afb-120"/>
+    <domain>self.bankDetails.id = :bankDetailsId </domain>
+    <context name="bankDetailsId" expr="eval: id"/>
+  </action-view>
+
+  <action-group name="action-group-bank-details-set-balance-onload">
+    <action name="action-bank-details-attrs-set-balance-title"/>
+    <action name="action-bank-details-record-set-balance-value"/>
+  </action-group>
+
+  <action-attrs name="action-bank-details-attrs-set-balance-title">
+    <attribute name="title" for="$balanceBtn"
+      expr="eval: com.axelor.i18n.L10n.getInstance().format(balanceUpdatedDate)"/>
+  </action-attrs>
+
+  <action-record name="action-bank-details-record-set-balance-value"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="$balanceBtn" expr="eval: balance"/>
+  </action-record>
+
+  <action-view name="action-bank-details-view-show-bank-statement-lines"
+    title="Bank Statement lines" model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120">
+    <view type="grid" name="bank-statement-line-afb-120-grid"/>
+    <view type="form" name="bank-statement-line-afb-120-form"/>
+    <view-param name="search-filters" value="bank-statement-line-afb-120-filters"/>
+    <view-param name="default-search-filters"
+      value="movement-bank-statement-line-afb-120"/>
+    <domain>self.bankDetails.id = :bankDetailsId</domain>
+    <context name="bankDetailsId" expr="eval: id"/>
+  </action-view>
+
+  <search-filters name="bank-statement-line-afb-120-filters"
+    model="com.axelor.apps.bankpayment.db.BankStatementLineAFB120"
+    title="Bank statement line AFK120 filters">
+    <filter title="Balance" name="initial-final-balance-bank-statement-line-afb-120">
+      <domain>self.lineTypeSelect = 1 OR self.lineTypeSelect = 3</domain>
+    </filter>
+    <filter title="Movement" name="movement-bank-statement-line-afb-120">
+      <domain>self.lineTypeSelect = 2</domain>
+    </filter>
+  </search-filters>
 
 </object-views>

@@ -1,24 +1,21 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Project">
 
     <string name="name"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <string name="description" multiline="true" large="true"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>
-    <many-to-many name="projectFolderSet"
-      ref="com.axelor.apps.project.db.ProjectFolder" title="Project Folders"/>
     <one-to-many name="childProjectList" ref="com.axelor.apps.project.db.Project"
-      title="Child Projects" mappedBy="parentProject"/>
+      title="Sub-Projects" mappedBy="parentProject"/>
     <many-to-one name="assignedTo" ref="com.axelor.auth.db.User" title="Assigned to"/>
-    <integer name="statusSelect" selection="project.status.select" title="Status"
-      default="1"/>
-    <many-to-many name="projectTaskCategorySet"
-      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Type of authorized categories"/>
+    <many-to-one name="projectStatus" title="Status"
+      ref="com.axelor.apps.project.db.ProjectStatus"/>
     <one-to-many name="projectTaskList" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks" mappedBy="project"/>
     <boolean name="synchronize"/>
@@ -30,6 +27,9 @@
     <one-to-many name="resourceBookingList"
       ref="com.axelor.apps.project.db.ResourceBooking" title="Resource booking" mappedBy="project"/>
 
+    <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
+      title="Task fields" orphanRemoval="true"/>
+
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
@@ -39,19 +39,14 @@
 
     <datetime name="fromDate" title="From Date"/>
     <datetime name="toDate" title="To Date"/>
-    <datetime name="dueDate" title="Due Date"/>
 
-    <decimal name="estimatedTimeDays" title="Estimated time (in days)"/>
     <decimal name="estimatedTimeHrs" title="Estimated time (in hours)"/>
 
-    <decimal name="timeSpent" title="Time Spent"/>
-
-    <decimal name="progress" title="Progress (%)"/>
     <decimal name="sequence" title="Sequence"/>
     <integer name="orderByState"/>
 
-    <boolean name="imputable" default="true" massUpdate="true"
-      help="If this option is disabled this project cannot be selected on a timesheet."/>
+    <boolean name="imputable" title="Imputable to HR timesheets" default="true"
+      massUpdate="true"/>
 
     <many-to-many name="finishToStartTaskSet" ref="com.axelor.apps.project.db.Project"
       title="Finish tasks to start"/>
@@ -62,37 +57,41 @@
     <many-to-many name="startToFinishTaskSet" ref="com.axelor.apps.project.db.Project"
       title="Start tasks to finish"/>
 
-    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
-
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>
 
-    <boolean name="excludePlanning" title="Exclude planning"/>
-
     <string name="fullName" namecolumn="true" title="Name"/>
 
-    <boolean name="isProject" title="Project/Phase" default="true"/>
-    <boolean name="isShowPhasesElements" title="Show phases elements" default="true"/>
-
-    <integer name="projectTypeSelect" selection="project.project.project.type.select"
-      default="1"/>
+    <boolean name="isShowPhasesElements" title="Show sub-projects"/>
     <enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine"
       default="BUSINESS_PROJECT"/>
+    <integer name="nextProjectTaskSequence" title="Next project sequence" hidden="true"
+      default="1"/>
 
+    <!-- Configuration fields -->
+    <boolean name="isShowStatus" title="Status?" default="true"/>
+    <many-to-many name="projectTaskStatusSet"
+      ref="com.axelor.apps.project.db.TaskStatus" title="Type of authorized status"/>
+    <boolean name="isShowPriority" title="Priorities?" default="true"/>
+    <many-to-many name="projectTaskPrioritySet"
+      ref="com.axelor.apps.project.db.ProjectPriority" title="Type of authorized priorities"/>
+    <boolean name="isShowTaskCategory" title="Categories?" default="true"/>
+    <many-to-many name="projectTaskCategorySet"
+      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Type of authorized categories"/>
+    <boolean name="isShowProgress" title="Task progress" default="true"/>
+    <boolean name="isShowPlanning" title="Task planning" default="true"/>
+    <boolean name="isShowFrequency" title="Task recurrence"/>
+    <boolean name="isShowTimeSpent" title="Time Spent?"/>
+    <boolean name="isShowSection" title="Section?" default="true"/>
+    <boolean name="isShowTopic" title="Topic?"/>
+    <boolean name="isShowGantt" title="Enable Gantt view"/>
+    <boolean name="isShowKanbanPerStatus" title="Enable Kanban view per status"/>
+    <boolean name="isShowKanbanPerSection" title="Enable Kanban view per section"/>
+    <boolean name="isShowCalendarPerStatus" title="Enable calendar view per status"/>
+    <boolean name="isShowCalendarPerSection" title="Enable calendar view per section"/>
+    <boolean name="isShowCalendarPerUser" title="Enable calendar view per user"/>
     <finder-method name="findAllByParentProject" using="parentProject" all="true"/>
     <finder-method name="findByName" using="name"/>
-
-    <extra-code>
-   		<![CDATA[
-   			public static final Integer TYPE_PROJECT = 1;
-   			public static final Integer TYPE_PHASE = 2;
-
-   			public static final Integer STATE_NEW = 1;
-   			public static final Integer STATE_IN_PROGRESS = 2;
-   			public static final Integer STATE_FINISHED = 3;
-   			public static final Integer STATE_CANCELED = 4;
-   		]]>
-    </extra-code>
   </entity>
 
   <enum name="GenProjTypePerOrderLine">

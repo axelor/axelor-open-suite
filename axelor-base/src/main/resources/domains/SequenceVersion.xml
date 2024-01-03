@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="SequenceVersion" lang="java">
+  <entity name="SequenceVersion">
 
     <many-to-one name="sequence" title="Sequence" ref="com.axelor.apps.base.db.Sequence"
       initParam="true"/>
@@ -22,11 +22,6 @@
     <finder-method name="findByDate" using="sequence,LocalDate:date"
       orderBy="-startDate"
       filter="self.sequence = :sequence AND self.startDate &lt;= :date AND (self.endDate IS NULL OR self.endDate &gt;= :date)"/>
-    <finder-method name="findByMonth" using="sequence,int:month,int:year"
-      filter="self.sequence = :sequence AND MONTH(self.startDate) = :month AND YEAR(self.startDate) = :year"/>
-    <finder-method name="findByYear" using="sequence,int:year"
-      filter="self.sequence = :sequence AND YEAR(self.startDate) = :year"/>
-
   </entity>
 
 </domain-models>

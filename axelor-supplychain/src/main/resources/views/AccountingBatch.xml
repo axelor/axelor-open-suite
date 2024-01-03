@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="accounting-batch-form" id="supplychain-accounting-batch-form"
+    title="Accounting Batch" model="com.axelor.apps.account.db.AccountingBatch" extension="true">
+    <extend target="//field[@name='company']">
+      <attribute name="onChange"
+        value="action-supplychain-accounting-batch-group-onchange-company"/>
+    </extend>
+    <extend target="//field[@name='accountingCutOffTypeSelect']">
+      <attribute name="onChange"
+        value="supplychain-action-group-accounting-batch-onchange-accounting-type"/>
+    </extend>
+    <extend target="//field[@name='miscOpeJournal']">
+      <insert position="before">
+        <field name="forecastedInvCustAccount"
+          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect == 2"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'receivable'"
+          grid-view="account-grid" form-view="account-form" colSpan="6"
+          showIf="accountingCutOffTypeSelect == 2" hidden="true"/>
+        <spacer colSpan="6" showIf="accountingCutOffTypeSelect == 2" hidden="true"/>
+        <field name="forecastedInvSuppAccount"
+          requiredIf="actionSelect == 26 &amp;&amp; accountingCutOffTypeSelect == 1"
+          domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'payable'"
+          grid-view="account-grid" form-view="account-form" colSpan="6"
+          showIf="accountingCutOffTypeSelect == 1" hidden="true"/>
+        <spacer colSpan="6" showIf="accountingCutOffTypeSelect == 1" hidden="true"/>
+
+      </insert>
+    </extend>
+  </form>
+
+  <action-group
+    name="supplychain-action-group-accounting-batch-onchange-accounting-type">
+    <action name="action-group-accounting-batch-onchange-accounting-type"/>
+    <action name="action-method-accounting-batch-set-default-accounts"/>
+  </action-group>
+
+  <action-group name="action-supplychain-accounting-batch-group-onchange-company">
+    <action name="action-accounting-batch-attrs-set-empty-year-and-accountset-value"/>
+    <action name="action-method-accounting-batch-set-default-accounts"/>
+  </action-group>
+
+  <action-group name="action-accounting-batch-group-accounting-cut-off"
+    id="supplychain-action-accounting-batch-group-accounting-cut-off">
+    <action name="save"/>
+    <action name="action-accounting-batch-validate-cut-off-move-status"/>
+    <action name="action-accounting-batch-method-compute-move-line-cut-off-fields"
+      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
+      if="previewRecordsToProcess &amp;&amp; [1,2].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-accounting-batch-view-preview-move-lines-to-process"
+      if="previewRecordsToProcess &amp;&amp; [3,4].contains(accountingCutOffTypeSelect)"/>
+    <action name="action-accounting-batch-validate-twice-in-a-month"
+      if="!previewRecordsToProcess"/>
+    <action name="action-accounting-batch-method-accounting-cut-off"
+      if="!previewRecordsToProcess"/>
+  </action-group>
+
+  <action-view name="action-supplychain-batch-view-preview-stock-move-lines-to-process"
+    title="Stock move lines concerned by cut off" model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-cut-off-grid"/>
+    <view type="form" name="stock-move-line-form"/>
+    <domain>
+      (self.qtyInvoiced = 0 OR self.qtyInvoiced &lt;&gt; self.realQty)
+      AND
+      (self.product IS NULL
+      OR (:_includeNotStockManagedProduct IS TRUE AND (self.product.stockManaged IS FALSE OR
+      self.product.stockManaged IS TRUE))
+      OR (:_includeNotStockManagedProduct IS FALSE AND
+      self.product.stockManaged IS TRUE))
+      AND
+      self.stockMove.invoicingStatusSelect &lt;&gt; 2
+      AND
+      self.stockMove.statusSelect = 3
+      AND
+      ((:_accountingCutOffTypeSelect = 1 AND
+      self.stockMove.typeSelect = 3)
+      OR
+      (:_accountingCutOffTypeSelect = 2 AND
+      self.stockMove.typeSelect = 2))
+      AND
+      self.stockMove.realDate &lt;= :_moveDate
+      AND
+      self.stockMove.company.id =
+      :_company
+    </domain>
+    <context name="_company" expr="eval: company.id"/>
+    <context name="_moveDate" expr="eval: moveDate"/>
+    <context name="_accountingCutOffTypeSelect" expr="eval: accountingCutOffTypeSelect"/>
+    <context name="_includeNotStockManagedProduct"
+      expr="eval: includeNotStockManagedProduct"/>
+    <context name="_cutOffPreview" expr="eval: true"/>
+    <context name="_ati" expr="eval: ati"/>
+    <context name="_recoveredTax" expr="eval: recoveredTax"/>
+    <context name="_batchId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-batch-show-stock-move" title="Stock moves"
+    model="com.axelor.apps.stock.db.StockMove">
+    <view type="grid" name="stock-move-in-grid"
+      if="accountingBatch &amp;&amp; accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 1"/>
+    <view type="grid" name="stock-move-out-grid"
+      if="(supplychainBatch &amp;&amp; supplychainBatch.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_OUTGOING_STOCK_MOVES) || (accountingBatch &amp;&amp; accountingBatch.actionSelect == __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF &amp;&amp; accountingBatch.accountingCutOffTypeSelect == 2)"/>
+    <view type="form" name="stock-move-form"/>
+    <domain>:batch MEMBER OF self.batchSet</domain>
+    <context name="batch" expr="eval: __self__"/>
+  </action-view>
+
+  <action-view name="action-batch-show-stock-move-lines" title="Stock move lines"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-all-grid"/>
+    <view type="form" name="stock-move-line-all-form"/>
+    <domain>self.id IN :stockMovelineIdList</domain>
+    <context name="stockMovelineIdList"
+      expr="call:com.axelor.apps.supplychain.service.AccountingCutOffSupplyChainService:getStockMoveLines(__self__)"/>
+  </action-view>
+
+  <action-method name="action-method-accounting-batch-set-default-accounts">
+    <call class="com.axelor.apps.supplychain.web.AccountingBatchController"
+      method="setDefaultCutOffAccount"/>
+  </action-method>
+
+</object-views>

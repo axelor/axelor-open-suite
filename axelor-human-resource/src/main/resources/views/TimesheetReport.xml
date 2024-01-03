@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="timesheet-report-grid" title="Timesheet report"
     model="com.axelor.apps.hr.db.TimesheetReport">
@@ -11,39 +11,34 @@
   </grid>
 
   <form name="timesheet-report-form" title="Timesheet report"
-    model="com.axelor.apps.hr.db.TimesheetReport" cols="12" width="large"
+    model="com.axelor.apps.hr.db.TimesheetReport" width="large"
     onNew="action-human-resource-record-timesheet-report-onnew">
-    <panel name="mainPanel">
+    <panel name="mainPanel" colSpan="12">
       <field name="typeSelect"/>
       <spacer/>
       <field name="fromDate" onChange="action-human-resource-group-date"/>
       <field name="toDate" onChange="action-human-resource-group-date"/>
-      <field name="userSet" form-view="user-form" grid-view="user-grid" colSpan="12"
-        canNew="false" canEdit="false"
+      <field name="employeeSet" form-view="employee-form" grid-view="employee-grid"
+        colSpan="12" canNew="false" canEdit="false"
         help="Please, provide weeklyPlanning , publicHolidaysPlanning and mainContract information for selected employees"
-        domain="self.blocked = false"/>
-      <field name="reminderUserSet" colSpan="12" form-view="user-form" grid-view="user-grid"
-        canEdit="false" canNew="false" canSelect="false" canView="false" showIf="typeSelect == 1"/>
+        domain="self.user.blocked = false"/>
+      <field name="reminderEmployeeSet" colSpan="12" form-view="employee-form"
+        grid-view="employee-grid" canEdit="false" canNew="false" canSelect="false" canView="false"
+        showIf="typeSelect == 1"/>
     </panel>
     <panel name="buttonPanel" sidebar="true">
-      <button name="setMissingUsersBtn" title="Set users to be reminded"
-        onClick="save,action-human-resource-method-set-user-to-be-reminded,save"
+      <button name="setMissingEmployeesBtn" title="Set employees to be reminded"
+        onClick="save,action-human-resource-method-set-employee-to-be-reminded,save"
         showIf="typeSelect == 1"/>
       <button name="sendReminderBtn" title="Send reminder"
         onClick="save,action-human-resource-method-send-timesheet-reminder" showIf="typeSelect == 1"/>
-      <button name="printBtn" title="Print"
-        onClick="save,action-human-resource-method-print-timesheet-report"/>
+      <button name="printBtn" title="Print" onClick="save,action-method-print-birt"/>
     </panel>
   </form>
 
-  <action-method name="action-human-resource-method-print-timesheet-report">
+  <action-method name="action-human-resource-method-set-employee-to-be-reminded">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController"
-      method="printEmployeeTimesheetReport"/>
-  </action-method>
-
-  <action-method name="action-human-resource-method-set-user-to-be-reminded">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController"
-      method="fillTimesheetReportReminderUsers"/>
+      method="fillTimesheetReportReminderEmployees"/>
   </action-method>
 
   <action-method name="action-human-resource-method-send-timesheet-reminder">
@@ -68,9 +63,8 @@
 
   <action-record name="action-human-resource-record-timesheet-report-onnew"
     model="com.axelor.apps.hr.db.TimesheetReport">
-    <field name="fromDate"
-      expr="eval: __config__.app.getTodayDate(__user__.activeCompany).withDayOfMonth(1)"/>
-    <field name="toDate" expr="eval:__config__.app.getTodayDate(__user__.activeCompany)"/>
+    <field name="fromDate" expr="eval: __config__.date.withDayOfMonth(1)"/>
+    <field name="toDate" expr="eval:__config__.date"/>
     <field name="typeSelect" expr="eval: 1"/>
   </action-record>
 

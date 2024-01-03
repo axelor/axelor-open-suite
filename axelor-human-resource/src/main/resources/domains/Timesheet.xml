@@ -1,17 +1,17 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
 
   <entity name="Timesheet" cacheable="true">
 
-    <date name="sentDate" title="Sent Date" readonly="true"/>
+    <datetime name="sentDateTime" title="Sent Date" readonly="true"/>
     <integer name="statusSelect" title="Status" selection="hrs.timesheet.status.select"
       default="1" readonly="true"/>
-    <many-to-one name="user" ref="com.axelor.auth.db.User" title="User" column="user_id"
-      required="true" readonly="true"/>
+    <many-to-one name="employee" ref="Employee" title="Employee" required="true"
+      readonly="true"/>
     <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine"
       title="Timesheet Lines" mappedBy="timesheet"/>
     <date name="fromDate"/>
@@ -21,30 +21,29 @@
       readonly="true"/>
     <many-to-one name="refusedBy" ref="com.axelor.auth.db.User" title="Refused By"
       readonly="true"/>
-    <date name="validationDate" title="Validation Date" readonly="true"/>
-    <date name="refusalDate" title="Refusal Date" readonly="true"/>
+    <datetime name="validationDateTime" title="Validation Date" readonly="true"/>
+    <datetime name="refusalDateTime" title="Refusal Date" readonly="true"/>
     <string name="groundForRefusal" title="Ground For Refusal" large="true"/>
     <decimal name="periodTotal" title="Total on period (hours)"/>
     <boolean name="showEditor" title="Show editor"/>
     <string name="timeLoggingPreferenceSelect" title="Time logging preference"
       selection="hr.time.logging.preference.select"/>
+    <boolean name="isCompleted" title="Completed"/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
-      		if(this.getUser() != null && this.getCreatedOn() != null){
-      			return this.getUser().getFullName()+" "+this.getCreatedOn().getDayOfMonth()+"/"+this.getCreatedOn().getMonthValue()
-	  				+"/"+this.getCreatedOn().getYear()+"  "+this.getCreatedOn().getHour()+":"+this.getCreatedOn().getMinute();
-      		}
-	  		else if (this.getUser() != null){
-	  			return this.getUser().getFullName()+" N°"+this.getId();
-	  		}
-	  		else{
-	  			return "N°"+this.getId();
-	  		}
+      		return Beans.get(TimesheetComputeNameService.class).computeTimesheetFullname(this.getEmployee(),this.getFromDate(),this.getToDate());
 	  ]]>
     </string>
 
-    <finder-method name="findByUserAndStatus" using="user,statusSelect"/>
+    <finder-method name="findByEmployeeAndStatus" using="employee,statusSelect"/>
+
+    <extra-imports>
+      <![CDATA[
+      import com.axelor.inject.Beans;
+      import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
+      ]]>
+    </extra-imports>
 
     <extra-code>
       	<![CDATA[
@@ -56,7 +55,7 @@
 	  ]]>
     </extra-code>
     <track>
-      <field name="statusSelect"/>
+      <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
     </track>
   </entity>
 

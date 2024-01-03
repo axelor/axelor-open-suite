@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="Period" lang="java" cacheable="true">
+  <entity name="Period" cacheable="true">
 
     <string name="name" title="Name" required="true"/>
     <string name="code" title="Code"/>
@@ -15,17 +15,18 @@
     <date name="toDate" title="To"/>
     <integer name="statusSelect" title="Status" readonly="true"
       selection="base.period.status.select" default="1"/>
-    <datetime name="closureDateTime" title="Closure date"/>
+    <datetime name="closureDateTime" title="Permanent closure date"/>
     <one-to-many name="adjustHistoryList" ref="com.axelor.apps.base.db.AdjustHistory"
       title="Adjust History" mappedBy="period"/>
+    <datetime name="temporarilyCloseDateTime" title="Temporarily closure date"/>
 
     <extra-code><![CDATA[
-
 	   	// STATUS SELECT
 		public static final int STATUS_OPENED = 1;
 		public static final int STATUS_CLOSED = 2;
 		public static final int STATUS_ADJUSTING = 3;
-
+		public static final int STATUS_TEMPORARILY_CLOSED = 4;
+		public static final int STATUS_CLOSURE_IN_PROGRESS = 5;
 	]]></extra-code>
   </entity>
 

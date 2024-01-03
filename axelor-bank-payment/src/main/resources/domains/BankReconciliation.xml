@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
-  <entity name="BankReconciliation" lang="java">
+  <entity name="BankReconciliation">
 
     <string name="name" title="Label" namecolumn="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"
@@ -19,7 +19,7 @@
     <many-to-one name="cashAccount" ref="com.axelor.apps.account.db.Account"
       title="Cash account"/>
     <decimal name="startingBalance" title="Starting Balance"/>
-    <decimal name="endingBalance" title="Ending Balance"/>
+    <decimal name="endingBalance" title="Ending Balance" readonly="true"/>
     <decimal name="accountBalance" title="Account balance"/>
     <one-to-many name="bankReconciliationLineList"
       ref="com.axelor.apps.bankpayment.db.BankReconciliationLine" mappedBy="bankReconciliation"
@@ -31,16 +31,43 @@
       title="Bank statement"/>
     <decimal name="totalPaid" title="Total paid" readonly="true"/>
     <decimal name="totalCashed" title="Total cashed" readonly="true"/>
-    <boolean name="includeOtherBankStatements" title="Include other bank statements"/>
+    <boolean name="includeOtherBankStatements" title="Include other bank statements"
+      default="true"/>
     <many-to-one name="validatedByUser" title="Validated By"
       ref="com.axelor.auth.db.User" readonly="true"/>
-    <date name="validatedDate" title="Validated On" readonly="true"/>
+    <datetime name="validateDateTime" title="Validated On" readonly="true"/>
+    <boolean name="hasBeenCorrected" title="Corrected" default="false"/>
+    <datetime name="correctedDateTime" readonly="true"/>
+    <many-to-one name="correctedUser" ref="com.axelor.auth.db.User" readonly="true"/>
+    <string name="comments" title="Comment" large="true"/>
+
+    <!-- Balances -->
+
+    <decimal name="statementReconciledLineBalance" title="Statement reconciled line balance"/>
+    <decimal name="movesReconciledLineBalance" title="Moves reconciled line balance"/>
+    <decimal name="statementUnreconciledLineBalance"
+      title="Statement unrereconciled line balance"/>
+    <decimal name="movesUnreconciledLineBalance" title="Moves unreconciled line balance"/>
+    <decimal name="statementOngoingReconciledBalance"
+      title="Statement ongoing reconciled balance"/>
+    <decimal name="movesOngoingReconciledBalance" title="Moves ongoing reconciled balance"/>
+    <decimal name="statementAmountRemainingToReconcile"
+      title="Statement amount remaining to reconcile"/>
+    <decimal name="movesAmountRemainingToReconcile"
+      title="Moves amount remaining to reconcile"/>
+    <decimal name="statementTheoreticalBalance" title="Statement theoretical balance"/>
+    <decimal name="movesTheoreticalBalance" title="Moves theoretical balance"/>
+
+
+    <finder-method name="findByBankDetails" using="bankDetails" all="true"/>
+    <finder-method name="findOneByBankDetails" using="bankDetails" orderBy="-id"/>
 
     <extra-code><![CDATA[
 
 	   	// Status select
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_VALIDATED = 2;
+		public static final int STATUS_UNDER_CORRECTION = 3;
 
 	]]></extra-code>
 

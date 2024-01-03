@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="ts-timer-grid" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
     editable="true" onNew="action-hr-ts-timer-record-default" canNew="false">
-    <field name="user" form-view="user-form" grid-view="user-grid"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="project" form-view="project-form" grid-view="project-grid"/>
     <field name="product"
       domain="self.isActivity = true AND EXISTS(SELECT p FROM Project p WHERE p = :project AND self MEMBER OF p.productSet) AND self.dtype = 'Product'"
@@ -20,10 +20,11 @@
   <form name="ts-timer-form" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
     width="large" onNew="action-hr-ts-timer-record-default" canNew="false">
     <panel name="startAndStopPanel" title="Start&amp;Stop Timer">
-      <field name="user" form-view="user-form" grid-view="user-grid" canNew="false"
-        canEdit="false" canView="false"/>
+      <field name="employee" form-view="employee-form" grid-view="employee-grid"
+        canNew="false" canEdit="false" canView="false"/>
       <field name="project" form-view="project-form" grid-view="project-grid"
-        domain="self.imputable = true" onChange="action-hr-ts-timer-record-empty-product"/>
+        domain="self.imputable = true AND self.isShowTimeSpent = true"
+        onChange="action-hr-ts-timer-record-empty-product"/>
       <field name="startDateTime"/>
       <field name="product" canEdit="false"
         onSelect="action-hr-timesheet-timer-attrs-domain-product" widget="SuggestBox"
@@ -61,16 +62,16 @@
 
   <action-record name="action-hr-ts-timer-record-default"
     model="com.axelor.apps.hr.db.TSTimer">
-    <field name="user" expr="eval:__user__"/>
+    <field name="employee" expr="eval:__user__.employee"/>
     <field name="product" expr="eval:__user__.employee?.product"/>
   </action-record>
 
   <action-record name="action-hr-ts-timer-record-new"
     model="com.axelor.apps.hr.db.TSTimer">
     <field name="project" expr="eval:null"
-      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
+      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet')?.getKeepProject() "/>
     <field name="product" expr="eval:null"
-      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet').getKeepProject() "/>
+      if="!__config__.app.isApp('timesheet') || !__config__.app.getApp('timesheet')?.getKeepProject() "/>
     <field name="startDateTime" expr="eval:null"/>
     <field name="duration" expr="eval:null"/>
     <field name="timesheetLine" expr="eval:null"/>
@@ -101,7 +102,7 @@
 
   <action-attrs name="action-ts-timer-attrs-readonly-panel">
     <attribute name="readonly" for="startAndStop"
-      expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.app.getApp('timesheet').getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"/>
+      expr="eval:statusSelect == TSTimerRepository.STATUS_STOP &amp;&amp; !__config__.app.getApp('timesheet')?.getEditModeTSTimer() &amp;&amp; __config__.app.isApp('timesheet')"/>
   </action-attrs>
 
 </object-views>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="account" package="com.axelor.apps.account.db"/>
+
+  <entity name="MoveLineMassEntry" extends="MoveLine">
+
+    <many-to-one name="moveMassEntry" ref="Move" title="Mass entry" initParam="true"/>
+    <integer name="temporaryMoveNumber" title="N°"/>
+    <integer name="inputAction" title="Input action"
+      selection="iaccount.move.line.mass.entry.input.action.select"/>
+    <many-to-one name="movePaymentMode" ref="com.axelor.apps.account.db.PaymentMode"
+      title="Payment Mode"/>
+    <many-to-one name="movePaymentCondition" title="Payment condition"
+      ref="com.axelor.apps.account.db.PaymentCondition"/>
+    <string name="moveDescription" title="Move Description" initParam="true"/>
+    <integer name="moveStatusSelect" title="Status" default="1" readonly="true"
+      selection="iaccount.move.status.select"/>
+    <many-to-one name="movePartnerBankDetails" title="Bank details"
+      ref="com.axelor.apps.base.db.BankDetails"/>
+    <integer name="isEdited" selection="iaccount.move.line.mass.entry.edited.field.select"
+      default="0"/>
+    <string name="fieldsErrorList"/>
+    <many-to-one name="movePfpValidatorUser" ref="com.axelor.auth.db.User"
+      title="PFP Validator"/>
+    <date name="deliveryDate" title="Delivery date"/>
+    <one-to-many name="analyticMoveLineMassEntryList"
+      ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
+      mappedBy="moveLineMassEntry"/>
+
+    <extra-code><![CDATA[
+
+      // MASS ENTRY INPUT ACTION
+      public static final int MASS_ENTRY_INPUT_ACTION_LINE = 1;
+      public static final int MASS_ENTRY_INPUT_ACTION_COUNTERPART = 2;
+	  public static final int MASS_ENTRY_INPUT_ACTION_MOVE = 3;
+
+      // MASS ENTRY IS EDITED
+      public static final int MASS_ENTRY_IS_EDITED_NULL = 0;
+      public static final int MASS_ENTRY_IS_EDITED_EXCEPT_VAT_SYSTEM = 1;
+      public static final int MASS_ENTRY_IS_EDITED_ALL = 2;
+
+
+    ]]></extra-code>
+
+  </entity>
+
+</domain-models>

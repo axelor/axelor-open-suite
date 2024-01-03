@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
   <grid name="analytic-account-grid" title="Analytic Accounts"
     model="com.axelor.apps.account.db.AnalyticAccount">
+    <toolbar>
+      <button name="massUpdateBtn" title="Mass update status"
+        onClick="action-mass-update-status-wizard"/>
+    </toolbar>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
     <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+    <field name="statusSelect"/>
+    <field name="company"/>
   </grid>
 
   <tree name="analytic-account-tree" title="Analytic accounting account">
@@ -28,13 +35,44 @@
   </tree>
 
   <form name="analytic-account-form" title="Analytic Account"
-    model="com.axelor.apps.account.db.AnalyticAccount">
+    model="com.axelor.apps.account.db.AnalyticAccount"
+    onLoad="action-attrs-analytic-account-change-axis,action-attrs-account-analytic-account-status-show-title"
+    onSave="action-method-analytic-account-check-children-company">
+    <panel name="statusPanel">
+      <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
+        colSpan="8"/>
+      <button name="activeStatusBtn" title="Set Active"
+        onClick="save,account-analytic-account-method-toggle-status-active,action-attrs-account-analytic-account-status-show-title"
+        colSpan="3"/>
+    </panel>
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
-      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"/>
-      <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"/>
+      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+        required="true" onChange="action-group-analytic-account-onchange-axis"/>
+      <field name="parent" form-view="analytic-account-form" grid-view="analytic-account-grid"
+        onSelect="action-method-set-domain-parent-level-analytic-account"
+        readonlyIf="!analyticLevel" onChange="action-method-set-company-change-parent"/>
+      <field name="company" onChange="action-method-analytic-account-check-children-company"
+        readonlyIf="(analyticAxis != null &amp;&amp; analyticAxis.company != null) || (parent != null &amp;&amp; parent.company != null)"/>
+      <field name="analyticLevel" form-view="analytic-level-form"
+        grid-view="analytic-level-grid" required="true"/>
+      <field name="analyticAxis.company" hidden="true"/>
     </panel>
+    <panel name="groupingValuePanel" hidden="true">
+      <field name="analyticGroupingValue1" hidden="true"/>
+      <field name="analyticGroupingValue2" hidden="true"/>
+      <field name="analyticGroupingValue3" hidden="true"/>
+      <field name="analyticGroupingValue4" hidden="true"/>
+      <field name="analyticGroupingValue5" hidden="true"/>
+      <field name="analyticGroupingValue6" hidden="true"/>
+      <field name="analyticGroupingValue7" hidden="true"/>
+      <field name="analyticGroupingValue8" hidden="true"/>
+      <field name="analyticGroupingValue9" hidden="true"/>
+      <field name="analyticGroupingValue10" hidden="true"/>
+    </panel>
+    <panel-dashlet action="action-analytic-account-tree-view"
+      name="relatedAccountsPanel" title="Related Accounts"/>
   </form>
 
   <form name="analytic-account-info-form" title="Analytic Account"
@@ -48,6 +86,40 @@
     </panel>
   </form>
 
+  <tree name="analytic-account-tree-2" title="Analytic accounting account (with axis)">
+    <column name="name" type="string"/>
+    <column name="code" type="string"/>
+    <node model="com.axelor.apps.account.db.AnalyticAxis" domain="self.id = :_axisId">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+    <node model="com.axelor.apps.account.db.AnalyticAccount" parent="analyticAxis"
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.id = :_accountId">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+    <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.parent is not null">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+    <node model="com.axelor.apps.account.db.AnalyticAccount" parent="parent"
+      onClick="action-analytic-account-view-account-onchange-view" draggable="true"
+      domain="self.parent is not null">
+      <field name="name" as="name"/>
+      <field name="code" as="code"/>
+    </node>
+  </tree>
+
+  <action-view name="action-analytic-account-tree-view"
+    model="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Tree">
+    <view name="analytic-account-tree-2" type="tree"/>
+    <context name="_axisId" expr="eval: analyticAxis?.id"/>
+    <context name="_accountId" expr="eval: id"/>
+  </action-view>
+
   <action-view name="action-analytic-account-view-account-onchange-view"
     title="Analytic Accounts" model="com.axelor.apps.account.db.AnalyticAccount">
     <view type="form" name="analytic-account-info-form"/>
@@ -57,5 +129,135 @@
     <view-param name="popup-save" value="false"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+
+  <action-group name="action-group-analytic-account-onchange-axis">
+    <action name="action-record-analytic-account-set-values"/>
+    <action name="action-attrs-analytic-account-change-axis"/>
+    <action name="action-method-set-company-change-axis"/>
+  </action-group>
+
+  <action-method name="action-method-set-domain-parent-level-analytic-account">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="setParentDomain"/>
+  </action-method>
+
+  <action-attrs name="action-attrs-analytic-account-change-axis">
+    <attribute name="hidden" for="groupingValuePanel" expr="eval: !analyticAxis"/>
+
+    <attribute name="domain" for="analyticGroupingValue1"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping1?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping1 &amp;&amp; analyticAxis.analyticGrouping1.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue1"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping1)"/>
+
+    <attribute name="domain" for="analyticGroupingValue2"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping2?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping2 &amp;&amp; analyticAxis.analyticGrouping2.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue2"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping2)"/>
+
+    <attribute name="domain" for="analyticGroupingValue3"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping3?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping3 &amp;&amp; analyticAxis.analyticGrouping3.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue3"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping3)"/>
+
+    <attribute name="domain" for="analyticGroupingValue4"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping4?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping4 &amp;&amp; analyticAxis.analyticGrouping4.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue4"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping4)"/>
+
+    <attribute name="domain" for="analyticGroupingValue5"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping5?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping5 &amp;&amp; analyticAxis.analyticGrouping5.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue5"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping5)"/>
+
+    <attribute name="domain" for="analyticGroupingValue6"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping6?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping6 &amp;&amp; analyticAxis.analyticGrouping6.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue6"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping6)"/>
+
+    <attribute name="domain" for="analyticGroupingValue7"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping7?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping7 &amp;&amp; analyticAxis.analyticGrouping7.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue7"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping7)"/>
+
+    <attribute name="domain" for="analyticGroupingValue8"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping8?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping8 &amp;&amp; analyticAxis.analyticGrouping8.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue8"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping8)"/>
+
+    <attribute name="domain" for="analyticGroupingValue9"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping9?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping9 &amp;&amp; analyticAxis.analyticGrouping9.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue9"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping9)"/>
+
+    <attribute name="domain" for="analyticGroupingValue10"
+      expr="eval: &quot;self.id in (${(analyticAxis?.analyticGrouping10?.analyticGroupingValueList?.collect{it.id}).join(',')})&quot;"
+      if="analyticAxis &amp;&amp; analyticAxis.analyticGrouping10 &amp;&amp; analyticAxis.analyticGrouping10.analyticGroupingValueList"/>
+    <attribute name="hidden" for="analyticGroupingValue10"
+      expr="eval: !(analyticAxis &amp;&amp; analyticAxis.analyticGrouping10)"/>
+
+    <attribute name="hidden" for="parent" expr="eval: !analyticAxis.manageParentAccount"
+      if="analyticAxis"/>
+  </action-attrs>
+
+  <action-attrs name="action-attrs-account-analytic-account-status-show-title">
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Active')" if="statusSelect == 0"/>
+    <attribute name="title" for="activeStatusBtn"
+      expr="eval:com.axelor.i18n.I18n.get('Set Inactive')" if="statusSelect == 1"/>
+  </action-attrs>
+
+  <action-method name="action-method-set-company-change-axis">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="setCompanyOnAxisChange"/>
+  </action-method>
+
+  <action-method name="action-method-set-company-change-parent">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="setCompanyOnParentChange"/>
+  </action-method>
+
+  <action-record name="action-record-analytic-account-set-values"
+    model="com.axelor.apps.account.db.AnalyticAccount">
+    <field name="analyticGroupingValue1" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping1)"/>
+    <field name="analyticGroupingValue2" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping2)"/>
+    <field name="analyticGroupingValue3" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping3)"/>
+    <field name="analyticGroupingValue4" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping4)"/>
+    <field name="analyticGroupingValue5" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping5)"/>
+    <field name="analyticGroupingValue6" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping6)"/>
+    <field name="analyticGroupingValue7" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping7)"/>
+    <field name="analyticGroupingValue8" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping8)"/>
+    <field name="analyticGroupingValue9" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping9)"/>
+    <field name="analyticGroupingValue10" expr="eval: null"
+      if="!(analyticAxis &amp;&amp; analyticAxis.analyticGrouping10)"/>
+    <field name="parent" expr="eval: null"
+      if="analyticAxis &amp;&amp; !analyticAxis.manageParentAccount"/>
+  </action-record>
+
+  <action-method name="account-analytic-account-method-toggle-status-active">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController" method="toggleStatus"/>
+  </action-method>
+
+  <action-method name="action-method-analytic-account-check-children-company">
+    <call class="com.axelor.apps.account.web.AnalyticAccountController"
+      method="checkChildrenCompany"/>
+  </action-method>
 
 </object-views>

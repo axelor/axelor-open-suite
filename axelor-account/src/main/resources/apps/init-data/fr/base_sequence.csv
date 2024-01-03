@@ -1,0 +1,73 @@
+"importId";"codeSelect";"name";"sequenceTypeSelect";"sequenceLettersTypeSelect";"nextNum";"padding";"prefixe";"suffixe";"toBeAdded";"yearlyResetOk"
+100;"accountClearance";"Apurement des trop-perçus";"NUMBERS";"UPPERCASE";1;4;"APURMT%YY";;1;1
+101;"chequeReject";"Rejet chèques";"NUMBERS";"UPPERCASE";1;4;"REJCHQ%YY";;1;1
+102;"invoice";"Facture de vente";"NUMBERS";"UPPERCASE";1;4;"FC%YY";;1;1
+103;"invoice";"Avoir client";"NUMBERS";"UPPERCASE";1;4;"AC%YY";;1;1
+104;"invoice";"Facture d'achat";"NUMBERS";"UPPERCASE";1;4;"FF%YY";;1;1
+105;"invoice";"Avoir fournisseur";"NUMBERS";"UPPERCASE";1;4;"AF%YY";;1;1
+106;"debit";"Prélèvement (facture et echeanciers hors mensu)";"NUMBERS";"UPPERCASE";1;4;"PRLFAC%YY";;1;1
+109;"irrecoverable";"Passage en irrécouvrable";"NUMBERS";"UPPERCASE";1;4;"IRRECO%YY";;1;1
+110;"move";"Ecriture Vente";"NUMBERS";"UPPERCASE";1;4;"EP_VTE%YY";;1;1
+111;"move";"Ecriture avoir";"NUMBERS";"UPPERCASE";1;4;"EP_AVC%YY";;1;1
+112;"move";"Ecriture Achat";"NUMBERS";"UPPERCASE";1;4;"EP_ACH%YY";;1;1
+113;"move";"Ecriture avoir fournisseur";"NUMBERS";"UPPERCASE";1;4;"EP_AVF%YY";;1;1
+114;"move";"Ecriture Factice";"NUMBERS";"UPPERCASE";1;4;"EP_VIRT%YY";;1;1
+115;"move";"Ecriture paiement en especes";"NUMBERS";"UPPERCASE";1;4;"EP_ESP%YY";;1;1
+116;"move";"Ecriture paiement client par cheque";"NUMBERS";"UPPERCASE";1;4;"EP_CHQ%YY";;1;1
+117;"move";"Ecriture paiement client par CB";"NUMBERS";"UPPERCASE";1;4;"EP_CB%YY";;1;1
+118;"move";"Ecriture paiement client par internet";"NUMBERS";"UPPERCASE";1;4;"EP_WEB%YY";;1;1
+119;"move";"Ecriture paiement client par TIP";"NUMBERS";"UPPERCASE";1;4;"EP_TIP%YY";;1;1
+120;"move";"Ecriture paiement client par TIP+Cheque";"NUMBERS";"UPPERCASE";1;4;"EP_TEC%YY";;1;1
+121;"move";"Ecriture paiement client par virement";"NUMBERS";"UPPERCASE";1;4;"EP_VIR%YY";;1;1
+122;"move";"Ecriture paiement client par prélèvement  (factures et échéanciers hors mensu)";"NUMBERS";"UPPERCASE";1;4;"EP_PRL%YY";;1;1
+123;"move";"Ecriture paiement client par autres moyens";"NUMBERS";"UPPERCASE";1;4;"EP_AUT%YY";;1;1
+124;"move";"Ecriture paiement client rejet d'opération bancaire";"NUMBERS";"UPPERCASE";1;4;"EP_REJ%YY";;1;1
+125;"move";"Ecriture de remboursement automatique";"NUMBERS";"UPPERCASE";1;4;"EP_RBTC%YY";;1;1
+126;"move";"Ecriture règlement fournisseur en especes";"NUMBERS";"UPPERCASE";1;4;"ER_ESP%YY";;1;1
+127;"move";"Ecriture règlement fournisseur par cheque";"NUMBERS";"UPPERCASE";1;4;"ER_CHQ%YY";;1;1
+128;"move";"Ecriture règlement fournisseur par CB";"NUMBERS";"UPPERCASE";1;4;"ER_CB%YY";;1;1
+129;"move";"Ecriture règlement fournisseur par TIP";"NUMBERS";"UPPERCASE";1;4;"ER_TIP%YY";;1;1
+130;"move";"Ecriture règlement fournisseur par virement";"NUMBERS";"UPPERCASE";1;4;"ER_VIR%YY";;1;1
+131;"move";"Ecriture règlement fournisseur par prélèvement  (factures et échéanciers hors mensu)";"NUMBERS";"UPPERCASE";1;4;"ER_PRL%YY";;1;1
+132;"move";"Ecriture règlement fournisseur par autres moyens";"NUMBERS";"UPPERCASE";1;4;"ER_AUT%YY";;1;1
+133;"move";"Ecriture d'OD automatique";"NUMBERS";"UPPERCASE";1;4;"EODAUT%YY";;1;1
+134;"move";"Ecriture d'OD manuelle";"NUMBERS";"UPPERCASE";1;4;"EODMAN%YY";;1;1
+135;"move";"Ecriture d'apurements";"NUMBERS";"UPPERCASE";1;4;"EAPUR%YY";;1;1
+136;"move";"Ecriture passage en irrécouvrable";"NUMBERS";"UPPERCASE";1;4;"EIRREC%YY";;1;1
+137;"moveLineExport";"Export comptable";"NUMBERS";"UPPERCASE";1;4;"EXPCPT%YY";;1;1
+138;"accountingReport";"Reporting comptable";"NUMBERS";"UPPERCASE";1;4;"REPCPT%YY";;1;1
+139;"paymentSchedule";"N° écheancier";"NUMBERS";"UPPERCASE";1;4;"ECH%YY";;1;1
+140;"paymentVoucher";"N° de paiement enc. espèces ";"NUMBERS";"UPPERCASE";1;4;"ENCESP%YY";;1;1
+141;"paymentVoucher";"N° de paiement enc. chèques ";"NUMBERS";"UPPERCASE";1;4;"ENCCHQ%YY";;1;1
+142;"paymentVoucher";"N° de paiement enc. CB ";"NUMBERS";"UPPERCASE";1;4;"ENCCB%YY";;1;1
+143;"paymentVoucher";"N° de paiement enc. internet ";"NUMBERS";"UPPERCASE";1;4;"ENCWEB%YY";;1;1
+144;"paymentVoucher";"N° de paiement enc. TIP ";"NUMBERS";"UPPERCASE";1;4;"ENCTIP%YY";;1;1
+145;"paymentVoucher";"N° de paiement enc. TIP+Cheque ";"NUMBERS";"UPPERCASE";1;4;"ENCTEC%YY";;1;1
+146;"paymentVoucher";"N° de paiement enc. virement ";"NUMBERS";"UPPERCASE";1;4;"ENCVIR%YY";;1;1
+147;"paymentVoucher";"N° de paiement enc. prélèvement  (factures et échéanciers hors mensu)";"NUMBERS";"UPPERCASE";1;4;"ENCPRL%YY";;1;1
+148;"paymentVoucher";"N° de paiement enc. autres moyens ";"NUMBERS";"UPPERCASE";1;4;"ENCAUT%YY";;1;1
+149;"paymentVoucher";"N° de paiement dec. espèces ";"NUMBERS";"UPPERCASE";1;4;"DECESP%YY";;1;1
+150;"paymentVoucher";"N° de paiement dec. chèques ";"NUMBERS";"UPPERCASE";1;4;"DECCHQ%YY";;1;1
+151;"paymentVoucher";"N° de paiement dec. CB ";"NUMBERS";"UPPERCASE";1;4;"DECCB%YY";;1;1
+152;"paymentVoucher";"N° de paiement dec. TIP ";"NUMBERS";"UPPERCASE";1;4;"DECTIP%YY";;1;1
+153;"paymentVoucher";"N° de paiement dec. virement ";"NUMBERS";"UPPERCASE";1;4;"DECVIR%YY";;1;1
+154;"paymentVoucher";"N° de paiement dec. prélèvement  (factures et échéanciers hors mensu) ";"NUMBERS";"UPPERCASE";1;4;"DECPRL%YY";;1;1
+155;"paymentVoucher";"N° de paiement dec. autres moyens ";"NUMBERS";"UPPERCASE";1;4;"DECAUT%YY";;1;1
+156;"paymentVoucherReceiptNo";"N° de reçu";"NUMBERS";"UPPERCASE";1;4;"RECU%YY";;1;1
+157;"purchaseInterface";"Interface achat";"NUMBERS";"UPPERCASE";1;4;"INTACH%YY";;1;1
+158;"refundInterface";"Interface avoir";"NUMBERS";"UPPERCASE";1;4;"INTAVO%YY";;1;1
+159;"reimbursement";"Proposition remboursement";"NUMBERS";"UPPERCASE";1;4;"REMB%YY";;1;1
+160;"saleInterface";"Interface vente";"NUMBERS";"UPPERCASE";1;4;"INTVEN%YY";;1;1
+161;"treasuryInterface";"Interface trésorerie";"NUMBERS";"UPPERCASE";1;4;"INTTRE%YY";;1;1
+162;"reconcile";"Réconciliation comptable";"NUMBERS";"UPPERCASE";1;4;"RECON%YY%M";;1;1
+172;"reconcileGroupDraft";"Lettrage non définitif";"LETTERS";"LOWERCASE";1;4;;;1;0
+173;"reconcileGroupFinal";"Lettrage définitif";"LETTERS";"UPPERCASE";1;4;;;1;0
+171;"analyticReport";"Rapport Analytique";"NUMBERS";"UPPERCASE";1;4;"ANAREP_%YY_";;1;1
+170;"depositSlip";"Bordereau de remise";"NUMBERS";"UPPERCASE";1;4;"BR%YY%FM";;1;1
+169;"subrogationRelease";"Quittance subrogative";"NUMBERS";"UPPERCASE";1;4;"QS%YY%FM";;1;1
+107;"debitReject";"Rejet des prélèvements";"NUMBERS";"UPPERCASE";1;4;"PRLREJ%YY";;1;1
+180;"move";"Ecriture de note de frais";"NUMBERS";"UPPERCASE";1;4;"ENF%YY%FM";;1;1
+181;"move";"Ecriture des à nouveaux";"NUMBERS";"UPPERCASE";1;4;"EANOUV%YY%FM";;1;1
+182;"fixedAsset";"N° Immobilisations";"NUMBERS";"UPPERCASE";1;3;"IMMO%YYYY";;1;1
+183;"paymentSession";"N° Session paiement";"NUMBERS";"UPPERCASE";1;3;"PMTS%YYYY";;1;1
+210;"noteBills";"Relevé de factures";"NUMBERS";"UPPERCASE";1;3;"NB%YYYY";;1;1
