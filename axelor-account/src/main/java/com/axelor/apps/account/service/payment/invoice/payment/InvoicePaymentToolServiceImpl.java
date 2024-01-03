@@ -55,6 +55,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -331,7 +332,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public List<Long> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
+  public Pair<List<Long>, Boolean> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
       throws AxelorException {
     if (invoicePayment.getCurrency() == null) {
       return null;
@@ -361,7 +362,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!invoicePayment.getManualChange()
           || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
         invoicePayment.setAmount(payableAmount);
-        amountError = invoicePayment.getManualChange();
+        amountError = true;
       }
 
       invoiceTermIdList =
@@ -384,14 +385,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
-
-      if (amountError) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
-      }
     }
-    return invoiceTermIdList;
+    return Pair.of(invoiceTermIdList, !invoicePayment.getManualChange() || !amountError);
   }
 
   public List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId)
