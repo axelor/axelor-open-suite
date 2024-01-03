@@ -22,7 +22,6 @@
     <field name="bankOrderSeq" width="120"/>
     <field name="orderTypeSelect"/>
     <field name="bankOrderDate"/>
-    <field name="confirmationDateTime"/>
     <field name="senderCompany"/>
     <field name="bankOrderTotalAmount"/>
     <field name="bankOrderCurrency"/>
@@ -52,7 +51,6 @@
     <field name="bankOrderSeq" width="120"/>
     <field name="partnerTypeSelect"/>
     <field name="bankOrderDate"/>
-    <field name="confirmationDateTime"/>
     <field name="senderCompany" canEdit="false"/>
     <field name="bankOrderTotalAmount"/>
     <field name="bankOrderCurrency"/>
@@ -80,7 +78,6 @@
     <field name="bankOrderSeq" width="120"/>
     <field name="generatedMetaFile"/>
     <field name="bankOrderDate"/>
-    <field name="confirmationDateTime"/>
     <field name="senderCompany" canEdit="false"/>
     <field name="bankOrderTotalAmount"/>
     <field name="bankOrderCurrency"/>
@@ -171,19 +168,6 @@
         </panel>
       </panel>
       <panel name="mainPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">
-        <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
-          form-view="user-form" grid-view="user-grid" hidden="true"/>
-
-        <field name="testMode" hidden="true"/>
-        <field name="$viewerTestMode" showTitle="false" showIf="testMode">
-          <viewer depends="testMode">
-		        	<![CDATA[
-		        		<>
-		        			{testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
-		        		</>
-		        	]]>
-          </viewer>
-        </field>
         <field name="isMultiDate" hidden="true"/>
         <field name="isMultiCurrency" hidden="true"/>
       </panel>
@@ -333,7 +317,6 @@
     </panel>
     <panel name="dateTimePanel" sidebar="true"
       showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
-      <field name="confirmationDateTime"/>
       <field name="fileGenerationDateTime" showIf="fileGenerationDateTime"/>
       <field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
       <field name="sendingDateTime" showIf="statusSelect == 4"/>
@@ -396,21 +379,7 @@
           onSelect="action-bank-order-method-bank-details-domain"/>
         <field name="orderTypeSelect" hidden="true"/>
       </panel>
-      <panel name="signatoryPanel" colSpan="12" readonlyIf="statusSelect &gt;= 3">
-        <field name="signatoryUser" canNew="false" canEdit="false" canView="false"
-          form-view="user-form" grid-view="user-grid" hidden="true"/>
 
-        <field name="testMode" hidden="true"/>
-        <field name="$viewerTestMode" showTitle="false" showIf="testMode">
-          <viewer depends="testMode">
-					<![CDATA[
-		        	<>
-		        		{testMode && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Test mode')}</Badge>}
-		        	</>
-					]]>
-          </viewer>
-        </field>
-      </panel>
     </panel>
 
     <panel name="otherTagsPanel" sidebar="true" showIf="areMovesGenerated" itemSpan="12"
@@ -440,7 +409,6 @@
     </panel>
     <panel name="dateTimePanel" sidebar="true"
       showIf="statusSelect &gt;= 2 || technicalOriginSelect == 1" itemSpan="12" readonly="true">
-      <field name="confirmationDateTime"/>
       <field name="validationDateTime" showIf="statusSelect &gt;= 3"/>
       <field name="sendingDateTime" showIf="statusSelect == 4"/>
     </panel>

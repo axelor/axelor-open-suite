@@ -9,7 +9,6 @@
 
     <boolean name="generateBankOrder" title="Generate Bank order"/>
     <boolean name="autoConfirmBankOrder" title="Confirm auto. the bank orders"/>
-    <boolean name="automaticTransmission" title="Transmit automatically to Bank"/>
     <integer name="orderTypeSelect" title="Order Type"
       selection="bankpayment.bank.order.type.select"/>
     <string name="bankOrderExportFolderPath"/>

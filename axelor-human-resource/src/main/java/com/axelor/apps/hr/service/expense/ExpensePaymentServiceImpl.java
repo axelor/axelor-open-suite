@@ -125,12 +125,8 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
           .getGenerateMoveForInvoicePayment()) {
         this.createMoveForExpensePayment(expense);
       }
-      if (paymentMode.getAutomaticTransmission()) {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-      } else {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-      }
+      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
     }
     expense.setPaymentAmount(
         expense

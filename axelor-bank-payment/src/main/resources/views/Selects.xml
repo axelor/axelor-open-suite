@@ -48,7 +48,7 @@
 
   <selection name="bankpayment.bank.order.status.select">
     <option value="1">Draft</option>
-    <option value="3">Validated</option>
+    <option value="3">Confirmed</option>
     <option value="4">Carried out</option>
     <option value="6">Canceled</option>
   </selection>
@@ -284,7 +284,6 @@
     <option value="0">None</option>
     <option value="1">Already accounted</option>
     <option value="2">Bank order confirmation</option>
-    <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>
   </selection>
 

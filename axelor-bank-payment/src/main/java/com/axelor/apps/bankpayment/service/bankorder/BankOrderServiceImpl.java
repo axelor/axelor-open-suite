@@ -179,11 +179,6 @@ public class BankOrderServiceImpl implements BankOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
     }
-    if (bankOrder.getSignatoryUser() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_SIGNATORY_MISSING));
-    }
   }
 
   @Override

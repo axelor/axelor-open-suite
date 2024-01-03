@@ -55,7 +55,6 @@
     model="com.axelor.apps.account.db.PaymentMode">
     <field name="orderTypeSelect" expr=""/>
     <field name="generateBankOrder" expr="false"/>
-    <field name="automaticTransmission" expr="false"/>
     <field name="bankOrderExportFolderPath" expr=""/>
   </action-record>
 

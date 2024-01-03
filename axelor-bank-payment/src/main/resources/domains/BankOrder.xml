@@ -21,7 +21,6 @@
       title="Payment Mode"/>
     <many-to-one name="bankOrderFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankOrderFileFormat" title="File format" required="true"/>
-    <datetime name="confirmationDateTime" title="Confirmation date"/>
     <datetime name="validationDateTime" title="Validation date"/>
     <datetime name="fileGenerationDateTime" title="File generation date"/>
     <datetime name="sendingDateTime" title="Sending date"/>
@@ -32,7 +31,6 @@
     <boolean name="isMultiDate" title="Multidate"/>
     <boolean name="isMultiCurrency" title="Multicurrency"/>
     <decimal name="arithmeticTotal" title="Arithmetic total" readonly="true"/>
-    <boolean name="testMode" title="Test mode"/>
     <many-to-one name="batch" ref="com.axelor.apps.base.db.Batch" title="Batch"/>
     <integer name="accountingTriggerSelect" title="Accounting move trigger select"
       selection="bank.order.accounting.trigger.select" default="0"/>
@@ -60,12 +58,8 @@
     <one-to-many name="bankOrderLineList" ref="BankOrderLine" mappedBy="bankOrder"
       title="Bank Order Lines" orderBy="counter"/>
 
-    <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User" title="Signatory"/>
-
     <many-to-one name="generatedMetaFile" ref="com.axelor.meta.db.MetaFile"
       title="Generated file"/>
-    <many-to-one name="signedMetaFile" ref="com.axelor.meta.db.MetaFile"
-      title="Signed file"/>
 
     <unique-constraint columns="bankOrderSeq,senderCompany"/>
 
