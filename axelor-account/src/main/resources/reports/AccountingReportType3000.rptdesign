@@ -17,6 +17,30 @@
     <property name="ReportValues.ValuesDS.y">80</property>
     <list-property name="propertyBindings">
         <structure>
+            <property name="name">queryText</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">5994</property>
+        </structure>
+        <structure>
+            <property name="name">queryText</property>
+            <property name="id">5439</property>
+        </structure>
+        <structure>
+            <property name="name">queryTimeOut</property>
+            <property name="id">5439</property>
+        </structure>
+        <structure>
+            <property name="name">rowFetchSize</property>
+            <property name="id">5439</property>
+        </structure>
+        <structure>
             <property name="name">odaDriverClass</property>
             <property name="id">8</property>
             <expression name="value" type="javascript">params["DefaultDriver"].value</expression>
@@ -35,18 +59,6 @@
             <property name="name">odaPassword</property>
             <property name="id">8</property>
             <expression name="value" type="javascript">params["Password"].value</expression>
-        </structure>
-        <structure>
-            <property name="name">queryText</property>
-            <property name="id">5994</property>
-        </structure>
-        <structure>
-            <property name="name">queryTimeOut</property>
-            <property name="id">5994</property>
-        </structure>
-        <structure>
-            <property name="name">rowFetchSize</property>
-            <property name="id">5994</property>
         </structure>
     </list-property>
     <property name="units">in</property>
@@ -179,6 +191,7 @@
     </data-sources>
     <data-sets>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ReportDS" id="5439">
+            <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
                 <structure>
                     <property name="columnName">ref</property>
@@ -264,18 +277,6 @@
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">logo_path</text-property>
                     <text-property name="heading">logo_path</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">display_delta_year</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_delta_year</text-property>
-                    <text-property name="heading">display_delta_year</text-property>
-                </structure>
-                <structure>
-                    <property name="columnName">display_delta_year_percentage</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_delta_year_percentage</text-property>
-                    <text-property name="heading">display_delta_year_percentage</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">reportyear</property>
@@ -374,16 +375,6 @@
                         <property name="position">13</property>
                         <property name="name">logo_path</property>
                         <property name="dataType">string</property>
-                    </structure>
-                    <structure>
-                        <property name="position">14</property>
-                        <property name="name">display_delta_year</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">15</property>
-                        <property name="name">display_delta_year_percentage</property>
-                        <property name="dataType">integer</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
@@ -496,20 +487,6 @@
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
-                    <property name="position">14</property>
-                    <property name="name">display_delta_year</property>
-                    <property name="nativeName">display_delta_year</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">15</property>
-                    <property name="name">display_delta_year_percentage</property>
-                    <property name="nativeName">display_delta_year_percentage</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
                     <property name="position">16</property>
                     <property name="name">reportyear</property>
                     <property name="nativeName">reportyear</property>
@@ -545,8 +522,6 @@
 	PaymentMode.name as payment_mode,
 	Period.name as period,
 	MetaFile.file_path as logo_path,
-	Report.display_delta_year,
-	Report.display_delta_year_percentage,
 	CONCAT(
 		TO_CHAR(Report.date_from, 'dd/mm/yyyy'),
 		' - ',
@@ -1650,32 +1625,6 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="name">no_of_periods</property>
                     <text-property name="displayName">no_of_periods</text-property>
                     <expression name="expression" type="javascript">dataSetRow["no_of_periods"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year</property>
-                    <text-property name="displayName">display_delta_year</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year_percentage</property>
-                    <text-property name="displayName">display_delta_year_percentage</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year_1</property>
-                    <text-property name="displayName">display_delta_year</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year"]</expression>
-                    <property name="dataType">integer</property>
-                </structure>
-                <structure>
-                    <property name="name">display_delta_year_percentage_1</property>
-                    <text-property name="displayName">display_delta_year_percentage</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_delta_year_percentage"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>

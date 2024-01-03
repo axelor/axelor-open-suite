@@ -15,7 +15,6 @@
     <date name="startDate" title="Start Date"/>
     <date name="endDate" title="End Date"/>
 
-    <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"/>
     <many-to-one name="parentBudgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
@@ -69,8 +68,6 @@
 
     <string name="commentString" title="Commentaires" large="true" multiline="true"/>
     <string name="versionNumber" title="Version Number" default="1"/>
-    <date name="projectStartDate" title="Project start date"/>
-    <date name="projectEndDate" title="Project end Date"/>
     <date name="fromDate" title="From date"/>
     <date name="toDate" title="To date"/>
 
@@ -135,15 +132,6 @@
 				//budget level source select
 				public static final String BUDGET_LEVEL_SOURCE_AUTO = "auto";
 				public static final String BUDGET_LEVEL_SOURCE_CUSTOM = "custom";
-
-				//budget level category select
-				public static final String BUDGET_LEVEL_CATEGORY_TURNOVER = "turnover";
-				public static final String BUDGET_LEVEL_CATEGORY_COSTS = "costs";
-
-	         //budget level sub category select
-	         public static final String BUDGET_LEVEL_SUB_CATEGORY_PROJECT = "proj";
-	         public static final String BUDGET_LEVEL_SUB_CATEGORY_SERVICE = "service";
-
 
 				//budget level type select
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;

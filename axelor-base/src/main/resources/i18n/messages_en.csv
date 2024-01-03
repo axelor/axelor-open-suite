@@ -1573,6 +1573,7 @@
 "Pricing computing order",,,
 "Pricing line",,,
 "Pricing lines",,,
+"Pricing process unavailable for this class : %s",,,
 "Pricing rule",,,
 "Pricing rules",,,
 "Pricings",,,
