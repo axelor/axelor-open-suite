@@ -61,6 +61,16 @@
     <panel name="descriptionPanel" title="Description" canCollapse="true">
       <field name="description" colSpan="12" showTitle="false"/>
     </panel>
+
+    <panel name="machineChargePerHourMainPanel" colSpan="12">
+      <label name="periodLimitLabel" title="The period cannot exceed 20 days"
+        css="label-danger"/>
+      <panel-dashlet action="chart:chart.machine.charge.per.hours"
+        name="previsionalMachineChargePerHourPanel" colSpan="12"/>
+    </panel>
+
+    <panel-dashlet action="chart:chart.machine.charge.per.days"
+      name="previsionalMachineChargePerDayPanel" colSpan="6"/>
   </form>
 
   <action-record name="action-record-machine-set-operating-duration"

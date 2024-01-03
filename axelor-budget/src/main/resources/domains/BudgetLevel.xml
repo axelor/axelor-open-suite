@@ -19,7 +19,7 @@
       title="Parent Level"/>
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
-      title="Global level"/>
+      title="Global budget"/>
     <many-to-one name="globalBudgetTemplate"
       ref="com.axelor.apps.budget.db.GlobalBudgetTemplate" title="Global budget template"/>
 
@@ -65,9 +65,6 @@
             return code + " " + name;
          ]]>
     </string>
-
-    <string name="levelTypeSelect" title="Level Type Select"
-      selection="budget.budget.level.type.select" default="global"/>
 
     <string name="commentString" title="Commentaires" large="true" multiline="true"/>
     <string name="versionNumber" title="Version Number" default="1"/>
@@ -135,11 +132,6 @@
 				//budget level source select
 				public static final String BUDGET_LEVEL_SOURCE_AUTO = "auto";
 				public static final String BUDGET_LEVEL_SOURCE_CUSTOM = "custom";
-
-				//budget level level type select
-				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL = "global";
-				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP = "group";
-				public static final String BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION = "section";
 
 				//budget level type select
 				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;

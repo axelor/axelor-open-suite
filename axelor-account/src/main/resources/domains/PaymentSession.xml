@@ -43,7 +43,8 @@
     <datetime name="validatedDate" title="Validated Date"/>
     <many-to-one name="partnerForEmail" ref="com.axelor.apps.base.db.Partner"/>
 
-    <decimal name="sessionTotalAmountFormula" title="Session total amount" formula="true">
+    <decimal name="sessionTotalAmountFormula" title="Session total amount" formula="true"
+      precision="20" scale="3">
       <![CDATA[
         SELECT SUM(self.amount_paid) FROM account_invoice_term as self WHERE self.payment_session = id AND self.is_selected_on_payment_session
       ]]>

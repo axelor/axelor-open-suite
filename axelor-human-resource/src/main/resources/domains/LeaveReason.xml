@@ -8,7 +8,6 @@
   <entity name="LeaveReason" cacheable="true">
 
     <string name="name" namecolumn="true" title="Leave reason" required="true"/>
-    <boolean name="manageAccumulation" title="Manage Accumulation"/>
     <boolean name="allowNegativeValue" title="Allow negative value for leaves"/>
     <boolean name="allowInjection" title="Allow Injection"/>
     <string name="instruction" title="Instruction" multiline="true" large="true"/>
@@ -23,6 +22,8 @@
     <integer name="leaveReasonTypeSelect" title="Leave type"
       selection="hr.leave.reason.type.select" default="1"/>
     <boolean name="isActive" title="Active"/>
+    <boolean name="isDaysAddedProrated" title="Prorate with employee hire date"
+      help="The hire date of the employee will be taken into account when computing days to add"/>
 
     <many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning"
       title="Plannings"/>
@@ -32,6 +33,10 @@
    		<![CDATA[
    			public static final int UNIT_SELECT_DAYS = 1;
    			public static final int UNIT_SELECT_HOURS = 2;
+
+            public static final int TYPE_SELECT_EVERY_MONTH = 1;
+   			public static final int TYPE_SELECT_EXCEPTIONAL_DAYS = 2;
+   			public static final int TYPE_SELECT_EVERY_YEAR = 3;
    		]]>
     </extra-code>
 

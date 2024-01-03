@@ -146,4 +146,17 @@ public class StockMoveController {
     Beans.get(StockMoveServiceSupplychain.class).setInvoicingStatusInvoicedValidated(stockMove);
     response.setReload(true);
   }
+
+  public void fillRealQuantities(ActionRequest request, ActionResponse response) {
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+
+      Beans.get(StockMoveServiceSupplychain.class).fillRealQuantities(stockMove);
+
+      response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

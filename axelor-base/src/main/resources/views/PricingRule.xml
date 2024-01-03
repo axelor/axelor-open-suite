@@ -18,9 +18,8 @@
     onLoad="action-pricing-rule-attrs-display-meta-json-field">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="concernedModel"
-        onChange="action-pricing-rule-attrs-field-to-populate-clear"
-        domain="self.name = 'SaleOrderLine'"/>
+      <field name="concernedModel" domain="self.name != 'Pricing'"
+        onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="company"/>
       <field name="typeSelect" onChange="action-pricing-rule-attrs-field-to-populate-clear"/>
       <field name="fieldTypeSelect" showIf="typeSelect == 1"/>

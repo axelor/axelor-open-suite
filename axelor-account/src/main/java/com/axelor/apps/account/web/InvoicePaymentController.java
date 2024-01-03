@@ -20,20 +20,16 @@ package com.axelor.apps.account.web;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
-import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
-import com.axelor.apps.account.service.payment.invoice.payment.InvoiceTermPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
@@ -43,7 +39,6 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -52,13 +47,12 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class InvoicePaymentController {
@@ -211,9 +205,15 @@ public class InvoicePaymentController {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
-      Beans.get(InvoicePaymentToolService.class).computeFinancialDiscount(invoicePayment);
+      Long invoiceId =
+          Long.valueOf(
+              (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
 
-      response.setValues(invoicePayment);
+      List<Long> invoiceTermIdList =
+          Beans.get(InvoicePaymentFinancialDiscountService.class)
+              .computeDataForFinancialDiscount(invoicePayment, invoiceId);
+
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -222,58 +222,15 @@ public class InvoicePaymentController {
   public void changeAmount(ActionRequest request, ActionResponse response) {
     try {
       InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
-      if (invoicePayment.getCurrency() == null) {
-        return;
-      }
+
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
-      boolean amountError = false;
+      Pair<List<Long>, Boolean> result =
+          Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
 
-      if (invoiceId > 0) {
-        List<InvoiceTerm> invoiceTerms =
-            Beans.get(InvoiceTermService.class)
-                .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
-        BigDecimal payableAmount =
-            Beans.get(InvoicePaymentToolService.class)
-                .getPayableAmount(
-                    invoiceTerms,
-                    invoicePayment.getPaymentDate(),
-                    invoicePayment.getManualChange(),
-                    invoicePayment.getCurrency());
-
-        if (!invoicePayment.getManualChange()
-            || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
-          invoicePayment.setAmount(payableAmount);
-          amountError = invoicePayment.getManualChange();
-        }
-
-        List<Long> invoiceTermIdList =
-            invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
-        if (!CollectionUtils.isEmpty(invoiceTerms)) {
-          response.setValue("$invoiceTerms", invoiceTermIdList);
-
-          BigDecimal amount = invoicePayment.getAmount();
-
-          if (invoicePayment.getManualChange()) {
-            Beans.get(InvoicePaymentToolService.class)
-                .computeFromInvoiceTermPayments(invoicePayment);
-            amount = amount.add(invoicePayment.getFinancialDiscountTotalAmount());
-          }
-
-          amount =
-              Beans.get(CurrencyScaleServiceAccount.class).getScaledValue(invoicePayment, amount);
-
-          invoicePayment.clearInvoiceTermPaymentList();
-          Beans.get(InvoiceTermPaymentService.class)
-              .initInvoiceTermPaymentsWithAmount(invoicePayment, invoiceTerms, amount, amount);
-        }
-        response.setValues(invoicePayment);
-
-        if (amountError) {
-          response.setInfo(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
-        }
-      }
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, result.getLeft()));
+      response.setAttr("amountErrorPanel", "hidden", result.getRight());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -290,39 +247,45 @@ public class InvoicePaymentController {
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
+      InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
 
-      if (invoiceId > 0) {
-        Invoice invoice = Beans.get(InvoiceRepository.class).find(invoiceId);
-        InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+      List<Long> invoiceTermIdList =
+          Beans.get(InvoicePaymentToolService.class).loadInvoiceTerms(invoicePayment, invoiceId);
 
-        invoicePayment.setInvoice(invoice);
+      Map<String, Object> invoiceTermMap = new HashMap<String, Object>();
 
-        List<InvoiceTerm> invoiceTerms =
-            Beans.get(InvoiceTermService.class)
-                .getUnpaidInvoiceTermsFiltered(invoicePayment.getInvoice());
+      invoiceTermMap.put("invoice", invoicePayment.getInvoice());
 
-        if (CollectionUtils.isEmpty(invoiceTerms)) {
-          return;
-        }
+      response.setValues(
+          this.getInvoiceTermValuesMap(invoiceTermMap, invoicePayment, invoiceTermIdList));
 
-        InvoiceTermPaymentService invoiceTermPaymentService =
-            Beans.get(InvoiceTermPaymentService.class);
-
-        invoicePayment =
-            invoiceTermPaymentService.initInvoiceTermPayments(
-                invoicePayment, Lists.newArrayList(invoiceTerms.get(0)));
-        invoicePayment = invoiceTermPaymentService.updateInvoicePaymentAmount(invoicePayment);
-
-        List<Long> invoiceTermIdList =
-            invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
-
-        response.setValue("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
-        response.setValue("amount", invoicePayment.getAmount());
-        response.setValue("$invoiceTerms", invoiceTermIdList);
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  private Map<String, Object> getInvoiceTermValuesMap(
+      Map<String, Object> invoiceTermMap,
+      InvoicePayment invoicePayment,
+      List<Long> invoiceTermIdList) {
+    if (ObjectUtils.isEmpty(invoiceTermMap)) {
+      invoiceTermMap = new HashMap<String, Object>();
+    }
+    invoiceTermMap.put("$invoiceTerms", invoiceTermIdList);
+    invoiceTermMap.put("amount", invoicePayment.getAmount());
+    invoiceTermMap.put(
+        "totalAmountWithFinancialDiscount", invoicePayment.getTotalAmountWithFinancialDiscount());
+    invoiceTermMap.put(
+        "financialDiscountTotalAmount", invoicePayment.getFinancialDiscountTotalAmount());
+    invoiceTermMap.put("applyFinancialDiscount", invoicePayment.getApplyFinancialDiscount());
+    invoiceTermMap.put("financialDiscount", invoicePayment.getFinancialDiscount());
+    invoiceTermMap.put(
+        "financialDiscountDeadlineDate", invoicePayment.getFinancialDiscountDeadlineDate());
+    invoiceTermMap.put(
+        "financialDiscountTaxAmount", invoicePayment.getFinancialDiscountTaxAmount());
+    invoiceTermMap.put("financialDiscountAmount", invoicePayment.getFinancialDiscountAmount());
+    invoiceTermMap.put("invoiceTermPaymentList", invoicePayment.getInvoiceTermPaymentList());
+    return invoiceTermMap;
   }
 
   @SuppressWarnings("unchecked")

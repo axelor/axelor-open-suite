@@ -12,7 +12,7 @@
       </menu>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
-          action="action-purchase-order-view-open-merge-form"/>
+          action="action-purchase-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
           action="purchase-order-see-quotation-lines"/>
       </menu>
@@ -192,7 +192,8 @@
         <field name="taxNumber" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 2"
           onSelect="action-purchase-order-attrs-compute-tax-number-domain"
-          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"/>
+          onChange="action-purchase-order-method-empty-fiscal-position-if-not-compatible,action-purchase-order-method-fiscal-position-on-change"
+          if="__config__.app.getApp('base')?.getEnableTaxNumbers()"/>
         <field name="fiscalPosition" colSpan="3" canNew="false" canEdit="false"
           readonlyIf="statusSelect > 2"
           onSelect="action-purchase-order-attrs-fiscal-position-domain"
@@ -746,8 +747,8 @@
 
   <action-record name="action-record-po-contact-partner-change"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="supplierPartner" expr="eval: contactPartner.mainPartner"
-      if="contactPartner.mainPartner != null"/>
+    <field name="supplierPartner" expr="eval: contactPartner?.mainPartner"
+      if="!supplierPartner"/>
   </action-record>
 
   <action-method name="action-purchase-order-method-validate-supplier">
@@ -826,7 +827,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
+    <domain>:purchaseOrder MEMBER OF self.purchaseOrderSet</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
@@ -1014,9 +1015,11 @@
   </action-attrs>
 
   <action-attrs name="action-purchase-order-attrs-fiscal-position-domain">
-    <attribute name="domain" for="fiscalPosition" if="taxNumber"
+    <attribute name="domain" for="fiscalPosition"
+      if="taxNumber &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"
       expr="eval: &quot;:taxNumber MEMBER OF self.taxNumberSet&quot;"/>
-    <attribute name="domain" for="fiscalPosition" if="!taxNumber"
+    <attribute name="domain" for="fiscalPosition"
+      if="!taxNumber &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"
       expr="eval: &quot;'${supplierPartner?.fiscalPosition?.code}' = self.code&quot;"/>
   </action-attrs>
 
@@ -1025,5 +1028,11 @@
       expr="eval: &quot; SIZE(self.paymentConditionLineList) &lt; 2 &quot;"
       if="!__config__.app.getApp('account').allowMultiInvoiceTerms"/>
   </action-attrs>
+
+  <action-method
+    name="action-purchase-order-method-convert-selected-lines-to-merge-lines">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderMergingController"
+      method="convertSelectedLinesToMergeLines"/>
+  </action-method>
 
 </object-views>

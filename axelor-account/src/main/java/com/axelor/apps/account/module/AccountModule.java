@@ -40,6 +40,8 @@ import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -113,12 +115,12 @@ import com.axelor.apps.account.service.custom.AccountingReportValueService;
 import com.axelor.apps.account.service.custom.AccountingReportValueServiceImpl;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryService;
 import com.axelor.apps.account.service.debtrecovery.DebtRecoveryHistoryServiceImpl;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermService;
-import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerInvoiceTermServiceImpl;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveServiceImpl;
 import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
+import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
+import com.axelor.apps.account.service.fecimport.ImportFECTypeServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
@@ -167,10 +169,13 @@ import com.axelor.apps.account.service.invoice.InvoiceMergingViewService;
 import com.axelor.apps.account.service.invoice.InvoiceMergingViewServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPaymentGroupServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
@@ -219,6 +224,8 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.move.MoveReverseServiceImpl;
 import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveSimulateServiceImpl;
+import com.axelor.apps.account.service.move.MoveTemplateService;
+import com.axelor.apps.account.service.move.MoveTemplateServiceImpl;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveToolServiceImpl;
 import com.axelor.apps.account.service.move.MoveValidateService;
@@ -263,6 +270,8 @@ import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
@@ -291,6 +300,8 @@ import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCan
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentFinancialDiscountServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
@@ -600,8 +611,6 @@ public class AccountModule extends AxelorModule {
 
     bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
 
-    bind(DoubtfulCustomerInvoiceTermService.class).to(DoubtfulCustomerInvoiceTermServiceImpl.class);
-
     bind(FixedAssetDateService.class).to(FixedAssetDateServiceImpl.class);
 
     bind(SimulatedMoveService.class).to(SimulatedMoveServiceImpl.class);
@@ -719,6 +728,12 @@ public class AccountModule extends AxelorModule {
 
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
 
+    bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
+
+    bind(InvoiceTermReplaceService.class).to(InvoiceTermReplaceServiceImpl.class);
+
+    bind(InvoiceLineRepository.class).to(InvoiceLineManagementRepository.class);
+
     bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 
     bind(InvoiceLineAttrsService.class).to(InvoiceLineAttrsServiceImpl.class);
@@ -732,5 +747,17 @@ public class AccountModule extends AxelorModule {
     bind(InvoiceTermPaymentGroupService.class).to(InvoiceTermPaymentGroupServiceImpl.class);
 
     bind(InvoiceTermPaymentAttrsService.class).to(InvoiceTermPaymentAttrsServiceImpl.class);
+
+    bind(MoveLineFinancialDiscountService.class).to(MoveLineFinancialDiscountServiceImpl.class);
+
+    bind(FinancialDiscountService.class).to(FinancialDiscountServiceImpl.class);
+
+    bind(InvoicePaymentFinancialDiscountService.class)
+        .to(InvoicePaymentFinancialDiscountServiceImpl.class);
+
+    bind(InvoiceTermFinancialDiscountService.class)
+        .to(InvoiceTermFinancialDiscountServiceImpl.class);
+
+    bind(ImportFECTypeService.class).to(ImportFECTypeServiceImpl.class);
   }
 }

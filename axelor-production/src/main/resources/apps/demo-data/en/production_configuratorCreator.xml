@@ -411,7 +411,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'CARTM' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'MOB' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>6</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -450,7 +450,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'DD' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'HDD' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>7</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -528,7 +528,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'BOIT' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'CASE' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>5</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -567,7 +567,7 @@
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code = 'ECR' AND self.dtype = 'Product']]></domain>
+            <![CDATA[self.productCategory.code = 'SCR' AND self.dtype = 'Product']]></domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>8</sequence>
           <onChange>action-configurator-update-indicators</onChange>
@@ -1156,7 +1156,7 @@ return cp*nbOrdi_1
           <formView></formView>
           <gridView></gridView>
           <domain>
-            <![CDATA[self.productCategory.code='IMP' AND self.dtype = 'Product']]>
+            <![CDATA[self.productCategory.code='PRT' AND self.dtype = 'Product']]>
           </domain>
           <targetJsonModelCode></targetJsonModelCode>
           <sequence>4</sequence>
@@ -1510,7 +1510,7 @@ return cp*nbOrdi_1
         <configuratorProductFormula>
           <metaField>productCategory</metaField>
           <formula>
-            <![CDATA[__repo__(ProductCategory).all().filter("self.code = 'FORF'").fetchOne()]]>
+            <![CDATA[__repo__(ProductCategory).all().filter("self.code = 'PROB'").fetchOne()]]>
           </formula>
           <showOnConfigurator>true</showOnConfigurator>
           <configuratorCreatorImportId>2</configuratorCreatorImportId>
@@ -1541,6 +1541,531 @@ return cp*nbOrdi_1
 
       <configuratorBomImportId>8</configuratorBomImportId>
 
+
+    </configurator-creator>
+
+    <configurator-creator>
+      <importId>3</importId>
+      <name>Audit personnalisé</name>
+      <attributes>
+        <attribute>
+          <name>nb_days_3</name>
+          <title>Nombre de jours</title>
+          <type>integer</type>
+          <defaultValue>1</defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help>Définit le nombre de jours d'audit</help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>true</required>
+          <nameField>false</nameField>
+          <minSize>1</minSize>
+          <maxSize>20</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>1</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>profil_3</name>
+          <title>Profil</title>
+          <type>many-to-one</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help></help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>true</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel>com.axelor.apps.base.db.Product</targetModel>
+          <enumType></enumType>
+          <formView>product-form</formView>
+          <gridView>product-grid</gridView>
+          <domain><![CDATA[self.isActivity is true]]></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>2</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>sep_3</name>
+          <title></title>
+          <type>separator</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help></help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>3</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>include_food_3</name>
+          <title>Repas inclus</title>
+          <type>boolean</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget>BooleanRadio</widget>
+          <help>Repas facturé au client</help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>4</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>include_hostel_3</name>
+          <title>Hotel inclus</title>
+          <type>boolean</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget>BooleanRadio</widget>
+          <help></help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>5</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>sep2_3</name>
+          <title></title>
+          <type>separator</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help></help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain>></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>6</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>isTransport_3</name>
+          <title>Transport inclus ?</title>
+          <type>boolean</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget>BooleanRadio</widget>
+          <help></help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>7</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>plane_price_3</name>
+          <title>Frais de transport</title>
+          <type>decimal</type>
+          <defaultValue>0</defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help>Trains, Avions, Parking etc...</help>
+          <showIf><![CDATA[isTransport_3 == true]]></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>100000</maxSize>
+          <precision>20</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>8</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>is_transported_3</name>
+          <title>Déplacement en véhicule</title>
+          <type>boolean</type>
+          <defaultValue></defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget>BooleanSwitch</widget>
+          <help></help>
+          <showIf></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>0</maxSize>
+          <precision>6</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>10</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs></widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>bareme_3</name>
+          <title>Barème kilométrique</title>
+          <type>decimal</type>
+          <defaultValue>0</defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help>Taux de barème kilométrique appliquée</help>
+          <showIf><![CDATA[is_transported_3 == true]]></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>1</maxSize>
+          <precision>20</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>11</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs>{"colSpan": "3"}</widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+        <attribute>
+          <name>nb_kilometers_3</name>
+          <title>Nombre de kilomètres</title>
+          <type>decimal</type>
+          <defaultValue>0</defaultValue>
+          <model>com.axelor.apps.sale.db.Configurator</model>
+          <modelField>attributes</modelField>
+          <jsonModelCode></jsonModelCode>
+          <selection></selection>
+          <widget></widget>
+          <help></help>
+          <showIf><![CDATA[is_transported_3 == true]]></showIf>
+          <hideIf></hideIf>
+          <requiredIf></requiredIf>
+          <hidden>false</hidden>
+          <required>false</required>
+          <nameField>false</nameField>
+          <minSize>0</minSize>
+          <maxSize>1000000</maxSize>
+          <precision>20</precision>
+          <scale>2</scale>
+          <regex></regex>
+          <targetModel></targetModel>
+          <enumType></enumType>
+          <formView></formView>
+          <gridView></gridView>
+          <domain></domain>
+          <targetJsonModelCode></targetJsonModelCode>
+          <sequence>12</sequence>
+          <onChange>action-configurator-update-indicators</onChange>
+          <onClick></onClick>
+          <widgetAttrs>{"colSpan": "3"}</widgetAttrs>
+          <contextField>configuratorCreator</contextField>
+          <contextFieldTarget>com.axelor.apps.sale.db.ConfiguratorCreator</contextFieldTarget>
+          <contextFieldTargetName>name</contextFieldTargetName>
+          <contextFieldValue>3</contextFieldValue>
+        </attribute>
+
+      </attributes>
+
+      <configuratorProductFormulaList>
+        <configuratorProductFormula>
+          <metaField>code</metaField>
+          <formula><![CDATA["Audit"+"-"+ (__repo__(Product).all().filter("self.name = 'Audit personnalisé' AND self.dtype = 'Product'").count() + 1)]]></formula>
+          <showOnConfigurator>true</showOnConfigurator>
+          <configuratorCreatorImportId>3</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>name</metaField>
+          <formula><![CDATA['Audit personnalisé']]></formula>
+          <showOnConfigurator>true</showOnConfigurator>
+          <configuratorCreatorImportId>3</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>productFamily</metaField>
+          <formula><![CDATA[__repo__(ProductFamily).all().filter("self.code = 'EQPT'").fetchOne()]]></formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>3</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>productTypeSelect</metaField>
+          <formula><![CDATA['Service']]></formula>
+          <showOnConfigurator>false</showOnConfigurator>
+          <configuratorCreatorImportId>3</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>salePrice</metaField>
+          <formula><![CDATA[cp=0
+cp+=(nb_days_3)*(profil_3?.salePrice?:0)
+cp+=plane_price_3
+
+if (include_food_3?:0) {
+  cp+=((nb_days_3 * 2) - 1)*20
+}
+if (include_hostel_3?:0) {
+  cp+=(nb_days_3 - 1)*90
+}
+if (is_transported_3?:0) {
+  cp+=(bareme_3)*(nb_kilometers_3)
+}
+
+return cp]]></formula>
+          <showOnConfigurator>true</showOnConfigurator>
+          <configuratorCreatorImportId>3</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+        <configuratorProductFormula>
+          <metaField>description</metaField>
+          <formula><![CDATA[description = ""
+
+description += "Nombre de jours de prestation : " + nb_days_3 + "j /  "
+
+description += "Frais de transport : " + plane_price_3 + " €  /  "
+
+if (is_transported_3?:0) {
+description += "Frais de déplacement kilométrique : " + ((bareme_3)*(nb_kilometers_3)) + " €  /  "
+}
+else {
+    description += "Aucun Frais de déplacement kilométrique " + "  /  "
+}
+
+if (include_food_3?:0) {
+description += "Frais de restauration : " + ((nb_days_3 * 2) - 1)*20  + " €  /  "
+}
+else {
+    description += "Frais de restauration inclus dans la prestation " + "  /  "
+}
+
+if (include_hostel_3?:0) {
+description += "Frais d'hotel : " + (nb_days_3 - 1)*90
+}
+else {
+    description += "Frais d'hotel inclus dans la prestation "
+}
+
+return description]]></formula>
+          <showOnConfigurator>true</showOnConfigurator>
+          <configuratorCreatorImportId>3</configuratorCreatorImportId>
+        </configuratorProductFormula>
+
+      </configuratorProductFormulaList>
+
+      <configuratorSOLineFormulaList></configuratorSOLineFormulaList>
+
+      <authorizedUserSet>
+        <authorizedUser>admin</authorizedUser>
+      </authorizedUserSet>
+
+      <authorizedGroupSet></authorizedGroupSet>
+
+      <generateProduct>true</generateProduct>
+      <isActive>true</isActive>
+
+      <configuratorBomImportId></configuratorBomImportId>
 
     </configurator-creator>
 

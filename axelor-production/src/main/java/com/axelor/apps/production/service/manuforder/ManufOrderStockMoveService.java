@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
@@ -45,6 +46,7 @@ import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -55,6 +57,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +76,7 @@ public class ManufOrderStockMoveService {
   protected ReservedQtyService reservedQtyService;
   protected ProductCompanyService productCompanyService;
   protected StockConfigProductionService stockConfigProductionService;
+  protected StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public ManufOrderStockMoveService(
@@ -82,7 +86,8 @@ public class ManufOrderStockMoveService {
       SupplyChainConfigService supplyChainConfigService,
       ReservedQtyService reservedQtyService,
       ProductCompanyService productCompanyService,
-      StockConfigProductionService stockConfigProductionService) {
+      StockConfigProductionService stockConfigProductionService,
+      StockMoveLineRepository stockMoveLineRepository) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.reservedQtyService = reservedQtyService;
     this.stockMoveService = stockMoveService;
@@ -90,6 +95,7 @@ public class ManufOrderStockMoveService {
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
     this.stockConfigProductionService = stockConfigProductionService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   public void createToConsumeStockMove(ManufOrder manufOrder) throws AxelorException {
@@ -796,5 +802,19 @@ public class ManufOrderStockMoveService {
 
     return stockConfigProductionService.getProductionVirtualStockLocation(
         stockConfig, manufOrder.getProdProcess().getOutsourcing());
+  }
+
+  public List<Long> getOutgoingStockMoves(ManufOrder manufOrder) {
+    if (CollectionUtils.isEmpty(manufOrder.getSaleOrderSet())) {
+      return Lists.newArrayList(0l);
+    }
+
+    return stockMoveLineRepository
+        .all()
+        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove != null")
+        .bind("saleOrderLine", manufOrder.getSaleOrderLine())
+        .fetchStream()
+        .map(l -> l.getStockMove().getId())
+        .collect(Collectors.toList());
   }
 }

@@ -64,7 +64,7 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND),
+              I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
               templateFileName));
     }
     standardTemplateFile = metaFiles.upload(templateFileInputStream, templateFileName);

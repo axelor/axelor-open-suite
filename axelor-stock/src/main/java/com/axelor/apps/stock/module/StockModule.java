@@ -45,6 +45,8 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.rest.StockProductRestService;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
+import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.service.InventoryLineServiceImpl;
 import com.axelor.apps.stock.service.InventoryProductService;
 import com.axelor.apps.stock.service.InventoryProductServiceImpl;
 import com.axelor.apps.stock.service.InventoryUpdateService;
@@ -66,6 +68,8 @@ import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockLocationPrintService;
+import com.axelor.apps.stock.service.StockLocationPrintServiceImpl;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
@@ -134,5 +138,7 @@ public class StockModule extends AxelorModule {
     bind(StockMoveCheckWapService.class).to(StockMoveCheckWapServiceImpl.class);
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
     bind(StockMoveMergingService.class).to(StockMoveMergingServiceImpl.class);
+    bind(InventoryLineService.class).to(InventoryLineServiceImpl.class);
+    bind(StockLocationPrintService.class).to(StockLocationPrintServiceImpl.class);
   }
 }

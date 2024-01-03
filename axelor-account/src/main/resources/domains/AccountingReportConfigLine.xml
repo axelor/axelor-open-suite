@@ -43,8 +43,8 @@
     <many-to-one name="reportTypeColumn" title="Report type"
       ref="com.axelor.apps.account.db.AccountingReportType"/>
     <string name="rule" title="Rule" large="true"/>
-    <string name="accountCode" title="Account code"/>
-    <string name="analyticAccountCode" title="Analytic account code"/>
+    <string name="accountCode" title="Account code" large="true"/>
+    <string name="analyticAccountCode" title="Analytic account code" large="true"/>
     <string name="groupsWithoutColumn" title="Groups without this column"/>
     <many-to-many ref="com.axelor.apps.account.db.AnalyticAccount"
       name="analyticAccountSet" title="Analytic accounts"/>
