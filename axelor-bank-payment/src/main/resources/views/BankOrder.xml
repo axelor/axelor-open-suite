@@ -12,7 +12,6 @@
       <button name="bankOrderLinesBtn" title="See Bank Order Lines"
         onClick="action-bank-order-method-display-bank-order-lines-bank-to-bank"/>
     </toolbar>
-    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -29,7 +28,6 @@
     <field name="nbOfLines"/>
     <field name="senderBankDetails.bank.bankName"/>
     <field name="statusSelect"/>
-    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -41,7 +39,6 @@
       <button name="bankOrderLinesBtn" title="See Bank Order Lines"
         onClick="action-bank-order-method-display-bank-order-lines"/>
     </toolbar>
-    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -58,7 +55,6 @@
     <field name="nbOfLines"/>
     <field name="senderBankDetails.bank.bankName"/>
     <field name="statusSelect"/>
-    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -68,7 +64,6 @@
         onClick="action-bank-order-method-merge"
         prompt="Are you sure you want merge the selected bank orders ?"/>
     </toolbar>
-    <hilite if="statusSelect != 4 &amp;&amp; hasBeenSentToBank" background="danger"/>
     <hilite
       if="statusSelect &lt;= 3 &amp;&amp; $moment(bankOrderDate).diff(todayDate,'days') &lt; 2"
       color="danger"/>
@@ -84,7 +79,6 @@
     <field name="senderReference"/>
     <field name="senderBankDetails.bank.bankName"/>
     <field name="statusSelect"/>
-    <field name="hasBeenSentToBank" hidden="true"/>
   </grid>
 
   <form name="bank-order-form" title="Bank Order"
@@ -124,16 +118,6 @@
             </>
           ]]>
         </viewer>
-      </field>
-      <field name="$hasBeenSentToBankTag" showTitle="false" colSpan="2"
-        showIf="hasBeenSentToBank" colOffset="10" readonly="true">
-        <viewer depends="hasBeenSentToBank"><![CDATA[
-          <>
-             <Box d="flex" justifyContent="flex-end">
-                 <Badge bg="success">{_t('Sent to bank')}</Badge>
-             </Box>
-          </>
-        ]]></viewer>
       </field>
     </panel>
     <panel name="mainPanel" colSpan="12">
@@ -347,14 +331,6 @@
                       </>
                     ]]>
         </viewer>
-      </field>
-      <field name="patherTags" showTitle="false" readonly="true" showIf="hasBeenSentToBank"
-        colSpan="2">
-        <viewer depends="hasBeenSentToBank"><![CDATA[
-          <>
-              {hasBeenSentToBank && <Badge bg="success">{_t('Sent to bank')}</Badge>}
-          </>
-        ]]></viewer>
       </field>
     </panel>
     <panel name="mainPanel" colSpan="12">
