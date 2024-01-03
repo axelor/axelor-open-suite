@@ -36,7 +36,9 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -44,6 +46,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -204,7 +207,22 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
                     " AND self.fromDate <= '%s' AND self.toDate >= '%s'",
                     purchaseOrder.getOrderDate(), purchaseOrder.getOrderDate()));
       }
+      if (purchaseOrder.getProject() != null
+          && !ObjectUtils.isEmpty(purchaseOrder.getProject().getGlobalBudgetSet())) {
+        AppBudget appBudget = appBudgetService.getAppBudget();
+        if (appBudget != null && appBudget.getEnableProject()) {
+          query =
+              query.concat(
+                  String.format(
+                      " AND self.budgetLevel.parentBudgetLevel.globalBudget.id IN (%s)",
+                      purchaseOrder.getProject().getGlobalBudgetSet().stream()
+                          .map(GlobalBudget::getId)
+                          .map(Objects::toString)
+                          .collect(Collectors.joining(","))));
+        }
+      }
     }
+
     return query;
   }
 
