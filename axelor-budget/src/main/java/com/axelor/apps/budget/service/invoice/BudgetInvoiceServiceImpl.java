@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
-import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
@@ -150,33 +149,6 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       invoiceRepo.save(invoice);
     }
     return String.join(", ", alertMessageTokenList);
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Invoice createRefund(Invoice invoice) throws AxelorException {
-
-    Invoice refund = new RefundInvoice(invoice).generate();
-    invoice.addRefundInvoiceListItem(refund);
-    updateRefundBudgetDistribution(refund);
-    invoiceRepo.save(invoice);
-
-    return refund;
-  }
-
-  public void updateRefundBudgetDistribution(Invoice refund) {
-
-    if (!CollectionUtils.isEmpty(refund.getInvoiceLineList())) {
-      for (InvoiceLine invoiceLine : refund.getInvoiceLineList()) {
-        if (CollectionUtils.isNotEmpty(invoiceLine.getBudgetDistributionList())) {
-          invoiceLine.getBudgetDistributionList().stream()
-              .forEach(
-                  budgetDistribution -> {
-                    budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
-                  });
-        }
-      }
-    }
   }
 
   @Override
@@ -307,12 +279,6 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       if (optBudgetLine.isPresent()) {
         BudgetLine budgetLine = optBudgetLine.get();
         BigDecimal amount = budgetDistribution.getAmount();
-        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
-            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
-            || invoice.getOperationSubTypeSelect()
-                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-          amount = amount.negate();
-        }
         budgetLine.setRealizedWithNoPo(budgetLine.getRealizedWithNoPo().add(amount));
         budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
         budgetLine.setToBeCommittedAmount(budgetLine.getToBeCommittedAmount().subtract(amount));

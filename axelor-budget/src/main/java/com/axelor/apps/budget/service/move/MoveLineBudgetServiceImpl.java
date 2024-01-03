@@ -78,7 +78,10 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
     if (moveLine.getBudgetDistributionList() != null
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().compareTo(moveLine.getCredit().add(moveLine.getDebit()))
+        if (budgetDistribution
+                .getAmount()
+                .abs()
+                .compareTo(moveLine.getCredit().add(moveLine.getDebit()))
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
