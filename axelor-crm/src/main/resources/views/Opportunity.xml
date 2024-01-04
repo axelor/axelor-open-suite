@@ -132,9 +132,7 @@
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<>
-                 		<h3>
-                 			<span>{opportunitySeq}</span>
-                 		</h3>
+                 		<Box as="h3" fontWeight="bold" mt={2}>{opportunitySeq}</Box>
                  	</>
               	]]></viewer>
         <editor>
@@ -146,7 +144,7 @@
         <viewer depends="name">
                     <![CDATA[
 						<>
-							<Box as="span" fontSize={4} fontWeight="bold">{name}</Box>
+							<Box as="h3" fontWeight="bold" mt={2}>{name}</Box>
 						</>
 					]]>
         </viewer>
