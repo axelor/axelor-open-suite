@@ -42,6 +42,7 @@ import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBudget;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -52,6 +53,9 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetDistributionServiceImpl implements BudgetDistributionService {
@@ -64,6 +68,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected AppBudgetService appBudgetService;
   private final int RETURN_SCALE = 2;
 
   @Inject
@@ -74,7 +79,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetRepository budgetRepo,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      AppBudgetService appBudgetService) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
@@ -82,6 +88,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -247,7 +254,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   }
 
   @Override
-  public String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect) {
+  public String getBudgetDomain(
+      Company company,
+      LocalDate date,
+      String technicalTypeSelect,
+      Set<GlobalBudget> globalBudgetSet) {
     String budget = "self.globalBudget";
     String query =
         String.format(
@@ -287,6 +298,21 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
                   GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT));
     } else {
       query = "self.id = 0";
+    }
+
+    if (!ObjectUtils.isEmpty(globalBudgetSet)) {
+      AppBudget appBudget = appBudgetService.getAppBudget();
+      if (appBudget != null && appBudget.getEnableProject()) {
+        query =
+            query.concat(
+                String.format(
+                    " AND %s.id IN (%s)",
+                    budget,
+                    globalBudgetSet.stream()
+                        .map(GlobalBudget::getId)
+                        .map(Objects::toString)
+                        .collect(Collectors.joining(","))));
+      }
     }
 
     return query;

@@ -95,21 +95,6 @@
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
-  <action-method name="action-budget-sale-order-line-method-group-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="setGroupBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-sale-order-line-method-section-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="setSectionBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-sale-order-line-method-line-domain">
-    <call class="com.axelor.apps.budget.web.SaleOrderLineController"
-      method="setLineBudgetDomain"/>
-  </action-method>
-
   <action-method name="action-budget-sale-order-line-method-budget-domain">
     <call class="com.axelor.apps.budget.web.SaleOrderLineController" method="setBudgetDomain"/>
   </action-method>

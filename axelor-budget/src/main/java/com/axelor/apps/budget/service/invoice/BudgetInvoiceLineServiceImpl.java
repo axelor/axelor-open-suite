@@ -52,6 +52,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -190,6 +191,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
 
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, new HashSet<>());
   }
 }

@@ -35,14 +35,14 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -146,33 +146,22 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Company company = null;
     LocalDate date = null;
+    Set<GlobalBudget> globalBudgetSet = new HashSet<>();
     if (saleOrder != null) {
       if (saleOrder.getCompany() != null) {
         company = saleOrder.getCompany();
       }
       date =
           saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
-    }
 
-    String query =
-        budgetDistributionService.getBudgetDomain(company, date, AccountTypeRepository.TYPE_INCOME);
-
-    if (saleOrder.getProject() != null
-        && !ObjectUtils.isEmpty(saleOrder.getProject().getGlobalBudgetSet())) {
-      AppBudget appBudget = appBudgetService.getAppBudget();
-      if (appBudget != null && appBudget.getEnableProject()) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.globalBudget.id IN (%s)",
-                    saleOrder.getProject().getGlobalBudgetSet().stream()
-                        .map(GlobalBudget::getId)
-                        .map(Objects::toString)
-                        .collect(Collectors.joining(","))));
+      if (saleOrder.getProject() != null
+          && !ObjectUtils.isEmpty(saleOrder.getProject().getGlobalBudgetSet())) {
+        globalBudgetSet = saleOrder.getProject().getGlobalBudgetSet();
       }
     }
 
-    return query;
+    return budgetDistributionService.getBudgetDomain(
+        company, date, AccountTypeRepository.TYPE_INCOME, globalBudgetSet);
   }
 
   @Override

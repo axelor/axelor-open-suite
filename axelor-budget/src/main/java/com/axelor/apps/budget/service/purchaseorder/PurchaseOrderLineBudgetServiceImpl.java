@@ -38,16 +38,16 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -147,7 +147,7 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
     Company company = null;
     LocalDate date = null;
-    String query = "";
+    Set<GlobalBudget> globalBudgetSet = new HashSet<>();
     if (purchaseOrder != null) {
       if (purchaseOrder.getCompany() != null) {
         company = purchaseOrder.getCompany();
@@ -155,7 +155,13 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       if (purchaseOrder.getOrderDate() != null) {
         date = purchaseOrder.getOrderDate();
       }
+
+      if (purchaseOrder.getProject() != null
+          && !ObjectUtils.isEmpty(purchaseOrder.getProject().getGlobalBudgetSet())) {
+        globalBudgetSet = purchaseOrder.getProject().getGlobalBudgetSet();
+      }
     }
+
     String technicalTypeSelect =
         Optional.of(purchaseOrderLine)
             .map(PurchaseOrderLine::getAccount)
@@ -163,24 +169,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(AccountTypeRepository.TYPE_CHARGE);
 
-    query = budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
-
-    if (purchaseOrder.getProject() != null
-        && !ObjectUtils.isEmpty(purchaseOrder.getProject().getGlobalBudgetSet())) {
-      AppBudget appBudget = appBudgetService.getAppBudget();
-      if (appBudget != null && appBudget.getEnableProject()) {
-        query =
-            query.concat(
-                String.format(
-                    " AND self.globalBudget.id IN (%s)",
-                    purchaseOrder.getProject().getGlobalBudgetSet().stream()
-                        .map(GlobalBudget::getId)
-                        .map(Objects::toString)
-                        .collect(Collectors.joining(","))));
-      }
-    }
-
-    return query;
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, globalBudgetSet);
   }
 
   @Override

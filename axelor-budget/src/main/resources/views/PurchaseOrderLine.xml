@@ -78,7 +78,6 @@
         </panel>
       </insert>
     </extend>
-
   </form>
 
   <action-group name="action-budget-group-purchase-purchase-orderline-product-onchange">

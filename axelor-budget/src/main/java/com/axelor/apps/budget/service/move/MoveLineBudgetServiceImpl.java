@@ -34,6 +34,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
 
 @RequestScoped
@@ -107,6 +108,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
 
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, new HashSet<>());
   }
 }
