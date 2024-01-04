@@ -216,7 +216,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   public GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
-    List<Budget> budgetList = getAllBudgets(globalBudget);
+    List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
         budgetVersion.getVersionExpectedAmountsLineList();
     if (globalBudget.getActiveVersion() != null) {

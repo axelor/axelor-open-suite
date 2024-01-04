@@ -61,6 +61,9 @@
     <boolean name="automaticBudgetComputation" title="Automatic budget computation"
       help="If enabled, an automatic budget computation will be done at request/finalize for orders"/>
 
+    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
+      title="Projects" mappedBy="globalBudgetSet"/>
+
 
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
             <![CDATA[

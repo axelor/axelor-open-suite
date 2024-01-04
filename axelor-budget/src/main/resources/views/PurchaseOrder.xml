@@ -193,8 +193,6 @@
 
   <action-record name="budget-action-purchase-order-record-project-onchange"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="globalBudget" expr="eval: project ? project.budget : globalBudget"
-      if="__config__.app.isApp('budget') &amp;&amp; (_project == null || id != null)"/>
     <field name="company" expr="eval: project ? project.company : null"/>
   </action-record>
 

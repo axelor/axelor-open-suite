@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
@@ -32,13 +33,16 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBudget;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -150,8 +154,25 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
           saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
     }
 
-    return budgetDistributionService.getBudgetDomain(
-        company, date, AccountTypeRepository.TYPE_INCOME);
+    String query =
+        budgetDistributionService.getBudgetDomain(company, date, AccountTypeRepository.TYPE_INCOME);
+
+    if (saleOrder.getProject() != null
+        && !ObjectUtils.isEmpty(saleOrder.getProject().getGlobalBudgetSet())) {
+      AppBudget appBudget = appBudgetService.getAppBudget();
+      if (appBudget != null && appBudget.getEnableProject()) {
+        query =
+            query.concat(
+                String.format(
+                    " AND self.globalBudget.id IN (%s)",
+                    saleOrder.getProject().getGlobalBudgetSet().stream()
+                        .map(GlobalBudget::getId)
+                        .map(Objects::toString)
+                        .collect(Collectors.joining(","))));
+      }
+    }
+
+    return query;
   }
 
   @Override
