@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
 public class BankStatementCreateService {
 
@@ -54,29 +55,23 @@ public class BankStatementCreateService {
   }
 
   public String computeName(BankStatement bankStatement) {
-    StringBuilder builder = new StringBuilder();
+    StringJoiner joiner = new StringJoiner("-");
 
     if (bankStatement.getEbicsPartner() != null) {
-      builder.append(bankStatement.getEbicsPartner().getPartnerId());
+      joiner.add(bankStatement.getEbicsPartner().getPartnerId());
     }
+
     if (bankStatement.getBankStatementFileFormat() != null) {
-      if (!builder.toString().isEmpty()) {
-        builder.append("-");
-      }
-      builder.append(bankStatement.getBankStatementFileFormat().getName());
+      joiner.add(bankStatement.getBankStatementFileFormat().getName());
     }
+
     if (bankStatement.getFromDate() != null) {
-      if (!builder.toString().isEmpty()) {
-        builder.append("-");
-      }
-      builder.append(bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+      joiner.add(bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
     }
+
     if (bankStatement.getToDate() != null) {
-      if (!builder.toString().isEmpty()) {
-        builder.append("-");
-      }
-      builder.append(bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+      joiner.add(bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
     }
-    return builder.toString();
+    return joiner.toString();
   }
 }
