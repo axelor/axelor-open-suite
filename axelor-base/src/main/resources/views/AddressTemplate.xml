@@ -14,12 +14,12 @@
     <panel name="mainPanel" title="Address Template">
       <field name="name"/>
       <field name="engineSelect"/>
-      <field name="templateStr" colSpan="12"/>
       <field name="addressL2Str" colSpan="12"/>
       <field name="addressL3Str" colSpan="12"/>
       <field name="addressL4Str" colSpan="12"/>
       <field name="addressL5Str" colSpan="12"/>
       <field name="addressL6Str" colSpan="12"/>
+      <field name="templateStr" colSpan="12"/>
     </panel>
 
     <panel name="addressTemplateLinesPanel" title="Address Template Lines">

@@ -8,6 +8,23 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class AddressAttrsServiceImpl implements AddressAttrsService {
+  private static final List<String> addressFormFieldsList =
+      List.of(
+          "department",
+          "subDepartment",
+          "buildingName",
+          "townName",
+          "townLocationName",
+          "districtName",
+          "countrySubDivision",
+          "room",
+          "floor",
+          "buildingNumber",
+          "street",
+          "streetName",
+          "postBox",
+          "city",
+          "zip");
 
   protected void addAttr(
       String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
@@ -20,24 +37,6 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
 
   @Override
   public void addAddressDomainFields(String field, Map<String, Map<String, Object>> attrsMap) {
-    List<String> addressFormFieldsList =
-        List.of(
-            "department",
-            "subDepartment",
-            "buildingName",
-            "townName",
-            "townLocationName",
-            "districtName",
-            "countrySubDivision",
-            "formattedFullName",
-            "room",
-            "floor",
-            "buildingNumber",
-            "street",
-            "streetName",
-            "postBox",
-            "city",
-            "zip");
 
     String nameList =
         addressFormFieldsList.stream()
@@ -54,23 +53,6 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
   public void addHiddenAndTitle(
       List<AddressTemplateLine> addressTemplateLineList,
       Map<String, Map<String, Object>> attrsMap) {
-    List<String> addressFormFieldsList =
-        List.of(
-            "department",
-            "subDepartment",
-            "buildingName",
-            "townName",
-            "townLocationName",
-            "districtName",
-            "countrySubDivision",
-            "room",
-            "floor",
-            "buildingNumber",
-            "street",
-            "streetName",
-            "postBox",
-            "city",
-            "zip");
 
     if (addressTemplateLineList.isEmpty()) {
       addressFormFieldsList.forEach(field -> addFieldUnhide(field, attrsMap));
@@ -84,7 +66,13 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
         .forEach(line -> addFieldTitle(line.getMetaField().getName(), line.getTitle(), attrsMap));
 
     addressTemplateLineList.forEach(
-        line -> addFieldUnhide(line.getMetaField().getName(), attrsMap));
+        line -> {
+          addFieldUnhide(line.getMetaField().getName(), attrsMap);
+          if ("street".equals(line.getMetaField().getName())) {
+            addFieldUnhide("streetNumber", attrsMap);
+          }
+        });
+    addFieldUnhide("formattedFullName", attrsMap);
   }
 
   @Override

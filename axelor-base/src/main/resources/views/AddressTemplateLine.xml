@@ -5,16 +5,16 @@
 
   <grid name="address-template-line-grid" title="Address template lines"
     model="com.axelor.apps.base.db.AddressTemplateLine">
-    <field name="title"/>
     <field name="metaField"/>
+    <field name="title"/>
   </grid>
 
   <form name="address-template-line-form" title="Address template lines"
     model="com.axelor.apps.base.db.AddressTemplateLine">
     <panel name="mainPanel" title="Address Template Line">
-      <field name="title"/>
       <field name="metaField"
         onSelect="action-address-template-line-method-on-meta-field-domain-address"/>
+      <field name="title"/>
     </panel>
   </form>
 

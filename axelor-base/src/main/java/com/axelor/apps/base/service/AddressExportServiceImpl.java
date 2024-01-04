@@ -77,7 +77,7 @@ public class AddressExportServiceImpl implements AddressExportService {
         .all()
         .filter(
             "self.room = ?1 AND self.floor = ?2 AND self.streetName = ?3 "
-                + "AND self.postBox = ?4 AND self.zip = ?5, self.city = ?6 AND self.country = ?7",
+                + "AND self.postBox = ?4 AND self.zip = ?5 AND self.city = ?6 AND self.country = ?7",
             room,
             floor,
             streetName,

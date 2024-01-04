@@ -309,6 +309,7 @@ public class AddressServiceImpl implements AddressService {
                 addressTemplate.getName(),
                 content));
       }
+      computedString = computedString.trim();
       computedString = computedString.replaceAll(EMPTY_LINE_REMOVAL_REGEX, "");
       return computedString;
 

@@ -9,17 +9,12 @@
     <string name="name" title="Name" required="true"/>
     <integer name="engineSelect" title="Template engine" selection="template.engine.select"
       required="true"/>
+    <string name="addressL2Str" title="Address L2 template" large="true" multiline="true"/>
+    <string name="addressL3Str" title="Address L3 template" large="true" multiline="true"/>
+    <string name="addressL4Str" title="Address L4 template" large="true" multiline="true"/>
+    <string name="addressL5Str" title="Address L5 template" large="true" multiline="true"/>
+    <string name="addressL6Str" title="Address L6 template" large="true" multiline="true"/>
     <string name="templateStr" title="Template Content" large="true" multiline="true"
-      required="true"/>
-    <string name="addressL2Str" title="Address L2 template" large="true" multiline="true"
-      required="true"/>
-    <string name="addressL3Str" title="Address L3 template" large="true" multiline="true"
-      required="true"/>
-    <string name="addressL4Str" title="Address L4 template" large="true" multiline="true"
-      required="true"/>
-    <string name="addressL5Str" title="Address L5 template" large="true" multiline="true"
-      required="true"/>
-    <string name="addressL6Str" title="Address L6 template" large="true" multiline="true"
       required="true"/>
 
     <one-to-many name="addressTemplateLineList"
