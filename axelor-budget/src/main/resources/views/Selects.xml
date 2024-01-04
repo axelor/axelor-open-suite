@@ -25,12 +25,6 @@
     <option value="custom">budget.custom</option>
   </selection>
 
-  <selection name="budget.budget.level.type.select">
-    <option value="global">Global budget</option>
-    <option value="group">Group Level</option>
-    <option value="section">Section Level</option>
-  </selection>
-
   <selection name="budget.budget.level.check.available">
     <option value="1">Budget Line</option>
     <option value="2">budget.Budget</option>
@@ -61,7 +55,7 @@
   </selection>
 
   <selection name="budget.scenario.entry.method.select">
-    <option value="0">Manual</option>
+    <option value="0">budget.Manual</option>
     <option value="1">Formula</option>
   </selection>
 

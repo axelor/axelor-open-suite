@@ -1,5 +1,0 @@
----
-title: "InvoicePayment/Reconcile : Change the link between the object"
-type: change
-description: "The previous link was a list of reconcile in the invoice payment and a link to the invoice payment in reconcile.
-Now, the link will be just a link to the reconcile in the payment"

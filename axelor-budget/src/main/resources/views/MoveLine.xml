@@ -3,41 +3,20 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <form id="budget-move-line-move-form" name="move-line-move-form" title="Move line"
+  <form id="budget-move-line-tabs-form" name="move-line-tabs-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
 
-    <extend target="//panel[@name='othersPanel']">
+    <extend target="//panel[@name='hiddenFields']">
       <insert position="inside">
-        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="account.accountType" hidden="true"/>
-        <field name="move.statusSelect" hidden="true"/>
-        <field name="move.invoice" hidden="true"/>
+        <field name="account.accountType.technicalTypeSelect"/>
+        <field name="account.accountType"/>
+        <field name="move.statusSelect"/>
+        <field name="move.invoice"/>
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel" title="Budget"
           if="__config__.app.isApp('budget')" readonlyIf="move.invoice"
           onChange="action-method-move-line-budget-distribution-validate-amount"
-          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
-          field="budgetDistributionList" form-view="move-line-budget-distribution-form"
-          grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>
-      </insert>
-    </extend>
-  </form>
-
-  <form id="budget-move-line-form" name="move-line-form" title="Move line"
-    model="com.axelor.apps.account.db.MoveLine" extension="true">
-
-    <extend target="//panel[@name='othersPanel']">
-      <insert position="inside">
-        <field name="account.accountType.technicalTypeSelect" hidden="true"/>
-        <field name="account.accountType" hidden="true"/>
-        <field name="move.statusSelect" hidden="true"/>
-        <field name="move.invoice" hidden="true"/>
-      </insert>
-      <insert position="after">
-        <panel-related name="budgetDistributionListPanel"
-          if="__config__.app.isApp('budget')" readonlyIf="move.statusSelect == 3 || move.invoice"
-          title="Budget" onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"
           grid-view="move-line-budget-distribution-grid" editable="true" colSpan="12"/>

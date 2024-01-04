@@ -204,6 +204,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
+        manufOrder.setSaleOrderLine(saleOrderLine);
       }
 
       manufOrder.setParentMO(manufOrderParent);

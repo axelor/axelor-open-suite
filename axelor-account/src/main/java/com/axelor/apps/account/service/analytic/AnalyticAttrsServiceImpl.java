@@ -145,8 +145,11 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
               String.format("axis%dAnalyticAccount", i),
               "domain",
               String.format(
-                  "self.id IN (%s) AND self.statusSelect = %d AND (self.company IS NULL OR self.company.id = %d)",
-                  idList, AnalyticAccountRepository.STATUS_ACTIVE, company.getId()),
+                  "%s AND self.id IN (%s) AND self.statusSelect = %d AND (self.company IS NULL OR self.company.id = %d)",
+                  analyticAccountService.getIsNotParentAnalyticAccountQuery(),
+                  idList,
+                  AnalyticAccountRepository.STATUS_ACTIVE,
+                  company.getId()),
               attrsMap);
         }
       }

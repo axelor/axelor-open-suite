@@ -94,9 +94,12 @@
     <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-calendars" parent="manufacturing-root"
+    title="Calendars" order="1450" icon="fa-calendar"/>
+
   <menuitem name="manufacturing-root-operation-order-planned-calendar"
-    parent="manufacturing-root" title="Planned operations"
-    action="manufacturing.root.operation.order.planned.calendar" order="700"/>
+    parent="manufacturing-root-calendars" title="Planned operations"
+    action="manufacturing.root.operation.order.planned.calendar" order="100"/>
 
   <action-view name="manufacturing.root.operation.order.planned.calendar"
     title="Planned operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -108,8 +111,8 @@
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order-real-calendar"
-    parent="manufacturing-root" title="Real operations"
-    action="manufacturing.root.operation.order.real.calendar" order="800"/>
+    parent="manufacturing-root-calendars" title="Real operations"
+    action="manufacturing.root.operation.order.real.calendar" order="200"/>
 
   <action-view name="manufacturing.root.operation.order.real.calendar"
     title="Real operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -179,16 +182,6 @@
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
     <domain>self.outsourcingOrder = true</domain>
-  </action-view>
-
-  <menuitem name="manufacturing-root-charge-by-machine-dashboard"
-    parent="manufacturing-root" title="Charge by machine"
-    action="manufacturing.root.charge.by.machine.dashboard" order="1000"/>
-
-  <action-view name="manufacturing.root.charge.by.machine.dashboard"
-    title="Charge by machine">
-    <view type="dashboard" name="charge.by.machine.dashboard"/>
-    <context name="today" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
@@ -295,6 +288,15 @@
   <action-view name="manufacturing.user.dashboard.view" title="User Dashboard"
     model="com.axelor.auth.db.User">
     <view type="form" name="manufacturing-dashboard-user"/>
+  </action-view>
+
+  <menuitem name="manufacturing-root-machine-charge-dashboard"
+    parent="manufacturing-root-report" title="Machine charge"
+    action="manufacturing.root.machine.charge.dashboard" order="1000"/>
+
+  <action-view name="manufacturing.root.machine.charge.dashboard" title="Machine charge">
+    <view type="dashboard" name="machine.charge.dashboard"/>
+    <context name="today" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration"

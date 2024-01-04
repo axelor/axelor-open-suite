@@ -218,6 +218,7 @@
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="hoursDuration" hidden="true"/>
+      <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="toInvoice" if-module="axelor-business-project"
@@ -268,6 +269,7 @@
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+      <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="toInvoice" if-module="axelor-business-project"
@@ -383,7 +385,7 @@
 
   <action-validate name="action-timesheet-line-validate-date">
     <error message="This date is invalid. It must be included in the timesheet's period."
-      if="date != null &amp;&amp; (__parent__.toDate != null &amp;&amp; date &gt; __parent__.toDate)"
+      if="date != null &amp;&amp; ((__parent__.toDate != null &amp;&amp; date &gt; __parent__.toDate) || (__parent__.fromDate != null &amp;&amp; date &lt; __parent__.fromDate))"
       action="action-timesheet-line-null-date"/>
   </action-validate>
 

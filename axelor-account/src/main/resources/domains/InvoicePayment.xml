@@ -8,7 +8,7 @@
   <entity name="InvoicePayment">
 
     <decimal name="amount" title="Paid amount" required="true" default="0" min="0"
-      initParam="true"/>
+      initParam="true" scale="3" precision="20"/>
 
     <date name="paymentDate" title="Date" required="true" initParam="true"/>
     <string name="delayReason" title="Delay reason"/>
@@ -42,16 +42,18 @@
     <string name="description" title="Description"/>
 
     <boolean name="manualChange" default="false"/>
-    <boolean name="applyFinancialDiscount" title="Apply Financial Discount ?"
-      readonly="true"/>
+    <boolean name="applyFinancialDiscount" title="Apply Financial Discount ?"/>
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <date name="financialDiscountDeadlineDate" title="Fin. Discount Deadline Date"/>
-    <decimal name="financialDiscountAmount" title="Fin. Discount Amount"/>
-    <decimal name="financialDiscountTaxAmount" title="Fin. Discount Tax"/>
-    <decimal name="financialDiscountTotalAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="financialDiscountAmount" title="Fin. Discount Amount" scale="3"
+      precision="20"/>
+    <decimal name="financialDiscountTaxAmount" title="Fin. Discount Tax" scale="3"
+      precision="20"/>
+    <decimal name="financialDiscountTotalAmount" title="Fin. Discount Total Amount"
+      scale="3" precision="20"/>
     <decimal name="totalAmountWithFinancialDiscount"
-      title="Total amount with financial discount"/>
+      title="Total amount with financial discount" scale="3" precision="20"/>
 
     <one-to-many name="invoiceTermPaymentList"
       ref="com.axelor.apps.account.db.InvoiceTermPayment" mappedBy="invoicePayment"

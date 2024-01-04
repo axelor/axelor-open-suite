@@ -249,7 +249,8 @@ public interface StockMoveLineService {
   boolean checkMassesRequired(StockMove stockMove, StockMoveLine stockMoveLine);
 
   public void splitStockMoveLineByTrackingNumber(
-      StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers);
+      StockMoveLine stockMoveLine, List<LinkedHashMap<String, Object>> trackingNumbers)
+      throws AxelorException;
 
   /**
    * set the available quantity of product in a given location.
@@ -257,12 +258,13 @@ public interface StockMoveLineService {
    * @param stockMoveLine
    * @return
    */
-  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation);
+  public void updateAvailableQty(StockMoveLine stockMoveLine, StockLocation stockLocation)
+      throws AxelorException;
 
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
-  public void setAvailableStatus(StockMoveLine stockMoveLine);
+  public void setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
 
   public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
 
@@ -338,4 +340,25 @@ public interface StockMoveLineService {
   Map<String, Object> getClearedStockMoveLineMap();
 
   void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException;
+
+  /**
+   * This method will fill realQty of stockMoveLine if conditions of configuration are met with the
+   * qty.
+   *
+   * @param stockMoveLine
+   * @param stockMove
+   * @param qty
+   */
+  void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty);
+
+  /**
+   * Split stock move line having realQty != 0 and realQty < qty into two lines each, one of whom is
+   * fulfilled with qty = realQty and the other one being unfulfilled with realQty = zero and qty
+   * equal the remaining unfulfilled qty ( original qty - original realQty)
+   *
+   * @param stockMoveLine
+   * @return
+   * @throws AxelorException
+   */
+  void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine);
 }

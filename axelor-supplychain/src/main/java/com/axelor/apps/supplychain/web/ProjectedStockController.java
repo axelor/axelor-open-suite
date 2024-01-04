@@ -26,6 +26,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.supplychain.db.MrpLine;
+import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
@@ -189,7 +190,8 @@ public class ProjectedStockController {
                 .param("popup", "true")
                 .param("popup-save", "false")
                 .param("popup.maximized", "true")
-                .context("_mrpLineList", mrpLineList)
+                .context(
+                    "_mrpLineList", Beans.get(MrpLineService.class).getMrpLineListCopy(mrpLineList))
                 .map());
       } catch (Exception e) {
         TraceBackService.trace(response, e);

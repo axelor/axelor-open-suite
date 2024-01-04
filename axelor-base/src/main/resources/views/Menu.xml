@@ -186,6 +186,16 @@
     <view type="form" name="import-export-interface-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-import-export-translation"
+    title="Import/Export translations" parent="admin-root-general"
+    action="admin.root.general.import.export.translation" order="1100"/>
+
+  <action-view name="admin.root.general.import.export.translation"
+    title="Import/Export translations" model="com.axelor.apps.base.db.ImportExportTranslation">
+    <view type="grid" name="import-export-translation-grid"/>
+    <view type="form" name="import-export-translation-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="300" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"
@@ -282,6 +292,16 @@
       PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
+
+  <menuitem title="Address templates" name="referential-conf-address-template"
+    parent="referential-conf" action="referential.conf.address.templates" order="650"/>
+
+  <action-view name="referential.conf.address.templates" title="Address templates"
+    model="com.axelor.apps.base.db.AddressTemplate">
+    <view type="grid" name="address-template-grid"/>
+    <view type="form" name="address-template-form"/>
+  </action-view>
+
 
   <menuitem name="referential-conf" title="Configuration" order="600"
     parent="referential-root" icon="fa-cog"/>

@@ -14,8 +14,9 @@
     <field name="paymentMode"/>
     <field name="partnerTypeSelect"/>
     <field name="paymentDate"/>
-    <field name="sessionTotalAmountFormula"/>
+    <field name="sessionTotalAmountFormula" x-scale="currency.numberOfDecimals"/>
     <field name="currency"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -64,6 +65,10 @@
         <field name="statusSelect" widget="NavSelect" readonly="true" showTitle="false"/>
       </panel>
       <panel name="viewerTagsPanel">
+        <field name="currency.symbol" hidden="true"/>
+        <field name="currency.numberOfDecimals" hidden="true"/>
+        <field name="sessionTotalAmountFormula" x-currency="currency.symbol" hidden="true"
+          x-scale="currency.numberOfDecimals"/>
         <field name="$viewerTags" showTitle="false" readonly="true">
           <viewer>
             <![CDATA[<>{(sessionTotalAmountFormula < 0) && <Badge bg="info">{_t('Session total amount is negative')}</Badge>}</>]]>
@@ -72,7 +77,7 @@
         <button name="sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
-          x-currency="company.currency.symbol" x-field="sessionTotalAmountFormula"/>
+          x-field="sessionTotalAmountFormula"/>
       </panel>
       <panel name="btnPanel" colSpan="4" itemSpan="12">
         <button name="validateBtn" title="Validate" css="btn-success"

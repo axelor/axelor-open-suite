@@ -237,8 +237,14 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     return supplierCatalog != null ? supplierCatalog.getMinQty() : BigDecimal.ONE;
   }
 
+  protected BigDecimal getMaxQty(Product product, Partner supplierPartner, Company company)
+      throws AxelorException {
+    SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
+    return supplierCatalog != null ? supplierCatalog.getMaxQty() : BigDecimal.ONE;
+  }
+
   @Override
-  public void checkMinQty(
+  public boolean checkMinQty(
       Product product,
       Partner supplierPartner,
       Company company,
@@ -248,25 +254,62 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       throws AxelorException {
 
     BigDecimal minQty = this.getMinQty(product, supplierPartner, company);
+    boolean isBreakMinQtyLimit = qty.compareTo(minQty) < 0;
+    setQtyLimitMessage(
+        isBreakMinQtyLimit,
+        request,
+        response,
+        PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY,
+        minQty);
 
-    if (qty.compareTo(minQty) < 0) {
-      String msg =
+    return isBreakMinQtyLimit;
+  }
+
+  @Override
+  public boolean checkMaxQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException {
+
+    BigDecimal maxQty = this.getMaxQty(product, supplierPartner, company);
+    boolean isBreakMaxQtyLimit = maxQty.compareTo(BigDecimal.ZERO) > 0 && qty.compareTo(maxQty) > 0;
+    setQtyLimitMessage(
+        isBreakMaxQtyLimit,
+        request,
+        response,
+        PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MAX_QTY,
+        maxQty);
+    return isBreakMaxQtyLimit;
+  }
+
+  protected void setQtyLimitMessage(
+      boolean isBreakQtyLimit,
+      ActionRequest request,
+      ActionResponse response,
+      String exceptionMessage,
+      BigDecimal limitQty) {
+    if (isBreakQtyLimit) {
+      String message =
           String.format(
-              I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_LINE_MIN_QTY),
-              minQty.setScale(
+              I18n.get(exceptionMessage),
+              limitQty.setScale(
                   appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
 
       if (request.getAction().endsWith("onchange")) {
-        response.setInfo(msg);
+        response.setInfo(message);
       }
 
-      String title = ContextHelper.formatLabel(msg, ContextHelper.SPAN_CLASS_WARNING, 75);
+      String title = ContextHelper.formatLabel(message, ContextHelper.SPAN_CLASS_WARNING, 75);
 
-      response.setAttr("minQtyNotRespectedLabel", "title", title);
-      response.setAttr("minQtyNotRespectedLabel", "hidden", false);
+      response.setAttr("qtyLimitNotRespectedLabel", "title", title);
+      response.setAttr("qtyLimitNotRespectedLabel", "hidden", false);
 
     } else {
-      response.setAttr("minQtyNotRespectedLabel", "hidden", true);
+      response.setAttr("qtyLimitNotRespectedLabel", "hidden", true);
     }
   }
 }

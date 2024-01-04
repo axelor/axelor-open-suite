@@ -18,14 +18,26 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.pricing.PricingGenericService;
+import com.axelor.apps.base.service.pricing.PricingGroupService;
 import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PricingController {
 
@@ -60,6 +72,80 @@ public class PricingController {
       response.setSignal("refresh-tab", pricing);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setFormulaField(ActionRequest request, ActionResponse response) {
+    Pricing pricing = request.getContext().asType(Pricing.class);
+    String formula = "";
+
+    if (pricing != null) {
+      formula =
+          Beans.get(PricingGroupService.class)
+              .computeFormulaField(pricing.getProduct(), pricing.getProductCategory());
+    }
+
+    response.setValue("formula", formula);
+  }
+
+  public void clearFieldsRelatedToFormula(ActionRequest request, ActionResponse response) {
+    Pricing pricing = request.getContext().asType(Pricing.class);
+
+    response.setValues(Beans.get(PricingGroupService.class).clearFieldsRelatedToFormula(pricing));
+  }
+
+  public void usePricings(ActionRequest request, ActionResponse response) {
+
+    try {
+      String modelName = request.getModel();
+      Context context = request.getContext();
+      Long recordId = Long.valueOf(context.get("id").toString());
+      Company company = (Company) request.getContext().get("company");
+      if (modelName != null && recordId != null) {
+        Beans.get(PricingGenericService.class)
+            .usePricings(company, Class.forName(modelName), recordId);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void usePricingsList(ActionRequest request, ActionResponse response) {
+
+    try {
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      if (ObjectUtils.isEmpty(idList)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.NO_RECORD_SELECTED_TO_PRINT));
+      }
+
+      String modelName = request.getModel();
+      Company company = (Company) request.getContext().get("company");
+
+      if (modelName != null) {
+        Beans.get(PricingGenericService.class)
+            .usePricings(company, Class.forName(modelName), idList);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @ErrorException
+  public void setModelDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    List<String> unavailableModels = Beans.get(PricingGenericService.class).getUnavailableModels();
+
+    if (!ObjectUtils.isEmpty(unavailableModels)) {
+      String unavailableModelsStr =
+          unavailableModels.stream()
+              .map(str -> String.format("'%s'", str))
+              .collect(Collectors.joining(","));
+      response.setAttr(
+          "concernedModel", "domain", String.format("self.name NOT IN (%s)", unavailableModelsStr));
     }
   }
 }
