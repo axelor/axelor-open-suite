@@ -8,11 +8,15 @@
   <entity name="MobileDashboard">
     <string name="name" title="Name"/>
     <string name="appName" title="Application"
+      help="Parent application of the dashboard menu entry."
       selection="mobilesettings.mobile.config.sequence.select"/>
-    <boolean name="isCustom" title="Custom app"/>
+    <boolean name="isCustom" title="Custom menu entry"
+      help="Enable the user to create a new menu entry with custom title, icon and order."/>
     <string name="menuTitle" title="Menu title"/>
-    <string name="iconName" title="Icon name"/>
-    <integer name="menuOrder" title="Menu order" nullable="true"/>
+    <string name="iconName" title="Icon name"
+      help="Bootstrap icon name, see https://icons.getbootstrap.com/"/>
+    <integer name="menuOrder" title="Menu order" nullable="true"
+      help="At the end of the menu list by default. To add a menu between two existing menu of the selected app, input index * 100"/>
     <many-to-one name="appMobileSettings" title="App mobile settings"
       ref="com.axelor.studio.db.AppMobileSettings"/>
     <one-to-many name="mobileDashboardLineList" title="Mobile dashboard line list"
