@@ -26,7 +26,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.CallMethod;
-
 import java.util.List;
 import java.util.Map;
 
@@ -153,6 +152,7 @@ public interface PartnerService {
   String computeCompanyStr(Partner partner);
 
   boolean isRegistrationCodeValid(Partner partner);
+
   String getRegistrationCodeTitleFromTemplate(Partner partner);
 
   Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner);

@@ -32,7 +32,6 @@ import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.RegistrationNumberTemplate;
-import com.axelor.apps.base.db.repo.ABCAnalysisRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -56,7 +55,6 @@ import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Method;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,9 +64,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,18 +83,18 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   private Pattern phoneNumberPattern =
-          Pattern.compile("^\\+?(?:[0-9]{2,3}(?:\\s|\\.)?){3,6}[0-9]{2,3}$");
+      Pattern.compile("^\\+?(?:[0-9]{2,3}(?:\\s|\\.)?){3,6}[0-9]{2,3}$");
 
   public Partner createPartner(
-          String name,
-          String firstName,
-          String fixedPhone,
-          String mobilePhone,
-          EmailAddress emailAddress,
-          Currency currency,
-          Address deliveryAddress,
-          Address mainInvoicingAddress,
-          boolean createContact) {
+      String name,
+      String firstName,
+      String fixedPhone,
+      String mobilePhone,
+      EmailAddress emailAddress,
+      Currency currency,
+      Address deliveryAddress,
+      Address mainInvoicingAddress,
+      boolean createContact) {
     Partner partner = new Partner();
 
     partner.setName(name);
@@ -113,14 +109,14 @@ public class PartnerServiceImpl implements PartnerService {
 
     if (createContact) {
       Partner contact =
-              this.createContact(
-                      partner,
-                      name,
-                      firstName,
-                      fixedPhone,
-                      mobilePhone,
-                      emailAddress != null ? new EmailAddress(emailAddress.getAddress()) : null,
-                      mainInvoicingAddress);
+          this.createContact(
+              partner,
+              name,
+              firstName,
+              fixedPhone,
+              mobilePhone,
+              emailAddress != null ? new EmailAddress(emailAddress.getAddress()) : null,
+              mainInvoicingAddress);
       partner.addContactPartnerSetItem(contact);
     }
 
@@ -135,13 +131,13 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   public Partner createContact(
-          Partner partner,
-          String name,
-          String firstName,
-          String fixedPhone,
-          String mobilePhone,
-          EmailAddress emailAddress,
-          Address mainAddress) {
+      Partner partner,
+      String name,
+      String firstName,
+      String fixedPhone,
+      String mobilePhone,
+      EmailAddress emailAddress,
+      Address mainAddress) {
 
     Partner contact = new Partner();
     contact.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
@@ -160,32 +156,32 @@ public class PartnerServiceImpl implements PartnerService {
   public void onSave(Partner partner) throws AxelorException {
 
     if (partner.getPartnerSeq() == null
-            && appBaseService.getAppBase().getGeneratePartnerSequence()) {
+        && appBaseService.getAppBase().getGeneratePartnerSequence()) {
       String seq =
-              Beans.get(SequenceService.class)
-                      .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
+          Beans.get(SequenceService.class)
+              .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
       if (seq == null) {
         throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(BaseExceptionMessage.PARTNER_1));
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BaseExceptionMessage.PARTNER_1));
       }
       partner.setPartnerSeq(seq);
     }
 
     if (partner.getEmailAddress() != null) {
       long existEmailCount =
-              partnerRepo
-                      .all()
-                      .filter(
-                              "self.id != ?1 and self.emailAddress = ?2",
-                              partner.getId(),
-                              partner.getEmailAddress())
-                      .count();
+          partnerRepo
+              .all()
+              .filter(
+                  "self.id != ?1 and self.emailAddress = ?2",
+                  partner.getId(),
+                  partner.getEmailAddress())
+              .count();
 
       if (existEmailCount > 0) {
         throw new AxelorException(
-                TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
-                I18n.get(BaseExceptionMessage.PARTNER_EMAIL_EXIST));
+            TraceBackRepository.CATEGORY_NO_UNIQUE_KEY,
+            I18n.get(BaseExceptionMessage.PARTNER_EMAIL_EXIST));
       }
     }
 
@@ -223,13 +219,13 @@ public class PartnerServiceImpl implements PartnerService {
       }
     } else if (address == null) {
       partner.removePartnerAddressListItem(
-              JPA.all(PartnerAddress.class)
-                      .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
-                      .bind("partnerId", partner.getId())
-                      .fetchOne());
+          JPA.all(PartnerAddress.class)
+              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .bind("partnerId", partner.getId())
+              .fetchOne());
 
     } else if (partner.getPartnerAddressList() != null
-            && partner.getPartnerAddressList().stream()
+        && partner.getPartnerAddressList().stream()
             .map(PartnerAddress::getAddress)
             .noneMatch(address::equals)) {
       PartnerAddress mainAddress = new PartnerAddress();
@@ -258,8 +254,8 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsInvoicingAddr()) {
           if (defaultInvoicingAddress != null) {
             throw new AxelorException(
-                    TraceBackRepository.CATEGORY_INCONSISTENCY,
-                    I18n.get(BaseExceptionMessage.ADDRESS_8));
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.ADDRESS_8));
           }
           defaultInvoicingAddress = partnerAddress.getAddress();
         }
@@ -267,8 +263,8 @@ public class PartnerServiceImpl implements PartnerService {
         if (partnerAddress.getIsDefaultAddr() && partnerAddress.getIsDeliveryAddr()) {
           if (defaultDeliveryAddress != null) {
             throw new AxelorException(
-                    TraceBackRepository.CATEGORY_INCONSISTENCY,
-                    I18n.get(BaseExceptionMessage.ADDRESS_9));
+                TraceBackRepository.CATEGORY_INCONSISTENCY,
+                I18n.get(BaseExceptionMessage.ADDRESS_9));
           }
           defaultDeliveryAddress = partnerAddress.getAddress();
         }
@@ -286,47 +282,47 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public String computeFullName(Partner partner) {
     return ComputeNameHelper.computeFullName(
-            partner.getFirstName(),
-            partner.getName(),
-            partner.getPartnerSeq(),
-            String.valueOf(partner.getId()));
+        partner.getFirstName(),
+        partner.getName(),
+        partner.getPartnerSeq(),
+        String.valueOf(partner.getId()));
   }
 
   @Override
   public String computeSimpleFullName(Partner partner) {
     return ComputeNameHelper.computeSimpleFullName(
-            partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
+        partner.getFirstName(), partner.getName(), String.valueOf(partner.getId()));
   }
 
   @Override
   public Map<String, String> getSocialNetworkUrl(
-          String name, String firstName, Integer typeSelect) {
+      String name, String firstName, Integer typeSelect) {
 
     Map<String, String> urlMap = new HashMap<String, String>();
     if (typeSelect == 2) {
       name =
-              firstName != null && name != null
-                      ? firstName + "+" + name
-                      : name == null ? firstName : name;
+          firstName != null && name != null
+              ? firstName + "+" + name
+              : name == null ? firstName : name;
     }
     name = name == null ? "" : name;
     urlMap.put(
-            "google",
-            "<a class='fa fa-google' href='https://www.google.com/search?q="
-                    + name
-                    + "&gws_rd=cr"
-                    + "' target='_blank' />");
+        "google",
+        "<a class='fa fa-google' href='https://www.google.com/search?q="
+            + name
+            + "&gws_rd=cr"
+            + "' target='_blank' />");
     urlMap.put(
-            "linkedin",
-            "<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"
-                    + name
-                    + "' target='_blank' />");
+        "linkedin",
+        "<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"
+            + name
+            + "' target='_blank' />");
     if (typeSelect == 2) {
       urlMap.put(
-              "linkedin",
-              "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
-                      + name.replace("+", "/")
-                      + "' target='_blank' />");
+          "linkedin",
+          "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+              + name.replace("+", "/")
+              + "' target='_blank' />");
     }
 
     return urlMap;
@@ -357,20 +353,20 @@ public class PartnerServiceImpl implements PartnerService {
   public List<Long> findMailsFromPartner(Partner partner, int emailType) {
 
     String query =
-            String.format(
-                    "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
-                            + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
-                    partner.getId());
+        String.format(
+            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
+                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
+            partner.getId());
 
     String emailAddress =
-            (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
+        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
     if (emailAddress != null) {
       query +=
-              " OR (:emailAddress IN ("
-                      + ((emailType == MessageRepository.TYPE_RECEIVED)
-                      ? "email.fromEmailAddress.address"
-                      : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
-                      + "))";
+          " OR (:emailAddress IN ("
+              + ((emailType == MessageRepository.TYPE_RECEIVED)
+                  ? "email.fromEmailAddress.address"
+                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
+              + "))";
     } else {
       query += " AND email.typeSelect = " + emailType;
     }
@@ -398,12 +394,12 @@ public class PartnerServiceImpl implements PartnerService {
     if (partner.getId() != null) {
       PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
       PartnerAddress partnerAddress =
-              partnerAddressRepo
-                      .all()
-                      .filter(
-                              "self.partner.id = ? AND self.isDefaultAddr = true" + addrTypeQuery,
-                              partner.getId())
-                      .fetchOne();
+          partnerAddressRepo
+              .all()
+              .filter(
+                  "self.partner.id = ? AND self.isDefaultAddr = true" + addrTypeQuery,
+                  partner.getId())
+              .fetchOne();
       if (partnerAddress != null) {
         partnerAddress.setIsDefaultAddr(false);
         partnerAddressRepo.save(partnerAddress);
@@ -413,11 +409,11 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public Partner addPartnerAddress(
-          Partner partner,
-          Address address,
-          Boolean isDefault,
-          Boolean isInvoicing,
-          Boolean isDelivery) {
+      Partner partner,
+      Address address,
+      Boolean isDefault,
+      Boolean isInvoicing,
+      Boolean isDelivery) {
 
     PartnerAddress partnerAddress = createPartnerAddress(address, isDefault);
 
@@ -426,9 +422,9 @@ public class PartnerServiceImpl implements PartnerService {
       LOG.debug("Add partner address : isInvoicing = {}", isInvoicing);
 
       String query =
-              String.format(
-                      " AND self.isDeliveryAddr = %s AND self.isInvoicingAddr = %s",
-                      isDelivery, isInvoicing);
+          String.format(
+              " AND self.isDeliveryAddr = %s AND self.isInvoicingAddr = %s",
+              isDelivery, isInvoicing);
       resetDefaultAddress(partner, query);
     }
 
@@ -456,13 +452,13 @@ public class PartnerServiceImpl implements PartnerService {
       PartnerAddressRepository partnerAddressRepo = Beans.get(PartnerAddressRepository.class);
 
       List<PartnerAddress> partnerAddressList =
-              partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
+          partnerAddressRepo.all().filter(querySpecific, partner.getId()).fetch();
       if (partnerAddressList.isEmpty()) {
         partnerAddressList = partnerAddressRepo.all().filter(queryComman, partner.getId()).fetch();
 
         if (partnerAddressList.isEmpty()) {
           partnerAddressList =
-                  partnerAddressRepo.all().filter("self.partner.id = ?1", partner.getId()).fetch();
+              partnerAddressRepo.all().filter("self.partner.id = ?1", partner.getId()).fetch();
         }
       }
 
@@ -483,27 +479,27 @@ public class PartnerServiceImpl implements PartnerService {
   public Address getInvoicingAddress(Partner partner) {
 
     return getAddress(
-            partner,
-            "self.partner.id = ?1 AND self.isInvoicingAddr = true AND self.isDeliveryAddr = false AND self.isDefaultAddr = true",
-            "self.partner.id = ?1 AND self.isInvoicingAddr = true");
+        partner,
+        "self.partner.id = ?1 AND self.isInvoicingAddr = true AND self.isDeliveryAddr = false AND self.isDefaultAddr = true",
+        "self.partner.id = ?1 AND self.isInvoicingAddr = true");
   }
 
   @Override
   public Address getDeliveryAddress(Partner partner) {
 
     return getAddress(
-            partner,
-            "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false AND self.isDefaultAddr = true",
-            "self.partner.id = ?1 AND self.isDeliveryAddr = true");
+        partner,
+        "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = false AND self.isDefaultAddr = true",
+        "self.partner.id = ?1 AND self.isDeliveryAddr = true");
   }
 
   @Override
   public Address getDefaultAddress(Partner partner) {
 
     return getAddress(
-            partner,
-            "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = true AND self.isDefaultAddr = true",
-            "self.partner.id = ?1 AND self.isDefaultAddr = true");
+        partner,
+        "self.partner.id = ?1 AND self.isDeliveryAddr = true AND self.isInvoicingAddr = true AND self.isDefaultAddr = true",
+        "self.partner.id = ?1 AND self.isDefaultAddr = true");
   }
 
   @Transactional
@@ -515,9 +511,9 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public BankDetails getDefaultBankDetails(Partner partner) {
     return partner.getBankDetailsList().stream()
-            .filter(BankDetails::getIsDefault)
-            .findFirst()
-            .orElse(null);
+        .filter(BankDetails::getIsDefault)
+        .findFirst()
+        .orElse(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -526,18 +522,18 @@ public class PartnerServiceImpl implements PartnerService {
     char[] Str = new char[9];
     if (partner == null) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.PARTNER_2),
-              I18n.get(BaseExceptionMessage.EXCEPTION),
-              "");
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PARTNER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          "");
     }
     if (partner.getRegistrationCode() == null || partner.getRegistrationCode().isEmpty()) {
       throw new AxelorException(
-              partner,
-              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(BaseExceptionMessage.PARTNER_2),
-              I18n.get(BaseExceptionMessage.EXCEPTION),
-              partner.getName());
+          partner,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.PARTNER_2),
+          I18n.get(BaseExceptionMessage.EXCEPTION),
+          partner.getName());
     } else {
       String registrationCode = partner.getRegistrationCode();
       // remove whitespace in the registration code before using it
@@ -577,18 +573,18 @@ public class PartnerServiceImpl implements PartnerService {
       return null;
     }
     LocalDate today =
-            appBaseService.getTodayDate(
-                    Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
+        appBaseService.getTodayDate(
+            Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
     List<PriceList> candidatePriceListList = new ArrayList<>();
     for (PriceList priceList : priceListSet) {
       LocalDate beginDate =
-              priceList.getApplicationBeginDate() != null
-                      ? priceList.getApplicationBeginDate()
-                      : LocalDate.MIN;
+          priceList.getApplicationBeginDate() != null
+              ? priceList.getApplicationBeginDate()
+              : LocalDate.MIN;
       LocalDate endDate =
-              priceList.getApplicationEndDate() != null
-                      ? priceList.getApplicationEndDate()
-                      : LocalDate.MAX;
+          priceList.getApplicationEndDate() != null
+              ? priceList.getApplicationEndDate()
+              : LocalDate.MAX;
       if (beginDate.compareTo(today) <= 0 && today.compareTo(endDate) <= 0) {
         candidatePriceListList.add(priceList);
       }
@@ -643,8 +639,8 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public boolean checkPhoneNumber(String phoneNumber) {
     return StringUtils.isBlank(phoneNumber)
-            ? false
-            : phoneNumberPattern.matcher(phoneNumber).matches();
+        ? false
+        : phoneNumberPattern.matcher(phoneNumber).matches();
   }
 
   /**
@@ -687,8 +683,8 @@ public class PartnerServiceImpl implements PartnerService {
     }
     Long partnerId = partner.getId();
     String filter =
-            "lower(self.simpleFullName) = lower(:newName) "
-                    + "and self.partnerTypeSelect = :_partnerTypeSelect ";
+        "lower(self.simpleFullName) = lower(:newName) "
+            + "and self.partnerTypeSelect = :_partnerTypeSelect ";
     if (partnerId != null) {
       filter += "and self.id != :partnerId ";
     }
@@ -699,11 +695,11 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     Query<Partner> partnerQuery =
-            partnerRepo
-                    .all()
-                    .filter(filter)
-                    .bind("newName", newName)
-                    .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
+        partnerRepo
+            .all()
+            .filter(filter)
+            .bind("newName", newName)
+            .bind("_partnerTypeSelect", partner.getPartnerTypeSelect());
     if (partnerId != null) {
       partnerQuery = partnerQuery.bind("partnerId", partnerId);
     }
@@ -715,14 +711,14 @@ public class PartnerServiceImpl implements PartnerService {
     String registrationCode = partner.getRegistrationCode();
     registrationCode = registrationCode.replace(" ", "");
     if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-            || Strings.isNullOrEmpty(registrationCode)) {
+        || Strings.isNullOrEmpty(registrationCode)) {
       return true;
     }
 
     Country businessCountry = partner.getBusinessCountry();
     if (businessCountry != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
-              businessCountry.getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
 
       if (registrationNumberTemplate != null) {
         return validateRegistrationCode(partner, registrationCode, registrationNumberTemplate);
@@ -731,29 +727,35 @@ public class PartnerServiceImpl implements PartnerService {
     return true;
   }
 
-  private boolean validateRegistrationCode(Partner partner, String registrationCode, RegistrationNumberTemplate registrationNumberTemplate) {
+  private boolean validateRegistrationCode(
+      Partner partner,
+      String registrationCode,
+      RegistrationNumberTemplate registrationNumberTemplate) {
     try {
       String origin = registrationNumberTemplate.getValidationMethodSelect();
 
-      if (registrationNumberTemplate.getIsRequiredForCompanies() && StringUtils.isBlank(registrationCode)) {
+      if (registrationNumberTemplate.getIsRequiredForCompanies()
+          && StringUtils.isBlank(registrationCode)) {
         throw new AxelorException(
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
       }
 
       if (registrationCode.length() != registrationNumberTemplate.getRequiredSize()) {
         throw new AxelorException(
-                TraceBackRepository.CATEGORY_MISSING_FIELD,
-                I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
       }
 
       if (origin != null) {
-        Class<? extends RegistrationNumberValidation> clazz = Class.forName(origin).asSubclass(RegistrationNumberValidation.class);
-        boolean isValidRegistrationCode = Beans.get(clazz).computeRegistrationCodeValidity(registrationCode);
+        Class<? extends RegistrationNumberValidation> clazz =
+            Class.forName(origin).asSubclass(RegistrationNumberValidation.class);
+        boolean isValidRegistrationCode =
+            Beans.get(clazz).computeRegistrationCodeValidity(registrationCode);
         if (!isValidRegistrationCode) {
           throw new AxelorException(
-                  TraceBackRepository.CATEGORY_MISSING_FIELD,
-                  I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+              TraceBackRepository.CATEGORY_MISSING_FIELD,
+              I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
         }
       }
     } catch (ClassNotFoundException | AxelorException e) {
@@ -768,8 +770,10 @@ public class PartnerServiceImpl implements PartnerService {
   public String getRegistrationCodeTitleFromTemplate(Partner partner) {
     Country country = partner.getBusinessCountry();
     if (country != null) {
-      RegistrationNumberTemplate registrationNumberTemplate = country.getRegistrationNumberTemplate();
-      if (registrationNumberTemplate != null && !StringUtils.isBlank(registrationNumberTemplate.getTitleToDisplay())) {
+      RegistrationNumberTemplate registrationNumberTemplate =
+          country.getRegistrationNumberTemplate();
+      if (registrationNumberTemplate != null
+          && !StringUtils.isBlank(registrationNumberTemplate.getTitleToDisplay())) {
         return registrationNumberTemplate.getTitleToDisplay();
       }
     }
@@ -779,17 +783,17 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
     Country businessCountry = partner.getBusinessCountry();
-    if(businessCountry != null) {
+    if (businessCountry != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
-              businessCountry.getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
 
       if (registrationNumberTemplate != null) {
         try {
           String origin = registrationNumberTemplate.getValidationMethodSelect();
           if (origin != null) {
-            Class<? extends RegistrationNumberValidation> clazz = (Class<? extends RegistrationNumberValidation>) Class.forName(origin);
-            return Beans.get(clazz)
-                    .getRegistrationCodeValidationAttrs(partner);
+            Class<? extends RegistrationNumberValidation> clazz =
+                (Class<? extends RegistrationNumberValidation>) Class.forName(origin);
+            return Beans.get(clazz).getRegistrationCodeValidationAttrs(partner);
           }
         } catch (ClassNotFoundException e) {
           TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));

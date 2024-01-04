@@ -89,7 +89,7 @@
     type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
 
   <input file="base_registrationNumberTemplate.csv" separator=";"
-         type="com.axelor.apps.base.db.RegistrationNumberTemplate" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.RegistrationNumberTemplate" search="self.importId = :importId"/>
 
   <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
     search="self.importId = :importId"/>
