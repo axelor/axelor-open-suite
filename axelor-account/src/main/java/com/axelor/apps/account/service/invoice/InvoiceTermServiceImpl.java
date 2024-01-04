@@ -556,6 +556,14 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return invoice;
     }
 
+    computeTermsDueDate(invoice, invoiceDate);
+
+    initInvoiceTermsSequence(invoice);
+    return invoice;
+  }
+
+  @Override
+  public Invoice computeTermsDueDate(Invoice invoice, LocalDate invoiceDate) {
     for (InvoiceTerm invoiceTerm : invoice.getInvoiceTermList()) {
       if (!invoiceTerm.getIsCustomized()) {
         LocalDate dueDate =
@@ -570,8 +578,6 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
         }
       }
     }
-
-    initInvoiceTermsSequence(invoice);
     return invoice;
   }
 
