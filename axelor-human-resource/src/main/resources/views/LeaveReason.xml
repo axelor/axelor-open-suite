@@ -35,6 +35,11 @@
       <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"
         showIf="leaveReasonTypeSelect != 2"/>
       <field name="isDaysAddedProrated" widget="boolean-switch" colSpan="4"/>
+      <field name="isToBeResetYearly" widget="boolean-switch" readonlyIf="recoveryLeaveReason"
+        showIf="leaveReasonTypeSelect != 2"/>
+      <field name="recoveryLeaveReason"
+        showIf="isToBeResetYearly &amp;&amp; leaveReasonTypeSelect != 2"
+        onSelect="action-leave-reason-attrs-recovery-leave-reason-onselect"/>
       <field name="instruction" colSpan="12" widget="html"/>
 
       <panel name="planningPanel" colSpan="12" hideIf="leaveReasonTypeSelect == 2"
@@ -60,5 +65,13 @@
     model="com.axelor.apps.hr.db.LeaveReason">
     <field name="unitSelect" expr="eval: 1"/>
   </action-record>
+
+  <action-attrs name="action-leave-reason-attrs-recovery-leave-reason-onselect">
+    <attribute for="recoveryLeaveReason" name="domain"
+      expr="eval: &quot; self.leaveReasonTypeSelect != 2 &quot;" if="!__id__"/>
+    <attribute for="recoveryLeaveReason" name="domain"
+      expr="eval: &quot; self.leaveReasonTypeSelect != 2 AND self.id != ${__this__.id} AND (self.recoveryLeaveReason.id != ${__this__.id} OR self.recoveryLeaveReason IS null)&quot;"
+      if="__id__"/>
+  </action-attrs>
 
 </object-views>
