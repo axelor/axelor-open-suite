@@ -5,7 +5,7 @@
 
   <grid name="control-point-grid" title="Control points"
     model="com.axelor.apps.quality.db.ControlPoint"
-    onNew="action-control-point-attrs-hide-quality-control" edit-icon="true">
+    onNew="action-control-point-attrs-hide-quality-control" edit-icon="true" canNew="false">
     <field name="name" width="700"/>
     <field name="controlPointType" width="150"/>
     <field name="statusSelect" width="130"/>
@@ -13,7 +13,7 @@
 
   <form name="control-point-form" title="Control points"
     model="com.axelor.apps.quality.db.ControlPoint"
-    onNew="action-quality-control-point-record-default">
+    onNew="action-quality-control-point-record-default" canNew="false">
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false" readonly="true"
         colSpan="12"/>
