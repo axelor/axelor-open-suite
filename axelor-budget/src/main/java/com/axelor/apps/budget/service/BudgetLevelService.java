@@ -21,10 +21,10 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.meta.db.MetaFile;
-import java.io.IOException;
+import com.axelor.apps.budget.db.GlobalBudget;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetLevelService {
 
@@ -34,33 +34,6 @@ public interface BudgetLevelService {
    * @param budgetLevel
    */
   public void computeTotals(BudgetLevel budgetLevel);
-
-  /**
-   * This function computes all totalAmounts of {@link Budget} list.
-   *
-   * @param budgetLevel
-   */
-  public void computeBudgetTotals(BudgetLevel budgetLevel);
-
-  /**
-   * This function imports and updates BudgetLevel.
-   *
-   * @param budgetLevel
-   * @throws AxelorException
-   * @throws ClassNotFoundException
-   * @throws IOException
-   * @return Error log metaFile
-   */
-  public MetaFile importBudgetLevel(BudgetLevel budgetLevel)
-      throws ClassNotFoundException, AxelorException, IOException;
-
-  /**
-   * This function computes totalAmountExpected of the BudgetLevel and from its list.
-   *
-   * @param budgetLevel
-   * @throws AxelorException
-   */
-  public void computeBudgetLevel(BudgetLevel budgetLevel) throws AxelorException;
 
   /**
    * Archive the global budget and archive all related budget levels and budgets
@@ -76,13 +49,6 @@ public interface BudgetLevelService {
    * @param budgetLevel, fromDate, toDate
    */
   public void updateBudgetLevelDates(BudgetLevel budgetLevel, LocalDate fromDate, LocalDate toDate);
-
-  /**
-   * This function set current BudgetLevel to the new project if budget in project is null.
-   *
-   * @param budgetLevel
-   */
-  public void setProjectBudget(BudgetLevel budgetLevel);
 
   /**
    * Set the status to valid then save it
@@ -101,14 +67,6 @@ public interface BudgetLevelService {
   public void draftChildren(BudgetLevel budgetLevel);
 
   /**
-   * Create budget key for each budget related to this section
-   *
-   * @param section
-   * @throws AxelorException
-   */
-  public void computeChildrenKey(BudgetLevel section) throws AxelorException;
-
-  /**
    * Check in all children budget that dates are in the parent period
    *
    * @param global
@@ -124,12 +82,8 @@ public interface BudgetLevelService {
    */
   public void validateBudgetLevelDates(BudgetLevel budgetLevel) throws AxelorException;
 
-  void getUpdatedGroupBudgetLevelList(
-      List<BudgetLevel> groupBudgetLevelList, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException;
-
-  void getUpdatedSectionBudgetList(
-      List<BudgetLevel> sectionBudgetLevelList, LocalDate fromDate, LocalDate toDate)
+  void getUpdatedBudgetLevelList(
+      List<BudgetLevel> budgetLevelList, LocalDate fromDate, LocalDate toDate)
       throws AxelorException;
 
   void getUpdatedBudgetList(List<Budget> budgetList, LocalDate fromDate, LocalDate toDate)
@@ -142,5 +96,13 @@ public interface BudgetLevelService {
    */
   public void computeBudgetLevelTotals(Budget budget);
 
-  void recomputeBudgetLevelTotals(BudgetLevel budgetLevel);
+  List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
+
+  void generateBudgetLevelFromGenerator(
+      BudgetLevel budgetLevel,
+      BudgetLevel parent,
+      GlobalBudget globalBudget,
+      Map<String, Object> variableAmountMap,
+      boolean linkToGlobal)
+      throws AxelorException;
 }

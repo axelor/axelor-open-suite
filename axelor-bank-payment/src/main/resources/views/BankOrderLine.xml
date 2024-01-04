@@ -88,6 +88,118 @@
     </panel>
   </form>
 
+  <grid name="bank-order-line-bank-order-grid"
+    model="com.axelor.apps.bankpayment.db.BankOrderLine" title="Bank Order lines">
+    <field name="partner.simpleFullName"/>
+    <field name="$pieceReferenceList" title="Piece references"/>
+    <field name="$pieceDateList" title="Piece dates"/>
+    <field name="$pieceDueDateList" title="Piece due dates"/>
+    <field name="bankOrderAmount"/>
+    <field name="bankOrderCurrency" hidden="true"/>
+    <field name="bankOrderDate" hidden="true"/>
+    <field name="receiverCompany" hidden="true"/>
+    <field name="receiverBankDetails"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="bank-order-line-bank-order-form"
+    model="com.axelor.apps.bankpayment.db.BankOrderLine" onNew="action-bank-order-line-onnew"
+    onLoad="action-bank-order-line-group-on-load" title="Bank Order line">
+    <panel>
+      <field name="sequence" css="label-bold bold" readonly="true" hideIf="sequence == null"
+        colSpan="6"/>
+      <field name="bankOrderDate" hidden="true"/>
+      <panel name="receiverCompanyPanel" colSpan="6" itemSpan="12">
+        <field name="receiverCompany" canEdit="false" form-view="company-form"
+          grid-view="company-grid" css="label-bold bold"
+          onChange="action-bank-order-line-group-receiver-company-change,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
+        <field name="partner" canView="false" form-view="partner-form"
+          grid-view="partner-grid" css="label-bold bold"
+          onSelect="action-bank-order-line-attrs-partner-domain"
+          onChange="action-bank-order-line-method-fill-bank-details,action-bank-order-line-record-receiver-bank-details-onchange,action-bank-order-line-method-fill-receiver-address"/>
+      </panel>
+      <panel name="receiverBankDetailsPanel" colSpan="6" itemSpan="12">
+        <field name="receiverBankDetails" showIf="receiverCompany" canView="false"
+          onSelect="action-bank-order-line-method-set-bank-details-domain" required="true"
+          onChange="action-bank-order-line-record-receiver-bank-details-onchange"
+          form-view="bank-details-form" grid-view="bank-details-bank-order-company-grid"/>
+        <field name="receiverBankDetails" showIf="!receiverCompany" canView="false"
+          onSelect="action-bank-order-line-method-set-bank-details-domain" required="true"
+          onChange="action-bank-order-line-record-receiver-bank-details-onchange"
+          form-view="bank-details-form" grid-view="bank-details-bank-order-grid"/>
+      </panel>
+      <field name="bankOrderAmount" colSpan="4" min="0.00" required="true"
+        onChange="action-bank-order-line-method-compute-company-currency-amount"/>
+      <panel name="bankOrderCurrencyPanel" stacked="true" colSpan="2" itemSpan="12">
+        <field name="bankOrder.bankOrderCurrency" canView="false" hidden="true"/>
+        <field name="bankOrderCurrency" canView="false" hidden="true"
+          onChange="action-bank-order-line-method-compute-company-currency-amount"/>
+      </panel>
+      <panel name="companyCurrencyPanel" colSpan="6">
+        <field name="companyCurrencyAmount" canView="false" colSpan="8" readonly="true"/>
+        <field name="bankOrder.companyCurrency" canView="false" colSpan="4"/>
+      </panel>
+      <field name="receiverReference"/>
+      <field name="receiverLabel"/>
+
+      <panel name="additionnalInformationPanel" title="Additional information" colSpan="12"
+        canCollapse="true" collapseIf="true" hidden="true">
+        <field name="bankOrderEconomicReason" canEdit="false"/>
+        <field name="receiverCountry" canView="false" colSpan="4"/>
+        <field name="receiverCountry.alpha2Code" colSpan="2" showTitle="false"/>
+        <field name="paymentModeSelect"/>
+        <field name="feesImputationModeSelect"/>
+        <field name="receiverAddressStr" colSpan="12" max="105"/>
+      </panel>
+
+      <panel name="furtherInformationPanel" title="Further information" colSpan="12"
+        canCollapse="true" collapseIf="true" hidden="true">
+        <panel name="paymentReasonPanel" title="Payment Reason" css="label-small"
+          itemSpan="12">
+          <field name="paymentReasonLine1" showTitle="false"
+            requiredIf="specialInstructionsLine1 || specialInstructionsLine2 || specialInstructionsLine3"/>
+          <field name="paymentReasonLine2" showTitle="false"/>
+          <field name="paymentReasonLine3" showTitle="false"/>
+          <field name="paymentReasonLine4" showTitle="false"/>
+        </panel>
+        <panel name="specialInstructionPanel" title="Special instructions" css="small"
+          itemSpan="12">
+          <field name="specialInstructionsLine1" showTitle="false"/>
+          <field name="specialInstructionsLine2" showTitle="false"/>
+          <field name="specialInstructionsLine3" showTitle="false"/>
+        </panel>
+      </panel>
+      <panel name="originPanel" title="Origins" colSpan="12" canCollapse="true"
+        collapseIf="true"
+        showIf="bankOrderLineOriginList != null &amp;&amp; bankOrderLineOriginList.length &gt; 0">
+        <field name="bankOrderLineOriginList" showTitle="false" colSpan="12" readonly="true"/>
+      </panel>
+      <panel name="accountingInfoPanel" title="Accounting information" colSpan="12"
+        hidden="true"
+        showIf="senderMove &amp;&amp; (bankOrder.statusSelect == 3 || bankOrder.statusSelect == 4)">
+        <field name="senderMove" form-view="move-form" grid-view="move-grid"/>
+        <field name="receiverMove" showIf="receiverMove" form-view="move-form"
+          grid-view="move-grid"/>
+      </panel>
+
+      <panel name="rejectInfoPanel" title="Reject information" colSpan="12" hidden="true"
+        showIf="isRejected">
+        <field name="rejectDate"/>
+        <field name="rejectMove" hidden="true" showIf="isRejected == true"
+          form-view="move-form" grid-view="move-grid"/>
+        <field name="interbankCodeLine"
+          onSelect="action-bank-order-attrs-interbank-code-line-domain"
+          form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
+        <field name="interbankCodeLine.description" colSpan="12"/>
+        <field name="isRejected" hidden="true"/>
+      </panel>
+      <field name="bankOrder.isMultiDate" hidden="true"/>
+      <field name="bankOrder.isMultiCurrency" hidden="true"/>
+      <field name="counter" hidden="true"/>
+      <field name="bankOrder" hidden="true"/>
+    </panel>
+  </form>
+
   <action-group name="action-bank-order-line-group-receiver-company-onchange">
     <action name="action-bank-order-line-group-receiver-company-change"/>
     <action name="action-bank-order-line-record-receiver-bank-details-onchange"/>
@@ -99,5 +211,42 @@
     <action name="action-bank-order-line-record-receiver-bank-details-onchange"/>
     <action name="action-bank-order-line-method-fill-receiver-address"/>
   </action-group>
+
+  <action-group name="action-bank-order-line-group-on-load">
+    <action name="action-bank-order-line-attrs-on-load"/>
+    <action name="action-bank-order-line-attrs-show-partner-or-receiver-company-on-load"/>
+  </action-group>
+
+  <action-attrs
+    name="action-bank-order-line-attrs-show-partner-or-receiver-company-on-load">
+    <attribute for="receiverCompany" name="hidden"
+      expr="eval: bankOrder.partnerTypeSelect != 4"/>
+    <attribute for="partner" name="hidden" expr="eval: bankOrder.partnerTypeSelect == 4"/>
+  </action-attrs>
+
+  <action-attrs name="action-bank-order-line-attrs-on-load">
+    <attribute name="hidden" for="additionnalInformationPanel"
+      expr="eval: !bankOrderFileFormat?.displayAdditionnalInformations"/>
+    <attribute name="hidden" for="bankOrderEconomicReason"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayBankOrderEconomicReason"/>
+    <attribute name="hidden" for="receiverCountry"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayReceiverCountry"/>
+    <attribute name="hidden" for="receiverCountry.alpha2Code"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayReceiverCountry"/>
+    <attribute name="hidden" for="paymentModeSelect"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayPaymentModeSelect"/>
+    <attribute name="hidden" for="feesImputationModeSelect"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayFeesImputationModeSelect"/>
+    <attribute name="hidden" for="furtherInformationPanel"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayFurtherInformations"/>
+    <attribute name="hidden" for="bankOrderDate"
+      expr="eval: !bankOrder.bankOrderFileFormat?.isMultiDate"/>
+    <attribute name="hidden" for="bankOrderCurrency"
+      expr="eval: !bankOrder.bankOrderFileFormat?.isMultiCurrency"/>
+    <attribute name="hidden" for="bankOrder.bankOrderCurrency"
+      expr="eval: bankOrder.bankOrderFileFormat?.isMultiCurrency"/>
+    <attribute name="hidden" for="receiverAddressStr"
+      expr="eval: !bankOrder.bankOrderFileFormat?.displayReceiverAddress"/>
+  </action-attrs>
 
 </object-views>

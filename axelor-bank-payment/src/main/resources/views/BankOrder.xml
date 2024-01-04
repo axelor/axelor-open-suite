@@ -167,9 +167,11 @@
       <field name="$hasBeenSentToBankTag" showTitle="false" colSpan="2"
         showIf="hasBeenSentToBank" colOffset="10" readonly="true">
         <viewer depends="hasBeenSentToBank"><![CDATA[
-          <h4 class="text-right">
-            <span class="label label-success" style="margin: 1px 0 !important; display: inline-table; line-height: initial;" x-translate>Sent to bank</span>
-          </h4>
+          <>
+             <Box d="flex" justifyContent="flex-end">
+                 <Badge bg="success">{_t('Sent to bank')}</Badge>
+             </Box>
+          </>
         ]]></viewer>
       </field>
     </panel>
@@ -265,9 +267,15 @@
       <field name="senderReference"/>
       <field name="senderLabel"/>
     </panel>
+    <panel-related name="bankOrderLineListPanel" colSpan="12" canNew="true"
+      field="bankOrderLineList" form-view="bank-order-line-bank-order-form"
+      grid-view="bank-order-line-bank-order-grid"
+      showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany"
+      if="!__config__.app.getApp('bank-payment')?.useEditorInBankOrderForm"/>
     <panel name="bankOrderLinesPanel" title="Bank Order Lines"
       readonlyIf="statusSelect &gt;= 2 || technicalOriginSelect == 1"
-      showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany">
+      showIf="paymentMode &amp;&amp; bankOrderFileFormat &amp;&amp; partnerTypeSelect &amp;&amp; senderBankDetails &amp;&amp; senderCompany"
+      if="__config__.app.getApp('bank-payment')?.useEditorInBankOrderForm">
       <field name="bankOrderLineList" showTitle="false" colSpan="12"
         canNew="bankOrderLineList == null || bankOrderLineList.length &lt; 10">
         <editor x-layout="table" x-show-on-new="false" x-viewer="true"

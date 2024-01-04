@@ -20,8 +20,10 @@
     <field name="analyticAccount.parent"/>
     <field name="accountType"/>
     <field name="date" width="120"/>
-    <field name="originalPieceAmount" aggregate="sum"/>
-    <field name="amount" aggregate="sum" width="120"/>
+    <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amount" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="typeSelect"/>
   </grid>
 
@@ -34,8 +36,10 @@
       form-view="analytic-account-form"/>
     <field name="accountType"/>
     <field name="percentage"/>
-    <field name="originalPieceAmount" aggregate="sum"/>
-    <field name="amount"/>
+    <field name="originalPieceAmount" aggregate="sum" x-sclae="currency.numberOfDecimals"/>
+    <field name="amount" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="date"/>
     <field name="project" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
@@ -47,7 +51,9 @@
     <field name="analyticAxis"/>
     <field name="analyticAccount"/>
     <field name="percentage"/>
-    <field name="amount"/>
+    <field name="amount" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="analyticJournal" hidden="true"/>
     <field name="date" hidden="true"/>
   </grid>
@@ -57,7 +63,9 @@
     <field name="analyticAxis" hidden="true"/>
     <field name="analyticAccount"/>
     <field name="percentage"/>
-    <field name="amount" aggregate="sum"/>
+    <field name="amount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="analyticJournal"/>
   </grid>
 
@@ -92,8 +100,8 @@
         grid-view="analytic-account-grid" onSelect="action-group-domain-onselect-analytic-account"/>
       <field name="date"/>
       <field name="percentage" min="0" max="100"/>
-      <field name="originalPieceAmount" aggregate="sum"/>
-      <field name="amount"/>
+      <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+      <field name="amount" x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
       <field name="project" domain="self.imputable = true AND self.isBusinessProject = true"
@@ -112,6 +120,7 @@
       <field name="invoiceLine" if="__config__.app.isApp('invoice')" colSpan="12"
         requiredIf="typeSelect == 2" form-view="invoice-line-form" grid-view="invoice-line-grid"
         showIf="invoiceLine || typeSelect == 2"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
@@ -135,12 +144,14 @@
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
       <field name="percentage" colSpan="4" min="0" max="100"
         onChange="action-analytic-move-line-method-compute-amount,action-method-calculate-amount-with-percentage-analytic-move-line"/>
-      <field name="originalPieceAmount" aggregate="sum"/>
-      <field name="amount" colSpan="4" readonly="true"/>
+      <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+      <field name="amount" colSpan="4" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="date" colSpan="4"/>
       <field name="project" grid-view="project-grid" form-view="project-form"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
+      <field name="currency" hidden="true"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -274,13 +285,13 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${analyticAxis?.company?.id} OR self.analyticAxis.company.id = ${analyticAxis?.company?.id} OR self.parent.company.id = ${analyticAxis?.company?.id})&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${analyticAxis?.company?.id} OR self.analyticAxis.company.id = ${analyticAxis?.company?.id} OR self.parent.company.id = ${analyticAxis?.company?.id})&quot;"
       if="analyticAxis &amp;&amp; analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.analyticAxis.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.parent.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id})&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.analyticAxis.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.parent.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id})&quot;"
       if="analyticAxis &amp;&amp; !analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) &quot;"
       if="!(analyticAxis?.company) &amp;&amp; !__parent__"/>
   </action-attrs>
 

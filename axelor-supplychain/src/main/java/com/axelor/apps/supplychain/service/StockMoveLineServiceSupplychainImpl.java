@@ -53,11 +53,13 @@ import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -80,6 +82,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected SupplyChainConfigService supplychainConfigService;
   protected InvoiceLineRepository invoiceLineRepository;
 
+  protected AppSupplychainService appSupplychainService;
+
   @Inject
   public StockMoveLineServiceSupplychainImpl(
       TrackingNumberService trackingNumberService,
@@ -98,7 +102,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SupplychainBatchRepository supplychainBatchRepo,
       SupplyChainConfigService supplychainConfigService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      AppSupplychainService appSupplychainService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -117,6 +122,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.supplychainBatchRepo = supplychainBatchRepo;
     this.supplychainConfigService = supplychainConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -654,5 +660,26 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           .fetch();
     }
     return new ArrayList<>();
+  }
+
+  @Override
+  public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
+
+    AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
+
+    if (stockMove != null) {
+
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && appSupplychain.getAutoFillDeliveryRealQty())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && appSupplychain.getAutoFillReceiptRealQty())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL)) {
+        stockMoveLine.setRealQty(qty);
+      } else {
+        stockMoveLine.setRealQty(BigDecimal.ZERO);
+      }
+    } else {
+      super.fillRealQuantities(stockMoveLine, stockMove, qty);
+    }
   }
 }
