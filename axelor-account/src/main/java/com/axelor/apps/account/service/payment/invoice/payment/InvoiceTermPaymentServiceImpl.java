@@ -273,11 +273,11 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     boolean isCompanyCurrency =
         invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
     invoiceTermPayment.setPaidAmount(
-        isCompanyCurrency ? this.computePaidAmount(invoiceTermToPay, paidAmount) : paidAmount);
+        isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
     invoiceTermPayment.setCompanyPaidAmount(
         isCompanyCurrency
-            ? paidAmount
-            : this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount));
+            ? this.computeCompanyPaidAmount(invoiceTermToPay, paidAmount)
+            : paidAmount);
 
     return invoiceTermPayment;
   }
