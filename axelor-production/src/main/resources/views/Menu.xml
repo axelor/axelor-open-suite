@@ -52,11 +52,11 @@
   </action-view>
 
   <menuitem name="manufacturing-root-import-bill-of-material"
-    parent="manufacturing-root-bill-of-material-root" title="Bill of material import"
+    parent="manufacturing-root-bill-of-material-root" title="Bill of materials import"
     action="manufacturing.root.import.bill.of.material" order="300"/>
 
   <action-view name="manufacturing.root.import.bill.of.material"
-    title="Bill of material imports" model="com.axelor.apps.production.db.BillOfMaterialImport">
+    title="Bill of materials imports" model="com.axelor.apps.production.db.BillOfMaterialImport">
     <view type="grid" name="bill-of-material-import-grid"/>
     <view type="form" name="bill-of-material-import-form"/>
   </action-view>
@@ -489,11 +489,11 @@
   </action-view>
 
   <menuitem name="manufacturing-conf-bill-of-material-import-source"
-    parent="manufacturing-conf" title="Bill of material import sources"
+    parent="manufacturing-conf" title="Bill of materials import sources"
     action="manufacturing.conf.bill.of.material.import.source" order="1100"/>
 
   <action-view name="manufacturing.conf.bill.of.material.import.source"
-    title="Bill of material import sources"
+    title="Bill of materials import sources"
     model="com.axelor.apps.production.db.BillOfMaterialImportSource">
     <view type="grid" name="bill-of-material-import-source-grid"/>
     <view type="form" name="bill-of-material-import-source-form"/>

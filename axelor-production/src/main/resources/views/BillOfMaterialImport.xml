@@ -3,14 +3,14 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="bill-of-material-import-grid" title="Bill of material imports"
+  <grid name="bill-of-material-import-grid" title="Bill of materials imports"
     model="com.axelor.apps.production.db.BillOfMaterialImport">
     <field name="name"/>
     <field name="mainBillOfMaterialGenerated"/>
     <field name="statusSelect"/>
   </grid>
 
-  <form name="bill-of-material-import-form" title="Bill of material import"
+  <form name="bill-of-material-import-form" title="Bill of materials import"
     model="com.axelor.apps.production.db.BillOfMaterialImport">
     <panel name="mainPanel">
       <field name="statusSelect" showTitle="true" readonly="true" colSpan="12"

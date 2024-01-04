@@ -47,6 +47,8 @@ import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
 import com.axelor.apps.production.rest.OperationOrderRestService;
 import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
+import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
@@ -206,5 +208,6 @@ public class ProductionModule extends AxelorModule {
     bind(StockMoveMergingServiceSupplychainImpl.class)
         .to(StockMoveMergingServiceProductionImpl.class);
     bind(OperationOrderChartService.class).to(OperationOrderChartServiceImpl.class);
+    bind(BillOfMaterialComputeNameService.class).to(BillOfMaterialComputeNameServiceImpl.class);
   }
 }

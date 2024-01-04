@@ -17,7 +17,7 @@
     <many-to-one name="documentMetaFile" title="Documents"
       ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="mainBillOfMaterialGenerated"
-      title="Main bill of material generated" ref="com.axelor.apps.production.db.BillOfMaterial"/>
+      title="Main bill of materials generated" ref="com.axelor.apps.production.db.BillOfMaterial"/>
     <one-to-many name="billOfMaterialImportLineList" title="Results"
       mappedBy="billOfMaterialImport" ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
 

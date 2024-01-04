@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <grid name="bill-of-material-import-line-grid" title="Bill of material import lines"
+  <grid name="bill-of-material-import-line-grid" title="Bill of materials import lines"
     model="com.axelor.apps.production.db.BillOfMaterialImportLine" editable="true"
     orderBy="bomLevel">
     <field name="code"/>
@@ -14,7 +14,7 @@
     <field name="unit"/>
   </grid>
 
-  <form name="bill-of-material-import-line-form" title="Bill of material import line"
+  <form name="bill-of-material-import-line-form" title="Bill of materials import line"
     model="com.axelor.apps.production.db.BillOfMaterialImportLine">
     <panel name="namePanel">
       <field name="code"/>
@@ -29,7 +29,7 @@
     </panel>
   </form>
 
-  <tree name="bill-of-material-import-line-tree" title="Bill of material import line tree">
+  <tree name="bill-of-material-import-line-tree" title="Bill of materials import line tree">
     <column name="code" type="string"/>
     <column name="name" type="string"/>
     <column name="bomLevel" type="integer"/>
@@ -44,7 +44,8 @@
       <field name="quantity"/>
       <field name="unit"/>
     </node>
-    <node model="com.axelor.apps.production.db.BillOfMaterialImportLine" parent="parent">
+    <node model="com.axelor.apps.production.db.BillOfMaterialImportLine"
+      parent="parentBoMImportLine">
       <field name="code"/>
       <field name="name"/>
       <field name="bomLevel"/>

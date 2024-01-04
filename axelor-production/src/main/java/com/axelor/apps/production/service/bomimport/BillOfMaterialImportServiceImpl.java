@@ -111,12 +111,12 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
               .filter(line -> line.getBomLevel() == 0)
               .findFirst();
     }
-    if (billOfMaterialImportLineOp.isEmpty()) {
-      throw new AxelorException(
-          billOfMaterialImport,
-          TraceBackRepository.CATEGORY_MISSING_FIELD,
-          ProductionExceptionMessage.BOM_IMPORT_NO_MAIN_BILL_OF_MATERIAL_GENERATED);
-    }
+    billOfMaterialImportLineOp.orElseThrow(
+        () ->
+            new AxelorException(
+                billOfMaterialImport,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                ProductionExceptionMessage.BOM_IMPORT_NO_MAIN_BILL_OF_MATERIALS_GENERATED));
 
     generateBillOfMaterialFromImportLine(billOfMaterialImportLineOp.get());
   }

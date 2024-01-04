@@ -33,14 +33,20 @@ public class BillOfMaterialImportLineServiceImpl implements BillOfMaterialImport
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           ProductionExceptionMessage.BOM_IMPORT_PARENTS_NOT_DONE_PROPERLY);
     }
-    if (billOfMaterialImportLine.getParent() == null) {
-      billOfMaterialImportLine.setBomLevel(0);
-      return 0;
-    } else if (billOfMaterialImportLine.getParent().getBomLevel() != null) {
-      billOfMaterialImportLine.setBomLevel(billOfMaterialImportLine.getParent().getBomLevel() + 1);
-      return billOfMaterialImportLine.getBomLevel();
+
+    int level = 0;
+    while (billOfMaterialImportLine.getParentBoMImportLine() != null) {
+      if (billOfMaterialImportLine.getParentBoMImportLine().getBomLevel() != null) {
+        level = billOfMaterialImportLine.getParentBoMImportLine().getBomLevel() + 1;
+        billOfMaterialImportLine.setBomLevel(level);
+        return level;
+      } else {
+        billOfMaterialImportLine = billOfMaterialImportLine.getParentBoMImportLine();
+        level++;
+      }
     }
-    billOfMaterialImportLine.setBomLevel(computeBoMLevel(billOfMaterialImportLine.getParent()) + 1);
-    return billOfMaterialImportLine.getBomLevel();
+
+    billOfMaterialImportLine.setBomLevel(level);
+    return level;
   }
 }
