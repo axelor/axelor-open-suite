@@ -214,7 +214,8 @@
         canNew="false" canEdit="false" canView="false" required="true" readonly="true"/>
       <field name="currency" required="true"/>
       <field name="isKilometricLine" widget="boolean-radio" x-true-text="Kilometric"
-        x-false-text="General" onChange="action-orphan-expense-line-method-fill-expense-product"/>
+        x-false-text="General"
+        onChange="action-orphan-expense-line-group-is-kilometric-line-onchange"/>
     </panel>
 
     <panel name="classicPanel" showIf="!isKilometricLine">
@@ -422,5 +423,16 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
       method="fillExpenseProduct"/>
   </action-method>
+
+  <action-group name="action-orphan-expense-line-group-is-kilometric-line-onchange">
+    <action name="action-orphan-expense-line-method-fill-expense-product"/>
+    <action name="action-orphan-expense-line-attrs-empty-amount"/>
+  </action-group>
+
+  <action-attrs name="action-orphan-expense-line-attrs-empty-amount">
+    <attribute for="totalAmount" name="value" expr="eval: 0"/>
+    <attribute for="untaxedAmount" name="value" expr="eval: 0"/>
+    <attribute for="totalTax" name="value" expr="eval: 0"/>
+  </action-attrs>
 
 </object-views>

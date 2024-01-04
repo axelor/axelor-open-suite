@@ -732,6 +732,7 @@
 "Open Street Maps error: %s",,,
 "Organization",,,
 "Orphan expense line",,,
+"OrphanExpenseLine.title","Expense line",,
 "Others",,,
 "Overseas",,,
 "Overview",,,
