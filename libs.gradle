@@ -2,7 +2,7 @@ def libs = ext.libs = [:]
 
 libs.axelor_studio = 'com.axelor.addons:axelor-studio:2.0.0-20240103.200600-73'
 libs.axelor_message = 'com.axelor.addons:axelor-message:2.0.0-20240103.200734-70'
-libs.axelor_utils = 'com.axelor.addons:axelor-utils:2.0.0-20240103.201301-79'
+libs.axelor_utils = 'com.axelor.addons:axelor-utils:2.0.0-20240104.164317-81'
 
 libs.bcpkix_jdk15on = 'org.bouncycastle:bcpkix-jdk15on:1.70'
 libs.bcprov_jdk15on = 'org.bouncycastle:bcprov-jdk15on:1.70'
