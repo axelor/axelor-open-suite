@@ -276,7 +276,6 @@
   <selection name="payment.mode.accounting.trigger.select"
     id="bank.payment.payment.mode.accounting.trigger.select">
     <option value="2" order="2">Bank order confirmation</option>
-    <option value="3" order="3">Bank order validation</option>
     <option value="4" order="4">Bank order realization</option>
   </selection>
 

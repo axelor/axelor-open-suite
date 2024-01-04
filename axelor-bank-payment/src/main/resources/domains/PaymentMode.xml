@@ -26,7 +26,6 @@
         public static final int ORDER_TYPE_INTERNATIONAL_TREASURY_TRANSFER = 6;
 
         public static final int ACCOUNTING_TRIGGER_CONFIRMATION = 2;
-        public static final int ACCOUNTING_TRIGGER_VALIDATION = 3;
         public static final int ACCOUNTING_TRIGGER_REALIZATION = 4;
     ]]></extra-code>
 

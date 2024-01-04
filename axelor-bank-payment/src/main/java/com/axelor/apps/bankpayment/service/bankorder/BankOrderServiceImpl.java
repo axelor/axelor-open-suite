@@ -454,17 +454,6 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
-    LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
-
-    if (!bankOrder.getAreMovesGenerated()
-        && bankOrder.getAccountingTriggerSelect()
-            == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      if (ObjectUtils.isEmpty(bankOrder.getBankOrderDate())
-          || bankOrder.getBankOrderDate().isBefore(todayDate)) {
-        bankOrder.setBankOrderDate(todayDate);
-      }
-      bankOrder = this.generateMoves(bankOrder);
-    }
 
     bankOrderRepo.save(bankOrder);
   }
