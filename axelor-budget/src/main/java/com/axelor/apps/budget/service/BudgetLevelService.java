@@ -41,7 +41,7 @@ public interface BudgetLevelService {
    * @param budgetLevel
    * @return BudgetLevel
    */
-  public void archiveBudgetLevel(BudgetLevel budgetLevel);
+  public void archiveChildren(BudgetLevel budgetLevel);
 
   /**
    * Find the budget level in database then set their dates and save it
