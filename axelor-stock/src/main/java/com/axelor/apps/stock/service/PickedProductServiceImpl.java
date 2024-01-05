@@ -4,6 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.MassStockMove;
+import com.axelor.apps.stock.db.MassStockMoveNeed;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -14,6 +15,7 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
@@ -23,6 +25,8 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PickedProductServiceImpl implements PickedProductService {
   protected PickedProductRepository pickedProductRepository;
@@ -260,5 +264,88 @@ public class PickedProductServiceImpl implements PickedProductService {
     }
     massStockMoveRepository.save(massStockMove);
     pickedProductRepository.save(pickedProduct);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void createPickedProductFromMassStockMoveNeed(MassStockMoveNeed massStockMoveNeed) {
+    Product product = massStockMoveNeed.getProductToMove();
+    MassStockMove massStockMove = massStockMoveNeed.getMassStockMove();
+    StockLocation commonFromStockLocation = massStockMove.getCommonFromStockLocation();
+
+    if (commonFromStockLocation != null) {
+      StockLocationLine stockLocationLine =
+          stockLocationLineRepository
+              .all()
+              .filter(
+                  "self.product = ?1 AND self.stockLocation = ?2 AND self.currentQty > 0",
+                  product,
+                  commonFromStockLocation)
+              .fetchOne();
+
+      this.createPickedProductFromStockLocationLine(stockLocationLine, product, massStockMove);
+
+    } else {
+
+      List<StockLocationLine> stockLocationLines =
+          stockLocationLineRepository
+              .all()
+              .filter(
+                  "self.product = ?1 AND self.stockLocation.typeSelect != ?2 AND self.stockLocation != ?3 AND self.currentQty > 0",
+                  product,
+                  StockLocationRepository.TYPE_VIRTUAL,
+                  massStockMove.getCartStockLocation())
+              .fetch();
+
+      stockLocationLines.stream()
+          .forEach(
+              stockLocationLine -> {
+                this.createPickedProductFromStockLocationLine(
+                    stockLocationLine, product, massStockMove);
+              });
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void createPickedProductFromStockLocationLine(
+      StockLocationLine stockLocationLine, Product product, MassStockMove massStockMove) {
+
+    boolean isTrackingNumberNull = product.getTrackingNumberConfiguration() == null;
+    BigDecimal currentQty = stockLocationLine.getCurrentQty();
+    StockLocation stockLocation = stockLocationLine.getStockLocation();
+
+    if (!isTrackingNumberNull && currentQty.compareTo(BigDecimal.ONE) > 0) {
+
+      List<TrackingNumber> trackingNumberList =
+          stockLocationLineRepository.all()
+              .filter(
+                  "self.product = ?1 AND self.detailsStockLocation = ?2 AND self.currentQty > 0",
+                  product,
+                  stockLocation)
+              .fetch().stream()
+              .map(x -> x.getTrackingNumber())
+              .collect(Collectors.toList());
+
+      for (int i = 0; i < currentQty.intValue(); i++) {
+        TrackingNumber trackingNumber = trackingNumberList.get(i);
+        PickedProduct trackingPickedProducts =
+            createPickedProduct(
+                massStockMove,
+                product,
+                trackingNumber,
+                stockLocation,
+                BigDecimal.ONE,
+                BigDecimal.ZERO,
+                null);
+        pickedProductRepository.save(trackingPickedProducts);
+      }
+    } else {
+      PickedProduct pickedProduct =
+          createPickedProduct(
+              massStockMove, product, null, stockLocation, currentQty, BigDecimal.ZERO, null);
+
+      pickedProductRepository.save(pickedProduct);
+    }
   }
 }
