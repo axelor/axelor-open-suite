@@ -331,4 +331,13 @@ public final class StockExceptionMessage {
 
   public static final String AT_LEAST_ONE_STORED_QUANTITY_IS_ZERO = /*$$(*/
       "At least one line has a stored quantity is equal to 0" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_LINE_CANT_DELETE = /*$$(*/
+      "Can't delete a line linked to a realized stock move line." /*)*/;
+
+  public static final String MANY_PRODUCTS_HAVE_NOT_BEEN_PICKED = /*$$(*/
+      "Many products have not been picked due to stock mismatch" /*)*/;
+
+  public static final String LOCATIONS_ARE_EMPTY = /*$$(*/
+      "Source and destination locations are empty" /*)*/;
 }
