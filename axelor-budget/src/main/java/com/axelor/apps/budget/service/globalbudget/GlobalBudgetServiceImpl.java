@@ -149,7 +149,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
   public GlobalBudget changeBudgetVersion(
       GlobalBudget globalBudget, BudgetVersion budgetVersion, boolean needRecomputeBudgetLine)
       throws AxelorException {
-    List<Budget> budgets = globalBudget.getBudgetList();
+    List<Budget> budgetList = globalBudgetToolsService.getAllBudgets(globalBudget);
     List<VersionExpectedAmountsLine> versionExpectedAmountsLineList =
         budgetVersion.getVersionExpectedAmountsLineList();
     if (globalBudget.getActiveVersion() != null) {
@@ -158,7 +158,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       budgetVersionRepo.save(oldBudgetVersion);
     }
 
-    for (Budget budget : budgets) {
+    for (Budget budget : budgetList) {
       VersionExpectedAmountsLine versionExpectedAmountsLine =
           versionExpectedAmountsLineList.stream()
               .filter(version -> version.getBudget().equals(budget))
@@ -182,7 +182,7 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
       }
     }
 
-    globalBudget.setBudgetList(budgets);
+    globalBudget.setBudgetList(budgetList);
     globalBudget.setActiveVersion(budgetVersion);
     budgetVersion.setIsActive(true);
     globalBudget = globalBudgetRepository.save(globalBudget);

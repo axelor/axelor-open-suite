@@ -169,4 +169,10 @@
     <option value="2">At the latest</option>
   </selection>
 
+  <selection name="production.bill.of.material.import.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Imported</option>
+    <option value="3">Validated</option>
+  </selection>
+
 </object-views>
