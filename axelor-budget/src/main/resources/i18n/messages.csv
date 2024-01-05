@@ -1,6 +1,6 @@
 "key","message","comment","context"
 "$budgetExceedAlert",,,
-"<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>",,,
+"<><Badge bg=""warning"">You need to save the budget before manage budget lines on periods</Badge></>",,,
 "A budget distribution has already been generated. By launching this action, the budget distribution table will be cleared and re-computed. Do you want to proceed ?",,,
 "Account",,,
 "Account configuration",,,
