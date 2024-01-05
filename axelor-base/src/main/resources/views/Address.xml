@@ -24,6 +24,7 @@
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
         <panel name="addressFieldPannel" colSpan="12">
           <field name="department" x-bind="{{department|uppercase}}"/>
+          <field name="room" x-bind="{{room|uppercase}}"/>
           <field name="floor" x-bind="{{floor|uppercase}}"/>
           <field name="street" onSelect="action-address-attrs-update-domain-street"
             onChange="action-address-record-change-streetName" form-view="street-form"
@@ -34,7 +35,6 @@
           <field name="buildingNumber" x-bind="{{buildingNumber|uppercase}}"
             onChange="action-address-record-change-streetName"/>
           <field name="buildingName" x-bind="{{buildingName|uppercase}}"/>
-          <field name="room" x-bind="{{room|uppercase}}"/>
           <field name="subDepartment" x-bind="{{subDepartment|uppercase}}"/>
           <field name="townName" x-bind="{{townName|uppercase}}"/>
           <field name="townLocationName" x-bind="{{townLocationName|uppercase}}"/>

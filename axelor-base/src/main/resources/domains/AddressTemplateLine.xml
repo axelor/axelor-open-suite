@@ -7,7 +7,7 @@
 
   <entity name="AddressTemplateLine">
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"
-      title="Address template line Field" required="true"/>
+      title="Field" required="true"/>
     <string name="title" title="Title" translatable="true"/>
 
     <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"/>

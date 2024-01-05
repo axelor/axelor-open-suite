@@ -7,7 +7,7 @@
 "Address";"inseeCode";"1";"true";"address.zipCode"
 "Address";"latit";"1";"true";"address.latitude"
 "Address";"zip";"1";"true";"address.zipCode"
-"Address";"streetNumber";"1";"true";"address.streetAddressNumber"
+"Address";"buildingNumber";"1";"true";"address.buildingNumber"
 "Address";"fullName";"1";"true";"address.fullAddress"
 "Address";"longit";"1";"true";"address.longitude"
 "EmailAddress";"address";"1";"true";"internet.emailAddress"

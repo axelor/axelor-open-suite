@@ -15,7 +15,7 @@
 "phoneNumber","phoneNumber","phoneNumber.phoneNumber","String","14"
 "latitude","address","address.latitude","String","15"
 "longitude","address","address.longitude","String","16"
-"streetAddressNumber","address","address.streetAddressNumber","String","17"
+"buildingNumber","address","address.buildingNumber","String","17"
 "secondaryAddress","address","address.secondaryAddress","String","18"
 "domainName","internet","internet.url","String","19"
 "title","job","job.title","String","20"

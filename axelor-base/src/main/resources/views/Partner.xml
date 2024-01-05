@@ -378,39 +378,7 @@
       <panel name="informationPanel" title="Information">
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
           showIf="isEmployee">
-          <field name="mainAddress" form-view="address-form" grid-view="address-grid">
-            <editor x-viewer="true" x-show-titles="false"
-              onNew="action-group-base-address-country-change">
-              <panel name="mainAddressPanel" colSpan="12">
-                <field name="country" required="true" form-view="country-form"
-                  grid-view="country-grid" onChange="action-group-base-address-country-change"/>
-                <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-                  <field name="room" x-bind="{{room|uppercase}}"
-                    placeholder="e.g. Financial department, CEO"/>
-                  <field name="floor" x-bind="{{floor|uppercase}}"
-                    placeholder="e.g. Building A, Entry 2, 2nd Floor, Door 2E"/>
-                  <field name="street" onSelect="action-address-attrs-update-domain-street"
-                    onChange="action-address-record-change-streetName" form-view="street-form"
-                    grid-view="street-grid" canNew="true"
-                    if="__config__.app.getApp('base')?.getStoreStreets()"/>
-                  <field if="__config__.app.getApp('base')?.getStoreStreets()"
-                    name="streetName" x-bind="{{streetName|uppercase}}"/>
-                  <field name="buildingName" x-bind="{{buildingName|uppercase}}"/>
-                  <field name="department" x-bind="{{department|uppercase}}"/>
-                  <field name="subDepartment" x-bind="{{subDepartment|uppercase}}"/>
-                  <field name="townName" x-bind="{{townName|uppercase}}"/>
-                  <field name="townLocationName" x-bind="{{townLocationName|uppercase}}"/>
-                  <field name="districtName" x-bind="{{districtName|uppercase}}"/>
-                  <field name="countrySubDivision" x-bind="{{countrySubDivision|uppercase}}"/>
-                  <field name="postBox" x-bind="{{postBox|uppercase}}"
-                    placeholder="e.g. POB 254"/>
-                  <field name="city" canNew="true" onChange="action-address-change-city"
-                    onSelect="action-address-attrs-update-domain-city" form-view="city-form"
-                    grid-view="city-grid"/>
-                </panel>
-              </panel>
-            </editor>
-          </field>
+          <field name="mainAddress" form-view="address-form" grid-view="address-grid"/>
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">

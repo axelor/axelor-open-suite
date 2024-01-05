@@ -69,7 +69,7 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
         line -> {
           addFieldUnhide(line.getMetaField().getName(), attrsMap);
           if ("street".equals(line.getMetaField().getName())) {
-            addFieldUnhide("streetNumber", attrsMap);
+            addFieldUnhide("buildingNumber", attrsMap);
           }
         });
     addFieldUnhide("formattedFullName", attrsMap);

@@ -22,11 +22,9 @@
       <field name="templateStr" colSpan="12"/>
     </panel>
 
-    <panel name="addressTemplateLinesPanel" title="Address Template Lines">
-      <panel-related name="addressTemplateLineListRelatedPanel"
+      <panel-related title="Address Template Lines" name="addressTemplateLineListRelatedPanel"
         field="addressTemplateLineList" colSpan="12" form-view="address-template-line-form"
         grid-view="address-template-line-grid"/>
-    </panel>
   </form>
 
 
