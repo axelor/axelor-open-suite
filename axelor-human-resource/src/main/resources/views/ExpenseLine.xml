@@ -152,7 +152,7 @@
         onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
         form-view="project-form" grid-view="project-grid"/>
       <field name="expenseDate"/>
-      <field name="kilometricAllowParam"
+      <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
         onChange="action-kilometric-allowance-method-compute"/>
       <field name="kilometricTypeSelect" required="true"/>
