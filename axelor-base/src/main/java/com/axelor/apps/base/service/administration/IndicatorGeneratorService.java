@@ -144,7 +144,7 @@ public class IndicatorGeneratorService {
       htmlBuilder.append("</style>");
       htmlBuilder.append("</head>");
       htmlBuilder.append("<body>");
-      htmlBuilder.append("<div style='overflow:auto; height:100%; max-height:436px;'>");
+      htmlBuilder.append("<div style='overflow:auto; max-height:436px;'>");
       htmlBuilder.append("<table border='1'>");
 
       // Extracting columns for table header
