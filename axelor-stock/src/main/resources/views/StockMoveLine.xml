@@ -371,6 +371,24 @@
     </field>
   </grid>
 
+  <grid name="stock-move-line-for-mass-stock-move-grid" title="Stock move lines"
+    model="com.axelor.apps.stock.db.StockMoveLine" canEdit="false" canNew="false" canDelete="false"
+    x-selector="checkbox">
+    <toolbar>
+      <button onClick="action-stock-move-line-method-fillProductToMove"
+        name="selectedStockMoveLinesToAdd" title="Selected move lines to add"/>
+    </toolbar>
+    <hilite strong="true" color="default" if="lineTypeSelect != 0"/>
+    <field name="name" width="120"/>
+    <field name="product" width="200"/>
+    <field name="stockMove.partner"/>
+    <field name="stockMove.fromStockLocation"/>
+    <field name="stockMove.toStockLocation"/>
+    <field name="realQty" x-scale="2"/>
+    <field name="unit"/>
+    <field name="stockMove.statusSelect"/>
+  </grid>
+
   <form name="stock-move-line-all-form" title="Stock move line"
     model="com.axelor.apps.stock.db.StockMoveLine" onNew="action-stock-move-line-group-onnew"
     onLoad="action-stock-move-line-group-all-onload" width="large" canNew="false" canDelete="false">
@@ -521,6 +539,10 @@
 
   <action-method name="action-stock-move-line-method-empty-line">
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="emptyLine"/>
+  </action-method>
+
+  <action-method name="action-stock-move-line-method-fillProductToMove">
+    <call class="com.axelor.apps.stock.web.MassStockMoveController" method="fillProductToMove"/>
   </action-method>
 
   <action-attrs name="action-stock-move-line-wizard-attrs-tracking-number-domain">
