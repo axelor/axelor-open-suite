@@ -201,7 +201,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, coalesce(nullif(LangTranslate.message_value, ''), LangTranslate.message_key) as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1]]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="LineDS" id="4248">
             <list-property name="columnHints">

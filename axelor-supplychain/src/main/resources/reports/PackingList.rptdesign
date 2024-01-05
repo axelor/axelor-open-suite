@@ -238,7 +238,7 @@
   LangTranslate.message_key,
   coalesce(nullif(LangTranslate.message_value, ''), LangTranslate.message_key) as "translation"
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1]]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1564,7 +1564,7 @@ left join stock_stock_move as StockMove on StockMoveLine.stock_move = StockMove.
 left join base_product as Product on StockMoveLine.product = Product.id
 left join stock_stock_move_sale_order_set SaleOrderSet on (SaleOrderSet.stock_stock_move = StockMove.id)
 left join sale_sale_order as SaleOrder on (SaleOrderSet.sale_order_set = SaleOrder.id)
-left join meta_translation as translat on translat.language = ?
+left join meta_translation as translat on translat.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1]
 and translat.message_key = case LogisticalFormLine.type_select
 when 1 then 'LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>'
 when 2 then 'LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>'
