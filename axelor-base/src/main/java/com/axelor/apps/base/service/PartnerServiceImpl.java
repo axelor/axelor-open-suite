@@ -728,8 +728,7 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   private boolean validateRegistrationCode(
-      String registrationCode,
-      RegistrationNumberTemplate registrationNumberTemplate) {
+      String registrationCode, RegistrationNumberTemplate registrationNumberTemplate) {
     try {
       String origin = registrationNumberTemplate.getValidationMethodSelect();
       if (registrationNumberTemplate.getIsRequiredForCompanies()
