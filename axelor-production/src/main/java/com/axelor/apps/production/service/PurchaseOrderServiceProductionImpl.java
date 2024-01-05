@@ -85,7 +85,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      TradingName tradingName)
+      TradingName tradingName,
+      boolean dummyPurchaseOrder)
       throws AxelorException {
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
@@ -100,7 +101,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             company,
             contactPartner,
             priceList,
-            tradingName);
+            tradingName,
+            dummyPurchaseOrder);
 
     manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
     return mergedPurchaseOrder;
@@ -116,7 +118,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       StockLocation stockLocation,
       Partner contactPartner,
       PriceList priceList,
-      TradingName tradingName)
+      TradingName tradingName,
+      boolean dummyPurchaseOrder)
       throws AxelorException {
 
     List<ManufOrder> manufOrderList = this.getManufOrdersOfPurchaseOrders(purchaseOrderList);
@@ -132,7 +135,8 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
             stockLocation,
             contactPartner,
             priceList,
-            tradingName);
+            tradingName,
+            dummyPurchaseOrder);
 
     manufOrderList.forEach(manufOrder -> manufOrder.setPurchaseOrder(mergedPurchaseOrder));
 

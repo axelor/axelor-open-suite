@@ -47,6 +47,7 @@ import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
@@ -92,6 +93,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
   @Inject protected ProductConversionService productConversionService;
 
   @Inject protected BirtTemplateService birtTemplateService;
+
+  @Inject protected PurchaseOrderLineRepository purchaseOrderLineRepository;
 
   @Override
   public PurchaseOrder _computePurchaseOrderLines(PurchaseOrder purchaseOrder)
@@ -367,7 +370,8 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       Company company,
       Partner contactPartner,
       PriceList priceList,
-      TradingName tradingName)
+      TradingName tradingName,
+      boolean dummyPurchaseOrder)
       throws AxelorException {
 
     String numSeq = "";
@@ -400,23 +404,29 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             supplierPartner,
             tradingName);
 
-    this.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged);
+    this.attachToNewPurchaseOrder(purchaseOrderList, purchaseOrderMerged, dummyPurchaseOrder);
 
     this.computePurchaseOrder(purchaseOrderMerged);
 
-    purchaseOrderRepo.save(purchaseOrderMerged);
-
-    this.removeOldPurchaseOrders(purchaseOrderList);
+    if (!dummyPurchaseOrder) {
+      purchaseOrderRepo.save(purchaseOrderMerged);
+      this.removeOldPurchaseOrders(purchaseOrderList);
+    }
 
     return purchaseOrderMerged;
   }
 
   // Attachment of all purchase order lines to new purchase order
   public void attachToNewPurchaseOrder(
-      List<PurchaseOrder> purchaseOrderList, PurchaseOrder purchaseOrderMerged) {
+      List<PurchaseOrder> purchaseOrderList,
+      PurchaseOrder purchaseOrderMerged,
+      boolean dummyPurchaseOrder) {
     for (PurchaseOrder purchaseOrder : purchaseOrderList) {
       int countLine = 1;
       for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
+        if (dummyPurchaseOrder) {
+          purchaseOrderLine = purchaseOrderLineRepository.copy(purchaseOrderLine, false);
+        }
         purchaseOrderLine.setSequence(countLine * 10);
         purchaseOrderMerged.addPurchaseOrderLineListItem(purchaseOrderLine);
         countLine++;

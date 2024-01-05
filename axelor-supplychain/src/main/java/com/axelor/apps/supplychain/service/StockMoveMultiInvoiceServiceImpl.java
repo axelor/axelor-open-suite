@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.PurchaseOrderMergingService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
@@ -45,6 +46,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -62,6 +64,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceService {
@@ -71,6 +74,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final PurchaseOrderRepository purchaseOrderRepository;
   protected final StockMoveInvoiceService stockMoveInvoiceService;
   protected final AppStockService appStockService;
+  protected final PurchaseOrderMergingService purchaseOrderMergingService;
 
   @Inject
   public StockMoveMultiInvoiceServiceImpl(
@@ -78,12 +82,14 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       SaleOrderRepository saleOrderRepository,
       PurchaseOrderRepository purchaseOrderRepository,
       StockMoveInvoiceService stockMoveInvoiceService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      PurchaseOrderMergingService purchaseOrderMergingService) {
     this.invoiceRepository = invoiceRepository;
     this.saleOrderRepository = saleOrderRepository;
     this.purchaseOrderRepository = purchaseOrderRepository;
     this.stockMoveInvoiceService = stockMoveInvoiceService;
     this.appStockService = appStockService;
+    this.purchaseOrderMergingService = purchaseOrderMergingService;
   }
 
   @Override
@@ -245,8 +251,11 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     boolean contactPartnerToCheck = false;
 
     checkForAlreadyInvoicedStockMove(stockMoveList);
-    List<Invoice> dummyInvoiceList =
-        stockMoveList.stream().map(this::createDummyInInvoice).collect(Collectors.toList());
+
+    List<Invoice> dummyInvoiceList = new ArrayList<>();
+    for (StockMove stockMove : stockMoveList) {
+      dummyInvoiceList.add(createDummyInInvoice(stockMove));
+    }
     checkInStockMoveRequiredFieldsAreTheSame(dummyInvoiceList);
 
     if (!dummyInvoiceList.isEmpty()) {
@@ -670,13 +679,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    *
    * @param stockMove an in stock move.
    * @return the created dummy invoice.
+   * @throws AxelorException
    */
-  protected Invoice createDummyInInvoice(StockMove stockMove) {
+  protected Invoice createDummyInInvoice(StockMove stockMove) throws AxelorException {
     Invoice dummyInvoice = new Invoice();
 
-    if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
-      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
-      PurchaseOrder purchaseOrder = purchaseOrderSet.iterator().next();
+    Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+    if (ObjectUtils.notEmpty(purchaseOrderSet)) {
+      PurchaseOrder purchaseOrder =
+          purchaseOrderMergingService.getDummyMergedPurchaseOrder(purchaseOrderSet);
       dummyInvoice.setCurrency(purchaseOrder.getCurrency());
       dummyInvoice.setPartner(purchaseOrder.getSupplierPartner());
       dummyInvoice.setCompany(purchaseOrder.getCompany());
@@ -801,9 +812,10 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    * @param dummyInvoice a dummy invoice used to store some fields that will be used to generate the
    *     real invoice.
    * @param stockMove a stock move to invoice.
+   * @throws AxelorException
    */
-  protected void completeInvoiceInMultiIncomingStockMove(
-      Invoice dummyInvoice, StockMove stockMove) {
+  protected void completeInvoiceInMultiIncomingStockMove(Invoice dummyInvoice, StockMove stockMove)
+      throws AxelorException {
 
     if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
       return;
@@ -875,28 +887,30 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    */
   protected void fillReferenceInvoiceFromMultiInStockMove(
       List<StockMove> stockMoveList, Invoice dummyInvoice) {
-    // Concat sequence, internal ref and external ref from all saleOrder
+    // Concat sequence, internal ref and external ref from all purchaseOrder
+    StringJoiner externalRef = new StringJoiner("|");
+    StringJoiner internalRef = new StringJoiner("|");
 
-    List<String> externalRefList = new ArrayList<>();
-    List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
       Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
-      if (ObjectUtils.notEmpty(purchaseOrderSet)) {
-        for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
 
-          externalRefList.add(purchaseOrder.getExternalReference());
-          internalRefList.add(
-              stockMove.getStockMoveSeq()
-                  + (purchaseOrder != null ? (":" + purchaseOrder.getPurchaseOrderSeq()) : ""));
-        }
+      if (ObjectUtils.isEmpty(purchaseOrderSet)) {
+        continue;
+      }
+      String externalReference =
+          stockMoveInvoiceService.fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet);
+      if (StringUtils.notEmpty(externalReference)) {
+        externalRef.add(externalReference);
+      }
+      String internalReference =
+          stockMoveInvoiceService.fillInternalReferenceInvoiceFromInStockMove(
+              stockMove, purchaseOrderSet);
+      if (StringUtils.notEmpty(internalReference)) {
+        internalRef.add(internalReference);
       }
     }
-
-    String externalRef = String.join("|", externalRefList);
-    String internalRef = String.join("|", internalRefList);
-
-    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef));
-    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef));
+    dummyInvoice.setExternalReference(StringHelper.cutTooLongString(externalRef.toString()));
+    dummyInvoice.setInternalReference(StringHelper.cutTooLongString(internalRef.toString()));
   }
 
   /**

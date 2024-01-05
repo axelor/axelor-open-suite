@@ -361,6 +361,9 @@ public final class SupplychainExceptionMessage {
   public static final String SALE_ORDER_MERGE_ERROR_INCOTERM = /*$$(*/
       "The incoterm must be the same for all sale orders" /*)*/;
 
+  public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
+      "The stock location must be the same for all purchase orders." /*)*/;
+
   public static final String MISSING_FORECASTED_INV_CUST_ACCOUNT = /*$$(*/
       "Please select a forecasted invoice customer account in the accounting batch" /*)*/;
   public static final String MISSING_FORECASTED_INV_SUPP_ACCOUNT = /*$$(*/

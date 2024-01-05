@@ -175,7 +175,11 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
     mergedStockMove.setTrackingNumber(stockMove.getTrackingNumber());
     mergedStockMove.setModeOfTransport(stockMove.getModeOfTransport());
     mergedStockMove.setIsReversion(stockMove.getIsReversion());
-    mergedStockMove.setOrigin(stockMove.getOrigin());
+    mergedStockMove.setOrigin(
+        stockMoveList.stream()
+            .map(StockMove::getOrigin)
+            .filter(Objects::nonNull)
+            .collect(Collectors.joining("|")));
     mergedStockMove.setNote(
         stockMoveList.stream()
             .map(StockMove::getNote)

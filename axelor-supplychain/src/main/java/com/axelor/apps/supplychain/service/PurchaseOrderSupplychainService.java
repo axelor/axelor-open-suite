@@ -60,7 +60,8 @@ public interface PurchaseOrderSupplychainService {
       StockLocation stockLocation,
       Partner contactPartner,
       PriceList priceList,
-      TradingName tradingName)
+      TradingName tradingName,
+      boolean dummyPurchaseOrder)
       throws AxelorException;
 
   void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder);
