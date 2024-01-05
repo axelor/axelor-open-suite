@@ -709,31 +709,29 @@ public class PartnerServiceImpl implements PartnerService {
   @Override
   public boolean isRegistrationCodeValid(Partner partner) {
     String registrationCode = partner.getRegistrationCode();
-    registrationCode = registrationCode.replace(" ", "");
     if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
         || Strings.isNullOrEmpty(registrationCode)) {
       return true;
     }
 
+    registrationCode = registrationCode.replace(" ", "");
     Country businessCountry = partner.getBusinessCountry();
     if (businessCountry != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
           businessCountry.getRegistrationNumberTemplate();
 
       if (registrationNumberTemplate != null) {
-        return validateRegistrationCode(partner, registrationCode, registrationNumberTemplate);
+        return validateRegistrationCode(registrationCode, registrationNumberTemplate);
       }
     }
     return true;
   }
 
   private boolean validateRegistrationCode(
-      Partner partner,
       String registrationCode,
       RegistrationNumberTemplate registrationNumberTemplate) {
     try {
       String origin = registrationNumberTemplate.getValidationMethodSelect();
-
       if (registrationNumberTemplate.getIsRequiredForCompanies()
           && StringUtils.isBlank(registrationCode)) {
         throw new AxelorException(
@@ -746,7 +744,6 @@ public class PartnerServiceImpl implements PartnerService {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
       }
-
       if (origin != null) {
         Class<? extends RegistrationNumberValidation> clazz =
             Class.forName(origin).asSubclass(RegistrationNumberValidation.class);

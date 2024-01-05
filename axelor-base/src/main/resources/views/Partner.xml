@@ -345,7 +345,7 @@
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
-          onChange="action-method-partner-registration-code-onChange"/>
+          onChange="action-group-partner-registration-code-onChange"/>
         <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
         <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
@@ -1321,6 +1321,11 @@
   <action-group name="action-partner-group-business-country-onchange">
     <action name="action-method-base-partner-business-country-change"/>
   </action-group>
+
+  <action-group name="action-group-partner-registration-code-onChange">
+    <action name="action-method-partner-registration-code-onChange"/>
+  </action-group>
+
 
   <action-record name="action-partner-empty-first-name"
     model="com.axelor.apps.base.db.Partner">
