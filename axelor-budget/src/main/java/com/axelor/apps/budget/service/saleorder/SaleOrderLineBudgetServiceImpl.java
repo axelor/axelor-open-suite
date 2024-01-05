@@ -28,6 +28,7 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -47,22 +48,26 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   protected BudgetDistributionService budgetDistributionService;
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public SaleOrderLineBudgetServiceImpl(
       BudgetService budgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineRepository saleOrderLineRepo,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+  public String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
     if (saleOrder == null || saleOrderLine == null) {
       return "";
     }
@@ -116,8 +121,16 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
         && saleOrderLine.getBudget() != null) {
       BudgetDistribution budgetDistribution = new BudgetDistribution();
       budgetDistribution.setBudget(saleOrderLine.getBudget());
+      LocalDate date = null;
+      if (saleOrderLine.getSaleOrder() != null) {
+        date =
+            saleOrderLine.getSaleOrder().getOrderDate() != null
+                ? saleOrderLine.getSaleOrder().getOrderDate()
+                : saleOrderLine.getSaleOrder().getCreationDate();
+      }
+
       budgetDistribution.setBudgetAmountAvailable(
-          budgetDistribution.getBudget().getAvailableAmount());
+          budgetToolsService.getAvailableAmountOnBudget(saleOrderLine.getBudget(), date));
       budgetDistribution.setAmount(saleOrderLine.getExTaxTotal());
       budgetDistributionList.add(budgetDistribution);
       saleOrderLine.setBudgetDistributionList(budgetDistributionList);
@@ -146,9 +159,9 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
       LocalDate date = null;
       if (saleOrder != null) {
         date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
+            saleOrder.getOrderDate() != null
+                ? saleOrder.getOrderDate()
+                : saleOrder.getCreationDate();
       }
       if (date != null) {
         query =

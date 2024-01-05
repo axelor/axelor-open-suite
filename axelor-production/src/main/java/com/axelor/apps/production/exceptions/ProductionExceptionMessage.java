@@ -204,8 +204,11 @@ public final class ProductionExceptionMessage {
   public static final String UNIT_COST_CALCULATION_IMPORT_CSV_ERROR = /*$$(*/
       "Uploaded file is not a CSV file" /*)*/;
 
-  public static final String UNIT_COST_CALCULATION_NO_PRODUCT = /*$$(*/
+  public static final String UNIT_COST_CALCULATION_CHOOSE_FILTERS = /*$$(*/
       "Please select an element (a product, a product category or a product family) to run calculation" /*)*/;
+
+  public static final String UNIT_COST_CALCULATION_NO_PRODUCT_FOUND = /*$$(*/
+      "No product has been found with these filters. Please check your filters" /*)*/;
 
   public static final String NO_PRODUCT_SELECTED = /*$$(*/
       "Please select at least one product in the list." /*)*/;
@@ -337,4 +340,10 @@ public final class ProductionExceptionMessage {
 
   public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/
       "There is no applicable bill of materials for %s" /*)*/;
+
+  public static final String NO_COMPANY_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM." /*)*/;
+
+  public static final String LOOP_IN_BILL_OF_MATERIALS = /*$$(*/
+      "The system found a loop in your bill of materials, please correct concerned data" /*)*/;
 }

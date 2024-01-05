@@ -303,7 +303,7 @@ public class InvoicePaymentValidateServiceImpl implements InvoicePaymentValidate
               customerMoveLine.getAccount().getCode());
         }
 
-        invoicePayment.addReconcileListItem(reconcile);
+        invoicePayment.setReconcile(reconcile);
       }
     }
 

@@ -3,152 +3,208 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <custom title="Activity" name="lead-form-activity-custom" css="crm-activity-dashlet">
+  <custom title="Activity" name="lead-form-activity-custom">
     <dataset type="rpc">com.axelor.apps.crm.web.LeadController:getLeadActivityData</dataset>
     <template>
       <![CDATA[
-      <div class="crm-activity-card" ng-repeat="item in data">
-        <div>
-          <span class="crm-activity-date">{{item.date | date}}</span>
-          	<span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial; float:right;" ng-show="item.status == 1" x-translate>Planned</span>
-            <span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 2" x-translate>Realized</span>
-            <span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 3" x-translate>Canceled</span>
-        </div>
-        <div class="crm-activity-content">
-          <div>
-            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
-            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
-            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
-            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
-            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
-          </div>
-          <div class="crm-activity-icon">
-            <span  ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
-            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
-            <span ng-show="item.type == 'event'">
-              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
-              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
-              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
-              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
-            </span>
-           </div>
-        </div>
-        <div ng-show="item.description != ''">
-          <hr/>
-          <span>{{item.description}}</span>
-        </div>
-      </div>
+      <>
+         <Box w={100}>
+      		{data.map(({date,status,closedWonStatus,closedLostStatus,type,activityName,description},index) => {
+      			return (
+      				<Box key={index} border borderColor="primary" borderWidth={1} rounded={2} m={2}>
+      					<Box d="flex" justifyContent="space-between" mt={2} ms={1} me={1}>
+      						<Box fontWeight="bold" fontSize={6}>{$moment(date).format('DD/MM/YYYY HH:mm')}</Box>
+      						<Box d="flex" justifyContent="flex-end" alignItems="center">
+      							{status == 1 && <Badge bg="primary">{_t('Planned')}</Badge>}
+      							{status == 2 && <Badge bg="success">{_t('Realized')}</Badge>}
+      							{status == 3 && <Badge bg="danger">{_t('Canceled')}</Badge>}
+      						</Box>
+      					</Box>
+      					<Box mt={1} ms={1} me={1} d="flex" justifyContent="space-between">
+      						<Box>
+      							{type == 'event' && activityName == 1 && <Box>{_t('Call')}</Box>}
+      							{type == 'event' && activityName == 2 && <Box>{_t('Meeting')}</Box>}
+      							{type == 'event' && activityName == 3 && <Box>{_t('Task')}</Box>}
+      							{type == 'event' && activityName == 5 && <Box>{_t('Note')}</Box>}
+      							{type == 'creation' && <Box>{activityName}</Box>}
+      							{type == 'statusChange' &&
+      								<Box>
+      									{JSON.parse(activityName).oldValue && (<span>{JSON.parse(activityName).oldValue} <Box as="span" style={{ verticalAlign: "middle" }}><Icon icon="arrow-right"/></Box> </span>)}
+      									{JSON.parse(activityName).value}
+      								</Box>
+      							}
+      						</Box>
+       						<Box>
+      							{type == 'creation' && <Icon icon="plus-lg" color="primary" fontSize="25px"/>}
+      							{type == 'statusChange' && <Icon icon="arrow-left-right" color="primary" fontSize="25px"/>}
+      							{type == 'event' &&
+      								<Box>
+      									{activityName == 1 && <Icon icon="telephone" color="primary" fontSize="25px"/>}
+      									{activityName == 2 && <Icon icon="pencil-square" color="primary" fontSize="25px"/>}
+      									{activityName == 3 && <Icon icon="list-task" color="primary" fontSize="25px"/>}
+      									{activityName == 5 && <Icon icon="sticky" color="primary" fontSize="25px"/>}
+      								 </Box>
+      							}
+      						</Box>
+      					</Box>
+      					{description &&
+      						<Box ms={1}>
+      							<Box borderTop borderColor="inherit" borderWidth={1}/>
+      							{description}
+      						</Box>
+      					}
+      				</Box>
+      			);
+      		})}
+         </Box>
+      </>
       ]]>
     </template>
   </custom>
 
-  <custom title="Recent activity" name="partner-form-recent-activity-custom"
-    css="crm-activity-dashlet">
+  <custom title="Recent activity" name="partner-form-recent-activity-custom">
     <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getRecentPartnerActivityData</dataset>
     <template>
       <![CDATA[
-      <span class="crm-activity-title" x-translate>Recent activity</span>
-      <div class="crm-activity-card" ng-repeat="item in data">
-        <div>
-          <span class="crm-activity-date">{{item.date | date}}</span>
-          <span ng-show="item.type == 'event'">
-            <span class="label label-default" style="background-color: #0285D8; margin: 0px 0 !important; display: inline-table; line-height: initial; float:right;" ng-show="item.status == 1" x-translate>Planned</span>
-          </span>
-         <span ng-show="item.type == 'opportunity'" style="float: right;">
-            <span class="label label-default" style="background-color: #0285D8;" ng-show="item.status != item.closedWonStatus && item.status != item.closedLostStatus" x-translate>{{item.status}}</span>
-          </span>
-        </div>
-        <div class="crm-activity-content">
-          <div>
-            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
-            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
-            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
-            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
-            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
-            <span ng-show="item.type == 'opportunity'">
-              <strong><span x-translate>Score : </span></strong>
-                <span ng-show="item.activityName == 0"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 1"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 2"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 3"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 4"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 5"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></span>
-            </span>
-          </div>
-          <div class="crm-activity-icon">
-            <span ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
-            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
-            <span ng-show="item.type == 'opportunity'"><i class="fa fa-handshake-o"></i></span>
-            <span ng-show="item.type == 'event'">
-              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
-              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
-              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
-              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
-            </span>
-           </div>
-        </div>
-        <div ng-show="item.description != ''">
-          <hr/>
-          <span>{{item.description}}</span>
-        </div>
-      </div>
+      <>
+         <Box w={100}>
+      		{data.map(({date,status,closedWonStatus,closedLostStatus,type,activityName,description},index) => {
+      			return (
+      				<Box key={index} border borderColor="primary" borderWidth={1} rounded={2} m={2}>
+      					<Box d="flex" justifyContent="space-between" mt={2} ms={1} me={1}>
+      						<Box fontWeight="bold" fontSize={6}>{$moment(date).format('DD/MM/YYYY HH:mm')}</Box>
+      						{type == 'event' &&
+      							<Box d="flex" justifyContent="flex-end" alignItems="center">
+      								{status == 1 && <Badge bg="primary">{_t('Planned')}</Badge>}
+      							</Box>
+      						}
+      						{type == 'opportunity' &&
+      							<Box d="flex" justifyContent="flex-end" alignItems="center">
+      								{status != closedWonStatus && status != closedLostStatus && <Badge bg="primary">{status}</Badge>}
+      							</Box>
+      						}
+      					</Box>
+      					<Box mt={1} ms={1} me={1} d="flex" justifyContent="space-between">
+      						<Box>
+      							{type == 'event' && activityName == 1 && <Box>{_t('Call')}</Box>}
+      							{type == 'event' && activityName == 2 && <Box>{_t('Meeting')}</Box>}
+      							{type == 'event' && activityName == 3 && <Box>{_t('Task')}</Box>}
+      							{type == 'event' && activityName == 5 && <Box>{_t('Note')}</Box>}
+      							{type == 'creation' && <Box>{activityName}</Box>}
+      							{type == 'statusChange' &&
+      								<Box>
+      									{JSON.parse(activityName).oldValue && (<span>{JSON.parse(activityName).oldValue} <Box as="span" style={{ verticalAlign: "middle" }}><Icon icon="arrow-right"/></Box> </span>)}
+      									{JSON.parse(activityName).value}
+      								</Box>
+      							}
+      							{type == 'opportunity' &&
+								    <Box>
+								    	<strong>{_t('Score :')} </strong>
+								    	{Array(parseInt(activityName)).fill(<Icon icon="star-fill" color="warning" fontSize="15px"/>)}
+								    	{Array(5-activityName).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
+								    </Box>
+      							}
+      						</Box>
+       						<Box>
+      							{type == 'creation' && <Icon icon="plus-lg" color="primary" fontSize="25px"/>}
+      							{type == 'statusChange' && <Icon icon="arrow-left-right" color="primary" fontSize="25px"/>}
+      							{type == 'opportunity' && <Icon icon="handshake" color="primary" fontSize="25px"/>}
+      							{type == 'event' &&
+      								<Box>
+      									{activityName == 1 && <Icon icon="telephone" color="primary" fontSize="25px"/>}
+      									{activityName == 2 && <Icon icon="pencil-square" color="primary" fontSize="25px"/>}
+      									{activityName == 3 && <Icon icon="list-task" color="primary" fontSize="25px"/>}
+      									{activityName == 5 && <Icon icon="sticky" color="primary" fontSize="25px"/>}
+      								 </Box>
+      							}
+      						</Box>
+      					</Box>
+      					{description &&
+      						<Box ms={1}>
+      							<Box borderTop borderColor="inherit" borderWidth={1}/>
+      							{description}
+      						</Box>
+      					}
+      				</Box>
+      			);
+      		})}
+         </Box>
+      </>
       ]]>
     </template>
   </custom>
 
-  <custom title="Past activity" name="partner-form-past-activity-custom"
-    css="crm-activity-dashlet">
+  <custom title="Past activity" name="partner-form-past-activity-custom">
     <dataset type="rpc">com.axelor.apps.crm.web.PartnerCrmController:getPastPartnerActivityData</dataset>
     <template>
       <![CDATA[
-      <span class="crm-activity-title" x-translate>Past activity</span>
-      <div class="crm-activity-card" ng-repeat="item in data">
-        <div>
-          <span class="crm-activity-date">{{item.date | date}}</span>
-          <span ng-show="item.type == 'event'">
-            <span class="label label-success" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 2" x-translate>Realized</span>
-            <span class="label label-important" style="margin: 0px 0 !important; display: inline-table; line-height: initial;float:right;" ng-show="item.status == 3" x-translate>Canceled</span>
-          </span>
-         <span ng-show="item.type == 'opportunity'" style="float: right;">
-            <span class="label label-default" style="background-color: #0285D8;" ng-show="item.status != item.closedWonStatus && item.status != item.closedLostStatus" x-translate>{{item.status}}</span>
-            <span class="label label-success" ng-show="item.status == item.closedWonStatus" x-translate>{{item.status}}</span>
-            <span class="label label-important" ng-show="item.status == item.closedLostStatus" x-translate>{{item.status}}</span>
-          </span>
-        </div>
-        <div class="crm-activity-content">
-          <div>
-            <span ng-show="item.type == 'event' && item.activityName == 1" x-translate>Call</span>
-            <span ng-show="item.type == 'event' && item.activityName == 2" x-translate>Meeting</span>
-            <span ng-show="item.type == 'event' && item.activityName == 3" x-translate>Task</span>
-            <span ng-show="item.type == 'event' && item.activityName == 5" x-translate>Note</span>
-            <span ng-show="item.type == 'creation' || item.type == 'statusChange'" x-translate>{{item.activityName}}</span>
-            <span ng-show="item.type == 'opportunity'">
-              <strong><span x-translate>Score : </span></strong>
-                <span ng-show="item.activityName == 0"><i class='fa fa-star-o' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 1"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 2"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 3"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 4"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star-o' style='color:#FFD700;'></i></span></span>
-                <span ng-show="item.activityName == 5"><i class='fa fa-star' style='color:#FFD700;'></i><span><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i><i class='fa fa-star' style='color:#FFD700;'></i></span></span>
-            </span>
-          </div>
-          <div class="crm-activity-icon">
-            <span ng-show="item.type == 'creation'"><i class="fa fa-plus" style=""></i></span>
-            <span ng-show="item.type == 'statusChange'"><i class="fa fa-exchange"></i></span>
-            <span ng-show="item.type == 'opportunity'"><i class="fa fa-handshake-o"></i></span>
-            <span ng-show="item.type == 'event'">
-              <i ng-show="item.activityName == 1" class="fa fa-phone"></i>
-              <i ng-show="item.activityName == 2" class="fa fa-pencil-square-o"></i>
-              <i ng-show="item.activityName == 3" class="fa fa-tasks"></i>
-              <i ng-show="item.activityName == 5" class="fa fa-sticky-note-o"></i>
-            </span>
-           </div>
-        </div>
-        <div ng-show="item.description != ''">
-          <hr/>
-          <span>{{item.description}}</span>
-        </div>
-      </div>
+      <>
+         <Box w={100}>
+      		{data.map(({date,status,closedWonStatus,closedLostStatus,type,activityName,description},index) => {
+      			return (
+      				<Box key={index} border borderColor="primary" borderWidth={1} rounded={2} m={2}>
+      					<Box d="flex" justifyContent="space-between" mt={2} ms={1} me={1}>
+      						<Box fontWeight="bold" fontSize={6}>{$moment(date).format('DD/MM/YYYY HH:mm')}</Box>
+      						{type == 'event' &&
+      							<Box d="flex" justifyContent="flex-end" alignItems="center">
+      								{status == 2 && <Badge bg="success">{_t('Realized')}</Badge>}
+      								{status == 3 && <Badge bg="danger">{_t('Canceled')}</Badge>}
+      							</Box>
+      						}
+      						{type == 'opportunity' &&
+      							<Box d="flex" justifyContent="flex-end" alignItems="center">
+      								{status != closedWonStatus && status != closedLostStatus && <Badge bg="primary">{status}</Badge>}
+      								{status == closedWonStatus && <Badge bg="success">{status}</Badge>}
+      								{status == closedLostStatus && <Badge bg="danger">{status}</Badge>}
+      							</Box>
+      						}
+      					</Box>
+      					<Box mt={1} ms={1} me={1} d="flex" justifyContent="space-between">
+      						<Box>
+      							{type == 'event' && activityName == 1 && <Box>{_t('Call')}</Box>}
+      							{type == 'event' && activityName == 2 && <Box>{_t('Meeting')}</Box>}
+      							{type == 'event' && activityName == 3 && <Box>{_t('Task')}</Box>}
+      							{type == 'event' && activityName == 5 && <Box>{_t('Note')}</Box>}
+      							{type == 'creation' && <Box>{activityName}</Box>}
+      							{type == 'statusChange' &&
+      								<Box>
+      									{JSON.parse(activityName).oldValue && (<span>{JSON.parse(activityName).oldValue} <Box as="span" style={{ verticalAlign: "middle" }}><Icon icon="arrow-right"/></Box> </span>)}
+      									{JSON.parse(activityName).value}
+      								</Box>
+      							}
+      							{type == 'opportunity' &&
+								    <Box>
+								    	<strong>{_t('Score :')} </strong>
+								    	{Array(parseInt(activityName)).fill(<Icon icon="star-fill" color="warning" fontSize="15px"/>)}
+								    	{Array(5-activityName).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
+								    </Box>
+      							}
+      						</Box>
+       						<Box>
+      							{type == 'creation' && <Icon icon="plus-lg" color="primary" fontSize="25px"/>}
+      							{type == 'statusChange' && <Icon icon="arrow-left-right" color="primary" fontSize="25px"/>}
+      							{type == 'opportunity' && <Icon icon="handshake" color="primary" fontSize="25px"/>}
+      							{type == 'event' &&
+      								<Box>
+      									{activityName == 1 && <Icon icon="telephone" color="primary" fontSize="25px"/>}
+      									{activityName == 2 && <Icon icon="pencil-square" color="primary" fontSize="25px"/>}
+      									{activityName == 3 && <Icon icon="list-task" color="primary" fontSize="25px"/>}
+      									{activityName == 5 && <Icon icon="sticky" color="primary" fontSize="25px"/>}
+      								 </Box>
+      							}
+      						</Box>
+      					</Box>
+      					{description &&
+      						<Box ms={1}>
+      							<Box borderTop borderColor="inherit" borderWidth={1}/>
+      							{description}
+      						</Box>
+      					}
+      				</Box>
+      			);
+      		})}
+         </Box>
+      </>
       ]]>
     </template>
   </custom>

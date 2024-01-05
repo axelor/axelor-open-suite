@@ -343,6 +343,10 @@ public class InvoiceToolService {
     copy.setNextDueDate(getNextDueDate(copy));
     setPfpStatus(copy);
     copy.setHasPendingPayments(false);
+    copy.setReasonOfRefusalToPay(null);
+    copy.setReasonOfRefusalToPayStr(null);
+    copy.setSubrogationRelease(null);
+    copy.setSubrogationReleaseMove(null);
   }
 
   /**
@@ -387,5 +391,17 @@ public class InvoiceToolService {
         && invoice.getCurrency() != null
         && invoice.getCompany() != null
         && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
+  }
+
+  public static void checkUseForPartnerBalanceAndReconcileOk(Invoice invoice)
+      throws AxelorException {
+    if (invoice.getPartnerAccount() != null
+        && (!invoice.getPartnerAccount().getReconcileOk()
+            || !invoice.getPartnerAccount().getUseForPartnerBalance())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK),
+          invoice.getPartnerAccount().getName());
+    }
   }
 }

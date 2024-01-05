@@ -6,9 +6,9 @@
   <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; (($moment(startDateTime) &lt;= $moment(_todayDateTime)) || ($moment(startDateTime) &lt;= $moment()))"/>
     <hilite color="warning"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; (($moment(startDateTime) &gt; $moment(_todayDateTime)) || ($moment(startDateTime) &gt; $moment()))"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
@@ -45,21 +45,24 @@
   <grid name="my-event-grid" orderBy="-startDateTime" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
     <field name="subject"/>
     <field name="typeSelect"/>
     <field name="duration" widget="duration" x-big="true"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <grid name="my-event-grouped-by-team-grid" orderBy="-startDateTime" groupBy="team"
     title="Events" model="com.axelor.apps.crm.db.Event">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
@@ -67,13 +70,15 @@
     <field name="typeSelect"/>
     <field name="duration" widget="duration" x-big="true"/>
     <field name="team" hidden="true"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <grid name="my-event-grouped-by-user-grid" orderBy="-startDateTime" groupBy="user"
     title="Events" model="com.axelor.apps.crm.db.Event">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
@@ -81,19 +86,22 @@
     <field name="typeSelect"/>
     <field name="duration" widget="duration" x-big="true"/>
     <field name="user" hidden="true"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
     <field name="subject"/>
     <field name="user"/>
     <field name="description" widget="html"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
@@ -292,7 +300,7 @@
     <template><![CDATA[
 	  <>
 	  	<Box>
-	  		<Box d="grid" gridTemplateColumns="20% 60% 20%">
+	  		<Box d="grid" gridTemplateColumns="auto auto auto">
 		  		<Box d="flex" gap="4" alignItems="center">
 		          	{typeSelect == 1 && <Badge bg="warning">{_t('Call')}</Badge>}
 		          	{typeSelect == 2 && <Badge style={{ backgroundColor: "#58427C" }}>{_t('Meeting')}</Badge>}
@@ -551,6 +559,8 @@
     <field name="user" expr="eval: _eventLead.user"/>
     <field name="team" expr="eval: _eventLead.team"/>
     <field name="partner" expr="eval: _eventLead.partner"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Lead'"/>
+    <field name="relatedToSelectId" expr="eval: _eventLead.id"/>
     <field name="typeSelect" expr="eval: 1" if="_call"/>
     <field name="typeSelect" expr="eval: 2" if="_meeting"/>
     <field name="typeSelect" expr="eval: 3" if="_task"/>
@@ -562,7 +572,10 @@
     <field name="opportunity" expr="eval: _opportunity"/>
     <field name="team" expr="eval: _opportunity.team"/>
     <field name="partner" expr="eval: _opportunity.partner"/>
-    <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
+    <field name="contactPartner" expr="eval: _opportunity.contact"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
+    <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_CALL" if="_call"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>
@@ -593,6 +606,8 @@
     <field name="user" expr="eval: __repo__(User).find(_partner.user.id)"
       if="_partner.user != null"/>
     <field name="team" expr="eval: _partner.team"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.base.db.Partner'"/>
+    <field name="relatedToSelectId" expr="eval: _partner.id"/>
     <field name="typeSelect" expr="eval: 1" if="_call"/>
     <field name="typeSelect" expr="eval: 2" if="_meeting"/>
     <field name="typeSelect" expr="eval: 3" if="_task"/>

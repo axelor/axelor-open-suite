@@ -41,17 +41,21 @@
       <field name="slaPolicy.name" showTitle="false"
         hideIf="statusSelect >= slaPolicy.reachStageSelect" colSpan="4">
         <viewer><![CDATA[
-					<h4 style="text-align: right;">
-			        	<span class="label label-important" ng-if="record.slaPolicy">{{record.slaPolicy.name}}</span>
-			        </h4>
+			        <>
+			            <Box d="flex" justifyContent="flex-end">
+			                {slaPolicy.name && <Badge bg="danger">{slaPolicy.name}</Badge>}
+			            </Box>
+			        </>
 				]]></viewer>
       </field>
       <field name="ticketSeq" showTitle="false">
         <viewer depends="ticketSeq">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;"><span x-translate>Ticket N° </span>{{record.ticketSeq}}</span>
-						</h3>
+						<>
+							<h3>
+								<span>{_t('Ticket N°')} {ticketSeq}</span>
+							</h3>
+						</>
 					]]>
         </viewer>
       </field>
@@ -85,11 +89,13 @@
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true" sidebar="true"
         if="__config__.app.getApp('helpdesk')?.getManageTimer()">
         <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="4" hidden="true"
-          onClick="action-ticket-method-start-timer"/>
+          onClick="action-ticket-method-start-timer, action-ticket-group-timer-process"/>
         <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="4" hidden="true"
-          onClick="action-ticket-method-stop-timer"/>
+          onClick="action-ticket-method-stop-timer, action-ticket-group-timer-process"/>
         <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="4"
-          hidden="true" onClick="action-ticket-method-cancel-timer" css="btn-danger"/>
+          hidden="true"
+          onClick="action-ticket-method-cancel-timer, action-ticket-group-timer-process"
+          css="btn-danger"/>
         <field name="$_totalTimerDuration" type="decimal" readonly="true"
           title="Total duration (Hours)" colSpan="4"/>
         <field name="realTotalDuration" colSpan="4"/>
@@ -157,27 +163,32 @@
     <hilite color="danger" if="prioritySelect == 4"/>
     <template>
 	 <![CDATA[
-     <h4>{{record.ticketSeq}}</h4>
-     <div class="card-body">
-    	<p>{{record.subject}}</p>
-        <dl>
-			<dt ng-show="record.progressSelect" x-translate>Progress</dt>
-			<dd ng-if="record.progressSelect == 80 || record.progressSelect == 90 || record.progressSelect == 100"><div class="progress progress-striped progress-success">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
-            </dd>
-            <dd ng-if="record.progressSelect == 50 || record.progressSelect == 60 || record.progressSelect == 70"><div class="progress progress-striped progress-primary">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
-            </dd>
-             <dd ng-if="record.progressSelect == 30 || record.progressSelect == 40"><div class="progress progress-striped progress-warning">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
-            </dd>
-             <dd ng-if="record.progressSelect == 10 || record.progressSelect == 20"><div class="progress progress-striped progress-danger">
-            	<div class="bar" style="width: {{record.progressSelect}}%;"></div></div>
-            </dd>
-            <dt ng-show="record.project.name" x-translate>Project</dt><dd ng-show="record.project.name">{{record.project.name}}</dd>
-            <dt ng-show="record.ticketType.name" x-translate>Ticket Type</dt><dd ng-show="record.ticketType.name">{{record.ticketType.name}}</dd>
-        </dl>
- 	 </div>
+ 	 <>
+ 	     <h4>{ticketSeq}</h4>
+	     <Box as="p" mt={2}>{subject}</Box>
+ 	     <Box as="dl">
+	 	     {progressSelect > 0 &&
+	 	     	 <Box>
+		 	         <dt>{_t('Progress')}</dt>
+		 	     	 <Box as="dd" d="flex" flex="1" style={{ height: 15, backgroundColor: "#e9ecef" }} rounded="pill" ms={2}>
+		 	     	 	<Box h={100} rounded="pill" style={{ width:`${progressSelect}%`, backgroundImage: 'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)' }} bg={progressSelect >= 80 ? "success" : progressSelect >= 50 ? "primary" : progressSelect >= 30 ? "warning" : "danger"}/>
+		 	     	 </Box>
+		 	     </Box>
+		 	 }
+ 	     	 {project.name &&
+ 	     	     <Box>
+ 	     	         <dt>{_t('Project')}</dt>
+ 	     	         <Box as="dd" ms={2}>{project.name}</Box>
+ 	     	     </Box>
+ 	     	 }
+ 	     	 {ticketType.name &&
+ 	     	     <Box>
+ 	     	         <dt>{_t('Ticket Type')}</dt>
+ 	     	         <Box as="dd" ms={2}>{ticketType.name}</Box>
+ 	     	     </Box>
+ 	     	 }
+ 	     </Box>
+ 	 </>
      ]]>
     </template>
   </kanban>

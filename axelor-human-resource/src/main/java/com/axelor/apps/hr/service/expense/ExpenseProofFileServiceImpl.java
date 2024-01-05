@@ -30,7 +30,7 @@ import com.axelor.studio.db.AppBase;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
-import org.camunda.bpm.engine.impl.util.CollectionUtil;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
 
@@ -55,7 +55,7 @@ public class ExpenseProofFileServiceImpl implements ExpenseProofFileService {
   @Override
   public void convertProofFilesInPdf(Expense expense) throws AxelorException {
     List<ExpenseLine> expenseLineList = expense.getGeneralExpenseLineList();
-    if (CollectionUtil.isEmpty(expenseLineList)) {
+    if (CollectionUtils.isEmpty(expenseLineList)) {
       return;
     }
 

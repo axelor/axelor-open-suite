@@ -14,4 +14,10 @@
       column="toDate"/>
   </input>
 
+  <input file="talent_appraisalType.csv" separator=";"
+    type="com.axelor.apps.talent.db.AppraisalType" search="self.importId = :importId"/>
+
+  <input file="talent_appraisal.csv" separator=";" type="com.axelor.apps.talent.db.Appraisal"
+    search="self.importId = :importId"/>
+
 </csv-inputs>

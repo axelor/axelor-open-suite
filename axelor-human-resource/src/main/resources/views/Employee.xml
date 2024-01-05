@@ -125,10 +125,6 @@
         <field name="managerUser" canEdit="false" canNew="false" canView="false" colSpan="4"
           form-view="user-form" grid-view="user-grid"/>
         <field name="exportCode" colSpan="4"/>
-        <field name="bankDetails" colSpan="4" form-view="bank-details-form"
-          grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
-          if-module="axelor-cash-management" widget="SuggestBox"
-          onSelect="action-employee-attrs-bank-details-on-select"/>
       </panel>
 
       <panel colSpan="12">
@@ -175,6 +171,10 @@
             grid-view="company-department-grid"/>
         </editor>
       </field>
+      <field name="bankDetails" colSpan="3" form-view="bank-details-form"
+        grid-view="bank-details-grid" if="__config__.app.getApp('base')?.getManageMultiBanks()"
+        showIf="mainEmploymentContract.payCompany" if-module="axelor-cash-management"
+        widget="SuggestBox" onSelect="action-employee-attrs-bank-details-on-select"/>
     </panel>
 
     <panel-related name="employmentContractsSBSPanel" field="employmentContractList"
@@ -237,8 +237,8 @@
           <![CDATA[
             <>
             	<Box d="flex" justifyContent="center">
-            		{contactPartner.picture && <Image src={$image('contactPartner.picture', 'content')}></Image>}
-	                {!contactPartner.picture && <Image src="img/partner-default.png"></Image>}
+            		{id && <Image src={$image('id', 'content')}></Image>}
+	                {!id && <Image src="img/partner-default.png"></Image>}
             	</Box>
             </>
           ]]>
@@ -639,7 +639,7 @@
     <attribute name="domain" expr="eval: &quot;self = null&quot;" for="bankDetails"/>
     <attribute if="!mainEmploymentContract?.payCompany?.bankDetailsList?.isEmpty()"
       name="domain"
-      expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}.join(',')}) AND self.active = true&quot;"
+      expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true&quot;"
       for="bankDetails"/>
   </action-attrs>
 

@@ -46,31 +46,32 @@
           if="__config__.app.isApp('business-project')" hidden="true" showIf="isBusinessProject">
           <panel title="Time follow-up" colSpan="12">
             <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
-              showTitle="false"/>
+              showTitle="false" height="125"/>
             <panel-dashlet action="action-project-view-updated-time-custom"
-              colSpan="3" showTitle="false"/>
+              colSpan="3" showTitle="false" height="125"/>
             <panel-dashlet action="action-project-view-planned-time-custom"
-              colSpan="3" showTitle="false"/>
+              colSpan="3" showTitle="false" height="125"/>
             <panel-dashlet action="action-project-view-spent-time-custom" colSpan="3"
-              showTitle="false"/>
+              showTitle="false" height="125"/>
 
             <panel-dashlet action="action-project-view-percentage-progress-custom"
-              colSpan="3" showTitle="false"/>
+              colSpan="3" showTitle="false" height="125"/>
             <panel-dashlet action="action-project-view-percentage-consumption-custom"
-              colSpan="3" showTitle="false"/>
+              colSpan="3" showTitle="false" height="125"/>
             <panel-dashlet action="action-project-view-remaining-to-do-custom"
-              colSpan="3" showTitle="false"/>
+              colSpan="3" showTitle="false" height="125"/>
           </panel>
 
           <panel title="Financial follow-up" colSpan="12">
             <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
-              <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"/>
+              <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"
+                height="125"/>
               <panel-dashlet action="action-project-view-initial-costs-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-initial-margin-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-initial-markup-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <field name="turnover" hidden="true"/>
               <field name="initialCosts" hidden="true"/>
               <field name="initialMargin" hidden="true"/>
@@ -78,24 +79,24 @@
             </panel>
             <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
               <panel-dashlet action="action-project-view-forecast-costs-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-forecast-margin-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-forecast-markup-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <field name="forecastCosts" hidden="true"/>
               <field name="forecastMargin" hidden="true"/>
               <field name="forecastMarkup" hidden="true"/>
             </panel>
             <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
               <panel-dashlet action="action-project-view-real-turnover-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-real-costs-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-real-margin-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-real-markup-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <field name="realTurnover" hidden="true"/>
               <field name="realCosts" hidden="true"/>
               <field name="realMargin" hidden="true"/>
@@ -103,24 +104,24 @@
             </panel>
             <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
               <panel-dashlet action="action-project-view-landing-costs-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-landing-margin-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-landing-markup-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <field name="landingCosts" hidden="true"/>
               <field name="landingMargin" hidden="true"/>
               <field name="landingMarkup" hidden="true"/>
             </panel>
             <panel name="invoicingPanel" title="Invoicing (excl. VAT)" colSpan="12">
               <panel-dashlet action="action-project-view-total-invoiced-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-invoiced-this-month-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-invoiced-last-month-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <panel-dashlet action="action-project-view-total-paid-custom"
-                colSpan="3"/>
+                colSpan="3" height="125"/>
               <field name="totalInvoiced" hidden="true"/>
               <field name="invoicedThisMonth" hidden="true"/>
               <field name="invoicedLastMonth" hidden="true"/>

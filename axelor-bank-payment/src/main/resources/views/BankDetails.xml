@@ -22,10 +22,9 @@
     <field name="balanceUpdatedDate" if-module="axelor-bank-payment"
       if="__config__.app.isApp('bank-payment')">
       <hilite
-        if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 3 &amp;&amp; $moment(__config__.date).diff(balanceUpdatedDate,'days') &lt; 7"
+        if="$moment().diff(balanceUpdatedDate,'days') &gt; 3 &amp;&amp; $moment().diff(balanceUpdatedDate,'days') &lt; 7"
         color="warning"/>
-      <hilite if="$moment(__config__.date).diff(balanceUpdatedDate,'days') &gt; 7"
-        color="danger"/>
+      <hilite if="$moment().diff(balanceUpdatedDate,'days') &gt; 7" color="danger"/>
     </field>
     <field name="balance" aggregate="sum" if-module="axelor-bank-payment"
       if="__config__.app.isApp('bank-payment')">
@@ -49,9 +48,8 @@
       <insert position="after">
         <panel name="balancePanel" hidden="true"
           showIf="company &amp;&amp; balanceUpdatedDate" colSpan="3">
-          <button name="$balanceBtn" title="Balance" icon="fa-balance-scale"
-            widget="info-button" onClick="action-bank-details-view-show-bank-statement-lines"
-            colSpan="12"/>
+          <button name="$balanceBtn" title="Balance" icon="balance" widget="info-button"
+            onClick="action-bank-details-view-show-bank-statement-lines" colSpan="12"/>
         </panel>
       </insert>
     </extend>

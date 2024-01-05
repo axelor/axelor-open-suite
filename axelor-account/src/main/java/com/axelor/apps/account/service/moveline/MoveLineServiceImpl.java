@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -82,6 +83,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected InvoiceTermService invoiceTermService;
   protected MoveLineControlService moveLineControlService;
   protected AccountingCutOffService cutOffService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -92,7 +94,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
       MoveLineControlService moveLineControlService,
-      AccountingCutOffService cutOffService) {
+      AccountingCutOffService cutOffService,
+      MoveLineTaxService moveLineTaxService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -101,6 +104,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.invoiceTermService = invoiceTermService;
     this.moveLineControlService = moveLineControlService;
     this.cutOffService = cutOffService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
@@ -164,6 +168,8 @@ public class MoveLineServiceImpl implements MoveLineService {
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_NO_SELECTED));
     }
+
+    moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
       return;
@@ -313,7 +319,19 @@ public class MoveLineServiceImpl implements MoveLineService {
 
   @Override
   public boolean checkManageCutOffDates(MoveLine moveLine) {
-    return moveLine.getAccount() != null && moveLine.getAccount().getManageCutOffPeriod();
+    return appAccountService.getAppAccount().getManageCutOffPeriod()
+        && moveLine.getAccount() != null
+        && moveLine.getAccount().getManageCutOffPeriod();
+  }
+
+  @Override
+  public boolean checkManageCutOffDates(MoveLine moveLine, int functionalOriginSelect) {
+    return this.checkManageCutOffDates(moveLine)
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CUT_OFF,
+                MoveRepository.FUNCTIONAL_ORIGIN_OPENING,
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE)
+            .contains(functionalOriginSelect);
   }
 
   @Override

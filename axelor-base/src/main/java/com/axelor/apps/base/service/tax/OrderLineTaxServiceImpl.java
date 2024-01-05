@@ -46,11 +46,15 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
                   .getValue()
                   .divide(
                       new BigDecimal(100),
-                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
-      orderLineTax.setTaxTotal(taxTotal);
+      orderLineTax.setTaxTotal(
+          taxTotal.setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
     }
-    orderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+    orderLineTax.setInTaxTotal(
+        exTaxBase
+            .add(taxTotal)
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
   }
 
   @Override

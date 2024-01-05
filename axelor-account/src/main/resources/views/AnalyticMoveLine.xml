@@ -73,6 +73,7 @@
         readonlyIf="!analyticAxis"/>
       <field name="percentage" min="0" max="100"
         onChange="action-method-calculate-amount-with-percentage-analytic-move-line"/>
+      <field name="typeSelect"/>
     </panel>
   </form>
 
@@ -184,11 +185,20 @@
 
   <action-attrs name="action-analytic-move-line-attrs-set-type-select">
     <attribute for="typeSelect" name="value"
+      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLine'"
+      expr="eval: AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING"/>
+    <attribute for="typeSelect" name="value"
+      if="__parent__?._model == 'com.axelor.apps.account.db.MoveLineMassEntry'"
+      expr="eval: AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING"/>
+    <attribute for="typeSelect" name="value"
       if="__parent__?._model == 'com.axelor.apps.account.db.InvoiceLine' "
       expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE"/>
     <attribute for="typeSelect" name="value"
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrderLine' || __parent__?._model == 'com.axelor.apps.sale.db.SaleOrderLine'"
       expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_ORDER"/>
+    <attribute for="typeSelect" name="value"
+      if="__parent__?._model == 'com.axelor.apps.contract.db.ContractLine'"
+      expr="eval: AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT"/>
   </action-attrs>
 
   <action-attrs name="action-analytic-move-line-attrs-hide-fields">
@@ -264,13 +274,13 @@
 
   <action-attrs name="action-attrs-domain-onselect-analytic-account">
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${analyticAxis?.company?.id} OR self.analyticAxis.company.id = ${analyticAxis?.company?.id} OR self.parent.company.id = ${analyticAxis?.company?.id})&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${analyticAxis?.company?.id} OR self.analyticAxis.company.id = ${analyticAxis?.company?.id} OR self.parent.company.id = ${analyticAxis?.company?.id})&quot;"
       if="analyticAxis &amp;&amp; analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.analyticAxis.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.parent.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id})&quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) AND self.analyticAxis.id = ${analyticAxis?.id} AND (self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.analyticAxis.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id} OR self.parent.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id})&quot;"
       if="analyticAxis &amp;&amp; !analyticAxis.company"/>
     <attribute name="domain" for="analyticAccount"
-      expr="eval: &quot;self.statusSelect = 1 &quot;"
+      expr="eval: &quot;self.statusSelect = 1 AND NOT EXISTS(SELECT 1 FROM AnalyticAccount aa WHERE aa.parent.id = self.id) &quot;"
       if="!(analyticAxis?.company) &amp;&amp; !__parent__"/>
   </action-attrs>
 

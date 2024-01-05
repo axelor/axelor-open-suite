@@ -87,8 +87,11 @@
 								<>
 									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
 										<Box>
-											{isBusinessProject && <Badge style={{ backgroundColor: "#FD6217" }}>{_t('To Invoice')}</Badge>}
-											{isBusinessProject && id && <Badge style={{ backgroundColor: "#FFAA00" }}>{$fmt('$toInvoiceCounter')}</Badge>}
+											{isBusinessProject &&
+												<Badge style={{ backgroundColor: "#FD6217" }}>
+													{_t('To Invoice')} {id && <Badge style={{ backgroundColor: "#FFAA00", fontSize: "12px" }}>{$fmt('$toInvoiceCounter')}</Badge>}
+												</Badge>
+											}
 										</Box>
 										{isBusinessProject && <Badge style={{ backgroundColor: "#2185D0" }}>{_t('Business')}</Badge>}
 									</Box>

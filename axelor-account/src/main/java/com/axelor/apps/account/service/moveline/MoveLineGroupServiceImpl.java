@@ -136,6 +136,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveLineAttrsService.addDescriptionRequired(move, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+    moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+    moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
 
     return attrsMap;
   }
@@ -157,6 +160,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addDescriptionRequired(move, attrsMap);
       analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
       moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -180,6 +186,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
       moveLineAttrsService.addAnalyticDistributionTypeSelect(move, attrsMap);
       moveLineAttrsService.addShowAnalyticDistributionPanel(move, moveLine, attrsMap);
       moveLineAttrsService.addSubrogationPartnerHidden(move, attrsMap);
+      moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffPanelHidden(move, moveLine, attrsMap);
+      moveLineAttrsService.addCutOffDatesRequired(move, moveLine, attrsMap);
     }
 
     return attrsMap;
@@ -293,6 +302,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineAttrsService.addPartnerReadonly(moveLine, move, attrsMap);
     analyticAttrsService.addAnalyticAxisAttrs(move.getCompany(), null, attrsMap);
     moveLineAttrsService.changeFocus(move, moveLine, attrsMap);
+    moveLineAttrsService.addTaxLineRequired(move, moveLine, attrsMap);
 
     return attrsMap;
   }

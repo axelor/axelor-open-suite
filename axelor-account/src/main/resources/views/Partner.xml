@@ -40,12 +40,12 @@
     <panel name="bankDetailsPanel" title="Bank details" colSpan="12">
       <field name="bankDetailsList" colSpan="12" showTitle="false">
         <viewer depends="isDefault,fullName,bankCode,sortCode,accountNbr,bbanKey"><![CDATA[
-                    <>
-                        <dl>
-                            {<Box as="dd" {...(!active && {color:"warning"})} {...(isDefault && {fontWeight:"bold"})}>{fullName}</Box>}
-                        </dl>
-                    </>
-                ]]></viewer>
+              <>
+                  <dl>
+                        {<Box as="dd" {...(!active && {color:"warning"})} {...(isDefault && {fontWeight:"bold"})}>{fullName}</Box>}
+                  </dl>
+              </>
+        ]]></viewer>
         <editor onNew="action-set-default-partner" x-show-on-new="false">
           <field name="ownerName"/>
           <field name="iban"/>
@@ -82,8 +82,7 @@
           <field name="companySet" colSpan="3" widget="TagSelect"/>
           <field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
           <field name="blockingToDate" colSpan="2">
-            <hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" color="danger"
-              strong="true"/>
+            <hilite if="$moment(blockingToDate) &gt; $moment()" color="danger" strong="true"/>
           </field>
           <field name="blockingReason" colSpan="3" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>

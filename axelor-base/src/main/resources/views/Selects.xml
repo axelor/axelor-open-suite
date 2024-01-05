@@ -369,9 +369,9 @@
 
   <selection name="printing.setting.logo.position">
     <option value="0">None</option>
-    <option value="1">Left</option>
+    <option value="1">Position.Left</option>
     <option value="2">Center</option>
-    <option value="3">Right</option>
+    <option value="3">Position.Right</option>
   </selection>
 
   <selection name="icrm.calendar.type.select">
@@ -566,8 +566,8 @@
   </selection>
 
   <selection name="base.print.settings.footer.text.alignment.select">
-    <option value="left">Left</option>
-    <option value="right">Right</option>
+    <option value="left">Position.Left</option>
+    <option value="right">Position.Right</option>
     <option value="center">Center</option>
   </selection>
 
@@ -636,8 +636,8 @@
   </selection>
 
   <selection name="printing.setting.address.position">
-    <option value="0">Right</option>
-    <option value="1">Left</option>
+    <option value="0">Position.Right</option>
+    <option value="1">Position.Left</option>
   </selection>
 
   <selection name="batch.action.launch.origin.select">
