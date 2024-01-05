@@ -7,7 +7,7 @@
 
   <entity name="TourLine">
 
-    <integer name="tourLineOrder" title="Order" required="true"/>
+    <integer name="tourLineOrder" title="tourLine.order" required="true"/>
     <many-to-one name="tour" ref="com.axelor.apps.crm.db.Tour" title="Tour"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
       required="true"/>
