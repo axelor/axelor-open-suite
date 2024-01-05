@@ -9,9 +9,6 @@
     <string name="code" title="Code" required="true"/>
     <string name="name" title="Name" required="true"/>
 
-    <integer name="budgetTypeSelect" selection="budget.level.budget.type.select" default="1"
-      title="Budget type select"/>
-
     <date name="startDate" title="Start Date"/>
     <date name="endDate" title="End Date"/>
 
@@ -20,8 +17,8 @@
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
       title="Global budget"/>
-    <many-to-one name="globalBudgetTemplate"
-      ref="com.axelor.apps.budget.db.GlobalBudgetTemplate" title="Global budget template"/>
+    <many-to-one name="budgetStructure" ref="com.axelor.apps.budget.db.BudgetStructure"
+      title="Budget structure"/>
 
     <string name="statusSelect" title="Status" selection="budget.level.status.select"
       default="draft"/>
@@ -78,9 +75,6 @@
       help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
     </decimal>
 
-    <integer name="checkAvailableSelect" title="Check available amount"
-      selection="budget.budget.level.check.available"/>
-
     <string name="parentId" search="parentBudgetLevel">
          <![CDATA[
          if (parentBudgetLevel != null && parentBudgetLevel.getId() != null){
@@ -94,14 +88,14 @@
 
     </string>
 
-    <string name="globalId" search="globalBudget,globalBudgetTemplate">
+    <string name="globalId" search="globalBudget,budgetStructure">
       <![CDATA[
          if (globalBudget != null && globalBudget.getId() != null){
 
             return globalBudget.getId().toString();
-         } else if (globalBudgetTemplate != null && globalBudgetTemplate.getId() != null){
+         } else if (budgetStructure != null && budgetStructure.getId() != null){
 
-            return globalBudgetTemplate.getId().toString();
+            return "Structure - "+budgetStructure.getId().toString();
          }
          else {
          	return "0";
@@ -117,12 +111,6 @@
 				//budget level type select
 				public static final String BUDGET_LEVEL_TYPE_SELECT_BUDGET = "budget";
 				public static final String BUDGET_LEVEL_TYPE_SELECT_TEMPLATE = "template";
-
-				//budget level budget type select
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE = 1;
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE = 2;
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT = 3;
-				public static final int BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT = 4;
 
 				//budget level status select
 				public static final String BUDGET_LEVEL_STATUS_SELECT_DRAFT = "draft";

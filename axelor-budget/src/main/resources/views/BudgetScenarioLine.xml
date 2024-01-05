@@ -14,6 +14,21 @@
     <field name="year6Value" hidden="true"/>
   </grid>
 
+  <grid name="budget-scenario-line-generator-grid" title="Budget Scenario Line"
+    model="com.axelor.apps.budget.db.BudgetScenarioLine" groupBy="budgetLevel"
+    orderBy="budgetLevel,budgetScenarioVariable.code">
+    <field name="budgetLevel" title="Section"/>
+    <field name="budgetScenarioVariable"/>
+    <field name="budgetScenarioVariable.category"/>
+    <field name="year1Value" hidden="true" aggregate="sum"/>
+    <field name="year2Value" hidden="true" aggregate="sum"/>
+    <field name="year3Value" hidden="true" aggregate="sum"/>
+    <field name="year4Value" hidden="true" aggregate="sum"/>
+    <field name="year5Value" hidden="true" aggregate="sum"/>
+    <field name="year6Value" hidden="true" aggregate="sum"/>
+  </grid>
+
+
   <form model="com.axelor.apps.budget.db.BudgetScenarioLine" title="Budget Scenario Line"
     name="budget-scenario-line-form" width="large"
     onNew="action-budget-scenario-line-method-change-column-names"
