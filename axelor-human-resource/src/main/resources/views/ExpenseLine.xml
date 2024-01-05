@@ -104,7 +104,8 @@
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+      onTabSelect="action-expense-line-attrs-read-only-distribution-lines"
+      showIf="expense.statusSelect >= 3">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -114,6 +115,7 @@
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
       <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      <field name="expense.statusSelect" hidden="true"/>
     </panel>
 
     <panel name="attrsPanel">
@@ -155,7 +157,8 @@
 
     <panel name="analyticDistributionPanel" title="Analytic distribution"
       if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
-      onTabSelect="action-expense-line-attrs-read-only-distribution-lines">
+      onTabSelect="action-expense-line-attrs-read-only-distribution-lines"
+      showIf="expense.statusSelect >= 3">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form" canEdit="false"
@@ -165,6 +168,7 @@
         form-view="analytic-move-line-distribution-form" colSpan="12"
         onChange="action-analytic-move-line-group-analytic-move-line-list-onchange"/>
       <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
+      <field name="expense.statusSelect" hidden="true"/>
     </panel>
   </form>
 
