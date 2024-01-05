@@ -753,7 +753,7 @@ left outer join public.base_currency as Currency on (AccountingReport.currency =
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, coalesce(nullif(LangTranslate.message_value, ''), LangTranslate.message_key) as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1]]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
     </data-sets>
     <styles>

@@ -472,7 +472,7 @@ LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartner
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate on (LangTranslate.message_key = 'PurchaseInvoicesDetails.invoiced')
 WHERE (Invoice.status_select = 2 OR Invoice.status_select = 3) AND Company.id = ? 
-		AND (LangTranslate.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1] OR LangTranslate.language is null )
+		AND (LangTranslate.language = substring(?, '^[a-zA-Z]+') OR LangTranslate.language is null )
         AND Invoice.operation_type_select = 1
         AND Invoice.invoice_date BETWEEN Assistant.from_date AND Assistant.to_date
         AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
@@ -500,7 +500,7 @@ LEFT OUTER JOIN account_assistant_report_invoice_partner_set as AssistantPartner
 LEFT OUTER JOIN account_assistant_report_invoice_product_category_set as AssistantProductCategories on (AssistantProductCategories.account_assistant_report_invoice = Assistant.id)
 LEFT OUTER JOIN meta_translation as LangTranslate1 on (LangTranslate1.message_key = 'PurchaseInvoicesDetails.ordered')
 WHERE Company.id = ?
-		AND (LangTranslate1.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1] OR LangTranslate1.language is null )
+		AND (LangTranslate1.language = substring(?, '^[a-zA-Z]+') OR LangTranslate1.language is null )
         AND PurchaseOrder.order_date BETWEEN Assistant.from_date AND Assistant.to_date
         AND (AssistantPartners.partner_set is null or Partner.id IN (AssistantPartners.partner_set)) 
         AND (AssistantProducts.product_set is null or Product.id IN (AssistantProducts.product_set))
@@ -640,7 +640,7 @@ WHERE Assistant.id = ?
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1]]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
     </data-sets>
     <cubes>

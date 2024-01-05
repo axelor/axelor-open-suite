@@ -2166,7 +2166,7 @@ end if;
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = (REGEXP_MATCHES(?, '^[a-zA-Z]+'))[1]]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="PurchaseOrderLineTaxDS" id="3422">
             <property name="nullsOrdering">nulls lowest</property>

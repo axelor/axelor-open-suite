@@ -320,7 +320,7 @@
     <panel name="userPreferencesPanel" title="User preferences" itemSpan="12">
       <field name="image" showTitle="false"/>
       <field name="localization" title="Localization" grid-view="localization-grid"
-        form-view="localization-form"/>
+        form-view="localization-form" onChange="action-base-user-record-change-language"/>
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
         widget="SuggestBox" form-view="company-form" grid-view="company-grid" canEdit="false"/>
       <field name="tradingName"
