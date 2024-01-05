@@ -52,6 +52,7 @@ import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +107,11 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   @Transactional
   public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-    if (invoice == null || invoiceLine == null) {
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
+    if (invoice == null || invoiceLine == null || date == null) {
       return "";
     }
     invoiceLine.clearBudgetDistributionList();
@@ -115,9 +120,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             invoiceLine.getAnalyticMoveLineList(),
             invoiceLine.getAccount(),
             invoice.getCompany(),
-            invoice.getInvoiceDate() != null
-                ? invoice.getInvoiceDate()
-                : invoice.getCreatedOn().toLocalDate(),
+            date,
             invoiceLine.getCompanyExTaxTotal(),
             invoiceLine.getName(),
             invoiceLine);
@@ -188,6 +191,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
 
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, new HashSet<>());
   }
 }

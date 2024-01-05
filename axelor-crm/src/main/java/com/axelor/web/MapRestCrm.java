@@ -114,8 +114,6 @@ public class MapRestCrm {
 
         String addressFullname = addressString.toString();
         objectNode.put("address", addressFullname);
-        objectNode.put("pinColor", "yellow");
-        objectNode.put("pinChar", I18n.get(ITranslation.PIN_CHAR_LEAD));
 
         Map<String, Object> result = Beans.get(MapService.class).getMap(addressFullname);
 
@@ -185,8 +183,6 @@ public class MapRestCrm {
           objectNode.put("address", addressString);
         }
 
-        objectNode.put("pinColor", "pink");
-        objectNode.put("pinChar", I18n.get(ITranslation.PIN_CHAR_OPPORTUNITY));
         arrayNode.add(objectNode);
       }
 

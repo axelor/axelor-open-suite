@@ -1,0 +1,171 @@
+package com.axelor.apps.budget.web;
+
+import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import java.util.List;
+
+public class GlobalBudgetViewController {
+
+  @ErrorException
+  public void viewGlobalPurchaseOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+
+    String domain =
+        String.format(
+            "self.purchaseOrderLine.purchaseOrder.statusSelect in (%d,%d,%d) and self.budget IN (:budgetList)",
+            PurchaseOrderRepository.STATUS_REQUESTED,
+            PurchaseOrderRepository.STATUS_VALIDATED,
+            PurchaseOrderRepository.STATUS_FINISHED);
+
+    response.setView(
+        ActionView.define(I18n.get("Committed lines"))
+            .model(BudgetDistribution.class.getName())
+            .add("grid", "budget-budget-distribution-purchase-order-line-global-dashlet-grid")
+            .add("form", "budget-budget-distribution-purchase-order-line-dashlet-form")
+            .domain(domain)
+            .context("_globalId", globalBudget.getId())
+            .context("budgetList", budgetList)
+            .map());
+  }
+
+  @ErrorException
+  public void viewGlobalSaleOrderLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+
+    String domain =
+        String.format(
+            "self.saleOrderLine.saleOrder.statusSelect in (%d,%d) and self.budget IN (:budgetList)",
+            SaleOrderRepository.STATUS_ORDER_CONFIRMED, SaleOrderRepository.STATUS_ORDER_COMPLETED);
+
+    response.setView(
+        ActionView.define(I18n.get("Committed lines"))
+            .model(BudgetDistribution.class.getName())
+            .add("grid", "budget-budget-distribution-sale-order-line-global-dashlet-grid")
+            .add("form", "sale-order-budget-distribution-form")
+            .domain(domain)
+            .context("_globalId", globalBudget.getId())
+            .context("budgetList", budgetList)
+            .map());
+  }
+
+  @ErrorException
+  public void viewBudgetLines(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+
+    String domain = "self IN (:budgetList)";
+
+    response.setView(
+        ActionView.define(I18n.get("Lines"))
+            .model(Budget.class.getName())
+            .add("grid", "budget-grid")
+            .add("form", "budget-form")
+            .param("details-view", "true")
+            .param("showArchived", "true")
+            .domain(domain)
+            .context("_globalId", globalBudget.getId())
+            .context(
+                "_isReadOnly",
+                globalBudget.getStatusSelect()
+                    != GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT)
+            .context("_typeSelect", "budget")
+            .context("budgetList", budgetList)
+            .map());
+  }
+
+  @ErrorException
+  public void viewSimulatedMove(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+
+    String domain =
+        String.format(
+            "self.moveLine.move.statusSelect = %d AND self.budget IN (:budgetList)",
+            MoveRepository.STATUS_SIMULATED);
+
+    response.setView(
+        ActionView.define(I18n.get("Simulated Moves"))
+            .model(BudgetDistribution.class.getName())
+            .add("grid", "budget-distribution-simulated-moves")
+            .add("form", "budget-distribution-line-form")
+            .param("show-toolbar", "true")
+            .param("show-confirm", "true")
+            .domain(domain)
+            .context("_globalBudgetId", globalBudget.getId())
+            .context("budgetList", budgetList)
+            .map());
+  }
+
+  @ErrorException
+  public void viewRealizedWithPo(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+
+    String domain =
+        String.format(
+            "(self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is not null) "
+                + "AND self.invoiceLine.invoice.statusSelect = %d AND self.budget IN (:budgetList)",
+            InvoiceRepository.STATUS_VENTILATED);
+
+    response.setView(
+        ActionView.define(I18n.get("Display realized with po"))
+            .model(BudgetDistribution.class.getName())
+            .add("grid", "budget-distribution-realized-with-po-line-grid")
+            .add("form", "budget-distribution-line-form")
+            .param("show-toolbar", "true")
+            .param("show-confirm", "true")
+            .domain(domain)
+            .context("_globalBudgetId", globalBudget.getId())
+            .context("budgetList", budgetList)
+            .map());
+  }
+
+  @ErrorException
+  public void viewRealizedWithoutPo(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+
+    String domain =
+        String.format(
+            "((self.invoiceLine.invoice.purchaseOrder is null AND self.invoiceLine.invoice.saleOrder is null AND self.invoiceLine.invoice.statusSelect = %d) "
+                + "OR (self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND self.moveLine.move.invoice IS NULL)) "
+                + "AND self.budget IN (:budgetList)",
+            InvoiceRepository.STATUS_VENTILATED,
+            MoveRepository.STATUS_DAYBOOK,
+            MoveRepository.STATUS_ACCOUNTED);
+
+    response.setView(
+        ActionView.define(I18n.get("Display realized with no po"))
+            .model(BudgetDistribution.class.getName())
+            .add("grid", "budget-distribution-realized-without-po-line-grid")
+            .add("form", "budget-distribution-line-form")
+            .param("show-toolbar", "true")
+            .param("show-confirm", "true")
+            .domain(domain)
+            .context("_globalBudgetId", globalBudget.getId())
+            .context("budgetList", budgetList)
+            .map());
+  }
+}

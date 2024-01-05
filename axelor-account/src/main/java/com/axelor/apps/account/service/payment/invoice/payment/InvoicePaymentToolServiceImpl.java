@@ -24,11 +24,11 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveToolService;
@@ -55,6 +55,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,12 +65,12 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   protected InvoiceRepository invoiceRepo;
   protected MoveToolService moveToolService;
   protected InvoicePaymentRepository invoicePaymentRepo;
-  protected AccountConfigRepository accountConfigRepository;
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermPaymentService invoiceTermPaymentService;
   protected CurrencyService currencyService;
   protected AppAccountService appAccountService;
   protected InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -82,7 +83,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       InvoiceTermPaymentService invoiceTermPaymentService,
       CurrencyService currencyService,
       AppAccountService appAccountService,
-      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService) {
+      InvoicePaymentFinancialDiscountService invoicePaymentFinancialDiscountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
 
     this.invoiceRepo = invoiceRepo;
     this.moveToolService = moveToolService;
@@ -92,6 +94,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     this.currencyService = currencyService;
     this.appAccountService = appAccountService;
     this.invoicePaymentFinancialDiscountService = invoicePaymentFinancialDiscountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -329,7 +332,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
   }
 
   @Override
-  public List<Long> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
+  public Pair<List<Long>, Boolean> changeAmount(InvoicePayment invoicePayment, Long invoiceId)
       throws AxelorException {
     if (invoicePayment.getCurrency() == null) {
       return null;
@@ -359,7 +362,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!invoicePayment.getManualChange()
           || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
         invoicePayment.setAmount(payableAmount);
-        amountError = invoicePayment.getManualChange();
+        amountError = true;
       }
 
       invoiceTermIdList =
@@ -382,14 +385,8 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
-
-      if (amountError) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_AMOUNT_TOO_HIGH));
-      }
     }
-    return invoiceTermIdList;
+    return Pair.of(invoiceTermIdList, !invoicePayment.getManualChange() || !amountError);
   }
 
   public List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId)
@@ -422,10 +419,15 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
 
-      invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
+      invoicePayment.setTotalAmountWithFinancialDiscount(
+          currencyScaleServiceAccount.getScaledValue(invoicePayment, invoicePayment.getAmount()));
 
       invoicePayment.setAmount(
-          invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
+          currencyScaleServiceAccount.getScaledValue(
+              invoicePayment,
+              invoicePayment
+                  .getAmount()
+                  .subtract(invoicePayment.getFinancialDiscountTotalAmount())));
 
       invoiceTermIdList =
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());

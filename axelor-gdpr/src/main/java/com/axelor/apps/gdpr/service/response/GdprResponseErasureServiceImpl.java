@@ -35,6 +35,7 @@ import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprErasureLogService;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -56,7 +57,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 public class GdprResponseErasureServiceImpl implements GdprResponseErasureService {
 

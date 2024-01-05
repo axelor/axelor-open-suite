@@ -25,10 +25,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.AuditableModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface BudgetDistributionService {
 
@@ -70,7 +72,11 @@ public interface BudgetDistributionService {
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate);
 
-  String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect);
+  String getBudgetDomain(
+      Company company,
+      LocalDate date,
+      String technicalTypeSelect,
+      Set<GlobalBudget> globalBudgetSet);
 
   void autoComputeBudgetDistribution(
       List<AnalyticMoveLine> analyticMoveLineList,
