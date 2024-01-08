@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service.move;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -46,6 +47,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -105,6 +107,18 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BankPaymentExceptionMessage.MOVE_LINKED_TO_VALIDATED_BANK_RECONCILIATION),
             move.getReference());
+      }
+
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        if (Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(
+                accountType ->
+                    AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
+            .orElse(false)) {
+          moveLine.setBankReconciledAmount(moveLine.getCurrencyAmount().abs());
+        }
       }
     }
     Move newMove = super.generateReverse(move, assistantMap);
