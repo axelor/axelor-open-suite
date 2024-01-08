@@ -1,4 +1,4 @@
-"key",message,"comment","context"
+"key","message","comment","context"
 "% in paper format",,,
 "%d expense treated successfully,",,,
 "%d expenses treated successfully,",,,
@@ -27,6 +27,7 @@
 "Alert if the manuf. order is finish",,,
 "All",,,
 "All companies",,,
+"All remaining leaves will be transferred to the selected leave type",,,
 "All timesheets",,,
 "Allow Injection",,,
 "Allow expense creation",,,
@@ -907,6 +908,7 @@
 "Realized",,,
 "Reason",,,
 "Record date",,,
+"Recovery leave reason",,,
 "Recruitment",,,
 "Ref.",,,
 "Referential date for seniority",,,
@@ -1089,6 +1091,7 @@
 "To",,,
 "To (included)",,,
 "To Date",,,
+"To be reset yearly",,,
 "To calculate",,,
 "To date",,,
 "To date can't be empty",,,
