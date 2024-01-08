@@ -5,10 +5,11 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestStructure;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class TSTimerPutRequest {
+public class TSTimerPutRequest extends RequestStructure {
 
   @NotNull
   @Min(0)
