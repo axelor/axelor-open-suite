@@ -183,15 +183,15 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
-      throws AxelorException {
+  public Map<String, Object> getDateOnChangeValuesMap(Move move) throws AxelorException {
     moveRecordSetService.setPeriod(move);
     moveLineControlService.setMoveLineDates(move);
     moveRecordUpdateService.updateMoveLinesCurrencyRate(move);
 
     Map<String, Object> valuesMap = moveComputeService.computeTotals(move);
 
-    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+    moveRecordUpdateService.updateDueDate(move, true, true);
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
 
     this.addPeriodDummyFields(move, valuesMap);
 
@@ -388,9 +388,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getCompanyOnChangeValuesMap(Move move, boolean paymentConditionChange)
-      throws AxelorException {
-    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move, paymentConditionChange);
+  public Map<String, Object> getCompanyOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move);
 
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setCompanyBankDetails(move);
