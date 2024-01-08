@@ -378,7 +378,8 @@
       <panel name="informationPanel" title="Information">
         <panel name="employeeAddressPanel" title="Contact address" colSpan="12"
           showIf="isEmployee">
-          <field name="mainAddress" form-view="address-form" grid-view="address-grid"/>
+          <field name="mainAddress" form-view="address-form" grid-view="address-grid"
+            canNew="true" colSpan="12"/>
         </panel>
         <panel name="postalAddressesPanel" title="Postal addresses" colSpan="12"
           hideIf="isEmployee">

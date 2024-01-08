@@ -6,18 +6,19 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Address">
-    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"
+      required="true"/>
     <string name="department" title="Department"/>
     <string name="subDepartment" title="Sub Department"/>
 
 
     <string name="addressL2" title="Recipient details"/>
     <string name="addressL3" title="Address precisions"/>
-    <string name="addressL4" title="N° and Street label" required="true"/>
+    <string name="addressL4" title="N° and Street label"/>
     <string name="addressL5" title="Distribution precisions (POB, Village...)"/>
     <string name="addressL6" title="Zip/City"/>
 
-    <string name="streetName" title="Street" required="true"/>
+    <string name="streetName" title="Street"/>
     <many-to-one name="street" ref="com.axelor.apps.base.db.Street" title="Street"/>
     <string name="buildingNumber" title="Building number"/>
     <string name="buildingName" title="Building"/>

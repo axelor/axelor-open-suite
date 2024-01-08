@@ -64,15 +64,28 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
     addressTemplateLineList.stream()
         .filter(line -> !StringUtils.isBlank(line.getTitle()))
         .forEach(line -> addFieldTitle(line.getMetaField().getName(), line.getTitle(), attrsMap));
+  }
 
+  @Override
+  public void addAllFieldsUnhide(
+      List<AddressTemplateLine> addressTemplateLineList,
+      Map<String, Map<String, Object>> attrsMap) {
     addressTemplateLineList.forEach(
         line -> {
           addFieldUnhide(line.getMetaField().getName(), attrsMap);
           if ("street".equals(line.getMetaField().getName())) {
             addFieldUnhide("buildingNumber", attrsMap);
           }
+          if (line.getIsRequired()) {
+            addFieldRequired(line.getMetaField().getName(), attrsMap);
+          }
         });
     addFieldUnhide("formattedFullName", attrsMap);
+  }
+
+  @Override
+  public void addFieldRequired(String field, Map<String, Map<String, Object>> attrsMap) {
+    this.addAttr(field, "required", true, attrsMap);
   }
 
   @Override

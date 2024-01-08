@@ -329,9 +329,7 @@ public class AddressServiceImpl implements AddressService {
       List<AddressTemplateLine> addressTemplateLineList =
           address.getCountry().getAddressTemplate().getAddressTemplateLineList();
       addressAttrsService.addHiddenAndTitle(addressTemplateLineList, attrsMap);
-      for (AddressTemplateLine addressTemplateLine : addressTemplateLineList) {
-        addressAttrsService.addFieldUnhide(addressTemplateLine.getMetaField().getName(), attrsMap);
-      }
+      addressAttrsService.addAllFieldsUnhide(addressTemplateLineList, attrsMap);
     }
 
     return attrsMap;

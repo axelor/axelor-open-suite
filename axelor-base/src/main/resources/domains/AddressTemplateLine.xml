@@ -9,6 +9,7 @@
     <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField" title="Field"
       required="true"/>
     <string name="title" title="Title" translatable="true"/>
+    <boolean name="isRequired" title="Required"/>
 
     <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"/>
   </entity>

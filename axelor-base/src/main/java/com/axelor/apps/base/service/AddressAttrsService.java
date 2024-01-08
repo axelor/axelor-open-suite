@@ -16,4 +16,9 @@ public interface AddressAttrsService {
   public void addFieldHide(String field, Map<String, Map<String, Object>> attrsMap);
 
   public void addFieldTitle(String field, String value, Map<String, Map<String, Object>> attrsMap);
+
+  public void addFieldRequired(String field, Map<String, Map<String, Object>> attrsMap);
+
+  public void addAllFieldsUnhide(
+      List<AddressTemplateLine> addressTemplateLineList, Map<String, Map<String, Object>> attrsMap);
 }
