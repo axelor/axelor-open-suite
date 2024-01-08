@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
@@ -51,11 +52,12 @@ public interface BudgetDistributionService {
   public String getBudgetExceedAlert(Budget budget, BigDecimal amount, LocalDate date);
 
   /**
-   * For all lines in invoice, compute paid amount field in all related budgets and save them
+   * For all lines in invoice or move, compute paid amount field in all related budgets and save
+   * them
    *
-   * @param invoice, ratio
+   * @param invoice, move, ratio
    */
-  public void computePaidAmount(Invoice invoice, BigDecimal ratio);
+  void computePaidAmount(Invoice invoice, Move move, BigDecimal ratio, boolean isCancel);
 
   String createBudgetDistribution(
       List<AnalyticMoveLine> analyticMoveLineList,
