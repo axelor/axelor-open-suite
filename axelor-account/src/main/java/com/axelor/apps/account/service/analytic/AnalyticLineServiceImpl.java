@@ -28,10 +28,12 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.ListHelper;
@@ -41,13 +43,13 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticLineServiceImpl implements AnalyticLineService {
 
-  private static final int RETURN_SCALE = 2;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
   protected AnalyticToolService analyticToolService;
@@ -55,6 +57,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   protected AccountService accountService;
   protected ListHelper listHelper;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public AnalyticLineServiceImpl(
@@ -64,7 +67,8 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AnalyticAccountRepository analyticAccountRepository,
       AccountService accountService,
       ListHelper listHelper,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
@@ -72,6 +76,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     this.accountService = accountService;
     this.listHelper = listHelper;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -82,6 +87,15 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           .getAnalyticJournal();
     }
     return null;
+  }
+
+  @Override
+  public Currency getCompanyCurrency(AnalyticLine analyticLine) {
+    return Optional.of(analyticLine)
+        .map(AnalyticLine::getAccount)
+        .map(Account::getCompany)
+        .map(Company::getCurrency)
+        .orElse(null);
   }
 
   @Override
@@ -106,7 +120,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       return analyticMoveLine
           .getPercentage()
           .multiply(parent.getLineAmount())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+          .divide(
+              new BigDecimal(100),
+              currencyScaleServiceAccount.getScale(analyticMoveLine),
+              RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
   }

@@ -11,9 +11,10 @@
     <field name="paymentMode" grid-view="payment-mode-grid" form-view="payment-mode-form"/>
     <field name="paymentDate"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-    <field name="paidAmount" aggregate="sum"/>
+    <field name="paidAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="generatedMove" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
   </grid>
 
@@ -111,15 +112,18 @@
     <panel name="paymentInfoPanel" readonlyIf="statusSelect == 2 || statusSelect == 3"
       colSpan="12">
       <field name="paidAmount" colSpan="4"
-        onChange="action-group-payment-voucher-reset-imputation,save"/>
+        onChange="action-group-payment-voucher-reset-imputation,save"
+        x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" colSpan="4" form-view="currency-form"
         grid-view="currency-grid" onChange="action-group-payment-voucher-reset-imputation"/>
-      <field name="remainingAmount" readonly="true" colSpan="4"/>
+      <field name="remainingAmount" readonly="true" colSpan="4"
+        x-scale="currency.numberOfDecimals"/>
       <field name="moveLine"
         onChange="action-record-fill-paidAmount-fromMoveLine,action-pv-moveLine-attrs"
         onSelect="action-pv-moveLine-domain" colSpan="4"
         showIf="operationTypeSelect == 3 || operationTypeSelect == 4" form-view="move-line-form"
         grid-view="move-line-grid"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
 
     <panel-stack name="otherDetailsPanel" readonlyIf="statusSelect > 1">

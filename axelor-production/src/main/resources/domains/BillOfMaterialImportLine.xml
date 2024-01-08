@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="BillOfMaterialImportLine">
+
+    <many-to-one name="billOfMaterialImport" title="Bill of materials import"
+      ref="com.axelor.apps.production.db.BillOfMaterialImport"/>
+    <integer name="bomLevel" title="Level"/>
+    <string name="code" title="Code"/>
+    <string name="name" title="Name"/>
+    <decimal name="quantity" title="Quantity"/>
+    <many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
+    <string name="mark" title="Mark"/>
+    <many-to-one name="parentBoMImportLine" title="Parent"
+      ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
+    <one-to-many name="billOfMaterialImportLineList" title="Content lines"
+      ref="com.axelor.apps.production.db.BillOfMaterialImportLine" mappedBy="parentBoMImportLine"/>
+    <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="description" title="Description"
+      ref="com.axelor.meta.db.MetaFile"/>
+
+  </entity>
+</domain-models>

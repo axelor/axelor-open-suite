@@ -8,6 +8,7 @@
     <field name="alpha3Code"/>
     <field name="alpha2Code"/>
     <field name="numericCode"/>
+    <field name="addressTemplate"/>
   </grid>
 
   <form name="country-form" title="Country" model="com.axelor.apps.base.db.Country">
@@ -18,8 +19,9 @@
       <field name="numericCode"/>
       <field name="economicArea" canEdit="false"/>
       <field name="citizenship"/>
-
       <field name="bankDetailsTemplate"/>
+      <field name="addressTemplate" grid-view="address-template-grid"
+        form-view="address-template-form"/>
     </panel>
     <panel name="attributesPanel" title="Attributes">
       <field name="cog"/>
@@ -35,6 +37,5 @@
     title="Country filters">
     <field name="isIspmRequired" hidden="true" if="!__config__.app.isApp('stock')"/>
   </search-filters>
-
 </object-views>
 

@@ -293,6 +293,16 @@
       partnerPriceList.isExclusive IS TRUE )</domain>
   </action-view>
 
+  <menuitem title="Address templates" name="referential-conf-address-template"
+    parent="referential-conf" action="referential.conf.address.templates" order="650"/>
+
+  <action-view name="referential.conf.address.templates" title="Address templates"
+    model="com.axelor.apps.base.db.AddressTemplate">
+    <view type="grid" name="address-template-grid"/>
+    <view type="form" name="address-template-form"/>
+  </action-view>
+
+
   <menuitem name="referential-conf" title="Configuration" order="600"
     parent="referential-root" icon="fa-cog"/>
 
@@ -328,7 +338,7 @@
   </action-view>
 
   <menuitem name="referential-conf-base-bank-details-template" parent="referential-conf"
-    title="Bank details templates" action="referential.conf.base.bank.details.template" order="650"/>
+    title="Bank details templates" action="referential.conf.base.bank.details.template" order="620"/>
 
   <action-view name="referential.conf.base.bank.details.template"
     title="Bank details templates" model="com.axelor.apps.base.db.BankDetailsTemplate">

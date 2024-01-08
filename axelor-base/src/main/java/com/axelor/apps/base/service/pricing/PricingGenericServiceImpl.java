@@ -3,6 +3,9 @@ package com.axelor.apps.base.service.pricing;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
+import com.axelor.apps.base.db.repo.PricingRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
@@ -14,6 +17,7 @@ import com.axelor.web.ITranslation;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -38,6 +42,7 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   @Override
   public <T extends Model> void usePricings(Company company, Class<?> modelClass, Long modelId)
       throws AxelorException {
+
     Model model = JPA.find((Class<T>) modelClass, modelId);
     usePricings(company, model);
   }
@@ -62,11 +67,22 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void computePricingsOnModel(Company company, Model model) throws AxelorException {
+    List<String> unavailableModels = getUnavailableModels();
+    if (!ObjectUtils.isEmpty(unavailableModels)
+        && unavailableModels.contains(model.getClass().getSimpleName())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(BaseExceptionMessage.PRICING_UNAVAILABLE_FOR_THIS_CLASS),
+              I18n.get(model.getClass().getSimpleName())));
+    }
+
     List<Pricing> pricingList = getPricings(company, model);
 
     if (ObjectUtils.isEmpty(pricingList)) {
       return;
     }
+
     List<StringBuilder> logsList = new ArrayList<>();
     for (Pricing pricing : pricingList) {
       PricingComputer pricingComputer = PricingComputer.of(pricing, model);
@@ -116,6 +132,18 @@ public class PricingGenericServiceImpl implements PricingGenericService {
   public String updatePricingScaleLogs(List<StringBuilder> logsList, Model model) {
     // overridden in other modules
     return computePricingLogs(logsList);
+  }
+
+  @Override
+  public List<String> getUnavailableModels() {
+    return Arrays.asList(
+        PricingRepository.PRICING_RESTRICT_PRICING,
+        PricingRepository.PRICING_RESTRICT_PRICING_LINE,
+        PricingRepository.PRICING_RESTRICT_PRICING_RULE,
+        PricingRepository.PRICING_RESTRICT_MOVE,
+        PricingRepository.PRICING_RESTRICT_MOVE_LINE,
+        PricingRepository.PRICING_RESTRICT_INVOICE,
+        PricingRepository.PRICING_RESTRICT_INVOICE_LINE);
   }
 
   protected String computePricingLogs(List<StringBuilder> logsList) {

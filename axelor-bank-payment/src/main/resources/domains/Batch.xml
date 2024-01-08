@@ -9,10 +9,6 @@
 
     <many-to-one name="bankOrder" ref="com.axelor.apps.bankpayment.db.BankOrder"/>
 
-    <!-- NOT DISPLAY -->
-    <many-to-one name="bankPaymentBatch"
-      ref="com.axelor.apps.bankpayment.db.BankPaymentBatch"/>
-
   </entity>
 
 </domain-models>
