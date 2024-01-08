@@ -146,8 +146,8 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
 
       BigDecimal invoiceTermAmount =
           isCompanyCurrency
-              ? invoiceTermToPay.getCompanyAmountRemaining()
-              : invoiceTermToPay.getAmountRemaining();
+              ? invoiceTermToPay.getAmountRemaining()
+              : invoiceTermToPay.getCompanyAmountRemaining();
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
