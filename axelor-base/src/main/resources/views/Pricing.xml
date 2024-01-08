@@ -35,7 +35,7 @@
         <field name="company" onChange="action-pricing-attrs-company-onchange" required="true"/>
         <field name="endDate" onChange="action-pricing-method-check-dates"/>
         <field name="concernedModel" onChange="action-pricing-attrs-concerned-model-onchange"
-          required="true" domain="self.name != 'Pricing'"/>
+          required="true" onSelect="action-pricing-method-model-onselect"/>
       </panel>
       <panel name="classificationPanel" colSpan="12">
         <field name="class1PricingRule"
@@ -293,5 +293,9 @@
 
   <action-method name="action-method-use-pricings-list">
     <call class="com.axelor.apps.base.web.PricingController" method="usePricingsList"/>
+  </action-method>
+
+  <action-method name="action-pricing-method-model-onselect">
+    <call class="com.axelor.apps.base.web.PricingController" method="setModelDomain"/>
   </action-method>
 </object-views>

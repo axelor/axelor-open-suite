@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
@@ -54,7 +53,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
-      EbicsService ebicsService,
       InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
@@ -71,7 +69,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         bankOrderRepo,
         invoicePaymentRepo,
         bankOrderLineService,
-        ebicsService,
         invoicePaymentBankPaymentCancelService,
         bankPaymentConfigService,
         sequenceService,

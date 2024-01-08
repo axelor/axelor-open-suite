@@ -894,6 +894,8 @@
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
     <attribute name="value" for="$companyCurrency"
       expr="eval:saleOrder?.company?.currency" if="saleOrder != null"/>
+    <attribute name="value" for="$companyCurrency"
+      expr="eval:oldVersionSaleOrder?.company?.currency" if="oldVersionSaleOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-set-currency">
@@ -901,6 +903,8 @@
       if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.sale.db.SaleOrder'"/>
     <attribute name="value" for="$currency" expr="eval:saleOrder?.currency"
       if="saleOrder != null"/>
+    <attribute name="value" for="$currency" expr="eval:oldVersionSaleOrder?.currency"
+      if="oldVersionSaleOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-hidden-fields-for-client">

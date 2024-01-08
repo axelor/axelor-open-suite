@@ -39,6 +39,8 @@
     <one-to-many name="bomChildTreeList" ref="TempBomTree" mappedBy="parentBom"/>
     <one-to-many name="bomTreeList" ref="TempBomTree" mappedBy="bom"/>
 
+    <string name="mark" title="Mark"/>
+
     <string name="note" large="true"/>
 
     <extra-code><![CDATA[

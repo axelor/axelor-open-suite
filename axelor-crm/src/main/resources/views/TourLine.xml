@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="tour-line-grid" title="Tour lines" model="com.axelor.apps.crm.db.TourLine"
+    canMove="true" editable="true" orderBy="tourLineOrder">
+    <field name="tourLineOrder" width="80"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      domain="self.isCustomer = true OR self.isProspect = true"/>
+    <field name="address" onSelect="action-tour-line-attrs-domain-address"/>
+    <field name="event" domain="self.partner = :partner" canNew="true" form-view="event-form"
+      grid-view="event-grid"/>
+    <field name="isValidated" readonly="true" width="110"/>
+    <button name="validateBtn" title="Validate" icon="fa-check"
+      showIf="!isValidated &amp;&amp; id != null"
+      onClick="action-tour-line-method-set-validated-and-last-visit-date"/>
+  </grid>
+
+  <form name="tour-line-form" title="Tour line" model="com.axelor.apps.crm.db.TourLine">
+    <panel name="mainPanel">
+      <field name="tourLineOrder"/>
+      <field name="partner" form-view="partner-form" grid-view="partner-grid"
+        domain="self.isCustomer = true OR self.isProspect = true"/>
+      <field name="address" onSelect="action-tour-line-attrs-domain-address"/>
+      <field name="event" domain="self.partner = :partner" canNew="true"
+        form-view="event-form" grid-view="event-grid"/>
+      <field name="isValidated" readonly="true"/>
+    </panel>
+  </form>
+
+  <action-method name="action-tour-line-method-set-validated-and-last-visit-date">
+    <call class="com.axelor.apps.crm.web.TourLineController"
+      method="setValidatedAndLastVisitDate"/>
+  </action-method>
+
+  <action-attrs name="action-tour-line-attrs-domain-address">
+    <attribute name="domain" for="address"
+      expr="eval: &quot;self.id IN (${(partner?.partnerAddressList?.findAll{it.address}.collect{it.address.id}).join(',')})&quot;"/>
+  </action-attrs>
+
+</object-views>

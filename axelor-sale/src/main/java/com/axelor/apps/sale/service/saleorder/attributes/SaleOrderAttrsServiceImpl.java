@@ -3,7 +3,6 @@ package com.axelor.apps.sale.service.saleorder.attributes;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,18 +50,5 @@ public class SaleOrderAttrsServiceImpl implements SaleOrderAttrsService {
   @Override
   public void addIncotermRequired(SaleOrder saleOrder, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("incoterm", "required", saleOrderService.isIncotermRequired(saleOrder), attrsMap);
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> onChangeSaleOrderLine(SaleOrder saleOrder) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    if (saleOrder != null && ObjectUtils.notEmpty(saleOrder.getSaleOrderLineList())) {
-      this.addIncotermRequired(saleOrder, attrsMap);
-      this.setSaleOrderLineScale(saleOrder, attrsMap);
-      this.setSaleOrderLineTaxScale(saleOrder, attrsMap);
-    }
-
-    return attrsMap;
   }
 }

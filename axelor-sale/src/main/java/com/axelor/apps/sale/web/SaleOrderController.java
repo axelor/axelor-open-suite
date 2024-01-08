@@ -45,6 +45,7 @@ import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
+import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
@@ -54,7 +55,6 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
-import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
@@ -667,7 +667,7 @@ public class SaleOrderController {
       Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
 
       response.setValues(saleOrder);
-      response.setAttrs(Beans.get(SaleOrderAttrsService.class).onChangeSaleOrderLine(saleOrder));
+      response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
