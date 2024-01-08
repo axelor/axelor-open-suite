@@ -179,6 +179,10 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       }
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
       for (BillOfMaterial childBom : childBomList) {
+
+        if (childBom.getProdProcess() == null) {
+          continue;
+        }
         productionOrder =
             productionOrderService.addManufOrder(
                 productionOrder,
