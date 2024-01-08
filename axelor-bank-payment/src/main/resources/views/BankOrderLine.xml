@@ -15,7 +15,6 @@
     <field name="bankOrderAmount"/>
     <field name="bankOrder.partnerTypeSelect"/>
     <field name="bankOrder.bankOrderDate"/>
-    <field name="bankOrder.confirmationDateTime"/>
     <field name="bankOrder.senderCompany"/>
     <field name="bankOrder.statusSelect"/>
     <field name="$pieceReferenceList" title="Piece references"/>
@@ -34,7 +33,6 @@
     <field name="bankOrderAmount"/>
     <field name="bankOrder.partnerTypeSelect"/>
     <field name="bankOrder.bankOrderDate"/>
-    <field name="bankOrder.confirmationDateTime"/>
     <field name="bankOrder.senderCompany"/>
     <field name="bankOrder.statusSelect"/>
     <field name="$pieceReferenceList" title="Piece references"/>
