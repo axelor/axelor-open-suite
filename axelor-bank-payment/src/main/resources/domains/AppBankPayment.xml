@@ -17,6 +17,9 @@
       title="Manage bank to bank transfer payment" default="true"/>
     <boolean name="enableEbicsModule" title="Enable EBICS module" default="false"/>
     <boolean name="manageBillOfExchange" title="Manage bill of exchange" default="true"/>
+    <boolean name="useEditorInBankOrderForm" title="Use editor in bank order form"
+      default="true"
+      help="If checked, the bank order form view will use an editor widget, which will make adding new lines easier but will cause performance issues if the bank order has too many lines."/>
 
     <track>
       <field name="manageDirectDebitPayment" on="UPDATE"/>
@@ -24,6 +27,7 @@
       <field name="manageBankToBankTransferPayment" on="UPDATE"/>
       <field name="enableEbicsModule" on="UPDATE"/>
       <field name="manageBillOfExchange" on="UPDATE"/>
+      <field name="useEditorInBankOrderForm" on="UPDATE"/>
     </track>
   </entity>
 

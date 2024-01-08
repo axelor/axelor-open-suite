@@ -444,17 +444,12 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
   @Override
   public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale) {
 
-    BigDecimal amount = this.computeAmount(quantity, price).setScale(scale, RoundingMode.HALF_UP);
+    BigDecimal amount = quantity.multiply(price).setScale(scale, RoundingMode.HALF_UP);
 
     logger.debug(
-        "Computation of W.T. amount with a quantity of {} for {} : {}",
-        new Object[] {quantity, price, amount});
+        "Computation of W.T. amount with a quantity of {} for {} : {}", quantity, price, amount);
 
     return amount;
-  }
-
-  protected BigDecimal computeAmount(BigDecimal quantity, BigDecimal price) {
-    return quantity.multiply(price);
   }
 
   @Override

@@ -27,6 +27,8 @@ import com.axelor.apps.mobilesettings.service.MobileChartService;
 import com.axelor.apps.mobilesettings.service.MobileChartServiceImpl;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeServiceImpl;
+import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeService;
+import com.axelor.apps.mobilesettings.service.MobileSettingsResponseComputeServiceImpl;
 
 public class MobileSettingsModule extends AxelorModule {
 
@@ -37,5 +39,7 @@ public class MobileSettingsModule extends AxelorModule {
     bind(MobileChartResponseComputeService.class).to(MobileChartResponseComputeServiceImpl.class);
     bind(MobileDashboardResponseComputeService.class)
         .to(MobileDashboardResponseComputeServiceImpl.class);
+    bind(MobileSettingsResponseComputeService.class)
+        .to(MobileSettingsResponseComputeServiceImpl.class);
   }
 }

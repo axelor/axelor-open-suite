@@ -28,7 +28,7 @@ public class GlobalBudgetGroupServiceImpl implements GlobalBudgetGroupService {
   protected GlobalBudgetWorkflowService globalBudgetWorkflowService;
 
   @Inject
-  public void GlobalBudgetGroupServiceImpl(
+  public GlobalBudgetGroupServiceImpl(
       GlobalBudgetService globalBudgetService,
       GlobalBudgetWorkflowService globalBudgetWorkflowService) {
     this.globalBudgetService = globalBudgetService;
