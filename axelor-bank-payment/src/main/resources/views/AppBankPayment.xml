@@ -10,6 +10,7 @@
       <field name="manageCreditTransferPayment" widget="boolean-switch"/>
       <field name="manageBankToBankTransferPayment" widget="boolean-switch"/>
       <field name="manageBillOfExchange" widget="boolean-switch"/>
+      <field name="useEditorInBankOrderForm" widget="boolean-switch"/>
     </panel>
     <panel name="configPanel">
       <button name="generateBankPaymentConfigurationsBtn"

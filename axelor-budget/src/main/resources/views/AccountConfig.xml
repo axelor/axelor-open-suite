@@ -7,6 +7,7 @@
     title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" extension="true">
     <extend target="/">
       <attribute name="onSave" value="action-budget-group-account-config-onsave"/>
+      <attribute name="onLoad" value="action-budget-account-config-group-onload"/>
     </extend>
 
     <extend target="//field[@name='analyticJournal']">
@@ -14,6 +15,8 @@
         <field name="enableBudgetKey" colSpan="6" if="__config__.app.isApp('budget')"/>
         <field name="budgetDistributionRoleSet" colSpan="6" widget="TagSelect"
           showIf="enableBudgetKey" if="__config__.app.isApp('budget')"/>
+        <static name="$budgetKeyDisable" colSpan="9" hidden="true">
+            <![CDATA[<span class='label label-warning'>To activate this option, you need to disable project management first in budget configuration.</span>]]></static>
       </insert>
     </extend>
   </form>
@@ -24,8 +27,18 @@
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
+  <action-group name="action-budget-account-config-group-onload">
+    <action name="action-account-config-group-onload"/>
+    <action name="action-account-config-method-manage-budget-key"
+      if="__config__.app.isApp('budget')"/>
+  </action-group>
+
   <action-method name="action-budget-method-validate-budgetKey-in-axis">
     <call class="com.axelor.apps.budget.web.AccountConfigController" method="checkBudgetKey"/>
+  </action-method>
+
+  <action-method name="action-account-config-method-manage-budget-key">
+    <call class="com.axelor.apps.budget.web.AccountConfigController" method="manageBudgetKey"/>
   </action-method>
 
 </object-views>

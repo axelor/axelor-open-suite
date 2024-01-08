@@ -49,7 +49,7 @@
 
   <form name="bill-of-material-form" title="Bill of materials"
     model="com.axelor.apps.production.db.BillOfMaterial" width="large" canNew="!_isPersonalized"
-    onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
+    onSave="save,action-bill-of-material-method-validate-prod-process"
     onNew="action-bill-of-material-group-on-new" onLoad="action-bill-of-material-group-on-load">
 
     <menubar>
@@ -106,6 +106,7 @@
       <field name="qty" colSpan="3"/>
       <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
         canEdit="false" required="true"/>
+      <field name="mark"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -251,10 +252,6 @@
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="unit" expr="eval: product?.unit"/>
   </action-record>
-
-  <action-method name="action-bill-of-material-method-name">
-    <call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeName"/>
-  </action-method>
 
   <action-record name="action-bill-of-material-record-count-number-of-components"
     model="com.axelor.apps.production.db.BillOfMaterial">
