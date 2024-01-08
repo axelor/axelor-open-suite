@@ -61,7 +61,7 @@
   </selection>
 
   <selection name="budget.scenario.entry.method.select">
-    <option value="0">Manual</option>
+    <option value="0">budget.Manual</option>
     <option value="1">Formula</option>
   </selection>
 

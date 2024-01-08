@@ -174,10 +174,11 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
   @Override
   public void onLineChange(SaleOrder saleOrder) throws AxelorException {
     this.handleComplementaryProducts(saleOrder);
-    if (saleOrder.getSaleOrderLineList().stream()
-        .anyMatch(
-            saleOrderLine ->
-                saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)) {
+    if (saleOrder.getSaleOrderLineList() != null
+        && saleOrder.getSaleOrderLineList().stream()
+            .anyMatch(
+                saleOrderLine ->
+                    saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_START_OF_PACK)) {
       if (appSaleService.getAppSale().getEnablePackManagement()
           && saleOrderLineService.isStartOfPackTypeLineQtyChanged(
               saleOrder.getSaleOrderLineList())) {

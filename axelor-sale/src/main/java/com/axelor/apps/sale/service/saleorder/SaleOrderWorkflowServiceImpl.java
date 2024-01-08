@@ -193,9 +193,6 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
-    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
-      this.saveSaleOrderPDFAsAttachment(saleOrder);
-    }
 
     Opportunity opportunity = saleOrder.getOpportunity();
     if (opportunity != null) {
@@ -203,6 +200,10 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
     }
 
     saleOrderRepo.save(saleOrder);
+
+    if (appSaleService.getAppSale().getPrintingOnSOFinalization()) {
+      this.saveSaleOrderPDFAsAttachment(saleOrder);
+    }
   }
 
   @Override

@@ -206,9 +206,7 @@
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="taxLineBeforeReverse" hidden="true"/>
-    <field name="move.company.accountConfig" hidden="true"/>
-    <field name="move.company" hidden="true"/>
-    <field name="move.functionalOriginSelect"/>
+    <field name="move.functionalOriginSelect" hidden="true"/>
     <field name="account.company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
     <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
     <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
@@ -514,7 +512,7 @@
         showIf="move.statusSelect == 2 || move.statusSelect == 3 || taxLine != null" readonly="true">
         <field name="taxLine" canEdit="false" colSpan="6" form-view="tax-line-form"
           grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
-          readonlyIf="['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect) || !account.isTaxAuthorizedOnMoveLine"
+          readonlyIf="['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect) || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="vatSystemSelect"
           readonlyIf="account.accountType.technicalTypeSelect != 'tax' || ![1,5].includes(move.statusSelect)"/>
@@ -753,8 +751,9 @@
         </field>
       </panel>
       <panel name="othersPanel" title="Others">
-        <field name="taxLine" canEdit="false" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
-          colSpan="6" form-view="tax-line-form" grid-view="tax-line-grid"
+        <field name="taxLine" canEdit="false"
+          readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
+          form-view="tax-line-form" grid-view="tax-line-grid"
           domain="self.endDate > :date OR self.endDate IS NULL"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>

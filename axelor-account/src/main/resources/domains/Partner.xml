@@ -27,7 +27,7 @@
     <integer name="invoicesCopySelect" title="Invoices copy" default="1"
       selection="grade.1.up.to.10.select"/>
 
-    <boolean name="isSubrogation" title="Subrogation" default="false"/>
+    <boolean name="isSubrogation" title="Third-party payer" default="false"/>
 
     <!-- PAGE SEPA -->
     <one-to-many name="umrList" ref="com.axelor.apps.account.db.Umr" mappedBy="partner"

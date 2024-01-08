@@ -16,24 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.debtrecovery;
+package com.axelor.apps.account.db.repo;
 
-import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.base.AxelorException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.inject.Beans;
+import java.util.Map;
 
-public interface DoubtfulCustomerInvoiceTermService {
-  void createOrUpdateInvoiceTerms(
-      Invoice invoice,
-      Move newMove,
-      List<MoveLine> invoicePartnerMoveLines,
-      List<MoveLine> creditMoveLines,
-      MoveLine debitMoveLine,
-      LocalDate todayDate,
-      BigDecimal amountRemaining)
-      throws AxelorException;
+public class InvoiceLineManagementRepository extends InvoiceLineRepository {
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put(
+        "$nbDecimalDigitForUnitPrice",
+        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+
+    return super.populate(json, context);
+  }
 }
