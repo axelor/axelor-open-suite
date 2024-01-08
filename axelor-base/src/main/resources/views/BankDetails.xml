@@ -50,6 +50,13 @@
         if="__config__.app.isApp('account')"/>
       <field name="code" x-bind="{{code|uppercase}}" hidden="true"/>
     </panel>
+    <panel name="bankAddressPanel" title="Bank information">
+      <field name="bank" canNew="true" form-view="bank-form"
+             onChange="action-group-bank-details-bank-onchange"/>
+      <field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
+             onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
+             form-view="bank-address-form"/>
+    </panel>
     <panel name="ibanPanel" title="IBAN / BBAN">
       <field name="bank.bankDetailsTypeSelect" readonly="true"/>
       <panel name="ibanPanel">
@@ -59,11 +66,7 @@
 	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
         </static>
       </panel>
-      <field name="bank" canNew="true" form-view="bank-form"
-        onChange="action-group-bank-details-bank-onchange"/>
-      <field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
-        onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
-        form-view="bank-address-form"/>
+
       <field name="ibanBic" readonly="true" x-bind="{{iban + ' ' + bank.code}}"/>
     </panel>
     <panel name="bbanPanel" title="BBAN" hideIf="bank.country.alpha2Code != 'FR'">

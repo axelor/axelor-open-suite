@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="bank-details-template-grid" title="Bank details templates"
+    model="com.axelor.apps.base.db.BankDetailsTemplate">
+    <field name="name" title="Name" required="true"/>
+    <field name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true"/>
+    <field name="bankDetailsTemplateLineList" title="Fields to use"/>
+  </grid>
+
+  <form name="bank-details-template-form" title="Bank details templates"
+    model="com.axelor.apps.base.db.BankDetailsTemplate">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" title="Name" required="true" colSpan="6"/>
+      <field name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true"
+        colSpan="6"/>
+      <panel-related field="bankDetailsTemplateLineList"
+        title="Bank Details Template Lines" colSpan="12"/>
+    </panel>
+  </form>
+</object-views>

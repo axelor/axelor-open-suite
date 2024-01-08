@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="BankDetailsTemplate">
+    <string name="name" title="Name" required="true"/>
+    <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true"
+      selection="base.bank.bank.details.type.select" default="1"/>
+    <one-to-many name="bankDetailsTemplateLineList"
+      ref="com.axelor.apps.base.db.BankDetailsTemplateLine" title="Fields to use"
+      mappedBy="bankDetailsTemplate"/>
+
+  </entity>
+
+</domain-models>

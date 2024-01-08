@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="BankDetailsTemplateLine">
+    <many-to-one name="metaField" ref="com.axelor.meta.db.MetaField"
+      title="Bank details field"/>
+    <string name="title" title="Title" namecolumn="true"/>
+    <many-to-one name="bankDetailsTemplate"
+      ref="com.axelor.apps.base.db.BankDetailsTemplate" title="Bank details template"/>
+  </entity>
+
+</domain-models>

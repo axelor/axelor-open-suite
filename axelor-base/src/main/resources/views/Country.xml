@@ -18,6 +18,8 @@
       <field name="numericCode"/>
       <field name="economicArea" canEdit="false"/>
       <field name="citizenship"/>
+
+      <field name="bankDetailsTemplate"/>
     </panel>
     <panel name="attributesPanel" title="Attributes">
       <field name="cog"/>

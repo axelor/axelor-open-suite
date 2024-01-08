@@ -327,6 +327,15 @@
     <view-param name="search-filters" value="bank-detail-filters"/>
   </action-view>
 
+  <menuitem name="referential-conf-base-bank-details-template" parent="referential-conf"
+    title="Bank details templates" action="referential.conf.base.bank.details.template" order="650"/>
+
+  <action-view name="referential.conf.base.bank.details.template"
+    title="Bank details templates" model="com.axelor.apps.base.db.BankDetailsTemplate">
+    <view type="grid" name="bank-details-template-grid"/>
+    <view type="form" name="bank-details-template-form"/>
+  </action-view>
+
   <menuitem name="referential-conf-invoice-bank" parent="referential-conf"
     title="SWIFT codes" action="referential.conf.invoice.bank" order="700"/>
 
