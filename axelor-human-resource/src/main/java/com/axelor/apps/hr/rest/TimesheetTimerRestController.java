@@ -28,7 +28,7 @@ import javax.ws.rs.core.Response;
 @Path("/aos/timesheet")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class TimesheetRestController {
+public class TimesheetTimerRestController {
   @Operation(
       summary = "Create TSTimer",
       tags = {"TSTimer"})
