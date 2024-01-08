@@ -25,19 +25,10 @@
     <option value="custom">budget.custom</option>
   </selection>
 
-  <selection name="budget.budget.level.check.available">
+  <selection name="budget.global.budget.check.available">
     <option value="1">Budget Line</option>
     <option value="2">budget.Budget</option>
-    <option value="3">Budget section</option>
-    <option value="4">Budget group</option>
     <option value="5">Global budget</option>
-  </selection>
-
-  <selection name="budget.level.budget.type.select">
-    <option value="1">Budget.Purchase</option>
-    <option value="2">Budget.Sale</option>
-    <option value="3">Investment</option>
-    <option value="4">Purchase and investment</option>
   </selection>
 
   <selection name="global.budget.budget.type.select">
