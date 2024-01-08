@@ -8,7 +8,8 @@
   <entity name="AppSupplychain" cacheable="true">
 
     <boolean name="deliveriesCopyFromManufOrder"
-      title="Deliveries copy from manufacturing order."/>
+      title="Inheritate the finished products from the MO to the deliveries"
+      help="This config allows to automatically fill the deliveries from the finished products of the manufacturing orders."/>
 
   </entity>
 
