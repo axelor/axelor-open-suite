@@ -39,8 +39,6 @@ import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
-import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -678,7 +676,5 @@ public class AccountModule extends AxelorModule {
     bind(MoveTemplateRepository.class).to(MoveTemplateManagementRepository.class);
 
     bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
-
-    bind(InvoiceLineRepository.class).to(InvoiceLineManagementRepository.class);
   }
 }
