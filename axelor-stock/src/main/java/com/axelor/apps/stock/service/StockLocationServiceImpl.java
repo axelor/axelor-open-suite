@@ -140,7 +140,9 @@ public class StockLocationServiceImpl implements StockLocationService {
       Long stockLocationLineUnitId = (Long) qtyPerUnit.get(0);
       BigDecimal sumOfQtyOfStockLocationLineUnit = (BigDecimal) qtyPerUnit.get(1);
 
-      if (productUnit != null && !productUnit.getId().equals(stockLocationLineUnitId)) {
+      if (productUnit != null
+          && stockLocationLineUnitId != null
+          && !productUnit.getId().equals(stockLocationLineUnitId)) {
         Unit stockLocationLineUnit = unitRepository.find(stockLocationLineUnitId);
 
         sumOfQty =
