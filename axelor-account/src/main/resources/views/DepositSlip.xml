@@ -65,7 +65,7 @@
         canRemove="false" grid-view="selector-payment-voucher-deposit-slip-grid"
         form-view="payment-voucher-deposit-slip-form" colSpan="12"/>
       <button
-        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count"
+        onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count,save"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
         readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
       <button
