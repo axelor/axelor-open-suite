@@ -67,6 +67,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.JpaSupport;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -133,7 +134,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
   protected EmployeeService employeeService;
   protected AppBaseService appBaseService;
-  private ExecutorService executor = Executors.newCachedThreadPool();
+  private ExecutorService executor = Executors.newSingleThreadExecutor();
   private static final int ENTITY_FIND_TIMEOUT = 10000;
   private static final int ENTITY_FIND_INTERVAL = 50;
 
@@ -300,6 +301,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
   @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException {
+    timesheet = timeSheetRepository.find(timesheet.getId());
     validate(timesheet);
     return sendValidationEmail(timesheet);
   }
@@ -763,7 +765,6 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
                   inTransaction(
                       () -> {
                         final Project updateProject = findProject(project.getId());
-                        getEntityManager().lock(updateProject, LockModeType.PESSIMISTIC_WRITE);
 
                         projectRepo.save(updateProject);
                       });
@@ -779,7 +780,9 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
               }
               return true;
             });
+        JPA.clear();
       }
+      executor.shutdown();
     }
   }
 
