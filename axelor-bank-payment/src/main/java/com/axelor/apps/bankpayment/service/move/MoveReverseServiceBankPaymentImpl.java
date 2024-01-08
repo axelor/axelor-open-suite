@@ -109,20 +109,12 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
             move.getReference());
       }
 
-      for (MoveLine moveLine : move.getMoveLineList()) {
-        if (Optional.of(moveLine)
-            .map(MoveLine::getAccount)
-            .map(Account::getAccountType)
-            .map(
-                accountType ->
-                    AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
-            .orElse(false)) {
-          moveLine.setBankReconciledAmount(moveLine.getCurrencyAmount().abs());
-        }
-      }
+      fillBankReconciledAmount(move);
     }
     Move newMove = super.generateReverse(move, assistantMap);
     if (isHiddenMoveLinesInBankReconciliation) {
+      fillBankReconciledAmount(newMove);
+
       bankReconciliationService.unreconcileLines(
           bankReconciliationLineList.stream()
               .filter(
@@ -228,6 +220,20 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   protected void updateBankAmountReconcile(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
+    }
+  }
+
+  protected void fillBankReconciledAmount(Move move) {
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (Optional.of(moveLine)
+          .map(MoveLine::getAccount)
+          .map(Account::getAccountType)
+          .map(
+              accountType ->
+                  AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
+          .orElse(false)) {
+        moveLine.setBankReconciledAmount(moveLine.getCurrencyAmount().abs());
+      }
     }
   }
 }
