@@ -103,7 +103,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.LockModeType;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections4.ListUtils;
 import wslite.json.JSONException;
