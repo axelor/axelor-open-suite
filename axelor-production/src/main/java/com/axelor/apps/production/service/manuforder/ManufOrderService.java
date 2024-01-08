@@ -48,6 +48,8 @@ public interface ManufOrderService {
    */
   boolean areLinesOutsourced(ManufOrder manufOrder);
 
+  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
+
   public interface ManufOrderOriginType {}
 
   public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {

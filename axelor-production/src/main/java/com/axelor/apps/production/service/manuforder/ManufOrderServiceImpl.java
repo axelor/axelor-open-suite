@@ -165,6 +165,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  public void setOperationOrdersOutsourcing(ManufOrder manufOrder) {
+    if (manufOrder != null && manufOrder.getOperationOrderList() != null) {
+      manufOrder
+          .getOperationOrderList()
+          .forEach(oo -> oo.setOutsourcing(manufOrder.getOutsourcing()));
+    }
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,

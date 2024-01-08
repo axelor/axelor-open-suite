@@ -117,7 +117,9 @@
       <field name="manufOrder" colSpan="3" hidden="true" readonly="true"/>
       <field name="prodProcessLine.outsourcable" hidden="true"/>
       <panel name="outsourcePanel" showTitle="false" colSpan="12">
-        <field name="outsourcing" colSpan="4" readonlyIf="!prodProcessLine.outsourcable"/>
+        <field name="outsourcing" colSpan="4"
+          hideIf="!prodProcessLine.outsourcable &amp;&amp; !prodProcessLine.outsourcing &amp;&amp; !manufOrder.outsourcing "
+          readonlyIf="!prodProcessLine.outsourcable"/>
         <field name="outsourcingPartner"
           showIf="outsourcing &amp;&amp; !manufOrder.outsourcing"
           domain="self.isSubcontractor = true" colSpan="4"/>

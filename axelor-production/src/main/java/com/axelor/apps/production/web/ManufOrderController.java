@@ -770,4 +770,11 @@ public class ManufOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setOperationOrdersOutsourcing(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+
+    Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
+    response.setValue("operationOrderList", manufOrder.getOperationOrderList());
+  }
 }

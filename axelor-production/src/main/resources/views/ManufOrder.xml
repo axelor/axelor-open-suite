@@ -151,7 +151,8 @@
         <field name="outsourcing" colSpan="3"
           hideIf="prodProcess.prodProcessLinesOutsourcable
            || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
-          readonlyIf="prodProcess.outsourcing"/>
+          readonlyIf="prodProcess.outsourcing"
+          onChange="action-manuf-order-method-set-operation-orders-outsourcing"/>
         <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
           domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
@@ -912,6 +913,12 @@
   <action-method name="action-manuf-order-method-check-merge-values"
     model="com.axelor.apps.production.db.ManufOrder">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="checkMergeValues"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setOperationOrdersOutsourcing"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-generate-merge-manuf-order"
