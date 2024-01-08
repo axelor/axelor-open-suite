@@ -328,14 +328,15 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     String[] technicalTypeSelects = {
       AccountTypeRepository.TYPE_CHARGE,
       AccountTypeRepository.TYPE_INCOME,
-      AccountTypeRepository.TYPE_TAX
+      AccountTypeRepository.TYPE_TAX,
+      AccountTypeRepository.TYPE_IMMOBILISATION
     };
 
     boolean isReadonly =
-        moveLine.getAccount() == null
-            || moveLine.getAccount().getAccountType() == null
-            || !Arrays.asList(technicalTypeSelects)
-                .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
+        moveLine.getAccount() != null
+            && (moveLine.getAccount().getAccountType() == null
+                || !Arrays.asList(technicalTypeSelects)
+                    .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect()));
 
     this.addAttr("$isVatSystemSelectReadonly", "value", isReadonly, attrsMap);
   }
