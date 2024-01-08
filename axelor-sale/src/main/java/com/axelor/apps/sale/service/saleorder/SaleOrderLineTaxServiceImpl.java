@@ -1,10 +1,12 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
@@ -21,10 +23,13 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected OrderLineTaxService orderLineTaxService;
+  protected CurrencyScaleServiceSale currencyScaleServiceSale;
 
   @Inject
-  public SaleOrderLineTaxServiceImpl(OrderLineTaxService orderLineTaxService) {
+  public SaleOrderLineTaxServiceImpl(
+      OrderLineTaxService orderLineTaxService, CurrencyScaleServiceSale currencyScaleServiceSale) {
     this.orderLineTaxService = orderLineTaxService;
+    this.currencyScaleServiceSale = currencyScaleServiceSale;
   }
 
   /**
@@ -52,7 +57,7 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       }
     }
 
-    computeAndAddTaxToList(map, saleOrderLineTaxList);
+    computeAndAddTaxToList(map, saleOrderLineTaxList, saleOrder.getCurrency());
     orderLineTaxService.setSpecificNotes(
         customerSpecificNote,
         saleOrder,
@@ -83,7 +88,8 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
       if (map.containsKey(taxLine)) {
         SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
         saleOrderLineTax.setExTaxBase(
-            saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
+            currencyScaleServiceSale.getScaledValue(
+                saleOrder, saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal())));
       } else {
         SaleOrderLineTax saleOrderLineTax =
             createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine);
@@ -102,10 +108,12 @@ public class SaleOrderLineTaxServiceImpl implements SaleOrderLineTaxService {
   }
 
   protected void computeAndAddTaxToList(
-      Map<TaxLine, SaleOrderLineTax> map, List<SaleOrderLineTax> saleOrderLineTaxList) {
+      Map<TaxLine, SaleOrderLineTax> map,
+      List<SaleOrderLineTax> saleOrderLineTaxList,
+      Currency currency) {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       // Dans la devise de la facture
-      orderLineTaxService.computeTax(saleOrderLineTax);
+      orderLineTaxService.computeTax(saleOrderLineTax, currency);
       saleOrderLineTaxList.add(saleOrderLineTax);
       LOG.debug(
           "VAT line : VAT total => {}, W.T. total => {}",

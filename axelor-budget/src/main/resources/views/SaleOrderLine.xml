@@ -39,7 +39,7 @@
           name="budgetDistributionPanel" title="Budget" showIf="product" colSpan="12">
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="companyExTaxTotal" title="Total W.T." hidden="false" readonly="true" colSpan="6"
-            x-currency="$currencySymbol">
+            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
             <viewer depends="companyExTaxTotal"><![CDATA[
 
 				<dd>{{$fmt('companyExTaxTotal')}}</dd>
@@ -48,7 +48,7 @@
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetDistributionSumAmount" readonly="true" colSpan="6"
-            x-currency="$currencySymbol">
+            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
             <viewer depends="budgetDistributionSumAmount">
               <![CDATA[
 				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
@@ -68,6 +68,7 @@
             grid-view="reduce-budget-distribution-grid" editable="true"
             onChange="action-group-budget-sale-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="$companyCurrencyScale" hidden="true"/>
         </panel>
       </insert>
     </extend>
