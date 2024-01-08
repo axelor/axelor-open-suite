@@ -939,8 +939,8 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     if (!bankReconciliation.getIncludeOtherBankStatements()) {
       query =
           query
-              + " AND (self.date >= :fromDate OR self.dueDate >= :fromDate)"
-              + " AND (self.date <= :toDate OR self.dueDate <= :toDate)";
+              + " AND (self.date BETWEEN :fromDate AND :toDate"
+              + " OR self.dueDate BETWEEN :fromDate AND :toDate)";
     }
 
     if (bankReconciliation.getJournal() != null) {
