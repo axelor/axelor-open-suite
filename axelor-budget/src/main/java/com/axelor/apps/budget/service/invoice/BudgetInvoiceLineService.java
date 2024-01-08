@@ -47,4 +47,6 @@ public interface BudgetInvoiceLineService {
   public void checkAmountForInvoiceLine(InvoiceLine invoiceLine) throws AxelorException;
 
   public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice);
+
+  void negateAmount(InvoiceLine invoiceLine, Invoice invoice);
 }

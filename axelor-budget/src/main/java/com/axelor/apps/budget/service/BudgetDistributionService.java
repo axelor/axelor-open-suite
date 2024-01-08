@@ -68,6 +68,9 @@ public interface BudgetDistributionService {
       AuditableModel object)
       throws AxelorException;
 
+  void linkBudgetDistributionWithParent(
+      BudgetDistribution budgetDistribution, AuditableModel object);
+
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate);
 }

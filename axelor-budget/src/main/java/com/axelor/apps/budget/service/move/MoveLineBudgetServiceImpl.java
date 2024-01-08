@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.budget.service.move;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -27,10 +29,12 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
 
 @RequestScoped
 public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
@@ -73,13 +77,38 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
     if (moveLine.getBudgetDistributionList() != null
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().compareTo(moveLine.getCredit().add(moveLine.getDebit()))
+        if (budgetDistribution
+                .getAmount()
+                .abs()
+                .compareTo(moveLine.getCredit().add(moveLine.getDebit()))
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_MOVE),
               budgetDistribution.getBudget().getCode(),
               moveLine.getAccount().getCode());
+        }
+      }
+    }
+  }
+
+  @Override
+  public void negateAmount(MoveLine moveLine, Move move) {
+    if (moveLine == null
+        || moveLine.getAccount() == null
+        || ObjectUtils.isEmpty(moveLine.getBudgetDistributionList())) {
+      return;
+    }
+
+    Account account = moveLine.getAccount();
+    if ((AccountRepository.COMMON_POSITION_CREDIT == account.getCommonPosition()
+            && moveLine.getDebit().signum() != 0)
+        || (AccountRepository.COMMON_POSITION_DEBIT == account.getCommonPosition()
+            && moveLine.getCredit().signum() != 0)) {
+
+      for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+          budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
         }
       }
     }

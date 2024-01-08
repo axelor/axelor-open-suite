@@ -44,4 +44,6 @@ public interface MoveLineBudgetService {
    * @throws AxelorException
    */
   public void checkAmountForMoveLine(MoveLine moveLine) throws AxelorException;
+
+  void negateAmount(MoveLine moveLine, Move move);
 }
