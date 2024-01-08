@@ -88,7 +88,8 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       AccountingCloseAnnualService accountingCloseAnnualService,
       AccountConfigService accountConfigService,
       MoveCreateService moveCreateService,
-      MoveValidateService moveValidateService) {
+      MoveValidateService moveValidateService,
+      MoveSimulateService moveSimulateService) {
     this.partnerRepository = partnerRepository;
     this.yearRepository = yearRepository;
     this.accountRepository = accountRepository;
@@ -97,6 +98,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     this.accountConfigService = accountConfigService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
+    this.moveSimulateService = moveSimulateService;
   }
 
   @Override
