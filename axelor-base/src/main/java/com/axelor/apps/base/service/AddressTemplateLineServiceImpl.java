@@ -1,7 +1,6 @@
 package com.axelor.apps.base.service;
 
 import com.google.inject.Inject;
-
 import java.util.HashMap;
 import java.util.Map;
 
