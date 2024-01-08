@@ -25,6 +25,8 @@ import java.math.BigDecimal;
 
 public interface TimesheetTimerService {
 
+  void start(TSTimer timer);
+
   public void pause(TSTimer timer);
 
   public void stop(TSTimer timer) throws AxelorException;
@@ -36,4 +38,6 @@ public interface TimesheetTimerService {
   public TSTimer getCurrentTSTimer();
 
   public BigDecimal convertSecondDurationInHours(long durationInSeconds);
+
+  void setUpdatedDuration(TSTimer timer, Long duration);
 }

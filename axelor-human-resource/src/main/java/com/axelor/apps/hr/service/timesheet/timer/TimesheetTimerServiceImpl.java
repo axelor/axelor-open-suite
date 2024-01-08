@@ -36,6 +36,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.DurationHelper;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -49,6 +50,29 @@ import org.slf4j.LoggerFactory;
 public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  protected AppBaseService appBaseService;
+  protected TSTimerRepository tsTimerRepository;
+
+  @Inject
+  public TimesheetTimerServiceImpl(
+      AppBaseService appBaseService, TSTimerRepository tsTimerRepository) {
+    this.appBaseService = appBaseService;
+    this.tsTimerRepository = tsTimerRepository;
+  }
+
+  @Transactional
+  @Override
+  public void start(TSTimer timer) {
+    LocalDateTime todayDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
+    timer.setStatusSelect(TSTimerRepository.STATUS_START);
+    timer.setTimerStartDateT(todayDateTime);
+    timer.setLastStartDateT(todayDateTime);
+    if (timer.getStartDateTime() == null
+        || timer.getStatusSelect() == TSTimerRepository.STATUS_PAUSE) {
+      timer.setStartDateTime(todayDateTime);
+    }
+  }
 
   @Transactional
   public void pause(TSTimer timer) {
@@ -141,6 +165,13 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     logger.debug("Duration in hours : {}", durationHours);
 
     return durationHours;
+  }
+
+  @Transactional
+  @Override
+  public void setUpdatedDuration(TSTimer timer, Long duration) {
+    timer.setUpdatedDuration(duration);
+    tsTimerRepository.save(timer);
   }
 
   public TSTimer getCurrentTSTimer() {
