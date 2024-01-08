@@ -48,10 +48,8 @@
 
   <selection name="bankpayment.bank.order.status.select">
     <option value="1">Draft</option>
-    <option value="2">Awaiting signature</option>
-    <option value="3">Validated</option>
+    <option value="3">Confirmed</option>
     <option value="4">Carried out</option>
-    <option value="5">Rejected</option>
     <option value="6">Canceled</option>
   </selection>
 
@@ -140,48 +138,10 @@
     <option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
   </selection>
 
-  <selection name="bankpayment.ebics.bank.bank.statement.period.mode.select">
-    <option value="1">Automatic</option>
-    <option value="2">Period</option>
-  </selection>
 
-  <selection name="bankpayment.ebics.partner.ebics.type.select">
-    <option value="0">Ebics T</option>
-    <option value="1">Ebics TS</option>
-  </selection>
 
-  <selection name="bankpayment.ebics.user.user.type.select">
-    <option value="0">Transport</option>
-    <option value="1">Signatory</option>
-  </selection>
 
-  <selection name="bankpayment.account.ebics.user.status.select">
-    <option value="0">Waiting for the certificate configuration</option>
-    <option value="1">Waiting for the sending of the signature certificate to the bank</option>
-    <option value="2">Waiting for the sending of the authentication and encryption certificates</option>
-    <option value="3">Active connection</option>
-    <option value="4">Certificates should be renewed</option>
-  </selection>
 
-  <selection name="bankpayment.ebics.certificate.type.select">
-    <option value="ssl">SSL</option>
-    <option value="encryption">Encryption</option>
-    <option value="authentication">Authentication</option>
-    <option value="signature">Signature</option>
-  </selection>
-
-  <selection name="bankpayment.ebics.bank.protocol.select">
-    <option value="ssl">SSL</option>
-    <option value="tls">TLS</option>
-  </selection>
-
-  <selection name="bankpayment.ebics.bank.certificate.validity.period.select">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-  </selection>
 
   <selection name="iaccounting.batch.action.select"
     id="bankpayment.iaccounting.batch.action.select">
@@ -232,11 +192,6 @@
   <selection name="bankpayment.bank.order.ff.qualifying.amount.select">
     <option value="T">Amount in transfer's currency</option>
     <option value="D">Equivalent amount in sender bank details' currency</option>
-  </selection>
-
-  <selection name="bank.payment.batch.action.select">
-    <option value="1">Check the ebics certificate validation date</option>
-    <option value="2">Bank statement</option>
   </selection>
 
   <selection name="bank.payment.bank.order.line.origin.related.to.select">
@@ -321,7 +276,6 @@
   <selection name="payment.mode.accounting.trigger.select"
     id="bank.payment.payment.mode.accounting.trigger.select">
     <option value="2" order="2">Bank order confirmation</option>
-    <option value="3" order="3">Bank order validation</option>
     <option value="4" order="4">Bank order realization</option>
   </selection>
 
@@ -329,7 +283,6 @@
     <option value="0">None</option>
     <option value="1">Already accounted</option>
     <option value="2">Bank order confirmation</option>
-    <option value="3">Bank order validation</option>
     <option value="4">Bank order realization</option>
   </selection>
 

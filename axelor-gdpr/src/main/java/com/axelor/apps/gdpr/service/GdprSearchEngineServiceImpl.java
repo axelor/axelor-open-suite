@@ -25,6 +25,7 @@ import com.axelor.apps.gdpr.db.GDPRSearchConfigLine;
 import com.axelor.apps.gdpr.exception.GdprExceptionMessage;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
@@ -222,7 +222,7 @@ public class GdprSearchEngineServiceImpl implements GdprSearchEngineService {
 
     if (fields.length == 1 || !value.isPresent()) {
       // simple case
-      return value.map(Object::toString).orElse(StringUtils.EMPTY);
+      return value.map(Object::toString).orElse("");
     } else {
       // handle subobject case
       MetaField metaField =

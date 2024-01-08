@@ -40,7 +40,6 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.GlobalBudgetTemplate;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
@@ -49,7 +48,6 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
@@ -63,7 +61,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -766,16 +763,16 @@ public class BudgetServiceImpl implements BudgetService {
       List<String> accountTypeList = new ArrayList<>();
 
       switch (budgetType) {
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT:
           accountTypeList.add(AccountTypeRepository.TYPE_IMMOBILISATION);
           accountTypeList.add(AccountTypeRepository.TYPE_CHARGE);
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_PURCHASE:
           accountTypeList.add(AccountTypeRepository.TYPE_CHARGE);
           break;
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_SALE:
           accountTypeList.add(AccountTypeRepository.TYPE_INCOME);
           break;
-        case BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT:
+        case GlobalBudgetRepository.GLOBAL_BUDGET_BUDGET_TYPE_SELECT_INVESTMENT:
           accountTypeList.add(AccountTypeRepository.TYPE_IMMOBILISATION);
           break;
       }
@@ -940,87 +937,13 @@ public class BudgetServiceImpl implements BudgetService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void generateBudgetsUsingTemplate(
-      GlobalBudgetTemplate globalBudgetTemplate,
-      List<Budget> budgetList,
-      Set<BudgetScenarioVariable> variablesList,
-      BudgetLevel budgetLevel,
-      GlobalBudget global,
-      Map<String, Object> variableAmountMap)
-      throws AxelorException {
-    if (!globalBudgetTemplate.getIsScenario() && !ObjectUtils.isEmpty(budgetList)) {
-      for (Budget budget : budgetList) {
-        Budget optBudget = budgetRepository.copy(budget, true);
-        optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-        optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-        optBudget.setAmountForGeneration(
-            currencyScaleServiceBudget.getCompanyScaledValue(
-                budget, budget.getTotalAmountExpected()));
-        optBudget.setAvailableAmount(
-            currencyScaleServiceBudget.getCompanyScaledValue(
-                budget, budget.getTotalAmountExpected()));
-        optBudget.setAvailableAmountWithSimulated(
-            currencyScaleServiceBudget.getCompanyScaledValue(
-                budget, budget.getTotalAmountExpected()));
-        generatePeriods(optBudget);
-        budgetLevel.addBudgetListItem(optBudget);
-        global.addBudgetListItem(optBudget);
-        budgetRepository.save(optBudget);
-      }
-    } else if (globalBudgetTemplate.getIsScenario() && !ObjectUtils.isEmpty(variablesList)) {
-
-      for (BudgetScenarioVariable budgetScenarioVariable : variablesList) {
-        Budget optBudget =
-            createBudgetFromVariable(budgetScenarioVariable, budgetLevel, variableAmountMap);
-        budgetLevel.addBudgetListItem(optBudget);
-        global.addBudgetListItem(optBudget);
-        budgetRepository.save(optBudget);
-      }
-    }
-  }
-
-  protected Budget createBudgetFromVariable(
-      BudgetScenarioVariable budgetScenarioVariable,
-      BudgetLevel budgetLevel,
-      Map<String, Object> variableAmountMap)
-      throws AxelorException {
-    if (budgetScenarioVariable == null || budgetLevel == null) {
-      return null;
-    }
-    Budget optBudget = new Budget();
-    optBudget.setCode(budgetScenarioVariable.getCode());
-    optBudget.setName(budgetScenarioVariable.getName());
-    optBudget.setFromDate(budgetLevel.getFromDate());
-    optBudget.setToDate(budgetLevel.getToDate());
-    optBudget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
-    optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
-    optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
-    optBudget.setCategory(budgetScenarioVariable.getCategory());
-    BigDecimal calculatedAmount =
-        currencyScaleServiceBudget.getCompanyScaledValue(
-            budgetLevel,
-            ((BigDecimal)
-                variableAmountMap.getOrDefault(budgetScenarioVariable.getCode(), BigDecimal.ZERO)));
-    optBudget.setAmountForGeneration(calculatedAmount);
-    optBudget.setTotalAmountExpected(calculatedAmount);
-    optBudget.setAvailableAmount(calculatedAmount);
-    optBudget.setAvailableAmountWithSimulated(optBudget.getAmountForGeneration());
-    optBudget.setPeriodDurationSelect(0);
-    generatePeriods(optBudget);
-    return optBudget;
-  }
-
-  @Override
   public void computeAvailableFields(Budget budget) {
     budget.setAvailableAmount(
-        currencyScaleServiceBudget.getCompanyScaledValue(
-            budget,
-            (budget
-                    .getTotalAmountExpected()
-                    .subtract(budget.getRealizedWithPo())
-                    .subtract(budget.getRealizedWithNoPo()))
-                .max(BigDecimal.ZERO)));
+        (budget
+                .getTotalAmountExpected()
+                .subtract(budget.getRealizedWithPo())
+                .subtract(budget.getRealizedWithNoPo()))
+            .max(BigDecimal.ZERO));
     computeTotalAvailableWithSimulatedAmount(budget);
     computeTotalFirmGap(budget);
   }
@@ -1032,5 +955,66 @@ public class BudgetServiceImpl implements BudgetService {
       budget.setArchived(true);
       budgetRepository.save(budget);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateLineFromGenerator(
+      Budget budget, BudgetLevel parent, GlobalBudget globalBudget) throws AxelorException {
+    Budget optBudget = budgetRepository.copy(budget, true);
+    optBudget.setFromDate(globalBudget.getFromDate());
+    optBudget.setToDate(globalBudget.getToDate());
+    optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
+    optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
+    optBudget.setAmountForGeneration(
+        currencyScaleServiceBudget.getCompanyScaledValue(budget, budget.getTotalAmountExpected()));
+    optBudget.setAvailableAmount(
+        currencyScaleServiceBudget.getCompanyScaledValue(budget, budget.getTotalAmountExpected()));
+    optBudget.setAvailableAmountWithSimulated(
+        currencyScaleServiceBudget.getCompanyScaledValue(budget, budget.getTotalAmountExpected()));
+    optBudget.setBudgetStructure(null);
+    generatePeriods(optBudget);
+    if (parent != null) {
+      parent.addBudgetListItem(optBudget);
+    }
+    budgetRepository.save(optBudget);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void generateLineFromGenerator(
+      BudgetScenarioVariable budgetScenarioVariable,
+      BudgetLevel parent,
+      Map<String, Object> variableAmountMap,
+      GlobalBudget globalBudget)
+      throws AxelorException {
+    Budget optBudget = new Budget();
+    optBudget.setCode(budgetScenarioVariable.getCode());
+    optBudget.setName(budgetScenarioVariable.getName());
+    optBudget.setFromDate(globalBudget.getFromDate());
+    optBudget.setToDate(globalBudget.getToDate());
+    optBudget.setStatusSelect(BudgetRepository.STATUS_DRAFT);
+    optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
+    optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
+    optBudget.setCategory(budgetScenarioVariable.getCategory());
+    BigDecimal calculatedAmount =
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            parent,
+            ((BigDecimal)
+                variableAmountMap.getOrDefault(budgetScenarioVariable.getCode(), BigDecimal.ZERO)));
+    optBudget.setAmountForGeneration(calculatedAmount);
+    optBudget.setTotalAmountExpected(calculatedAmount);
+    optBudget.setAvailableAmount(calculatedAmount);
+    optBudget.setAvailableAmountWithSimulated(optBudget.getAmountForGeneration());
+    optBudget.setPeriodDurationSelect(0);
+    generatePeriods(optBudget);
+    if (parent != null) {
+      parent.addBudgetListItem(optBudget);
+    }
+    if (globalBudget != null) {
+      globalBudget.addBudgetListItem(optBudget);
+    }
+
+    budgetRepository.save(optBudget);
   }
 }

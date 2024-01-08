@@ -119,6 +119,8 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
 
   protected BigDecimal getYearValue(BudgetScenarioLine budgetScenarioLine, int yearNumber) {
     switch (yearNumber) {
+      case 1:
+        return budgetScenarioLine.getYear1Value();
       case 2:
         return budgetScenarioLine.getYear2Value();
       case 3:
@@ -130,7 +132,7 @@ public class BudgetScenarioServiceImpl implements BudgetScenarioService {
       case 6:
         return budgetScenarioLine.getYear6Value();
       default:
-        return budgetScenarioLine.getYear1Value();
+        return BigDecimal.ZERO;
     }
   }
 

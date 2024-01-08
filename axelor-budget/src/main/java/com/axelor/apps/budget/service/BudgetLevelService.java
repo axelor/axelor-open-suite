@@ -24,6 +24,7 @@ import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.GlobalBudget;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetLevelService {
 
@@ -40,7 +41,7 @@ public interface BudgetLevelService {
    * @param budgetLevel
    * @return BudgetLevel
    */
-  public void archiveBudgetLevel(BudgetLevel budgetLevel);
+  public void archiveChildren(BudgetLevel budgetLevel);
 
   /**
    * Find the budget level in database then set their dates and save it
@@ -96,4 +97,12 @@ public interface BudgetLevelService {
   public void computeBudgetLevelTotals(Budget budget);
 
   List<BudgetLevel> getLastSections(GlobalBudget globalBudget);
+
+  void generateBudgetLevelFromGenerator(
+      BudgetLevel budgetLevel,
+      BudgetLevel parent,
+      GlobalBudget globalBudget,
+      Map<String, Object> variableAmountMap,
+      boolean linkToGlobal)
+      throws AxelorException;
 }

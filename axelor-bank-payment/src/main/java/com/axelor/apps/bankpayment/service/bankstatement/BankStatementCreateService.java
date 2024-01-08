@@ -19,47 +19,13 @@
 package com.axelor.apps.bankpayment.service.bankstatement;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class BankStatementCreateService {
 
-  public BankStatement createBankStatement(
-      File file,
-      LocalDate fromDate,
-      LocalDate toDate,
-      BankStatementFileFormat bankStatementFileFormat,
-      EbicsPartner ebicsPartner,
-      LocalDateTime executionDateTime)
-      throws IOException {
-
-    BankStatement bankStatement = new BankStatement();
-    bankStatement.setFromDate(fromDate);
-    bankStatement.setToDate(toDate);
-    bankStatement.setBankStatementFileFormat(bankStatementFileFormat);
-    bankStatement.setEbicsPartner(ebicsPartner);
-    bankStatement.setGetDateTime(executionDateTime);
-    bankStatement.setBankStatementFile(Beans.get(MetaFiles.class).upload(file));
-    bankStatement.setName(this.computeName(bankStatement));
-    bankStatement.setStatusSelect(BankStatementRepository.STATUS_RECEIVED);
-    return bankStatement;
-  }
-
   public String computeName(BankStatement bankStatement) {
 
     String name = "";
-
-    if (bankStatement.getEbicsPartner() != null) {
-      name += bankStatement.getEbicsPartner().getPartnerId();
-    }
 
     if (bankStatement.getBankStatementFileFormat() != null) {
       if (name != "") {

@@ -77,7 +77,6 @@
     <field name="purchaseOrderLine.exTaxTotal"
       x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
-    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="imputationDate"/>
     <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
@@ -110,7 +109,7 @@
     <field name="purchaseOrderLine.exTaxTotal"
       x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
+    <field name="budget.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -128,8 +127,7 @@
     <field name="purchaseOrderLine.exTaxTotal"
       x-scale="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrderLine.purchaseOrder.currency.numberOfDecimals" hidden="true"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="budget.globalBudget" title="Global budget"/>
     <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
@@ -187,8 +185,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.product"/>
     <field name="amount" x-scale="budget.company.currency.numberOfDecimals"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="budget.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
   </grid>
@@ -287,11 +284,8 @@
     <panel name="mainPanel" readonly="true">
       <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
-      <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-        showIf="$fromGroup"/>
-      <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"
-        showIf="$fromSection"/>
-      <field name="budget.budgetLevel" title="Section line" showIf="$fromBudget"/>
+      <field name="budget.globalBudget" title="Global budget"/>
+      <field name="budget.budgetLevel" title="Section line"/>
       <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
       <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
       <field name="purchaseOrderLine.productName"/>

@@ -28,8 +28,6 @@
             onChange="action-payment-mode-record-generate-bank-order-onchange"/>
           <field name="autoConfirmBankOrder" showIf="generateBankOrder"/>
           <panel name="generateBankOrderPanel" showIf="generateBankOrder" colSpan="12">
-            <field name="automaticTransmission"
-              if="__config__.app.getApp('bank-payment')?.enableEbicsModule"/>
             <field name="consoBankOrderLinePerPartner"/>
             <panel stacked="true">
               <field name="orderTypeSelect" selection-in="[2,4]" hidden="true"
@@ -57,7 +55,6 @@
     model="com.axelor.apps.account.db.PaymentMode">
     <field name="orderTypeSelect" expr=""/>
     <field name="generateBankOrder" expr="false"/>
-    <field name="automaticTransmission" expr="false"/>
     <field name="bankOrderExportFolderPath" expr=""/>
   </action-record>
 

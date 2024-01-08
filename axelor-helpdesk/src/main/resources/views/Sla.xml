@@ -28,8 +28,10 @@
         <field name="reachIn" title="Reach in">
           <viewer>
 					<![CDATA[
-						<span>{{record.days}} <b>days</b></span><br />
-						<span>{{record.hours}} <b>hours</b></span>
+						<>
+							<span>{days} <b>days</b></span> <Box/>
+							<span>{hours} <b>hours</b></span>
+						</>
 					]]>
           </viewer>
           <editor>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="BillOfMaterialImport">
+
+    <string name="name" title="Name" required="true"/>
+    <integer name="statusSelect" title="Status" default="1"
+      selection="production.bill.of.material.import.status.select"/>
+    <many-to-one name="importSource" title="Import source"
+      ref="com.axelor.apps.production.db.BillOfMaterialImportSource" required="true"/>
+    <many-to-one name="importMetaFile" title="Import CSV"
+      ref="com.axelor.meta.db.MetaFile" required="true"/>
+    <many-to-one name="documentMetaFile" title="Documents"
+      ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="mainBillOfMaterialGenerated"
+      title="Main bill of materials generated" ref="com.axelor.apps.production.db.BillOfMaterial"/>
+    <one-to-many name="billOfMaterialImportLineList" title="Results"
+      mappedBy="billOfMaterialImport" ref="com.axelor.apps.production.db.BillOfMaterialImportLine"/>
+
+    <extra-code>
+      <![CDATA[
+	  		public static final int STATUS_DRAFT = 1;
+	  		public static final int STATUS_IMPORTED = 2;
+	  		public static final int STATUS_VALIDATED = 3;
+	  ]]>
+    </extra-code>
+
+  </entity>
+</domain-models>

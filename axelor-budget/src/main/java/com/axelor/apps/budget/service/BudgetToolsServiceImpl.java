@@ -31,7 +31,6 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -192,7 +191,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
 
     switch (budgetControlLevel) {
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE:
+      case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE:
         if (date == null && globalBudget != null && globalBudget.getCompany() != null) {
           date = appBaseService.getTodayDate(globalBudget.getCompany());
         }
@@ -204,7 +203,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
           }
         }
         break;
-      case BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET:
+      case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET:
         return currencyScaleServiceBudget.getCompanyScaledValue(
             budget, budget.getAvailableAmount());
       default:
@@ -228,11 +227,11 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
     if (globalBudget != null
         && globalBudget.getCheckAvailableSelect() != null
         && globalBudget.getCheckAvailableSelect()
-            != GlobalBudgetRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_DEFAULT_VALUE) {
+            != GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE) {
       return globalBudget.getCheckAvailableSelect();
     } else {
       return appBudgetService.getAppBudget().getCheckAvailableBudget()
-          ? BudgetLevelRepository.BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE
+          ? GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE
           : null;
     }
   }
