@@ -5,3 +5,33 @@ ${(Address.addressL4 == null) ? '' : Address.addressL4}
 ${(Address.addressL5 == null) ? '' : Address.addressL5}
 ${(Address.addressL6 == null) ? '' : Address.addressL6}
 ${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.floor == null) ? '' : Address.floor}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.zip == null) ? '' : Address.zip}"
+"2";"CANADA";"2";"${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";;"${(Address.department == null) ? '' : Address.department}";"${(Address.room == null) ? '' : Address.room}-${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision} ${(Address.zip == null) ? '' : Address.zip}"
+"3";"ETATS-UNIS";"2";"${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";;"${(Address.department == null) ? '' : Address.department}";"${(Address.room == null) ? '' : Address.room}-${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision} ${(Address.zip == null) ? '' : Address.zip}"
+"4";"MAROC";"2";"${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";;;"${(Address.streetName == null) ? '' : Address.streetName}";;"${(Address.city == null) ? '' : Address.city.name}"
+"5";"ROYAUME-UNI";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.subDepartment == null) ? '' : Address.subDepartment}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.zip == null) ? '' : Address.zip}"
+"6";"INDE";"2";"${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";;"${(Address.department == null) ? '' : Address.department}";"${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision}";"${(Address.zip == null) ? '' : Address.zip} - ${(Address.city == null) ? '' : Address.city.name}"
+"7";"AUSTRALIE";"2";"${(Address.addressL2 == null) ? '' : Address.addressL2}
+${(Address.addressL3 == null) ? '' : Address.addressL3}
+${(Address.addressL4 == null) ? '' : Address.addressL4}
+${(Address.addressL5 == null) ? '' : Address.addressL5}
+${(Address.addressL6 == null) ? '' : Address.addressL6}
+${(Address.country == null) ? '' : Address.country.name}";"${(Address.department == null) ? '' : Address.department}";"${(Address.subDepartment == null) ? '' : Address.subDepartment}";"${(Address.room == null) ? '' : Address.room}/${(Address.streetName == null) ? '' : Address.streetName}";"${(Address.postBox == null) ? '' : Address.postBox}";"${(Address.city == null) ? '' : Address.city.name} ${(Address.countrySubDivision == null) ? '' : Address.countrySubDivision} ${(Address.zip == null) ? '' : Address.zip}"
