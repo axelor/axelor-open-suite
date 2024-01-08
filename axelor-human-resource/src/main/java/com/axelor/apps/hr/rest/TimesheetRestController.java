@@ -53,9 +53,9 @@ public class TimesheetRestController {
       summary = "Update TSTimer",
       tags = {"TSTimer"})
   @Path("/timer/update/{timerId}")
-  @POST
+  @PUT
   @HttpExceptionHandler
-  public Response updateTSTimer(@PathParam("timerId") Long timerId, TSTimerPostRequest requestBody)
+  public Response updateTSTimer(@PathParam("timerId") Long timerId, TSTimerPutRequest requestBody)
       throws AxelorException {
     new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
 
@@ -68,6 +68,23 @@ public class TimesheetRestController {
             requestBody.fetchProject(),
             requestBody.fetchProjectTask(),
             requestBody.fetchProduct());
+
+    return ResponseConstructor.build(
+        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
+  }
+
+  @Operation(
+      summary = "Reset TSTimer",
+      tags = {"TSTimer"})
+  @Path("/timer/reset/{timerId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response resetTSTimer(@PathParam("timerId") Long timerId) {
+    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
+
+    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
+    Beans.get(TimesheetTimerCreateService.class).resetTimer(timer);
+
     return ResponseConstructor.build(
         Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
   }
@@ -122,10 +139,11 @@ public class TimesheetRestController {
   @Operation(
       summary = "Update TSTimer duration",
       tags = {"TSTimer"})
-  @Path("/timer/update/{timerId}")
+  @Path("/timer/duration/{timerId}")
   @PUT
   @HttpExceptionHandler
-  public Response updateTSTimer(@PathParam("timerId") Long timerId, TSTimerPutRequest requestBody) {
+  public Response updateDurationTSTimer(
+      @PathParam("timerId") Long timerId, TSTimerPutRequest requestBody) {
     new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
 
     TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);

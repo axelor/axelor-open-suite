@@ -1194,6 +1194,7 @@
 "Working time modification",,,
 "Year",,,
 "You are not able to take leave in advance for the reason '%s'.",,,
+"You can only update a drafted timer",,,
 "You can't exceed the daily limit of %s hours on the %s.",,,
 "You have already been invited to the restaurant for the following dates:",,,
 "You have to choose at least one timesheet",,,

@@ -18,9 +18,8 @@ public interface TimesheetTimerCreateService {
       throws AxelorException;
 
   TSTimer updateTimer(
-      TSTimer tsTimer,
-      Employee employee,
-      Project project,
-      ProjectTask projectTask,
-      Product product);
+      TSTimer timer, Employee employee, Project project, ProjectTask projectTask, Product product)
+      throws AxelorException;
+
+  void resetTimer(TSTimer timer);
 }

@@ -338,4 +338,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_TIMER_ACTIVITY_INCONSISTENCY = /*$$(*/
       "Given project task and activity are not related." /*)*/;
+
+  public static final String TIMESHEET_TIMER_UPDATE_STATUS_ISSUE = /*$$(*/
+      "You can only update a drafted timer" /*)*/;
 }

@@ -58,7 +58,8 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     return timer;
   }
 
-  protected void resetTimer(TSTimer timer) {
+  @Transactional
+  public void resetTimer(TSTimer timer) {
     timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
     timer.setTimesheetLine(null);
     timer.setStartDateTime(null);
@@ -66,6 +67,7 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     timer.setComments(null);
     timer.setProject(null);
     timer.setProjectTask(null);
+    timer.setProduct(null);
     timer.setLastStartDateT(null);
     timer.setUpdatedDuration(null);
   }
@@ -85,12 +87,28 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
   @Transactional
   @Override
   public TSTimer updateTimer(
-      TSTimer timer, Employee employee, Project project, ProjectTask projectTask, Product product) {
+      TSTimer timer, Employee employee, Project project, ProjectTask projectTask, Product product)
+      throws AxelorException {
+    if (timer.getStatusSelect() != TSTimerRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_UPDATE_STATUS_ISSUE));
+    }
+    checkRelation(project, projectTask, product);
 
-    timer.setEmployee(employee);
-    timer.setProject(project);
-    timer.setProjectTask(projectTask);
-    timer.setProduct(product);
+    if (employee != null) {
+      timer.setEmployee(employee);
+    }
+    if (project != null) {
+      timer.setProject(project);
+    }
+    if (projectTask != null) {
+      timer.setProjectTask(projectTask);
+    }
+    if (product != null) {
+      timer.setProduct(product);
+    }
+
     return timer;
   }
 
@@ -109,6 +127,11 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_EMPTY_ACTIVITY));
     }
 
+    checkRelation(project, projectTask, product);
+  }
+
+  protected void checkRelation(Project project, ProjectTask projectTask, Product product)
+      throws AxelorException {
     if ((project == null && projectTask != null) || (project != null && projectTask == null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
