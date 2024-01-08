@@ -487,6 +487,10 @@
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
           readonlyIf="statusSelect == 3 || statusSelect == 4"
           form-view="address-partner-address-form"/>
+        <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
+          canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
+          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+          form-view="stock-location-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
         </static>
