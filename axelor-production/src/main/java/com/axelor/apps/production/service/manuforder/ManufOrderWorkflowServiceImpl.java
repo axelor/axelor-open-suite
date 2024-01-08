@@ -913,6 +913,23 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   }
 
   @Override
+  public List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getOutsourcing()
+        && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
+      return List.of(manufOrderOutsourceService.getOutsourcePartner(manufOrder).get());
+    } else {
+      return manufOrder.getOperationOrderList().stream()
+          .filter(OperationOrder::getOutsourcing)
+          .map(oo -> operationOrderOutsourceService.getOutsourcePartner(oo))
+          .map(optPartner -> optPartner.orElse(null))
+          .filter(Objects::nonNull)
+          .distinct()
+          .collect(Collectors.toList());
+    }
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void setOperationOrderMaxPriority(ManufOrder manufOrder) {
 

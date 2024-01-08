@@ -805,7 +805,7 @@ public class ManufOrderController {
       throws AxelorException {
 
     List<Partner> manufOrderPartners =
-        Beans.get(ManufOrderWorkflowService.class).getOutsourcePartnersForGenerationPO(manufOrder);
+        Beans.get(ManufOrderWorkflowService.class).getOutsourcePartners(manufOrder);
 
     response.setAttr(
         "$partnerToDeclare",
