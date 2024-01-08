@@ -16,16 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.db.repo;
+package com.axelor.apps.crm.web;
 
-import com.axelor.apps.bankpayment.db.BankPaymentBatch;
+import com.axelor.apps.crm.db.TourLine;
+import com.axelor.apps.crm.db.repo.TourLineRepository;
+import com.axelor.apps.crm.service.TourLineService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public class BankPaymentBatchBankRepository extends BankPaymentBatchRepository {
+public class TourLineController {
 
-  @Override
-  public BankPaymentBatch copy(BankPaymentBatch entity, boolean deep) {
-    BankPaymentBatch copy = super.copy(entity, deep);
-    copy.clearBatchList();
-    return copy;
+  public void setValidatedAndLastVisitDate(ActionRequest request, ActionResponse response) {
+    TourLine tourline = request.getContext().asType(TourLine.class);
+    tourline = Beans.get(TourLineRepository.class).find(tourline.getId());
+    Beans.get(TourLineService.class).setValidatedAndLastVisitDate(tourline);
+    response.setReload(true);
   }
 }

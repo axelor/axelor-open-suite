@@ -40,8 +40,6 @@
     <field name="generateBankOrder" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
     <field name="autoConfirmBankOrder" hidden="true"
       if="!__config__.app.isApp('bank-payment')"/>
-    <field name="automaticTransmission" hidden="true"
-      if="!__config__.app.isApp('bank-payment')"/>
     <field name="bankOrderMoveGenTriggerSelect" hidden="true"
       if="!__config__.app.isApp('bank-payment')"/>
     <field name="consoBankOrderLinePerPartner" hidden="true"

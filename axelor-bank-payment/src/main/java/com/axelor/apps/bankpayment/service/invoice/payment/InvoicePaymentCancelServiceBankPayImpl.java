@@ -107,8 +107,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
     BankOrder paymentBankOrder = invoicePayment.getBankOrder();
 
     if (paymentBankOrder != null
-        && (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-            || paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED)) {
+        && (paymentBankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT)) {
       throw new AxelorException(
           invoicePayment,
           TraceBackRepository.CATEGORY_INCONSISTENCY,

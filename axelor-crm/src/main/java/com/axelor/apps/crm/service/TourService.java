@@ -16,20 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.db.repo;
+package com.axelor.apps.crm.service;
 
-import com.axelor.apps.bankpayment.db.EbicsBank;
-import com.axelor.apps.bankpayment.ebics.service.EbicsBankService;
-import com.google.inject.Inject;
+import com.axelor.apps.crm.db.Tour;
 
-public class EbicsBankAccountRepository extends EbicsBankRepository {
+public interface TourService {
 
-  @Inject EbicsBankService ebicsBankService;
-
-  @Override
-  public EbicsBank save(EbicsBank ebicsBank) {
-    ebicsBankService.computeFullName(ebicsBank);
-
-    return super.save(ebicsBank);
-  }
+  public void setValidated(Tour tour);
 }

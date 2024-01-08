@@ -90,12 +90,12 @@
       <field name="title" colSpan="12"/>
       <field name="amount" colSpan="4" required="true"
         onChange="action-timetable-group-on-amount-change"
-        x-scale="purchaseOrder.currency.numberOfDecimals"/>
+        x-scale="saleOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" required="true"
         onChange="action-timetable-record-on-percentage-change"/>
       <field name="invoiced" hideIf="!invoice"/>
       <field name="comments" colSpan="12"/>
-      <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
+      <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 

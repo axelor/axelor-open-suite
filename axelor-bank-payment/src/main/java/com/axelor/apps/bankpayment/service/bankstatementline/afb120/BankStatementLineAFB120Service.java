@@ -133,28 +133,6 @@ public class BankStatementLineAFB120Service extends BankStatementLineService {
         fromDate, toDate, BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT, bankDetails);
   }
 
-  protected String getTimezone(BankStatementLineAFB120 bankStatementLine) {
-    BankStatement bankStatement = bankStatementLine.getBankStatement();
-    if (bankStatement.getEbicsPartner() == null
-        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser() == null
-        || bankStatement.getEbicsPartner().getDefaultSignatoryEbicsUser().getAssociatedUser()
-            == null
-        || bankStatement
-                .getEbicsPartner()
-                .getDefaultSignatoryEbicsUser()
-                .getAssociatedUser()
-                .getActiveCompany()
-            == null) {
-      return null;
-    }
-    return bankStatement
-        .getEbicsPartner()
-        .getDefaultSignatoryEbicsUser()
-        .getAssociatedUser()
-        .getActiveCompany()
-        .getTimezone();
-  }
-
   public BankStatementLineAFB120 getLastBankStatementLineAFB120FromBankDetails(
       BankDetails bankDetails) {
     if (bankDetails != null) {

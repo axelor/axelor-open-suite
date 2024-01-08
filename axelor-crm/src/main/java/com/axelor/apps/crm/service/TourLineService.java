@@ -16,11 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.ebics.service;
+package com.axelor.apps.crm.service;
 
-import com.axelor.apps.bankpayment.db.EbicsBank;
+import com.axelor.apps.crm.db.TourLine;
 
-public interface EbicsBankService {
+public interface TourLineService {
 
-  public void computeFullName(EbicsBank ebicsBank);
+  public void setValidatedAndLastVisitDate(TourLine tourLine);
 }
