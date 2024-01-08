@@ -121,12 +121,12 @@ public class TimesheetRestController {
   }
 
   @Operation(
-      summary = "Complete TSTimer",
+      summary = "Stop TSTimer",
       tags = {"TSTimer"})
-  @Path("/timer/complete/{timerId}")
+  @Path("/timer/stop/{timerId}")
   @PUT
   @HttpExceptionHandler
-  public Response completeTSTimer(@PathParam("timerId") Long timerId) throws AxelorException {
+  public Response stopTSTimer(@PathParam("timerId") Long timerId) throws AxelorException {
     new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
 
     TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);

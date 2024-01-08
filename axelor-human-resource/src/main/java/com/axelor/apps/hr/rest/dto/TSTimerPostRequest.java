@@ -21,6 +21,7 @@ public class TSTimerPostRequest extends RequestPostStructure {
   @Min(0)
   private Long projectTaskId;
 
+  @NotNull
   @Min(0)
   private Long productId;
 
