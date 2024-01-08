@@ -19,15 +19,13 @@
     <field name="productCode"/>
     <field name="qty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
+    <field name="inTaxPrice" x-scale="2"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="isTitleLine" hidden="true"/>
     <field name="desiredDelivDate"/>
     <field name="estimatedDelivDate"/>
-    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-line-invoicing-project-grid" title="PO lines"

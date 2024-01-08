@@ -49,8 +49,6 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
-import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
-import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -278,6 +276,5 @@ public class BaseModule extends AxelorModule {
     bind(ProductConversionService.class).to(ProductConversionServiceImpl.class);
     bind(PrintHtmlGenerationService.class).to(PrintHtmlGenerationServiceImpl.class);
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
-    bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
   }
 }
