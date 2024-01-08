@@ -337,7 +337,6 @@
     <field name="debit"/>
     <field name="credit"/>
     <field name="amountRemaining"/>
-    <field name="taxLine"/>
     <field name="move.statusSelect"/>
     <field name="description"/>
     <field name="dueDate"/>
