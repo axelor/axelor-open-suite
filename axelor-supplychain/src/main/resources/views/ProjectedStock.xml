@@ -9,7 +9,8 @@
     <panel colSpan="12" name="projectedStockPanel">
       <panel-dashlet action="action.projected.stock.dashlet" showTitle="false"
         colSpan="12"/>
-      <field name="$mrpLineList" target="com.axelor.apps.supplychain.db.MrpLine" height="150"
+      <field name="$mrpLineList" title="Projection details"
+        target="com.axelor.apps.supplychain.db.MrpLine" height="150"
         grid-view="projected-stock-grid" type="one-to-many" readonly="true" colSpan="12"/>
     </panel>
   </form>
