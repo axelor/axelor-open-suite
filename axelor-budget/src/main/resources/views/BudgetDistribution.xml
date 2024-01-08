@@ -64,7 +64,6 @@
     <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
-    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="imputationDate"/>
     <field name="amount" aggregate="sum"/>
@@ -91,7 +90,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
+    <field name="budget.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel" title="Section line"/>
     <field name="amount" aggregate="sum"/>
   </grid>
@@ -106,8 +105,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.productName"/>
     <field name="purchaseOrderLine.exTaxTotal"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="budget.globalBudget" title="Global budget"/>
     <field name="amount" aggregate="sum"/>
   </grid>
 
@@ -158,8 +156,7 @@
     <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
     <field name="purchaseOrderLine.product"/>
     <field name="amount"/>
-    <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"/>
+    <field name="budget.globalBudget" title="Global budget"/>
     <field name="budget.budgetLevel" title="Section line"/>
   </grid>
 
@@ -246,11 +243,8 @@
     <panel name="mainPanel" readonly="true">
       <field name="purchaseOrderLine.purchaseOrder" title="Ref."/>
       <field name="purchaseOrderLine.purchaseOrder.statusSelect"/>
-      <field name="budget.budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-        showIf="$fromGroup"/>
-      <field name="budget.budgetLevel.parentBudgetLevel" title="Group line"
-        showIf="$fromSection"/>
-      <field name="budget.budgetLevel" title="Section line" showIf="$fromBudget"/>
+      <field name="budget.globalBudget" title="Global budget"/>
+      <field name="budget.budgetLevel" title="Section line"/>
       <field name="purchaseOrderLine.purchaseOrder.supplierPartner"/>
       <field name="purchaseOrderLine.purchaseOrder.orderDate"/>
       <field name="purchaseOrderLine.productName"/>

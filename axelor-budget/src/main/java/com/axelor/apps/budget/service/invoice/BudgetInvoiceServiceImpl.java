@@ -189,11 +189,16 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     String budgetExceedAlert = "";
 
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
 
     if (appBudgetService.getAppBudget() != null
         && appBudgetService.getAppBudget().getCheckAvailableBudget()
         && invoice.getId() != null
-        && CollectionUtils.isNotEmpty(invoiceLineList)) {
+        && CollectionUtils.isNotEmpty(invoiceLineList)
+        && date != null) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
@@ -216,11 +221,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
             budgetExceedAlert +=
                 budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(),
-                    budgetEntry.getValue(),
-                    invoice.getInvoiceDate() != null
-                        ? invoice.getInvoiceDate()
-                        : invoice.getCreatedOn().toLocalDate());
+                    budgetEntry.getKey(), budgetEntry.getValue(), date);
           }
         } else {
           Budget budget = invoiceLine.getBudget();
@@ -234,11 +235,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
             budgetExceedAlert +=
                 budgetDistributionService.getBudgetExceedAlert(
-                    budget,
-                    amountPerBudgetMap.get(budget),
-                    invoice.getInvoiceDate() != null
-                        ? invoice.getInvoiceDate()
-                        : invoice.getCreatedOn().toLocalDate());
+                    budget, amountPerBudgetMap.get(budget), date);
           }
         }
       }
@@ -304,7 +301,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       LocalDate date =
           invoice.getInvoiceDate() != null
               ? invoice.getInvoiceDate()
-              : invoice.getCreatedOn().toLocalDate();
+              : appBaseService.getTodayDate(invoice.getCompany());
       budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =

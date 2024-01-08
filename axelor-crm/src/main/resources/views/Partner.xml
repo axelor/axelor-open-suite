@@ -172,6 +172,7 @@
     <extend target="//button[@name='showAllEventsBtn']">
       <insert position="after">
         <field name="lastEventDateT" readonly="true" colSpan="3"/>
+        <field name="lastVisitDateT" colSpan="3" readonly="true"/>
         <field name="scheduledEventDateT" colSpan="3" readonly="true"/>
       </insert>
     </extend>

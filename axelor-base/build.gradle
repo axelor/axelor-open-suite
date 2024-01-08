@@ -20,7 +20,7 @@ axelor {
 }
 
 dependencies {
-	implementation libs.commons_lang3
+	api libs.commons_lang3
 	implementation libs.commons_math3
 	implementation libs.commons_validator
 	implementation libs.commons_httpclient

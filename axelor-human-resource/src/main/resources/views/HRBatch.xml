@@ -24,9 +24,15 @@
     <panel-tabs name="mainPanelTab">
       <panel name="leaveManagementPanel" title="Leave management" hidden="true"
         showIf="actionSelect == 1">
-        <field name="leaveReason" colSpan="3"
-          onChange="action-hr-batch-record-day-number-default" requiredIf="actionSelect == 1"/>
-        <field name="comments" colSpan="9"/>
+        <field name="leaveReasonSet" colSpan="3"
+          onChange="action-hr-batch-record-reset-leave-reason-type-select"
+          requiredIf="actionSelect == 1 &amp;&amp; !leaveReasonTypeSelect"
+          readonlyIf="leaveReasonTypeSelect" widget="TagSelect"/>
+        <field name="leaveReasonTypeSelect" colSpan="3"
+          requiredIf="actionSelect == 1 &amp;&amp; !leaveReasonSet"
+          onChange="action-hr-batch-record-reset-leave-reasons"
+          readonlyIf="leaveReasonSet != null &amp;&amp; leaveReasonSet.length &gt; 0"/>
+        <field name="comments" colSpan="9" required="true"/>
         <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>
         <field name="useWeeklyPlanningCoef" colSpan="3"/>
         <field name="planningSet" grid-view="weekly-planning-grid"
@@ -43,12 +49,12 @@
 
       <panel name="seniorityLeaveManagementPanel" title="Seniority leave management page"
         hidden="true" showIf="actionSelect == 2">
-        <field name="leaveReason" colSpan="4"/>
+        <field name="leaveReasonSet" colSpan="4" widget="TagSelect"/>
         <field name="comments" colSpan="8"/>
         <field name="startDate" colSpan="4"/>
         <field name="endDate" colSpan="4"/>
         <field name="referentialDate" colSpan="4"/>
-        <button name="seniorityLeaveManagementBatchBtn" readonlyIf="leaveReason == null"
+        <button name="seniorityLeaveManagementBatchBtn" readonlyIf="leaveReasonSet == null"
           title="Seniority leave management batch" onClick="save,action-hrbatch-method-hr-batch"/>
       </panel>
 
@@ -83,8 +89,10 @@
 
       <panel name="leaveManagementResetPanel" title="Leave counter reset" hidden="true"
         showIf="actionSelect == 5">
-        <field name="leaveReason" colSpan="3"
-          onChange="action-hr-batch-record-day-number-default"/>
+        <field name="leaveReasonSet" colSpan="3"
+          onChange="action-hr-batch-record-reset-leave-reason-type-select" widget="TagSelect"
+          domain="self.leaveReasonTypeSelect != 2 AND self.isToBeResetYearly = true"
+          placeholder="All"/>
         <field name="comments" colSpan="9"/>
         <field name="startDate" colSpan="3"/>
         <field name="endDate" colSpan="3"/>
@@ -143,9 +151,14 @@
     <field name="company" expr="eval: __user__.activeCompany"/>
   </action-record>
 
-  <action-record name="action-hr-batch-record-day-number-default"
+  <action-record name="action-hr-batch-record-reset-leave-reason-type-select"
     model="com.axelor.apps.hr.db.HrBatch">
-    <field name="dayNumber" expr="eval: leaveReason?.defaultDayNumberGain"/>
+    <field name="leaveReasonTypeSelect" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-hr-batch-record-reset-leave-reasons"
+    model="com.axelor.apps.hr.db.HrBatch">
+    <field name="leaveReasonSet" expr="eval: null"/>
   </action-record>
 
   <action-attrs name="action-hr-batch-attrs-employee-set-domain">

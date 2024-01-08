@@ -41,6 +41,17 @@
     <many-to-one name="currentPricing" ref="com.axelor.apps.base.db.Pricing"
       title="Current pricing"/>
     <many-to-one name="historizedBy" ref="com.axelor.auth.db.User" title="Historized by"/>
+
+    <extra-code><![CDATA[
+	   	// RESTRICT PRICING
+		public static final String PRICING_RESTRICT_PRICING = "Pricing";
+		public static final String PRICING_RESTRICT_PRICING_LINE = "PricingLine";
+		public static final String PRICING_RESTRICT_PRICING_RULE = "PricingRule";
+		public static final String PRICING_RESTRICT_MOVE = "Move";
+		public static final String PRICING_RESTRICT_MOVE_LINE = "MoveLine";
+		public static final String PRICING_RESTRICT_INVOICE = "Invoice";
+		public static final String PRICING_RESTRICT_INVOICE_LINE = "InvoiceLine";
+	]]></extra-code>
   </entity>
 
 </domain-models>

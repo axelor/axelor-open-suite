@@ -4,26 +4,14 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
-    name="purchase-order-line-purchase-order-grid" title="PO lines"
+    name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <hilite color="danger" strong="true"
-      if="($get('exTaxTotal')-$get('budget.availableAmount')) &gt; 0"/>
-    <field name="sequence"
-      if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
-    <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
-    <field name="productName"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
-    <field name="priceDiscounted" title="Unit price W.T."
-      x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="taxLine.tax.code"/>
-    <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="budget.availableAmount"
-      if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="unassignedAmt" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
-    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <extend target="//field[@name='inTaxTotal']">
+      <insert position="after">
+        <field name="budgetStr" if="__config__.app.getApp('budget').getManageMultiBudget()"/>
+        <field name="budget" if="!__config__.app.getApp('budget').getManageMultiBudget()"/>
+      </insert>
+    </extend>
   </grid>
 
   <grid id="budget-purchase-order-line-grid"
@@ -31,8 +19,6 @@
     name="purchase-order-line-grid" extension="true">
     <extend target="//field[@name='estimatedReceiptDate']">
       <insert position="after">
-        <field name="budget.budgetLevel.parentBudgetLevel" title="Group"/>
-        <field name="budget.budgetLevel" title="Section"/>
         <field name="budget"/>
       </insert>
     </extend>
@@ -79,9 +65,6 @@
           <field name="account"
             onSelect="action-budget-purchase-order-line-set-account-domain"
             onChange="action-purchase-order-line-attrs-hidden-analytic-distribution-panel"/>
-          <field name="$global" title="Global budget" type="many-to-one"
-            target="com.axelor.apps.budget.db.GlobalBudget" readonly="true" colSpan="12"
-            hidden="true"/>
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
@@ -94,16 +77,6 @@
           <field name="$currencySymbol" hidden="true"/>
         </panel>
       </insert>
-    </extend>
-
-  </form>
-
-  <form id="budget-purchase-order-line-all-form"
-    model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO line"
-    name="purchase-order-line-all-form" extension="true">
-    <extend target="/">
-      <attribute name="onLoad"
-        value="action-budget-purchase-order-line-record-set-budget-level"/>
     </extend>
   </form>
 
@@ -137,47 +110,15 @@
 
   <action-group name="action-budget-purchase-purchase-orderline-group-onload">
     <action name="supplychain-action-purchase-order-line-group-onload"/>
-    <action name="action-budget-purchase-order-line-record-set-budget-level"
-      if="__config__.app.isApp('budget')"/>
     <action name="action-method-purchase-order-line-budget-check-budget-key-roles"
       if="__config__.app.isApp('budget')"/>
     <action name="action-budget-distribution-attrs-currency-symbol"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 
-  <action-record name="action-budget-purchase-order-line-record-set-budget-level"
-    model="com.axelor.apps.purchase.db.PurchaseOrderLine">
-    <field name="$global" expr="eval: _parent?.globalBudget"
-      if="__config__.app.isApp('budget') &amp;&amp; _parent"/>
-    <field name="$group" expr="eval: budget?.budgetLevel?.parentBudgetLevel"
-      if="__config__.app.isApp('budget') &amp;&amp; budget != null"/>
-    <field name="$section" expr="eval: budget?.budgetLevel"
-      if="__config__.app.isApp('budget') &amp;&amp; budget != null"/>
-  </action-record>
-
-  <action-method name="action-budget-purchase-order-line-method-group-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="setGroupBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-purchase-order-line-method-section-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="setSectionBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-purchase-order-line-method-line-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="setLineBudgetDomain"/>
-  </action-method>
-
   <action-method name="action-budget-purchase-order-line-method-budget-domain">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
       method="setBudgetDomain"/>
-  </action-method>
-
-  <action-method name="action-budget-purchase-order-line-method-account-domain">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
-      method="getAccountDomain"/>
   </action-method>
 
   <action-view name="purchase-order-see-purchase-order-lines"
