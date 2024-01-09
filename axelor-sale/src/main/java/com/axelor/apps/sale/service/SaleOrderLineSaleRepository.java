@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -34,8 +35,9 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
 
     if (context.get("_model") != null
-        && context.get("_model").toString().contains("SaleOrder")
-        && context.get("id") != null) {
+        && (context.get("_model").equals(SaleOrder.class.getName())
+            || context.get("_model").equals(SaleOrderLine.class.getName()))
+        && (context.get("id") != null || context.get("_field_ids") != null)) {
       Long id = (Long) json.get("id");
       if (id != null) {
         SaleOrderLine saleOrderLine = find(id);
@@ -48,6 +50,14 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
                             == SaleOrderRepository.STATUS_ORDER_CONFIRMED
                         && saleOrderLine.getSaleOrder().getOrderBeingEdited()))
                 && saleOrderLine.getDiscountsNeedReview());
+
+        SaleOrder saleOrder =
+            saleOrderLine.getSaleOrder() != null
+                ? saleOrderLine.getSaleOrder()
+                : saleOrderLine.getOldVersionSaleOrder();
+        json.put(
+            "$currencyNumberOfDecimals",
+            Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
       }
     }
     return super.populate(json, context);

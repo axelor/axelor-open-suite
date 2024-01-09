@@ -46,12 +46,14 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -106,7 +108,11 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
   @Transactional
   public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
       throws AxelorException {
-    if (invoice == null || invoiceLine == null) {
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
+    if (invoice == null || invoiceLine == null || date == null) {
       return "";
     }
     invoiceLine.clearBudgetDistributionList();
@@ -115,9 +121,7 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             invoiceLine.getAnalyticMoveLineList(),
             invoiceLine.getAccount(),
             invoice.getCompany(),
-            invoice.getInvoiceDate() != null
-                ? invoice.getInvoiceDate()
-                : invoice.getCreatedOn().toLocalDate(),
+            date,
             invoiceLine.getCompanyExTaxTotal(),
             invoiceLine.getName(),
             invoiceLine);
@@ -131,7 +135,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     if (invoiceLine.getBudgetDistributionList() != null
         && !invoiceLine.getBudgetDistributionList().isEmpty()) {
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
+        if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
+            > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
@@ -188,6 +193,21 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
 
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, new HashSet<>());
+  }
+
+  @Override
+  public void negateAmount(InvoiceLine invoiceLine, Invoice invoice) {
+    if (invoiceLine == null || ObjectUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
+      return;
+    }
+
+    for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
+      if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+        budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
+      }
+    }
+    computeBudgetDistributionSumAmount(invoiceLine, invoice);
   }
 }

@@ -159,8 +159,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.taxLine = taxLine;
     this.discountTypeSelect = discountTypeSelect;
     this.discountAmount = discountAmount;
-    this.exTaxTotal = exTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
-    this.inTaxTotal = inTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
+    this.exTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, exTaxTotal);
+    this.inTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, inTaxTotal);
   }
 
   public Invoice getInvoice() {

@@ -634,5 +634,15 @@ public final class BaseExceptionMessage {
   public static final String PRICING_BUTTON_ERROR = /*$$(*/
       "There was an error while trying to add the pricing button : %s" /*)*/;
 
+  public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
+      "Pricing process unavailable for this class : %s" /*)*/;
+
+  /** Import Configuration */
+  public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
+      "There is an error in the import configuration." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
+      "The import configuration executed successfully." /*)*/;
+
   public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
 }

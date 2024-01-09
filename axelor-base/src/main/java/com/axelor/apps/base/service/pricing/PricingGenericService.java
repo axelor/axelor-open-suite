@@ -22,4 +22,6 @@ public interface PricingGenericService {
   void computePricingsOnChildren(Company company, Model model) throws AxelorException;
 
   String updatePricingScaleLogs(List<StringBuilder> logsList, Model model);
+
+  List<String> getUnavailableModels();
 }
