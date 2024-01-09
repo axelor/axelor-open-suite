@@ -1,2 +1,2 @@
-"importId";"isRequiredForCompanies";"titleToDisplay";"requiredSize";"validationMethodSelect";"useSiren";"sirenPos";"sirenLength";"useNic";"nicPos";"nicLength"
-"1";"true";"Registration Number";"14";"com.axelor.apps.base.service.RegistrationNumberValidationFRA";"true";"1";"9";"true";"10";"5"
+"importId";"name";"isRequiredForCompanies";"titleToDisplay";"requiredSize";"validationMethodSelect";"useSiren";"sirenPos";"sirenLength";"useNic";"nicPos";"nicLength"
+"1";"France";"true";"Registration Number";"14";"com.axelor.apps.base.service.RegistrationNumberValidationFRA";"true";"1";"9";"true";"10";"5"
