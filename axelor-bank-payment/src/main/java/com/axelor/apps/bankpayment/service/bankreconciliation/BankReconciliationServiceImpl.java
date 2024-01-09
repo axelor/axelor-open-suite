@@ -934,21 +934,10 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
             + " AND self.move.company = :company"
             + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
-            + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)";
-
-    if (!bankReconciliation.getIncludeOtherBankStatements()) {
-      query =
-          query
-              + " AND (self.date BETWEEN :fromDate AND :toDate"
-              + " OR self.dueDate BETWEEN :fromDate AND :toDate)";
-    }
-
-    if (bankReconciliation.getJournal() != null) {
-      query = query + " AND self.move.journal = :journal";
-    }
-    if (bankReconciliation.getCashAccount() != null) {
-      query = query + " AND self.account = :cashAccount";
-    }
+            + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)"
+            + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
+            + " AND (:journal IS NULL OR self.move.journal = :journal)"
+            + " AND (:cashAccount IS NULL OR self.account = :cashAccount)";
 
     return query;
   }
@@ -965,17 +954,23 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     params.put("company", bankReconciliation.getCompany());
     params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
-    if (!bankReconciliation.getIncludeOtherBankStatements()) {
-      int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
-      params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
-      params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
-    }
-    if (bankReconciliation.getJournal() != null) {
-      params.put("journal", bankReconciliation.getJournal());
-    }
-    if (bankReconciliation.getCashAccount() != null) {
-      params.put("cashAccount", bankReconciliation.getCashAccount());
-    }
+    params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
+
+    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
+    params.put(
+        "fromDate",
+        bankReconciliation.getFromDate() != null
+            ? bankReconciliation.getFromDate().minusDays(dateMargin)
+            : null);
+    params.put(
+        "toDate",
+        bankReconciliation.getToDate() != null
+            ? bankReconciliation.getToDate().plusDays(dateMargin)
+            : null);
+
+    params.put("journal", bankReconciliation.getJournal());
+
+    params.put("cashAccount", bankReconciliation.getCashAccount());
 
     return params;
   }
