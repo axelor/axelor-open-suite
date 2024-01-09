@@ -46,14 +46,14 @@
           if="__config__.app.isApp('budget')" if-module="axelor-supplychain" colSpan="12">
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            hidden="false" x-currency="$currencySymbol">
+            hidden="false" x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
             <viewer depends="companyExTaxTotal,$currencySymbol">
               <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
-            x-currency="$currencySymbol">
+            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
             <viewer depends="budgetDistributionSumAmount">
               <![CDATA[
 				<dd>{{$fmt('budgetDistributionSumAmount')}}</dd>
@@ -73,6 +73,7 @@
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" showIf="account"
             onChange="action-group-budget-purchase-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
+          <field name="$companyCurrencyScale" hidden="true"/>
         </panel>
       </insert>
     </extend>
