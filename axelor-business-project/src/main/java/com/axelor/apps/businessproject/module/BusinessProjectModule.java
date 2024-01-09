@@ -66,6 +66,8 @@ import com.axelor.apps.businessproject.service.SaleOrderLineProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.businessproject.service.TimesheetLineProjectServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetProjectInvoiceServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetProjectPPTServiceImpl;
 import com.axelor.apps.businessproject.service.TimesheetProjectService;
 import com.axelor.apps.businessproject.service.TimesheetProjectServiceImpl;
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
@@ -82,8 +84,9 @@ import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
-import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
@@ -108,7 +111,6 @@ public class BusinessProjectModule extends AxelorModule {
   protected void configure() {
     bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceProjectServiceImpl.class);
     bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceProjectServiceImpl.class);
-    bind(TimesheetServiceImpl.class).to(TimesheetProjectServiceImpl.class);
     bind(TimesheetProjectService.class).to(TimesheetProjectServiceImpl.class);
     bind(TimesheetLineServiceImpl.class).to(TimesheetLineProjectServiceImpl.class);
     bind(ExpenseInvoiceLineServiceImpl.class).to(ExpenseInvoiceLineServiceProjectImpl.class);
@@ -159,5 +161,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ExpenseLineResponseComputeServiceImpl.class)
         .to(ExpenseLineResponseComputeServiceProjectImpl.class);
     bind(AnalyticLineModelServiceImpl.class).to(AnalyticLineModelProjectServiceImpl.class);
+    bind(TimesheetProjectPlanningTimeServiceImpl.class).to(TimesheetProjectPPTServiceImpl.class);
+    bind(TimesheetInvoiceServiceImpl.class).to(TimesheetProjectInvoiceServiceImpl.class);
   }
 }

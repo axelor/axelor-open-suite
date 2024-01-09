@@ -21,7 +21,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.Map;
@@ -30,13 +30,13 @@ public class ValidateTimesheet {
 
   protected final TimesheetRepository timesheetRepository;
 
-  protected final TimesheetService timesheetService;
+  protected final TimesheetWorkflowService timesheetWorkflowService;
 
   @Inject
   public ValidateTimesheet(
-      TimesheetRepository timesheetRepository, TimesheetService timesheetService) {
+      TimesheetRepository timesheetRepository, TimesheetWorkflowService timesheetWorkflowService) {
     this.timesheetRepository = timesheetRepository;
-    this.timesheetService = timesheetService;
+    this.timesheetWorkflowService = timesheetWorkflowService;
   }
 
   @Transactional
@@ -46,7 +46,7 @@ public class ValidateTimesheet {
     Timesheet timesheet = (Timesheet) bean;
 
     if (timesheet.getStatusSelect() == TimesheetRepository.STATUS_VALIDATED) {
-      timesheetService.validate(timesheet);
+      timesheetWorkflowService.validate(timesheet);
       timesheetRepository.save(timesheet);
     }
 

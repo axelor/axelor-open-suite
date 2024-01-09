@@ -27,7 +27,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.auth.db.User;
@@ -44,16 +44,16 @@ public class TimesheetLineBusinessProductionServiceImpl
     implements TimesheetLineBusinessProductionService {
 
   protected EmployeeService employeeService;
-  protected TimesheetService timesheetService;
+  protected TimesheetFetchService timesheetFetchService;
   protected TimesheetRepository timesheetRepository;
 
   @Inject
   public void TimesheetBusinessProductionServiceImpl(
       EmployeeService employeeService,
-      TimesheetService timesheetService,
+      TimesheetFetchService timesheetFetchService,
       TimesheetRepository timesheetRepository) {
     this.employeeService = employeeService;
-    this.timesheetService = timesheetService;
+    this.timesheetFetchService = timesheetFetchService;
     this.timesheetRepository = timesheetRepository;
   }
 
@@ -75,7 +75,7 @@ public class TimesheetLineBusinessProductionServiceImpl
         && operationOrderDuration.getStoppingDateTime() != null) {
 
       Timesheet timesheet =
-          timesheetService.getOrCreateOpenTimesheet(
+          timesheetFetchService.getOrCreateOpenTimesheet(
               employee, operationOrderDuration.getStartingDateTime().toLocalDate());
       TimesheetLine tsl = createTimesheetLine(timesheet, operationOrderDuration);
 

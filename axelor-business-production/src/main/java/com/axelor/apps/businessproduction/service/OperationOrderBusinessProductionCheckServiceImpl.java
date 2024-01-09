@@ -23,7 +23,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.auth.db.User;
@@ -34,13 +34,13 @@ public class OperationOrderBusinessProductionCheckServiceImpl
     implements OperationOrderBusinessProductionCheckService {
 
   protected EmployeeService employeeService;
-  protected TimesheetService timesheetService;
+  protected TimesheetFetchService timesheetFetchService;
 
   @Inject
   public OperationOrderBusinessProductionCheckServiceImpl(
-      EmployeeService employeeService, TimesheetService timesheetService) {
+      EmployeeService employeeService, TimesheetFetchService timesheetFetchService) {
     this.employeeService = employeeService;
-    this.timesheetService = timesheetService;
+    this.timesheetFetchService = timesheetFetchService;
   }
 
   @Override
@@ -124,7 +124,7 @@ public class OperationOrderBusinessProductionCheckServiceImpl
 
       // If it is null then no problem with matching since a new one will be created
       Timesheet timesheet =
-          timesheetService.getDraftTimesheet(
+          timesheetFetchService.getDraftTimesheet(
               employee, operationOrderDuration.getStartingDateTime().toLocalDate());
 
       if (timesheet == null) {

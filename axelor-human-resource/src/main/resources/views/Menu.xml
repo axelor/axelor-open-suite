@@ -639,7 +639,7 @@
     <domain>self.project.id IN :_projectIds</domain>
     <context name="_showLogTime" expr="eval: true"/>
     <context name="_projectIds"
-      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetService:getContextProjectIds()"/>
+      expr="call:com.axelor.apps.hr.service.timesheet.TimesheetContextProjectService:getContextProjectIds()"/>
   </action-view>
 
   <!-- Top Menus -->
