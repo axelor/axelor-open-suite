@@ -307,11 +307,9 @@ public class InvoiceController {
       }
       LocalDate date = null;
 
-      if (invoice.getDueDate() != null) {
-        date = invoice.getDueDate();
-      } else if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
+      if (InvoiceToolService.isPurchase(invoice)) {
         date = invoice.getOriginDate();
-      } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
+      } else {
         date = invoice.getInvoiceDate();
       }
 
@@ -1242,25 +1240,8 @@ public class InvoiceController {
   public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-      if (invoice.getDueDate() == null) {
-        LocalDate date = null;
-        if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
-          date = invoice.getOriginDate();
-        } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
-          date = invoice.getInvoiceDate();
-        }
-
-        if (date == null) {
-          date = Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
-        }
-
-        invoice = invoiceTermService.setDueDates(invoice, date);
-      } else {
-        invoice = invoiceTermService.computeTermsDueDate(invoice, invoice.getDueDate());
-      }
       invoice = invoiceService.computeEstimatedPaymentDate(invoice);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       response.setValue("nextDueDate", InvoiceToolService.getNextDueDate(invoice));
