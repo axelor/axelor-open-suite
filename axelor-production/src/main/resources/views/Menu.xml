@@ -159,11 +159,15 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.typeSelect = :_typeSelect AND
       self.isReversion = FALSE AND
-      self.stockMoveLineList.toStockLocation.typeSelect=:_stockLocTypeSelect AND
-      self.stockMoveLineList.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+      ((self.stockMoveLineList.toStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.stockMoveLineList.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc)
+      OR
+      (self.toStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc))</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>
+    <context name="_fromOutsource" expr="eval:true"/>
   </action-view>
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals"

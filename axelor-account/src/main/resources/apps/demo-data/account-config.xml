@@ -203,7 +203,19 @@
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+    <bind column="temporaryClosureAuthorizedRoleList" to="temporaryClosureAuthorizedRoleList"
+      search="self.name in :temporaryClosureAuthorizedRoleList"
+      eval="temporaryClosureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="moveOnTempClosureAuthorizedRoleList" to="moveOnTempClosureAuthorizedRoleList"
+      search="self.name in :moveOnTempClosureAuthorizedRoleList"
+      eval="moveOnTempClosureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="closureAuthorizedRoleList" to="closureAuthorizedRoleList"
+      search="self.name in :closureAuthorizedRoleList"
+      eval="closureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="clearanceAccountSet" to="clearanceAccountSet"
+      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
+  </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
     search="self.importId = :importId" update="true"
