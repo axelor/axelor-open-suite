@@ -15,72 +15,79 @@
   </grid>
 
   <form name="address-form" title="Address" model="com.axelor.apps.base.db.Address"
+    width="large" onLoad="action-group-base-address-onload"
     onSave="action-group-base-address-onsave,save,action-base-address-method-update-lat-long"
-    onNew="action-group-base-address-onnnew" onLoad="action-group-base-address-onload" width="large">
+    onNew="action-group-base-address-onnnew">
     <panel name="mainPanel" title="Address details" colSpan="12">
-      <field name="country" onChange="action-group-base-address-country-change"
-        required="true" canEdit="false" form-view="country-form" grid-view="country-grid"
-        colSpan="12"/>
+      <field name="country" colSpan="12" canEdit="false"
+        onChange="action-group-base-address-country-change" required="true" form-view="country-form"
+        grid-view="country-grid"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-        <field name="department" x-bind="{{department|uppercase}}"/>
-        <field name="room" x-bind="{{room|uppercase}}"/>
-        <field name="floor" x-bind="{{floor|uppercase}}"/>
-        <field if="__config__.app.getApp('base')?.getStoreStreets()" name="buildingNumber"
-               x-bind="{{buildingNumber|uppercase}}" onChange="action-address-record-change-streetName"/>
-        <field name="street" onSelect="action-address-attrs-update-domain-street"
-          onChange="action-address-record-change-streetName" form-view="street-form"
-          grid-view="street-grid" canNew="true"
-          if="__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field name="streetName" x-bind="{{streetName|uppercase}}"
-          if="!__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field name="postBox" x-bind="{{postBox|uppercase}}"/>
-        <field name="buildingName" x-bind="{{buildingName|uppercase}}"/>
-        <field name="subDepartment" x-bind="{{subDepartment|uppercase}}"/>
-        <field name="townName" x-bind="{{townName|uppercase}}"/>
-        <field name="townLocationName" x-bind="{{townLocationName|uppercase}}"/>
-        <field name="districtName" x-bind="{{districtName|uppercase}}"/>
-        <field name="countrySubDivision" x-bind="{{countrySubDivision|uppercase}}"/>
+        <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
+        <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
+        <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
+        <field name="buildingNumber" onChange="action-address-record-change-streetName"
+          x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
+        <field name="street" canNew="true" colSpan="12"
+          onChange="action-address-record-change-streetName"
+          onSelect="action-address-attrs-update-domain-street" form-view="street-form"
+          grid-view="street-grid"/>
+        <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
+        <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
+        <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
+        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
+        <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
+        <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>
+        <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>
+        <field name="countrySubDivision" colSpan="12"
+          x-bind="{{countrySubDivision|uppercase}}"/>
+        <field name="city" colSpan="12" canNew="true" canEdit="false"
+          onChange="action-address-change-city" onSelect="action-address-attrs-update-domain-city"
+          form-view="city-form" grid-view="city-grid"/>
+        <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
+        <field name="isInvoicingAddr" title="Invoicing address"
+          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+        <field name="isDeliveryAddr" title="Delivery address"
+          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+        <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
+          type="boolean"/>
 
-        <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false"
-          canNew="true" onChange="action-address-change-city" form-view="city-form"
-          grid-view="city-grid"/>
-        <field name="zip" onChange="action-address-method-autocomplete-address"/>
-        <field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
-          title="Invoicing address"/>
-        <field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
-          title="Delivery address"/>
-        <field name="isDefault" type="boolean" showIf="$popup() &amp;&amp; id == null"
-          title="Default"/>
-        <button-group colSpan="6" hideIf="$popup()" readonlyIf="!id">
+      </panel>
+    </panel>
+
+    <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
+      <panel name="mapBtnPanel" colSpan="12">
+        <button-group hideIf="$popup()" readonlyIf="!id" colSpan="12">
           <button name="mapBtn" title="View map" icon="fa-map-marker"
             onClick="action-base-address-method-view-map"/>
           <button name="directionsBtn" title="Get direction" icon="near_me"
             onClick="action-base-address-method-view-direction"/>
         </button-group>
-        <spacer name="btnGrpSpacer" colSpan="6"/>
-        <button-group colSpan="6" showIf="$popup()" readonlyIf="!id">
+        <spacer name="btnGrpSpacer" colSpan="12"/>
+        <button-group showIf="$popup()" readonlyIf="!id" colSpan="12">
           <button name="mapBtn" title="View map" icon="fa-map-marker"
             onClick="action-base-address-method-view-map,close"/>
           <button name="directionsBtn" title="Get direction" icon="near_me"
             onClick="action-base-address-method-view-direction,close"/>
         </button-group>
-        <field name="isUsed" hidden="true" type="boolean"/>
-        <field name="isValidLatLong" hidden="true"/>
-        <field name="formattedFullName" readonly="true" height="4" colSpan="12"/>
+      </panel>
+      <field name="isUsed" hidden="true" type="boolean"/>
+      <field name="isValidLatLong" hidden="true"/>
+      <field name="formattedFullName" readonly="true" colSpan="12" height="4"/>
 
+      <panel if="__config__.app.getApp('base')?.getHasQasValidation()"
+        name="qasCertificationPanel" title="QAS certification" colSpan="12">
+        <field name="certifiedOk" colSpan="4"/>
+        <panel name="actionsPanel" colSpan="4">
+          <button name="validateBtn" title="Validate"
+            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+          <button name="selectBtn" title="Choose"
+            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        </panel>
+        <panel-related name="pickListPanel" title="Pick list" colSpan="12"
+          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"/>
       </panel>
-    </panel>
-    <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"
-      if="__config__.app.getApp('base')?.getHasQasValidation()">
-      <field name="certifiedOk" colSpan="4"/>
-      <panel name="actionsPanel" colSpan="4">
-        <button name="validateBtn" title="Validate"
-          onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-        <button name="selectBtn" title="Choose"
-          onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-      </panel>
-      <panel-related name="pickListPanel" field="pickList" title="Pick list"
-        colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
+
     </panel>
   </form>
 
@@ -93,68 +100,70 @@
         required="true" canEdit="false" form-view="country-form" grid-view="country-grid"
         colSpan="12"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-        <field name="department" x-bind="{{department|uppercase}}"/>
-        <field name="floor" x-bind="{{floor|uppercase}}"/>
-        <field name="street" onSelect="action-address-attrs-update-domain-street"
-          onChange="action-address-record-change-streetName" form-view="street-form"
-          grid-view="street-grid" canNew="true"
-          if="__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field name="streetName" x-bind="{{streetName|uppercase}}"
-          if="!__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field if="__config__.app.getApp('base')?.getStoreStreets()" name="buildingNumber"
-          x-bind="{{buildingNumber|uppercase}}" onChange="action-address-record-change-streetName"/>
+        <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
+        <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
+        <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
+        <field name="buildingNumber" onChange="action-address-record-change-streetName"
+          x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
+        <field name="street" canNew="true" colSpan="12"
+          onChange="action-address-record-change-streetName"
+          onSelect="action-address-attrs-update-domain-street" form-view="street-form"
+          grid-view="street-grid"/>
+        <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
+        <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
+        <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
+        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
+        <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
+        <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>
+        <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>
+        <field name="countrySubDivision" colSpan="12"
+          x-bind="{{countrySubDivision|uppercase}}"/>
+        <field name="city" colSpan="12" canNew="true" canEdit="false"
+          onChange="action-address-change-city" onSelect="action-address-attrs-update-domain-city"
+          form-view="city-form" grid-view="city-grid"/>
+        <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
+        <field name="isInvoicingAddr" title="Invoicing address"
+          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+        <field name="isDeliveryAddr" title="Delivery address"
+          showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+        <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
+          type="boolean"/>
 
-        <field name="postBox" x-bind="{{postBox|uppercase}}"/>
-        <field name="buildingName" x-bind="{{buildingName|uppercase}}"/>
-        <field name="subDepartment" x-bind="{{subDepartment|uppercase}}"/>
-        <field name="townName" x-bind="{{townName|uppercase}}"/>
-        <field name="townLocationName" x-bind="{{townLocationName|uppercase}}"/>
-        <field name="districtName" x-bind="{{districtName|uppercase}}"/>
-        <field name="countrySubDivision" x-bind="{{countrySubDivision|uppercase}}"/>
+        <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
+          <panel name="mapBtnPanel" colSpan="12">
+            <button-group hideIf="$popup()" readonlyIf="!id" colSpan="6">
+              <button name="mapBtn" title="View map" icon="fa-map-marker"
+                onClick="action-base-address-method-view-map"/>
+              <button name="directionsBtn" title="Get direction" icon="near_me"
+                onClick="action-base-address-method-view-direction"/>
+            </button-group>
+            <spacer name="btnGrpSpacer" colSpan="6"/>
+            <button-group showIf="$popup()" readonlyIf="!id" colSpan="6">
+              <button name="mapBtn" title="View map" icon="fa-map-marker"
+                onClick="action-base-address-method-view-map,close"/>
+              <button name="directionsBtn" title="Get direction" icon="near_me"
+                onClick="action-base-address-method-view-direction,close"/>
+            </button-group>
+          </panel>
+          <field name="isUsed" hidden="true" type="boolean"/>
+          <field name="isValidLatLong" hidden="true"/>
+          <field name="formattedFullName" readonly="true" height="4" colSpan="12"/>
 
-        <field name="city" onSelect="action-address-attrs-update-domain-city" canEdit="false"
-          canNew="true" onChange="action-address-change-city" form-view="city-form"
-          grid-view="city-grid"/>
-        <field name="zip" onChange="action-address-method-autocomplete-address"/>
-
-        <field name="room" x-bind="{{room|uppercase}}"/>
-        <field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
-          title="Invoicing address"/>
-        <field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
-          title="Delivery address"/>
-        <field name="isDefault" type="boolean" showIf="$popup() &amp;&amp; id == null"
-          title="Default"/>
-        <button-group colSpan="6" hideIf="$popup()" readonlyIf="!id">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
-            onClick="action-base-address-method-view-map"/>
-          <button name="directionsBtn" title="Get direction" icon="near_me"
-            onClick="action-base-address-method-view-direction"/>
-        </button-group>
-        <spacer name="btnGrpSpacer" colSpan="6"/>
-        <button-group colSpan="6" showIf="$popup()" readonlyIf="!id">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
-            onClick="action-base-address-method-view-map,close"/>
-          <button name="directionsBtn" title="Get direction" icon="near_me"
-            onClick="action-base-address-method-view-direction,close"/>
-        </button-group>
-        <field name="isUsed" hidden="true" type="boolean"/>
-        <field name="isValidLatLong" hidden="true"/>
-        <field name="formattedFullName" readonly="true" height="4" colSpan="12"/>
+        </panel>
 
       </panel>
-
-    </panel>
-    <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"
-      if="__config__.app.getApp('base')?.getHasQasValidation()">
-      <field name="certifiedOk" colSpan="4"/>
-      <panel name="actionsPanel" colSpan="4">
-        <button name="validateBtn" title="Validate"
-          onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-        <button name="selectBtn" title="Choose"
-          onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+      <panel name="qasCertificationPanel" title="QAS certification" colSpan="12"
+        if="__config__.app.getApp('base')?.getHasQasValidation()">
+        <field name="certifiedOk" colSpan="4"/>
+        <panel name="actionsPanel" colSpan="4">
+          <button name="validateBtn" title="Validate"
+            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+          <button name="selectBtn" title="Choose"
+            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        </panel>
+        <panel-related name="pickListPanel" field="pickList" title="Pick list"
+          colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
       </panel>
-      <panel-related name="pickListPanel" field="pickList" title="Pick list"
-        colSpan="12" form="pick-list-entry-form" grid-view="pick-list-entry-grid"/>
     </panel>
   </form>
 

@@ -61,7 +61,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -375,5 +374,4 @@ public class AddressServiceImpl implements AddressService {
     }
     return Character.toUpperCase(s.charAt(0)) + s.substring(1);
   }
-
 }

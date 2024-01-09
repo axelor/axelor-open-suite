@@ -382,5 +382,4 @@ public class AddressController {
       response.setAttrs(attrsMap);
     }
   }
-
 }
