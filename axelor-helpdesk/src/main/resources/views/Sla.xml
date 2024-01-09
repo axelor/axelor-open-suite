@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="team"/>
     <field name="ticketType"/>
-    <field name="reachStageSelect"/>
+    <field name="reachStageTicketStatus"/>
     <field name="prioritySelect"/>
   </grid>
 
@@ -24,7 +24,7 @@
       </panel>
 
       <panel name="targetPanel" title="Target" colSpan="12">
-        <field name="reachStageSelect"/>
+        <field name="reachStageTicketStatus"/>
         <field name="reachIn" title="Reach in">
           <viewer>
 					<![CDATA[

@@ -42,19 +42,39 @@ import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
 
-  @Inject private AppHelpdeskRepository appHelpdeskRepo;
+  protected AppHelpdeskRepository appHelpdeskRepo;
 
-  @Inject private TicketRepository ticketRepo;
+  protected TicketRepository ticketRepo;
 
-  @Inject private SlaRepository slaRepo;
+  protected SlaRepository slaRepo;
 
-  @Inject private PublicHolidayService publicHolidayService;
+  protected PublicHolidayService publicHolidayService;
 
-  @Inject private WeeklyPlanningService weeklyPlanningService;
+  protected WeeklyPlanningService weeklyPlanningService;
+
+  protected TicketStatusService ticketStatusService;
 
   private LocalDateTime toDate;
+
+  @Inject
+  public TicketServiceImpl(
+      SequenceService sequenceService,
+      AppHelpdeskRepository appHelpdeskRepo,
+      TicketRepository ticketRepo,
+      SlaRepository slaRepo,
+      PublicHolidayService publicHolidayService,
+      WeeklyPlanningService weeklyPlanningService,
+      TicketStatusService ticketStatusService) {
+    this.sequenceService = sequenceService;
+    this.appHelpdeskRepo = appHelpdeskRepo;
+    this.ticketRepo = ticketRepo;
+    this.slaRepo = slaRepo;
+    this.publicHolidayService = publicHolidayService;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.ticketStatusService = ticketStatusService;
+  }
 
   /** Generate sequence of the ticket. */
   @Override
@@ -223,9 +243,13 @@ public class TicketServiceImpl implements TicketService {
       LocalDateTime currentDate = LocalDateTime.now();
       LocalDateTime deadlineDateT = ticket.getDeadlineDateT();
 
-      ticket.setIsSlaCompleted(
-          ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
-              && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
+      if (ticket.getTicketStatus() != null
+          && ticket.getSlaPolicy().getReachStageTicketStatus() != null) {
+        ticket.setIsSlaCompleted(
+            ticket.getTicketStatus().getPriority()
+                    >= ticket.getSlaPolicy().getReachStageTicketStatus().getPriority()
+                && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
+      }
     }
   }
 
@@ -279,5 +303,30 @@ public class TicketServiceImpl implements TicketService {
     }
 
     return ticket.getStartDateT();
+  }
+
+  @Override
+  public boolean isNewTicket(Ticket ticket) {
+
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findDefaultStatus());
+  }
+
+  @Override
+  public boolean isInProgressTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findOngoingStatus());
+  }
+
+  @Override
+  public boolean isResolvedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findResolvedStatus());
+  }
+
+  @Override
+  public boolean isClosedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findClosedStatus());
   }
 }
