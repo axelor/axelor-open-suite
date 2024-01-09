@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.base.AxelorException;
@@ -149,24 +150,55 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   }
 
   @Override
-  @Transactional
-  public void computePaidAmount(Invoice invoice, BigDecimal ratio) {
-    if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+  public void computePaidAmount(Invoice invoice, Move move, BigDecimal ratio, boolean isCancel) {
+    if (ratio.signum() == 0) {
+      return;
+    }
+
+    if (isCancel) {
+      ratio = ratio.negate();
+    }
+    if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
-          Budget budget = null;
-          for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-            budget = budgetDistribution.getBudget();
-            budget.setTotalAmountPaid(
-                currencyScaleServiceBudget.getCompanyScaledValue(
-                    budget,
-                    budget
-                        .getTotalAmountPaid()
-                        .add(budgetDistribution.getAmount().multiply(ratio))));
-            budgetRepo.save(budget);
-          }
-        }
+        updateAmountPaidOnBudgets(
+            invoiceLine.getBudgetDistributionList(),
+            ratio,
+            invoice.getInvoiceDate() != null
+                ? invoice.getInvoiceDate()
+                : invoice.getCreatedOn().toLocalDate());
       }
+    } else if (move != null
+        && move.getInvoice() == null
+        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+      for (MoveLine moveLine : move.getMoveLineList()) {
+        updateAmountPaidOnBudgets(moveLine.getBudgetDistributionList(), ratio, move.getDate());
+      }
+    }
+  }
+
+  @Transactional
+  protected void updateAmountPaidOnBudgets(
+      List<BudgetDistribution> budgetDistributionList, BigDecimal ratio, LocalDate date) {
+    if (ObjectUtils.isEmpty(budgetDistributionList)) {
+      return;
+    }
+    Budget budget = null;
+    for (BudgetDistribution budgetDistribution : budgetDistributionList) {
+      budget = budgetDistribution.getBudget();
+      BigDecimal totalAmountPaid =
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget, budgetDistribution.getAmount().multiply(ratio));
+      budget.setTotalAmountPaid(
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              budget, budget.getTotalAmountPaid().add(totalAmountPaid)));
+      BudgetLine budgetLine =
+          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date).orElse(null);
+      if (budgetLine != null) {
+        budgetLine.setAmountPaid(
+            currencyScaleServiceBudget.getCompanyScaledValue(
+                budget, budgetLine.getAmountPaid().add(totalAmountPaid)));
+      }
+      budgetRepo.save(budget);
     }
   }
 
@@ -222,7 +254,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     return String.join(", ", alertMessageTokenList);
   }
 
-  protected void linkBudgetDistributionWithParent(
+  @Override
+  public void linkBudgetDistributionWithParent(
       BudgetDistribution budgetDistribution, AuditableModel object) {
 
     if (MoveLine.class.equals(EntityHelper.getEntityClass(object))) {

@@ -113,7 +113,7 @@
       </panel>
 
       <static name="$periodNotAvailable" colSpan="12" hidden="true">
-        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
+        <![CDATA[<><Badge bg="warning">You need to save the budget before manage budget lines on periods</Badge></>]]></static>
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
         colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
         <field name="periodDurationSelect" colSpan="4"/>

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -31,9 +32,11 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Optional;
@@ -82,7 +85,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
         if (currencyScaleServiceBudget
-                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount())
+                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount().abs())
                 .compareTo(
                     currencyScaleServiceBudget.getCompanyScaledValue(
                         budgetDistribution, moveLine.getCredit().add(moveLine.getDebit())))
@@ -118,5 +121,27 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
 
     return budgetDistributionService.getBudgetDomain(
         company, date, technicalTypeSelect, new HashSet<>());
+  }
+
+  @Override
+  public void negateAmount(MoveLine moveLine, Move move) {
+    if (moveLine == null
+        || moveLine.getAccount() == null
+        || ObjectUtils.isEmpty(moveLine.getBudgetDistributionList())) {
+      return;
+    }
+
+    Account account = moveLine.getAccount();
+    if ((AccountRepository.COMMON_POSITION_CREDIT == account.getCommonPosition()
+            && moveLine.getDebit().signum() != 0)
+        || (AccountRepository.COMMON_POSITION_DEBIT == account.getCommonPosition()
+            && moveLine.getCredit().signum() != 0)) {
+
+      for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
+        if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+          budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
+        }
+      }
+    }
   }
 }

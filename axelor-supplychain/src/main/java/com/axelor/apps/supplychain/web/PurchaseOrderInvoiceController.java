@@ -24,6 +24,7 @@ import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -143,7 +144,7 @@ public class PurchaseOrderInvoiceController {
           "scale",
           isPercent
               ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
-              : purchaseOrder.getCurrency().getNumberOfDecimals());
+              : Beans.get(CurrencyScaleServicePurchase.class).getScale(purchaseOrder));
     }
   }
 }

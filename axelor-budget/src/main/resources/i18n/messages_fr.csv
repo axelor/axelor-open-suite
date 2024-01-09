@@ -3,6 +3,7 @@
 "<span class='label label-warning'>To activate this option, you need to disable budget key first in account configurations of companies.</span>","<span class='label label-warning'>Pour activer cette option, vous devez d'abord désactiver la clé budgétaire dans la configuration comptable des sociétés.</span>",,
 "<span class='label label-warning'>To activate this option, you need to disable project management first in budget configuration.</span>","<span class='label label-warning'>Pour activer cette option, vous devez d'abord désactiver la gestion des projets dans la configuration budgétaire.</span>",,
 "<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>","<span class='label label-warning'>Veuillez sauvegarder le budget avant de pouvoir gérer les lignes budgétaires sur périodes</span>",,
+"<><Badge bg=""warning"">You need to save the budget before manage budget lines on periods</Badge></>","<><Badge bg=""warning"">Veuillez sauvegarder le budget avant de pouvoir gérer les lignes budgétaires sur périodes</Badge></>",,
 "A budget distribution has already been generated. By launching this action, the budget distribution table will be cleared and re-computed. Do you want to proceed ?","Une répartition budgétaire a déjà été générée. En relançant cette action, vous allez perdre l'ancienne répartition budgétaire. Souhaitez-vous continuer ?",,
 "Account","Comptes comptables",,
 "Account configuration","Configuration comptable",,
