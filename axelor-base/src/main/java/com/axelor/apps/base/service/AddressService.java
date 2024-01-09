@@ -106,4 +106,6 @@ public interface AddressService {
 
   public Map<String, Map<String, Object>> getCountryAddressMetaFieldOnChangeAttrsMap(
       Address address);
+
+  public void checkRequiredAddressFields(Address address);
 }

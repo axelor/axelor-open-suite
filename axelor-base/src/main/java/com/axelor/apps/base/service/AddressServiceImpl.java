@@ -61,6 +61,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -332,6 +333,47 @@ public class AddressServiceImpl implements AddressService {
       addressAttrsService.addAllFieldsUnhide(addressTemplateLineList, attrsMap);
     }
 
+    LOG.info("Attrs: {}", attrsMap);
     return attrsMap;
   }
+
+  @Override
+  public void checkRequiredAddressFields(Address address) {
+    if (address.getCountry() != null) {
+      AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
+      for (AddressTemplateLine addressTemplateLine : addressTemplate.getAddressTemplateLineList()) {
+        if (addressTemplateLine.getIsRequired()) {
+          // Assuming field name is stored in addressTemplateLine.getFieldName()
+          String fieldName = addressTemplateLine.getMetaField().getName();
+
+          // Use reflection to get the value of the field
+          Object fieldValue = invokeGetter(address, "get" + capitalize(fieldName));
+
+          // Check if the field value is empty (assuming it's a String)
+          if (fieldValue instanceof String && ((String) fieldValue).isEmpty()) {
+            // Field is required but empty
+            System.out.println(fieldName + " is required but empty.");
+          }
+        }
+      }
+    }
+  }
+
+  // Helper method to invoke getter dynamically using reflection
+  private Object invokeGetter(Object object, String getterName) {
+    try {
+      return object.getClass().getMethod(getterName).invoke(object);
+    } catch (Exception e) {
+
+      return null;
+    }
+  }
+
+  private String capitalize(String s) {
+    if (s == null || s.isEmpty()) {
+      return s;
+    }
+    return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+  }
+
 }

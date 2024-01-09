@@ -13,10 +13,10 @@
   <form name="address-template-line-form" title="Address template lines"
     model="com.axelor.apps.base.db.AddressTemplateLine">
     <panel name="mainPanel" title="Address Template Line">
-      <field name="isRequired" colSpan="2" widget="boolean-switch"/>
       <field name="metaField"
         onSelect="action-address-template-line-method-on-meta-field-domain-address" colSpan="5"/>
       <field name="title" colSpan="5"/>
+      <field name="isRequired" colSpan="2" widget="boolean-switch"/>
     </panel>
   </form>
 

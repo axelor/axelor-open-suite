@@ -23,16 +23,16 @@
         colSpan="12"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
         <field name="department" x-bind="{{department|uppercase}}"/>
+        <field name="room" x-bind="{{room|uppercase}}"/>
         <field name="floor" x-bind="{{floor|uppercase}}"/>
+        <field if="__config__.app.getApp('base')?.getStoreStreets()" name="buildingNumber"
+               x-bind="{{buildingNumber|uppercase}}" onChange="action-address-record-change-streetName"/>
         <field name="street" onSelect="action-address-attrs-update-domain-street"
           onChange="action-address-record-change-streetName" form-view="street-form"
           grid-view="street-grid" canNew="true"
           if="__config__.app.getApp('base')?.getStoreStreets()"/>
         <field name="streetName" x-bind="{{streetName|uppercase}}"
           if="!__config__.app.getApp('base')?.getStoreStreets()"/>
-        <field if="__config__.app.getApp('base')?.getStoreStreets()" name="buildingNumber"
-          x-bind="{{buildingNumber|uppercase}}" onChange="action-address-record-change-streetName"/>
-
         <field name="postBox" x-bind="{{postBox|uppercase}}"/>
         <field name="buildingName" x-bind="{{buildingName|uppercase}}"/>
         <field name="subDepartment" x-bind="{{subDepartment|uppercase}}"/>
@@ -45,7 +45,6 @@
           canNew="true" onChange="action-address-change-city" form-view="city-form"
           grid-view="city-grid"/>
         <field name="zip" onChange="action-address-method-autocomplete-address"/>
-        <field name="room" x-bind="{{room|uppercase}}"/>
         <field name="isInvoicingAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
           title="Invoicing address"/>
         <field name="isDeliveryAddr" type="boolean" showIf="$popup() &amp;&amp; id == null"
