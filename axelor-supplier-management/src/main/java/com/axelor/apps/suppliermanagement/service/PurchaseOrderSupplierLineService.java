@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
@@ -61,7 +62,9 @@ public class PurchaseOrderSupplierLineService {
     purchaseOrderLine.setPrice(purchaseOrderSupplierLine.getPrice());
     purchaseOrderLine.setExTaxTotal(
         PurchaseOrderLineServiceImpl.computeAmount(
-            purchaseOrderLine.getQty(), purchaseOrderLine.getPrice()));
+            purchaseOrderLine.getQty(),
+            purchaseOrderLine.getPrice(),
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS));
 
     purchaseOrderSupplierLine.setStateSelect(PurchaseOrderSupplierLineRepository.STATE_ACCEPTED);
 

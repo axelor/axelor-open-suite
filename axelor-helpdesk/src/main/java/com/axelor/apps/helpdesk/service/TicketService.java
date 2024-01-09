@@ -38,4 +38,12 @@ public interface TicketService {
   public LocalDateTime computeEndDate(Ticket ticket);
 
   public LocalDateTime computeStartDate(Ticket ticket);
+
+  public boolean isNewTicket(Ticket ticket);
+
+  public boolean isInProgressTicket(Ticket ticket);
+
+  public boolean isResolvedTicket(Ticket ticket);
+
+  public boolean isClosedTicket(Ticket ticket);
 }

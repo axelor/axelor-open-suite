@@ -159,6 +159,8 @@
 				        {$activityList.map((activity,activityIndex) => (
 				        <Box key={activityIndex}>
 				            {Object.entries(activity).map(([key, value],index) => (
+
+				            Array.isArray(value) &&
 				            <Box key={index}>
 				                <dt>
 				                    <Box mb={2}>{key}</Box>
@@ -166,6 +168,8 @@
 				                {value.map((titleList,titleListIndex) => (
 				                <Box key={titleListIndex}>
 				                    {Object.entries(titleList).map(([title, activityList],activityListIndex) => (
+
+				                    Array.isArray(activityList) &&
 				                    <Box key={activityListIndex} m={1}>
 				                        <Box as="dd" border borderColor="light-subtle" shadow="xl">
 				                            {activityList.map((item,itemIndex) => (

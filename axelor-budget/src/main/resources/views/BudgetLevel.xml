@@ -22,8 +22,6 @@
     name="budget-level-template-grid" orderBy="code">
     <field name="code"/>
     <field name="name"/>
-    <field name="fromDate"/>
-    <field name="toDate"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
@@ -98,26 +96,25 @@
       <field name="fullName" colSpan="12" hidden="true"/>
       <field name="code" colSpan="4"/>
       <field name="name" colSpan="4"/>
-      <field name="globalBudgetTemplate" colSpan="2" readonly="true"
-        showIf="globalBudgetTemplate" form-view="global-budget-template-form"
-        grid-view="global-budget-template-grid"/>
+      <field name="budgetStructure" colSpan="2" readonly="true" showIf="budgetStructure"
+        form-view="budget-structure-form" grid-view="budget-structure-grid"/>
       <field name="parentBudgetLevel" colSpan="2" readonly="true" showIf="parentBudgetLevel"
         form-view="budget-level-template-form" grid-view="budget-level-template-grid"/>
-      <field name="fromDate" onChange="action-budget-level-validate-from-to-dates"/>
-      <field name="toDate" onChange="action-budget-level-validate-from-to-dates"/>
       <field name="$isScenario" hidden="true"/>
     </panel>
     <panel name="masterDetailPanel" colSpan="12" css="border-solid border-red">
-      <field name="budgetLevelList" title="Sections" showIf="globalBudgetTemplate"
+      <field name="budgetLevelList" title="Sections"
+        hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetScenarioVariableSet != null &amp;&amp; budgetScenarioVariableSet.length &gt;= 1)"
         colSpan="12" form-view="budget-level-template-form"
         grid-view="budget-level-children-template-grid"/>
       <field name="budgetList" title="Lines"
-        showIf="parentBudgetLevel &amp;&amp; !$isScenario" colSpan="12"
-        form-view="budget-included-template-form" grid-view="budget-lines-template-grid"/>
+        hideIf="(budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1) || $isScenario"
+        colSpan="12" form-view="budget-included-template-form"
+        grid-view="budget-lines-template-grid"/>
       <field name="budgetScenarioVariableSet" title="Variables"
-        showIf="parentBudgetLevel &amp;&amp; $isScenario" colSpan="12"
-        form-view="budget-scenario-variable-form" grid-view="budget-scenario-variable-grid"
-        canNew="false" canEdit="false" canSelect="true"/>
+        hideIf="(budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1) || !$isScenario"
+        colSpan="12" form-view="budget-scenario-variable-form"
+        grid-view="budget-scenario-variable-grid" canNew="false" canEdit="false" canSelect="true"/>
     </panel>
   </form>
 
@@ -165,7 +162,6 @@
     <field name="startDate" expr="eval: __parent__?.startDate"/>
     <field name="endDate" expr="eval: __parent__?.endDate"/>
     <field name="company" expr="eval: __parent__?.company"/>
-    <field name="budgetTypeSelect" expr="eval: __parent__?.budgetTypeSelect"/>
   </action-record>
 
   <action-record name="action-budget-level-template-record-onnew"

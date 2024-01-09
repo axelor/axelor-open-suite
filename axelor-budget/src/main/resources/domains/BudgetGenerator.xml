@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="BudgetGenerator">
+
+    <many-to-one name="budgetStructure" ref="com.axelor.apps.budget.db.BudgetStructure"
+      title="Budget Structure"/>
+    <string name="name" title="Name"/>
+    <string name="code" title="Code"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
+    <many-to-one name="budgetScenario" title="Budget scenario"
+      ref="com.axelor.apps.budget.db.BudgetScenario"/>
+    <many-to-many ref="com.axelor.apps.base.db.Year" name="yearSet" title="Years"/>
+
+  </entity>
+
+</domain-models>
+

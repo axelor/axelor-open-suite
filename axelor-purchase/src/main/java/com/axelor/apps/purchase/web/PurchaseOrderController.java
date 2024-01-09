@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderDomainService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
+import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
@@ -89,6 +90,8 @@ public class PurchaseOrderController {
       try {
         purchaseOrder = Beans.get(PurchaseOrderService.class).computePurchaseOrder(purchaseOrder);
         response.setValues(purchaseOrder);
+        response.setAttrs(
+            Beans.get(PurchaseOrderAttrsService.class).onChangePurchaseOrderLine(purchaseOrder));
       } catch (Exception e) {
         TraceBackService.trace(response, e);
       }

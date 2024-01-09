@@ -64,7 +64,7 @@ public class ContractRevaluationServiceImpl implements ContractRevaluationServic
           newUnitPrices.add(contractLine.getPrice().toString());
         }
         contractLineService.compute(contractLine, contract, contractLine.getProduct());
-        contractLineService.computeTotal(contractLine);
+        contractLineService.computeTotal(contractLine, contract);
       }
     }
     return contract;
