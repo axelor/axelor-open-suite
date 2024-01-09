@@ -21,12 +21,15 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountClearance;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountClearanceRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -75,6 +78,8 @@ public class AccountClearanceService {
   protected User user;
   protected MoveLineCreateService moveLineCreateService;
   protected BankDetailsService bankDetailsService;
+  protected AccountingSituationService accountingSituationService;
+  protected AccountingSituationRepository accountingSituationRepo;
 
   @Inject
   public AccountClearanceService(
@@ -89,7 +94,9 @@ public class AccountClearanceService {
       TaxAccountService taxAccountService,
       AccountClearanceRepository accountClearanceRepo,
       MoveLineCreateService moveLineCreateService,
-      BankDetailsService bankDetailsService) {
+      BankDetailsService bankDetailsService,
+      AccountingSituationService accountingSituationService,
+      AccountingSituationRepository accountingSituationRepo) {
 
     this.appBaseService = appBaseService;
     this.user = userService.getUser();
@@ -103,6 +110,8 @@ public class AccountClearanceService {
     this.accountClearanceRepo = accountClearanceRepo;
     this.moveLineCreateService = moveLineCreateService;
     this.bankDetailsService = bankDetailsService;
+    this.accountingSituationService = accountingSituationService;
+    this.accountingSituationRepo = accountingSituationRepo;
   }
 
   public List<? extends MoveLine> getExcessPayment(AccountClearance accountClearance)
@@ -149,33 +158,42 @@ public class AccountClearanceService {
     AccountConfig accountConfig = company.getAccountConfig();
 
     Tax tax = accountConfig.getStandardRateTax();
-
-    BigDecimal taxRate =
-        taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
     Account profitAccount = accountConfig.getProfitAccount();
     Journal journal = accountConfig.getAccountClearanceJournal();
 
     Set<MoveLine> moveLineList = accountClearance.getMoveLineSet();
 
     for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getAccount().getVatSystemSelect() == null
-          || moveLine.getAccount().getVatSystemSelect() == 0) {
+      AccountingSituation accountingSituation =
+          accountingSituationRepo.findByCompanyAndPartner(company, moveLine.getPartner());
+
+      if (accountingSituation == null
+          || accountingSituation.getVatSystemSelect() == null
+          || accountingSituation.getVatSystemSelect()
+              == AccountingSituationRepository.VAT_SYSTEM_DEFAULT) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-            moveLine.getAccount().getCode());
+            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
+            moveLine.getPartner().getFullName(),
+            company.getCode());
       }
+
+      int vatSystemSelect =
+          accountingSituationService.determineVatSystemSelect(accountingSituation, profitAccount);
+
       Account taxAccount =
           taxAccountService.getAccount(
-              tax,
-              company,
-              journal,
-              moveLine.getAccount().getVatSystemSelect(),
-              false,
-              moveLine.getMove().getFunctionalOriginSelect());
+              tax, company, journal, vatSystemSelect, false, MoveRepository.FUNCTIONAL_ORIGIN_SALE);
       Move move =
           this.createAccountClearanceMove(
-              moveLine, taxRate, taxAccount, profitAccount, company, journal, accountClearance);
+              moveLine,
+              tax,
+              taxAccount,
+              profitAccount,
+              company,
+              journal,
+              accountClearance,
+              vatSystemSelect);
       moveValidateService.accounting(move);
     }
 
@@ -189,12 +207,13 @@ public class AccountClearanceService {
 
   public Move createAccountClearanceMove(
       MoveLine moveLine,
-      BigDecimal taxRate,
+      Tax tax,
       Account taxAccount,
       Account profitAccount,
       Company company,
       Journal journal,
-      AccountClearance accountClearance)
+      AccountClearance accountClearance,
+      int vatSystemSelect)
       throws AxelorException {
     Partner partner = moveLine.getPartner();
 
@@ -234,6 +253,8 @@ public class AccountClearanceService {
     move.getMoveLineList().add(debitMoveLine);
 
     // Credit MoveLine 77. (profit account)
+    BigDecimal taxRate =
+        taxService.getTaxRate(tax, appBaseService.getTodayDateTime().toLocalDate());
     BigDecimal divid = taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE);
     BigDecimal profitAmount =
         amount
@@ -250,6 +271,7 @@ public class AccountClearanceService {
             2,
             null,
             null);
+    this.setTax(creditMoveLine1, tax, vatSystemSelect);
     move.getMoveLineList().add(creditMoveLine1);
 
     // Credit MoveLine 445 (Tax account)
@@ -265,6 +287,7 @@ public class AccountClearanceService {
             3,
             null,
             null);
+    this.setTax(creditMoveLine2, tax, vatSystemSelect);
     move.getMoveLineList().add(creditMoveLine2);
 
     Reconcile reconcile = reconcileService.createReconcile(debitMoveLine, moveLine, amount, false);
@@ -276,6 +299,15 @@ public class AccountClearanceService {
     creditMoveLine1.setAccountClearance(accountClearance);
     creditMoveLine2.setAccountClearance(accountClearance);
     return move;
+  }
+
+  protected void setTax(MoveLine moveLine, Tax tax, int vatSystemSelect) {
+    TaxLine taxLine = tax.getActiveTaxLine();
+
+    moveLine.setTaxLine(taxLine);
+    moveLine.setTaxRate(taxLine.getValue());
+    moveLine.setTaxCode(tax.getCode());
+    moveLine.setVatSystemSelect(vatSystemSelect);
   }
 
   public AccountClearance createAccountClearance(
