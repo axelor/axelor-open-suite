@@ -21,7 +21,7 @@
         type="integer"/>
     </panel>
     <panel name="stockHistoryLineListPanel" colSpan="12">
-      <field name="$stockHistoryLineList" type="one-to-many"
+      <field name="$stockHistoryLineList" title="Stock history line" type="one-to-many"
         target="com.axelor.apps.stock.db.StockHistoryLine" colSpan="12" readonly="true"
         x-order="date" grid-view="stock-history-line-grid" form-view="stock-history-line-form"/>
       <button name="exportStockHistoryLineListBtn"

@@ -458,7 +458,7 @@
     name="multi-level-generated-draft-manuf-order-wizard-form"
     onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
     <panel name="mainPanel">
-      <field name="$draftManufOrderList" type="one-to-many"
+      <field name="$draftManufOrderList" type="one-to-many" title="Manufacturing orders"
         target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
         canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
 
