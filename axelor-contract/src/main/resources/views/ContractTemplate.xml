@@ -13,7 +13,7 @@
   <form name="contract-template-form" title="Contract template"
     model="com.axelor.apps.contract.db.ContractTemplate" width="large"
     onNew="action-contract-template-record-default-record-onnew" readonlyIf="statusSelect == 3"
-    onLoad="action-contract-method-on-change-additional-contract-line-list">
+    onLoad="action-contract-method-additional-contract-line-list-on-change">
     <panel name="mainPanel">
       <panel colSpan="9" name="subMainPanel">
         <field name="targetTypeSelect" readonlyIf="id"

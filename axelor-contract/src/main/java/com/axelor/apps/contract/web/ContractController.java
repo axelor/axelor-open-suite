@@ -306,7 +306,7 @@ public class ContractController {
     }
   }
 
-  public void changeContractLines(ActionRequest request, ActionResponse response) {
+  public void onChangeContractLines(ActionRequest request, ActionResponse response) {
     try {
       Contract contract = this.getContract(request);
 
@@ -320,7 +320,7 @@ public class ContractController {
     }
   }
 
-  public void changeAdditionalContractLines(ActionRequest request, ActionResponse response) {
+  public void onChangeAdditionalContractLines(ActionRequest request, ActionResponse response) {
     try {
       Contract contract = this.getContract(request);
 

@@ -185,7 +185,6 @@ public class ContractLineServiceImpl implements ContractLineService {
   public ContractLine computeTotal(ContractLine contractLine, Contract contract)
       throws AxelorException {
     BigDecimal taxRate = BigDecimal.ZERO;
-    Contract currentContract = contract;
 
     if (contractLine.getTaxLine() != null) {
       taxRate = contractLine.getTaxLine().getValue().divide(new BigDecimal(100));
@@ -193,7 +192,7 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     if (contractLine.getContractVersion() != null) {
       contractLine = computePricesPerYear(contractLine, contractLine.getContractVersion());
-      currentContract = contractLine.getContractVersion().getContract();
+      contract = contractLine.getContractVersion().getContract();
     }
 
     BigDecimal price =
@@ -204,11 +203,11 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setPriceDiscounted(price);
     BigDecimal exTaxTotal =
         currencyScaleServiceContract.getScaledValue(
-            currentContract, contractLine.getQty().multiply(price));
+            contract, contractLine.getQty().multiply(price));
     contractLine.setExTaxTotal(exTaxTotal);
     BigDecimal inTaxTotal =
         currencyScaleServiceContract.getScaledValue(
-            currentContract, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
+            contract, exTaxTotal.add(exTaxTotal.multiply(taxRate)));
     contractLine.setInTaxTotal(inTaxTotal);
 
     return contractLine;

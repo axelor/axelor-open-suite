@@ -14,7 +14,7 @@
 
   <form name="contract-version-next-form" title="Version"
     model="com.axelor.apps.contract.db.ContractVersion" width="large"
-    onLoad="action-contract-version-attrs-load,action-contract-method-on-change-contract-line-list"
+    onLoad="action-contract-version-group-form-onload"
     onSave="save,action-contract-version-method-save"
     onNew="action-contract-version-method-new-draft,action-contract-version-attrs-load">
     <panel name="mainPanel">
@@ -104,7 +104,7 @@
         <field if="__config__.app.getApp('contract')?.isInvoicingManagement" hidden="true"
           showIf="nextContract.isInvoicingManagement" name="contractLineList" colSpan="12"
           form-view="contract-line-form" grid-view="contract-line-grid"
-          onChange="action-contract-method-on-change-contract-line-list"/>
+          onChange="action-contract-method-contract-line-list-on-change"/>
         <field name="description" colSpan="9" widget="html"/>
         <field name="metaFile" colSpan="3" widget="binary-link"/>
       </panel>
@@ -179,6 +179,11 @@
       <mail-followers/>
     </panel-mail>
   </form>
+
+  <action-group name="action-contract-version-group-form-onload">
+    <action name="action-contract-version-attrs-load"/>
+    <action name="action-contract-method-contract-line-list-on-change"/>
+  </action-group>
 
   <action-attrs name="action-contract-version-attrs-load">
     <attribute for="$_xIsNext" name="value" expr="eval: nextContract"/>
