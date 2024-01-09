@@ -36,8 +36,11 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
   protected BudgetResetToolService budgetResetToolService;
 
   @Inject
-  public GlobalBudgetResetToolServiceImpl(BudgetLevelResetToolService budgetLevelResetToolService) {
+  public GlobalBudgetResetToolServiceImpl(
+      BudgetLevelResetToolService budgetLevelResetToolService,
+      BudgetResetToolService budgetResetToolService) {
     this.budgetLevelResetToolService = budgetLevelResetToolService;
+    this.budgetResetToolService = budgetResetToolService;
   }
 
   public void resetGlobalBudget(GlobalBudget globalBudget) {

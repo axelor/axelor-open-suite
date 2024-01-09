@@ -28,8 +28,8 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetResetToolServiceImpl implements BudgetResetToolService {
 
-  private final BudgetLineResetToolService budgetLineResetToolService;
-  private final BudgetRepository budgetRepository;
+  protected BudgetLineResetToolService budgetLineResetToolService;
+  protected BudgetRepository budgetRepository;
 
   @Inject
   public BudgetResetToolServiceImpl(

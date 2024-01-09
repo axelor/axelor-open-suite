@@ -27,11 +27,11 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolService {
 
-  private final BudgetResetToolService budgetService;
+  protected BudgetResetToolService budgetResetToolService;
 
   @Inject
   public BudgetLevelResetToolServiceImpl(BudgetResetToolService budgetResetToolService) {
-    this.budgetService = budgetResetToolService;
+    this.budgetResetToolService = budgetResetToolService;
   }
 
   @Override
@@ -53,7 +53,7 @@ public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolServ
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
       budgetLevel.getBudgetLevelList().forEach(child -> resetBudgetLevel(child));
     } else if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
-      budgetLevel.getBudgetList().forEach(budgetService::resetBudget);
+      budgetLevel.getBudgetList().forEach(budgetResetToolService::resetBudget);
     }
   }
 }
