@@ -47,10 +47,8 @@
           <field name="companyExTaxTotal" title="Total W.T." colSpan="6"
             if="__config__.app.getApp('budget')?.getManageMultiBudget()" readonly="true"
             hidden="false" x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="companyExTaxTotal">
-              <![CDATA[
-							<dd>{{$fmt('companyExTaxTotal')}}</dd>
-						]]>
+            <viewer depends="companyExTaxTotal,$currencySymbol">
+              <![CDATA[<><dd>{$fmt('companyExTaxTotal')}</dd></>]]>
             </viewer>
           </field>
           <field name="budgetDistributionSumAmount" colSpan="6"
