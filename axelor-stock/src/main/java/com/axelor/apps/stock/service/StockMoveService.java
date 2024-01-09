@@ -238,4 +238,6 @@ public interface StockMoveService {
   public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException;
 
   void setMergedStatus(StockMove stockMove);
+
+  StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
 }
