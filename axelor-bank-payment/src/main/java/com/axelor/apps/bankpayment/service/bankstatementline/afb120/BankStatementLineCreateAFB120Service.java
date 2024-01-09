@@ -32,16 +32,15 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,48 +76,39 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
 
   @Transactional
   protected BankStatementLine createBankStatementLine(
-      Map<String, Object> structuredContentLine, int sequence) {
+      StructuredContentLine structuredContentLine, int sequence) {
 
-    String description = (String) structuredContentLine.get("description");
-    LocalDate operationDate = (LocalDate) structuredContentLine.get("operationDate");
-    LocalDate valueDate = (LocalDate) structuredContentLine.get("valueDate");
-    int lineType = (int) structuredContentLine.get("lineType");
+    String description = structuredContentLine.getDescription();
+    LocalDate operationDate = structuredContentLine.getOperationDate();
+    LocalDate valueDate = structuredContentLine.getValueDate();
+    int lineType = structuredContentLine.getLineType();
 
-    if (structuredContentLine.containsKey("additionalInformation")
-        && structuredContentLine.get("additionalInformation") != null) {
-      description += "\n" + (String) structuredContentLine.get("additionalInformation");
+    if (StringUtils.notEmpty(structuredContentLine.getAdditionalInformation())) {
+      description += "\n" + structuredContentLine.getAdditionalInformation();
     }
 
     BankDetails bankDetails = null;
-    if (structuredContentLine.containsKey("bankDetails")
-        && structuredContentLine.get("bankDetails") != null) {
-      bankDetails =
-          bankDetailsRepository.find(
-              ((BankDetails) structuredContentLine.get("bankDetails")).getId());
+    if (structuredContentLine.getBankDetails() != null) {
+      bankDetails = bankDetailsRepository.find(structuredContentLine.getBankDetails().getId());
     }
 
     Currency currency = null;
-    if (structuredContentLine.containsKey("currency")
-        && structuredContentLine.get("currency") != null) {
-      currency =
-          currencyRepository.find(((Currency) structuredContentLine.get("currency")).getId());
+    if (structuredContentLine.getCurrency() != null) {
+      currency = currencyRepository.find(structuredContentLine.getCurrency().getId());
     }
 
     InterbankCodeLine operationInterbankCodeLine = null;
-    if (structuredContentLine.containsKey("operationInterbankCodeLine")
-        && structuredContentLine.get("operationInterbankCodeLine") != null) {
+    if (structuredContentLine.getOperationInterbankCodeLine() != null) {
       operationInterbankCodeLine =
           interbankCodeLineRepository.find(
-              ((InterbankCodeLine) structuredContentLine.get("operationInterbankCodeLine"))
-                  .getId());
+              structuredContentLine.getOperationInterbankCodeLine().getId());
     }
 
     InterbankCodeLine rejectInterbankCodeLine = null;
-    if (structuredContentLine.containsKey("rejectInterbankCodeLine")
-        && structuredContentLine.get("rejectInterbankCodeLine") != null) {
+    if (structuredContentLine.getRejectInterbankCodeLine() != null) {
       rejectInterbankCodeLine =
           interbankCodeLineRepository.find(
-              ((InterbankCodeLine) structuredContentLine.get("rejectInterbankCodeLine")).getId());
+              structuredContentLine.getRejectInterbankCodeLine().getId());
     }
 
     BankStatementLineAFB120 bankStatementLineAFB120 =
@@ -126,19 +116,19 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
             findBankStatement(),
             sequence,
             bankDetails,
-            (BigDecimal) structuredContentLine.get("debit"),
-            (BigDecimal) structuredContentLine.get("credit"),
+            structuredContentLine.getDebit(),
+            structuredContentLine.getCredit(),
             currency,
             description,
             operationDate,
             valueDate,
             operationInterbankCodeLine,
             rejectInterbankCodeLine,
-            (String) structuredContentLine.get("origin"),
-            (String) structuredContentLine.get("reference"),
+            structuredContentLine.getOrigin(),
+            structuredContentLine.getReference(),
             lineType,
-            (String) structuredContentLine.get("unavailabilityIndexSelect"),
-            (String) structuredContentLine.get("commissionExemptionIndexSelect"));
+            structuredContentLine.getUnavailabilityIndexSelect(),
+            structuredContentLine.getCommissionExemptionIndexSelect());
 
     updateBankStatementDate(operationDate, lineType);
 
@@ -170,9 +160,9 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
     }
   }
 
-  protected List<Map<String, Object>> readFile() throws IOException, AxelorException {
+  protected List<StructuredContentLine> readFile() throws IOException, AxelorException {
 
-    List<Map<String, Object>> structuredContent = Lists.newArrayList();
+    List<StructuredContentLine> structuredContent = Lists.newArrayList();
 
     List<String> fileContent = FileHelper.reader(file.getPath());
 

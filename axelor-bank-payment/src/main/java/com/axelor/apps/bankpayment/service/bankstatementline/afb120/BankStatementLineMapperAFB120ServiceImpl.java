@@ -10,13 +10,12 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
-import com.google.common.collect.Maps;
+import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 public class BankStatementLineMapperAFB120ServiceImpl
     implements BankStatementLineMapperAFB120Service {
@@ -45,7 +44,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
   }
 
   @Override
-  public void writeStructuredContent(String lineData, List<Map<String, Object>> structuredContent)
+  public void writeStructuredContent(String lineData, List<StructuredContentLine> structuredContent)
       throws AxelorException {
     // Code enregistrement
     String operationCode =
@@ -76,25 +75,23 @@ public class BankStatementLineMapperAFB120ServiceImpl
   }
 
   protected void writeAdditionalInformation(
-      String lineData, List<Map<String, Object>> structuredContent) throws AxelorException {
-    Map<String, Object> movementLine = structuredContent.get(structuredContent.size() - 1);
+      String lineData, List<StructuredContentLine> structuredContent) throws AxelorException {
+    StructuredContentLine movementLine = structuredContent.get(structuredContent.size() - 1);
     String additionalInformation = "";
-    if (movementLine.containsKey("additionalInformation")) {
-      additionalInformation = (String) movementLine.get("additionalInformation") + "\n";
+    if (StringUtils.notEmpty(movementLine.getAdditionalInformation())) {
+      additionalInformation = movementLine.getAdditionalInformation() + "\n";
     }
-    additionalInformation +=
-        (String) readAdditionalMovementRecord(lineData).get("additionalInformation");
+    additionalInformation += readAdditionalMovementRecord(lineData).getAdditionalInformation();
 
-    movementLine.put("additionalInformation", additionalInformation);
+    movementLine.setAdditionalInformation(additionalInformation);
   }
 
-  protected Map<String, Object> readPreviousBalanceRecord(String lineContent)
+  protected StructuredContentLine readPreviousBalanceRecord(String lineContent)
       throws AxelorException {
 
-    Map<String, Object> structuredLineContent = Maps.newHashMap();
+    StructuredContentLine structuredLineContent = new StructuredContentLine();
 
-    structuredLineContent.put(
-        "lineType", BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE);
+    structuredLineContent.setLineType(BankStatementLineAFB120Repository.LINE_TYPE_INITIAL_BALANCE);
 
     // Zone 1-B : Code banque
     String bankCode =
@@ -125,7 +122,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_ALPHA,
             17,
             3);
-    structuredLineContent.put("currency", getCurrency(currencyCode));
+    structuredLineContent.setCurrency(getCurrency(currencyCode));
 
     // Zone 1-F : Nombre de décimales du montant de l'ancien solde
     int decimalDigitNumber =
@@ -148,7 +145,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             22,
             11);
 
-    structuredLineContent.put("bankDetails", getBankDetails(accountNumber, bankCode, sortCode));
+    structuredLineContent.setBankDetails(getBankDetails(accountNumber, bankCode, sortCode));
 
     // Zone 1-J : Date de l'ancien solde (JJMMAA)
     String date =
@@ -159,7 +156,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             35,
             6);
-    structuredLineContent.put("operationDate", getDate(date));
+    structuredLineContent.setOperationDate(getDate(date));
 
     // Zone 1-L : Montant de l'ancien solde
     String amountStr =
@@ -174,21 +171,21 @@ public class BankStatementLineMapperAFB120ServiceImpl
     BigDecimal amount = getAmount(amountStr, decimalDigitNumber);
 
     if (amount.signum() == 1) {
-      structuredLineContent.put("debit", BigDecimal.ZERO);
-      structuredLineContent.put("credit", amount.abs());
+      structuredLineContent.setDebit(BigDecimal.ZERO);
+      structuredLineContent.setCredit(amount.abs());
     } else {
-      structuredLineContent.put("credit", BigDecimal.ZERO);
-      structuredLineContent.put("debit", amount.abs());
+      structuredLineContent.setCredit(BigDecimal.ZERO);
+      structuredLineContent.setDebit(amount.abs());
     }
 
     return structuredLineContent;
   }
 
-  protected Map<String, Object> readMovementRecord(String lineContent) throws AxelorException {
+  protected StructuredContentLine readMovementRecord(String lineContent) throws AxelorException {
 
-    Map<String, Object> structuredLineContent = Maps.newHashMap();
+    StructuredContentLine structuredLineContent = new StructuredContentLine();
 
-    structuredLineContent.put("lineType", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT);
+    structuredLineContent.setLineType(BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT);
 
     // Zone 2-B : Code banque
     String bankCode =
@@ -219,7 +216,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_ALPHA,
             17,
             3);
-    structuredLineContent.put("currency", getCurrency(currencyCode));
+    structuredLineContent.setCurrency(getCurrency(currencyCode));
 
     // Zone 2-F : Nombre de décimales du montant du mouvement
     int decimalDigitNumber =
@@ -242,7 +239,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             22,
             11);
 
-    structuredLineContent.put("bankDetails", getBankDetails(accountNumber, bankCode, sortCode));
+    structuredLineContent.setBankDetails(getBankDetails(accountNumber, bankCode, sortCode));
 
     // Zone 2-I : Code opération interbancaire
     String operationInterbankCode =
@@ -253,8 +250,8 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_ALPHA_NUMERIC,
             33,
             2);
-    structuredLineContent.put(
-        "operationInterbankCodeLine", getInterbankCodeLine(operationInterbankCode));
+    structuredLineContent.setOperationInterbankCodeLine(
+        getInterbankCodeLine(operationInterbankCode));
 
     // Zone 2-J : Date de comptabilisation de l'opération (JJMMAA)
     String movementDate =
@@ -265,7 +262,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             35,
             6);
-    structuredLineContent.put("operationDate", getDate(movementDate));
+    structuredLineContent.setOperationDate(getDate(movementDate));
 
     // Zone 2-K : Code motif de rejet
     String rejectInterbankCodeLine =
@@ -276,8 +273,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             41,
             2);
-    structuredLineContent.put(
-        "rejectInterbankCodeLine", getInterbankCodeLine(rejectInterbankCodeLine));
+    structuredLineContent.setRejectInterbankCodeLine(getInterbankCodeLine(rejectInterbankCodeLine));
 
     // Zone 2-L : Date de valeur (JJMMAA)
     String valueDate =
@@ -288,11 +284,10 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             43,
             6);
-    structuredLineContent.put("valueDate", getDate(valueDate));
+    structuredLineContent.setValueDate(getDate(valueDate));
 
     // Zone 2-M : Libellé
-    structuredLineContent.put(
-        "description",
+    structuredLineContent.setDescription(
         cfonbToolService.readZone(
             "2-M : label",
             lineContent,
@@ -302,8 +297,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             31));
 
     // Zone 2-O : Numéro d'écriture
-    structuredLineContent.put(
-        "origin",
+    structuredLineContent.setOrigin(
         cfonbToolService.readZone(
             "2-O : move number",
             lineContent,
@@ -313,8 +307,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             7));
 
     // Zone 2-P : Indice d'exonération de commission de mouvement de compte
-    structuredLineContent.put(
-        "commissionExemptionIndexSelect",
+    structuredLineContent.setCommissionExemptionIndexSelect(
         cfonbToolService.readZone(
             "2-P : turnover commission exemption index",
             lineContent,
@@ -324,8 +317,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             1));
 
     // Zone 2-Q : Indice d'indisponibilité
-    structuredLineContent.put(
-        "unavailabilityIndexSelect",
+    structuredLineContent.setUnavailabilityIndexSelect(
         cfonbToolService.readZone(
             "2-Q : unavailability index",
             lineContent,
@@ -346,16 +338,15 @@ public class BankStatementLineMapperAFB120ServiceImpl
     BigDecimal amount = getAmount(amountStr, decimalDigitNumber);
 
     if (amount.signum() == 1) {
-      structuredLineContent.put("debit", BigDecimal.ZERO);
-      structuredLineContent.put("credit", amount.abs());
+      structuredLineContent.setDebit(BigDecimal.ZERO);
+      structuredLineContent.setCredit(amount.abs());
     } else {
-      structuredLineContent.put("credit", BigDecimal.ZERO);
-      structuredLineContent.put("debit", amount.abs());
+      structuredLineContent.setCredit(BigDecimal.ZERO);
+      structuredLineContent.setDebit(amount.abs());
     }
 
     // Zone 2-S : Zone référence
-    structuredLineContent.put(
-        "reference",
+    structuredLineContent.setReference(
         cfonbToolService.readZone(
             "2-S : reference zone",
             lineContent,
@@ -367,12 +358,11 @@ public class BankStatementLineMapperAFB120ServiceImpl
     return structuredLineContent;
   }
 
-  protected Map<String, Object> readNewBalanceRecord(String lineContent) throws AxelorException {
+  protected StructuredContentLine readNewBalanceRecord(String lineContent) throws AxelorException {
 
-    Map<String, Object> structuredLineContent = Maps.newHashMap();
+    StructuredContentLine structuredLineContent = new StructuredContentLine();
 
-    structuredLineContent.put(
-        "lineType", BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE);
+    structuredLineContent.setLineType(BankStatementLineAFB120Repository.LINE_TYPE_FINAL_BALANCE);
 
     // Zone 1-B : Code banque
     String bankCode =
@@ -403,7 +393,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_ALPHA,
             17,
             3);
-    structuredLineContent.put("currency", getCurrency(currencyCode));
+    structuredLineContent.setCurrency(getCurrency(currencyCode));
 
     // Zone 1-F : Nombre de décimales du montant du nouveau solde
     int nbDecimalDigit =
@@ -426,7 +416,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             22,
             11);
 
-    structuredLineContent.put("bankDetails", getBankDetails(accountNumber, bankCode, sortCode));
+    structuredLineContent.setBankDetails(getBankDetails(accountNumber, bankCode, sortCode));
 
     // Zone 1-J : Date du nouveau solde (JJMMAA)
     String date =
@@ -437,7 +427,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             35,
             6);
-    structuredLineContent.put("operationDate", getDate(date));
+    structuredLineContent.setOperationDate(getDate(date));
 
     // Zone 1-L : Montant du nouveau solde
     String amountStr =
@@ -452,20 +442,20 @@ public class BankStatementLineMapperAFB120ServiceImpl
     BigDecimal amount = getAmount(amountStr, nbDecimalDigit);
 
     if (amount.signum() == 1) {
-      structuredLineContent.put("debit", BigDecimal.ZERO);
-      structuredLineContent.put("credit", amount.abs());
+      structuredLineContent.setDebit(BigDecimal.ZERO);
+      structuredLineContent.setCredit(amount.abs());
     } else {
-      structuredLineContent.put("credit", BigDecimal.ZERO);
-      structuredLineContent.put("debit", amount.abs());
+      structuredLineContent.setCredit(BigDecimal.ZERO);
+      structuredLineContent.setDebit(amount.abs());
     }
 
     return structuredLineContent;
   }
 
-  protected Map<String, Object> readAdditionalMovementRecord(String lineContent)
+  protected StructuredContentLine readAdditionalMovementRecord(String lineContent)
       throws AxelorException {
 
-    Map<String, Object> structuredLineContent = Maps.newHashMap();
+    StructuredContentLine structuredLineContent = new StructuredContentLine();
 
     // Zone 2b-B : Code banque
     String bankCode =
@@ -496,7 +486,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_ALPHA,
             17,
             3);
-    structuredLineContent.put("currency", getCurrency(currencyCode));
+    structuredLineContent.setCurrency(getCurrency(currencyCode));
 
     // Zone 2b-F : Nombre de décimales du montant du mouvement
     cfonbToolService.readZone(
@@ -517,7 +507,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             22,
             11);
 
-    structuredLineContent.put("bankDetails", getBankDetails(accountNumber, bankCode, sortCode));
+    structuredLineContent.setBankDetails(getBankDetails(accountNumber, bankCode, sortCode));
 
     // Zone 2b-I : Code opération interbancaire
     String operationInterbankCode =
@@ -528,8 +518,8 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_ALPHA_NUMERIC,
             33,
             2);
-    structuredLineContent.put(
-        "operationInterbankCodeLine", getInterbankCodeLine(operationInterbankCode));
+    structuredLineContent.setOperationInterbankCodeLine(
+        getInterbankCodeLine(operationInterbankCode));
 
     // Zone 2b-J : Date de comptabilisation de l'opération (JJMMAA)
     String date =
@@ -540,7 +530,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             35,
             6);
-    structuredLineContent.put("operationDate", getDate(date));
+    structuredLineContent.setOperationDate(getDate(date));
 
     // Zone 2b-L : Qualifiant de la zone "Informations complémentaires"
     String additionalInformationType =
@@ -555,8 +545,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
     switch (additionalInformationType) {
       case "LIB":
         // Zone 2b-M : Informations complémentaires
-        structuredLineContent.put(
-            "additionalInformation",
+        structuredLineContent.setAdditionalInformation(
             cfonbToolService.readZone(
                 "2b-M : additional information",
                 lineContent,
@@ -600,13 +589,11 @@ public class BankStatementLineMapperAFB120ServiceImpl
         String decimalPartOfAmount =
             amountInCurrency.substring(amountInCurrency.length() - decimalDigitNumber);
         String correctAmount = integerPartOfAmount + "." + decimalPartOfAmount;
-        structuredLineContent.put(
-            "additionalInformation", correctAmount + " " + origineCurrencyCode);
+        structuredLineContent.setAdditionalInformation(correctAmount + " " + origineCurrencyCode);
         break;
       default:
         // Zone 2b-M : Informations complémentaires
-        structuredLineContent.put(
-            "additionalInformation",
+        structuredLineContent.setAdditionalInformation(
             cfonbToolService.readZone(
                 "2b-M : additional information",
                 lineContent,

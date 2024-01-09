@@ -70,6 +70,7 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     billOfMaterialLine.setProduct(product);
     billOfMaterialLine.setBillOfMaterial(billOfMaterial);
     billOfMaterialLine.setQty(qty);
+    billOfMaterialLine.setUnit(unit);
     billOfMaterialLine.setPriority(priority);
     billOfMaterial.setHasNoManageStock(hasNoManageStock);
 
