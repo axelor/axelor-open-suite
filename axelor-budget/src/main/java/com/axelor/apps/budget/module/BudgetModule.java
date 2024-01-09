@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.module;
 
 import com.axelor.app.AxelorModule;
+import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
@@ -73,6 +74,7 @@ import com.axelor.apps.budget.service.GlobalBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetServiceImpl;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowService;
 import com.axelor.apps.budget.service.GlobalBudgetWorkflowServiceImpl;
+import com.axelor.apps.budget.service.ReconcileBudgetServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineServiceImpl;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceService;
@@ -87,6 +89,7 @@ import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveLineGroupBudgetServiceImpl;
 import com.axelor.apps.budget.service.move.MoveRemoveBudgetService;
+import com.axelor.apps.budget.service.move.MoveReverseServiceBudgetImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetServiceImpl;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderInvoiceBudgetServiceImpl;
@@ -106,6 +109,7 @@ import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImp
 import com.axelor.apps.businessproject.service.WorkflowCancelServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowValidationServiceProjectImpl;
 import com.axelor.apps.businessproject.service.WorkflowVentilationProjectServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 
 public class BudgetModule extends AxelorModule {
@@ -165,5 +169,7 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
     bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
+    bind(ExpenseMoveReverseServiceImpl.class).to(MoveReverseServiceBudgetImpl.class);
+    bind(ReconcileServiceImpl.class).to(ReconcileBudgetServiceImpl.class);
   }
 }

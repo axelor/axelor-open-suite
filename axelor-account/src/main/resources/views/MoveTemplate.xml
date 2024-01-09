@@ -147,7 +147,7 @@
     <field name="creditPartner" target-name="fullName" title="Partner to Credit"
       onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
       target="com.axelor.apps.base.db.Partner"/>
-    <field name="subrogationPartner" target-name="fullName" title="Subrogation"
+    <field name="subrogationPartner" target-name="fullName" title="Third-party payer"
       type="many-to-one" target="com.axelor.apps.base.db.Partner"
       onSelect="action-move-template-attrs-wizard-subrogation-partner-domain"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
@@ -169,7 +169,7 @@
       <field name="creditPartner" target-name="fullName" title="Partner to Credit"
         onSelect="action-account-attrs-move-template-partner-domain" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"/>
-      <field name="subrogationPartner" target-name="fullName" title="Subrogation"
+      <field name="subrogationPartner" target-name="fullName" title="Third-party payer"
         type="many-to-one" target="com.axelor.apps.base.db.Partner"
         showIf="[1,2,5].includes(moveTemplate.journal.journalType.technicalTypeSelect)"
         onSelect="action-move-template-attrs-wizard-subrogation-partner-domain"
