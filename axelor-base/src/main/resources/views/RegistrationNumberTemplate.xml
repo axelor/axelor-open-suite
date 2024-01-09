@@ -19,17 +19,15 @@
       <field name="validationMethodSelect"/>
 
       <panel title="Short registration number">
-        <field name="useSiren" />
-        <field name="sirenPos"
-          showIf="useSiren"/>
+        <field name="useSiren"/>
+        <field name="sirenPos" showIf="useSiren"/>
         <field name="sirenLength" showIf="useSiren"/>
       </panel>
 
       <panel title="Internal classification number">
-        <field name="useNic" />
-        <field name="nicPos"
-          showIf="useNic"/>
-        <field name="nicLength"  showIf="useNic"/>
+        <field name="useNic"/>
+        <field name="nicPos" showIf="useNic"/>
+        <field name="nicLength" showIf="useNic"/>
       </panel>
 
     </panel>
