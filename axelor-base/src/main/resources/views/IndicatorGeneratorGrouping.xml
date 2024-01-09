@@ -21,7 +21,7 @@
       colSpan="12" form-view="indicator-generator-form" grid-view="indicator-generator-grid"/>
 
     <panel name="infoPanel">
-      <field name="result" colSpan="12"/>
+      <field name="result" colSpan="12" widget="html" x-lite="true"/>
       <field name="log" colSpan="12"/>
     </panel>
 

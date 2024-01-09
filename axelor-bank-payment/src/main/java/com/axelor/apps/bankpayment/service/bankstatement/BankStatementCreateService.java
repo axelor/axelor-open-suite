@@ -20,36 +20,24 @@ package com.axelor.apps.bankpayment.service.bankstatement;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
 public class BankStatementCreateService {
 
   public String computeName(BankStatement bankStatement) {
-
-    String name = "";
+    StringJoiner joiner = new StringJoiner("-");
 
     if (bankStatement.getBankStatementFileFormat() != null) {
-      if (name != "") {
-        name += "-";
-      }
-      name += bankStatement.getBankStatementFileFormat().getName();
+      joiner.add(bankStatement.getBankStatementFileFormat().getName());
     }
 
-    try {
-      if (bankStatement.getFromDate() != null) {
-        if (name != "") {
-          name += "-";
-        }
-        name += bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-      }
-      if (bankStatement.getToDate() != null) {
-        if (name != "") {
-          name += "-";
-        }
-        name += bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-      }
-    } catch (Exception e) {
+    if (bankStatement.getFromDate() != null) {
+      joiner.add(bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
     }
 
-    return name;
+    if (bankStatement.getToDate() != null) {
+      joiner.add(bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+    }
+    return joiner.toString();
   }
 }

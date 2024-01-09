@@ -18,19 +18,6 @@
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
-  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId" update="true"
-    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
-    call="com.axelor.csv.script.ImportAccount:importAccount">
-    <bind to="importId" column="importId"/>
-    <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
-      update="true">
-      <bind to="code" column="parent_code"/>
-    </bind>
-    <bind column="compatibleAccounts" to="compatibleAccountSet"
-      search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
-  </input>
-
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
     search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
 
@@ -217,6 +204,19 @@
 
   <input file="account_accountConfig.csv" separator=";"
     type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+
+  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
+    search="self.importId = :importId" update="true"
+    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
+    <bind to="importId" column="importId"/>
+    <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
+      update="true">
+      <bind to="code" column="parent_code"/>
+    </bind>
+    <bind column="compatibleAccounts" to="compatibleAccountSet"
+      search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
+  </input>
 
   <input file="account_debtRecoveryConfigLine.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryConfigLine"/>
