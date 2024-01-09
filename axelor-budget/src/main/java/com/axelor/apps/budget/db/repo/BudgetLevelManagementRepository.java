@@ -20,7 +20,10 @@ package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
+import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.inject.Beans;
+import java.util.Map;
 
 public class BudgetLevelManagementRepository extends BudgetLevelRepository {
 
@@ -31,5 +34,18 @@ public class BudgetLevelManagementRepository extends BudgetLevelRepository {
     Beans.get(BudgetLevelResetToolService.class).resetBudgetLevel(copy);
 
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put(
+        "$currencyNumberOfDecimals",
+        Beans.get(CurrencyScaleServiceBudget.class)
+            .getCompanyScale(
+                Beans.get(BudgetToolsService.class)
+                    .getGlobalBudgetUsingBudgetLevel(
+                        Beans.get(BudgetLevelRepository.class).find((Long) json.get("id")))));
+
+    return super.populate(json, context);
   }
 }

@@ -9,15 +9,14 @@
     <field name="name"/>
     <field name="globalBudget"/>
     <field name="parentBudgetLevel"/>
-    <field name="totalAmountExpected" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <field name="totalAmountAvailable"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <field name="totalAmountCommitted"
-      x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <field name="realizedWithNoPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <field name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-    <field name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
+    <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="$currencyNumberOfDecimals"/>
+    <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
+    <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
+    <field name="totalFirmGap" x-scale="$currencyNumberOfDecimals"/>
     <field name="statusSelect"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Budget level"
@@ -61,23 +60,17 @@
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
         title="Total amounts">
-        <field name="totalAmountExpected"
-          x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="totalAmountAvailable"
-          x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="availableAmountWithSimulated"
-          x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="simulatedAmount" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="totalAmountCommitted"
-          x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="realizedWithNoPo"
-          x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="totalAmountPaid" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="totalAmountRealized" hidden="true"
-          x-scale="globalBudget.company.currency.numberOfDecimals"/>
-        <field name="globalBudget.company.currency.numberOfDecimals" hidden="true"/>
+        <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="$currencyNumberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountCommitted" x-scale="$currencyNumberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="$currencyNumberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
       </panel>
 
     </panel>
@@ -171,6 +164,8 @@
     <field name="startDate" expr="eval: __parent__?.startDate"/>
     <field name="endDate" expr="eval: __parent__?.endDate"/>
     <field name="company" expr="eval: __parent__?.company"/>
+    <field name="$currencyNumberOfDecimals"
+      expr="eval: __parent__?.company?.currency?.numberOfDecimals"/>
   </action-record>
 
   <action-record name="action-budget-level-template-record-onnew"
