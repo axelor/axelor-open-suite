@@ -28,12 +28,10 @@ import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppHelpdesk;
-import com.google.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 
 public class TicketManagementRepository extends TicketRepository {
-  @Inject private AppBaseService appBaseService;
 
   @Override
   public Ticket save(Ticket ticket) {

@@ -6,8 +6,11 @@
   <grid name="sale-order-line-tax-grid" title="SO Tax lines"
     model="com.axelor.apps.sale.db.SaleOrderLineTax">
     <field name="taxLine" width="400%" form-view="tax-line-form" grid-view="tax-line-grid"/>
-    <field name="exTaxBase"/>
-    <field name="taxTotal" aggregate="sum"/>
+    <field name="saleOrder" hidden="true"/>
+    <field name="saleOrder.currency" hidden="true"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxBase" x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="taxTotal" aggregate="sum" x-scale="saleOrder.currency.numberOfDecimals"/>
   </grid>
 
   <form name="sale-order-line-tax-form" title="SO Tax line"
@@ -18,9 +21,12 @@
         form-view="tax-line-form"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
-      <field name="exTaxBase"/>
-      <field name="taxTotal"/>
-      <field name="inTaxTotal"/>
+      <field name="exTaxBase" x-scale="saleOrder.currency.numberOfDecimals"/>
+      <field name="taxTotal" x-scale="saleOrder.currency.numberOfDecimals"/>
+      <field name="inTaxTotal" x-scale="saleOrder.currency.numberOfDecimals"/>
+      <field name="saleOrder" hidden="true"/>
+      <field name="saleOrder.currency" hidden="true"/>
+      <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 

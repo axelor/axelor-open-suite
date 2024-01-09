@@ -82,7 +82,7 @@ public interface SaleOrderLineService {
    * @param price The unit price.
    * @return The excluded tax total amount.
    */
-  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price);
+  public BigDecimal computeAmount(BigDecimal quantity, BigDecimal price, int scale);
 
   public BigDecimal getExTaxUnitPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) throws AxelorException;

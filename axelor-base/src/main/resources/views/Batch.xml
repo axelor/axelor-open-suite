@@ -69,9 +69,6 @@
         onClick="action-batch-show-move,close" if-module="axelor-supplychain"/>
       <button name="showBankOrderBtn" title="Show bank order" hidden="true" colSpan="4"
         onClick="action-batch-show-bank-order,close" if-module="axelor-bank-payment"/>
-      <button name="showEbicsCertificatesBtn" title="Ebics certificates" hidden="true"
-        colSpan="4" onClick="action-batch-show-ebics-certificates,close"
-        if-module="axelor-bank-payment"/>
       <button name="createBankOrderBtn" title="Create bank order" hidden="true" colSpan="4"
         onClick="action-batch-create-bank-order,action-batch-show-bank-order,close"
         if-module="axelor-bank-payment"/>
@@ -135,8 +132,6 @@
     <attribute name="hidden" for="createBankOrderBtn"
       expr="eval: !(__parent__?.actionSelect == 12 &amp;&amp; !bankOrder &amp;&amp; done)"
       if="__parent__?._model == 'com.axelor.apps.account.db.AccountingBatch'"/>
-    <attribute name="hidden" for="showEbicsCertificatesBtn" expr="eval: false"
-      if="__parent__?._model == 'com.axelor.apps.bankpayment.db.BankPaymentBatch'"/>
 
     <attribute name="hidden" for="showStockMoveBtn"
       expr="eval: (__parent__?._model != 'com.axelor.apps.account.db.AccountingBatch' || __parent__?.actionSelect != __repo__(AccountingBatch).ACTION_ACCOUNTING_CUT_OFF  || accountingCutOffTypeSelect &gt;= __repo__(AccountingBatch).ACCOUNTING_CUT_OFF_TYPE_PREPAID_EXPENSES) &amp;&amp; (__parent__?._model != 'com.axelor.apps.supplychain.db.SupplychainBatch' || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_INVOICE_ORDERS || __parent__?.actionSelect == __repo__(SupplychainBatch).ACTION_UPDATE_STOCK_HISTORY)"/>
@@ -284,15 +279,6 @@
     model="com.axelor.apps.account.db.AccountingReport">
     <view type="grid" name="accounting-report-export-grid"/>
     <view type="form" name="accounting-report-export-form"/>
-    <domain>:batch MEMBER OF self.batchSet</domain>
-    <context name="batch" expr="eval: __self__"/>
-  </action-view>
-
-  <action-view name="action-batch-show-ebics-certificates" title="Ebics certificate"
-    model="com.axelor.apps.bankpayment.db.EbicsCertificate">
-    <view type="grid" name="ebics-certificate-grid"/>
-    <view type="form" name="ebics-certificate-form"/>
-    <view-param name="show-toolbar" value="false"/>
     <domain>:batch MEMBER OF self.batchSet</domain>
     <context name="batch" expr="eval: __self__"/>
   </action-view>

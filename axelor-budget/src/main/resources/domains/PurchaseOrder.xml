@@ -14,8 +14,9 @@
     <many-to-one name="companyDepartment"
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Company department"/>
 
-    <decimal name="unassignedAmt" title="Total unassigned amount" readonly="true"/>
-    <decimal name="gapAmt" title="Gap amount" readonly="true"/>
+    <decimal name="unassignedAmt" title="Total unassigned amount" readonly="true"
+      precision="20" scale="3"/>
+    <decimal name="gapAmt" title="Gap amount" readonly="true" precision="20" scale="3"/>
     <boolean name="budgetDistributionGenerated" title="Budget distribution generated"/>
 
   </entity>
