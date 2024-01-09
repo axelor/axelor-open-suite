@@ -54,8 +54,15 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
       if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
         BudgetInvoiceLineService budgetInvoiceLineService =
             Beans.get(BudgetInvoiceLineService.class);
+        boolean negateAmount =
+            invoice.getOperationTypeSelect() == OPERATION_TYPE_SUPPLIER_REFUND
+                || invoice.getOperationTypeSelect() == OPERATION_TYPE_CLIENT_REFUND
+                || invoice.getOperationSubTypeSelect() == OPERATION_SUB_TYPE_ADVANCE;
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
           budgetInvoiceLineService.checkAmountForInvoiceLine(invoiceLine);
+          if (negateAmount) {
+            budgetInvoiceLineService.negateAmount(invoiceLine, invoice);
+          }
         }
       }
     } catch (AxelorException e) {
