@@ -6,8 +6,9 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="RegistrationNumberTemplate">
-    <boolean name="isRequiredForCompanies" title="Required for companies" required="true"/>
-    <string name="titleToDisplay" namecolumn="true" required="true"/>
+    <boolean name="isRequiredForCompanies" title="Required for companies"/>
+    <string name="name" title="Name" namecolumn="true"/>
+    <string name="titleToDisplay"/>
     <integer name="requiredSize" min="1"/>
     <string name="validationMethodSelect"
       selection="base.registration.number.template.validation.method.select"/>

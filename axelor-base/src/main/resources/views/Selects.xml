@@ -753,7 +753,7 @@
   </selection>
 
   <selection name="base.registration.number.template.validation.method.select">
-    <option value="com.axelor.apps.base.service.RegistrationNumberValidationFRA">RegistrationNumberValidationFRA</option>
+    <option value="com.axelor.apps.base.service.RegistrationNumberValidationFRA">French registration number validation</option>
   </selection>
 
 </object-views>

@@ -634,5 +634,5 @@ public final class BaseExceptionMessage {
   public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
       "Pricing process unavailable for this class : %s" /*)*/;
   public static final String REGISTRATION_CODE_EMPTY_FOR_COMPANIES = /*$$(*/
-      "Registration code must be required for companies" /*)*/;
+      "Registration code is required for companies" /*)*/;
 }

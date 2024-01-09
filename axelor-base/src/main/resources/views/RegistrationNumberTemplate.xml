@@ -5,40 +5,31 @@
 
   <grid name="registration-number-template-grid" title="Registration number templates"
     model="com.axelor.apps.base.db.RegistrationNumberTemplate">
-    <field name="isRequiredForCompanies" title="Required for companies" required="true"/>
-    <field name="titleToDisplay" required="true"/>
-    <field name="requiredSize"/>
+    <field name="name"/>
     <field name="validationMethodSelect"/>
-
-    <field name="useSiren" title="Use short registration number"/>
-    <field name="sirenPos" title="Starting position in the registration number"/>
-    <field name="sirenLength" title="Length"/>
-
-    <field name="useNic" title="Use internal classification number"/>
-    <field name="nicPos" title="Starting position in the registration number"/>
-    <field name="nicLength" title="Length"/>
   </grid>
 
   <form name="registration-number-template-form" title="Registration number templates"
     model="com.axelor.apps.base.db.RegistrationNumberTemplate">
     <panel name="mainPanel" title="Main Template">
-      <field name="isRequiredForCompanies" title="Required for companies" required="true"/>
-      <field name="titleToDisplay" required="true"/>
+      <field name="name"/>
+      <field name="isRequiredForCompanies"/>
+      <field name="titleToDisplay"/>
       <field name="requiredSize"/>
       <field name="validationMethodSelect"/>
 
       <panel title="Short registration number">
-        <field name="useSiren" title="Use short registration number"/>
-        <field name="sirenPos" title="Starting position in the registration number"
+        <field name="useSiren" />
+        <field name="sirenPos"
           showIf="useSiren"/>
-        <field name="sirenLength" title="Length" showIf="useSiren"/>
+        <field name="sirenLength" showIf="useSiren"/>
       </panel>
 
       <panel title="Internal classification number">
-        <field name="useNic" title="Use internal classification number"/>
-        <field name="nicPos" title="Starting position in the registration number"
+        <field name="useNic" />
+        <field name="nicPos"
           showIf="useNic"/>
-        <field name="nicLength" title="Length" showIf="useNic"/>
+        <field name="nicLength"  showIf="useNic"/>
       </panel>
 
     </panel>

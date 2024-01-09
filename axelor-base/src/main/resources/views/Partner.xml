@@ -346,8 +346,8 @@
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
           onChange="action-group-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
+        <field name="siren" hideIf="partnerTypeSelect== 2 || businessCountry == null" colSpan="4" readonly="true"/>
+        <field name="nic" hideIf="partnerTypeSelect== 2 || businessCountry == null" colSpan="4" readonly="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
@@ -1320,6 +1320,7 @@
 
   <action-group name="action-partner-group-business-country-onchange">
     <action name="action-method-base-partner-business-country-change"/>
+    <action name="action-group-partner-registration-code-onChange" />
   </action-group>
 
   <action-group name="action-group-partner-registration-code-onChange">
