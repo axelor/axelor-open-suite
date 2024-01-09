@@ -1714,7 +1714,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
-    <action name="action-invoice-method-validate"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
