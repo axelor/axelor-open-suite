@@ -42,14 +42,12 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.PeriodService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -261,12 +259,7 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     boolean errorAdded = false;
 
     for (MoveLineMassEntry moveLine : move.getMoveLineMassEntryList()) {
-      if (BigDecimal.ZERO
-          .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS)
-          .equals(
-              moveLine
-                  .getCurrencyRate()
-                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP))) {
+      if (moveLine.getCurrencyRate().signum() == 0) {
         this.setFieldsErrorListMessage(moveLine, "currencyRate");
         if (!errorAdded) {
           errorAdded = true;

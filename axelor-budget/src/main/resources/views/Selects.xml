@@ -25,25 +25,10 @@
     <option value="custom">budget.custom</option>
   </selection>
 
-  <selection name="budget.budget.level.type.select">
-    <option value="global">Global budget</option>
-    <option value="group">Group Level</option>
-    <option value="section">Section Level</option>
-  </selection>
-
-  <selection name="budget.budget.level.check.available">
+  <selection name="budget.global.budget.check.available">
     <option value="1">Budget Line</option>
     <option value="2">budget.Budget</option>
-    <option value="3">Budget section</option>
-    <option value="4">Budget group</option>
     <option value="5">Global budget</option>
-  </selection>
-
-  <selection name="budget.level.budget.type.select">
-    <option value="1">Budget.Purchase</option>
-    <option value="2">Budget.Sale</option>
-    <option value="3">Investment</option>
-    <option value="4">Purchase and investment</option>
   </selection>
 
   <selection name="global.budget.budget.type.select">
@@ -61,7 +46,7 @@
   </selection>
 
   <selection name="budget.scenario.entry.method.select">
-    <option value="0">Manual</option>
+    <option value="0">budget.Manual</option>
     <option value="1">Formula</option>
   </selection>
 
@@ -78,6 +63,12 @@
   </selection>
 
   <selection name="app.budget.check.missing.select">
+    <option value="0">None</option>
+    <option value="1">Optional</option>
+    <option value="2">Required</option>
+  </selection>
+
+  <selection name="app.budget.check.exceed.order.select">
     <option value="0">None</option>
     <option value="1">Optional</option>
     <option value="2">Required</option>

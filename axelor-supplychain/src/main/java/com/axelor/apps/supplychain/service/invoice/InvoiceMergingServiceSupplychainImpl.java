@@ -20,7 +20,6 @@ package com.axelor.apps.supplychain.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceMergingServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
@@ -28,11 +27,9 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
-import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Objects;
-import java.util.StringJoiner;
 
 public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceImpl {
 
@@ -42,9 +39,10 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
   @Inject
   public InvoiceMergingServiceSupplychainImpl(
       InvoiceService invoiceService,
+      InvoiceRepository invoiceRepository,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService) {
-    super(invoiceService);
+    super(invoiceService, invoiceRepository);
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
     this.saleOrderInvoiceService = saleOrderInvoiceService;
   }
@@ -152,24 +150,6 @@ public class InvoiceMergingServiceSupplychainImpl extends InvoiceMergingServiceI
           && !getCommonFields(result).getCommonPurchaseOrder().equals(invoice.getPurchaseOrder())) {
         getCommonFields(result).setCommonPurchaseOrder(null);
         getChecks(result).setExistPurchaseOrderDiff(true);
-      }
-    }
-  }
-
-  @Override
-  protected void checkErrors(StringJoiner fieldErrors, InvoiceMergingResult result)
-      throws AxelorException {
-    super.checkErrors(fieldErrors, result);
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)) {
-      if (getCommonFields(result).getCommonSaleOrder() == null
-          && getChecks(result).isExistSaleOrderDiff()) {
-        fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_SALEORDER));
-      }
-    }
-    if (result.getInvoiceType().equals(InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)) {
-      if (getCommonFields(result).getCommonPurchaseOrder() == null
-          && getChecks(result).isExistPurchaseOrderDiff()) {
-        fieldErrors.add(I18n.get(AccountExceptionMessage.INVOICE_MERGE_ERROR_PURCHASEORDER));
       }
     }
   }

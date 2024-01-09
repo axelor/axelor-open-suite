@@ -21,23 +21,28 @@ package com.axelor.apps.budget.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.auth.db.AuditableModel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface BudgetDistributionService {
 
   /**
    * Create a budget distribution object with parameters and save
    *
-   * @param budget, amount
+   * @param budget, amount, date
    * @return BudgetDistribution
    */
-  public BudgetDistribution createDistributionFromBudget(Budget budget, BigDecimal bigDecimal);
+  public BudgetDistribution createDistributionFromBudget(
+      Budget budget, BigDecimal bigDecimal, LocalDate date);
 
   /**
    * Check amount with budget available amount watching config for budget and return an error
@@ -49,11 +54,12 @@ public interface BudgetDistributionService {
   public String getBudgetExceedAlert(Budget budget, BigDecimal amount, LocalDate date);
 
   /**
-   * For all lines in invoice, compute paid amount field in all related budgets and save them
+   * For all lines in invoice or move, compute paid amount field in all related budgets and save
+   * them
    *
-   * @param invoice, ratio
+   * @param invoice, move, ratio
    */
-  public void computePaidAmount(Invoice invoice, BigDecimal ratio);
+  void computePaidAmount(Invoice invoice, Move move, BigDecimal ratio, boolean isCancel);
 
   String createBudgetDistribution(
       List<AnalyticMoveLine> analyticMoveLineList,
@@ -62,10 +68,26 @@ public interface BudgetDistributionService {
       LocalDate date,
       BigDecimal amount,
       String name,
-      AuditableModel object);
+      AuditableModel object)
+      throws AxelorException;
+
+  void linkBudgetDistributionWithParent(
+      BudgetDistribution budgetDistribution, AuditableModel object);
 
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate);
 
-  String getBudgetDomain(Company company, LocalDate date, String technicalTypeSelect);
+  String getBudgetDomain(
+      Company company,
+      LocalDate date,
+      String technicalTypeSelect,
+      Set<GlobalBudget> globalBudgetSet);
+
+  void autoComputeBudgetDistribution(
+      List<AnalyticMoveLine> analyticMoveLineList,
+      Account account,
+      Company company,
+      LocalDate date,
+      BigDecimal amount,
+      AuditableModel object);
 }

@@ -2,16 +2,26 @@ package com.axelor.apps.base.service.tax;
 
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.interfaces.PricedOrder;
 import com.axelor.apps.base.interfaces.PricedOrderLine;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.common.base.Joiner;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Set;
 
 public class OrderLineTaxServiceImpl implements OrderLineTaxService {
+
+  protected CurrencyScaleService currencyScaleService;
+
+  @Inject
+  public OrderLineTaxServiceImpl(CurrencyScaleService currencyScaleService) {
+    this.currencyScaleService = currencyScaleService;
+  }
 
   @Override
   public boolean isCustomerSpecificNote(PricedOrder pricedOrder) {
@@ -35,7 +45,7 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
   }
 
   @Override
-  public void computeTax(OrderLineTax orderLineTax) {
+  public void computeTax(OrderLineTax orderLineTax, Currency currency) {
     BigDecimal exTaxBase = orderLineTax.getExTaxBase().abs();
     BigDecimal taxTotal = BigDecimal.ZERO;
     if (orderLineTax.getTaxLine() != null) {
@@ -46,11 +56,14 @@ public class OrderLineTaxServiceImpl implements OrderLineTaxService {
                   .getValue()
                   .divide(
                       new BigDecimal(100),
-                      AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                      AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
-      orderLineTax.setTaxTotal(taxTotal);
+      orderLineTax.setTaxTotal(
+          currencyScaleService.getScaledValue(taxTotal, currency.getNumberOfDecimals()));
     }
-    orderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+    orderLineTax.setInTaxTotal(
+        currencyScaleService.getScaledValue(
+            exTaxBase.add(taxTotal), currency.getNumberOfDecimals()));
   }
 
   @Override

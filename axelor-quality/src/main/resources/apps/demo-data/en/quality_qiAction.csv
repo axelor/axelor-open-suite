@@ -1,0 +1,8 @@
+"code";"name";"importId";"company.importId";"isProductAction";"isSystemAction"
+"SAU";"Supplier audit";1;1;"true";"true"
+"IAU";"Internal audit";2;1;"false";"true"
+"ENG";"Engineering review";3;1;"true";"true"
+"QUA";"Quality review";4;1;"true";"true"
+"TEC";"Technical review";5;1;"true";"true"
+"PROC";"Request for review of procedures";6;1;"true";"true"
+"STU";"Carrying out a study";7;1;"true";"true"

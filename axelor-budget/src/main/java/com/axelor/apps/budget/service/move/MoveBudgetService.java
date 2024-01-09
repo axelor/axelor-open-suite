@@ -33,15 +33,16 @@ public interface MoveBudgetService {
    * @param move
    * @return String
    */
-  public String computeBudgetDistribution(Move move);
+  public String computeBudgetDistribution(Move move) throws AxelorException;
 
   /**
    * For all budgets related to this move, check budget exceed based on global budget control on
    * budget exceed then compute an error message if needed.
    *
    * @param move
+   * @return String
    */
-  public void getBudgetExceedAlert(Move move) throws AxelorException;
+  public String getBudgetExceedAlert(Move move);
 
   /**
    * Return if there is budget distribution on any move line
@@ -58,4 +59,6 @@ public interface MoveBudgetService {
    * @return boolean
    */
   boolean checkMissingBudgetDistributionOnAccountedMove(Move move);
+
+  void autoComputeBudgetDistribution(Move move) throws AxelorException;
 }

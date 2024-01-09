@@ -92,7 +92,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="moveLineList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-group-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="2"/>
+            grid-view="company-grid" colSpan="2" onSelect="action-move-method-company-onselect"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="2" canEdit="false"
             onSelect="com.axelor.apps.base.web.CompanyBankDetailsController:fillCompanyBankDetailsDomain"
@@ -260,7 +260,7 @@
         <button colSpan="3" name="counterpartGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate counterpart"
           showIf="journal != null &amp;&amp; statusSelect != 3 &amp;&amp; ([1,2,4].includes(journal.journalType.technicalTypeSelect) &amp;&amp; functionalOriginSelect &amp;&amp; (functionalOriginSelect == 3 || functionalOriginSelect == 4 || functionalOriginSelect == 7))"
-          onClick="action-move-method-generate-counterpart"/>
+          onClick="action-move-group-generate-counterpart"/>
         <button colSpan="3" name="autoTaxLineGenerateBtn" css="btn-custom text-left"
           icon="fa-plus" title="Generate tax lines" showIf="[1,2,5].includes(statusSelect)"
           onClick="action-move-method-generate-tax-lines"/>
@@ -288,25 +288,26 @@
           </viewer>
         </field>
         <field name="$totalCurrency" title="Total Currency" readonly="true"
-          showIf="currency.id != companyCurrency.id" colSpan="3" type="integer">
+          showIf="currency.id != companyCurrency.id" colSpan="3" type="decimal"
+          x-scale="currency.numberOfDecimals">
           <viewer>
             <![CDATA[<><h3>{$fmt('$totalCurrency')} {$fmt('currencyCode')}</h3></>]]>
           </viewer>
         </field>
         <field name="$totalDebit" title="Total debit" readonly="true" colSpan="3"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer>
             <![CDATA[<><h3>{$fmt('$totalDebit')} {$fmt('$companyCurrencyCodeIso')}</h3></>]]>
           </viewer>
         </field>
         <field name="$totalCredit" title="Total credit" readonly="true" colSpan="3"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer>
             <![CDATA[<><h3>{$fmt('$totalCredit')} {$fmt('$companyCurrencyCodeIso')}</h3></>]]>
           </viewer>
         </field>
         <field name="$difference" title="Difference" readonly="true" colSpan="2"
-          type="decimal">
+          type="decimal" x-scale="companyCurrency.numberOfDecimals">
           <viewer>
           		<![CDATA[
           				<>
@@ -358,6 +359,8 @@
           <field name="ignoreInDebtRecoveryOk"/>
           <field name="rejectOk" readonly="true" showIf="rejectOk"/>
           <field name="companyCurrency" hidden="true"/>
+          <field name="companyCurrency.numberOfDecimals" hidden="true"/>
+          <field name="currency.numberOfDecimals" hidden="true"/>
           <field name="$periodClosed" hidden="true"/>
           <field name="$simulatedPeriodClosed" hidden="true"/>
           <field name="period.statusSelect" hidden="true"/>
@@ -420,7 +423,7 @@
           <field name="company" canEdit="false" widget="SuggestBox"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             onChange="action-move-method-company-onchange" form-view="company-form"
-            grid-view="company-grid" colSpan="3"/>
+            grid-view="company-grid" colSpan="3" onSelect="action-move-method-company-onselect"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
             readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
@@ -545,6 +548,11 @@
   <action-group name="action-move-group-pfp-validate">
     <action name="save"/>
     <action name="action-method-account-move-validate-pfp"/>
+  </action-group>
+
+  <action-group name="action-move-group-generate-counterpart">
+    <action name="action-move-method-generate-counterpart"/>
+    <action name="save" if="statusSelect != 4 &amp;&amp; statusSelect &gt;= 2"/>
   </action-group>
 
   <!-- ACTION GROUP WITH ALERT -->
@@ -795,6 +803,10 @@
     <call class="com.axelor.apps.account.web.MoveController" method="checkPeriodPermission"/>
   </action-method>
 
+  <action-method name="action-move-method-company-onselect">
+    <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-move-view-open-generate-reverse-wizard"
@@ -894,7 +906,7 @@
       <domain>self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND
         self.accountingOk = false</domain>
     </filter>
-    <filter title="Moves from invoices/refunds">
+    <filter title="Moves from invoices/credit notes">
       <domain>self.invoice IS NOT NULL</domain>
     </filter>
     <filter title="Moves from payment">

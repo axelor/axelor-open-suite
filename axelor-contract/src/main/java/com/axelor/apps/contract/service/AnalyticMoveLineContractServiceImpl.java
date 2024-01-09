@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -46,7 +47,8 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
       AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
       AppBaseService appBaseService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         analyticMoveLineRepository,
         appAccountService,
@@ -55,7 +57,8 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
         accountConfigRepository,
         accountRepository,
         appBaseService,
-        accountingSituationService);
+        accountingSituationService,
+        currencyScaleServiceAccount);
   }
 
   @Override

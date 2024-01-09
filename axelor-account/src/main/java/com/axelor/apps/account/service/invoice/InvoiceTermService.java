@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -36,7 +35,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -58,15 +56,6 @@ public interface InvoiceTermService {
       throws AxelorException;
 
   void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback);
-
-  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
-
-  void computeFinancialDiscount(
-      InvoiceTerm invoiceTerm,
-      BigDecimal totalAmount,
-      FinancialDiscount financialDiscount,
-      BigDecimal financialDiscountAmount,
-      BigDecimal remainingAmountAfterFinDiscount);
 
   @CallMethod
   boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) throws AxelorException;
@@ -182,14 +171,6 @@ public interface InvoiceTermService {
   public BigDecimal computePercentageSum(Invoice invoice);
 
   /**
-   * Update invoice terms financial discount if not paid with invoice financial discount
-   *
-   * @param invoice
-   * @return
-   */
-  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
-
-  /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
    * based on due date
    *
@@ -269,10 +250,6 @@ public interface InvoiceTermService {
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
-  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
-
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
-
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
   boolean setCustomizedAmounts(
@@ -288,8 +265,6 @@ public interface InvoiceTermService {
   boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
 
   boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
-
-  BigDecimal computeParentTotal(Context context);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
@@ -339,5 +314,8 @@ public interface InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate);
+      BigDecimal currencyRate,
+      Company company);
+
+  boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
 }

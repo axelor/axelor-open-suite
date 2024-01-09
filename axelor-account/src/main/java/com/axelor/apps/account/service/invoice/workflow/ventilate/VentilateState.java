@@ -157,13 +157,7 @@ public class VentilateState extends WorkflowInvoice {
       invoice.setPartnerAccount(account);
     }
 
-    Account partnerAccount = invoice.getPartnerAccount();
-
-    if (!partnerAccount.getReconcileOk() || !partnerAccount.getUseForPartnerBalance()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE));
-    }
+    InvoiceToolService.checkUseForPartnerBalanceAndReconcileOk(invoice);
   }
 
   protected void setJournal() throws AxelorException {
@@ -325,7 +319,7 @@ public class VentilateState extends WorkflowInvoice {
 
     invoice.setInvoiceId(
         sequenceService.getSequenceNumber(
-            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId"));
+            sequence, invoice.getInvoiceDate(), Invoice.class, "invoiceId", invoice));
 
     if (invoice.getInvoiceId() != null) {
       return;

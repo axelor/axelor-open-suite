@@ -8,12 +8,13 @@
     <toolbar>
       <button name="printStockMoveGridBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
+      <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
+        onClick="action-stock-move-group-merge"/>
     </toolbar>
-    <hilite
-      if="statusSelect == 2 &amp;&amp; $moment(__config__.date).diff(estimatedDate, 'days') &gt; 0"
+    <hilite if="statusSelect == 2 &amp;&amp; $moment().diff(estimatedDate, 'days') &gt; 0"
       color="danger"/>
     <hilite
-      if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10"
+      if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff($moment(), 'days') &lt; 10"
       color="warning"/>
     <hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 2" color="success"/>
     <hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 3" color="danger"/>
@@ -45,7 +46,7 @@
       if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -59,9 +60,11 @@
         onClick="action-print-picking-stock-move" icon="fa-print"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
+      <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
+        onClick="action-stock-move-group-merge"/>
     </toolbar>
     <hilite
-      if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"
+      if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || $moment(invoiceBlockedToDate) &gt; $moment())"
       color="danger"/>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="pickingIsEdited"/>
@@ -92,7 +95,7 @@
     <field name="typeSelect" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -149,7 +152,7 @@
     <field name="typeSelect" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -161,6 +164,8 @@
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
+      <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
+        onClick="action-stock-move-group-merge"/>
     </toolbar>
     <field name="stockMoveSeq" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
@@ -180,7 +185,7 @@
     <field name="typeSelect" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
-    <button name="viewDirectionBtn" icon="fa-location-arrow"
+    <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
       readonlyIf="typeSelect != 2 || statusSelect == 1"/>
   </grid>
@@ -256,8 +261,8 @@
     <panel name="mainPanel">
       <panel name="typeSelectPanel" colSpan="9">
         <panel name="statusPanel" colSpan="12">
-          <field name="statusSelect" showTitle="false" colSpan="5" widget="NavSelect"/>
-          <field name="stockMoveSeq" showTitle="false" colSpan="3" css="label-bold bold large">
+          <field name="statusSelect" showTitle="false" colSpan="7" widget="NavSelect"/>
+          <field name="stockMoveSeq" showTitle="false" colSpan="1" css="label-bold bold large">
             <viewer>
 						<![CDATA[
 							<>
@@ -382,6 +387,9 @@
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
           onClick="save,action-stock-move-method-generate-reversion"
           showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
+        <button name="generateNewStockMoveBtn" title="Generate a new stock move"
+          icon="fa-undo" onClick="save,action-stock-move-method-generate-new-stock-move"
+          showIf="statusSelect == 3 &amp;&amp; isReversion"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="delayedInvoice" title="Facturation ultérieure"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
@@ -433,10 +441,10 @@
           showTitle="false">
           <viewer><![CDATA[
 						<>
-							<dl>
-								<dt>{_t('Total W.T.')}</dt>
-								<dd>{$fmt('exTaxTotal')}</dd>
-							</dl>
+							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+							</Box>
 						</>
 	                    ]]>
           </viewer>
@@ -507,10 +515,10 @@
             <viewer>
                           <![CDATA[
 							<>
-								<dl>
-									<dt>{_t('Total W.T.')}</dt>
-									<dd>{$fmt('exTaxTotal')}</dd>
-								</dl>
+								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								</Box>
 							</>
                           ]]>
             </viewer>
@@ -550,10 +558,10 @@
             showTitle="false">
             <viewer><![CDATA[
 							<>
-								<dl>
-									<dt>{_t('Total W.T.')}</dt>
-									<dd>{$fmt('exTaxTotal')}</dd>
-								</dl>
+								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
+									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
+									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
+								</Box>
 							</>
                           ]]>
             </viewer>
@@ -587,11 +595,11 @@
 
         <panel itemSpan="3">
           <field name="incoterm" form-view="incoterm-form" grid-view="incoterm-grid"
-            canEdit="false"/>
+            canEdit="false" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
           <field name="trackingNumber"/>
           <field name="modeOfTransport"/>
           <field name="deliveryCondition" height="3"
-            showIf="typeSelect == 2 &amp;&amp; saleOrder != null"/>
+            showIf="typeSelect == 2 &amp;&amp; saleOrderSet != null &amp;&amp; saleOrderSet.length>0"/>
         </panel>
 
         <panel itemSpan="3">
@@ -632,14 +640,17 @@
         <panel name="OriginPanel" colSpan="12">
           <panel colSpan="3" itemSpan="3" stacked="true" readonly="true">
             <field name="inventory" hidden="true" showIf="inventory != null"/>
-            <field name="saleOrder" hidden="true" showIf="saleOrder != null"/>
-            <field name="purchaseOrder" hidden="true" showIf="purchaseOrder != null"/>
             <field name="manufOrder" hidden="true" showIf="manufOrder != null"
               if-module="axelor-production"/>
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
               if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
           </panel>
+          <field name="saleOrderSet" hidden="true"
+            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
+          <field name="purchaseOrderSet" hidden="true"
+            showIf="purchaseOrderSet &amp;&amp; purchaseOrderSet.length > 0" colSpan="12"
+            readonly="true"/>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
@@ -1001,7 +1012,7 @@
 
   <action-attrs name="action-stock-move-generate-invoice-button">
     <attribute name="title" for="generateInvoiceBtn"
-      expr="eval: com.axelor.i18n.I18n.get('Generate refund')" if="isReversion"/>
+      expr="eval: com.axelor.i18n.I18n.get('Generate credit note')" if="isReversion"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-attrs-domain-address">
@@ -1171,18 +1182,6 @@
     <call class="com.axelor.apps.stock.web.StockMoveController" method="cancel"/>
   </action-method>
 
-  <action-method name="action-supply-chain-method-update-so-on-cancel"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
-      method="updateSaleOrderOnCancel"/>
-  </action-method>
-
-  <action-method name="action-supply-chain-method-update-po-on-cancel"
-    if-module="axelor-supplychain">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderController"
-      method="updatePurchaseOrderOnCancel"/>
-  </action-method>
-
   <action-method name="action-print-picking-stock-move">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="printPickingStockMove"/>
   </action-method>
@@ -1207,6 +1206,10 @@
 
   <action-method name="action-stock-move-method-generate-reversion">
     <call class="com.axelor.apps.stock.web.StockMoveController" method="generateReversion"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-generate-new-stock-move">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="generateNewStockMove"/>
   </action-method>
 
   <action-method name="action-stock-move-method-view-direction">
@@ -1558,4 +1561,18 @@
       message="Please fill printing settings on following stock moves: ${__repo__(StockMove).all().filter('self.id IN ?1 AND self.printingSettings IS NULL', id?:_ids).fetch()?.collect{it.stockMoveSeq}?.join(', ')}"
       if="(id || _ids) &amp;&amp; __repo__(StockMove).all().filter('self.id IN ?1 AND self.printingSettings IS NULL', id?:_ids).count() > 0"/>
   </action-validate>
+
+  <action-group name="action-stock-move-group-merge">
+    <action name="action-stock-move-method-check-merge-values"/>
+    <action name="action-stock-move-method-merge"/>
+  </action-group>
+
+  <action-method name="action-stock-move-method-check-merge-values">
+    <call class="com.axelor.apps.stock.web.StockMoveMergingController"
+      method="checkMergeValues"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-merge">
+    <call class="com.axelor.apps.stock.web.StockMoveMergingController" method="mergeStockMoves"/>
+  </action-method>
 </object-views>

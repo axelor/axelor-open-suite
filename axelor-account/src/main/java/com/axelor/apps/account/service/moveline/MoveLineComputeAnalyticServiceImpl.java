@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -34,7 +35,6 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +48,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected ListHelper listHelper;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
-  private final int RETURN_SCALE = 2;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineComputeAnalyticServiceImpl(
@@ -57,13 +57,15 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticAccountRepository analyticAccountRepository,
       ListHelper listHelper,
       AnalyticToolService analyticToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.listHelper = listHelper;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -75,7 +77,9 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       createAnalyticDistributionWithTemplate(moveLine);
     } else {
       LocalDate date = moveLine.getDate();
-      BigDecimal amount = moveLine.getDebit().add(moveLine.getCredit());
+      BigDecimal amount =
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              moveLine, moveLine.getDebit().add(moveLine.getCredit()));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(analyticMoveLine, amount, date);
       }
@@ -114,7 +118,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            moveLine.getDebit().add(moveLine.getCredit()),
+            currencyScaleServiceAccount.getCompanyScaledValue(
+                moveLine, moveLine.getDebit().add(moveLine.getCredit())),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
 
@@ -127,7 +132,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             moveLine.getAnalyticDistributionTemplate(),
-            moveLine.getDebit().add(moveLine.getCredit()),
+            currencyScaleServiceAccount.getCompanyScaledValue(
+                moveLine, moveLine.getDebit().add(moveLine.getCredit())),
             AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING,
             moveLine.getDate());
 
@@ -270,21 +276,5 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
       moveLine.getAnalyticMoveLineList().clear();
     }
-  }
-
-  @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    }
-    return BigDecimal.ZERO;
   }
 }

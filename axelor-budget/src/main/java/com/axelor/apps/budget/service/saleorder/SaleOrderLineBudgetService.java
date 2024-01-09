@@ -32,17 +32,12 @@ public interface SaleOrderLineBudgetService {
 
   String searchAndFillBudgetStr(SaleOrderLine saleOrderLine, boolean multiBudget);
 
-  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine);
+  String computeBudgetDistribution(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 
   String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
 
   void checkAmountForSaleOrderLine(SaleOrderLine saleOrderLine) throws AxelorException;
 
   void computeBudgetDistributionSumAmount(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getGroupBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getSectionBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder);
-
-  String getLineBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isBudget);
 }

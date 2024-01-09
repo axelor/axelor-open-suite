@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
@@ -35,6 +36,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -42,6 +44,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
@@ -57,6 +60,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -145,6 +149,9 @@ public class MoveLineController {
     try {
       if (idList != null && !idList.isEmpty()) {
         MoveLineRepository moveLineRepository = Beans.get(MoveLineRepository.class);
+        Company company = null;
+        boolean differentCompanies = false;
+
         for (Integer id : idList) {
           if (id != null) {
             MoveLine moveLine = moveLineRepository.find(id.longValue());
@@ -155,6 +162,13 @@ public class MoveLineController {
                   || statusSelect.equals(MoveRepository.STATUS_SIMULATED)) {
                 totalCredit = totalCredit.add(moveLine.getCredit());
                 totalDebit = totalDebit.add(moveLine.getDebit());
+              }
+
+              if (company == null && moveLine.getMove().getCompany() != null) {
+                company = moveLine.getMove().getCompany();
+              } else if (moveLine.getMove().getCompany() != null
+                  && company != moveLine.getMove().getCompany()) {
+                differentCompanies = true;
               }
             } else {
               throw new AxelorException(
@@ -168,6 +182,16 @@ public class MoveLineController {
           }
         }
         finalBalance = totalDebit.subtract(totalCredit);
+
+        if (!differentCompanies) {
+          CurrencyScaleServiceAccount currencyScaleServiceAccount =
+              Beans.get(CurrencyScaleServiceAccount.class);
+          int scale = currencyScaleServiceAccount.getCompanyScale(company);
+
+          totalCredit = totalCredit.setScale(scale, RoundingMode.HALF_UP);
+          totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
+          finalBalance = finalBalance.setScale(scale, RoundingMode.HALF_UP);
+        }
 
         response.setView(
             ActionView.define(I18n.get("Calculation"))
@@ -255,7 +279,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine);
 
       response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
@@ -408,7 +432,10 @@ public class MoveLineController {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
       Move move = this.getMove(request, moveLine);
 
-      response.setAttrs(Beans.get(MoveLineGroupService.class).getOnLoadAttrsMap(moveLine, move));
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getOnLoadAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -426,8 +453,10 @@ public class MoveLineController {
         move = parentContext.asType(Move.class);
       }
 
-      response.setAttrs(
-          Beans.get(MoveLineGroupService.class).getOnLoadMoveAttrsMap(moveLine, move));
+      MoveLineGroupService moveLineGroupService = Beans.get(MoveLineGroupService.class);
+
+      response.setValues(moveLineGroupService.getOnLoadValuesMap(moveLine, move));
+      response.setAttrs(moveLineGroupService.getOnLoadMoveAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -663,12 +692,15 @@ public class MoveLineController {
   public void generatePfpPartialTerms(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
 
-      if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-        if (Beans.get(InvoiceTermPfpService.class)
-            .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
-          response.setReload(true);
+      if (moveLine.getId() != null) {
+        moveLine = Beans.get(MoveLineRepository.class).find(moveLine.getId());
+
+        if (moveLine != null && !CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
+          if (Beans.get(InvoiceTermPfpService.class)
+              .generateInvoiceTermsAfterPfpPartial(moveLine.getInvoiceTermList())) {
+            response.setReload(true);
+          }
         }
       }
 

@@ -41,7 +41,7 @@
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"
             requiredIf="$enableBudgetKey"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"
-            domain="self.company = :company AND self.budgetLevel.parentBudgetLevel.globalBudget.statusSelect = 2 AND (:budgetLevel IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget = :budgetLevel ) OR (:budgetLevel IS NULL AND self.budgetLevel.parentBudgetLevel.globalBudget IS NOT NULL AND ((:companyDepartment IS NOT NULL AND self.budgetLevel.parentBudgetLevel.globalBudget.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL))"/>
+            domain="self.company = :company AND self.globalBudget.statusSelect = 2 AND ((:companyDepartment IS NOT NULL AND self.globalBudget.companyDepartment = :companyDepartment) OR :companyDepartment IS NULL)"/>
           <button name="applyToAllBtn" title="Apply to all"
             onClick="action-budget-btn-apply-to-all-group" readonlyIf="!budget"
             showIf="statusSelect &lt;= 2"/>
@@ -123,13 +123,23 @@
 
   <action-group name="action-group-budget-purchase-order-request-onclick">
     <action name="save"/>
-    <action name="action-method-budget-purchase-order-no-compute-budget-distribution"
+    <action name="action-purchase-order-method-budget-auto-compute-budget-distribution"
       if="__config__.app.isApp('budget')"/>
-    <action name="action-budget-purchase-order-group-get-and-validate-budget-balance"
+    <action name="action-purchase-order-method-budget-validate-request"
       if="__config__.app.isApp('budget')"/>
     <action name="action-purchase-order-method-requested"/>
     <action name="save"/>
   </action-group>
+
+  <action-method
+    name="action-purchase-order-method-budget-auto-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController"
+      method="autoComputeBudgetDistribution"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-budget-validate-request">
+    <call class="com.axelor.apps.budget.web.PurchaseOrderController" method="validateRequest"/>
+  </action-method>
 
   <action-record name="action-budget-purchase-order-record-get-budget-balance"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
@@ -183,8 +193,6 @@
 
   <action-record name="budget-action-purchase-order-record-project-onchange"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="globalBudget" expr="eval: project ? project.budget : globalBudget"
-      if="__config__.app.isApp('budget') &amp;&amp; (_project == null || id != null)"/>
     <field name="company" expr="eval: project ? project.company : null"/>
   </action-record>
 

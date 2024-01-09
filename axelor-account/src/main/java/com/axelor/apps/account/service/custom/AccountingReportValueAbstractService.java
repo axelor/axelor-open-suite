@@ -40,7 +40,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public abstract class AccountingReportValueAbstractService {
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected AnalyticAccountRepository analyticAccountRepo;
   protected DateService dateService;
+  protected Map<String, Integer> groupAccountMap;
 
   @Inject
   public AccountingReportValueAbstractService(
@@ -64,6 +67,8 @@ public abstract class AccountingReportValueAbstractService {
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.analyticAccountRepo = analyticAccountRepo;
     this.dateService = dateService;
+
+    this.groupAccountMap = new HashMap<>(Map.of("nextValue", 0));
   }
 
   protected void addNullValue(
@@ -100,9 +105,26 @@ public abstract class AccountingReportValueAbstractService {
       throws AxelorException {
     DateTimeFormatter format = dateService.getDateFormat();
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
-    int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
+    String columnCode =
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+
     int columnNumber = column.getSequence();
     int lineNumber = line.getSequence();
+    int groupNumber = 0;
+
+    if (groupColumn != null) {
+      if (groupColumn.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP) {
+        groupNumber = groupColumn.getSequence();
+      }
+    } else if (StringUtils.notEmpty(parentTitle)) {
+      if (!this.groupAccountMap.containsKey(parentTitle)) {
+        int nextValue = groupAccountMap.get("nextValue");
+        groupAccountMap.put(parentTitle, nextValue++);
+        groupAccountMap.replace("nextValue", nextValue);
+      }
+
+      groupNumber = groupAccountMap.get(parentTitle);
+    }
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
@@ -127,9 +149,6 @@ public abstract class AccountingReportValueAbstractService {
             configAnalyticAccount);
 
     accountingReportValueRepo.save(accountingReportValue);
-
-    String columnCode =
-        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
     if (valuesMapByColumn.containsKey(columnCode)) {
       valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
@@ -196,55 +215,22 @@ public abstract class AccountingReportValueAbstractService {
   }
 
   protected List<String> getAccountFilters(
-      Set<AccountType> accountTypeSet,
-      String groupColumnFilter,
-      String columnAccountFilter,
-      String lineAccountFilter,
-      boolean moveLine,
-      boolean areAllAccountSetsEmpty) {
-    List<String> queryList = new ArrayList<>();
+      Set<AccountType> accountTypeSet, String groupColumnFilter, boolean areAllAccountSetsEmpty) {
+    List<String> queryList = new ArrayList<>(Arrays.asList("self.isRegulatoryAccount IS FALSE"));
 
     if (!areAllAccountSetsEmpty) {
-      queryList.add(
-          String.format(
-              "(self%1$s IS NULL OR self%1$s IN :accountSet)", moveLine ? ".account" : ""));
+      queryList.add("(self IS NULL OR self IN :accountSet)");
     }
 
     if (!Strings.isNullOrEmpty(groupColumnFilter)) {
-      queryList.add(this.getAccountFilterQueryList(groupColumnFilter, "groupColumn", moveLine));
-    }
-
-    if (!Strings.isNullOrEmpty(columnAccountFilter)) {
-      queryList.add(this.getAccountFilterQueryList(columnAccountFilter, "column", moveLine));
-    }
-
-    if (!Strings.isNullOrEmpty(lineAccountFilter)) {
-      queryList.add(this.getAccountFilterQueryList(lineAccountFilter, "line", moveLine));
+      queryList.add(this.getAccountFilterQueryList(groupColumnFilter));
     }
 
     if (CollectionUtils.isNotEmpty(accountTypeSet)) {
-      queryList.add(
-          String.format(
-              "(self%1$s IS NULL OR self%1$s.accountType IN :accountTypeSet)",
-              moveLine ? ".account" : ""));
-    }
-
-    if (!moveLine) {
-      queryList.add("self.isRegulatoryAccount IS FALSE");
+      queryList.add("(self IS NULL OR self.accountType IN :accountTypeSet)");
     }
 
     return queryList;
-  }
-
-  protected boolean areAllAccountSetsEmpty(
-      AccountingReport accountingReport,
-      AccountingReportConfigLine groupColumn,
-      AccountingReportConfigLine column,
-      AccountingReportConfigLine line) {
-    return CollectionUtils.isEmpty(accountingReport.getAccountSet())
-        && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAccountSet()))
-        && CollectionUtils.isEmpty(column.getAccountSet())
-        && CollectionUtils.isEmpty(line.getAccountSet());
   }
 
   protected boolean areAllAnalyticAccountSetsEmpty(
@@ -255,24 +241,25 @@ public abstract class AccountingReportValueAbstractService {
     return CollectionUtils.isEmpty(accountingReport.getAnalyticAccountSet())
         && (groupColumn == null || CollectionUtils.isEmpty(groupColumn.getAnalyticAccountSet()))
         && CollectionUtils.isEmpty(column.getAnalyticAccountSet())
-        && CollectionUtils.isEmpty(line.getAnalyticAccountSet());
+        && CollectionUtils.isEmpty(line.getAnalyticAccountSet())
+        && (line.getDetailBySelect()
+                != AccountingReportConfigLineRepository.DETAIL_BY_ANALYTIC_ACCOUNT
+            || !accountingReport.getDisplayDetails());
   }
 
-  protected String getAccountFilterQueryList(String accountFilter, String type, boolean moveLine) {
+  protected String getAccountFilterQueryList(String accountFilter) {
     String[] tokens = accountFilter.split(",");
     List<String> filterQueryList = new ArrayList<>();
 
     for (int i = 0; i < tokens.length; i++) {
-      filterQueryList.add(
-          String.format(
-              "self%s.code LIKE :%sAccountFilter%d", moveLine ? ".account" : "", type, i));
+      filterQueryList.add(String.format("self.code LIKE :groupColumnAccountFilter%d", i));
     }
 
     return String.format("(%s)", String.join(" OR ", filterQueryList));
   }
 
   protected <T extends Model> Query<T> bindAccountFilters(
-      Query<T> moveLineQuery, String accountFilter, String type) {
+      Query<T> moveLineQuery, String accountFilter) {
     if (StringUtils.isEmpty(accountFilter)) {
       return moveLineQuery;
     }
@@ -280,7 +267,7 @@ public abstract class AccountingReportValueAbstractService {
     String[] tokens = accountFilter.split(",");
 
     for (int i = 0; i < tokens.length; i++) {
-      moveLineQuery = moveLineQuery.bind(String.format("%sAccountFilter%d", type, i), tokens[i]);
+      moveLineQuery = moveLineQuery.bind(String.format("groupColumnAccountFilter%d", i), tokens[i]);
     }
 
     return moveLineQuery;

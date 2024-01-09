@@ -174,6 +174,14 @@
     <context name="_domain" expr="self.isContact = true AND self.isEmployee = false"/>
   </action-view>
 
+  <menuitem name="crm-root-tour" parent="crm-root" title="Tour" action="crm.root.tour"
+    order="450"/>
+
+  <action-view name="crm.root.tour" title="Tour" model="com.axelor.apps.crm.db.Tour">
+    <view type="grid" name="tour-grid"/>
+    <view type="form" name="tour-form"/>
+  </action-view>
+
   <menuitem name="crm-root-catalog" parent="crm-root" title="Catalogs"
     action="crm.root.catalogs" order="500" if="__config__.app.getApp('crm')?.getIsManageCatalogs()"/>
 
@@ -560,12 +568,22 @@
     <view type="form" name="company-department-form"/>
   </action-view>
 
-  <menuitem title="Type" name="crm-conf-type" parent="crm-conf" action="crm.conf.type"
-    order="900"/>
-  <action-view name="crm.conf.type" title="Type"
+  <menuitem title="Custom types" name="crm-conf-custom-types" parent="crm-conf" order="900"/>
+
+  <menuitem title="Partner types" name="crm-conf-partner-type"
+    parent="crm-conf-custom-types" action="crm.conf.partner.types" order="100"/>
+  <action-view name="crm.conf.partner.types" title="Partner types"
     model="com.axelor.apps.base.db.PartnerCategory">
     <view type="grid" name="partner-category-grid"/>
     <view type="form" name="partner-category-form"/>
+  </action-view>
+
+  <menuitem title="Opportunity types" name="crm-conf-opportunity-type"
+    parent="crm-conf-custom-types" action="crm.conf.opportunity.types" order="200"/>
+  <action-view name="crm.conf.opportunity.types" title="Opportunity types"
+    model="com.axelor.apps.crm.db.OpportunityType">
+    <view type="grid" name="opportunity-type-grid"/>
+    <view type="form" name="opportunity-type-form"/>
   </action-view>
 
   <menuitem title="Custom status" name="crm-conf-custom-status" parent="crm-conf"

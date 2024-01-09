@@ -25,9 +25,9 @@
       <panel-dashlet action="custom:mps-charge-mps-weekley-schedule-custom"
         name="mpsWeeklySchedualCustomPanel" colSpan="12" showTitle="false"/>
       <panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.first.year"
-        name="mpsWeeklySchedualChartFirstYearPanel" colSpan="6"/>
+        name="mpsWeeklySchedualChartFirstYearPanel" colSpan="12"/>
       <panel-dashlet action="chart:mps.charge.mps.weekley.schedule.chart.second.year"
-        name="mpsWeeklySchedualChartSecondYearPanel" colSpan="6"/>
+        name="mpsWeeklySchedualChartSecondYearPanel" colSpan="12"/>
     </panel>
   </form>
 

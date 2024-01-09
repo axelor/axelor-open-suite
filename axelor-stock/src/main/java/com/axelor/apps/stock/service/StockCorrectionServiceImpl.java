@@ -31,6 +31,7 @@ import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -50,6 +51,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   protected AppBaseService baseService;
   protected StockMoveService stockMoveService;
   protected StockMoveLineService stockMoveLineService;
+  protected StockCorrectionRepository stockCorrectionRepository;
 
   @Inject
   public StockCorrectionServiceImpl(
@@ -58,16 +60,16 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLineService stockLocationLineService,
       AppBaseService baseService,
       StockMoveService stockMoveService,
+      StockCorrectionRepository stockCorrectionRepository,
       StockMoveLineService stockMoveLineService) {
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineService = stockLocationLineService;
     this.baseService = baseService;
     this.stockMoveService = stockMoveService;
+    this.stockCorrectionRepository = stockCorrectionRepository;
     this.stockMoveLineService = stockMoveLineService;
   }
-
-  @Inject private StockCorrectionRepository stockCorrectionRepository;
 
   @Override
   public Map<String, Object> fillDefaultValues(StockLocationLine stockLocationLine) {
@@ -288,7 +290,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       TrackingNumber trackingNumber,
       BigDecimal realQty,
       StockCorrectionReason reason,
-      String comments) {
+      String comments)
+      throws AxelorException {
 
     StockCorrection stockCorrection = new StockCorrection();
     setNewStockCorrectionInformation(
@@ -305,11 +308,16 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       BigDecimal realQty,
       StockCorrectionReason reason,
       StockCorrection stockCorrection,
-      String comments) {
+      String comments)
+      throws AxelorException {
     stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_DRAFT);
     stockCorrection.setStockLocation(stockLocation);
     stockCorrection.setProduct(product);
-    if (product.getTrackingNumberConfiguration() != null && trackingNumber != null) {
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                product, "trackingNumberConfiguration", stockLocation.getCompany());
+    if (trackingNumberConfiguration != null && trackingNumber != null) {
       stockCorrection.setTrackingNumber(trackingNumber);
     }
     stockCorrection.setRealQty(realQty);

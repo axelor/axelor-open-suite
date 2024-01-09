@@ -44,7 +44,13 @@ public class SaleOrderLineController {
   public void setProductAccount(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      SaleOrder saleOrder;
+
+      if (SaleOrder.class.equals(request.getContext().getParent().getContextClass())) {
+        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+      } else {
+        saleOrder = saleOrderLine.getSaleOrder();
+      }
 
       if (saleOrderLine.getProduct() == null) {
         response.setValue("account", null);
@@ -152,13 +158,19 @@ public class SaleOrderLineController {
   public void checkBudget(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder;
+
       if (request.getContext().getParent() == null) {
         saleOrder =
             Beans.get(SaleOrderRepository.class)
                 .find(Long.valueOf((Integer) request.getContext().get("_parentId")));
       } else {
-        saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+        if (SaleOrder.class.equals(request.getContext().getParent().getContextClass())) {
+          saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+        } else {
+          saleOrder = request.getContext().asType(SaleOrderLine.class).getSaleOrder();
+        }
       }
+
       if (saleOrder != null && saleOrder.getCompany() != null) {
 
         response.setAttr(
@@ -179,61 +191,6 @@ public class SaleOrderLineController {
     }
   }
 
-  public void setGroupBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
-      String query = "self.id = 0";
-
-      if (saleOrder != null && saleOrder.getCompany() != null) {
-        query =
-            Beans.get(SaleOrderLineBudgetService.class)
-                .getGroupBudgetDomain(saleOrderLine, saleOrder);
-      }
-
-      response.setAttr("groupBudget", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setSectionBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
-      String query = "self.id = 0";
-
-      if (saleOrder != null && saleOrder.getCompany() != null) {
-        query =
-            Beans.get(SaleOrderLineBudgetService.class)
-                .getSectionBudgetDomain(saleOrderLine, saleOrder);
-      }
-
-      response.setAttr("section", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setLineBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      SaleOrder saleOrder = request.getContext().getParent().asType(SaleOrder.class);
-      String query = "self.id = 0";
-
-      if (saleOrder != null && saleOrder.getCompany() != null) {
-        query =
-            Beans.get(SaleOrderLineBudgetService.class)
-                .getLineBudgetDomain(saleOrderLine, saleOrder, false);
-      }
-
-      response.setAttr("line", "domain", query);
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setBudgetDomain(ActionRequest request, ActionResponse response) {
     try {
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
@@ -242,8 +199,7 @@ public class SaleOrderLineController {
 
       if (saleOrder != null && saleOrder.getCompany() != null) {
         query =
-            Beans.get(SaleOrderLineBudgetService.class)
-                .getLineBudgetDomain(saleOrderLine, saleOrder, true);
+            Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }
 
       response.setAttr("budget", "domain", query);

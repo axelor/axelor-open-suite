@@ -173,6 +173,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     Company company = billOfMaterial.getCompany();
+    if (company == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(ProductionExceptionMessage.NO_COMPANY_IN_BILL_OF_MATERIALS),
+          billOfMaterial.getProduct().getName());
+    }
 
     if (billOfMaterial.getQty().signum() == 0) {
       throw new AxelorException(
@@ -431,7 +437,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         productionConfigService.getManufOrderSequence(
             productionConfig, manufOrder.getWorkshopStockLocation());
 
-    String seq = sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq");
+    String seq =
+        sequenceService.getSequenceNumber(sequence, ManufOrder.class, "manufOrderSeq", manufOrder);
 
     if (seq == null) {
       throw new AxelorException(
@@ -1282,8 +1289,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 billOfMaterialService.getPriority(billOfMaterial),
                 IS_TO_INVOICE,
                 billOfMaterial,
-                null,
                 manufOrder.getPlannedStartDateT(),
+                manufOrder.getPlannedEndDateT(),
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
         manufOrder.setClientPartner(clientPartner);

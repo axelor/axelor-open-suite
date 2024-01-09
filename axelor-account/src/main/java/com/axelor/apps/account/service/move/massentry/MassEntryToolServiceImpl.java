@@ -123,6 +123,12 @@ public class MassEntryToolServiceImpl implements MassEntryToolService {
       moveLineResult.setSourceTaxLine(moveLine.getSourceTaxLine());
       moveLineResult.setVatSystemSelect(moveLine.getVatSystemSelect());
 
+      if (move.getCurrency() != null && move.getCompany() != null) {
+        moveLineResult.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
+        moveLineResult.setCompanyCurrencyDecimals(
+            move.getCompany().getCurrency().getNumberOfDecimals());
+      }
+
       moveLineMassEntryRecordService.setAnalytics(moveLineResult, moveLine);
       moveLineMassEntryRecordService.fillAnalyticMoveLineMassEntryList(moveLineResult, moveLine);
     }

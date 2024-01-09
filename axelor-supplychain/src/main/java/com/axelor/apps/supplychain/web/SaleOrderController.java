@@ -32,6 +32,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -41,6 +43,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.SaleOrderReservedQtyService;
 import com.axelor.apps.supplychain.service.SaleOrderServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -450,7 +453,8 @@ public class SaleOrderController {
     StockMove stockMove =
         stockMoveRepo
             .all()
-            .filter("self.saleOrder.id = :saleOrderId AND self.statusSelect = :statusSelect")
+            .filter(
+                ":saleOrderId MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
@@ -605,8 +609,7 @@ public class SaleOrderController {
   public void createShipmentCostLine(ActionRequest request, ActionResponse response) {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-      String message =
-          Beans.get(SaleOrderSupplychainService.class).createShipmentCostLine(saleOrder);
+      String message = Beans.get(SaleOrderShipmentService.class).createShipmentCostLine(saleOrder);
       if (message != null) {
         response.setInfo(message);
       }
@@ -714,5 +717,23 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     Beans.get(SaleOrderSupplychainService.class).updateTimetableAmounts(saleOrder);
     response.setValues(saleOrder);
+  }
+
+  public void setAmountToInvoiceScale(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      boolean isPercent = (Boolean) request.getContext().getOrDefault("isPercent", false);
+
+      if (saleOrder != null && saleOrder.getCurrency() != null) {
+        response.setAttr(
+            "$amountToInvoice",
+            "scale",
+            isPercent
+                ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
+                : Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

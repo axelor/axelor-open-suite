@@ -34,7 +34,7 @@ public interface MoveLineBudgetService {
    * @param moveLine
    * @return String
    */
-  public String computeBudgetDistribution(Move move, MoveLine moveLine);
+  public String computeBudgetDistribution(Move move, MoveLine moveLine) throws AxelorException;
 
   /**
    * Take all budget distribution and throw an error if the total amount of budget distribution is
@@ -46,4 +46,6 @@ public interface MoveLineBudgetService {
   public void checkAmountForMoveLine(MoveLine moveLine) throws AxelorException;
 
   String getBudgetDomain(Move move, MoveLine moveLine);
+
+  void negateAmount(MoveLine moveLine, Move move);
 }

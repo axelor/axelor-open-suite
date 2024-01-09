@@ -44,10 +44,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -81,6 +83,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   protected AppBaseService appBaseService;
 
+  protected AppStockService appStockService;
+
   protected AppSupplychainService appSupplychainService;
 
   protected SaleOrderRepository saleOrderRepo;
@@ -99,10 +103,12 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CommonInvoiceService commonInvoiceService;
   protected InvoiceLineOrderService invoiceLineOrderService;
   protected SaleInvoicingStateService saleInvoicingStateService;
+  protected CurrencyScaleServiceSale currencyScaleServiceSale;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
       AppBaseService appBaseService,
+      AppStockService appStockService,
       AppSupplychainService appSupplychainService,
       SaleOrderRepository saleOrderRepo,
       InvoiceRepository invoiceRepo,
@@ -113,9 +119,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleOrderWorkflowService saleOrderWorkflowService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
-      SaleInvoicingStateService saleInvoicingStateService) {
+      SaleInvoicingStateService saleInvoicingStateService,
+      CurrencyScaleServiceSale currencyScaleServiceSale) {
 
     this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderRepo = saleOrderRepo;
     this.invoiceRepo = invoiceRepo;
@@ -127,6 +135,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.commonInvoiceService = commonInvoiceService;
     this.invoiceLineOrderService = invoiceLineOrderService;
     this.saleInvoicingStateService = saleInvoicingStateService;
+    this.currencyScaleServiceSale = currencyScaleServiceSale;
   }
 
   @Override
@@ -206,7 +215,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     invoice.setPartnerTaxNbr(saleOrder.getClientPartner().getTaxNbr());
 
     invoiceTermService.computeInvoiceTerms(invoice);
-    invoice.setIncoterm(saleOrder.getIncoterm());
+
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      invoice.setIncoterm(saleOrder.getIncoterm());
+    }
     invoice = invoiceRepo.save(invoice);
 
     return invoice;
@@ -680,17 +692,21 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
             InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
 
     if (saleAmount != null) {
-      invoicedAmount = invoicedAmount.add(saleAmount);
+      invoicedAmount =
+          currencyScaleServiceSale.getScaledValue(saleOrder, invoicedAmount.add(saleAmount));
     }
     if (refundAmount != null) {
-      invoicedAmount = invoicedAmount.subtract(refundAmount);
+      invoicedAmount =
+          currencyScaleServiceSale.getScaledValue(saleOrder, invoicedAmount.subtract(refundAmount));
     }
 
     if (!saleOrder.getCurrency().equals(saleOrder.getCompany().getCurrency())
         && saleOrder.getCompanyExTaxTotal().compareTo(BigDecimal.ZERO) != 0) {
       BigDecimal rate =
           invoicedAmount.divide(saleOrder.getCompanyExTaxTotal(), 4, RoundingMode.HALF_UP);
-      invoicedAmount = saleOrder.getExTaxTotal().multiply(rate);
+      invoicedAmount =
+          currencyScaleServiceSale.getScaledValue(
+              saleOrder, saleOrder.getExTaxTotal().multiply(rate));
     }
 
     log.debug(

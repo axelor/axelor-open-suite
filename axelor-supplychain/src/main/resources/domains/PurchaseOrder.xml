@@ -12,7 +12,8 @@
     <many-to-one name="paymentCondition"
       ref="com.axelor.apps.account.db.PaymentCondition" title="Payment condition"/>
 
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
+      precision="20" scale="3"/>
 
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>
@@ -24,6 +25,9 @@
     <date name="expectedRealisationDate" title="Expected realisation date"/>
     <boolean name="interco" title="Interco"/>
     <boolean name="createdByInterco" default="false"/>
+    <many-to-one name="shipmentMode" ref="com.axelor.apps.stock.db.ShipmentMode"/>
+    <many-to-one name="freightCarrierMode"
+      ref="com.axelor.apps.stock.db.FreightCarrierMode"/>
 
     <long name="generatedSaleOrderId"/>
     <extra-code>

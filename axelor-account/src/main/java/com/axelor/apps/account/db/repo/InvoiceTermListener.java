@@ -113,8 +113,11 @@ public class InvoiceTermListener {
     List<InvoiceTermPayment> linkedInvoiceTermPayment =
         Beans.get(InvoiceTermPaymentRepository.class)
             .all()
-            .filter("self.invoiceTerm = :invoiceTerm")
+            .filter(
+                "self.invoiceTerm = :invoiceTerm "
+                    + "AND (self.invoicePayment IS NULL OR self.invoicePayment.statusSelect = :statusValidated)")
             .bind("invoiceTerm", invoiceTerm)
+            .bind("statusValidated", InvoicePaymentRepository.STATUS_VALIDATED)
             .autoFlush(false)
             .fetch();
 

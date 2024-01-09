@@ -21,12 +21,14 @@ package com.axelor.apps.bankpayment.service;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.InvoiceVisibilityService;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
@@ -51,8 +53,10 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
       InvoicePaymentCreateService invoicePaymentCreateService,
       UserRepository userRepo,
       JournalService journalService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       BankOrderLineOriginRepository bankOrderLineOriginRepository,
-      PfpService pfpService) {
+      PfpService pfpService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         invoiceTermRepo,
         invoiceRepo,
@@ -62,8 +66,10 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
         reconcileService,
         invoicePaymentCreateService,
         journalService,
+        invoiceTermFinancialDiscountService,
         userRepo,
-        pfpService);
+        pfpService,
+        currencyScaleServiceAccount);
     this.bankOrderLineOriginRepository = bankOrderLineOriginRepository;
   }
 
@@ -84,14 +90,12 @@ public class InvoiceTermBankPaymentServiceImpl extends InvoiceTermServiceImpl
             "self.relatedToSelect = ?1 AND self.relatedToSelectId = ?2 "
                 + "AND self.bankOrderLine.bankOrder IS NOT NULL "
                 + "AND (self.bankOrderLine.bankOrder.statusSelect = ?3 "
-                + "OR self.bankOrderLine.bankOrder.statusSelect = ?4 "
-                + "OR self.bankOrderLine.bankOrder.statusSelect = ?5) "
-                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?6 "
-                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?7",
+                + "OR self.bankOrderLine.bankOrder.statusSelect = ?4) "
+                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?5 "
+                + "AND self.bankOrderLine.bankOrder.orderTypeSelect != ?6",
             BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM,
             invoiceTerm.getId(),
             BankOrderRepository.STATUS_DRAFT,
-            BankOrderRepository.STATUS_AWAITING_SIGNATURE,
             BankOrderRepository.STATUS_VALIDATED,
             BankOrderRepository.ORDER_TYPE_SEPA_DIRECT_DEBIT,
             BankOrderRepository.ORDER_TYPE_INTERNATIONAL_DIRECT_DEBIT)

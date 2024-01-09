@@ -141,8 +141,6 @@ public final class BankPaymentExceptionMessage {
       "Total amount of bank order lines must be equal to the bank order amount" /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_MISSING = /*$$(*/
       "Please fill the receiver bank details" /*)*/;
-  public static final String BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN = /*$$(*/
-      "You cannot use this bank account because he is not authorized by the ebics partner." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_NOT_ACTIVE = /*$$(*/
       "The receiver bank details for the line %s is inactive." /*)*/;
   public static final String BANK_ORDER_LINE_BANK_DETAILS_TYPE_NOT_COMPATIBLE = /*$$(*/
@@ -159,7 +157,7 @@ public final class BankPaymentExceptionMessage {
       "Please select at least two bank orders" /*)*/;
 
   public static final String BANK_ORDER_MERGE_STATUS = /*$$(*/
-      "Please select draft or awaiting signature bank orders only" /*)*/;
+      "Please select draft bank orders only" /*)*/;
   public static final String BANK_ORDER_MERGE_SAME_STATUS = /*$$(*/
       "Please select some bank orders that have the same status" /*)*/;
   public static final String BANK_ORDER_MERGE_SAME_ORDER_TYPE_SELECT = /*$$(*/
@@ -187,26 +185,6 @@ public final class BankPaymentExceptionMessage {
   public static final String BANK_ORDER_FILE_UNKNOWN_SEPA_TYPE = /*$$(*/
       "Unknown SEPA type for file generation" /*)*/;
 
-  /** Ebics */
-  public static final String EBICS_WRONG_PASSWORD = /*$$(*/
-      "Incorrect password, please try again" /*)*/;
-
-  public static final String EBICS_MISSING_PASSWORD = /*$$(*/ "Please insert a password" /*)*/;
-  public static final String EBICS_MISSING_NAME = /*$$(*/ "Please select a user name" /*)*/;
-  public static final String EBICS_TEST_MODE_NOT_ENABLED = /*$$(*/
-      "Test mode is not enabled or test file is missing" /*)*/;
-  public static final String EBICS_MISSING_CERTIFICATES = /*$$(*/
-      "Please add certificates to print" /*)*/;
-
-  public static final String EBICS_MISSING_USER_TRANSPORT = /*$$(*/
-      "Please insert a EBICS user for transport in the EBICS partner" /*)*/;
-  public static final String EBICS_NO_SERVICE_CONFIGURED = /*$$(*/
-      "No service configured on EBICS partner %s for file format %s" /*)*/;
-  public static final String EBICS_PARTNER_BANK_DETAILS_WARNING = /*$$(*/
-      "At least one bank details you have entered is missing currency. Here is the list of invalid bank details : %s" /*)*/;
-  public static final String EBICS_MISSING_SIGNATORY_EBICS_USER = /* $$( */
-      "Signatory EBICS user is missing." /* ) */;
-
   /** Batch bank statement */
   public static final String BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT = /*$$(*/
       "Number of retrieved bank statements: %d." /*)*/;
@@ -219,8 +197,6 @@ public final class BankPaymentExceptionMessage {
       "Missing bank statement file" /*)*/;
   public static final String BANK_STATEMENT_MISSING_FILE_FORMAT = /*$$(*/
       "Missing bank statement file format" /*)*/;
-  public static final String BANK_STATEMENT_EBICS_PARTNER = /*$$(*/
-      "Error with EBICS partner %s: %s" /*)*/;
   public static final String BANK_STATEMENT_ALREADY_IMPORTED = /*$$(*/
       "Bank statement already imported. Aborted." /*)*/;
   public static final String BANK_STATEMENT_NOT_MATCHING = /*$$(*/
