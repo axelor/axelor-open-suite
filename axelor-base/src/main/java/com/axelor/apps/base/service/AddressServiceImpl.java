@@ -52,6 +52,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -331,27 +332,35 @@ public class AddressServiceImpl implements AddressService {
       addressAttrsService.addHiddenAndTitle(addressTemplateLineList, attrsMap);
       addressAttrsService.addAllFieldsUnhide(addressTemplateLineList, attrsMap);
     }
-
-    LOG.info("Attrs: {}", attrsMap);
     return attrsMap;
   }
 
   @Override
-  public void checkRequiredAddressFields(Address address) {
+  public void checkRequiredAddressFields(Address address) throws AxelorException {
     if (address.getCountry() != null) {
       AddressTemplate addressTemplate = address.getCountry().getAddressTemplate();
       for (AddressTemplateLine addressTemplateLine : addressTemplate.getAddressTemplateLineList()) {
         if (addressTemplateLine.getIsRequired()) {
           // Assuming field name is stored in addressTemplateLine.getFieldName()
           String fieldName = addressTemplateLine.getMetaField().getName();
-
-          // Use reflection to get the value of the field
-          Object fieldValue = invokeGetter(address, "get" + capitalize(fieldName));
-
-          // Check if the field value is empty (assuming it's a String)
-          if (fieldValue instanceof String && ((String) fieldValue).isEmpty()) {
-            // Field is required but empty
-            System.out.println(fieldName + " is required but empty.");
+          Object fieldValue = null;
+          try {
+            fieldValue = Mapper.of(address.getClass()).getGetter(fieldName).invoke(address);
+          } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new AxelorException(
+                addressTemplateLine,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                String.format(
+                    I18n.get(BaseExceptionMessage.MISSING_ADDRESS_FIELD),
+                    addressTemplateLine.getMetaField().getName()));
+          }
+          if (fieldValue == null) {
+            throw new AxelorException(
+                addressTemplateLine,
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                String.format(
+                    I18n.get(BaseExceptionMessage.MISSING_ADDRESS_FIELD),
+                    addressTemplateLine.getMetaField().getName()));
           }
         }
       }

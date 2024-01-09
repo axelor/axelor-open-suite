@@ -154,6 +154,7 @@
 "Add Guests","Ajouter des invités",,
 "Additionnal","Ajout",,
 "Address","Adresse",,
+"Address Field is missing : %s",,,
 "Address L2 template",,,
 "Address L3 template",,,
 "Address L4 template",,,

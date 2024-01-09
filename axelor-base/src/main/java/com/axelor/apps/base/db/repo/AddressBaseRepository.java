@@ -42,6 +42,7 @@ public class AddressBaseRepository extends AddressRepository {
         addressService.updateLatLong(entity);
       }
       addressService.setFormattedFullName(entity);
+      addressService.checkRequiredAddressFields(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);

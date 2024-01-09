@@ -83,7 +83,6 @@ public class AddressAttrsServiceImpl implements AddressAttrsService {
     addressTemplateLineList.forEach(
         line -> {
           addFieldUnhide(line.getMetaField().getName(), attrsMap);
-          LOG.info("Store Strret - {}", appBase.getStoreStreets());
           if ("streetName".equals(line.getMetaField().getName()) && appBase.getStoreStreets()) {
             addFieldUnhide("buildingNumber", attrsMap);
             addFieldUnhide("street", attrsMap);

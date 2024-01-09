@@ -633,4 +633,6 @@ public final class BaseExceptionMessage {
       "An error occurred while generating the address template: '%s' - '%s'" /*)*/;
   public static final String PRICING_BUTTON_ERROR = /*$$(*/
       "There was an error while trying to add the pricing button : %s" /*)*/;
+
+  public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
 }
