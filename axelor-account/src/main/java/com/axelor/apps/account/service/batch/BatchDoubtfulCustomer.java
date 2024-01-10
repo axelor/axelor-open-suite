@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingService;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
@@ -59,10 +58,9 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
   public BatchDoubtfulCustomer(
       DoubtfulCustomerService doubtfulCustomerService,
       BatchAccountCustomer batchAccountCustomer,
-      MoveLineRepository moveLineRepo,
       AccountRepository accountRepo) {
 
-    super(doubtfulCustomerService, batchAccountCustomer, moveLineRepo);
+    super(doubtfulCustomerService, batchAccountCustomer);
 
     this.accountRepo = accountRepo;
 
