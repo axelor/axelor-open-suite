@@ -321,4 +321,14 @@ public class TicketController {
       response.setValue("$isInProgress", false);
     }
   }
+
+  public void computeSlaAndDeadLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+    Ticket ticket = request.getContext().asType(Ticket.class);
+
+    Beans.get(TicketService.class).computeSLAAndDeadLine(ticket);
+    response.setValue("slaPolicy", ticket.getSlaPolicy());
+    response.setValue("deadlineDateT", ticket.getDeadlineDateT());
+  }
 }
