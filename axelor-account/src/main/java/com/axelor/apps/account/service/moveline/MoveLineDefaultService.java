@@ -29,7 +29,7 @@ public interface MoveLineDefaultService {
 
   void setFieldsFromFirstMoveLine(MoveLine moveLine, Move move);
 
-  void setIsOtherCurrency(MoveLine moveLine, Move move);
+  void setIsOtherCurrency(MoveLine moveLine, Move move) throws AxelorException;
 
   void setFinancialDiscount(MoveLine moveLine);
 
