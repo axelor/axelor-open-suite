@@ -20,11 +20,12 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Localization;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -46,8 +47,14 @@ class TestCompanyDateService {
   @BeforeAll
   static void prepare() {
     companyDateService = new CompanyDateService();
-    usCompany = prepareCompany(Locale.US.toLanguageTag());
-    frCompany = prepareCompany(Locale.FRANCE.toLanguageTag());
+    Country country_us = new Country("UNITED STATES OF AMERICA");
+    country_us.setAlpha2Code("US");
+    Country country_fr = new Country("FRANCE");
+    country_fr.setAlpha2Code("FR");
+    Language language_us = new Language("English", "en");
+    Language language_fr = new Language("French", "fr");
+    usCompany = prepareCompany(language_us, country_us);
+    frCompany = prepareCompany(language_fr, country_fr);
   }
 
   @Test
@@ -72,11 +79,13 @@ class TestCompanyDateService {
         getDateTimeFormat(DD_MM_YYYY_HH_MM), getCompanyDateTimeformat(frCompany));
   }
 
-  protected static Company prepareCompany(String languageTag) {
+  protected static Company prepareCompany(Language language, Country country) {
     Company company = new Company();
     Localization localization = new Localization();
-    localization.setName("test: " + languageTag);
-    localization.setCode(languageTag);
+    localization.setName(language.getName() + " (" + country.getName() + ")");
+    localization.setLanguage(language);
+    localization.setCountry(country);
+    localization.setCode(language.getCode() + "_" + country.getAlpha2Code());
     company.setLocalization(localization);
     return company;
   }
