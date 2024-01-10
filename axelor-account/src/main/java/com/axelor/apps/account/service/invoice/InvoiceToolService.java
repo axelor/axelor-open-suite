@@ -256,6 +256,8 @@ public class InvoiceToolService {
     copy.setReasonOfRefusalToPayStr(null);
     copy.setSubrogationRelease(null);
     copy.setSubrogationReleaseMove(null);
+    copy.setOriginDate(null);
+    copy.setSupplierInvoiceNb(null);
   }
 
   /**
