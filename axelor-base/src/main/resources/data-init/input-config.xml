@@ -15,6 +15,9 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
+  <input file="base_bankDetailsTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.BankDetailsTemplate" search="self.importId = :importId"/>
+
   <input file="base_birtTemplate.csv" separator=";"
     call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">

@@ -22,7 +22,7 @@
     <many-to-one name="citizenship" title="Citizenship"
       ref="com.axelor.apps.base.db.Citizenship"/>
 
-    <many-to-one name="bankDetailsTemplate"
+    <many-to-one name="bankDetailsTemplate" required="true"
       ref="com.axelor.apps.base.db.BankDetailsTemplate" title="Bank details template"/>
 
   </entity>

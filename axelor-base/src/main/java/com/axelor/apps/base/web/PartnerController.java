@@ -300,7 +300,8 @@ public class PartnerController {
         Bank bank = bankDetails.getBank();
         if (bankDetails.getIban() != null
             && bank != null
-            && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+            && bank.getCountry().getBankDetailsTemplate().getBankDetailsTypeSelect()
+                == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
           LOG.debug("checking iban code : {}", bankDetails.getIban());
           try {
             Beans.get(BankDetailsService.class).validateIban(bankDetails.getIban());

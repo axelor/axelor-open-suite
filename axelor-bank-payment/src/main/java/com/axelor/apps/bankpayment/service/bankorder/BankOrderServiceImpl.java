@@ -620,7 +620,8 @@ public class BankOrderServiceImpl implements BankOrderService {
       String[] identifiers = acceptedIdentifiers.replaceAll("\\s", "").split(",");
       int i = 0;
       while (i < identifiers.length
-          && bankDetails.getBank().getBankDetailsTypeSelect() != Integer.parseInt(identifiers[i])) {
+          && bankDetails.getBank().getCountry().getBankDetailsTemplate().getBankDetailsTypeSelect()
+              != Integer.parseInt(identifiers[i])) {
         i++;
       }
       if (i == identifiers.length) {

@@ -19,7 +19,7 @@
       <field name="numericCode"/>
       <field name="economicArea" canEdit="false"/>
       <field name="citizenship"/>
-      <field name="bankDetailsTemplate"/>
+      <field name="bankDetailsTemplate" required="true"/>
       <field name="addressTemplate" grid-view="address-template-grid"
         form-view="address-template-form"/>
     </panel>

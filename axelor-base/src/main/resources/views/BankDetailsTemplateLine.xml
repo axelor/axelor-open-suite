@@ -7,7 +7,6 @@
     model="com.axelor.apps.base.db.BankDetailsTemplateLine">
     <field name="title" title="Title"/>
     <field name="metaField" title="Bank details fields"/>
-    <field name="bankDetailsTemplate" title="Bank Details Template"/>
   </grid>
 
   <form name="bank-details-template-line-form" title="Bank details template lines"
@@ -17,7 +16,6 @@
       <field name="metaField" title="Bank details fields" colSpan="6"
         domain="self.name in ('bankCode','sortCode','accountNbr','bbanKey')"
         onChange="action-base-record-bank-details-template-line-set-title"/>
-      <field name="bankDetailsTemplate" title="Bank details template" colSpan="12"/>
     </panel>
   </form>
 

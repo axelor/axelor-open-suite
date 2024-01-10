@@ -9,10 +9,6 @@
 
     <string name="fullName" title="Name" search="code,bankName"/>
 
-    <!-- to be removed -->
-    <integer name="bankDetailsTypeSelect" title="Type of Bank Details Id" required="true"
-      selection="base.bank.bank.details.type.select" default="1"/>
-
     <string name="code" title="BIC (Bank Identifier)" namecolumn="true" required="true"
       unique="true"/>
 
