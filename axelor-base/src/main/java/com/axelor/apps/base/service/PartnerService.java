@@ -116,12 +116,12 @@ public interface PartnerService {
   PriceList getSalePriceList(Partner partner);
 
   /**
-   * Get the partner language code. If null, return the default partner language.
+   * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
    * @return
    */
-  String getPartnerLanguageCode(Partner partner);
+  String getPartnerLocale(Partner partner);
 
   /**
    * Normalize phone number.

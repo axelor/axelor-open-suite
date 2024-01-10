@@ -250,9 +250,9 @@ public class ReportSettings {
   public static String getPrintingLocale(Partner partner) {
 
     if (partner != null) {
-      return Beans.get(PartnerServiceImpl.class).getPartnerLanguageCode(partner);
+      return Beans.get(PartnerServiceImpl.class).getPartnerLocale(partner);
     } else {
-      return Beans.get(UserService.class).getLanguage();
+      return Beans.get(UserService.class).getLocalizationCode();
     }
   }
 
