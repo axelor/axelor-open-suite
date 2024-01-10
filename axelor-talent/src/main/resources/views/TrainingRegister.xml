@@ -138,7 +138,7 @@
   </action-method>
 
   <search-filters name="my-training-register-filters"
-    model="com.axelor.apps.talent.db.Appraisal-my-traning-filters" title="My traning filters">
+    model="com.axelor.apps.talent.db.Appraisal" title="My training filters">
     <filter name="my-training-register-filters-my-upcoming-trainings"
       title="My upcoming trainings">
       <domain>self.employee.id = :_employeeId and self.statusSelect = 1</domain>
