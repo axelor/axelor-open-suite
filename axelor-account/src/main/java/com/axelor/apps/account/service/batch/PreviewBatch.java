@@ -9,20 +9,14 @@ import java.util.List;
 public abstract class PreviewBatch extends BatchStrategy {
   protected List<Long> recordIdList;
 
-  protected MoveLineRepository moveLineRepo;
-
   public PreviewBatch(MoveLineRepository moveLineRepo) {
     this.moveLineRepo = moveLineRepo;
   }
 
   @Inject
-  public PreviewBatch(
-      DoubtfulCustomerService doubtfulCustomerService,
-      BatchAccountCustomer batchAccountCustomer,
-      MoveLineRepository moveLineRepo) {
+  protected PreviewBatch(
+      DoubtfulCustomerService doubtfulCustomerService, BatchAccountCustomer batchAccountCustomer) {
     super(doubtfulCustomerService, batchAccountCustomer);
-
-    this.moveLineRepo = moveLineRepo;
   }
 
   public void setRecordIdList(List<Long> recordIdList) {
