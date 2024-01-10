@@ -5,9 +5,13 @@
 
   <form name="tax-form" title="Tax" model="com.axelor.apps.account.db.Tax"
     id="account-tax-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-tax-attrs-display-purchase-accounts"/>
+    </extend>
     <extend target="//panel[@name='mainPanel']/field[@name='taxType']">
       <insert position="after">
-        <field name="isNonDeductibleTax" widget="boolean-switch" if-module="axelor-account"
+        <field name="isNonDeductibleTax" widget="boolean-switch"
+          onChange="action-tax-attrs-display-purchase-accounts" if-module="axelor-account"
           if="__config__.app.isApp('account')"/>
       </insert>
     </extend>
@@ -20,5 +24,12 @@
       </insert>
     </extend>
   </form>
+
+  <action-attrs name="action-tax-attrs-display-purchase-accounts">
+    <attribute name="hidden" for="accountManagementList.purchaseTaxVatSystem1Account"
+      expr="eval: isNonDeductibleTax"/>
+    <attribute name="hidden" for="accountManagementList.purchaseAccount"
+      expr="eval: !isNonDeductibleTax"/>
+  </action-attrs>
 
 </object-views>

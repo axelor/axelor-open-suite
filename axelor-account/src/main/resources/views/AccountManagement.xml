@@ -34,6 +34,10 @@
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       if-module="axelor-account" form-view="account-form" grid-view="account-grid"
       if="__config__.app.isApp('account')" canEdit="false"/>
+    <field name="purchaseAccount"
+      domain="self.statusSelect = 1 AND self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"
+      if-module="axelor-account" form-view="account-form" grid-view="account-grid"
+      if="__config__.app.isApp('account')" canEdit="false"/>
     <field name="purchFixedAssetsTaxVatSystem1Account"
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       if-module="axelor-account" form-view="account-form" grid-view="account-grid"
@@ -103,6 +107,8 @@
         <field name="$isNonDeductibleTax" type="boolean" hidden="true"/>
       </insert>
       <attribute name="hideIf" value="tax &amp;&amp; !$isNonDeductibleTax"/>
+      <attribute name="domain"
+        value="self.statusSelect = 1 AND self.company = :company AND (self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'debt')"/>
     </extend>
     <extend
       target="//panel[@name='fixedAssetsConfig2Panel']/field[@name='purchFixedAssetsAccount']">
