@@ -79,9 +79,15 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
       ProdProcessLine prodProcessLine, WorkCenterGroup workCenterGroup) {
     WorkCenterGroup workCenterGroupCopy = JPA.copy(workCenterGroup, false);
     workCenterGroupCopy.setWorkCenterGroupModel(workCenterGroup);
+    workCenterGroupCopy.clearWorkCenterSet();
     workCenterGroupCopy.setTemplate(false);
-    workCenterGroup.getWorkCenterSet().forEach((workCenterGroupCopy::addWorkCenterSetItem));
-
+    workCenterGroup
+        .getWorkCenterSet()
+        .forEach(
+            (k -> {
+              WorkCenter w = JPA.copy(k, false);
+              workCenterGroupCopy.addWorkCenterSetItem(w);
+            }));
     prodProcessLine.setWorkCenterGroup(workCenterGroupCopy);
     return prodProcessLineRepo.save(prodProcessLine);
   }
