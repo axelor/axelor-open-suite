@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.base.AxelorException;
