@@ -1,0 +1,7 @@
+"importId";"metaModel";"metaField";"title";"addressTemplate.importId";"isRequired"
+"1";"Address";"department";"Recipient details";"1";"false"
+"2";"Address";"floor";"Address precisions";"1";"false"
+"4";"Address";"streetName";"N° and Street label";"1";"true"
+"5";"Address";"postBox";"Distribution precisions (POB, Village...)";"1";"false"
+"6";"Address";"city";;"1";"true"
+"7";"Address";"zip";;"1";"true"

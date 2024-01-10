@@ -24,6 +24,7 @@
         grid-view="country-grid"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
         <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
+        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
         <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
         <field name="buildingNumber" onChange="action-address-record-change-streetName"
@@ -35,7 +36,6 @@
         <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
         <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
         <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
-        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
         <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>
         <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>
@@ -101,6 +101,7 @@
         colSpan="12"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
         <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
+        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
         <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
         <field name="buildingNumber" onChange="action-address-record-change-streetName"
@@ -112,7 +113,6 @@
         <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
         <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
         <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
-        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
         <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
         <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>
         <field name="districtName" colSpan="12" x-bind="{{districtName|uppercase}}"/>

@@ -31,7 +31,7 @@
 "31";"Address";"streetName";"N° and street name";"6";"true"
 "32";"Address";"city";;"6";"true"
 "33";"Address";"countrySubDivision";"State";"6";"true"
-"34";"Address";"zip";"Pin code";"6";"true"
+"34";"Address";"zip";"PIN code";"6";"true"
 "35";"Address";"department";"Company";"7";"false"
 "36";"Address";"subDepartment";"Department";"7";"false"
 "37";"Address";"streetName";"N° and street name";"7";"true"
