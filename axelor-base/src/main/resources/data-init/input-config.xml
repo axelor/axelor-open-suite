@@ -87,12 +87,12 @@
     search="self.name = :name"/>
 
   <input file="base_addressTemplate.csv" separator=";"
-         type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
 
   <input file="base_addressTemplateLine.csv" separator=";"
-         type="com.axelor.apps.base.db.AddressTemplateLine" search="self.importId = :importId">
+    type="com.axelor.apps.base.db.AddressTemplateLine" search="self.importId = :importId">
     <bind to="metaField" column="metaField"
-          search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
   </input>
 
 
