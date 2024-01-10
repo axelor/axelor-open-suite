@@ -63,12 +63,11 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   @Inject
   public BatchAccountingCutOffSupplyChain(
       AccountingCutOffService cutOffService,
-      MoveLineRepository moveLineRepository,
       AccountingBatchRepository accountingBatchRepository,
       StockMoveRepository stockMoveRepository,
       StockMoveLineRepository stockMoveLineRepository,
       AccountingCutOffSupplyChainService cutOffSupplyChainService) {
-    super(cutOffService, moveLineRepository, accountingBatchRepository);
+    super(cutOffService, accountingBatchRepository);
     this.stockMoveRepository = stockMoveRepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.cutOffSupplyChainService = cutOffSupplyChainService;

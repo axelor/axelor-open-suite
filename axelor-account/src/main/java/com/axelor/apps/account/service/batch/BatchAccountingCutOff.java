@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.base.AxelorException;
@@ -54,10 +53,8 @@ public class BatchAccountingCutOff extends PreviewBatch {
 
   @Inject
   public BatchAccountingCutOff(
-      AccountingCutOffService cutOffService,
-      MoveLineRepository moveLineRepository,
-      AccountingBatchRepository accountingBatchRepository) {
-    super(moveLineRepository);
+      AccountingCutOffService cutOffService, AccountingBatchRepository accountingBatchRepository) {
+    super();
     this.accountingBatchRepository = accountingBatchRepository;
     this.cutOffService = cutOffService;
   }

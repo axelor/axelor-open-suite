@@ -1,7 +1,6 @@
 package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
 import com.google.inject.Inject;
 import java.util.List;
@@ -9,9 +8,7 @@ import java.util.List;
 public abstract class PreviewBatch extends BatchStrategy {
   protected List<Long> recordIdList;
 
-  public PreviewBatch(MoveLineRepository moveLineRepo) {
-    this.moveLineRepo = moveLineRepo;
-  }
+  protected PreviewBatch() {}
 
   @Inject
   protected PreviewBatch(
