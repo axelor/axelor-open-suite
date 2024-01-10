@@ -46,7 +46,7 @@ public interface ExpenseToolService {
 
   boolean isKilometricExpenseLine(ExpenseLine expenseLine);
 
-  boolean listHasSeveralCurrencies(List<ExpenseLine> expenseLineList);
+  boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList);
 
-  boolean listHasSeveralEmployees(List<ExpenseLine> expenseLineList);
+  boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList);
 }

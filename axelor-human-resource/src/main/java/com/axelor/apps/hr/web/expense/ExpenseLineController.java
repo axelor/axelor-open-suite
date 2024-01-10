@@ -26,8 +26,11 @@ import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.db.Wizard;
+import java.util.List;
 
 public class ExpenseLineController {
   public void checkJustificationFile(ActionRequest request, ActionResponse response) {
@@ -47,10 +50,24 @@ public class ExpenseLineController {
 
   public void openExpenseCreateWizard(ActionRequest request, ActionResponse response)
       throws AxelorException {
-    response.setView(
-        Beans.get(ExpenseCreateWizardService.class)
-            .getCreateExpenseWizard(request.getContext())
-            .map());
+
+    List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+    if (Beans.get(ExpenseCreateWizardService.class).checkExpenseLinesToMerge(idList)) {
+      response.setView(openExpenseMergeForm(idList).map());
+    }
+  }
+
+  protected ActionView.ActionViewBuilder openExpenseMergeForm(List<Integer> idList) {
+    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Create expense"));
+    actionViewBuilder.model(Wizard.class.getName());
+    actionViewBuilder.add("form", "expense-line-merge-form");
+    actionViewBuilder.param("popup", "reload");
+    actionViewBuilder.param("show-toolbar", "false");
+    actionViewBuilder.param("show-confirm", "false");
+    actionViewBuilder.param("width", "large");
+    actionViewBuilder.param("popup-save", "false");
+    actionViewBuilder.context("_selectedLines", idList);
+    return actionViewBuilder;
   }
 
   public void fillExpenseProduct(ActionRequest request, ActionResponse response)

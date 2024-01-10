@@ -13,9 +13,6 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Optional;
@@ -38,18 +35,15 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
     this.expenseCreateService = expenseCreateService;
   }
 
-  @Override
-  public ActionView.ActionViewBuilder getCreateExpenseWizard(Context context)
-      throws AxelorException {
+  public boolean checkExpenseLinesToMerge(List<Integer> idList) throws AxelorException {
 
-    List<Integer> idList = (List<Integer>) context.get("_ids");
     if (CollectionUtils.isEmpty(idList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_NO_LINE_SELECTED));
     }
     checkLines(idList);
-    return createView(idList);
+    return true;
   }
 
   @Override
@@ -115,21 +109,8 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
     checkEmployee(expenseLineList);
   }
 
-  protected ActionView.ActionViewBuilder createView(List<Integer> idList) {
-    ActionView.ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get("Create expense"));
-    actionViewBuilder.model(Wizard.class.getName());
-    actionViewBuilder.add("form", "expense-line-merge-form");
-    actionViewBuilder.param("popup", "reload");
-    actionViewBuilder.param("show-toolbar", "false");
-    actionViewBuilder.param("show-confirm", "false");
-    actionViewBuilder.param("width", "large");
-    actionViewBuilder.param("popup-save", "false");
-    actionViewBuilder.context("_selectedLines", idList);
-    return actionViewBuilder;
-  }
-
   protected void checkCurrency(List<ExpenseLine> expenseLineList) throws AxelorException {
-    if (expenseToolService.listHasSeveralCurrencies(expenseLineList)) {
+    if (expenseToolService.hasSeveralCurrencies(expenseLineList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_SELECTED_CURRENCY_ERROR));
@@ -137,7 +118,7 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
   }
 
   protected void checkEmployee(List<ExpenseLine> expenseLineList) throws AxelorException {
-    if (expenseToolService.listHasSeveralEmployees(expenseLineList)) {
+    if (expenseToolService.hasSeveralEmployees(expenseLineList)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_SELECTED_EMPLOYEE_ERROR));
