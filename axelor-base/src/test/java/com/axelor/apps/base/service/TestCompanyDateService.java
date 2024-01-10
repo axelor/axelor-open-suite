@@ -20,6 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Localization;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -73,7 +74,10 @@ class TestCompanyDateService {
 
   protected static Company prepareCompany(String languageTag) {
     Company company = new Company();
-    company.setLocale(languageTag);
+    Localization localization = new Localization();
+    localization.setName("test: " + languageTag);
+    localization.setCode(languageTag);
+    company.setLocalization(localization);
     return company;
   }
 
