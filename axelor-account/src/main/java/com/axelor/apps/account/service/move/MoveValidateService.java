@@ -70,7 +70,7 @@ public interface MoveValidateService {
 
   String accountingMultiple(List<Integer> moveIds);
 
-  void freezeFieldsOnMoveLines(Move move);
+  void freezeFieldsOnMoveLines(Move move) throws AxelorException;
 
   void accountingMultiple(Query<Move> moveListQuery) throws AxelorException;
 
