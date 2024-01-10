@@ -1,0 +1,2 @@
+title : "Invoice : Fixed error when we change partner in supplier invoice with invoice lines"
+type: fix
