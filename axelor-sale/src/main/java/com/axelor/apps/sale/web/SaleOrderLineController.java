@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.apps.base.service.subline.SubLineService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -46,10 +47,16 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.studio.db.AppSale;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
 public class SaleOrderLineController {
@@ -325,10 +332,13 @@ public class SaleOrderLineController {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
     if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
       Map<String, Object> newSaleOrderLine = Mapper.toMap(new SaleOrderLine());
-      newSaleOrderLine.put("qty", BigDecimal.ZERO);
+      if (SaleOrderLineRepository.TYPE_PARENT != saleOrderLine.getTypeSelect()) {
+        newSaleOrderLine.put("qty", BigDecimal.ZERO);
+      }
       newSaleOrderLine.put("id", saleOrderLine.getId());
       newSaleOrderLine.put("version", saleOrderLine.getVersion());
       newSaleOrderLine.put("typeSelect", saleOrderLine.getTypeSelect());
+      newSaleOrderLine.put("subLineId", saleOrderLine.getSubLineId());
       if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_END_OF_PACK) {
         newSaleOrderLine.put("productName", I18n.get(ITranslation.SALE_ORDER_LINE_END_OF_PACK));
       }
@@ -365,10 +375,8 @@ public class SaleOrderLineController {
 
   protected void compute(ActionResponse response, SaleOrder saleOrder, SaleOrderLine orderLine)
       throws AxelorException {
-
-    Map<String, BigDecimal> map =
-        Beans.get(SaleOrderLineService.class).computeValues(saleOrder, orderLine);
-
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    Map<String, BigDecimal> map = saleOrderLineService.computeValues(saleOrder, orderLine);
     map.put("price", orderLine.getPrice());
     map.put("inTaxPrice", orderLine.getInTaxPrice());
     map.put("companyCostPrice", orderLine.getCompanyCostPrice());
@@ -381,6 +389,20 @@ public class SaleOrderLineController {
         map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
                 .compareTo(saleOrder.getInAti() ? orderLine.getInTaxPrice() : orderLine.getPrice())
             == 0);
+
+    response.setValue("isDirty", true);
+    if (CollectionUtils.isNotEmpty(orderLine.getSubSoLineList())) {
+      SubLineService subLineService = Beans.get(SubLineService.class);
+      subLineService.updateSubLinesQty(orderLine.getQtyBeforeUpdate(), orderLine, saleOrder);
+      subLineService.updateSubLinesPrice(orderLine.getPriceBeforeUpdate(), orderLine, saleOrder);
+      response.setValue("qtyBeforeUpdate", orderLine.getQty());
+      response.setValue("priceBeforeUpdate", orderLine.getPrice());
+      response.setValue(
+          "subSoLineList",
+          orderLine.getSubSoLineList().stream()
+              .map(saleOrderLineService::toMapWithSubLine)
+              .collect(Collectors.toList()));
+    }
   }
 
   /**
@@ -450,5 +472,116 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void subLinesOnChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrderLine line = request.getContext().asType(SaleOrderLine.class);
+      saleOrderLineService.subLinesOnChange(
+          saleOrderLineService.getSaleOrder(request.getContext()), line);
+      response.setValues(line);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateSubLinesQty(ActionRequest request, ActionResponse response) {
+    try {
+      SubLineService subLineService = Beans.get(SubLineService.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrderLine line = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());
+
+      BigDecimal oldQty = line.getQtyBeforeUpdate();
+      subLineService.updateSubLinesQty(oldQty, line, saleOrder);
+      response.setValues(saleOrderLineService.toMapWithSubLine(line));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateSubLinesPrice(ActionRequest request, ActionResponse response) {
+    try {
+      SubLineService subLineService = Beans.get(SubLineService.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      SaleOrderLine line = request.getContext().asType(SaleOrderLine.class);
+      SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());
+
+      BigDecimal oldPrice = line.getPriceBeforeUpdate();
+      subLineService.updateSubLinesPrice(oldPrice, line, saleOrder);
+      response.setValues(saleOrderLineService.toMapWithSubLine(line));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void updateIsCounted(ActionRequest request, ActionResponse response) {
+    SubLineService subLineService = Beans.get(SubLineService.class);
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    SaleOrderLine line = request.getContext().asType(SaleOrderLine.class);
+
+    subLineService.updateIsNotCountable(line);
+    response.setValues(saleOrderLineService.toMapWithSubLine(line));
+  }
+
+  public void setIsChildCounted(ActionRequest request, ActionResponse response) {
+    SaleOrderLine line = request.getContext().asType(SaleOrderLine.class);
+    SubLineService subLineService = Beans.get(SubLineService.class);
+    boolean isChildCounted = subLineService.isChildCounted(line);
+    response.setValue("$isChildCounted", isChildCounted);
+  }
+
+  public void setSubLineId(ActionRequest request, ActionResponse response) {
+    response.setValue("subLineId", UUID.randomUUID().toString());
+  }
+
+  public void setSubLineAttrs(ActionRequest request, ActionResponse response) {
+    SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+    AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
+    SaleOrder saleOrder = saleOrderLineService.getSaleOrder(request.getContext());
+
+    Boolean enablePackManagement = appSale.getEnablePackManagement();
+    List<Integer> allSelection =
+        Arrays.asList(
+            SaleOrderLineRepository.TYPE_NORMAL,
+            SaleOrderLineRepository.TYPE_TITLE,
+            SaleOrderLineRepository.TYPE_START_OF_PACK,
+            SaleOrderLineRepository.TYPE_END_OF_PACK,
+            SaleOrderLineRepository.TYPE_PARENT);
+
+    List<Integer> withoutPackSelection =
+        Arrays.asList(
+            SaleOrderLineRepository.TYPE_NORMAL,
+            SaleOrderLineRepository.TYPE_TITLE,
+            SaleOrderLineRepository.TYPE_PARENT);
+
+    Boolean isEditableGridEnabled = appSale.getIsEditableGridEnabled();
+    Boolean isDiscountEnabledOnEditableGrid = appSale.getIsDiscountEnabledOnEditableGrid();
+
+    response.setAttr("subSoLineList.exTaxTotal", "hidden", saleOrder.getInAti());
+    response.setAttr("subSoLineList.price", "hidden", saleOrder.getInAti());
+    response.setAttr("subSoLineList.inTaxTotal", "hidden", !saleOrder.getInAti());
+    response.setAttr("subSoLineList.inTaxPrice", "hidden", !saleOrder.getInAti());
+
+    response.setAttr("subSoLineList.qty", "scale", appBaseService.getNbDecimalDigitForQty());
+    response.setAttr(
+        "subSoLineList.price", "scale", appBaseService.getNbDecimalDigitForUnitPrice());
+
+    response.setAttr(
+        "subSoLineList.discountAmount", "scale", appBaseService.getNbDecimalDigitForUnitPrice());
+
+    response.setAttr(
+        "subSoLineList.typeSelect",
+        "selection-in",
+        enablePackManagement ? allSelection : withoutPackSelection);
+
+    response.setAttr(
+        "subSoLineList.discountTypeSelect",
+        "hidden",
+        !(isEditableGridEnabled && isDiscountEnabledOnEditableGrid));
+    response.setAttr("subSoLineList.discountAmount", "hidden", !isDiscountEnabledOnEditableGrid);
   }
 }

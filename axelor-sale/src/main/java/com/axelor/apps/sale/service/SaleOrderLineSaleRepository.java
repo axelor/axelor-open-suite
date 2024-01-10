@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.subline.SubLineService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -34,7 +35,7 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
     json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
-
+    SubLineService subLineService = Beans.get(SubLineService.class);
     if (context.get("_model") != null
         && (context.get("_model").equals(SaleOrder.class.getName())
             || context.get("_model").equals(SaleOrderLine.class.getName()))
@@ -59,6 +60,9 @@ public class SaleOrderLineSaleRepository extends SaleOrderLineRepository {
         json.put(
             "$currencyNumberOfDecimals",
             Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
+        json.put("qtyBeforeUpdate", saleOrderLine.getQty());
+        json.put("priceBeforeUpdate", saleOrderLine.getPrice());
+        json.put("$isChildCounted", subLineService.isChildCounted(saleOrderLine));
       }
     }
     return super.populate(json, context);

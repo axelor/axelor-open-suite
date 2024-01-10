@@ -24,6 +24,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSequence;
 import com.google.inject.Inject;
@@ -185,7 +186,26 @@ public class SaleOrderOnLineChangeServiceImpl implements SaleOrderOnLineChangeSe
         this.updateProductQtyWithPackHeaderQty(saleOrder);
       }
     }
+    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+      updateQty(saleOrderLine);
+    }
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderMarginService.computeMarginSaleOrder(saleOrder);
+  }
+
+  protected void updateQty(SaleOrderLine saleOrderLine) {
+    if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_TITLE) {
+      List<SaleOrderLine> list = saleOrderLine.getSubSoLineList();
+
+      if (ObjectUtils.notEmpty(list)) {
+        for (SaleOrderLine saleOrderLine2 : list) {
+          updateQty(saleOrderLine2);
+        }
+
+        BigDecimal totalQty =
+            list.stream().map(SaleOrderLine::getQty).reduce(BigDecimal.ZERO, BigDecimal::add);
+        saleOrderLine.setQty(totalQty);
+      }
+    }
   }
 }

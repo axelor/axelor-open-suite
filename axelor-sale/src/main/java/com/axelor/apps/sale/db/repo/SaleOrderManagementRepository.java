@@ -81,8 +81,12 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
   @Override
   public SaleOrder save(SaleOrder saleOrder) {
     try {
+
       AppSale appSale = Beans.get(AppSaleService.class).getAppSale();
       SaleOrderComputeService saleOrderComputeService = Beans.get(SaleOrderComputeService.class);
+
+      SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+      saleOrderService.updateSubLines(saleOrder);
 
       if (appSale.getEnablePackManagement()) {
         saleOrderComputeService.computePackTotal(saleOrder);
@@ -93,11 +97,12 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       computeFullName(saleOrder);
 
       if (appSale.getManagePartnerComplementaryProduct()) {
-        Beans.get(SaleOrderService.class).manageComplementaryProductSOLines(saleOrder);
+        saleOrderService.manageComplementaryProductSOLines(saleOrder);
       }
 
       computeSubMargin(saleOrder);
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
+
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

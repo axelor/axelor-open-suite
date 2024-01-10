@@ -333,4 +333,11 @@ public interface SaleOrderLineService {
    */
   public boolean hasPricingLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  public SaleOrderLine subLinesOnChange(SaleOrder saleOrder, SaleOrderLine line)
+      throws AxelorException;
+
+  public void updateSubLinesPrice(SaleOrder saleOrder, SaleOrderLine line) throws AxelorException;
+
+  public Map<String, Object> toMapWithSubLine(SaleOrderLine line);
 }

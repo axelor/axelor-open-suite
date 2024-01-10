@@ -21,9 +21,11 @@ package com.axelor.apps.sale.service.saleorder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public interface SaleOrderService {
 
@@ -103,4 +105,9 @@ public interface SaleOrderService {
   void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
 
   boolean isIncotermRequired(SaleOrder saleOrder);
+
+  void updateSubLines(SaleOrder saleOrder);
+
+  List<SaleOrderLine> updateRelatedLines(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException;
 }

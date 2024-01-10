@@ -126,9 +126,10 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
       // skip title lines in computing total amounts
-      if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
+      if (saleOrderLine.getIsNotCountable()) {
         continue;
       }
+
       saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
 
       // In the company accounting currency

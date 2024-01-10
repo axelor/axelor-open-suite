@@ -46,6 +46,7 @@
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <field name="isNotCountable"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
@@ -56,7 +57,10 @@
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence" editable="true">
-
+    <hilite strong="true" color="default" if="typeSelect != 0"/>
+    <hilite color="danger" if="deliveryState == 1"/>
+    <hilite color="warning" if="deliveryState == 2"/>
+    <hilite color="success" if="deliveryState == 3"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
     <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"/>
@@ -71,11 +75,10 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-      validIf="$qtyValid != false"/>
+      readonlyIf="$isChildCounted" validIf="$qtyValid != false"/>
     <field name="price" colSpan="3"
       readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
-      onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
-      hidden="true"/>
+      onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
       onChange="action-sale-order-line-group-discount-type-select-onchange"/>
@@ -88,7 +91,8 @@
       onChange="action-group-sale-saleorderline-tax-line-onchange"
       domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form"/>
-    <field name="inTaxPrice" x-scale="2"/>
+    <field name="inTaxPrice" x-scale="2"
+      onChange="action-sale-order-line-method-onchange-intaxprice,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="inTaxTotal" aggregate="sum"/>
     <field name="description"/>
@@ -96,8 +100,15 @@
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <field name="isNotCountable" onChange="action-sale-order-line-method-is-counted-onchange"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
+    <field name="$isChildCounted" type="boolean" hidden="true"/>
+    <field name="qtyBeforeUpdate" hidden="true"/>
+    <field name="priceBeforeUpdate" hidden="true"/>
+    <field name="isDirty" hidden="true"/>
+    <field name="subLineId" hidden="true"/>
+    <field name="subSoLineList" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -155,7 +166,7 @@
     model="com.axelor.apps.sale.db.SaleOrderLine"
     onLoad="action-group-sale-saleorderline-onload,action-sale-order-line-attrs-hidden-fields-for-client"
     onNew="action-group-sale-saleorderline-onnew" width="large">
-    <panel name="productPanel" showIf="typeSelect > 0">
+    <panel name="productPanel" showIf="typeSelect > 0 &amp;&amp; typeSelect != 4">
       <field name="productName" colSpan="9" title="Title"/>
       <field name="typeSelect" requiredIf="typeSelect != 0" colSpan="3"
         onChange="action-sale-order-line-method-empty-line"/>
@@ -170,7 +181,7 @@
       </panel>
     </panel>
 
-    <panel-tabs name="mainPanelTab" hideIf="typeSelect > 0">
+    <panel-tabs name="mainPanelTab" hideIf="typeSelect > 0 &amp;&amp; typeSelect != 4">
       <panel name="informationsPanel" title="Information">
         <!-- The condition $isReadOnly !== false is used to manage the case where isReadOnly is null. -->
         <panel name="productInfoPanel" colSpan="12"
@@ -243,13 +254,15 @@
           <field name="enableFreezeFields" colSpan="2"/>
           <field name="typeSelect" colSpan="2"
             onChange="action-sale-order-line-method-empty-line,action-sale-order-attrs-hide-ati"/>
+          <field name="isNotCountable" colSpan="2"
+            onChange="action-sale-order-line-method-is-counted-onchange"/>
           <field name="productName" colSpan="12"/>
           <field name="oldQty"/>
         </panel>
         <panel name="productDetailPanel" colSpan="12">
           <field name="qty" colSpan="3"
             onChange="action-group-sale-saleorderline-qty-onchange"
-            readonlyIf="$availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))"
+            readonlyIf="$isChildCounted || $availabiltyRequest || ($isReadOnly !== false &amp;&amp; !$get('saleOrder.orderBeingEdited'))"
             validIf="$qtyValid != false"/>
           <field name="unit" colSpan="3"
             readonlyIf="$isReadOnly !== false || deliveryState == 3 || $nonNegotiable"
@@ -304,6 +317,12 @@
             hidden="true"/>
           <field name="$currency.numberOfDecimals" hidden="true"/>
         </panel>
+        <panel-related name="subSoLineListPanel" field="subSoLineList"
+          showIf="typeSelect == 4" form-view="sale-order-line-form"
+          grid-view="sale-order-line-editable-grid"
+          onNew="action-sale-order-line-group-editable-onnew"
+          onChange="action-sale-order-line-method-sub-so-line-onchange,action-sale-order-line-method-set-is-child-counted,action-sale-order-line-attrs-values-before-update"
+          colSpan="12"/>
         <panel name="reservationPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
           <field name="requestedReservedQty" colSpan="6" hidden="true"
@@ -438,6 +457,11 @@
       <field name="product.isUnrenewed"/>
       <field name="product.isPrototype"/>
       <field name="saleOrder"/>
+      <field name="$isChildCounted" type="boolean"/>
+      <field name="qtyBeforeUpdate" x-dirty="false"/>
+      <field name="priceBeforeUpdate" x-dirty="false"/>
+      <field name="isDirty" x-dirty="false"/>
+      <field name="subLineId"/>
     </panel>
     <panel-mail name="mailsPanel">
       <mail-messages/>
@@ -600,6 +624,7 @@
   <!-- ACTION GROUPs -->
 
   <action-group name="action-group-sale-saleorderline-onnew">
+    <action name="action-sale-order-line-method-sub-line-id"/>
     <action name="action-sale-order-line-record-is-form-readonly"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
     <action name="action-sale-order-line-attrs-hide-qty-warning-label"/>
@@ -646,6 +671,9 @@
     <action name="action-sale-order-line-attrs-selection-in-type-select"/>
     <action name="action-sale-order-line-attrs-delivered-qty-hidden"/>
     <action name="action-sale-order-line-attrs-display-different-language-message"/>
+    <action name="action-sale-order-line-attrs-values-before-update"/>
+    <action name="action-sale-order-line-method-set-is-child-counted"/>
+    <action name="action-sale-order-line-method-set-subline-attrs"/>
   </action-group>
 
   <action-group name="action-group-sale-saleorderline-product-onchange">
@@ -856,6 +884,35 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController" method="checkStocks"/>
   </action-method>
 
+  <action-method name="action-sale-order-line-method-sub-so-line-update-sublines-qty">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updateSubLinesQty"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-line-method-sub-so-line-update-sublines-price">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updateSubLinesPrice"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-is-counted-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="updateIsCounted"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-sub-so-line-onchange">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="subLinesOnChange"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-is-child-counted">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="setIsChildCounted"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-sub-line-id">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="setSubLineId"/>
+  </action-method>
+
+  <action-method name="action-sale-order-line-method-set-subline-attrs">
+    <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="setSubLineAttrs"/>
+  </action-method>
+
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material"
@@ -954,7 +1011,7 @@
 
   <action-attrs name="action-sale-order-line-attrs-selection-in-type-select">
     <attribute name="selection-in" for="typeSelect"
-      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3] : [0,1]"/>
+      expr="eval: __config__.app.getApp('sale')?.enablePackManagement ? [0,1,2,3,4] : [0,1,4]"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-delivered-qty-hidden">
@@ -1043,10 +1100,17 @@
   <action-group name="action-sale-order-line-group-editable-onnew">
     <action name="action-sale-order-line-attrs-onnew-focus"/>
     <action name="action-sale-order-line-record-non-negotiable"/>
+    <action name="action-sale-order-line-method-sub-line-id"/>
   </action-group>
 
   <action-attrs name="action-sale-order-line-attrs-onnew-focus">
     <attribute for="product" name="focus" expr="true"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-values-before-update">
+    <attribute name="value" for="qtyBeforeUpdate" expr="eval: qty"/>
+    <attribute name="value" for="priceBeforeUpdate" expr="eval: price"/>
+    <attribute name="value" for="isDirty" expr="eval: true"/>
   </action-attrs>
 
   <action-record

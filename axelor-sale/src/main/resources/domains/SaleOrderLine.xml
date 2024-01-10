@@ -77,6 +77,19 @@
       mappedBy="mainSaleOrderLine"/>
     <many-to-one name="mainSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
 
+    <!-- SUB LINES -->
+    <one-to-many name="subSoLineList" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sub lines" mappedBy="parentSaleOrderLine"/>
+    <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <boolean name="isNotCountable" title="Not countable" default="false"/>
+    <boolean name="isDirty" title="Dirty ?" default="false" transient="true"/>
+    <decimal name="qtyBeforeUpdate" title="Qty before update" default="1" precision="20"
+      scale="10" transient="true"/>
+    <decimal name="priceBeforeUpdate" title="Price before update" precision="20" scale="10"
+      transient="true"/>
+    <string name="subLineId" title="Subline id" large="true" multiline="true"/>
+
+
     <!-- Margins -->
     <decimal name="subTotalCostPrice" title="SubTotal cost price" precision="20" scale="3"/>
     <decimal name="subTotalGrossMargin" title="Sub Total gross profit" precision="20"
@@ -118,7 +131,7 @@
 			public static final int TYPE_TITLE = 1;
             public static final int TYPE_START_OF_PACK = 2;
             public static final int TYPE_END_OF_PACK = 3;
-
+			public static final int TYPE_PARENT = 4;
 	  	]]>
     </extra-code>
 

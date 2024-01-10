@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.ProductCategoryServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingGenericServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingMetaServiceImpl;
 import com.axelor.apps.base.service.pricing.PricingObserverImpl;
+import com.axelor.apps.base.service.subline.SubLineService;
 import com.axelor.apps.crm.db.repo.OpportunityManagementRepository;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -108,6 +109,7 @@ import com.axelor.apps.sale.service.saleorder.attributes.SaleOrderAttrsServiceIm
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingObserver;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintServiceImpl;
+import com.axelor.apps.sale.service.saleorder.subline.SubLineServiceImpl;
 
 public class SaleModule extends AxelorModule {
 
@@ -161,5 +163,6 @@ public class SaleModule extends AxelorModule {
     bind(CurrencyScaleServiceSale.class).to(CurrencyScaleServiceSaleImpl.class);
     bind(SaleOrderAttrsService.class).to(SaleOrderAttrsServiceImpl.class);
     bind(SaleOrderGroupService.class).to(SaleOrderGroupServiceImpl.class);
+    bind(SubLineService.class).to(SubLineServiceImpl.class);
   }
 }

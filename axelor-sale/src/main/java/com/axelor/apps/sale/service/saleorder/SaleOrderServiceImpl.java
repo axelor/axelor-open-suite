@@ -51,11 +51,16 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
@@ -374,6 +379,151 @@ public class SaleOrderServiceImpl implements SaleOrderService {
                 saleOrder.getSaleOrderSeq()),
             saleOrder);
       }
+    }
+  }
+
+  @Override
+  public void updateSubLines(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+
+    Map<String, String> saleOrderLineMap =
+        getSaleOrderLineMap(saleOrder.getSaleOrderLineList(), null);
+
+    if (MapUtils.isEmpty(saleOrderLineMap)) {
+      return;
+    }
+
+    saleOrderLineList.forEach(SaleOrderLine::clearSubSoLineList);
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      setParentSaleOrderLine(saleOrderLine, saleOrderLineList, saleOrderLineMap);
+    }
+  }
+
+  @Override
+  public List<SaleOrderLine> updateRelatedLines(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+      throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    for (SaleOrderLine subLine : getChildrenLines(saleOrderLine)) {
+      addOrReplaceInLineList(saleOrderLineList, subLine);
+    }
+
+    Map<String, String> saleOrderLineMap =
+        getSaleOrderLineMap(saleOrder.getSaleOrderLineList(), null);
+
+    String parentLineId = saleOrderLineMap.get(saleOrderLine.getSubLineId());
+
+    if (StringUtils.isEmpty(parentLineId)) {
+      return saleOrderLineList;
+    }
+
+    SaleOrderLine parentLine =
+        getParentSaleOrderLine(saleOrderLine, saleOrderLineList, saleOrderLineMap);
+
+    if (parentLine == null) {
+      return saleOrderLineList;
+    }
+
+    addOrReplaceInLineList(parentLine.getSubSoLineList(), saleOrderLine);
+    addOrReplaceInLineList(saleOrderLineList, parentLine);
+    updateParentLines(saleOrder, parentLine, saleOrderLineList, saleOrderLineMap);
+
+    return saleOrderLineList;
+  }
+
+  protected void addOrReplaceInLineList(
+      List<SaleOrderLine> saleOrderLineList, SaleOrderLine subLine) {
+    final String subLineId = subLine.getSubLineId();
+    OptionalInt index =
+        IntStream.range(0, saleOrderLineList.size())
+            .filter(i -> saleOrderLineList.get(i).getSubLineId().equals(subLineId))
+            .findFirst();
+    if (index.isEmpty()) {
+      saleOrderLineList.add(subLine);
+    } else {
+      saleOrderLineList.set(index.getAsInt(), subLine);
+    }
+  }
+
+  protected void setParentSaleOrderLine(
+      SaleOrderLine saleOrderLine,
+      List<SaleOrderLine> saleOrderLineList,
+      Map<String, String> saleOrderLineMap) {
+
+    SaleOrderLine parentSaleOrderLine =
+        getParentSaleOrderLine(saleOrderLine, saleOrderLineList, saleOrderLineMap);
+
+    if (parentSaleOrderLine != null) {
+      parentSaleOrderLine.addSubSoLineListItem(saleOrderLine);
+    }
+  }
+
+  protected Map<String, String> getSaleOrderLineMap(
+      List<SaleOrderLine> saleOrderLineList, SaleOrderLine parentLine) {
+    Map<String, String> map = new HashMap<>();
+
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return map;
+    }
+
+    for (SaleOrderLine line : saleOrderLineList) {
+      if (parentLine != null) {
+        map.put(line.getSubLineId(), parentLine.getSubLineId());
+      }
+      map.putAll(getSaleOrderLineMap(line.getSubSoLineList(), line));
+    }
+    return map;
+  }
+
+  protected List<SaleOrderLine> getChildrenLines(SaleOrderLine saleOrderLine) {
+
+    List<SaleOrderLine> childrens = new ArrayList<>();
+    childrens.add(saleOrderLine);
+
+    if (CollectionUtils.isEmpty(saleOrderLine.getSubSoLineList())) {
+      return childrens;
+    }
+
+    for (SaleOrderLine line : saleOrderLine.getSubSoLineList()) {
+      childrens.addAll(getChildrenLines(line));
+    }
+    return childrens;
+  }
+
+  protected SaleOrderLine getParentSaleOrderLine(
+      SaleOrderLine saleOrderLine,
+      List<SaleOrderLine> saleOrderLineList,
+      Map<String, String> saleOrderLineMap) {
+    String parentLineId = saleOrderLineMap.get(saleOrderLine.getSubLineId());
+
+    if (StringUtils.isEmpty(parentLineId)) {
+      return null;
+    }
+
+    return saleOrderLineList.stream()
+        .filter(line -> parentLineId.equals(line.getSubLineId()))
+        .findFirst()
+        .orElse(null);
+  }
+
+  protected void updateParentLines(
+      SaleOrder saleOrder,
+      SaleOrderLine line,
+      List<SaleOrderLine> saleOrderLineList,
+      Map<String, String> saleOrderLineMap)
+      throws AxelorException {
+
+    saleOrderLineService.subLinesOnChange(saleOrder, line);
+    addOrReplaceInLineList(saleOrderLineList, line);
+
+    SaleOrderLine parentSaleOrderLine =
+        getParentSaleOrderLine(line, saleOrderLineList, saleOrderLineMap);
+    if (parentSaleOrderLine != null) {
+      addOrReplaceInLineList(parentSaleOrderLine.getSubSoLineList(), line);
+      updateParentLines(saleOrder, parentSaleOrderLine, saleOrderLineList, saleOrderLineMap);
     }
   }
 }

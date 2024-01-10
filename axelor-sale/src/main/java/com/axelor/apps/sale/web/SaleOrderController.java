@@ -76,6 +76,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -673,7 +674,6 @@ public class SaleOrderController {
       if (saleOrder == null) {
         return;
       }
-
       Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
 
       response.setValues(saleOrder);
@@ -736,5 +736,28 @@ public class SaleOrderController {
       response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
     }
     response.setReload(true);
+  }
+
+  public void syncSubLines(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      SaleOrderService saleOrderService = Beans.get(SaleOrderService.class);
+      SaleOrderLineService saleOrderLineService = Beans.get(SaleOrderLineService.class);
+      Optional<SaleOrderLine> updatedLineOpt =
+          saleOrder.getSaleOrderLineList().stream().filter(SaleOrderLine::getIsDirty).findFirst();
+
+      if (updatedLineOpt.isEmpty()) {
+        return;
+      }
+      SaleOrderLine saleOrderLine = updatedLineOpt.get();
+      List<SaleOrderLine> lines = saleOrderService.updateRelatedLines(saleOrder, saleOrderLine);
+      saleOrderLine.setIsDirty(false);
+      response.setValue(
+          "saleOrderLineList",
+          lines.stream().map(saleOrderLineService::toMapWithSubLine).collect(Collectors.toList()));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

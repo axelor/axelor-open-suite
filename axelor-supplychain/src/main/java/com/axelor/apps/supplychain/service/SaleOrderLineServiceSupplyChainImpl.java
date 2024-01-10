@@ -32,6 +32,7 @@ import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingService;
+import com.axelor.apps.base.service.subline.SubLineService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.SupplierCatalog;
@@ -105,7 +106,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
       AnalyticLineModelService analyticLineModelService,
-      CurrencyScaleServiceSale currencyScaleServiceSale) {
+      CurrencyScaleServiceSale currencyScaleServiceSale,
+      SubLineService subLineService) {
     super(
         currencyService,
         priceListService,
@@ -118,7 +120,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         pricingService,
         taxService,
         saleOrderMarginService,
-        currencyScaleServiceSale);
+        currencyScaleServiceSale,
+        subLineService);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
