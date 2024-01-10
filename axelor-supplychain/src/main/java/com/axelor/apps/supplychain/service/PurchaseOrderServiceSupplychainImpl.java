@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -75,6 +76,7 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected PurchaseOrderLineService purchaseOrderLineService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -254,7 +256,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
         sumTimetableAmount = sumTimetableAmount.add(timetable.getAmount());
       }
     }
-    purchaseOrder.setAmountToBeSpreadOverTheTimetable(totalHT.subtract(sumTimetableAmount));
+    purchaseOrder.setAmountToBeSpreadOverTheTimetable(
+        currencyScaleServiceAccount.getScaledValue(
+            totalHT.subtract(sumTimetableAmount),
+            currencyScaleServiceAccount.getScale(purchaseOrder.getCurrency())));
   }
 
   @Override

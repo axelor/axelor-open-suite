@@ -25,4 +25,16 @@ public final class HelpdeskExceptionMessage {
   public static final String SELECT_TICKETS = /*$$(*/ "Please select tickets" /*)*/;
   public static final String UPDATE_TICKET_WORKFLOW = /*$$(*/
       "Workflow to update status to value provided is not supported by ticket." /*)*/;
+
+  public static final String ON_GOING_TICKET_STATUS_DONT_EXIST = /*$$(*/
+      "On going ticket status does not exist. Please configure at least one." /*)*/;
+
+  public static final String RESOLVED_TICKET_STATUS_DONT_EXIST = /*$$(*/
+      "Resolved ticket status does not exist. Please configure at least one." /*)*/;
+
+  public static final String CLOSED_TICKET_STATUS_DONT_EXIST = /*$$(*/
+      "Closed ticket status does not exist. Please configure at least one." /*)*/;
+
+  public static final String DEFAULT_TICKET_STATUS_DONT_EXIST = /*$$(*/
+      "Default ticket status does not exist. Please configure at least one." /*)*/;
 }

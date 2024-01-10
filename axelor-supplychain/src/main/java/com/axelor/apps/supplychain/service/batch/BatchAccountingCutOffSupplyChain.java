@@ -23,7 +23,6 @@ import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
-import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.base.AxelorException;
@@ -63,12 +62,11 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
   @Inject
   public BatchAccountingCutOffSupplyChain(
       AccountingCutOffService cutOffService,
-      MoveLineRepository moveLineRepository,
       AccountingBatchRepository accountingBatchRepository,
       StockMoveRepository stockMoveRepository,
       StockMoveLineRepository stockMoveLineRepository,
       AccountingCutOffSupplyChainService cutOffSupplyChainService) {
-    super(cutOffService, moveLineRepository, accountingBatchRepository);
+    super(cutOffService, accountingBatchRepository);
     this.stockMoveRepository = stockMoveRepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.cutOffSupplyChainService = cutOffSupplyChainService;
@@ -91,9 +89,9 @@ public class BatchAccountingCutOffSupplyChain extends BatchAccountingCutOff {
       }
     } else {
       if (this.recordIdList == null) {
-        this._processMovesByQuery(accountingBatch);
+        this._processByQuery(accountingBatch);
       } else {
-        this._processMovesByIds(accountingBatch);
+        this._processByIds(accountingBatch);
       }
     }
   }

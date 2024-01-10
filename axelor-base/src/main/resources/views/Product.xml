@@ -220,7 +220,8 @@
             hideIf="isShippingCostsProduct || !sellable"/>
           <panel name="unitsPanel" title="Units" colSpan="12">
             <field name="unit" canEdit="false" colSpan="6" form-view="unit-form"
-              grid-view="unit-grid" onChange="action-product-method-update-cost-price"/>
+              grid-view="unit-grid" onChange="action-product-method-update-cost-price"
+              requiredIf="stockManaged"/>
             <button name="updateUnitBtn" title="Update stock location" colSpan="6"
               showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
               onClick="save,action-product-method-update-stock-location" if-module="axelor-stock"

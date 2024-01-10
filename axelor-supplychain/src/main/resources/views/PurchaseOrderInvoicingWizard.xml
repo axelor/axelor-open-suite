@@ -5,13 +5,14 @@
 
   <form name="purchase-order-invoicing-wizard-form" title="Invoicing"
     model="com.axelor.apps.purchase.db.PurchaseOrder"
-    onLoad="action-method-supplychain-purchase-order-wizard-set-default-values">
+    onLoad="action-group-purchase-order-invoicing-wizard-onload">
     <panel name="operationSelectPanel">
       <field name="$operationSelect" title="Operation choice" type="selection"
         selection="supplychain.purchase.order.invoicing.wizard.select" required="true"/>
     </panel>
     <panel name="amountPanel" showIf="$contains([2],$number($operationSelect))">
-      <field name="$isPercent" title="Is amount in %" type="boolean"/>
+      <field name="$isPercent" title="Is amount in %" type="boolean"
+        onChange="action-method-supplychain-purchase-order-wizard-set-amount-to-invoice-scale"/>
       <field name="$amountToInvoice" title="Amount to invoice" type="decimal" min="0"
         showIf="$contains([2],$number($operationSelect))"/>
     </panel>
@@ -29,6 +30,12 @@
       if="operationSelect == &quot;2&quot;"/>
   </action-group>
 
+  <action-group name="action-group-purchase-order-invoicing-wizard-onload">
+    <action name="action-method-supplychain-purchase-order-wizard-set-default-values"/>
+    <action
+      name="action-method-supplychain-purchase-order-wizard-set-amount-to-invoice-scale"/>
+  </action-group>
+
   <action-method name="action-method-supplychain-purchase-order-invoicing-invoice-all">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
       method="generateInvoice"/>
@@ -44,5 +51,11 @@
     name="action-method-supplychain-purchase-order-wizard-set-default-values">
     <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
       method="setWizardDefaultValues"/>
+  </action-method>
+
+  <action-method
+    name="action-method-supplychain-purchase-order-wizard-set-amount-to-invoice-scale">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderInvoiceController"
+      method="setAmountToInvoiceScale"/>
   </action-method>
 </object-views>

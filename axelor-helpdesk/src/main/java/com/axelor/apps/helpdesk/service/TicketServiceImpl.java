@@ -22,13 +22,16 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.db.repo.SlaRepository;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.axelor.utils.helpers.date.DurationHelper;
@@ -38,23 +41,49 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class TicketServiceImpl implements TicketService {
 
-  @Inject private SequenceService sequenceService;
+  protected SequenceService sequenceService;
 
-  @Inject private AppHelpdeskRepository appHelpdeskRepo;
+  protected AppHelpdeskRepository appHelpdeskRepo;
 
-  @Inject private TicketRepository ticketRepo;
+  protected TicketRepository ticketRepo;
 
-  @Inject private SlaRepository slaRepo;
+  protected SlaRepository slaRepo;
 
-  @Inject private PublicHolidayService publicHolidayService;
+  protected PublicHolidayService publicHolidayService;
 
-  @Inject private WeeklyPlanningService weeklyPlanningService;
+  protected WeeklyPlanningService weeklyPlanningService;
+
+  protected TicketStatusService ticketStatusService;
+
+  protected AppBaseService appBaseService;
 
   private LocalDateTime toDate;
+
+  @Inject
+  public TicketServiceImpl(
+      SequenceService sequenceService,
+      AppHelpdeskRepository appHelpdeskRepo,
+      TicketRepository ticketRepo,
+      SlaRepository slaRepo,
+      PublicHolidayService publicHolidayService,
+      WeeklyPlanningService weeklyPlanningService,
+      TicketStatusService ticketStatusService,
+      AppBaseService appBaseService) {
+    this.sequenceService = sequenceService;
+    this.appHelpdeskRepo = appHelpdeskRepo;
+    this.ticketRepo = ticketRepo;
+    this.slaRepo = slaRepo;
+    this.publicHolidayService = publicHolidayService;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.ticketStatusService = ticketStatusService;
+    this.appBaseService = appBaseService;
+  }
 
   /** Generate sequence of the ticket. */
   @Override
@@ -73,73 +102,62 @@ public class TicketServiceImpl implements TicketService {
    * is defined in SLA.
    */
   @Override
-  public void computeSLA(Ticket ticket) {
+  public Sla computeSLA(Ticket ticket) {
 
     AppHelpdesk helpdesk = appHelpdeskRepo.all().fetchOne();
+    Sla sla = null;
 
     if (helpdesk.getIsSla()) {
 
-      Sla sla =
+      List<Sla> potentialSlaList =
           slaRepo
               .all()
               .filter(
-                  "self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = ?3",
+                  "self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType OR "
+                      + "(self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = null OR "
+                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType) OR "
+                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
+                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = null OR "
+                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = null) OR "
+                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
+                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = null)")
+              .bind(
+                  "team",
                   ticket.getAssignedToUser() == null
                       ? null
-                      : ticket.getAssignedToUser().getActiveTeam(),
-                  ticket.getPrioritySelect(),
-                  ticket.getTicketType())
-              .fetchOne();
+                      : ticket.getAssignedToUser().getActiveTeam())
+              .bind("prioritySelect", ticket.getPrioritySelect())
+              .bind("ticketType", ticket.getTicketType())
+              .fetch();
 
-      if (sla == null) {
-        sla =
-            slaRepo
-                .all()
-                .filter(
-                    "self.team = ?1 AND self.prioritySelect = ?2 AND self.ticketType = null OR "
-                        + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = ?3) OR "
-                        + "(self.team = ?1 AND self.prioritySelect = null AND self.ticketType = ?3)",
-                    ticket.getAssignedToUser() == null
-                        ? null
-                        : ticket.getAssignedToUser().getActiveTeam(),
-                    ticket.getPrioritySelect(),
-                    ticket.getTicketType())
-                .fetchOne();
-      }
-      if (sla == null) {
-        sla =
-            slaRepo
-                .all()
-                .filter(
-                    "self.team = ?1 AND self.prioritySelect = null AND self.ticketType = null OR "
-                        + "(self.team = null AND self.prioritySelect = ?2 AND self.ticketType = null) OR "
-                        + "(self.team = null AND self.prioritySelect = null AND self.ticketType = ?3)",
-                    ticket.getAssignedToUser() == null
-                        ? null
-                        : ticket.getAssignedToUser().getActiveTeam(),
-                    ticket.getPrioritySelect(),
-                    ticket.getTicketType())
-                .fetchOne();
-      }
-      if (sla == null) {
-        sla =
-            slaRepo
-                .all()
-                .filter(
-                    "self.team = null AND self.prioritySelect = null AND self.ticketType = null")
-                .fetchOne();
-      }
-      if (sla != null) {
-        ticket.setSlaPolicy(sla);
-        try {
-          this.computeDuration(ticket, sla);
-        } catch (AxelorException e) {
-          e.printStackTrace();
-        }
-      } else {
+      sla =
+          potentialSlaList.stream()
+              .filter(
+                  _sla ->
+                      ticket.getTicketStatus().getPriority()
+                          < Optional.ofNullable(_sla.getReachStageTicketStatus())
+                              .map(TicketStatus::getPriority)
+                              .orElse(0))
+              .min(
+                  Comparator.comparingInt(
+                      sla2 ->
+                          Optional.ofNullable(sla2.getReachStageTicketStatus())
+                              .map(TicketStatus::getPriority)
+                              .orElse(0)))
+              .orElse(null);
+    }
+    ticket.setSlaPolicy(sla);
+    return sla;
+  }
 
-        ticket.setSlaPolicy(null);
-      }
+  @Override
+  public void computeSLAAndDeadLine(Ticket ticket) throws AxelorException {
+    Sla sla = computeSLA(ticket);
+
+    if (sla != null) {
+      this.computeDeadLine(ticket, sla);
+    } else {
+      ticket.setDeadlineDateT(null);
     }
   }
 
@@ -150,20 +168,20 @@ public class TicketServiceImpl implements TicketService {
    * @param sla
    * @throws AxelorException
    */
-  protected void computeDuration(Ticket ticket, Sla sla) throws AxelorException {
+  protected void computeDeadLine(Ticket ticket, Sla sla) throws AxelorException {
 
-    if (sla.getIsWorkingDays()
-        && ticket.getAssignedToUser() != null
-        && ticket.getAssignedToUser().getActiveCompany() != null
-        && ticket.getAssignedToUser().getActiveCompany().getWeeklyPlanning() != null
-        && ticket.getAssignedToUser().getActiveCompany().getPublicHolidayEventsPlanning() != null) {
+    // Check assignedUserCompany -> Current user company -> else null
+    Company company =
+        Optional.ofNullable(ticket.getAssignedToUser())
+            .map(User::getActiveCompany)
+            .orElse(
+                Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
 
+    if (sla.getIsWorkingDays() && company != null && company.getWeeklyPlanning() != null) {
       if (sla.getDays() > 0) {
         LocalDateTime fromDate = ticket.getStartDateT().plusDays(1);
-        this.calculateWorkingDays(
-            fromDate, ticket.getAssignedToUser().getActiveCompany(), sla.getDays());
+        this.calculateWorkingDays(fromDate, company, sla.getDays());
         ticket.setDeadlineDateT(toDate.plusHours(sla.getHours()));
-
       } else {
         ticket.setDeadlineDateT(ticket.getStartDateT().plusHours(sla.getHours()));
       }
@@ -223,9 +241,13 @@ public class TicketServiceImpl implements TicketService {
       LocalDateTime currentDate = LocalDateTime.now();
       LocalDateTime deadlineDateT = ticket.getDeadlineDateT();
 
-      ticket.setIsSlaCompleted(
-          ticket.getStatusSelect() >= ticket.getSlaPolicy().getReachStageSelect()
-              && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
+      if (ticket.getTicketStatus() != null
+          && ticket.getSlaPolicy().getReachStageTicketStatus() != null) {
+        ticket.setIsSlaCompleted(
+            ticket.getTicketStatus().getPriority()
+                    >= ticket.getSlaPolicy().getReachStageTicketStatus().getPriority()
+                && (currentDate.isBefore(deadlineDateT) || currentDate.isEqual(deadlineDateT)));
+      }
     }
   }
 
@@ -279,5 +301,30 @@ public class TicketServiceImpl implements TicketService {
     }
 
     return ticket.getStartDateT();
+  }
+
+  @Override
+  public boolean isNewTicket(Ticket ticket) {
+
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findDefaultStatus());
+  }
+
+  @Override
+  public boolean isInProgressTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findOngoingStatus());
+  }
+
+  @Override
+  public boolean isResolvedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findResolvedStatus());
+  }
+
+  @Override
+  public boolean isClosedTicket(Ticket ticket) {
+    return ticket.getTicketStatus() != null
+        && ticket.getTicketStatus().equals(ticketStatusService.findClosedStatus());
   }
 }

@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -729,7 +730,7 @@ public class SaleOrderController {
             "scale",
             isPercent
                 ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
-                : saleOrder.getCurrency().getNumberOfDecimals());
+                : Beans.get(CurrencyScaleServiceSale.class).getScale(saleOrder));
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

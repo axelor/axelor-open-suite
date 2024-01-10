@@ -8,16 +8,16 @@
   <entity name="QIStatus">
 
     <string name="name" title="Name" required="true"/>
-    <integer name="priority" title="Priority" required="true"/>
+    <integer name="sequence" title="Sequence"/>
     <boolean name="isClosedStatus" title="Closed Status"/>
     <boolean name="isCancelledStatus" title="Cancelled Status"/>
 
     <finder-method name="findDefaultStatus" using=""
-      filter="self.isClosedStatus = false AND self.isCancelledStatus = false" orderBy="priority"/>
+      filter="self.isClosedStatus = false AND self.isCancelledStatus = false" orderBy="sequence"/>
 
     <track>
       <field name="name"/>
-      <field name="priority"/>
+      <field name="sequence"/>
       <field name="isClosedStatus"/>
       <field name="isCancelledStatus"/>
     </track>
