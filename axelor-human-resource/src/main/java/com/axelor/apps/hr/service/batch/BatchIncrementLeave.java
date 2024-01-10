@@ -40,7 +40,7 @@ public class BatchIncrementLeave extends AbstractBatch {
     List<Long> leaveReasonList =
         leaveReasonRepository.all()
             .filter(
-                "self.isActive = true AND self.leaveReasonTypeSelect = :typeSelect AND self.leaveReasonTypeSelect != :exceptionalSelect")
+                "self.isAutoIncrement = true AND self.leaveReasonTypeSelect = :typeSelect AND self.leaveReasonTypeSelect != :exceptionalSelect")
             .bind("typeSelect", batch.getHrBatch().getLeaveReasonTypeSelect())
             .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS).fetch()
             .stream()
