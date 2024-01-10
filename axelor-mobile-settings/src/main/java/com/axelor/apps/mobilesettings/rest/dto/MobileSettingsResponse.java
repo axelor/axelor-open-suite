@@ -25,6 +25,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isLineCreationOfTimesheetDetailsAllowed;
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
+  protected final Boolean isStockLocationManagementEnabled;
 
   public MobileSettingsResponse(
       Integer version,
@@ -47,7 +48,8 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isManualCreationOfTimesheetAllowed,
       Boolean isLineCreationOfTimesheetDetailsAllowed,
       Boolean isEditionOfDateAllowed,
-      Boolean isTimesheetProjectInvoicingEnabled) {
+      Boolean isTimesheetProjectInvoicingEnabled,
+      Boolean isStockLocationManagementEnabled) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -69,6 +71,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isLineCreationOfTimesheetDetailsAllowed = isLineCreationOfTimesheetDetailsAllowed;
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
+    this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -149,5 +152,9 @@ public class MobileSettingsResponse extends ResponseStructure {
 
   public Boolean getTimesheetProjectInvoicingEnabled() {
     return isTimesheetProjectInvoicingEnabled;
+  }
+
+  public Boolean getStockLocationManagementEnabled() {
+    return isStockLocationManagementEnabled;
   }
 }
