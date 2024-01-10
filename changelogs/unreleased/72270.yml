@@ -1,0 +1,8 @@
+---
+title: "BANKDETAILS : use a template for internationalization"
+type: feature
+description: |
+  The current bank details format only works for French bank details. 
+  In this feature, a BankDetailsTemplate object and a BankDetailsTemplateLine object are added to manage different 
+  countries bank details. The bank.bankDetailsTypeSelect is moved into BankDetailsTemplate, and on the country, 
+  a M2O bankDetailsTemplate is added.
