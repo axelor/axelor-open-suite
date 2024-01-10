@@ -141,11 +141,11 @@
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
           grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
-          domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash' OR self.accountType.technicalTypeSelect = 'charge' OR self.accountType.technicalTypeSelect = 'income')"
+          domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'charge', 'income', 'asset')"
           showIf="closeYear"/>
         <panel-related field="openingAccountSet" form-view="account-form"
           grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
-          domain="self.company = :company AND (self.accountType.technicalTypeSelect = 'equity' OR self.accountType.technicalTypeSelect = 'provision' OR self.accountType.technicalTypeSelect = 'debt' OR self.accountType.technicalTypeSelect = 'immobilisation' OR self.accountType.technicalTypeSelect = 'currentAsset' OR self.accountType.technicalTypeSelect = 'receivable' OR self.accountType.technicalTypeSelect = 'payable' OR self.accountType.technicalTypeSelect = 'tax' OR self.accountType.technicalTypeSelect = 'cash')"
+          domain="self.company = :company AND self.accountType.technicalTypeSelect IN ('equity', 'provision', 'debt', 'immobilisation', 'currentAsset', 'receivable', 'payable', 'tax', 'cash', 'asset')"
           showIf="openYear"/>
         <field name="generateResultMove" showIf="openYear"/>
         <field name="includeSpecialAccounts" showIf="openYear &amp;&amp; generateResultMove"/>
