@@ -13,7 +13,7 @@
     </toolbar>
     <field name="name"/>
     <field name="metaModel"/>
-    <field name="language"/>
+    <field name="localization"/>
   </grid>
 
   <form name="print-template-form" title="Print template"
@@ -23,7 +23,7 @@
       <field name="metaModel" grid-view="meta-model-grid" form-view="meta-model-form"/>
       <field name="metaModelDefaultPath"/>
       <field name="company" grid-view="company-grid" form-view="company-form"/>
-      <field name="language" grid-view="language-grid" form-view="language-form"/>
+      <field name="localization" form-view="localization-form" grid-view="localization-grid"/>
       <field name="hidePrintSettings" widget="boolean-switch"/>
       <field name="formatSelect"/>
       <field name="displayTypeSelect"/>
@@ -65,17 +65,17 @@
     model="com.axelor.utils.db.Wizard"
     onNew="action-print-template-wizard-attrs-set-template-domain">
     <panel>
-      <field name="$language" title="Language" widget="ManyToOne"
-        target="com.axelor.apps.base.db.Language"
+      <field name="$localization" title="Localization" widget="ManyToOne"
+        target="com.axelor.apps.base.db.Localization"
         onChange="action-print-template-wizard-attrs-reset-template" canEdit="false" required="true"
-        grid-view="language-grid" form-view="language-form"/>
+        grid-view="localization-grid" form-view="localization-form"/>
       <field name="$template" title="Print template" widget="ManyToOne"
         target="com.axelor.apps.base.db.PrintTemplate"
         onSelect="action-print-template-wizard-attrs-set-template-domain"
         grid-view="print-template-grid" form-view="print-template-form"/>
       <button name="validate" title="Validate" colOffset="3"
         onClick="action-print-template-wizard-method-generate-print"
-        readonlyIf="!$language || !$template"/>
+        readonlyIf="!$localization|| !$template"/>
     </panel>
   </form>
 
@@ -95,8 +95,8 @@
     model="com.axelor.apps.base.db.PrintTemplate">
     <attribute for="$template" name="domain" expr="eval: &quot;self.id = -1&quot;"/>
     <attribute for="$template" name="domain"
-      expr="eval: &quot;self.metaModel.fullName = :_templateContextModel AND self.language.id = ${language.id}&quot;"
-      if="language != null"/>
+      expr="eval: &quot;self.metaModel.fullName = :_templateContextModel AND self.localization.id = ${localization.id}&quot;"
+      if="localization != null"/>
   </action-attrs>
 
   <action-attrs name="action-print-template-wizard-attrs-reset-template">

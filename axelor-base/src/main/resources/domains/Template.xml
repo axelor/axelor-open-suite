@@ -9,7 +9,8 @@
 
     <many-to-many name="birtTemplateSet" ref="com.axelor.apps.base.db.BirtTemplate"
       title="Birt Template"/>
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization"/>
 
   </entity>
 

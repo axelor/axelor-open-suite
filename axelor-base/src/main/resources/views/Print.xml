@@ -6,7 +6,7 @@
   <grid name="print-grid" title="Prints" model="com.axelor.apps.base.db.Print">
     <field name="name"/>
     <field name="metaModel"/>
-    <field name="language"/>
+    <field name="localization"/>
   </grid>
 
   <form name="print-form" title="PRINT_NOUN" model="com.axelor.apps.base.db.Print">
@@ -43,7 +43,8 @@
         hidden="true"/>
       <field name="company" grid-view="company-grid" form-view="company-form" hidden="true"/>
       <field name="hidePrintSettings" hidden="true"/>
-      <field name="language" grid-view="language-grid" form-view="language-form" hidden="true"/>
+      <field name="localization" grid-view="localization-grid" form-view="localization-form"
+        hidden="true"/>
       <panel-related name="printSetPanel" field="printSet" grid-view="print-grid"
         form-view="print-form" colSpan="12"/>
     </panel>

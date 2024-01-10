@@ -33,6 +33,18 @@
   <input file="base_templateContext.csv" separator=";"
     type="com.axelor.message.db.TemplateContext" search="self.name = :name"/>
 
+  <input file="base_addressTemplate.csv" separator=";"
+    type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
+
+  <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
+    search="self.importId = :importId"/>
+
+  <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
+    search="self.code = :code"/>
+
+  <input file="base_localization.csv" separator=";"
+    type="com.axelor.apps.base.db.Localization" search="self.code = :code"/>
+
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind column="birtTemplateSet_importId" to="birtTemplateSet"
@@ -53,8 +65,6 @@
     <bind to="appBase" column="appBase" search="self.app.code = :appBase" update="true"/>
   </input>
 
-  <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
-    search="self.code = :code"/>
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
