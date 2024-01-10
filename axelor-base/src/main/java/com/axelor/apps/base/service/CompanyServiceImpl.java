@@ -18,19 +18,12 @@
  */
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.common.StringUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import java.util.List;
-import java.util.Locale;
-import org.apache.commons.lang3.LocaleUtils;
 
 public class CompanyServiceImpl implements CompanyService {
 
@@ -65,23 +58,5 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     return count;
-  }
-
-  @Override
-  public void validateLocale(Company company) throws AxelorException {
-    String localeStr = company.getLocale();
-    if (StringUtils.isEmpty(localeStr)) {
-      return;
-    }
-    String languageTag = localeStr.replace("_", "-");
-
-    if (LocaleUtils.availableLocaleList().stream()
-        .map(Locale::toLanguageTag)
-        .noneMatch(languageTag::equals)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.COMPANY_INVALID_LOCALE),
-          localeStr);
-    }
   }
 }

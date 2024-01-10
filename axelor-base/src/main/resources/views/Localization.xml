@@ -14,7 +14,7 @@
   </grid>
 
   <form name="localization-form" title="Localization"
-    model="com.axelor.apps.base.db.Localization">
+    model="com.axelor.apps.base.db.Localization" onSave="action-localization-method-validate-locale">
     <panel name="mainPanel" colSpan="12">
       <field name="name" title="Name" required="true" colSpan="6"/>
       <field name="code" title="Code" required="true" colSpan="6" readonly="true"
@@ -34,4 +34,8 @@
     model="com.axelor.apps.base.db.Localization">
     <field name="name" expr="eval:language?.name + ' (' + country?.name + ')'"/>
   </action-record>
+
+  <action-method name="action-localization-method-validate-locale">
+    <call class="com.axelor.apps.base.web.LocalizationController" method="validateLocale"/>
+  </action-method>
 </object-views>
