@@ -878,10 +878,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal linesTaxAmount =
         moveLineList.stream()
-            .filter(
-                moveLine ->
-                    moveLineTaxService.isGenerateMoveLineForAutoTax(
-                        moveLine.getAccount().getAccountType().getTechnicalTypeSelect()))
+            .filter(moveLine -> moveLineTaxService.isGenerateMoveLineForAutoTax(moveLine))
             .map(this::getTaxAmount)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
@@ -914,9 +911,13 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
 
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
+    Set<TaxLine> taxLineSet =
+        moveLine.getTaxLineSet().stream()
+            .filter(it -> it.getTax().getIsNonDeductibleTax())
+            .collect(Collectors.toSet());
 
     return lineTotal
-        .multiply(taxService.getTotalTaxRateInPercentage(moveLine.getTaxLineSet()))
+        .multiply(taxService.getTotalTaxRateInPercentage(taxLineSet))
         .divide(
             BigDecimal.valueOf(100),
             currencyScaleServiceAccount.getCompanyScale(moveLine),

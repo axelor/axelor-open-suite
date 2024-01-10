@@ -285,11 +285,9 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       if (CollectionUtils.isNotEmpty(taxLineSet))
         for (TaxLine taxLine : taxLineSet) {
           if (taxLine != null && taxLine.getValue().signum() != 0) {
-
             String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
 
-            if (this.isGenerateMoveLineForAutoTax(accountType)) {
-
+            if (this.isGenerateMoveLineForAutoTax(moveLine)) {
               moveLineCreateService.createMoveLineForAutoTax(
                   move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
             }
@@ -301,11 +299,20 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public boolean isGenerateMoveLineForAutoTax(String accountType) {
-    return accountType.equals(AccountTypeRepository.TYPE_DEBT)
-        || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
-        || accountType.equals(AccountTypeRepository.TYPE_INCOME)
-        || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
+  public boolean isGenerateMoveLineForAutoTax(MoveLine moveLine) {
+    String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+    boolean accountTypeCondition =
+        accountType.equals(AccountTypeRepository.TYPE_DEBT)
+            || accountType.equals(AccountTypeRepository.TYPE_CHARGE)
+            || accountType.equals(AccountTypeRepository.TYPE_INCOME)
+            || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
+
+    boolean taxLineCondition =
+        CollectionUtils.isEmpty(moveLine.getTaxLineSet())
+            || moveLine.getTaxLineSet().size() != 1
+            || !moveLine.getTaxLineSet().iterator().next().getTax().getIsNonDeductibleTax();
+
+    return accountTypeCondition && taxLineCondition;
   }
 
   @Override

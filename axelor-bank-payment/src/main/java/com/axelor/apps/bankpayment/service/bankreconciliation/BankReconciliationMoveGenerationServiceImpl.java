@@ -323,6 +323,7 @@ public class BankReconciliationMoveGenerationServiceImpl
                 taxLine != null ? taxLine.getTax() : null,
                 company,
                 journal,
+                moveLine,
                 vatSystemSelect,
                 false,
                 move.getFunctionalOriginSelect());

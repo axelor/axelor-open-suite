@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Journal;
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.base.AxelorException;
@@ -89,6 +90,7 @@ public interface AccountManagementAccountService extends AccountManagementServic
       Tax tax,
       Company company,
       Journal journal,
+      MoveLine originalMoveLine,
       int vatSystemSelect,
       int functionalOrigin,
       boolean isFixedAssets)
