@@ -55,30 +55,21 @@ public class ImportExportTranslationController {
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
     Callable<Path> importTask =
-        () -> {
-          Path path = null;
-          try {
-            path =
-                importExportTranslationService.importTranslations(
-                    Beans.get(ImportExportTranslationRepository.class)
-                        .find(importExportTranslation.getId()));
-            response.setInfo(I18n.get("The import file is empty or it has error format."));
-            response.setReload(true);
-            if (path == null) {
-              response.setInfo(I18n.get("The import file is empty or it has error format."));
-              response.setReload(true);
-            } else {
+        () -> importExportTranslationService.importTranslations(
+                  Beans.get(ImportExportTranslationRepository.class)
+                      .find(importExportTranslation.getId()));
+      try {
+        ControllerCallableTool<Path> controllerCallableTool = new ControllerCallableTool<>();
+          Path path = controllerCallableTool.runInSeparateThread(importTask, response);
+          if (path != null)  {
               response.setInfo(I18n.get("File successfully imported."));
-              response.setReload(true);
-            }
-          } catch (AxelorException e) {
-            Logger logger = LoggerFactory.getLogger(getClass());
-            logger.error("Read CSV file failed.", e);
-            TraceBackService.trace(response, e, ResponseMessageType.ERROR);
           }
-          return path;
-        };
-    ControllerCallableTool<Path> controllerCallableTool = new ControllerCallableTool<>();
-    controllerCallableTool.runInSeparateThread(importTask, response);
+      } catch (Exception e) {
+          Logger logger = LoggerFactory.getLogger(getClass());
+          logger.error("Read CSV file failed.", e);
+          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+        } finally {
+            response.setReload(true);
+        }
   }
 }
