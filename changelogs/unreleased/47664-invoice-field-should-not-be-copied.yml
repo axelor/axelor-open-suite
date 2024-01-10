@@ -1,0 +1,3 @@
+---
+title: "Invoice : Duplicating an invoice correctly empty the origin date and the supplier invoice number."
+type: fix
