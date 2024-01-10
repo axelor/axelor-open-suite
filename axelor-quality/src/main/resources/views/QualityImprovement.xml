@@ -35,7 +35,7 @@
       <panel name="identificationPanel" title="Identification">
         <field name="qiIdentification" showTitle="false" colSpan="12" canSelect="false"
           canView="false" canRemove="false">
-          <editor>
+          <editor x-viewer="true">
             <panel title="Partner" name="nonIntPanel" colSpan="12">
               <field name="customerPartner"
                 onChange="action-quality-improvement-group-customer-partner-on-change"
@@ -135,7 +135,7 @@
       <panel name="resolutionPanel" title="Resolution">
         <field name="qiResolution" showTitle="false" colSpan="12" canSelect="false"
           canView="false" canRemove="false">
-          <editor>
+          <editor x-viewer="true">
             <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"
               hideIf="$get('qi.type') == 2"/>
             <panel name="defaultPanel" title="Observed defaults" colSpan="12">
@@ -165,7 +165,7 @@
       <panel name="analysisPanel" title="Analysis">
         <field name="qiAnalysis" showTitle="false" colSpan="12" canSelect="false"
           canView="false" canRemove="false">
-          <editor>
+          <editor x-viewer="true">
             <panel name="planPanel" title="Plan" colSpan="12">
               <field name="planOwner" colSpan="3" form-view="user-form" grid-view="user-grid"/>
               <field name="advancement" colSpan="3" widget="progress"/>

@@ -138,8 +138,8 @@
           <field name="analyticDistributionTemplate"
             showIf="analyticDistributionAuthorized &amp;&amp; analyticDistributionTemplate &amp;&amp; !$readonly()"
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
-            colSpan="12" canNew="false" canSelect="false" showTitle="false">
-            <editor>
+            colSpan="12" canNew="false" canSelect="false" showTitle="false" canView="true">
+            <editor x-viewer="true">
               <field name="analyticDistributionLineList" colSpan="12" editable="true"
                 showTitle="false" grid-view="analytic-distribution-line-editable-grid"
                 form-view="analytic-distribution-line-form"/>

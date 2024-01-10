@@ -31,7 +31,7 @@
 	        				<>{name} : {$fmt('value')}</>
 	        			]]>
           </viewer>
-          <editor x-show-titles="false" itemSpan="4">
+          <editor x-show-titles="false" itemSpan="4" x-viewer="true">
             <field name="name"/>
             <field name="value" widget="CodeEditor" height="60"/>
             <field name="type"/>

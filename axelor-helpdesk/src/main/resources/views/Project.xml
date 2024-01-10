@@ -13,7 +13,7 @@
   <form name="helpdesk-project-form" title="Project" model="com.axelor.apps.project.db.Project">
     <panel name="overviewPanel" title="Overview">
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
-        <editor x-show-titles="false">
+        <editor x-viewer="true" x-show-titles="false">
           <field name="code" required="true" x-bind="{{code|unaccent|uppercase}}"
             showTitle="false" css="label-bold bold large" colSpan="3"/>
           <field name="name" required="true" showTitle="false" css="label-bold bold large"

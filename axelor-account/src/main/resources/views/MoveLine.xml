@@ -586,7 +586,7 @@
             <viewer>
               <![CDATA[<><span>{currencyRate}</span> x <span>{$fmt('currencyAmount')}</span> <span>{move.currencyCode}</span></>]]>
             </viewer>
-            <editor layout="table" x-show-titles="false">
+            <editor layout="table" x-show-titles="false" x-viewer="true">
               <field name="currencyRate"
                 onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
               <field name="currencyAmount" x-scale="currencyDecimals"

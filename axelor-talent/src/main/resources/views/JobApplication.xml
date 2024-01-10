@@ -56,7 +56,7 @@
               </>
           ]]>
         </viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="titleSelect" colSpan="3"/>
           <field name="firstName" colSpan="5"/>
           <field name="lastName" colSpan="4"/>
@@ -144,7 +144,7 @@
             <field name="fax" widget="phone" colSpan="3"/>
             <field name="emailAddress" canRemove="false" canSelect="true" canSuggest="false"
               colSpan="3" canNew="true" canEdit="true">
-              <editor x-show-titles="false">
+              <editor x-viewer="true" x-show-titles="false">
                 <field name="address" colSpan="12"
                   pattern="^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@+[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$"
                   widget="Email" placeholder="user@mydomain.com"/>
