@@ -81,6 +81,7 @@ public class AnalyticDistributionLineController {
         AnalyticLineService analyticMoveLineService = Beans.get(AnalyticLineService.class);
         response.setValue("analyticJournal", analyticMoveLineService.getAnalyticJournal(parent));
         response.setValue("date", analyticMoveLineService.getDate(parent));
+        response.setValue("currency", analyticMoveLineService.getCompanyCurrency(parent));
       }
 
     } catch (Exception e) {

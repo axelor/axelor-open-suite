@@ -11,11 +11,10 @@
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
     </toolbar>
-    <hilite
-      if="statusSelect == 2 &amp;&amp; $moment(__config__.date).diff(estimatedDate, 'days') &gt; 0"
+    <hilite if="statusSelect == 2 &amp;&amp; $moment().diff(estimatedDate, 'days') &gt; 0"
       color="danger"/>
     <hilite
-      if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff(todayDate, 'days') &lt; 10"
+      if="statusSelect == 2 &amp;&amp;  $moment(estimatedDate).diff($moment(), 'days') &lt; 10"
       color="warning"/>
     <hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 2" color="success"/>
     <hilite if="_fromInvoice &amp;&amp; pfpValidateStatusSelect == 3" color="danger"/>
@@ -65,8 +64,10 @@
         onClick="action-stock-move-group-merge"/>
     </toolbar>
     <hilite
-      if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || invoiceBlockedToDate &gt;  __date__)"
+      if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || $moment(invoiceBlockedToDate) &gt; $moment())"
       color="danger"/>
+    <hilite color="orange" if="$get('toStockLocation.isOutsourcingLocation')"/>
+    <field name="toStockLocation.isOutsourcingLocation" hidden="true"/>
     <field name="stockMoveSeq" width="120">
       <hilite color="warning" strong="true" if="pickingIsEdited"/>
     </field>
@@ -94,6 +95,7 @@
       if="__config__.app.isApp('supplychain')"/>
     <field name="pickingIsEdited" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
+    <field name="toStockLocation" hidden="true"/>
     <button name="printStockMoveBtn" title="Print" icon="fa-print"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
@@ -484,6 +486,10 @@
           onChange="action-stock-move-method-set-addresses-str,action-stock-move-record-ispm-field"
           readonlyIf="statusSelect == 3 || statusSelect == 4"
           form-view="address-partner-address-form"/>
+        <field name="toStockLocation" showIf="_fromOutsource &amp;&amp; typeSelect == 2"
+          canEdit="false" domain="self.company = :company AND self.typeSelect IN (2, 3)"
+          onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
+          form-view="stock-location-form"/>
         <static name="deliveryAddressText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
         </static>
@@ -693,7 +699,8 @@
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-from-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>
-        <field name="toStockLocation" showIf="typeSelect == 2" canEdit="false"
+        <field name="toStockLocation"
+          showIf="typeSelect == 2 || (_fromOutsource &amp;&amp; typeSelect != 2)" canEdit="false"
           domain="self.company = :company AND self.typeSelect IN (2, 3)"
           onChange="action-stock-move-group-to-location-onchange" grid-view="stock-location-grid"
           form-view="stock-location-form"/>

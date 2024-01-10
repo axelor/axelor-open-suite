@@ -52,6 +52,8 @@ import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -66,6 +68,8 @@ import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AddressExportService;
+import com.axelor.apps.base.service.AddressExportServiceImpl;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.AddressServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
@@ -186,6 +190,8 @@ import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileServiceImpl;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
+import com.axelor.apps.base.service.imports.ImportConfigurationService;
+import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
@@ -292,6 +298,7 @@ public class BaseModule extends AxelorModule {
         new ControllerMethodInterceptor());
 
     bind(AddressService.class).to(AddressServiceImpl.class);
+    bind(AddressExportService.class).to(AddressExportServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
     bind(UserService.class).to(UserServiceImpl.class);
     bind(MessageServiceImpl.class).to(MessageServiceBaseImpl.class);
@@ -407,6 +414,7 @@ public class BaseModule extends AxelorModule {
     bind(PrintHtmlGenerationService.class).to(PrintHtmlGenerationServiceImpl.class);
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
+    bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(OrderLineTaxService.class).to(OrderLineTaxServiceImpl.class);
     bind(CurrencyService.class).to(CurrencyServiceImpl.class);
     bind(CurrencyScaleService.class).to(CurrencyScaleServiceImpl.class);
@@ -415,5 +423,6 @@ public class BaseModule extends AxelorModule {
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
+    bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
   }
 }

@@ -11,11 +11,12 @@
     <field name="qty"/>
     <field name="isConsumptionLine"/>
     <field name="price"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="isToRevaluate"/>
-    <field name="initialPricePerYear" readonly="true"/>
-    <field name="yearlyPriceRevalued" readonly="true"/>
+    <field name="initialPricePerYear" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="yearlyPriceRevalued" readonly="true" x-scale="$currencyNumberOfDecimals"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
@@ -24,13 +25,14 @@
     <field name="productName"/>
     <field name="qty"/>
     <field name="price"/>
-    <field name="exTaxTotal"/>
-    <field name="inTaxTotal"/>
+    <field name="exTaxTotal" x-scale="$currencyNumberOfDecimals"/>
+    <field name="inTaxTotal" x-scale="$currencyNumberOfDecimals"/>
     <field name="isInvoiced" hidden="true"/>
     <field name="invoiceId" type="string" title="Invoice N°"/>
     <field name="subscriptionFromDate" type="date" title="From"/>
     <field name="subscriptionToDate" type="date" title="To"/>
     <field name="statusSelect" type="string" title="Status"/>
+    <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="contract-line-grid-for-template" title="Contract Lines"
@@ -181,8 +183,8 @@
 
   <form name="contract-line-form-for-template" title="Contract Line"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
+    onNew="action-contract-line-method-scale-and-precision"
+    onLoad="action-contract-line-method-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
@@ -199,8 +201,8 @@
 
   <form name="additional-contract-line-form-for-template" title="Additional benefit"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
+    onNew="action-contract-line-method-scale-and-precision"
+    onLoad="action-contract-line-method-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
@@ -223,14 +225,14 @@
   <action-group name="action-contract-line-group-edit-view">
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
-    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
     <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-contract-line-group-additional-onnew-onload">
-    <action name="action-contract-line-attrs-scale-and-precision"/>
+    <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
@@ -294,13 +296,6 @@
       if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.contract.db.Contract'"/>
   </action-attrs>
 
-  <action-attrs name="action-contract-line-attrs-scale-and-precision">
-    <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="price"
-      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
-  </action-attrs>
-
   <!-- ACTION RECORD -->
 
   <action-record name="action-method-contract-line-change-is-consumption-line"
@@ -357,6 +352,11 @@
     name="action-contract-line-method-set-analytic-distribution-panel-hidden">
     <call class="com.axelor.apps.contract.web.ContractLineController"
       method="setAnalyticDistributionPanelHidden"/>
+  </action-method>
+
+  <action-method name="action-contract-line-method-scale-and-precision">
+    <call class="com.axelor.apps.contract.web.ContractLineController"
+      method="setScaleAndPrecision"/>
   </action-method>
 
   <!-- ACTION VALIDATE -->

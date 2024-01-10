@@ -109,7 +109,7 @@
   <selection name='accounting.report.config.line.type.select'>
     <option value="1">Value</option>
     <option value="4">Group</option>
-    <option value="5" hidden="true">Group by account</option>
+    <option value="5">Group by account</option>
   </selection>
 
   <selection name="accounting.report.config.line.style.select">

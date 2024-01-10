@@ -99,8 +99,6 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     bankOrder.setSenderReference(null);
     bankOrder.setBankOrderDate(
         Beans.get(AppBaseService.class).getTodayDate(bankOrder.getSenderCompany()));
-    bankOrder.setSignatoryUser(null);
-    bankOrder.setSignatoryEbicsUser(null);
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
@@ -152,8 +150,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     for (BankOrder bankOrder : bankOrders) {
 
       int statusSelect = bankOrder.getStatusSelect();
-      if (statusSelect != BankOrderRepository.STATUS_DRAFT
-          && statusSelect != BankOrderRepository.STATUS_AWAITING_SIGNATURE) {
+      if (statusSelect != BankOrderRepository.STATUS_DRAFT) {
         throw new AxelorException(
             bankOrder,
             TraceBackRepository.CATEGORY_INCONSISTENCY,
