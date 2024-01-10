@@ -22,8 +22,10 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.repo.PayVoucherDueElementRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -39,9 +41,9 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   protected AccountConfigService accountConfigService;
   protected AppAccountService appAccountService;
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected PaymentVoucherToolService paymentVoucherToolService;
-
-  private final int RETURN_SCALE = 2;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public PayVoucherDueElementServiceImpl(
@@ -50,20 +52,23 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
       AccountConfigService accountConfigService,
       AppAccountService appAccountService,
       InvoiceTermService invoiceTermService,
-      PaymentVoucherToolService paymentVoucherToolService) {
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      PaymentVoucherToolService paymentVoucherToolService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.payVoucherDueElementRepository = payVoucherDueElementRepository;
     this.appBaseService = appBaseService;
     this.accountConfigService = accountConfigService;
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.paymentVoucherToolService = paymentVoucherToolService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public PayVoucherDueElement updateDueElementWithFinancialDiscount(
-      PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher)
-      throws AxelorException {
+      PayVoucherDueElement payVoucherDueElement, PaymentVoucher paymentVoucher) {
     payVoucherDueElement.setPaymentVoucher(paymentVoucher);
     InvoiceTerm invoiceTerm = payVoucherDueElement.getInvoiceTerm();
 
@@ -82,19 +87,20 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
                     payVoucherDueElement.getInvoiceTerm().getAmount(), 10, RoundingMode.HALF_UP);
       }
       payVoucherDueElement.setFinancialDiscountTotalAmount(
-          invoiceTerm
-              .getFinancialDiscountAmount()
-              .multiply(ratioPaid)
-              .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getScaledValue(
+              paymentVoucher, invoiceTerm.getFinancialDiscountAmount().multiply(ratioPaid)));
       payVoucherDueElement.setFinancialDiscountTaxAmount(
-          invoiceTermService
-              .getFinancialDiscountTaxAmount(invoiceTerm)
-              .multiply(ratioPaid)
-              .setScale(RETURN_SCALE, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getScaledValue(
+              paymentVoucher,
+              invoiceTermFinancialDiscountService
+                  .getFinancialDiscountTaxAmount(invoiceTerm)
+                  .multiply(ratioPaid)));
       payVoucherDueElement.setFinancialDiscountAmount(
-          payVoucherDueElement
-              .getFinancialDiscountTotalAmount()
-              .subtract(payVoucherDueElement.getFinancialDiscountTaxAmount()));
+          currencyScaleServiceAccount.getScaledValue(
+              paymentVoucher,
+              payVoucherDueElement
+                  .getFinancialDiscountTotalAmount()
+                  .subtract(payVoucherDueElement.getFinancialDiscountTaxAmount())));
       payVoucherDueElement.setFinancialDiscountDeadlineDate(
           invoiceTerm.getFinancialDiscountDeadlineDate());
     }
@@ -106,8 +112,8 @@ public class PayVoucherDueElementServiceImpl implements PayVoucherDueElementServ
   public boolean applyFinancialDiscount(InvoiceTerm invoiceTerm, PaymentVoucher paymentVoucher) {
     return invoiceTerm.getFinancialDiscount() != null
         && invoiceTerm.getFinancialDiscountDeadlineDate() != null
-        && invoiceTerm.getFinancialDiscountDeadlineDate().compareTo(paymentVoucher.getPaymentDate())
-            >= 0;
+        && !invoiceTerm.getFinancialDiscountDeadlineDate().isBefore(paymentVoucher.getPaymentDate())
+        && !invoiceTermService.isPartiallyPaid(invoiceTerm);
   }
 
   @Override

@@ -33,14 +33,9 @@ import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
-import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
-import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
@@ -60,13 +55,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.mail.db.repo.MailFollowerRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -77,6 +71,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,7 +88,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected BankOrderRepository bankOrderRepo;
   protected InvoicePaymentRepository invoicePaymentRepo;
   protected BankOrderLineService bankOrderLineService;
-  protected EbicsService ebicsService;
   protected InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService;
   protected BankPaymentConfigService bankPaymentConfigService;
   protected SequenceService sequenceService;
@@ -104,13 +98,13 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected PaymentSessionRepository paymentSessionRepo;
   protected MoveCancelBankPaymentService moveCancelBankPaymentService;
   protected MoveRepository moveRepo;
+  protected CurrencyService currencyService;
 
   @Inject
   public BankOrderServiceImpl(
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
-      EbicsService ebicsService,
       InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
@@ -120,12 +114,12 @@ public class BankOrderServiceImpl implements BankOrderService {
       PaymentSessionCancelService paymentSessionCancelService,
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
-      MoveRepository moveRepo) {
+      MoveRepository moveRepo,
+      CurrencyService currencyService) {
 
     this.bankOrderRepo = bankOrderRepo;
     this.invoicePaymentRepo = invoicePaymentRepo;
     this.bankOrderLineService = bankOrderLineService;
-    this.ebicsService = ebicsService;
     this.invoicePaymentBankPaymentCancelService = invoicePaymentBankPaymentCancelService;
     this.bankPaymentConfigService = bankPaymentConfigService;
     this.sequenceService = sequenceService;
@@ -136,6 +130,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.paymentSessionRepo = paymentSessionRepo;
     this.moveCancelBankPaymentService = moveCancelBankPaymentService;
     this.moveRepo = moveRepo;
+    this.currencyService = currencyService;
   }
 
   public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
@@ -184,11 +179,6 @@ public class BankOrderServiceImpl implements BankOrderService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
     }
-    if (bankOrder.getSignatoryUser() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_SIGNATORY_MISSING));
-    }
   }
 
   @Override
@@ -216,6 +206,16 @@ public class BankOrderServiceImpl implements BankOrderService {
     List<BankOrderLine> bankOrderLines = bankOrder.getBankOrderLineList();
     if (bankOrderLines != null) {
       for (BankOrderLine bankOrderLine : bankOrderLines) {
+        bankOrderLine.setCompanyCurrencyAmount(
+            bankOrderLine.getBankOrder().getIsMultiCurrency()
+                ? currencyService
+                    .getAmountCurrencyConvertedAtDate(
+                        bankOrder.getBankOrderCurrency(),
+                        bankOrder.getCompanyCurrency(),
+                        bankOrderLine.getBankOrderAmount(),
+                        bankOrderLine.getBankOrderDate())
+                    .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
+                : bankOrderLine.getBankOrderAmount());
         BigDecimal amount = bankOrderLine.getCompanyCurrencyAmount();
         if (amount != null) {
           companyCurrencyTotalAmount = companyCurrencyTotalAmount.add(amount);
@@ -423,18 +423,7 @@ public class BankOrderServiceImpl implements BankOrderService {
 
     PaymentMode paymentMode = bankOrder.getPaymentMode();
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()
-        && paymentMode != null
-        && paymentMode.getAutomaticTransmission()) {
-
-      bankOrder.setConfirmationDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
-      bankOrder.setStatusSelect(BankOrderRepository.STATUS_AWAITING_SIGNATURE);
-      makeEbicsUserFollow(bankOrder);
-
-      bankOrderRepo.save(bankOrder);
-    } else {
-      validate(bankOrder);
-    }
+    processBankOrderStatus(bankOrder, paymentMode);
 
     if (bankOrder.getAccountingTriggerSelect()
         == PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION) {
@@ -444,6 +433,11 @@ public class BankOrderServiceImpl implements BankOrderService {
       }
       this.generateMoves(bankOrder);
     }
+  }
+
+  protected void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
+      throws AxelorException {
+    validate(bankOrder);
   }
 
   @Override
@@ -460,73 +454,14 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setValidationDateTime(LocalDateTime.now());
 
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_VALIDATED);
-    LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
-
-    if (!bankOrder.getAreMovesGenerated()
-        && bankOrder.getAccountingTriggerSelect()
-            == PaymentModeRepository.ACCOUNTING_TRIGGER_VALIDATION) {
-      if (ObjectUtils.isEmpty(bankOrder.getBankOrderDate())
-          || bankOrder.getBankOrderDate().isBefore(todayDate)) {
-        bankOrder.setBankOrderDate(todayDate);
-      }
-      bankOrder = this.generateMoves(bankOrder);
-    }
 
     bankOrderRepo.save(bankOrder);
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void realize(BankOrder bankOrder) throws AxelorException {
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      if (bankOrder.getSignatoryEbicsUser() == null) {
-        throw new AxelorException(
-            bankOrder,
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_SIGNATORY_EBICS_USER));
-      }
-      if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTransportEbicsUser() == null) {
-        throw new AxelorException(
-            bankOrder.getSignatoryEbicsUser().getEbicsPartner(),
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get(BankPaymentExceptionMessage.EBICS_MISSING_USER_TRANSPORT));
-      }
-
-      if (!bankOrder.getHasBeenSentToBank()) {
-        sendBankOrderFile(bankOrder);
-      }
-    }
-    realizeBankOrder(bankOrder);
-  }
-
-  protected void sendBankOrderFile(BankOrder bankOrder) throws AxelorException {
-
-    File dataFileToSend = null;
-    File signatureFileToSend = null;
-
-    if (bankOrder.getSignatoryEbicsUser().getEbicsPartner().getEbicsTypeSelect()
-        == EbicsPartnerRepository.EBICS_TYPE_TS) {
-      if (bankOrder.getSignedMetaFile() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_NOT_PROPERLY_SIGNED));
-      }
-
-      signatureFileToSend = MetaFiles.getPath(bankOrder.getSignedMetaFile()).toFile();
-    }
-    dataFileToSend = MetaFiles.getPath(bankOrder.getGeneratedMetaFile()).toFile();
-
-    sendFile(bankOrder, dataFileToSend, signatureFileToSend);
-    markAsSent(bankOrder);
-  }
-
-  @Transactional
-  protected void markAsSent(BankOrder bankOrder) {
-    bankOrder.setHasBeenSentToBank(true);
-  }
-
-  @Transactional(rollbackOn = {Exception.class})
-  protected void realizeBankOrder(BankOrder bankOrder) throws AxelorException {
     LocalDate todayDate = appBaseService.getTodayDate(bankOrder.getSenderCompany());
 
     if (!bankOrder.getAreMovesGenerated()
@@ -542,31 +477,12 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setSendingDateTime(appBaseService.getTodayDateTime().toLocalDateTime());
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CARRIED_OUT);
 
-    if (Beans.get(AppBankPaymentService.class).getAppBankPayment().getEnableEbicsModule()) {
-      bankOrder.setTestMode(bankOrder.getSignatoryEbicsUser().getEbicsPartner().getTestMode());
-    }
-
     bankOrderRepo.save(bankOrder);
   }
 
-  protected void sendFile(BankOrder bankOrder, File dataFileToSend, File signatureFileToSend)
-      throws AxelorException {
-
-    PaymentMode paymentMode = bankOrder.getPaymentMode();
-
-    if (paymentMode != null && !paymentMode.getAutomaticTransmission()) {
-      return;
-    }
-
-    EbicsUser signatoryEbicsUser = bankOrder.getSignatoryEbicsUser();
-
-    ebicsService.sendFULRequest(
-        signatoryEbicsUser.getEbicsPartner().getTransportEbicsUser(),
-        signatoryEbicsUser,
-        null,
-        dataFileToSend,
-        bankOrder.getBankOrderFileFormat(),
-        signatureFileToSend);
+  @Transactional
+  protected void markAsSent(BankOrder bankOrder) {
+    bankOrder.setHasBeenSentToBank(true);
   }
 
   @Override
@@ -607,21 +523,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   protected void saveBankOrder(BankOrder bankOrder) {
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_CANCELED);
     bankOrderRepo.save(bankOrder);
-  }
-
-  @Override
-  @Transactional
-  public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails) {
-    EbicsPartner ebicsPartner =
-        Beans.get(EbicsPartnerRepository.class)
-            .all()
-            .filter("? MEMBER OF self.bankDetailsSet", bankDetails)
-            .fetchOne();
-    if (ebicsPartner != null) {
-      return ebicsPartner.getDefaultSignatoryEbicsUser();
-    } else {
-      return null;
-    }
   }
 
   @Override
@@ -865,7 +766,8 @@ public class BankOrderServiceImpl implements BankOrderService {
     }
 
     bankOrder.setBankOrderSeq(
-        (sequenceService.getSequenceNumber(sequence, date, BankOrder.class, "bankOrderSeq")));
+        (sequenceService.getSequenceNumber(
+            sequence, date, BankOrder.class, "bankOrderSeq", bankOrder)));
 
     if (bankOrder.getBankOrderSeq() != null) {
       return;
@@ -876,19 +778,6 @@ public class BankOrderServiceImpl implements BankOrderService {
         TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
         I18n.get(BankPaymentExceptionMessage.BANK_ORDER_COMPANY_NO_SEQUENCE),
         bankOrder.getSenderCompany().getName());
-  }
-
-  /**
-   * The signatory ebics user will follow the bank order record
-   *
-   * @param bankOrder
-   */
-  protected void makeEbicsUserFollow(BankOrder bankOrder) {
-    EbicsUser ebicsUser = bankOrder.getSignatoryEbicsUser();
-    if (ebicsUser != null) {
-      User signatoryUser = ebicsUser.getAssociatedUser();
-      Beans.get(MailFollowerRepository.class).follow(bankOrder, signatoryUser);
-    }
   }
 
   @Override
@@ -977,14 +866,6 @@ public class BankOrderServiceImpl implements BankOrderService {
   @Override
   public void setStatusToDraft(BankOrder bankOrder) {
     bankOrder.setStatusSelect(BankOrderRepository.STATUS_DRAFT);
-    bankOrderRepo.save(bankOrder);
-  }
-
-  @Transactional
-  @Override
-  public void setStatusToRejected(BankOrder bankOrder) {
-    bankOrder.setRejectStatusSelect(BankOrderRepository.REJECT_STATUS_TOTALLY_REJECTED);
-    bankOrder.setStatusSelect(BankOrderRepository.STATUS_REJECTED);
     bankOrderRepo.save(bankOrder);
   }
 }

@@ -66,4 +66,6 @@ public interface MoveLineToolService {
   void setAmountRemainingReconciliableMoveLines(Context context);
 
   boolean isCutOffActive(MoveLine moveLine);
+
+  void setDecimals(MoveLine moveLine, Move move);
 }

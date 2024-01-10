@@ -37,6 +37,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -92,6 +93,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected TaxService taxService;
   protected AppBaseService appBaseService;
   protected AnalyticLineService analyticLineService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -110,7 +112,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AppBaseService appBaseService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -127,6 +130,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.taxService = taxService;
     this.appBaseService = appBaseService;
     this.analyticLineService = analyticLineService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -172,7 +176,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
     BigDecimal amountConvertedInCompanyCurrency =
         currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            amountInSpecificMoveCurrency, currencyRate);
+            amountInSpecificMoveCurrency, currencyRate, companyCurrency);
 
     return this.createMoveLine(
         move,
@@ -226,7 +230,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       throws AxelorException {
 
     if (amountInSpecificMoveCurrency != null) {
-      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.abs();
+      amountInSpecificMoveCurrency =
+          currencyScaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.abs());
     }
 
     log.debug(
@@ -258,9 +263,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (isDebit) {
-      debit = amountInCompanyCurrency;
+      debit = currencyScaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
     } else {
-      credit = amountInCompanyCurrency;
+      credit = currencyScaleServiceAccount.getCompanyScaledValue(move, amountInCompanyCurrency);
     }
 
     if (currencyRate == null) {
@@ -278,7 +283,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     if (!isDebit) {
-      amountInSpecificMoveCurrency = amountInSpecificMoveCurrency.negate();
+      amountInSpecificMoveCurrency =
+          currencyScaleServiceAccount.getScaledValue(move, amountInSpecificMoveCurrency.negate());
     }
 
     MoveLine moveLine =
@@ -476,42 +482,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 origin,
                 invoiceLine.getProductName());
 
-        List<AnalyticMoveLine> analyticMoveLineList =
-            CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-                ? new ArrayList<>()
-                : new ArrayList<>(moveLine.getAnalyticMoveLineList());
-        moveLine.clearAnalyticMoveLineList();
-
-        moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
-        if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
-          for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
-            AnalyticMoveLine analyticMoveLine =
-                analyticMoveLineGenerateRealService.createFromForecast(
-                    invoiceAnalyticMoveLine, moveLine);
-            moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
-          }
-        } else {
-          moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-        }
-
-        if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-          moveLine.setAnalyticMoveLineList(analyticMoveLineList);
-        }
-
-        analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
-
-        TaxLine taxLine = invoiceLine.getTaxLine();
-        if (taxLine != null) {
-          moveLine.setTaxLine(taxLine);
-          moveLine.setTaxRate(taxLine.getValue());
-          moveLine.setTaxCode(taxLine.getTax().getCode());
-        }
-
-        // Cut off
-        if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
-          moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
-          moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
-        }
+        moveLine = fillMoveLineWithInvoiceLine(moveLine, invoiceLine, move.getCompany());
 
         moveLines.add(moveLine);
       }
@@ -646,6 +617,52 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     return moveLines;
   }
 
+  @Override
+  public MoveLine fillMoveLineWithInvoiceLine(
+      MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
+    if (moveLine == null || invoiceLine == null) {
+      return null;
+    }
+
+    List<AnalyticMoveLine> analyticMoveLineList =
+        CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+            ? new ArrayList<>()
+            : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+    moveLine.clearAnalyticMoveLineList();
+
+    moveLine.setAnalyticDistributionTemplate(invoiceLine.getAnalyticDistributionTemplate());
+    if (!CollectionUtils.isEmpty(invoiceLine.getAnalyticMoveLineList())) {
+      for (AnalyticMoveLine invoiceAnalyticMoveLine : invoiceLine.getAnalyticMoveLineList()) {
+        AnalyticMoveLine analyticMoveLine =
+            analyticMoveLineGenerateRealService.createFromForecast(
+                invoiceAnalyticMoveLine, moveLine);
+        moveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+      }
+    } else {
+      moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+    }
+
+    if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+      moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+    }
+
+    analyticLineService.setAnalyticAccount(moveLine, company);
+
+    TaxLine taxLine = invoiceLine.getTaxLine();
+    if (taxLine != null) {
+      moveLine.setTaxLine(taxLine);
+      moveLine.setTaxRate(taxLine.getValue());
+      moveLine.setTaxCode(taxLine.getTax().getCode());
+    }
+
+    // Cut off
+    if (invoiceLine.getAccount() != null && invoiceLine.getAccount().getManageCutOffPeriod()) {
+      moveLine.setCutOffStartDate(invoiceLine.getCutOffStartDate());
+      moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
+    }
+    return moveLine;
+  }
+
   protected List<MoveLine> addInvoiceTermMoveLines(
       Invoice invoice,
       Account partnerAccount,
@@ -736,13 +753,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
 
       moveLine.setDebit(
-          moveLine
-              .getDebit()
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(move, moveLine.getDebit()));
       moveLine.setCredit(
-          moveLine
-              .getCredit()
-              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+          currencyScaleServiceAccount.getCompanyScaledValue(move, moveLine.getCredit()));
 
       moveLines.add(moveLine);
     }
@@ -860,6 +873,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         StringHelper.cutTooLongString(
             moveLineToolService.determineDescriptionMoveLine(
                 move.getJournal(), move.getOrigin(), move.getDescription())));
+    moveLineToolService.setDecimals(newOrUpdatedMoveLine, move);
 
     BigDecimal taxLineValue =
         taxLineBeforeReverse != null ? taxLineBeforeReverse.getValue() : taxLine.getValue();
@@ -870,20 +884,12 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
           sumMoveLinesByAccountType(move.getMoveLineList(), AccountTypeRepository.TYPE_RECEIVABLE);
     }
 
+    int scale = currencyScaleServiceAccount.getCompanyScale(move);
     BigDecimal newMoveLineDebit =
-        debit
-            .multiply(taxLineValue)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+        debit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
     BigDecimal newMoveLineCredit =
-        credit
-            .multiply(taxLineValue)
-            .divide(
-                BigDecimal.valueOf(100),
-                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                RoundingMode.HALF_UP);
+        credit.multiply(taxLineValue).divide(BigDecimal.valueOf(100), scale, RoundingMode.HALF_UP);
+
     this.setTaxLineAmount(newMoveLineDebit, newMoveLineCredit, newOrUpdatedMoveLine);
 
     newOrUpdatedMoveLine.setOriginDate(move.getOriginDate());
@@ -916,6 +922,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       newOrUpdatedMoveLineRC.setDebit(newOrUpdatedMoveLineRC.getDebit().add(newMoveLineCredit));
       newOrUpdatedMoveLineRC.setCredit(newOrUpdatedMoveLineRC.getCredit().add(newMoveLineDebit));
       newOrUpdatedMoveLineRC = moveLineToolService.setCurrencyAmount(newOrUpdatedMoveLineRC);
+      moveLineToolService.setDecimals(newOrUpdatedMoveLineRC, move);
 
       newOrUpdatedMoveLineRC.setOriginDate(move.getOriginDate());
 

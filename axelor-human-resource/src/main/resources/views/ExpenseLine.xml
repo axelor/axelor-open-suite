@@ -113,7 +113,7 @@
       </field>
       <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
         onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
-        readonlyIf="expenseProduct.blockExpenseTax == true"/>
+        readonlyIf="expenseProduct.blockExpenseTax"/>
       <field name="untaxedAmount"/>
       <field name="toInvoice" colSpan="3"/>
       <field name="invoiced" colSpan="3"
@@ -135,6 +135,7 @@
       <field name="expense" hidden="true"/>
       <field name="expense.companyCbSelect" hidden="true"/>
       <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
+      <field name="expenseProduct.blockExpenseTax" hidden="true"/>
       <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
         onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
     </panel>
@@ -361,6 +362,7 @@
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="isAloneMeal" expr="eval: true" if="expenseProduct?.deductLunchVoucher"/>
     <field name="invitedCollaboratorSet" expr="eval: null"/>
+    <field name="totalTax" expr="eval:0"/>
   </action-record>
 
   <action-record name="action-expense-line-record-alone-meal-on-change"

@@ -178,7 +178,7 @@ public final class BaseExceptionMessage {
   public static final String TEMPLATE_MESSAGE_BASE_2 = /*$$(*/
       "Unable to generate Birt report file" /*)*/;
 
-  public static final String BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND = /*$$(*/
+  public static final String FILE_NOT_FOUND_IN_STANDARD_APPLICATION = /*$$(*/
       "%s was not found in the standard application." /*)*/;
 
   /** Tax service */
@@ -491,7 +491,7 @@ public final class BaseExceptionMessage {
       "Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected." /*)*/;
 
   public static final String PRICING_2 = /*$$(*/
-      "There is already a pricing that has the selected pricing as previous pricing, for the product/category '%s', company '%s' and model '%s'." /*)*/;
+      "There is already a pricing that has the selected pricing as previous pricing, for the formula '%s', company '%s' and model '%s'." /*)*/;
 
   public static final String PRICING_3 = /*$$(*/
       "You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal." /*)*/;
@@ -623,4 +623,21 @@ public final class BaseExceptionMessage {
 
   public static final String FILE_COULD_NOT_BE_GENERATED = /*$$(*/
       "The file could not be generated." /*)*/;
+  public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
+      "An error occurred while generating the sequence. Please check the configuration." /*)*/;
+
+  public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
+      "An error occurred while generating the address template: '%s'" /*)*/;
+  public static final String PRICING_BUTTON_ERROR = /*$$(*/
+      "There was an error while trying to add the pricing button : %s" /*)*/;
+
+  public static final String PRICING_UNAVAILABLE_FOR_THIS_CLASS = /*$$(*/
+      "Pricing process unavailable for this class : %s" /*)*/;
+
+  /** Import Configuration */
+  public static final String IMPORT_CONFIGURATION_ERROR_MESSAGE = /*$$(*/
+      "There is an error in the import configuration." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_CLOSING_MESSAGE = /*$$(*/
+      "The import configuration executed successfully." /*)*/;
 }

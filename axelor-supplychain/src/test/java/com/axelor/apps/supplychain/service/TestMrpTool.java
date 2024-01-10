@@ -19,51 +19,51 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.supplychain.db.Mrp;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class TestMrpTool {
+class TestMrpTool {
 
   @Test
-  public void testComputeFullNameEveryField() {
+  void testComputeFullNameEveryField() {
     Mrp mrp = createMrp("Name", "MRP0002");
-    Assert.assertEquals("MRP0002 - Name", MrpTool.computeFullName(mrp));
+    Assertions.assertEquals("MRP0002 - Name", MrpTool.computeFullName(mrp));
   }
 
   @Test
-  public void testComputeFullNameNameNull() {
+  void testComputeFullNameNameNull() {
     Mrp mrp = createMrp(null, "MRP0002");
-    Assert.assertEquals("MRP0002", MrpTool.computeFullName(mrp));
+    Assertions.assertEquals("MRP0002", MrpTool.computeFullName(mrp));
   }
 
   @Test
-  public void testComputeFullNameNameEmpty() {
+  void testComputeFullNameNameEmpty() {
     Mrp mrp = createMrp("", "MRP0002");
-    Assert.assertEquals("MRP0002", MrpTool.computeFullName(mrp));
+    Assertions.assertEquals("MRP0002", MrpTool.computeFullName(mrp));
   }
 
   @Test
-  public void testComputeFullNameMrpSeqNull() {
+  void testComputeFullNameMrpSeqNull() {
     Mrp mrp = createMrp("Name", null);
-    Assert.assertEquals("Name", MrpTool.computeFullName(mrp));
+    Assertions.assertEquals("Name", MrpTool.computeFullName(mrp));
   }
 
   @Test
-  public void testComputeFullNameMrpSeqEmpty() {
+  void testComputeFullNameMrpSeqEmpty() {
     Mrp mrp = createMrp("Name", "");
-    Assert.assertEquals("Name", MrpTool.computeFullName(mrp));
+    Assertions.assertEquals("Name", MrpTool.computeFullName(mrp));
   }
 
   @Test
-  public void testComputeFullNameEverythingNull() {
+  void testComputeFullNameEverythingNull() {
     Mrp mrp = createMrp(null, null);
-    Assert.assertNull(MrpTool.computeFullName(mrp));
+    Assertions.assertNull(MrpTool.computeFullName(mrp));
   }
 
   @Test
-  public void testComputeFullNameEverythingEmpty() {
+  void testComputeFullNameEverythingEmpty() {
     Mrp mrp = createMrp("", "");
-    Assert.assertEquals("", MrpTool.computeFullName(mrp));
+    Assertions.assertEquals("", MrpTool.computeFullName(mrp));
   }
 
   protected Mrp createMrp(String name, String mrpSeq) {

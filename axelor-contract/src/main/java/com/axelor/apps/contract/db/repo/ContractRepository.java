@@ -39,7 +39,8 @@ public class ContractRepository extends AbstractContractRepository {
     try {
       ContractLineService contractLineService = Beans.get(ContractLineService.class);
       if (contract.getContractId() == null) {
-        contract.setContractId(computeSeq(contract.getCompany(), contract.getTargetTypeSelect()));
+        contract.setContractId(
+            computeSeq(contract.getCompany(), contract.getTargetTypeSelect(), contract));
       }
 
       ContractVersion currentContractVersion = contract.getCurrentContractVersion();
@@ -51,7 +52,7 @@ public class ContractRepository extends AbstractContractRepository {
             contract.getCurrentContractVersion().getContractLineList())) {
           for (ContractLine contractLine :
               contract.getCurrentContractVersion().getContractLineList()) {
-            contractLineService.computeTotal(contractLine);
+            contractLineService.computeTotal(contractLine, contract);
           }
         }
         Beans.get(ContractVersionServiceImpl.class)
@@ -65,7 +66,7 @@ public class ContractRepository extends AbstractContractRepository {
     }
   }
 
-  public String computeSeq(Company company, int type) {
+  public String computeSeq(Company company, int type, Contract contract) {
     try {
       String seq =
           Beans.get(SequenceService.class)
@@ -73,7 +74,8 @@ public class ContractRepository extends AbstractContractRepository {
                   type == 1 ? CUSTOMER_CONTRACT_SEQUENCE : SUPPLIER_CONTRACT_SEQUENCE,
                   company,
                   Contract.class,
-                  "contractId");
+                  "contractId",
+                  contract);
       if (seq == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,

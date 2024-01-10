@@ -16,10 +16,10 @@
   <form name="quality-improvement-form" title="Quality improvement"
     model="com.axelor.apps.quality.db.QualityImprovement" width="large"
     onLoad="action-quality-improvement-group-on-load"
-    onNew="action-quality-improvement-record-on-new">
+    onNew="action-quality-improvement-method-set-default-values-on-new">
     <panel name="mainPanel">
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
-        widget="NavSelect"/>
+        widget="NavSelect" x-order="sequence"/>
       <field name="sequence" colSpan="4"/>
       <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
       <field name="type" colSpan="4"/>
@@ -216,7 +216,9 @@
     <field name="type"/>
     <field name="qiDetection.origin"/>
     <field name="sequence"/>
-    <field name="qiIdentification.partner.fullName"/>
+    <field name="qiIdentification.supplierPartner.fullName"/>
+    <field name="qiIdentification.detectedByInternal.fullName"/>
+    <field name="qiIdentification.customerPartner.fullName"/>
     <field name="qiIdentification.product.fullName"/>
     <field name="qiIdentification.quantity"/>
     <field name="qiIdentification.nonConformingQuantity"/>
@@ -225,34 +227,63 @@
     <hilite color="warning" if="$get('qiDetection.origin') == 3"/>
     <template>
     	<![CDATA[
-    		<h4>{{sequence}}</h4>
-		    <div class="card-body">
-			    <dl>
-				    <dt ng-if="qiIdentification.partner.fullName" x-translate>Customer</dt>
-				    <dd ng-if="qiIdentification.partner.fullName">{{qiIdentification.partner.fullName}}</dd>
-				    <dt ng-if="qiIdentification.product.fullName" x-translate>Product</dt>
-				    <dd ng-if="qiIdentification.product.fullName" >{{qiIdentification.product.fullName}}</dd>
-				    <dt ng-if="qiIdentification.quantity != 0" x-translate>Quantity</dt>
-				    <dd ng-if="qiIdentification.quantity != 0" >{{qiIdentification.quantity}}</dd>
-				    <dt ng-if="qiIdentification.nonConformingQuantity != 0" x-translate>Non-Conforming quantity</dt>
-				    <dd ng-if="qiIdentification.nonConformingQuantity != 0" >{{qiIdentification.nonConformingQuantity}}</dd>
-			    </dl>
-		    </div>
-    		<h6 class="label label-default bg-primary" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="type == 1" x-translate>Product</h6>
-    		<h6 class="label label-default bg-info" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="type == 2" x-translate>System</h6>
-    		<h6 class="label label-default bg-danger" style="margin: 5px 0 !important; width:30% !important;display: inline-table; line-height: initial;" ng-show="qiDetection.origin == 1" x-translate>Customer</h6>
-    		<h6 class="label label-default bg-info" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="qiDetection.origin == 2" x-translate>Internal</h6>
-    		<h6 class="label label-default bg-warning" style="margin: 5px 0 !important; width:30% !important; display: inline-table; line-height: initial;" ng-show="qiDetection.origin == 3" x-translate>Supplier</h6>
+  			<>
+	    		<h4>{sequence}</h4>
+  				<Box as="dl" mt={4}>
+  					{qiDetection.origin == 1 && qiIdentification.supplierPartner.fullName &&
+  						<Box>
+  							<dt>{_t('Supplier')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.supplierPartner.fullName}</Box>
+  						</Box>
+  					}
+  					{qiDetection.origin == 2 && qiIdentification.detectedByInternal.fullName &&
+  						<Box>
+  							<dt>{_t('Internal')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.detectedByInternal.fullName}</Box>
+  						</Box>
+  					}
+  					{qiDetection.origin == 3 && qiIdentification.customerPartner.fullName &&
+  						<Box>
+  							<dt>{_t('Customer')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.customerPartner.fullName}</Box>
+  						</Box>
+  					}
+  					{qiIdentification.product.fullName &&
+  						<Box>
+  							<dt>{_t('Product')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.product.fullName}</Box>
+  						</Box>
+  					}
+  					{qiIdentification.quantity != 0 &&
+  						<Box>
+  							<dt>{_t('Quantity')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.quantity}</Box>
+  						</Box>
+  					}
+  					{qiIdentification.nonConformingQuantity != 0 &&
+  						<Box>
+  							<dt>{_t('Non-Conforming quantity')}</dt>
+  							<Box as="dd" ms={2}>{qiIdentification.nonConformingQuantity}</Box>
+  						</Box>
+  					}
+  				</Box>
+  				<Box d="flex" gap="4" mt={4}>
+  					{type == 1 && <Badge bg="primary">{_t('Product')}</Badge>}
+  					{type == 2 && <Badge bg="info">{_t('System')}</Badge>}
+
+  					{qiDetection.origin == 1 && <Badge bg="danger">{_t('Supplier')}</Badge>}
+  					{qiDetection.origin == 2 && <Badge bg="info">{_t('Internal')}</Badge>}
+  					{qiDetection.origin == 3 && <Badge bg="warning">{_t('Customer')}</Badge>}
+  				</Box>
+  			</>
   		]]>
     </template>
   </kanban>
 
-  <action-record name="action-quality-improvement-record-on-new"
-    model="com.axelor.apps.quality.db.QualityImprovement">
-    <field name="qiStatus" expr="eval: __repo__(QIStatus).findDefaultStatus()"/>
-    <field name="company" expr="eval:__user__.activeCompany"
-      if="__user__.activeCompany != null"/>
-  </action-record>
+  <action-method name="action-quality-improvement-method-set-default-values-on-new">
+    <call class="com.axelor.apps.quality.web.QualityImprovementController"
+      method="setDefaultValues"/>
+  </action-method>
 
   <action-attrs name="action-quality-improvement-attrs-set-defaults">
     <attribute name="title" for="qiIdentification.stockMove"
@@ -321,10 +352,10 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-stock-move-domain">
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.saleOrder = :customerSaleOrder &quot;"
+      expr="eval: &quot; :customerSaleOrder MEMBER OF self.saleOrderSet  &quot;"
       if="qi?.qiDetection?.origin == 3"/>
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.purchaseOrder = :supplierPurchaseOrder &quot;"
+      expr="eval: &quot; :supplierPurchaseOrder MEMBER OF self.purchaseOrderSet &quot;"
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 

@@ -53,26 +53,27 @@
       ref="com.axelor.apps.sale.db.SaleOrderLineTax" mappedBy="saleOrder" title="Tax Lines"
       readonly="true"/>
 
-    <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
-    <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
-    <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
-    <decimal name="advanceTotal" title="Advance payment total" scale="2" precision="20"
+    <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
+    <decimal name="taxTotal" title="Total tax" scale="3" precision="20" readonly="true"/>
+    <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20" readonly="true"/>
+    <decimal name="advanceTotal" title="Advance payment total" scale="3" precision="20"
       readonly="true"/>
     <decimal name="amountToBeSpreadOverTheTimetable"
-      title="Amount to be spread over the timetable" scale="2" precision="20" readonly="true"
+      title="Amount to be spread over the timetable" scale="3" precision="20" readonly="true"
       copy="false"/>
 
-    <decimal name="companyExTaxTotal" title="Total W.T." scale="2" precision="20"
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="3" precision="20"
       readonly="true"/>
-    <decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"/>
+    <decimal name="companyCostTotal" title="Total cost in company currency" hidden="true"
+      precision="20" scale="3"/>
 
     <integer name="statusSelect" title="Status" selection="sale.order.status.select"
       readonly="true"/>
 
     <!-- Margins -->
-    <decimal name="accountedRevenue" title="Accounted Revenue"/>
-    <decimal name="totalCostPrice" title="Total cost price"/>
-    <decimal name="totalGrossMargin" title="Gross Profit"/>
+    <decimal name="accountedRevenue" title="Accounted Revenue" precision="20" scale="3"/>
+    <decimal name="totalCostPrice" title="Total cost price" precision="20" scale="3"/>
+    <decimal name="totalGrossMargin" title="Gross Profit" precision="20" scale="3"/>
     <decimal name="marginRate" title="Margin (%)"/>
     <decimal name="markup" title="Markup (%)"/>
 
@@ -112,7 +113,8 @@
     <one-to-many name="advancePaymentList" ref="com.axelor.apps.sale.db.AdvancePayment"
       mappedBy="saleOrder" title="Advance Payments"/>
     <boolean name="advancePaymentNeeded" title="Advance payment needed"/>
-    <decimal name="advancePaymentAmountNeeded" title="Advance payment amount needed"/>
+    <decimal name="advancePaymentAmountNeeded" title="Advance payment amount needed"
+      precision="20" scale="3"/>
 
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"
       title="Company bank"/>

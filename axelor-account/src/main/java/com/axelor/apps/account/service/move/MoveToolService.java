@@ -143,6 +143,8 @@ public interface MoveToolService {
    */
   BigDecimal getTotalDebitAmount(List<MoveLine> debitMoveLineList);
 
+  BigDecimal getTotalCurrencyAmount(List<MoveLine> moveLineList);
+
   /**
    * Compute the balance amount : total debit - total credit
    *

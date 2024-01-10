@@ -121,9 +121,11 @@
     <field name="responsible"/>
     <template>
             <![CDATA[
-            <h4>{{reference}}</h4>
-            <div class="card-body">{{team.name}}</div>
-            <div class="card-body">{{responsible.name}}</div>
+            <>
+	            <h4>{reference}</h4>
+	            <Box>{team.name}</Box>
+	            <Box>{responsible.name}</Box>
+            </>
     		]]>
     </template>
 

@@ -355,7 +355,7 @@
   <!-- Pricing menus -->
 
   <menuitem title="Pricing" name="sc-root-sale-pricing" parent="sc-root-sale" order="1200"
-    action="sc.root.sale.pricing" if="__config__.app.getApp('sale')?.enablePricingScale"/>
+    action="sc.root.sale.pricing" if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="sc.root.sale.pricing" title="Pricing"
     model="com.axelor.apps.base.db.Pricing">
@@ -365,7 +365,7 @@
 
   <menuitem title="Pricing rules" name="sc-root-sale-conf-pricing-rule"
     parent="sc-root-sale-conf" order="1000" action="sc.root.sale.conf.pricing.rule"
-    if="__config__.app.getApp('sale')?.enablePricingScale"/>
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
 
   <action-view name="sc.root.sale.conf.pricing.rule" title="Pricing rules"
     model="com.axelor.apps.base.db.PricingRule">

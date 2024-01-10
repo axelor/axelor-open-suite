@@ -23,12 +23,12 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -42,17 +42,20 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public MoveLineRecordServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -79,7 +82,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       BigDecimal currencyAmount =
           total.divide(
               moveLine.getCurrencyRate(),
-              AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+              currencyScaleServiceAccount.getScale(move),
               RoundingMode.HALF_UP);
       if (isCredit) {
         currencyAmount = currencyAmount.negate();
@@ -190,11 +193,13 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
 
   @Override
   public void setCounter(MoveLine moveLine, Move move) {
-    moveLine.setCounter(
-        move.getMoveLineList().stream()
+    int counter =
+        ObjectUtils.notEmpty(move.getMoveLineList())
+            ? move.getMoveLineList().stream()
                 .map(MoveLine::getCounter)
                 .max(Comparator.naturalOrder())
                 .orElse(0)
-            + 1);
+            : 0;
+    moveLine.setCounter(counter + 1);
   }
 }

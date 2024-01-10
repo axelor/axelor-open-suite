@@ -20,6 +20,7 @@ package com.axelor.apps.budget.service.invoice;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public interface BudgetInvoiceService {
    * @param invoice
    * @return String
    */
-  public String computeBudgetDistribution(Invoice invoice);
+  public String computeBudgetDistribution(Invoice invoice) throws AxelorException;
 
   /**
    * For all budgets related to this invoice, check budget exceed based on global budget control on
@@ -78,4 +79,6 @@ public interface BudgetInvoiceService {
    */
   public void updateLineWithPO(
       BudgetDistribution budgetDistribution, Invoice invoice, InvoiceLine invoiceLine);
+
+  void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException;
 }

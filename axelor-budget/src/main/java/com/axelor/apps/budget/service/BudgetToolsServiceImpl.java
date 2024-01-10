@@ -19,26 +19,55 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AnalyticAxis;
+import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.BudgetLine;
+import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.Model;
+import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.date.LocalDateHelper;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
 public class BudgetToolsServiceImpl implements BudgetToolsService {
 
   protected AccountConfigService accountConfigService;
+  protected AppBudgetService appBudgetService;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public BudgetToolsServiceImpl(AccountConfigService accountConfigService) {
+  public BudgetToolsServiceImpl(
+      AccountConfigService accountConfigService,
+      AppBudgetService appBudgetService,
+      AppBaseService appBaseService) {
     this.accountConfigService = accountConfigService;
+    this.appBudgetService = appBudgetService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -71,5 +100,202 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
           || move.getStatusSelect() == MoveRepository.STATUS_CANCELED;
     }
     return false;
+  }
+
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudget(Budget budget) {
+
+    if (budget == null) {
+      return null;
+    }
+
+    if (budget.getGlobalBudget() != null) {
+      return budget.getGlobalBudget();
+    }
+    if (budget.getBudgetLevel() != null) {
+      return getGlobalBudgetUsingBudgetLevel(budget.getBudgetLevel());
+    }
+
+    return null;
+  }
+
+  @Override
+  public GlobalBudget getGlobalBudgetUsingBudgetLevel(BudgetLevel budgetLevel) {
+    if (budgetLevel == null) {
+      return null;
+    }
+
+    if (budgetLevel.getGlobalBudget() != null) {
+      return budgetLevel.getGlobalBudget();
+    }
+
+    return getGlobalBudgetUsingBudgetLevel(budgetLevel.getParentBudgetLevel());
+  }
+
+  @Override
+  public String getBudgetExceedMessage(String budgetExceedAlert, boolean isOrder, boolean isError) {
+    if (Strings.isNullOrEmpty(budgetExceedAlert)) {
+      return "";
+    }
+    if (isOrder && isError) {
+      return budgetExceedAlert;
+    }
+    return String.format(
+        "%s %s",
+        I18n.get(budgetExceedAlert), I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ERROR_ALERT));
+  }
+
+  @Override
+  public boolean canAutoComputeBudgetDistribution(Company company, List<? extends Model> list)
+      throws AxelorException {
+    return !CollectionUtils.isEmpty(list)
+        && company != null
+        && checkBudgetKeyAndRole(company, AuthUtils.getUser())
+        && checkBudgetKeyInConfig(company);
+  }
+
+  public List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException {
+    if (company == null) {
+      return new ArrayList<>();
+    }
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    if (accountConfig == null
+        || CollectionUtils.isEmpty(accountConfig.getAnalyticAxisByCompanyList())) {
+      return new ArrayList<>();
+    }
+
+    return accountConfig.getAnalyticAxisByCompanyList().stream()
+        .filter(AnalyticAxisByCompany::getIncludeInBudgetKey)
+        .map(AnalyticAxisByCompany::getAnalyticAxis)
+        .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean checkBudgetKeyInConfig(Company company) throws AxelorException {
+    return (company != null
+        && accountConfigService.getAccountConfig(company) != null
+        && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
+  }
+
+  public BigDecimal getAvailableAmountOnBudget(Budget budget, LocalDate date) {
+    if (budget == null) {
+      return BigDecimal.ZERO;
+    }
+    Integer budgetControlLevel = getBudgetControlLevel(budget);
+    if (budgetControlLevel == null) {
+      return budget.getAvailableAmount();
+    }
+    GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
+
+    switch (budgetControlLevel) {
+      case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE:
+        if (date == null && globalBudget != null && globalBudget.getCompany() != null) {
+          date = appBaseService.getTodayDate(globalBudget.getCompany());
+        }
+
+        for (BudgetLine budgetLine : budget.getBudgetLineList()) {
+          if (LocalDateHelper.isBetween(budgetLine.getFromDate(), budgetLine.getToDate(), date)) {
+            return budgetLine.getAvailableAmount();
+          }
+        }
+        break;
+      case GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET:
+        return budget.getAvailableAmount();
+      default:
+        return Optional.of(globalBudget)
+            .map(GlobalBudget::getTotalAmountAvailable)
+            .orElse(BigDecimal.ZERO);
+    }
+    return BigDecimal.ZERO;
+  }
+
+  @Override
+  public Integer getBudgetControlLevel(Budget budget) {
+
+    if (appBudgetService.getAppBudget() == null
+        || !appBudgetService.getAppBudget().getCheckAvailableBudget()) {
+      return null;
+    }
+    GlobalBudget globalBudget = getGlobalBudgetUsingBudget(budget);
+    if (globalBudget != null
+        && globalBudget.getCheckAvailableSelect() != null
+        && globalBudget.getCheckAvailableSelect()
+            != GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE) {
+      return globalBudget.getCheckAvailableSelect();
+    } else {
+      return appBudgetService.getAppBudget().getCheckAvailableBudget()
+          ? GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE
+          : null;
+    }
+  }
+
+  @Override
+  public Map<String, BigDecimal> buildMapWithAmounts(
+      List<Budget> budgetList, List<BudgetLevel> budgetLevelList) {
+    Map<String, BigDecimal> amountByField = new HashMap<>();
+    amountByField.put("totalAmountExpected", BigDecimal.ZERO);
+    amountByField.put("totalAmountCommitted", BigDecimal.ZERO);
+    amountByField.put("totalAmountRealized", BigDecimal.ZERO);
+    amountByField.put("realizedWithPo", BigDecimal.ZERO);
+    amountByField.put("realizedWithNoPo", BigDecimal.ZERO);
+    amountByField.put("totalAmountPaid", BigDecimal.ZERO);
+    amountByField.put("totalFirmGap", BigDecimal.ZERO);
+    amountByField.put("simulatedAmount", BigDecimal.ZERO);
+    if (!ObjectUtils.isEmpty(budgetLevelList)) {
+      for (BudgetLevel budgetLevelObj : budgetLevelList) {
+        amountByField.replace(
+            "totalAmountExpected",
+            amountByField.get("totalAmountExpected").add(budgetLevelObj.getTotalAmountExpected()));
+        amountByField.replace(
+            "totalAmountCommitted",
+            amountByField
+                .get("totalAmountCommitted")
+                .add(budgetLevelObj.getTotalAmountCommitted()));
+        amountByField.replace(
+            "totalAmountRealized",
+            amountByField.get("totalAmountRealized").add(budgetLevelObj.getTotalAmountCommitted()));
+        amountByField.replace(
+            "realizedWithPo",
+            amountByField.get("realizedWithPo").add(budgetLevelObj.getRealizedWithPo()));
+        amountByField.replace(
+            "realizedWithNoPo",
+            amountByField.get("realizedWithNoPo").add(budgetLevelObj.getRealizedWithNoPo()));
+        amountByField.replace(
+            "totalAmountPaid",
+            amountByField.get("totalAmountPaid").add(budgetLevelObj.getTotalAmountPaid()));
+        amountByField.replace(
+            "totalFirmGap",
+            amountByField.get("totalFirmGap").add(budgetLevelObj.getTotalFirmGap()));
+        amountByField.replace(
+            "simulatedAmount",
+            amountByField.get("simulatedAmount").add(budgetLevelObj.getSimulatedAmount()));
+      }
+    } else if (!ObjectUtils.isEmpty(budgetList)) {
+      for (Budget budget : budgetList) {
+        amountByField.replace(
+            "totalAmountExpected",
+            amountByField.get("totalAmountExpected").add(budget.getTotalAmountExpected()));
+        amountByField.replace(
+            "totalAmountCommitted",
+            amountByField.get("totalAmountCommitted").add(budget.getTotalAmountCommitted()));
+        amountByField.replace(
+            "totalAmountRealized",
+            amountByField.get("totalAmountRealized").add(budget.getTotalAmountCommitted()));
+        amountByField.replace(
+            "realizedWithPo", amountByField.get("realizedWithPo").add(budget.getRealizedWithPo()));
+        amountByField.replace(
+            "realizedWithNoPo",
+            amountByField.get("realizedWithNoPo").add(budget.getRealizedWithNoPo()));
+        amountByField.replace(
+            "totalAmountPaid",
+            amountByField.get("totalAmountPaid").add(budget.getTotalAmountPaid()));
+        amountByField.replace(
+            "totalFirmGap", amountByField.get("totalFirmGap").add(budget.getTotalFirmGap()));
+        amountByField.replace(
+            "simulatedAmount",
+            amountByField.get("simulatedAmount").add(budget.getSimulatedAmount()));
+      }
+    }
+    return amountByField;
   }
 }

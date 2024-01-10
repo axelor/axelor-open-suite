@@ -24,6 +24,8 @@ import com.axelor.apps.account.service.invoice.InvoiceViewService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
+import com.axelor.apps.purchase.service.CurrencyScaleServicePurchase;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -129,6 +131,20 @@ public class PurchaseOrderInvoiceController {
       response.setAttr("$operationSelect", "value", "1");
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setAmountToInvoiceScale(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    boolean isPercent = (Boolean) request.getContext().getOrDefault("isPercent", false);
+
+    if (purchaseOrder != null && purchaseOrder.getCurrency() != null) {
+      response.setAttr(
+          "$amountToInvoice",
+          "scale",
+          isPercent
+              ? AppSaleService.DEFAULT_NB_DECIMAL_DIGITS
+              : Beans.get(CurrencyScaleServicePurchase.class).getScale(purchaseOrder));
     }
   }
 }

@@ -185,7 +185,7 @@ public interface StockMoveService {
    */
   void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
-  void setAvailableStatus(StockMove stockMove);
+  void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
   /**
    * Update editDate of one Outgoing Stock Move
@@ -234,4 +234,10 @@ public interface StockMoveService {
   void changeLinesToStockLocation(StockMove stockMove, StockLocation stockLocation);
 
   void checkPrintingSettings(StockMove stockMove) throws AxelorException;
+
+  public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException;
+
+  void setMergedStatus(StockMove stockMove);
+
+  StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
 }

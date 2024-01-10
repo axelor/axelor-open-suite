@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -39,16 +40,19 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
   protected LeaveRequestRepository leaveRequestRepository;
 
   protected AppBaseService appBaseService;
+  protected LeaveReasonService leaveReasonService;
 
   @Inject
   public LeaveRequestServiceImpl(
       LeaveLineRepository leaveLineRepository,
       LeaveRequestRepository leaveRequestRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      LeaveReasonService leaveReasonService) {
 
     this.leaveLineRepository = leaveLineRepository;
     this.leaveRequestRepository = leaveRequestRepository;
     this.appBaseService = appBaseService;
+    this.leaveReasonService = leaveReasonService;
   }
 
   public List<LeaveRequest> getLeaves(Employee employee, LocalDate date) {
@@ -93,12 +97,8 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
             .bind("employee", leaveRequest.getEmployee())
             .fetchOne();
     if (leaveLine == null) {
-      if (leaveRequest.getLeaveReason() != null
-          && !leaveRequest.getLeaveReason().getManageAccumulation()) {
-        return true;
-      }
-
-      return false;
+      return leaveRequest.getLeaveReason() != null
+          && leaveReasonService.isExceptionalDaysReason(leaveRequest.getLeaveReason());
     }
 
     BigDecimal num =

@@ -58,7 +58,7 @@
       <field name="deliverToCustomerPartner"/>
       <field name="carrierPartner"/>
       <field name="forwarderPartner"/>
-      <field name="incoterm"/>
+      <field name="incoterm" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
       <field name="tracking"/>
       <message if="statusSelect == 1" tag="important">Provision</message>
       <message if="statusSelect == 2" tag="info">Carrier validated</message>

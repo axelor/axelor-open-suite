@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.payment.paymentsession.PaymentSessionCancelService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.ebics.service.EbicsService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineOriginService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderMoveService;
@@ -33,6 +32,7 @@ import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentBankPaymentCancelService;
 import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
@@ -53,7 +53,6 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       BankOrderRepository bankOrderRepo,
       InvoicePaymentRepository invoicePaymentRepo,
       BankOrderLineService bankOrderLineService,
-      EbicsService ebicsService,
       InvoicePaymentBankPaymentCancelService invoicePaymentBankPaymentCancelService,
       BankPaymentConfigService bankPaymentConfigService,
       SequenceService sequenceService,
@@ -64,12 +63,12 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       PaymentSessionRepository paymentSessionRepo,
       MoveCancelBankPaymentService moveCancelBankPaymentService,
       MoveRepository moveRepo,
+      CurrencyService currencyService,
       ExpensePaymentService expensePaymentService) {
     super(
         bankOrderRepo,
         invoicePaymentRepo,
         bankOrderLineService,
-        ebicsService,
         invoicePaymentBankPaymentCancelService,
         bankPaymentConfigService,
         sequenceService,
@@ -79,7 +78,8 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
         paymentSessionCancelService,
         paymentSessionRepo,
         moveCancelBankPaymentService,
-        moveRepo);
+        moveRepo,
+        currencyService);
     this.expensePaymentService = expensePaymentService;
   }
 

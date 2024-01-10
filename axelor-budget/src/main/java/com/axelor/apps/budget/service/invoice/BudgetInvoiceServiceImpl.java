@@ -30,7 +30,6 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.factory.CancelFactory;
 import com.axelor.apps.account.service.invoice.factory.ValidateFactory;
 import com.axelor.apps.account.service.invoice.factory.VentilateFactory;
-import com.axelor.apps.account.service.invoice.generator.invoice.RefundInvoice;
 import com.axelor.apps.account.service.invoice.print.InvoiceProductStatementService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
@@ -47,6 +46,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -77,6 +77,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
   protected BudgetService budgetService;
   protected BudgetLineService budgetLineService;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetInvoiceServiceImpl(
@@ -104,7 +105,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
       BudgetLineService budgetLineService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -131,11 +133,12 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     this.budgetService = budgetService;
     this.budgetLineService = budgetLineService;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
   @Transactional
-  public String computeBudgetDistribution(Invoice invoice) {
+  public String computeBudgetDistribution(Invoice invoice) throws AxelorException {
     List<String> alertMessageTokenList = new ArrayList<>();
     if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
       for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
@@ -153,43 +156,21 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Invoice createRefund(Invoice invoice) throws AxelorException {
-
-    Invoice refund = new RefundInvoice(invoice).generate();
-    invoice.addRefundInvoiceListItem(refund);
-    updateRefundBudgetDistribution(refund);
-    invoiceRepo.save(invoice);
-
-    return refund;
-  }
-
-  public void updateRefundBudgetDistribution(Invoice refund) {
-
-    if (!CollectionUtils.isEmpty(refund.getInvoiceLineList())) {
-      for (InvoiceLine invoiceLine : refund.getInvoiceLineList()) {
-        if (CollectionUtils.isNotEmpty(invoiceLine.getBudgetDistributionList())) {
-          invoiceLine.getBudgetDistributionList().stream()
-              .forEach(
-                  budgetDistribution -> {
-                    budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
-                  });
-        }
-      }
-    }
-  }
-
-  @Override
   @CallMethod
   public String getBudgetExceedAlert(Invoice invoice) {
     String budgetExceedAlert = "";
 
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
 
     if (appBudgetService.getAppBudget() != null
         && appBudgetService.getAppBudget().getCheckAvailableBudget()
         && invoice.getId() != null
-        && CollectionUtils.isNotEmpty(invoiceLineList)) {
+        && CollectionUtils.isNotEmpty(invoiceLineList)
+        && date != null) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
@@ -212,11 +193,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
             budgetExceedAlert +=
                 budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(),
-                    budgetEntry.getValue(),
-                    invoice.getInvoiceDate() != null
-                        ? invoice.getInvoiceDate()
-                        : invoice.getCreatedOn().toLocalDate());
+                    budgetEntry.getKey(), budgetEntry.getValue(), date);
           }
         } else {
           Budget budget = invoiceLine.getBudget();
@@ -230,11 +207,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
 
             budgetExceedAlert +=
                 budgetDistributionService.getBudgetExceedAlert(
-                    budget,
-                    amountPerBudgetMap.get(budget),
-                    invoice.getInvoiceDate() != null
-                        ? invoice.getInvoiceDate()
-                        : invoice.getCreatedOn().toLocalDate());
+                    budget, amountPerBudgetMap.get(budget), date);
           }
         }
       }
@@ -300,19 +273,17 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       LocalDate date =
           invoice.getInvoiceDate() != null
               ? invoice.getInvoiceDate()
-              : invoice.getCreatedOn().toLocalDate();
+              : appBaseService.getTodayDate(invoice.getCompany());
       budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
       if (optBudgetLine.isPresent()) {
         BudgetLine budgetLine = optBudgetLine.get();
-        budgetLine.setRealizedWithNoPo(
-            budgetLine.getRealizedWithNoPo().add(budgetDistribution.getAmount()));
-        budgetLine.setAmountRealized(
-            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-        budgetLine.setToBeCommittedAmount(
-            budgetLine.getToBeCommittedAmount().subtract(budgetDistribution.getAmount()));
+        BigDecimal amount = budgetDistribution.getAmount();
+        budgetLine.setRealizedWithNoPo(budgetLine.getRealizedWithNoPo().add(amount));
+        budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
+        budgetLine.setToBeCommittedAmount(budgetLine.getToBeCommittedAmount().subtract(amount));
         BigDecimal firmGap =
             budgetLine
                 .getAmountExpected()
@@ -320,12 +291,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
         budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
 
         budgetLine.setAvailableAmount(
-            budgetLine
-                        .getAvailableAmount()
-                        .subtract(budgetDistribution.getAmount())
-                        .compareTo(BigDecimal.ZERO)
-                    > 0
-                ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
+            budgetLine.getAvailableAmount().subtract(amount).compareTo(BigDecimal.ZERO) > 0
+                ? budgetLine.getAvailableAmount().subtract(amount)
                 : BigDecimal.ZERO);
       }
     }
@@ -353,24 +320,24 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
       if (optBudgetLine.isPresent()) {
         BudgetLine budgetLine = optBudgetLine.get();
-        budgetLine.setRealizedWithPo(
-            budgetLine.getRealizedWithPo().add(budgetDistribution.getAmount()));
-        budgetLine.setAmountRealized(
-            budgetLine.getAmountRealized().add(budgetDistribution.getAmount()));
-        budgetLine.setAmountCommitted(
-            budgetLine.getAmountCommitted().subtract(budgetDistribution.getAmount()));
+        BigDecimal amount = budgetDistribution.getAmount();
+        if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND
+            || invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND
+            || invoice.getOperationSubTypeSelect()
+                == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+          amount = amount.negate();
+        }
+        budgetLine.setRealizedWithPo(budgetLine.getRealizedWithPo().add(amount));
+        budgetLine.setAmountRealized(budgetLine.getAmountRealized().add(amount));
+        budgetLine.setAmountCommitted(budgetLine.getAmountCommitted().subtract(amount));
         BigDecimal firmGap =
             budgetLine
                 .getAmountExpected()
                 .subtract(budgetLine.getRealizedWithPo().add(budgetLine.getRealizedWithNoPo()));
         budgetLine.setFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
         budgetLine.setAvailableAmount(
-            budgetLine
-                        .getAvailableAmount()
-                        .subtract(budgetDistribution.getAmount())
-                        .compareTo(BigDecimal.ZERO)
-                    > 0
-                ? budgetLine.getAvailableAmount().subtract(budgetDistribution.getAmount())
+            budgetLine.getAvailableAmount().subtract(amount).compareTo(BigDecimal.ZERO) > 0
+                ? budgetLine.getAvailableAmount().subtract(amount)
                 : BigDecimal.ZERO);
       }
     }
@@ -439,5 +406,24 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     }
     return budgetDistributionList.stream()
         .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+        invoice.getCompany(), invoice.getInvoiceLineList())) {
+      return;
+    }
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAccount(),
+          invoice.getCompany(),
+          invoice.getInvoiceDate() != null
+              ? invoice.getInvoiceDate()
+              : invoice.getCreatedOn().toLocalDate(),
+          invoiceLine.getCompanyExTaxTotal(),
+          invoiceLine);
+    }
   }
 }

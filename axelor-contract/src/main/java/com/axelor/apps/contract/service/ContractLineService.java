@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
+import java.util.Map;
 
 public interface ContractLineService {
   /**
@@ -31,7 +32,7 @@ public interface ContractLineService {
    * @param contractLine to reset.
    * @return ContractLine reset.
    */
-  ContractLine reset(ContractLine contractLine);
+  Map<String, Object> reset(ContractLine contractLine);
 
   /**
    * Fill ContractLine with Product information.
@@ -76,7 +77,7 @@ public interface ContractLineService {
    * @param contractLine to compute ex/in tax total.
    * @return ContractLine with ex/in tax total computed.
    */
-  ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
+  ContractLine computeTotal(ContractLine contractLine, Contract contract) throws AxelorException;
 
   ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
       throws AxelorException;

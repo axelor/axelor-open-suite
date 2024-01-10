@@ -317,16 +317,19 @@ public final class AccountExceptionMessage {
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_SUM_AMOUNT = /*$$(*/
-      "The sum of all invoice terms is not equal to the move line amount" /*)*/;
+      "Move line %s: The sum of all invoice terms is not equal to the move line amount" /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT = /*$$(*/
-      "The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
+      "Move line %s: The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
       "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK_2 = /*$$(*/
       "There is at least a holdback move line but move payment condition is not defining any. Please manage invoice terms there manually." /*)*/;
+
+  public static final String MOVE_LINE_TAX_LINE_MISSING = /*$$(*/
+      "Tax line must be filled when an account of type tax is selected in order to be able to properly reconcile the payments (with the split of taxes included) : Please verify the move line(s) : %s." /*)*/;
 
   /* Invoice payment controller */
   public static final String INVOICE_PAYMENT_MISSING_TERM_LINE = /*$$(*/
@@ -757,11 +760,11 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_CONFIG_SEQUENCE_1 = /*$$(*/
       "%s : Please, configure a sequence for the customer invoices and the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_SEQUENCE_2 = /*$$(*/
-      "%s : Please, configure a sequence for the customer refunds and the company %s" /*)*/;
+      "%s : Please, configure a sequence for the customer credit notes and the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_SEQUENCE_3 = /*$$(*/
       "%s : Please, configure a sequence for the supplier invoices and the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_SEQUENCE_4 = /*$$(*/
-      "%s : Please, configure a sequence for the supplier refunds and the company %s" /*)*/;
+      "%s : Please, configure a sequence for the supplier credit notes and the company %s" /*)*/;
   public static final String ACCOUNT_CONFIG_SEQUENCE_5 = /*$$(*/
       "%s : Please, configure a sequence for the fixed assets and the company %s" /*)*/;
 
@@ -861,13 +864,13 @@ public final class AccountExceptionMessage {
       "Their is at least one invoice selected that it is not validated to pay" /*)*/;
 
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PURCHASE = /*$$(*/
-      "This invoice/refund indicates that the supplier offers the possibility to obtain a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
+      "This invoice/credit note indicates that the supplier offers the possibility to obtain a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
 
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_SALE = /*$$(*/
-      "This invoice/refund indicates that the customer is eligible to a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
+      "This invoice/credit note indicates that the customer is eligible to a financial discount but the system does not support at the moment financial discount on invoices in a currency different from the company currency. Please remove the invoice financial discount settings on the invoice to proceed." /*)*/;
 
   public static final String INVOICE_MULTI_CURRENCY_FINANCIAL_DISCOUNT_PARTNER = /*$$(*/
-      "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/refunds in a currency different from the company currency." /*)*/;
+      "Please be aware that the selected %s offers financial discounts but the system does not support at the moment financial discount on invoices/credit notes in a currency different from the company currency." /*)*/;
 
   public static final String INVOICE_PFP_VALIDATOR_USER_MISSING = /*$$(*/
       "At least one pfp validator is missing, do you wish to continue ?" /*)*/;
@@ -931,9 +934,6 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
       "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
-
-  public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
-      "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
 
   public static final String INVOICE_PAYMENT_CANNOT_RECONCILE = /*$$(*/
       "Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s." /*)*/;
@@ -1043,7 +1043,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_2 = /*$$(*/ "Credit note created" /*)*/;
   public static final String INVOICE_3 = /*$$(*/ "Please select the invoice(s) to print." /*)*/;
-  public static final String INVOICE_4 = /*$$(*/ "Refunds from invoice %s" /*)*/;
+  public static final String INVOICE_4 = /*$$(*/ "Credit notes from invoice %s" /*)*/;
 
   public static final String INVOICE_NO_INVOICE_TO_PAY = /*$$(*/ "No invoice to pay" /*)*/;
 
@@ -1062,8 +1062,11 @@ public final class AccountExceptionMessage {
   public static final String ACCOUNT_RECONCILABLE_USE_FOR_PARTNER_BALANCE = /*$$(*/
       "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance." /*)*/;
 
+  public static final String ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK = /*$$(*/
+      "Please make sure that the account %s being used can be reconciled and used for partner balance." /*)*/;
+
   public static final String INVOICE_INVOICE_TERM_AMOUNT_MISMATCH = /*$$(*/
-      "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/refund" /*)*/;
+      "The sum of invoice payment term amount must be equal to total amount tax included of the invoice/credit note" /*)*/;
 
   public static final String INVOICE_INVOICE_TERM_PERCENTAGE_MISMATCH = /*$$(*/
       "The sum of invoice payment term lines must be equal to 100%" /*)*/;
@@ -1076,9 +1079,6 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_INVOICE_TERM_HOLD_BACK_DELETION_PROHIBITED = /*$$(*/
       "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back." /*)*/;
-
-  public static final String INVOICE_INVOICE_TERM_ACCOUNT = /*$$(*/
-      "The invoice's partner account doesn't have invoice terms activated. Ventilating an invoice is not possible with an account without invoice terms." /*)*/;
 
   public static final String INVOICE_INVOICE_TERM_MULTIPLE_LINES_NO_MULTI = /*$$(*/
       "Payment condition used for invoice term generation contains multiple lines but corresponding multi invoice term config is not enabled." /*)*/;
@@ -1186,9 +1186,9 @@ public final class AccountExceptionMessage {
 
   /* Check refunds */
   public static final String INVOICE_NOT_IMPUTED_CLIENT_REFUNDS = /*$$(*/
-      "Note: there are existing not imputed client refunds."; /*)*/
+      "Note: there are existing not imputed client credit notes."; /*)*/
   public static final String INVOICE_NOT_IMPUTED_SUPPLIER_REFUNDS = /*$$(*/
-      "Note: there are existing not imputed supplier refunds."; /*)*/
+      "Note: there are existing not imputed supplier credit notes."; /*)*/
 
   public static final String FIXED_ASSET_DISPOSAL_DATE_ERROR_1 = /*$$(*/
       "Disposal date must be after the date of the last depreciation." /*)*/;
@@ -1457,7 +1457,7 @@ public final class AccountExceptionMessage {
       "The period of the move is closed or temporary closed and can not be accounted" /*)*/;
 
   public static final String PAYMENT_SESSION_HOLD_BACK_MIXED_WITH_REFUND = /*$$(*/
-      "Holdback invoice term cannot be reconciled with refund invoice term, please unselect refund invoice terms in order to continue." /*)*/;
+      "Holdback invoice term cannot be reconciled with credit note invoice term, please unselect credit note invoice terms in order to continue." /*)*/;
 
   public static final String MOVE_14 = /*$$(*/
       "The functional origin %s of the account move %s is not allowed on the journal %s (%s)" /*)*/;
@@ -1468,8 +1468,11 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
 
-  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+  public static final String BATCH_NO_LINE = /*$$(*/
       "You must select at least one line to validate" /*)*/;
+
+  public static final String BATCH_NO_PREVIEW = /*$$(*/
+      "This batch does not support the preview feature." /*)*/;
 
   public static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
       "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;
@@ -1482,19 +1485,6 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX = /*$$(*/
       "No account found for Tax: %s (company: %s)" /*)*/;
-
-  public static final String
-      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an allowed financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_ALLOWED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an allowed financial discount account on payments for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an obtained financial discount account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
-  public static final String
-      ACCOUNT_MANAGEMENT_OBTAINED_FINANCIAL_DISCOUNT_TAX_VAT_SYSTEM_2_ACCOUNT_MISSING_TAX = /*$$(*/
-          "Please select an obtained financial discount account on payments for Tax: %s (company: %s)" /*)*/;
 
   public static final String ACCOUNT_MANAGEMENT_SALE_TAX_VAT_SYSTEM_1_ACCOUNT_MISSING_TAX = /*$$(*/
       "Please select a sale account on deliveries/invoice for Tax: %s (company: %s)" /*)*/;
@@ -1519,7 +1509,7 @@ public final class AccountExceptionMessage {
       "Please select a financial discount account for Tax: %s (company: %s)" /*)*/;
 
   public static final String BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION = /*$$(*/
-      "The bank statement cannot be removed because of bank reconciliation, please remove those references %s" /*)*/;
+      "The bank statement cannot be removed because of at least a bank reconciliation record attached. Please remove the following reference(s) : %s" /*)*/;
   public static final String
       BANK_STATEMENT_CANNOT_BE_REMOVED_BECAUSE_BANK_RECONCILIATION_LINE = /*$$(*/
           "The bank statement cannot be removed because of bank reconciliation line, please remove those references %s" /*)*/;

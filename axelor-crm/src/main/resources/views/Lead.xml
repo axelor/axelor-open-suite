@@ -25,30 +25,29 @@
          <>
          	<h4>{simpleFullName}</h4>
          	{user && <Image src={$image('user', 'image')}></Image>}
-         	<Box mt={4}/>
-         	<dl>
+         	<Box as="dl" mt={4}>
          		{enterpriseName &&
          			<Box>
          				<dt>{_t('Enterprise Name')}</dt>
-         				<dd>{enterpriseName}</dd>
+         				<Box as="dd" ms={2}>{enterpriseName}</Box>
          			</Box>
          		}
          		{nextScheduledEventDateT &&
-         			<Box>
-         				<Icon icon="clock"/> {$moment(nextScheduledEventDateT).format('YYYY-MM-DD HH:mm:ss')}
-         			</Box>
+         			<dt>
+         				<Icon icon="clock" fontSize="15px"/> {$moment(nextScheduledEventDateT).format('YYYY-MM-DD HH:mm:ss')}
+         			</dt>
          		}
          		<Box>
          			<dt>{_t('Lead scoring')}</dt>
-         			<dd>
-         				{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning"/>)}
-         				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning"/>)}
-         			</dd>
+         			<Box as="dd" ms={2}>
+         				{Array(leadScoringSelect).fill(<Icon icon="star-fill" color="warning" fontSize="15px"/>)}
+         				{Array(5-leadScoringSelect).fill(<Icon icon="star" color="warning" fontSize="15px"/>)}
+         			</Box>
          		</Box>
-         	</dl>
+         	</Box>
 	        <Box className="card-summary popover">
 	       		<Box as="p" m={2}>
-	        		{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ height: 100, wordBreak: "break-all", maxWidth: 250 }}></Box>}
+	        		{description && <Box dangerouslySetInnerHTML={{__html : description}} style={{ wordBreak: "break-all", maxWidth: 250 }}></Box>}
 	        	</Box>
 	        </Box>
          </>
@@ -466,11 +465,13 @@
       expr="eval: primaryCity.department.region" for="primaryState"/>
     <attribute if="eval: primaryCity?.country" name="value"
       expr="eval: primaryCity.country" for="primaryCountry"/>
+    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
     <attribute name="readonly" expr="eval: primaryCity?.department?.region ? true: false"
       for="primaryState"/>
     <attribute name="readonly" expr="eval: primaryCity?.country ? true: false"
       for="primaryCountry"/>
-    <attribute name="value" for="primaryPostalCode" expr="eval: primaryCity?.zip"/>
+    <attribute name="readonly" expr="eval: primaryCity?.zip ? true: false"
+      for="primaryPostalCode"/>
   </action-attrs>
 
   <action-view name="action-lead-view-lose" model="com.axelor.apps.crm.db.Lead"
@@ -580,6 +581,7 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.eventLead.id = :_leadId </domain>
     <context name="_leadId" expr="eval: __id__"/>
   </action-view>

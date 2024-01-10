@@ -34,7 +34,8 @@ public interface BudgetInvoiceLineService {
    * @param invoiceLine
    * @return String
    */
-  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine);
+  public String computeBudgetDistribution(Invoice invoice, InvoiceLine invoiceLine)
+      throws AxelorException;
 
   /**
    * Take all budget distribution and throw an error if the total amount of budget distribution is
@@ -48,4 +49,6 @@ public interface BudgetInvoiceLineService {
   public void computeBudgetDistributionSumAmount(InvoiceLine invoiceLine, Invoice invoice);
 
   String getBudgetDomain(Invoice invoice, InvoiceLine invoiceLine);
+
+  void negateAmount(InvoiceLine invoiceLine, Invoice invoice);
 }

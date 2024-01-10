@@ -49,10 +49,10 @@ public class BudgetDistributionController {
       Context parentContext = request.getContext().getParent();
       Context grandParentContext = null;
       LocalDate date = null;
-      if (parentContext == null) {
+      if (parentContext == null || budgetDistribution.getBudget() == null) {
         return;
       }
-      grandParentContext = request.getContext().getParent().getParent();
+      grandParentContext = parentContext.getParent();
       if (grandParentContext == null) {
         return;
       }
@@ -65,15 +65,13 @@ public class BudgetDistributionController {
                   ? invoice.getInvoiceDate()
                   : Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
         }
-      }
-      if (PurchaseOrderLine.class.equals(parentContext.getContextClass())
+      } else if (PurchaseOrderLine.class.equals(parentContext.getContextClass())
           && budgetDistribution.getBudget() != null) {
         PurchaseOrder purchaseOrder = grandParentContext.asType(PurchaseOrder.class);
         if (purchaseOrder != null && purchaseOrder.getOrderDate() != null) {
           date = purchaseOrder.getOrderDate();
         }
-      }
-      if (MoveLine.class.equals(parentContext.getContextClass())
+      } else if (MoveLine.class.equals(parentContext.getContextClass())
           && budgetDistribution.getBudget() != null) {
         Move move = grandParentContext.asType(Move.class);
         if (move != null && move.getDate() != null) {
@@ -81,18 +79,20 @@ public class BudgetDistributionController {
         } else {
           date = parentContext.asType(MoveLine.class).getDate();
         }
+      } else if (SaleOrderLine.class.equals(parentContext.getContextClass())
+          && budgetDistribution.getBudget() != null) {
+        SaleOrder saleOrder = grandParentContext.asType(SaleOrder.class);
+        if (saleOrder != null) {
+          date =
+              saleOrder.getOrderDate() != null
+                  ? saleOrder.getOrderDate()
+                  : saleOrder.getCreationDate();
+        }
       }
 
       Beans.get(BudgetDistributionService.class)
           .computeBudgetDistributionSumAmount(budgetDistribution, date);
       response.setValues(budgetDistribution);
-
-      if (SaleOrderLine.class.equals(parentContext.getContextClass())
-          && budgetDistribution.getBudget() != null) {
-        budgetDistribution.setBudgetAmountAvailable(
-            budgetDistribution.getBudget().getAvailableAmount());
-        response.setValues(budgetDistribution);
-      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -106,9 +106,11 @@ public class BudgetDistributionController {
       if (parentContext != null
           && PurchaseOrderLine.class.equals(parentContext.getContextClass())) {
         PurchaseOrderLine purchaseOrderLine = parentContext.asType(PurchaseOrderLine.class);
-        PurchaseOrder purchaseOrder = null;
+        PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-        if (PurchaseOrder.class.equals(parentContext.getParent().getContextClass())) {
+        if (purchaseOrder == null
+            && parentContext.getParent() != null
+            && PurchaseOrder.class.equals(parentContext.getParent().getContextClass())) {
           purchaseOrder = parentContext.getParent().asType(PurchaseOrder.class);
         }
         query =
@@ -116,13 +118,12 @@ public class BudgetDistributionController {
                 .getBudgetDomain(purchaseOrderLine, purchaseOrder);
 
       } else if (parentContext != null && MoveLine.class.equals(parentContext.getContextClass())) {
-        Move move = null;
         MoveLine moveLine = parentContext.asType(MoveLine.class);
-        if (parentContext.getParent() != null
+        Move move = moveLine.getMove();
+        if (move == null
+            && parentContext.getParent() != null
             && Move.class.equals(parentContext.getParent().getContextClass())) {
           move = parentContext.getParent().asType(Move.class);
-        } else if (parentContext.asType(MoveLine.class).getMove() != null) {
-          move = parentContext.asType(MoveLine.class).getMove();
         }
         query = Beans.get(MoveLineBudgetService.class).getBudgetDomain(move, moveLine);
 
@@ -130,14 +131,24 @@ public class BudgetDistributionController {
           && InvoiceLine.class.equals(parentContext.getContextClass())) {
 
         if (Invoice.class.equals(parentContext.getParent().getContextClass())) {
-          Invoice invoice = parentContext.getParent().asType(Invoice.class);
           InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
+          Invoice invoice = invoiceLine.getInvoice();
+          if (invoice == null
+              && parentContext.getParent() != null
+              && Invoice.class.equals(parentContext.getParent().getContextClass())) {
+            invoice = parentContext.getParent().asType(Invoice.class);
+          }
           query = Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine);
         }
       } else if (parentContext != null
           && SaleOrderLine.class.equals(parentContext.getContextClass())) {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
-        SaleOrder saleOrder = parentContext.getParent().asType(SaleOrder.class);
+        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+        if (saleOrder == null
+            && parentContext.getParent() != null
+            && SaleOrder.class.equals(parentContext.getParent().getContextClass())) {
+          saleOrder = parentContext.getParent().asType(SaleOrder.class);
+        }
         query =
             Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }

@@ -18,22 +18,6 @@
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
 
-  <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
-
-  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId" update="true"
-    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
-    call="com.axelor.csv.script.ImportAccount:importAccount">
-    <bind to="importId" column="importId"/>
-    <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
-      update="true">
-      <bind to="code" column="parent_code"/>
-    </bind>
-    <bind column="compatibleAccounts" to="compatibleAccountSet"
-      search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
-  </input>
-
   <input file="account_taxEquiv.csv" separator=";" type="com.axelor.apps.account.db.TaxEquiv"
     search="self.fiscalPosition.code = :fiscalPosition_code AND self.fromTax.code = :fromTax_code AND self.toTax.code = :toTax_code"/>
 
@@ -191,22 +175,6 @@
       search="self.code = :chequeDepositJournal_code and self.company.importId = :company_id"
       to="chequeDepositJournal" update="true" if="chequeDepositJournal_code"/>
     <bind
-      search="self.code = :allowedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
-      to="allowedFinDiscountTaxVatSystem1Account" update="true"
-      if="allowedFinDiscountTaxVatSystem1Account_code"/>
-    <bind
-      search="self.code = :allowedFinDiscountTaxVatSystem2Account_code and self.company.importId = :company_id"
-      to="allowedFinDiscountTaxVatSystem2Account" update="true"
-      if="allowedFinDiscountTaxVatSystem2Account_code"/>
-    <bind
-      search="self.code = :obtainedFinDiscountTaxVatSystem1Account_code and self.company.importId = :company_id"
-      to="obtainedFinDiscountTaxVatSystem1Account" update="true"
-      if="obtainedFinDiscountTaxVatSystem1Account_code"/>
-    <bind
-      search="self.code = :obtainedFinDiscountTaxVatSystem2Account_code and self.company.importId = :company_id"
-      to="obtainedFinDiscountTaxVatSystem2Account" update="true"
-      if="obtainedFinDiscountTaxVatSystem2Account_code"/>
-    <bind
       search="self.code = :purchFixedAssetsTaxVatSystem1Account_code and self.company.importId = :company_id"
       to="purchFixedAssetsTaxVatSystem1Account" update="true"
       if="purchFixedAssetsTaxVatSystem1Account_code"/>
@@ -235,7 +203,32 @@
     type="com.axelor.apps.account.db.AnalyticJournal" search="self.importId = :importId"/>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId">
+    <bind column="temporaryClosureAuthorizedRoleList" to="temporaryClosureAuthorizedRoleList"
+      search="self.name in :temporaryClosureAuthorizedRoleList"
+      eval="temporaryClosureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="moveOnTempClosureAuthorizedRoleList" to="moveOnTempClosureAuthorizedRoleList"
+      search="self.name in :moveOnTempClosureAuthorizedRoleList"
+      eval="moveOnTempClosureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="closureAuthorizedRoleList" to="closureAuthorizedRoleList"
+      search="self.name in :closureAuthorizedRoleList"
+      eval="closureAuthorizedRoleList.split('\\|') as List"/>
+    <bind column="clearanceAccountSet" to="clearanceAccountSet"
+      search="self.code in :clearanceAccountSet" eval="clearanceAccountSet.split('\\|') as List"/>
+  </input>
+
+  <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
+    search="self.importId = :importId" update="true"
+    prepare-context="com.axelor.csv.script.ImportAccount:resetLineNo"
+    call="com.axelor.csv.script.ImportAccount:importAccount">
+    <bind to="importId" column="importId"/>
+    <bind to="parentAccount" search="self.code = :parent_code AND self.company.id = 1"
+      update="true">
+      <bind to="code" column="parent_code"/>
+    </bind>
+    <bind column="compatibleAccounts" to="compatibleAccountSet"
+      search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
+  </input>
 
   <input file="account_debtRecoveryConfigLine.csv" separator=";"
     type="com.axelor.apps.account.db.DebtRecoveryConfigLine"/>

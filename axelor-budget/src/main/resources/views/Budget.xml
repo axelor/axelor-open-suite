@@ -4,55 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="budget-grid" title="Budget Line" model="com.axelor.apps.budget.db.Budget"
-    orderBy="code">
-    <field name="totalAmountExpected" aggregate="sum"/>
-    <field name="budgetLevel"/>
-    <field name="name"/>
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="fromDate"/>
-    <field name="toDate"/>
-    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="statusSelect"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="typeSelect"/>
-    <field name="sourceSelect"/>
-    <field name="inChargeUser" hidden="true"/>
-  </grid>
-
-  <grid name="budget-lines-template-grid" title="Budgets"
-    model="com.axelor.apps.budget.db.Budget" edit-icon="true" canNew="false" orderBy="code">
-    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-    <field name="name"/>
-    <field name="budgetLevel"/>
-  </grid>
-
-  <grid model="com.axelor.apps.budget.db.Budget" title="Budgets" name="budget-detailed-grid"
-    orderBy="budgetLevel.parentBudgetLevel.globalBudget,budgetLevel.parentBudgetLevel,budgetLevel"
-    groupBy="budgetLevel.parentBudgetLevel.globalBudget,budgetLevel.parentBudgetLevel,budgetLevel">
-    <field name="code" x-bind="{{code|unaccent|uppercase}}" readonlyIf="!$popup()"/>
-    <field name="name" readonlyIf="!$popup()"/>
-    <field name="inChargeUser"/>
-    <field name="fromDate" readonlyIf="!$popup()"/>
-    <field name="toDate" readonlyIf="!$popup()"/>
-    <field name="totalAmountExpected" aggregate="sum" title="Initial"/>
-    <field name="totalAmountCommitted" title="Total amount committed" aggregate="sum"/>
-    <field name="totalFirmGap" aggregate="sum"/>
-    <field name="realizedWithNoPo" aggregate="sum"/>
-    <field name="realizedWithPo" aggregate="sum"/>
-    <field name="simulatedAmount" aggregate="sum"/>
-    <field name="availableAmountWithSimulated" aggregate="sum"/>
-    <field name="availableAmount" title="Total amount available" aggregate="sum"/>
-    <field name="statusSelect"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget.budgetTypeSelect"/>
-    <field name="sourceSelect"/>
-    <field name="budgetLevel" hidden="true"/>
-    <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"/>
-    <field name="budgetLevel.parentBudgetLevel.globalBudget.versionNumber"/>
-  </grid>
-
-  <grid name="budget-lines-grid" title="Budgets" model="com.axelor.apps.budget.db.Budget"
-    edit-icon="true" canNew="false" orderBy="budgetLevel.id,code">
+    orderBy="budgetLevel.id,code">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
@@ -64,90 +16,52 @@
     <field name="toDate"/>
   </grid>
 
-  <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
-    width="large" onNew="budget-action-budget-group-onnew"
-    onLoad="budget-action-budget-group-onload"
-    onSave="budget-action-method-create-check-budget-key,budget-action-method-create-check-dates-on-budget">
+  <grid name="budget-lines-template-grid" title="Budgets"
+    model="com.axelor.apps.budget.db.Budget" edit-icon="true" canNew="false" orderBy="code">
+    <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="name"/>
+    <field name="budgetLevel"/>
+  </grid>
 
-    <panel name="mainPanel">
-      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
-        readonly="true" hidden="true"/>
-      <field name="fullName" hidden="true" showTitle="false" colSpan="12"/>
-      <field name="code" required="true" colSpan="2"/>
-      <field name="name" required="true" colSpan="4"/>
-      <field name="budgetLevel" readonlyIf="$popup()" colSpan="3" requiredIf="!$popup()"
-        onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-        domain="self.parentBudgetLevel != null" form-view="budget-section-budget-level-form"/>
-      <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-        colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
-      <field name="typeSelect" colSpan="3"/>
-      <field name="sourceSelect" colSpan="3"/>
-      <field name="budgetKey" colSpan="6" readonly="true"/>
-      <field name="category" colSpan="4"/>
-      <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
-        onChange="action-budget-budget-validate-dates" required="true"/>
-      <field name="toDate" colSpan="4" readonlyIf="statusSelect == 2"
-        onChange="action-budget-budget-validate-dates" required="true"/>
-      <field name="company" hidden="true"/>
-      <field name="company.currency" hidden="true"/>
-    </panel>
+  <tree name="budget-tree" title="Budget Levels">
+    <column name="name" type="string"/>
+    <column name="code" type="string"/>
+    <column name="totalAmountExpected"/>
+    <column name="totalAmountCommitted"/>
+    <column name="totalFirmGap"/>
+    <column name="realizedWithNoPo"/>
+    <column name="realizedWithPo"/>
+    <column name="simulatedAmount"/>
+    <column name="availableAmountWithSimulated"/>
 
-    <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" title="Initial"
-      itemSpan="3">
+    <node model="com.axelor.apps.budget.db.BudgetLevel"
+      domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "
+      onClick="action-budget-view-budget-level">
+      <field as="name" name="name"/>
+      <field as="code" name="code"/>
       <field name="totalAmountExpected"/>
-      <field name="availableAmount"/>
-      <field name="availableAmountWithSimulated"/>
-      <field name="simulatedAmount"/>
-      <field name="totalAmountCommitted" if-module="axelor-supplychain"
-        if="__config__.app.isApp('supplychain')"/>
+      <field name="totalAmountCommitted"/>
+      <field name="totalFirmGap"/>
       <field name="realizedWithNoPo"/>
       <field name="realizedWithPo"/>
-      <field name="totalAmountPaid"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmountWithSimulated"/>
+    </node>
+    <node model="com.axelor.apps.budget.db.BudgetLevel" parent="parentBudgetLevel"
+      onClick="action-budget-view-budget-level">
+      <field as="name" name="name"/>
+      <field as="code" name="code"/>
+      <field name="totalAmountExpected"/>
+      <field name="totalAmountCommitted"/>
       <field name="totalFirmGap"/>
-      <field name="totalAmountRealized" hidden="true"/>
-      <separator colSpan="12"/>
-    </panel>
+      <field name="realizedWithNoPo"/>
+      <field name="realizedWithPo"/>
+      <field name="simulatedAmount"/>
+      <field name="availableAmountWithSimulated"/>
+    </node>
+  </tree>
 
-    <panel>
-      <static name="$periodNotAvailable" colSpan="12" hidden="true">
-        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
-    </panel>
-    <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-      colSpan="12" readonlyIf="statusSelect != 1">
-      <field name="periodDurationSelect" colSpan="4"/>
-      <field name="amountForGeneration" colSpan="4"/>
-      <button name="generatePeriodsBtn" title="Generate periods"
-        onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
-      <separator colSpan="12"/>
-    </panel>
-
-    <panel-related name="budgetLineListPanel" field="budgetLineList"
-      onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect == 2"/>
-
-    <panel readonlyIf="statusSelect != 1">
-      <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
-        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
-      <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onChange="action-axis-change-remove-account"
-        onSelect="action-method-budget-analytic-axis-set-domain"/>
-      <field name="analyticAccount" grid-view="analytic-account-grid"
-        form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
-        onSelect="action-method-budget-analytic-account-set-domain"/>
-      <panel-related name="accountModelSetPanel" field="accountModelSet"
-        form-view="account-model-form" grid-view="account-model-grid" colSpan="12" hidden="true"
-        canNew="false" canEdit="false"/>
-    </panel>
-
-    <panel name="followUpPanel" title="Follow-up" canCollapse="true" sidebar="true"
-      collapseIf="true">
-      <field name="inChargeUser" canNew="false" canView="false" canEdit="false"/>
-    </panel>
-    <panel name="configuration" title="Configuration" canCollapse="true" sidebar="true"
-      collapseIf="true" readonlyIf="statusSelect == 2">
-    </panel>
-  </form>
-
-  <form name="budget-included-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
+  <form name="budget-form" title="Budget" model="com.axelor.apps.budget.db.Budget"
     width="large" onNew="budget-action-budget-group-onnew"
     onLoad="budget-action-budget-group-onload"
     onSave="budget-action-method-create-check-budget-key,budget-action-method-create-check-dates-on-budget"
@@ -159,27 +73,25 @@
         <field name="code" required="true" colSpan="2"
           onChange="budget-action-method-budget-manage-budget-key"/>
         <field name="name" required="true" colSpan="4"/>
-        <field name="budgetLevel" form-view="budget-section-budget-level-form"
+        <field name="budgetLevel" form-view="budget-level-form"
+          requiredIf="(globalBudget.budgetLevelList &amp;&amp; globalBudget.budgetLevelList.length &gt; 0)"
           onChange="action-budget-record-set-default-values-budget-level,budget-action-method-budget-manage-budget-key"
-          readonlyIf="$popup()" requiredIf="!$popup()" colSpan="3"
-          domain="self.parentBudgetLevel != null AND self.parentBudgetLevel.globalBudget.id = :globalId"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget" title="Global budget"
-          colSpan="3" grid-view="global-budget-grid" form-view="global-budget-form"/>
+          readonlyIf="$popup()" colSpan="3" onSelect="action-budget-method-get-budget-level-domain"/>
+        <field name="globalBudget" title="Global budget" colSpan="3" readonly="true"
+          grid-view="global-budget-grid" form-view="global-budget-form"/>
         <field name="budgetKey" colSpan="12" readonly="true"/>
         <field name="category" colSpan="4"/>
         <field name="fromDate" colSpan="4" readonlyIf="statusSelect == 2"
           onChange="action-budget-budget-validate-dates" required="true"/>
         <field name="toDate" colSpan="4" readonlyIf="statusSelect == 2"
           onChange="action-budget-budget-validate-dates" required="true"/>
-        <field name="$globalId" hidden="true"/>
         <field name="statusSelect" hidden="true"/>
-        <field name="budgetLevel.parentBudgetLevel" hidden="true"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget" hidden="true"/>
-        <field name="budgetLevel.parentBudgetLevel.globalBudget.statusSelect" hidden="true"/>
+        <field name="globalBudget.budgetLevelList" hidden="true"/>
+        <field name="globalBudget.statusSelect" hidden="true"/>
       </panel>
       <panel name="budgetDistributionLineOrderLineBtnPanel"
         if="__config__.app.isApp('supplychain')" colSpan="3" stacked="true" hidden="true"
-        showIf="budgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel != null &amp;&amp; budgetLevel.parentBudgetLevel.globalBudget.statusSelect == 2">
+        showIf="globalBudget != null &amp;&amp; globalBudget.statusSelect == 2">
         <button name="showBudgetDistributionLineOrderLineBtn"
           showIf="totalAmountCommitted &gt; 0 || totalAmountRealized &gt; 0"
           onClick="action-budget-group-view-budget-distribution-order-line"
@@ -196,7 +108,7 @@
       </panel>
 
       <static name="$periodNotAvailable" colSpan="12" hidden="true">
-        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
+        <![CDATA[<><Badge bg="warning">You need to save the budget before manage budget lines on periods</Badge></>]]></static>
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
         colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
         <field name="periodDurationSelect" colSpan="4"/>
@@ -303,7 +215,7 @@
   </action-validate>
 
   <action-group name="budget-action-budget-group-onnew">
-    <action name="action-budget-record-on-new"/>
+    <action name="action-budget-method-on-new"/>
     <action name="budget-action-budget-attrs-set-attrs"/>
     <action name="budget-action-method-show-period-fields"/>
     <action name="budget-action-method-budget-manage-budget-key"/>
@@ -323,7 +235,7 @@
       expr="eval: !(typeSelect == com.axelor.apps.budget.db.repo.BudgetRepository.BUDGET_TYPE_SELECT_TEMPLATE)"/>
     <attribute name="title" for="availableAmount"
       expr="eval: com.axelor.i18n.I18n.get('Remains for sale')"
-      if="budgetLevel?.parentBudgetLevel?.globalBudget?.budgetTypeSelect == 2"/>
+      if="globalBudget?.budgetTypeSelect == 2"/>
     <attribute for="code" name="focus" expr="true"/>
   </action-attrs>
 
@@ -335,27 +247,6 @@
       expr="eval: _toDate ? _toDate : __parent__?.toDate != null ? __parent__?.toDate : toDate"/>
     <field name="inChargeUser"
       expr="eval: budgetLevel?.parentBudgetLevel?.parentBudgetLevel?.budgetManager"/>
-  </action-record>
-
-  <action-record name="action-budget-record-on-new"
-    model="com.axelor.apps.budget.db.Budget">
-    <field name="company" expr="eval: _parent?.company ?: __user__.activeCompany"/>
-    <field name="inChargeUser"
-      expr="eval: _parent?._parent?._parent?.budgetManager != null ? _parent?._parent?._parent.budgetManager : __user__"/>
-    <field name="typeSelect" expr="eval: _typeSelect"/>
-    <field name="typeSelect" expr="eval: _parent?._parent?._parent?.typeSelect"
-      if="_parent?._parent?._parent"/>
-    <field name="sourceSelect" expr="eval: _parent?._parent?._parent?.sourceSelect"
-      if="_parent?._parent?._parent"/>
-    <field name="sourceSelect"
-      expr="eval: com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_SOURCE_CUSTOM"
-      if="(_typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET) || (_parent?.typeSelect == com.axelor.apps.budget.db.repo.BudgetLevelRepository.BUDGET_LEVEL_TYPE_SELECT_BUDGET)"/>
-    <field name="fromDate" expr="eval: _parent?.fromDate"/>
-    <field name="toDate" expr="eval: _parent?.toDate"/>
-    <field name="budgetLevel" expr="eval: _parent"
-      if="!budgetLevel &amp;&amp; (_parent?.code != null || _parent?.name != null)"/>
-    <field name="$globalId" expr="eval: _globalId" if="_globalId"/>
-    <field name="$globalId" expr="eval: 0" if="!_globalId"/>
   </action-record>
 
   <action-validate name="action-budget-budget-validate-dates">
@@ -411,6 +302,15 @@
   <action-method name="action-method-budget-analytic-account-set-domain">
     <call class="com.axelor.apps.budget.web.BudgetController" method="setAnalyticAccountDomain"/>
   </action-method>
+
+  <action-method name="action-budget-method-get-budget-level-domain">
+    <call class="com.axelor.apps.budget.web.BudgetController" method="getBudgetLevelDomain"/>
+  </action-method>
+
+  <action-method name="action-budget-method-on-new">
+    <call class="com.axelor.apps.budget.web.BudgetController" method="initializeValues"/>
+  </action-method>
+
 
   <action-validate name="action-budget-validate-exceed-line-amount-extax">
     <alert

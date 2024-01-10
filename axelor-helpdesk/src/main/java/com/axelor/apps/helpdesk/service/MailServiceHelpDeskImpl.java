@@ -20,13 +20,10 @@ package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.helpdesk.db.Ticket;
-import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.message.service.MailAccountService;
 import com.axelor.studio.app.service.AppService;
-import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import java.io.IOException;
 import javax.mail.MessagingException;
@@ -40,18 +37,6 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
   public MailServiceHelpDeskImpl(
       MailAccountService mailAccountService, AppBaseService appBaseService) {
     super(mailAccountService, appBaseService);
-  }
-
-  @Override
-  protected String getSubject(MailMessage message, Model entity) {
-    if (!(Ticket.class.isInstance(entity)) || !Beans.get(AppService.class).isApp("helpdesk")) {
-      return super.getSubject(message, entity);
-    }
-    Ticket ticket = (Ticket) entity;
-    if (!Strings.isNullOrEmpty(ticket.getMailSubject())) {
-      return ticket.getMailSubject();
-    }
-    return super.getSubject(message, entity);
   }
 
   @Override
