@@ -1,6 +1,6 @@
 "importId";"name";"code";"language.importId";"dateFormat";"numbersFormat";"country.importId"
-1;"English (UNITED-KINGDOM)";"en_GB";1;"DD/MM/YYYY";"#,###.00";148
-2;"French (FRANCE)";"fr_FR";2;"DD/MM/YYYY";"#,###.00";67
-3;"French (CANADA)";"fr_CA";2;"YYYY-MM-DD";"#,###.00";35
-4;"English (CANADA)";"en_CA";1;"YYYY-MM-DD";"#,###.00";35
-5;"English (UNITED STATES OF AMERICA)";"en_US";1;"MM/DD/YYYY";"#,###.00";62
+1;"English (UNITED-KINGDOM)";"en_GB";1;"dd/MM/yyyy";"#,###.00";148
+2;"French (FRANCE)";"fr_FR";2;"dd/MM/yyyy";"#,###.00";67
+3;"French (CANADA)";"fr_CA";2;"yyyy-MM-dd";"#,###.00";35
+4;"English (CANADA)";"en_CA";1;"yyyy-MM-dd";"#,###.00";35
+5;"English (UNITED STATES OF AMERICA)";"en_US";1;"MM/dd/yyyy";"#,###.00";62
