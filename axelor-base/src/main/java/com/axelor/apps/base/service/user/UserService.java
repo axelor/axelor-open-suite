@@ -116,6 +116,8 @@ public interface UserService {
 
   public String getLanguage();
 
+  public String getLocalizationCode();
+
   /**
    * Get user's active company address.
    *

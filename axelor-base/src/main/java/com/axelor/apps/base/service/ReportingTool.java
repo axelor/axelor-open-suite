@@ -20,7 +20,7 @@ package com.axelor.apps.base.service;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import java.util.Locale;
@@ -33,8 +33,8 @@ public class ReportingTool {
     // manage NPE using optional
     return Optional.ofNullable(AuthUtils.getUser())
         .map(User::getActiveCompany)
-        .map(Company::getLanguage)
-        .map(Language::getCode)
+        .map(Company::getLocalization)
+        .map(Localization::getCode)
         .map(Locale::new)
         .orElseGet(AppFilter::getLocale);
   }

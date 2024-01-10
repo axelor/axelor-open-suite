@@ -438,7 +438,8 @@
         </panel>
 
         <panel name="settingsPanel" title="Settings" colSpan="12">
-          <field name="language" colSpan="6" canEdit="false"/>
+          <field name="localization" colSpan="6" canEdit="false" grid-view="localization-grid"
+            form-view="localization-form"/>
           <field name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)"
             if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
             widget="boolean-switch" colSpan="12"/>
@@ -769,7 +770,8 @@
 
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
+      <field name="localization" canEdit="false" grid-view="localization-grid"
+        form-view="localization-form"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
@@ -1021,7 +1023,8 @@
     </panel-tabs>
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="language" canEdit="false"/>
+      <field name="localization" grid-view="localization-grid" form-view="localization-form"
+        canEdit="false"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
@@ -1369,8 +1372,8 @@
     model="com.axelor.apps.base.db.Partner">
     <field name="$positiveBalanceBtn"
       expr="eval: balance &lt; 0 ?
-		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format(balance * -1) :
-		java.text.NumberFormat.getInstance(new Locale(__user__.language)).format(balance)"
+		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance * -1) :
+		java.text.NumberFormat.getInstance(new Locale(__user__.localization?.code)).format(balance)"
       if="balance != null"/>
     <field name="$positiveBalanceBtn" expr="eval: 0" if="balance == null"/>
   </action-record>
@@ -1406,8 +1409,8 @@
     <field name="invoiceSendingFormatSelect" expr="#{'emailpaper'}" if="#{!isContact}"/>
     <field name="user" expr="#{__user__}"/>
     <field name="team" expr="#{__user__.activeTeam}"/>
-    <field name="language"
-      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="isCustomer" expr="true"
       if="_isCustomer || (__user__?.activeCompany?.defaultPartnerCategorySelect == 1 &amp;&amp; !_isSupplier &amp;&amp; !_isCarrier &amp;&amp; !_isSubcontractor)"/>
     <field name="isSupplier" expr="true"
@@ -1423,8 +1426,8 @@
     <field name="partnerTypeSelect" expr="#{2}"/>
     <field name="isContact" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
-    <field name="language"
-      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
@@ -1445,8 +1448,8 @@
     <field name="isContact" expr="#{false}"/>
     <field name="isEmployee" expr="#{true}"/>
     <field name="companySet" expr="#{__parent__.companySet}"/>
-    <field name="language"
-      expr="eval: __parent__ != null ? __parent__.language : __config__.app.getApp('base')?.getDefaultPartnerLanguage()"/>
+    <field name="localization"
+      expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
       if="#{__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"

@@ -651,7 +651,7 @@ left outer join (SELECT cast(meta_select_item.value as int) AS select_value, met
 	AND meta_select_item.select_id = meta_select.id) 
 AS Meta ON (Meta.select_value = Move.status_select)
 left outer join meta_translation as MetaTranslation
-ON MetaTranslation.message_key = Meta.select_title AND MetaTranslation.language = ?
+ON MetaTranslation.message_key = Meta.select_title AND MetaTranslation.language = substring(?, '^[a-zA-Z]+')
 where 
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
 (AccountingReport.date_from IS NULL OR MoveLine.date_val >= AccountingReport.date_from) AND
@@ -1174,7 +1174,7 @@ where AccountingReport.id = ? ]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
