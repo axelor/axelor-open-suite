@@ -19,7 +19,7 @@
 						</h3>
 					</>
 				]]></viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="name" showTitle="true"/>
         </editor>
       </field>
@@ -31,7 +31,7 @@
         <field name="partnerQuery" colSpan="12" showIf="partnerQueryTypeSelect == 1"/>
         <field name="partnerFilterList" colSpan="12" layout="table"
           showIf="partnerQueryTypeSelect == 0">
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <panel name="metaFieldPanel">
               <field name="metaField"
                 onSelect="action-target-list-partner-filters-field-domain" colSpan="4"
@@ -83,7 +83,7 @@
         <field name="leadQuery" colSpan="12" showIf="leadQueryTypeSelect == 1"/>
         <field name="leadFilterList" colSpan="12" layout="table"
           showIf="leadQueryTypeSelect == 0">
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <panel name="metaFieldPanel">
               <field name="metaField" onSelect="action-target-list-lead-filters-field-domain"
                 colSpan="4" widget="SuggestBox" required="true"

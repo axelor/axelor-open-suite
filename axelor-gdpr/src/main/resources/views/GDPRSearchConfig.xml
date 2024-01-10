@@ -20,7 +20,7 @@
       </help>
 
       <field name="searchConfigLineList" colSpan="12" showTitle="false">
-        <editor colSpan="12">
+        <editor x-viewer="true" colSpan="12">
           <field name="key" colSpan="4"/>
           <field name="query" colSpan="4"/>
           <field name="mapping" colSpan="4"/>

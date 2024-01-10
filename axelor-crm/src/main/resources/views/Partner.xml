@@ -75,7 +75,7 @@
       <replace>
         <field name="simpleFullName" showTitle="false" colSpan="7" css="label-bold bold large">
           <hilite color="primary" strong="true" if="true"/>
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <field name="partnerTypeSelect" showTitle="false" colSpan="12"
               placeholder="Partner Type" onChange="action-partner-group-type-select-onchange"/>
             <panel name="companyPartnerNamePanel" showIf="partnerTypeSelect == 1" colSpan="12">
@@ -287,7 +287,7 @@
     <extend target="//field[@name='simpleFullName']">
       <replace>
         <field name="simpleFullName" showTitle="false" colSpan="12" css="bold">
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <field name="titleSelect" colSpan="2" placeholder="Civility" selection-in="[1,2]"/>
             <field name="firstName" colSpan="5" css="highlight" placeholder="First name"
               onChange="action-group-base-partner-contact-name-onchange"/>

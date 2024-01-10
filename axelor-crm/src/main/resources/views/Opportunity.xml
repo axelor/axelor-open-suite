@@ -135,7 +135,7 @@
                  		<Box as="h3" fontWeight="bold" mt={2}>{opportunitySeq}</Box>
                  	</>
               	]]></viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
         </editor>
       </field>

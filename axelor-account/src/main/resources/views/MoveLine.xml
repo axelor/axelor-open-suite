@@ -743,7 +743,7 @@
           <viewer>
 			<![CDATA[<><span>{currencyRate}</span> x <span>{currencyAmount}</span> <span>{move.currencyCode}</span></>]]>
           </viewer>
-          <editor colSpan="12" layout="table" x-show-titles="false">
+          <editor colSpan="12" layout="table" x-show-titles="false" x-viewer="true">
             <field name="currencyRate"
               onChange="action-move-line-method-currency-amount-rate-onchange" readonly="true"/>
             <field name="currencyAmount"

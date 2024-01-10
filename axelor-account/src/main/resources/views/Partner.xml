@@ -46,7 +46,7 @@
                   </dl>
               </>
         ]]></viewer>
-        <editor onNew="action-set-default-partner" x-show-on-new="false">
+        <editor onNew="action-set-default-partner" x-show-on-new="false" x-viewer="true">
           <field name="ownerName"/>
           <field name="iban"/>
           <field name="bank" canNew="true"/>
@@ -92,7 +92,7 @@
       <field name="blockingList" colSpan="12" title="Blockings" showIf="!$readonly()">
         <editor x-show-on-new="false"
           onNew="action-blocking-record-default-companies,action-blocking-record-realized-by"
-          colSpan="12">
+          colSpan="12" x-viewer="true">
           <field name="companySet" colSpan="12" widget="TagSelect"
             onSelect="action-blocking-attrs-domain-companySet" canNew="false"/>
           <field name="blockingSelect" colSpan="12" selection="base.blocking.select"

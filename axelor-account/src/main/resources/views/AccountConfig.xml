@@ -323,7 +323,7 @@
             <field name="statementsForItemsCategoriesList" colSpan="12"
               title="Statements present in the invoice according to product types"
               help="You can define a statement for a specific combination of product types.">
-              <editor>
+              <editor x-viewer="true">
                 <field name="typeList" widget="MultiSelect" colSpan="4"/>
                 <field name="statement" colSpan="8" height="1"/>
               </editor>
@@ -387,7 +387,7 @@
       <panel name="cfonbPanel" title="CFONB"
         if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment">
         <field name="cfonbConfig" showTitle="false" colSpan="12">
-          <editor itemSpan="6">
+          <editor itemSpan="6" x-viewer="true">
             <field name="name" colSpan="8"/>
             <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="4"/>
           </editor>
@@ -395,8 +395,8 @@
         <panel name="cfonbExportPanel" title="CFONB Export" hidden="true"
           showIf="!$readonly()">
           <field name="cfonbConfig" showTitle="false" colSpan="12" canRemove="false"
-            canView="false" canNew="false" canSelect="false">
-            <editor itemSpan="6">
+            canNew="false" canSelect="false">
+            <editor itemSpan="6" x-viewer="true">
               <field name="senderRecordCodeExportCFONB"/>
               <field name="senderNumExportCFONB"/>
               <field name="senderNameCodeExportCFONB"/>
@@ -412,8 +412,8 @@
           showIf="!$readonly()">
 
           <field name="cfonbConfig" showTitle="false" colSpan="12" canRemove="false"
-            canView="false" canNew="false" canSelect="false">
-            <editor itemSpan="6">
+            canNew="false" canSelect="false">
+            <editor itemSpan="6" x-viewer="true">
               <field name="headerRecordCodeImportCFONB"/>
               <field name="detailRecordCodeImportCFONB"/>
               <field name="endingRecordCodeImportCFONB"/>

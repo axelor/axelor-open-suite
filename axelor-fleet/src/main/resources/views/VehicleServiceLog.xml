@@ -11,7 +11,7 @@
     model="com.axelor.apps.fleet.db.VehicleServiceLog" width="large">
     <panel name="mainPanel" title="Information">
       <field name="vehicle" title="Vehicle" hideIf="$popup()">
-        <editor>
+        <editor x-viewer="true">
           <field name="name" colSpan="12"/>
           <field name="vehicleOdometer"/>
         </editor>

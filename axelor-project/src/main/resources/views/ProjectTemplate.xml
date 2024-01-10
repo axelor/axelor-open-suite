@@ -15,7 +15,7 @@
     <panel name="mainPanel">
       <panel name="informationPanel" colSpan="12">
         <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <field name="name" showTitle="false" colSpan="9" css="label-bold bold large"/>
           </editor>
         </field>

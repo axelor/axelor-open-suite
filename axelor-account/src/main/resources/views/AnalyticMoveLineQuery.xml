@@ -34,7 +34,7 @@
         <field name="searchAnalyticMoveLineQueryParameterList"
           readonlyIf="!company || !fromDate || !toDate" colSpan="12">
           <editor x-show-on-new="false"
-            onNew="action-analytic-move-line-query-parameter-record-search-on-new">
+            onNew="action-analytic-move-line-query-parameter-record-search-on-new" x-viewer="true">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
               form-view="analytic-axis-form"
               onSelect="action-analytic-move-line-query-method-search-query-axis-domain"
@@ -51,7 +51,7 @@
           readonlyIf="!searchAnalyticMoveLineQueryParameterList.length" colSpan="12"
           showTitle="false">
           <editor x-show-on-new="false"
-            onNew="action-analytic-move-line-query-parameter-record-reverse-on-new">
+            onNew="action-analytic-move-line-query-parameter-record-reverse-on-new" x-viewer="true">
             <field name="analyticAxis" grid-view="analytic-axis-grid"
               form-view="analytic-axis-form"
               onSelect="action-analytic-move-line-query-method-reverse-query-axis-domain"

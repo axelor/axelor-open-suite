@@ -61,7 +61,7 @@
       </field>
       <panel name="progressPanel" colSpan="6" itemSpan="12">
         <field name="progressSelect" widget="SelectProgress">
-          <editor>
+          <editor x-viewer="true">
             <field name="progressSelect" colSpan="6" showTitle="false"/>
           </editor>
         </field>

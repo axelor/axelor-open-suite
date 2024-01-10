@@ -19,7 +19,7 @@
     onSave="action-sequence-group-onsave">
     <panel name="mainPanel">
       <field name="fullName" showTitle="false" css="label-bold bold large" colSpan="12">
-        <editor>
+        <editor x-viewer="true">
           <field name="name" showTitle="false" colSpan="6" css="label-bold bold large"
             placeholder="Name" onChange="action-sequence-method-compute-fullname"/>
         </editor>
