@@ -942,11 +942,11 @@
     <field name="timetableList" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="My RFQs">
+    <filter name="purchase-order-filters-my-rfqs" title="My RFQs">
       <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id =
         :_internalUser</domain>
     </filter>
-    <filter title="My Sales">
+    <filter name="purchase-order-filters-my-sales" title="My Sales">
       <domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id =
         :_internalUser</domain>
     </filter>
