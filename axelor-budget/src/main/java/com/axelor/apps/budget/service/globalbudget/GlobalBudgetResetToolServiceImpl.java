@@ -24,6 +24,7 @@ import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.apps.budget.service.BudgetResetToolService;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -34,10 +35,14 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
 
   protected BudgetLevelResetToolService budgetLevelResetToolService;
   protected BudgetResetToolService budgetResetToolService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
-  public GlobalBudgetResetToolServiceImpl(BudgetLevelResetToolService budgetLevelResetToolService) {
+  public GlobalBudgetResetToolServiceImpl(
+      BudgetLevelResetToolService budgetLevelResetToolService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetLevelResetToolService = budgetLevelResetToolService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   public void resetGlobalBudget(GlobalBudget globalBudget) {
@@ -46,8 +51,12 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     globalBudget.setArchived(false);
 
     globalBudget.setTotalAmountCommitted(BigDecimal.ZERO);
-    globalBudget.setTotalAmountAvailable(globalBudget.getTotalAmountExpected());
-    globalBudget.setAvailableAmountWithSimulated(globalBudget.getTotalAmountExpected());
+    globalBudget.setTotalAmountAvailable(
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            globalBudget, globalBudget.getTotalAmountExpected()));
+    globalBudget.setAvailableAmountWithSimulated(
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            globalBudget, globalBudget.getTotalAmountExpected()));
     globalBudget.setRealizedWithNoPo(BigDecimal.ZERO);
     globalBudget.setRealizedWithPo(BigDecimal.ZERO);
     globalBudget.setSimulatedAmount(BigDecimal.ZERO);
