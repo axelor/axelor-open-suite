@@ -1,6 +1,6 @@
 package com.axelor.apps.base.service;
 
-public class RegistrationNumberValidationFRA implements RegistrationNumberValidation {
+public class RegistrationNumberValidationFRA extends RegistrationNumberValidation {
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     int sum = 0;
     boolean isOddNumber = true;

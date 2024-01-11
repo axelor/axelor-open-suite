@@ -425,7 +425,6 @@ public class BaseModule extends AxelorModule {
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
-    bind(RegistrationNumberValidation.class).to(RegistrationNumberValidationFRA.class);
     bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
   }
 }
