@@ -108,8 +108,6 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
             I18n.get(BankPaymentExceptionMessage.MOVE_LINKED_TO_VALIDATED_BANK_RECONCILIATION),
             move.getReference());
       }
-
-      fillBankReconciledAmount(move);
     }
     Move newMove = super.generateReverse(move, assistantMap);
     if (isHiddenMoveLinesInBankReconciliation) {
@@ -122,6 +120,9 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                       bankReconciliationLine.getBankReconciliation().getStatusSelect()
                           == BankReconciliationRepository.STATUS_UNDER_CORRECTION)
               .collect(Collectors.toList()));
+
+      fillBankReconciledAmount(move);
+
     } else {
       this.updateBankAmountReconcile(newMove);
     }
