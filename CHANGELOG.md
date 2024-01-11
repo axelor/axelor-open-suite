@@ -1,3 +1,16 @@
+## [6.5.25] (2024-01-11)
+
+#### Fixed
+
+* Product: make the product unit field required for stock managed items.
+* Reconcile: fixed invoice term amount remaining with multi currency.
+* Stock move: fixed unable to select external stock location on receipt.
+* Invoice: Duplicating an invoice now correctly empties the origin date and the supplier invoice number.
+* Invoice: fixed error when we change partner in supplier invoice with invoice lines.
+* Account clearance: fixed the way tax and vat system are managed.
+* Indicators: fixed results display.
+* Sale order: keep attached files and internal notes when merging sale orders.
+
 ## [6.5.24] (2023-12-21)
 
 #### Fixed
@@ -1063,6 +1076,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.25]: https://github.com/axelor/axelor-open-suite/compare/v6.5.24...v6.5.25
 [6.5.24]: https://github.com/axelor/axelor-open-suite/compare/v6.5.23...v6.5.24
 [6.5.23]: https://github.com/axelor/axelor-open-suite/compare/v6.5.22...v6.5.23
 [6.5.22]: https://github.com/axelor/axelor-open-suite/compare/v6.5.21...v6.5.22
