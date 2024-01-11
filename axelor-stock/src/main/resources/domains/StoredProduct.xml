@@ -20,6 +20,8 @@
     <many-to-one name="stockMoveLine" ref="com.axelor.apps.stock.db.StockMoveLine"/>
     <many-to-one name="pickedProduct" ref="com.axelor.apps.stock.db.PickedProduct"/>
 
+    <entity-listener class="com.axelor.apps.stock.db.repo.StoredProductListener"/>
+
   </entity>
 
 </domain-models>

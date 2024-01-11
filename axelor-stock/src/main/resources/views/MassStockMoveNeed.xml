@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_5.4.xsd">
+
+  <grid name="mass-stock-move-need-grid" title="Products to move"
+    model="com.axelor.apps.stock.db.MassStockMoveNeed"
+    onNew="action-mass-stock-move-need-group-onnew">
+    <field name="productToMove" required="true" domain="self.productTypeSelect = 'storable'"/>
+    <field name="qtyToMove" required="true"/>
+  </grid>
+
+  <form name="mass-stock-move-need-form" title="Products to move"
+    model="com.axelor.apps.stock.db.MassStockMoveNeed"
+    onNew="action-mass-stock-move-need-group-onnew">
+    <panel name="mainPanel">
+      <field name="productToMove" required="true" domain="self.productTypeSelect = 'storable'"/>
+      <field name="qtyToMove" required="true"/>
+    </panel>
+  </form>
+
+  <action-group name="action-mass-stock-move-need-group-onnew">
+    <action name="action-mass-stock-move-need-record-set-mass-stock-move"/>
+  </action-group>
+
+  <action-record name="action-mass-stock-move-need-record-set-mass-stock-move"
+    model="com.axelor.apps.stock.db.MassStockMoveNeed">
+    <field name="massStockMove" expr="eval: __parent__"/>
+  </action-record>
+
+</object-views>

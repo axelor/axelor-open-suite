@@ -7,12 +7,16 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.MassStockMove;
+import com.axelor.apps.stock.db.MassStockMoveNeed;
 import com.axelor.apps.stock.db.PickedProduct;
 import com.axelor.apps.stock.db.StockLocationLine;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.StoredProduct;
+import com.axelor.apps.stock.db.repo.MassStockMoveNeedRepository;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
@@ -30,6 +34,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
   protected StockLocationLineRepository stockLocationLineRepository;
   protected PickedProductService pickedProductService;
   protected StoredProductService storedProductService;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected MassStockMoveNeedService massStockMoveNeedService;
+  protected MassStockMoveNeedRepository massStockMoveNeedRepository;
 
   @Inject
   public MassStockMoveServiceImpl(
@@ -39,7 +46,10 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
       StoredProductRepository storedProductRepo,
       StockLocationLineRepository stockLocationLineRepository,
       PickedProductService pickedProductService,
-      StoredProductService storedProductService) {
+      StoredProductService storedProductService,
+      StockMoveLineRepository stockMoveLineRepository,
+      MassStockMoveNeedService massMoveNeedsService,
+      MassStockMoveNeedRepository massStockMoveNeedRepository) {
     this.massStockMoveRepository = massStockMoveRepository;
     this.sequenceService = sequenceService;
     this.pickedProductRepo = pickedProductRepo;
@@ -47,6 +57,9 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
     this.stockLocationLineRepository = stockLocationLineRepository;
     this.pickedProductService = pickedProductService;
     this.storedProductService = storedProductService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
+    this.massStockMoveNeedService = massMoveNeedsService;
+    this.massStockMoveNeedRepository = massStockMoveNeedRepository;
   }
 
   @Override
@@ -205,5 +218,27 @@ public class MassStockMoveServiceImpl implements MassStockMoveService {
             pickedProduct ->
                 line.getProduct().getId().equals(pickedProduct.getPickedProduct().getId())
                     && line.getTrackingNumber().equals(pickedProduct.getTrackingNumber()));
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void useStockMoveLinesIdsToCreateMassStockMoveNeeds(
+      MassStockMove massStockMove, List<Long> stockMoveLinesToAdd) {
+    for (Long stockMoveLineId : stockMoveLinesToAdd) {
+      StockMoveLine stockMoveLine = stockMoveLineRepository.find(stockMoveLineId);
+      MassStockMoveNeed massStockMoveNeed =
+          massStockMoveNeedService.createMassStockMoveNeed(
+              massStockMove, stockMoveLine.getProduct(), stockMoveLine.getRealQty());
+      massStockMoveNeedRepository.save(massStockMoveNeed);
+      massStockMove.addProductToMoveListItem(massStockMoveNeed);
+    }
+    massStockMoveRepository.save(massStockMove);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void clearProductToMoveList(MassStockMove massStockMove) {
+    massStockMove.getProductToMoveList().clear();
+    massStockMoveRepository.save(massStockMove);
   }
 }
