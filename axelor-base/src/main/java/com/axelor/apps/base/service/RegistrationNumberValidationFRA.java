@@ -4,7 +4,6 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.common.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +71,8 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
     String regCode = partner.getRegistrationCode();
     String nic = "";
 
-    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
           businessCountry.getRegistrationNumberTemplate();
@@ -97,7 +97,8 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
     String regCode = partner.getRegistrationCode();
     String siren = "";
 
-    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
           businessCountry.getRegistrationNumberTemplate();
@@ -123,9 +124,10 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
 
     boolean useNic = false;
     boolean useSiren = false;
-    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
-              partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
+          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
       if (!registrationNumberTemplate.getUseNic()) {
         useNic = true;
       }
@@ -134,7 +136,7 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
       }
     }
 
-    if(!StringUtils.isBlank(partner.getRegistrationCode())) {
+    if (!StringUtils.isBlank(partner.getRegistrationCode())) {
       String taxNbr = getTaxNbrFromRegistrationCode(partner);
       String nic = getNicFromRegistrationCode(partner);
       String siren = getSirenFromRegistrationCode(partner);
@@ -142,7 +144,7 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
       attrsMap.put("taxNbr", Map.of("value", taxNbr));
       attrsMap.put("nic", Map.of("value", nic, "hidden", useNic));
       attrsMap.put("siren", Map.of("value", siren, "hidden", useSiren));
-    }else{
+    } else {
       attrsMap.put("nic", Map.of("value", "", "hidden", useNic));
       attrsMap.put("siren", Map.of("value", "", "hidden", useSiren));
     }

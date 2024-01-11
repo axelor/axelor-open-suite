@@ -202,10 +202,10 @@ public class PartnerServiceImpl implements PartnerService {
     this.setPartnerFullName(partner);
     this.setCompanyStr(partner);
 
-    if(!isRegistrationCodeValid(partner)){
+    if (!isRegistrationCodeValid(partner)) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 
@@ -722,7 +722,8 @@ public class PartnerServiceImpl implements PartnerService {
 
     registrationCode = registrationCode.replace(" ", "");
     LOG.info("Main Address - {}", partner.getMainAddress());
-    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
           businessCountry.getRegistrationNumberTemplate();
@@ -771,10 +772,11 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public String getRegistrationCodeTitleFromTemplate(Partner partner) {
-    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
-              businessCountry.getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
       if (registrationNumberTemplate != null
           && !StringUtils.isBlank(registrationNumberTemplate.getTitleToDisplay())) {
         return registrationNumberTemplate.getTitleToDisplay();
@@ -785,7 +787,8 @@ public class PartnerServiceImpl implements PartnerService {
 
   @Override
   public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
-    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
           businessCountry.getRegistrationNumberTemplate();

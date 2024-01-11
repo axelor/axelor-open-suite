@@ -9,7 +9,8 @@
     <field name="validationMethodSelect"/>
   </grid>
 
-  <form name="registration-number-template-form" title="Registration number templates" model="com.axelor.apps.base.db.RegistrationNumberTemplate">
+  <form name="registration-number-template-form" title="Registration number templates"
+    model="com.axelor.apps.base.db.RegistrationNumberTemplate">
     <panel name="mainPanel" title="Main Template">
       <panel showTitle="false" colSpan="12">
         <field name="name"/>

@@ -344,10 +344,8 @@
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
           onChange="action-group-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2"
-          colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2 "
-          colSpan="4" readonly="true"/>
+        <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
+        <field name="nic" hideIf="partnerTypeSelect== 2 " colSpan="4" readonly="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
@@ -1327,7 +1325,7 @@
   </action-group>
 
   <action-record name="action-record-partner-registration-code-empty"
-                 model="com.axelor.apps.base.db.Partner">
+    model="com.axelor.apps.base.db.Partner">
     <field name="siren" expr="eval: null"/>
     <field name="nic" expr="eval: null"/>
   </action-record>
