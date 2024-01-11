@@ -55,21 +55,22 @@ public class ImportExportTranslationController {
     ImportExportTranslationService importExportTranslationService =
         Beans.get(ImportExportTranslationService.class);
     Callable<Path> importTask =
-        () -> importExportTranslationService.importTranslations(
-                  Beans.get(ImportExportTranslationRepository.class)
-                      .find(importExportTranslation.getId()));
-      try {
-        ControllerCallableTool<Path> controllerCallableTool = new ControllerCallableTool<>();
-          Path path = controllerCallableTool.runInSeparateThread(importTask, response);
-          if (path != null)  {
-              response.setInfo(I18n.get("File successfully imported."));
-          }
-      } catch (Exception e) {
-          Logger logger = LoggerFactory.getLogger(getClass());
-          logger.error("Read CSV file failed.", e);
-          TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-        } finally {
-            response.setReload(true);
-        }
+        () ->
+            importExportTranslationService.importTranslations(
+                Beans.get(ImportExportTranslationRepository.class)
+                    .find(importExportTranslation.getId()));
+    try {
+      ControllerCallableTool<Path> controllerCallableTool = new ControllerCallableTool<>();
+      Path path = controllerCallableTool.runInSeparateThread(importTask, response);
+      if (path != null) {
+        response.setInfo(I18n.get("File successfully imported."));
+      }
+    } catch (Exception e) {
+      Logger logger = LoggerFactory.getLogger(getClass());
+      logger.error("Read CSV file failed.", e);
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    } finally {
+      response.setReload(true);
+    }
   }
 }
