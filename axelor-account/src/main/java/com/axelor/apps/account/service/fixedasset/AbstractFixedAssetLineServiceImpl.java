@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
@@ -30,7 +31,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -56,6 +56,7 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
   protected YearService yearService;
   protected PeriodService periodService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   protected abstract int getPeriodicityTypeSelect(FixedAsset fixedAsset);
 
@@ -76,11 +77,13 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
       FixedAssetLineRepository fixedAssetLineRepository,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
       YearService yearService,
-      PeriodService periodService) {
+      PeriodService periodService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.fixedAssetLineRepository = fixedAssetLineRepository;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.yearService = yearService;
     this.periodService = periodService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -122,9 +125,12 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
           lastRealizedLine != null
               ? lastRealizedLine.getCumulativeDepreciation().add(deprecationValue)
               : deprecationValue;
-      firstPlannedLine.setCumulativeDepreciation(cumulativeValue);
+      firstPlannedLine.setCumulativeDepreciation(
+          currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, cumulativeValue));
       firstPlannedLine.setAccountingValue(
-          fixedAsset.getGrossValue().subtract(firstPlannedLine.getCumulativeDepreciation()));
+          currencyScaleServiceAccount.getCompanyScaledValue(
+              fixedAsset,
+              fixedAsset.getGrossValue().subtract(firstPlannedLine.getCumulativeDepreciation())));
       firstPlannedLine.setDepreciationDate(disposalDate);
     }
     return firstPlannedLine;
@@ -139,18 +145,11 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
           fixedAsset
               .getGrossValue()
               .multiply(prorataTemporis)
-              .divide(
-                  BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
-                  FixedAssetServiceImpl.RETURNED_SCALE,
-                  RoundingMode.HALF_UP);
+              .divide(BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()));
     } else {
-      deprecationValue =
-          firstPlannedLine
-              .getDepreciation()
-              .multiply(prorataTemporis)
-              .setScale(FixedAssetServiceImpl.RETURNED_SCALE, RoundingMode.HALF_UP);
+      deprecationValue = firstPlannedLine.getDepreciation().multiply(prorataTemporis);
     }
-    return deprecationValue;
+    return currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, deprecationValue);
   }
 
   @Transactional

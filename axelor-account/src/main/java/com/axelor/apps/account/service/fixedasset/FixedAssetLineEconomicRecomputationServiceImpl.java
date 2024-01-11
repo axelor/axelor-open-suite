@@ -18,18 +18,16 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
-import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.RETURNED_SCALE;
-
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,8 +45,13 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
   public FixedAssetLineEconomicRecomputationServiceImpl(
       FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
-      AppBaseService appBaseService) {
-    super(fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
+      AppBaseService appBaseService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+    super(
+        fixedAssetDateService,
+        fixedAssetFailOverControlService,
+        appBaseService,
+        currencyScaleServiceAccount);
   }
 
   @Override
@@ -139,15 +142,17 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
                         .count())
             .orElse(0l)
             .intValue();
-    return computeDepreciationNumerator(
-            baseValue, getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines)))
-        .multiply(ddRate)
-        .setScale(RETURNED_SCALE, RoundingMode.HALF_UP);
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        fixedAsset,
+        computeDepreciationNumerator(
+                baseValue,
+                getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines)))
+            .multiply(ddRate));
   }
 
   @Override
   protected BigDecimal computeDepreciationBase(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine) throws AxelorException {
     if (getComputationMethodSelect(fixedAsset)
         .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return getAccountingValue(previousFixedAssetLine);
@@ -158,7 +163,8 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
 
   @Override
   protected BigDecimal computeDepreciation(
-      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue) {
+      FixedAsset fixedAsset, FixedAssetLine previousFixedAssetLine, BigDecimal baseValue)
+      throws AxelorException {
     if (linearDepreciationBase == null) {
       linearDepreciationBase = getAccountingValue(previousFixedAssetLine);
     }

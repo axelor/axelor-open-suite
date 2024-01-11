@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -39,8 +41,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
   public FixedAssetLineEconomicComputationServiceImpl(
       FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
-      AppBaseService appBaseService) {
-    super(fixedAssetFailOverControlService, appBaseService);
+      AppBaseService appBaseService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+    super(fixedAssetFailOverControlService, appBaseService, currencyScaleServiceAccount);
     this.fixedAssetDateService = fixedAssetDateService;
   }
 
@@ -58,12 +61,15 @@ public class FixedAssetLineEconomicComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
+      return currencyScaleServiceAccount.getCompanyScaledValue(
+          fixedAsset, fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)));
     }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
+      return currencyScaleServiceAccount.getCompanyScaledValue(
+          fixedAsset, fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
     }
-    return fixedAsset.getGrossValue();
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        fixedAsset, fixedAsset.getGrossValue());
   }
 
   @Override
@@ -115,7 +121,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
-      FixedAsset fixedAsset, BigDecimal baseValue) {
+      FixedAsset fixedAsset, BigDecimal baseValue) throws AxelorException {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset) && !isProrataTemporis(fixedAsset)) {
       FixedAssetLine dummyPreviousLine = new FixedAssetLine();
       dummyPreviousLine.setAccountingValue(baseValue);
@@ -132,7 +138,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
 
-    return fixedAsset.getImportAlreadyDepreciatedAmount();
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        fixedAsset, fixedAsset.getImportAlreadyDepreciatedAmount());
   }
 
   @Override
@@ -143,7 +150,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
-    return fixedAsset.getDepreciatedAmountCurrentYear();
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        fixedAsset, fixedAsset.getDepreciatedAmountCurrentYear());
   }
 
   @Override

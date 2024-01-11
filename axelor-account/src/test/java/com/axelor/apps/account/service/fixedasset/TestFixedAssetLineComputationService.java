@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
@@ -47,9 +48,14 @@ class TestFixedAssetLineComputationService {
     AppBaseService appBaseService = mock(AppBaseService.class);
     FixedAssetFailOverControlService fixedAssetFailOverControlService =
         mock(FixedAssetFailOverControlService.class);
+    CurrencyScaleServiceAccount currencyScaleServiceAccount =
+        mock(CurrencyScaleServiceAccount.class);
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
-            fixedAssetDateService, fixedAssetFailOverControlService, appBaseService);
+            fixedAssetDateService,
+            fixedAssetFailOverControlService,
+            appBaseService,
+            currencyScaleServiceAccount);
   }
 
   @Test

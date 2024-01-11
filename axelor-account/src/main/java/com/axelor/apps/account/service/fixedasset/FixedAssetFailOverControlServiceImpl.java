@@ -22,12 +22,23 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
+import com.google.inject.Inject;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverControlService {
+
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+
+  @Inject
+  public FixedAssetFailOverControlServiceImpl(
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+  }
 
   /**
    * {@inheritDoc}
@@ -38,32 +49,37 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
   public void controlFailOver(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
+    BigDecimal grossValue =
+        currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, fixedAsset.getGrossValue());
+    BigDecimal importAlreadyDepreciatedAmount =
+        currencyScaleServiceAccount.getCompanyScaledValue(
+            fixedAsset, fixedAsset.getImportAlreadyDepreciatedAmount());
+    BigDecimal importFiscalAlreadyDepreciationAmount =
+        currencyScaleServiceAccount.getCompanyScaledValue(
+            fixedAsset, fixedAsset.getImportFiscalAlreadyDepreciatedAmount());
+    BigDecimal importIfrsAlreadyDepreciatedAmount =
+        currencyScaleServiceAccount.getCompanyScaledValue(
+            fixedAsset, fixedAsset.getImportIfrsAlreadyDepreciatedAmount());
+
     if (isFailOver(fixedAsset) && fixedAssetCategory != null) {
-      if (fixedAsset.getImportAlreadyDepreciatedAmount() != null
-          && fixedAsset.getImportAlreadyDepreciatedAmount().compareTo(fixedAsset.getGrossValue())
-              > 0) {
+      if (importAlreadyDepreciatedAmount != null
+          && importAlreadyDepreciatedAmount.compareTo(grossValue) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
                 AccountExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
-      if (fixedAsset.getImportFiscalAlreadyDepreciatedAmount() != null
-          && fixedAsset
-                  .getImportFiscalAlreadyDepreciatedAmount()
-                  .compareTo(fixedAsset.getGrossValue())
-              > 0) {
+      if (importFiscalAlreadyDepreciationAmount != null
+          && importFiscalAlreadyDepreciationAmount.compareTo(grossValue) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
                 AccountExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
-      if (fixedAsset.getImportIfrsAlreadyDepreciatedAmount() != null
-          && fixedAsset
-                  .getImportIfrsAlreadyDepreciatedAmount()
-                  .compareTo(fixedAsset.getGrossValue())
-              > 0) {
+      if (importIfrsAlreadyDepreciatedAmount != null
+          && importIfrsAlreadyDepreciatedAmount.compareTo(grossValue) > 0) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(

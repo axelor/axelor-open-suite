@@ -60,7 +60,8 @@ public class FixedAssetLineGenerationServiceImpl implements FixedAssetLineGenera
    * @throws NullPointerException if fixedAsset is null
    */
   @Override
-  public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) {
+  public void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset)
+      throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     if (fixedAsset
         .getDepreciationPlanSelect()
