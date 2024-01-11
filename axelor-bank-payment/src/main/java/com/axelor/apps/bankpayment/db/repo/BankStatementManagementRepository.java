@@ -19,16 +19,17 @@
 package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineService;
+import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.google.inject.Inject;
 
 public class BankStatementManagementRepository extends BankStatementRepository {
 
-  protected BankStatementLineService bankStatementLineService;
+  protected BankStatementLineDeleteService bankStatementLineDeleteService;
 
   @Inject
-  public BankStatementManagementRepository(BankStatementLineService bankStatementLineService) {
-    this.bankStatementLineService = bankStatementLineService;
+  public BankStatementManagementRepository(
+      BankStatementLineDeleteService bankStatementLineDeleteService) {
+    this.bankStatementLineDeleteService = bankStatementLineDeleteService;
   }
 
   @Override
@@ -40,7 +41,7 @@ public class BankStatementManagementRepository extends BankStatementRepository {
 
   @Override
   public void remove(BankStatement entity) {
-    bankStatementLineService.removeBankReconciliationLines(entity);
+    bankStatementLineDeleteService.deleteBankStatementLines(entity);
     super.remove(entity);
   }
 }

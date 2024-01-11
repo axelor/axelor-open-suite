@@ -1,4 +1,4 @@
-package com.axelor.apps.bankpayment.service.bankstatement.line.afb120;
+package com.axelor.apps.bankpayment.service.bankstatementline.afb120;
 
 import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
