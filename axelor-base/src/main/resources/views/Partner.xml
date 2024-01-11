@@ -1324,12 +1324,6 @@
     <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
-  <action-record name="action-record-partner-registration-code-empty"
-    model="com.axelor.apps.base.db.Partner">
-    <field name="siren" expr="eval: null"/>
-    <field name="nic" expr="eval: null"/>
-  </action-record>
-
   <action-record name="action-partner-empty-first-name"
     model="com.axelor.apps.base.db.Partner">
     <field name="firstName" expr="eval: null"/>
