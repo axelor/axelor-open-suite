@@ -67,8 +67,8 @@
 	  	]]>
     </string>
 
-    <!-- Currency is only used for mobile application -->
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
+    <boolean name="isKilometricLine" title="Kilometric line"/>
 
     <extra-code>
 		<![CDATA[

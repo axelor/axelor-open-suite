@@ -1,5 +1,6 @@
 "key","message","comment","context"
 "$budgetExceedAlert",,,
+"<><Badge bg=""warning"">You need to save the budget before manage budget lines on periods</Badge></>",,,
 "<span class='label label-warning'>To activate this option, you need to disable budget key first in account configurations of companies.</span>",,,
 "<span class='label label-warning'>To activate this option, you need to disable project management first in budget configuration.</span>",,,
 "<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>",,,

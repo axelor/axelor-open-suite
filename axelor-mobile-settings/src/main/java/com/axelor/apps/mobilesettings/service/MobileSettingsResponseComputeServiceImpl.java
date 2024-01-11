@@ -67,7 +67,8 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsManualCreationOfTimesheetAllowed(),
         appMobileSettings.getIsLineCreationOfTimesheetDetailsAllowed(),
         appMobileSettings.getIsEditionOfDateAllowed(),
-        appMobileSettings.getIsTimesheetProjectInvoicingEnabled());
+        appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
+        appMobileSettings.getIsStockLocationManagementEnabled());
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {

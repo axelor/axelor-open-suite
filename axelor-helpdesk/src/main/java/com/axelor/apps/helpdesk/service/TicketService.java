@@ -19,6 +19,7 @@
 package com.axelor.apps.helpdesk.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.helpdesk.db.Sla;
 import com.axelor.apps.helpdesk.db.Ticket;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +28,9 @@ public interface TicketService {
 
   public void computeSeq(Ticket ticket) throws AxelorException;
 
-  public void computeSLA(Ticket ticket);
+  public Sla computeSLA(Ticket ticket);
+
+  public void computeSLAAndDeadLine(Ticket ticket) throws AxelorException;
 
   public void checkSLAcompleted(Ticket ticket);
 
@@ -38,4 +41,12 @@ public interface TicketService {
   public LocalDateTime computeEndDate(Ticket ticket);
 
   public LocalDateTime computeStartDate(Ticket ticket);
+
+  public boolean isNewTicket(Ticket ticket);
+
+  public boolean isInProgressTicket(Ticket ticket);
+
+  public boolean isResolvedTicket(Ticket ticket);
+
+  public boolean isClosedTicket(Ticket ticket);
 }

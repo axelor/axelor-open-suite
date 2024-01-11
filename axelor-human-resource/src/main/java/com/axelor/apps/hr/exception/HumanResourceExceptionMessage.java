@@ -314,4 +314,13 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_DISTANCE_ERROR = /*$$(*/
       "This is a kilometric expense line. Distance must be greater than 0." /*)*/;
+
+  public static final String EXPENSE_LINE_NO_LINE_SELECTED = /*$$(*/
+      "Please select at least one expense line." /*)*/;
+
+  public static final String EXPENSE_LINE_SELECTED_CURRENCY_ERROR = /*$$(*/
+      "All lines must have the same currency." /*)*/;
+
+  public static final String EXPENSE_LINE_SELECTED_EMPLOYEE_ERROR = /*$$(*/
+      "All lines must have the same employee." /*)*/;
 }
