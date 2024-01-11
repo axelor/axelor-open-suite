@@ -27,7 +27,7 @@
 						</h3>
 					</>
 				]]></viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="name" showTitle="true"/>
         </editor>
       </field>

@@ -50,7 +50,7 @@
 				<h3><span>{fullName}</span></h3>
 			</>
     ]]></viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="name" showTitle="true" css="label-bold bold large"/>
         </editor>
       </field>

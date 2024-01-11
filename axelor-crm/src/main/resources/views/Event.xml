@@ -178,7 +178,7 @@
 					</>
 				]]>
         </viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="subject" showTitle="true" colSpan="12" height="2px"/>
         </editor>
       </field>
@@ -244,7 +244,7 @@
         </editor>
       </field>
       <field name="attendees" canNew="false" canSelect="false" colSpan="12" showTitle="false">
-        <editor layout="table" x-show-titles="false">
+        <editor x-viewer="true" layout="table" x-show-titles="false">
           <field name="name" readonly="true"/>
           <field name="statusSelect"/>
         </editor>

@@ -72,7 +72,7 @@
       <field name="configuratorBom" canEdit="true" showTitle="false"
         if-module="axelor-production" colSpan="12" form-view="configurator-bom-form"
         grid-view="configurator-bom-grid">
-        <editor>
+        <editor x-viewer="true">
           <panel>
             <field name="company"/>
             <field name="statusSelect" selection-in="[2,3]"/>

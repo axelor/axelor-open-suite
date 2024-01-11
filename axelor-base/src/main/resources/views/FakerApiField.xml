@@ -31,7 +31,7 @@
         showIf="!id || (!$readonly()) || ($readonly() &amp;&amp; fakerFieldParametersList!=null &amp;&amp; fakerFieldParametersList.length&gt;0)">
         <help><![CDATA[Pay attention to the type and the order of the parameters.<br>See <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html" target="_blank">java documentation</a> for TimeUnit syntax.]]></help>
         <field name="fakerFieldParametersList" colSpan="12" showTitle="false">
-          <editor>
+          <editor x-viewer="true">
             <field name="paramType" requiredIf="paramValue"/>
             <field name="paramValue" requiredIf="paramType"
               onChange="action-faker-api-field-condition-filter-timeunit-field"/>

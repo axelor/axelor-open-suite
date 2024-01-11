@@ -22,7 +22,7 @@
       <field name="fullName" colSpan="12" showTitle="false" css="label-bold bold large">
         <editor x-show-titles="false">
           <field name="code" x-bind="{{code|unaccent|uppercase}}" colSpan="3"
-            placeholder="BIC" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$"/>
+            placeholder="BIC" pattern="^[A-Z]{4}[A-Z]{2}[0-9A-Z]{2}([0-9A-Z]{3})?$" x-viewer="true"/>
           <field name="bankName" colSpan="9" placeholder="Bank Name"/>
         </editor>
       </field>
@@ -31,7 +31,7 @@
     </panel>
     <panel name="addressPanel">
       <field name="bankAddressList" colSpan="12">
-        <editor x-show-titles="false">
+        <editor x-show-titles="false" x-viewer="true">
           <field name="code" x-bind="{{code|unaccent|uppercase}}"
             onChange="action-method-bank-address-fill-full-name" colSpan="3"/>
           <field name="address" onChange="action-method-bank-address-fill-full-name"

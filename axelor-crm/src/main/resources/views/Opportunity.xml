@@ -137,7 +137,7 @@
                  		</h3>
                  	</>
               	]]></viewer>
-        <editor>
+        <editor x-viewer="true">
           <field name="opportunitySeq" showTitle="true" readonly="true" css="label-bold bold"/>
         </editor>
       </field>

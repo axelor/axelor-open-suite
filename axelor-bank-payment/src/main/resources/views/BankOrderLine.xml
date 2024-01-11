@@ -71,7 +71,7 @@
       <field name="bankOrderLineOriginList" colSpan="12" readonly="true">
         <editor x-viewer="true">
           <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
-            colSpan="12" showTitle="false"/>
+            colSpan="12" showTitle="false" x-viewer="true"/>
         </editor>
       </field>
     </panel>

@@ -75,7 +75,7 @@
       <field name="company" colSpan="12" form-view="company-form" grid-view="company-grid"
         canEdit="false"/>
       <field name="multiRelatedList">
-        <editor>
+        <editor x-viewer="true">
           <field name="relatedToSelect" widget="RefSelect" x-related="relatedToSelectId"
             colSpan="12" showTitle="false"/>
           <field name="relatedToSelectId" hidden="true"/>

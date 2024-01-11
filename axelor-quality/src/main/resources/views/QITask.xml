@@ -22,7 +22,7 @@
 				  </h3>
 			  </>
 		  ]]></viewer>
-          <editor>
+          <editor x-viewer="true">
             <field name="subject" showTitle="true" colSpan="12"/>
           </editor>
         </field>

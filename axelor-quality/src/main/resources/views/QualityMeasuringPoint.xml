@@ -29,7 +29,7 @@
         showIf="measuringTypeSelect == 2"
         onChange="action-measuring-point-attrs-on-compliant-change"/>
       <field name="picturesList" colSpan="12">
-        <editor onNew="action-quality-picture-record-on-new">
+        <editor x-viewer="true" onNew="action-quality-picture-record-on-new">
           <panel name="mainPanel">
             <panel name="imagePanel" colSpan="6">
               <field name="metaFile" widget="Image" colSpan="12" showTitle="false"/>

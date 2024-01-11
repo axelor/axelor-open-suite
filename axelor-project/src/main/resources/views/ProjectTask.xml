@@ -87,7 +87,7 @@
 							</>
 						]]>
             </viewer>
-            <editor>
+            <editor x-viewer="true">
               <field name="name" title="Subject" colSpan="12" css="label-bold bold large"
                 required="true"/>
             </editor>

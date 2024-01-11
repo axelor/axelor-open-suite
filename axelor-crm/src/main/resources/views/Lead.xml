@@ -145,7 +145,7 @@
                             <>{firstName} {name}</>
                         ]]>
           </viewer>
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <field name="titleSelect" showTitle="false" placeholder="Civility" colSpan="2"/>
             <field name="firstName" showTitle="false" css="highlight" placeholder="First name"
               colSpan="5"
@@ -159,7 +159,7 @@
           <![CDATA[<><Badge bg="warning">There is already a lead with this name.</Badge></>]]>
         </static>
         <field name="fullName" showTitle="false" colSpan="12">
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <field name="enterpriseName" css="label-bold bold large" colSpan="12"
               showIf="partner == null" placeholder="Enterprise name"
               onChange="action-lead-method-set-social-network-url" required="true"/>

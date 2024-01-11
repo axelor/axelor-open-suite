@@ -23,7 +23,7 @@
       </help>
 
       <field name="researchParameterList" showIf="model" colSpan="12" showTitle="false">
-        <editor colSpan="12">
+        <editor colSpan="12" x-viewer="true">
           <field name="researchPrimaryKey" colSpan="3" required="true"/>
           <field name="mapping" onChange="ation-base-research-parameter-method-set-query"
             colSpan="3" readonlyIf="researchPrimaryKey == null"

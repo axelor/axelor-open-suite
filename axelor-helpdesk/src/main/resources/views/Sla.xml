@@ -34,7 +34,7 @@
 						</>
 					]]>
           </viewer>
-          <editor>
+          <editor x-viewer="true">
             <field name="days" colSpan="3"/>
             <field name="hours" colSpan="3"/>
           </editor>

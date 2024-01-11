@@ -103,7 +103,7 @@
 
       <panel name="informationPanel" colSpan="10">
         <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
-          <editor x-show-titles="false">
+          <editor x-viewer="true" x-show-titles="false">
             <panel name="seq" colSpan="3">
               <field name="code" showTitle="false" colSpan="12" readonly="true"
                 if="__config__.app.getApp('project')?.generateProjectSequence"
