@@ -33,6 +33,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.AxelorException;
@@ -493,6 +494,23 @@ public class FixedAssetController {
       if (showDepreciationMessage) {
         response.setInfo(I18n.get(AccountExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeDisposalWizardDisposalAmount(ActionRequest request, ActionResponse response) {
+    try {
+      int disposalTypeSelect = (int) request.getContext().get("disposalTypeSelect");
+      FixedAsset fixedAsset =
+          Beans.get(FixedAssetRepository.class)
+              .find(Long.valueOf(request.getContext().get("_id").toString()));
+      FixedAssetGroupService fixedAssetGroupService = Beans.get(FixedAssetGroupService.class);
+
+      response.setValues(
+          fixedAssetGroupService.getDisposalWizardValuesMap(fixedAsset, disposalTypeSelect));
+      response.setAttrs(
+          fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
