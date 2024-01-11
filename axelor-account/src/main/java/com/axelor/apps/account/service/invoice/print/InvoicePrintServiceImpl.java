@@ -259,23 +259,23 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
-      String userLanguageCode =
+      String userLocalizationCode =
           Optional.ofNullable(AuthUtils.getUser())
               .map(User::getLocalization)
               .map(Localization::getCode)
               .orElse(null);
-      String companyLanguageCode =
+      String companyLocalizationCode =
           invoice.getCompany().getLocalization() != null
               ? invoice.getCompany().getLocalization().getCode()
-              : userLanguageCode;
-      String partnerLanguageCode =
+              : userLocalizationCode;
+      String partnerLocalizationCode =
           invoice.getPartner().getLocalization() != null
               ? invoice.getPartner().getLocalization().getCode()
-              : userLanguageCode;
+              : userLocalizationCode;
       locale =
-          accountConfig.getIsPrintInvoicesInCompanyLanguage()
-              ? companyLanguageCode
-              : partnerLanguageCode;
+          accountConfig.getIsPrintInvoicesInCompanyLocalization()
+              ? companyLocalizationCode
+              : partnerLocalizationCode;
     }
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();

@@ -48,7 +48,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -500,18 +500,22 @@ public class InvoiceController {
                 ? Integer.parseInt(context.get("reportType").toString())
                 : null;
 
-        Map languageMap =
+        Map localizationMap =
             reportType != null
                     && (reportType == 1 || reportType == 3)
-                    && context.get("language") != null
-                ? (Map<String, Object>) request.getContext().get("language")
+                    && context.get("localization") != null
+                ? (Map<String, Object>) request.getContext().get("localization")
                 : null;
-        String locale =
-            languageMap != null && languageMap.get("id") != null
-                ? Beans.get(LanguageRepository.class)
-                    .find(Long.parseLong(languageMap.get("id").toString()))
+        String localizationCode =
+            localizationMap != null && localizationMap.get("id") != null
+                ? Beans.get(LocalizationRepository.class)
+                    .find(Long.parseLong(localizationMap.get("id").toString()))
                     .getCode()
                 : null;
+        String locale = "en";
+        if (localizationCode != null) {
+          locale = localizationCode.substring(0, 2);
+        }
 
         fileLink =
             Beans.get(InvoicePrintService.class)
