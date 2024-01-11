@@ -56,6 +56,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -208,7 +209,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       List<Pair<Long, Long>> openingAccountAndPartnerPairList =
           accountingCloseAnnualService.assignPartner(
               openingAccountIdList, year, allocatePerPartner);
-      Map<AccountByPartner, Map<Boolean, Boolean>> map = new HashMap<>();
+      LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map = new LinkedHashMap<>();
       map =
           openAndCloseProcess(
               closureAccountAndPartnerPairList, accountingBatch.getCloseYear(), false, map);
@@ -220,11 +221,11 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
-  protected Map<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
+  protected LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> openAndCloseProcess(
       List<Pair<Long, Long>> accountAndPartnerPairList,
       boolean close,
       boolean open,
-      Map<AccountByPartner, Map<Boolean, Boolean>> map) {
+      LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map) {
     for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
       Partner partner = getPartner(accountAndPartnerPairList, account);
 
