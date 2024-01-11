@@ -10,9 +10,11 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="computeDistanceWithWebService"/>
+    <boolean name="isOrphanExpenseLineManaged" title="Manage orphan expense lines"/>
 
     <track>
       <field name="computeDistanceWithWebService" on="UPDATE"/>
+      <field name="isOrphanExpenseLineManaged" on="UPDATE"/>
     </track>
 
   </entity>
