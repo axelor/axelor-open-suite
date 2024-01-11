@@ -450,6 +450,12 @@ public class DebtRecoveryService {
 
         remindedOk = true;
 
+        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
+
+        if (ObjectUtils.isEmpty(invoiceTermList)) {
+          debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
+        }
+
         if (debtRecovery == null) {
           AccountingSituationRepository accSituationRepo =
               Beans.get(AccountingSituationRepository.class);
@@ -467,95 +473,89 @@ public class DebtRecoveryService {
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
-        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
+        this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
+        this.updateInvoiceDebtRecovery(
+            debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
 
-        if (ObjectUtils.notEmpty(invoiceTermList)) {
-          this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
-          this.updateInvoiceDebtRecovery(
-              debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
+        debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
 
-          debtRecovery.setBalanceDueDebtRecovery(balanceDueDebtRecovery);
+        Integer levelDebtRecovery = -1;
+        if (debtRecovery.getDebtRecoveryMethodLine() != null) {
+          levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
+        }
 
-          Integer levelDebtRecovery = -1;
-          if (debtRecovery.getDebtRecoveryMethodLine() != null) {
-            levelDebtRecovery = debtRecovery.getDebtRecoveryMethodLine().getSequence();
-          }
+        LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
+        LocalDate referenceDate = this.getReferenceDate(debtRecovery, invoiceTermList);
 
-          LocalDate oldReferenceDate = debtRecovery.getReferenceDate();
-          LocalDate referenceDate = this.getReferenceDate(debtRecovery, invoiceTermList);
+        boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
 
-          boolean isReset = this.isInvoiceSetNew(debtRecovery, oldReferenceDate);
+        if (referenceDate != null) {
+          log.debug("reference date : {} ", referenceDate);
+          debtRecovery.setReferenceDate(referenceDate);
+        } else {
+          throw new AxelorException(
+              debtRecovery,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              "%s :\n"
+                  + I18n.get("Partner")
+                  + " %s, "
+                  + I18n.get("Company")
+                  + " %s : "
+                  + (tradingName != null ? I18n.get("Trading name") + " %s : " : "")
+                  + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
+              I18n.get(BaseExceptionMessage.EXCEPTION),
+              partner.getName(),
+              company.getName(),
+              tradingName != null ? tradingName.getName() : "");
+        }
+        if (debtRecovery.getDebtRecoveryMethod() == null) {
+          fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);
+        }
+        if (isReset) {
+          debtRecoverySessionService.reset(debtRecovery);
+        }
+        debtRecoverySessionService.debtRecoverySession(debtRecovery);
+        if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
+          // Si le niveau de relance a évolué
+          if (debtRecovery.getDebtRecoveryMethodLine() != null
+              && !debtRecovery
+                  .getDebtRecoveryMethodLine()
+                  .getSequence()
+                  .equals(levelDebtRecovery)) {
+            debtRecoveryActionService.runAction(debtRecovery);
 
-          if (referenceDate != null) {
-            log.debug("reference date : {} ", referenceDate);
-            debtRecovery.setReferenceDate(referenceDate);
-          } else {
-            throw new AxelorException(
-                debtRecovery,
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                "%s :\n"
-                    + I18n.get("Partner")
-                    + " %s, "
-                    + I18n.get("Company")
-                    + " %s : "
-                    + (tradingName != null ? I18n.get("Trading name") + " %s : " : "")
-                    + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_2),
-                I18n.get(BaseExceptionMessage.EXCEPTION),
-                partner.getName(),
-                company.getName(),
-                tradingName != null ? tradingName.getName() : "");
-          }
-          if (debtRecovery.getDebtRecoveryMethod() == null) {
-            fetchDebtRecoveryMethod(partner, company, tradingName, debtRecovery);
-          }
-          if (isReset) {
-            debtRecoverySessionService.reset(debtRecovery);
-          }
-          debtRecoverySessionService.debtRecoverySession(debtRecovery);
-          if (debtRecovery.getWaitDebtRecoveryMethodLine() == null) {
-            // Si le niveau de relance a évolué
-            if (debtRecovery.getDebtRecoveryMethodLine() != null
-                && !debtRecovery
-                    .getDebtRecoveryMethodLine()
-                    .getSequence()
-                    .equals(levelDebtRecovery)) {
-              debtRecoveryActionService.runAction(debtRecovery);
+            DebtRecoveryHistory debtRecoveryHistory =
+                debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
 
-              DebtRecoveryHistory debtRecoveryHistory =
-                  debtRecoveryActionService.getDebtRecoveryHistory(debtRecovery);
-
-              if (CollectionUtils.isEmpty(
-                  Beans.get(MultiRelatedRepository.class)
-                      .all()
-                      .filter(
-                          "self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId AND self.message IS NOT NULL")
-                      .bind("relatedToSelectId", Math.toIntExact(debtRecoveryHistory.getId()))
-                      .bind("relatedToSelect", DebtRecoveryHistory.class.getCanonicalName())
-                      .fetch())) {
-                debtRecoveryActionService.runMessage(debtRecovery);
-              }
+            if (CollectionUtils.isEmpty(
+                Beans.get(MultiRelatedRepository.class)
+                    .all()
+                    .filter(
+                        "self.relatedToSelect = :relatedToSelect AND self.relatedToSelectId = :relatedToSelectId AND self.message IS NOT NULL")
+                    .bind("relatedToSelectId", Math.toIntExact(debtRecoveryHistory.getId()))
+                    .bind("relatedToSelect", DebtRecoveryHistory.class.getCanonicalName())
+                    .fetch())) {
+              debtRecoveryActionService.runMessage(debtRecovery);
             }
-          } else {
-            log.debug(
-                "Partner {}, Company {} - Reminder level : on hold",
-                partner.getName(),
-                company.getName());
-            TraceBackService.trace(
-                new AxelorException(
-                    debtRecovery,
-                    TraceBackRepository.CATEGORY_INCONSISTENCY,
-                    "%s :\n"
-                        + I18n.get("Partner")
-                        + " %s, "
-                        + I18n.get("Company")
-                        + " %s : "
-                        + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_4),
-                    I18n.get(BaseExceptionMessage.EXCEPTION),
-                    partner.getName(),
-                    company.getName()));
           }
         } else {
-          debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
+          log.debug(
+              "Partner {}, Company {} - Reminder level : on hold",
+              partner.getName(),
+              company.getName());
+          TraceBackService.trace(
+              new AxelorException(
+                  debtRecovery,
+                  TraceBackRepository.CATEGORY_INCONSISTENCY,
+                  "%s :\n"
+                      + I18n.get("Partner")
+                      + " %s, "
+                      + I18n.get("Company")
+                      + " %s : "
+                      + I18n.get(AccountExceptionMessage.DEBT_RECOVERY_4),
+                  I18n.get(BaseExceptionMessage.EXCEPTION),
+                  partner.getName(),
+                  company.getName()));
         }
       } else {
         debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
