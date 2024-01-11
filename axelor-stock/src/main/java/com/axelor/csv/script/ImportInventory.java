@@ -19,6 +19,8 @@
 package com.axelor.csv.script;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.SequenceRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.InventoryService;
@@ -28,7 +30,8 @@ import java.util.Map;
 
 public class ImportInventory {
 
-  @Inject InventoryService inventoryService;
+  @Inject protected InventoryService inventoryService;
+  @Inject protected SequenceService sequenceService;
 
   @Transactional(rollbackOn = {Exception.class})
   public Object validateInventory(Object bean, Map<String, Object> values) throws AxelorException {
@@ -46,6 +49,9 @@ public class ImportInventory {
     assert bean instanceof Inventory;
 
     Inventory inventory = (Inventory) bean;
+    inventory.setInventorySeq(
+        sequenceService.getSequenceNumber(
+            SequenceRepository.INVENTORY, Inventory.class, "inventorySeq", inventory));
     inventory.setInventoryTitle(inventoryService.computeTitle(inventory));
 
     return inventory;

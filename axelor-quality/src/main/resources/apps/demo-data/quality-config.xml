@@ -45,9 +45,8 @@
     type="com.axelor.apps.quality.db.QIDecisionConfigCompany" search="self.importId = :importId"/>
 
   <input file="quality_qualityImprovement.csv" separator=";"
-    type="com.axelor.apps.quality.db.QualityImprovement" search="self.importId = :importId">
-    <bind to="sequence"
-      eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.QUALITY_IMPROVEMENT,com.axelor.apps.quality.db.QualityImprovement,'sequence')"/>
+    type="com.axelor.apps.quality.db.QualityImprovement" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportQualityImprovement:importQualityImprovement">
   </input>
 
   <input file="quality_qiIdentification.csv" separator=";"

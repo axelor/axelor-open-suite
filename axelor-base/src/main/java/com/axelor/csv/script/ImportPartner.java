@@ -18,9 +18,12 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
@@ -40,11 +43,16 @@ public class ImportPartner {
 
   @Inject protected PartnerService partnerService;
 
-  public Object importPartner(Object bean, Map<String, Object> values) {
+  @Inject protected SequenceService sequenceService;
+
+  public Object importPartner(Object bean, Map<String, Object> values) throws AxelorException {
 
     assert bean instanceof Partner;
 
     Partner partner = (Partner) bean;
+    partner.setPartnerSeq(
+        sequenceService.getSequenceNumber(
+            SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner));
 
     partnerService.setPartnerFullName(partner);
 
