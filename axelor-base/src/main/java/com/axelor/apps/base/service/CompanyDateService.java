@@ -50,10 +50,10 @@ public class CompanyDateService {
   protected Locale checkLocale(Company company) throws AxelorException {
     Locale locale = null;
     String localeStr =
-            Optional.ofNullable(company)
-                    .map(Company::getLocalization)
-                    .map(Localization::getCode)
-                    .orElse(null);
+        Optional.ofNullable(company)
+            .map(Company::getLocalization)
+            .map(Localization::getCode)
+            .orElse(null);
 
     if (StringUtils.isEmpty(localeStr)) {
       localeStr = AppSettings.get().get(AvailableAppSettings.APPLICATION_LOCALE, null);
