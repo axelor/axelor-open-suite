@@ -25,7 +25,7 @@
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Group line"
     name="budget-level-included-grid" orderBy="code" canNew="false">
     <button name="showBudgetLinesBtn" icon="fa-bars"
-      onClick="action-budget-budget-level-view-budget-lines" hideIf="$popup()"/>
+      onClick="action-budget-budget-level-method-view-budget-lines" hideIf="$popup()"/>
     <field name="code"/>
     <field name="name"/>
     <field name="globalBudget"/>
@@ -41,7 +41,7 @@
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Section line"
     name="budget-level-node-grid" orderBy="code" canNew="false">
     <button name="showBudgetLinesBtn" icon="fa-bars"
-      onClick="action-budget-budget-level-view-budget-lines" hideIf="$popup()"/>
+      onClick="action-budget-budget-level-method-view-budget-lines, close" hideIf="$popup()"/>
     <field name="code"/>
     <field name="name"/>
     <field name="parentBudgetLevel"/>
@@ -510,36 +510,6 @@
     <field name="endDate" expr="eval: null"/>
   </action-record>
 
-  <action-view name="action-budget-budget-level-view-budget-lines" title="Lines"
-    model="com.axelor.apps.budget.db.Budget">
-    <view type="grid" name="budget-lines-grid"/>
-    <view type="form" name="budget-included-form"/>
-    <view-param name="details-view" value="true"/>
-    <domain>
-      <![CDATA[(:_sectionId IS NOT NULL AND self.budgetLevel.id = :_sectionId)
-      OR
-      (:_groupId IS NOT NULL
-      AND self.budgetLevel.parentBudgetLevel.id = :_groupId)]]>
-    </domain>
-    <context name="_sectionId" expr="eval: id"
-      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION"/>
-    <context name="_groupId" expr="eval: id"
-      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP"/>
-    <context name="_globalCode" expr="eval:__this__.parentBudgetLevel.code"
-      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP"/>
-    <context name="_globalCode"
-      expr="eval:__this__.parentBudgetLevel.parentBudgetLevel.code"
-      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION"/>
-    <context
-      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_SECTION &amp;&amp; __this__.parentBudgetLevel.parentBudgetLevel.statusSelect != __repo__(BudgetLevel).BUDGET_LEVEL_STATUS_SELECT_DRAFT"
-      name="_isReadOnly" expr="true"/>
-    <context
-      if="levelTypeSelect == __repo__(BudgetLevel).BUDGET_LEVEL_LEVEL_TYPE_SELECT_GROUP &amp;&amp; __this__.parentBudgetLevel.statusSelect != __repo__(BudgetLevel).BUDGET_LEVEL_STATUS_SELECT_DRAFT"
-      name="_isReadOnly" expr="true"/>
-    <context name="_fromDate" expr="eval: startDate"/>
-    <context name="_toDate" expr="eval: endDate"/>
-  </action-view>
-
   <action-group name="action-budget-level-group-view-group-order-line">
     <action name="action-budget-level-view-group-purchase-order-line"
       if="__this__?.parentBudgetLevel?.budgetTypeSelect != 2"/>
@@ -757,5 +727,9 @@
       self.moveLine.move.statusSelect = 5]]></domain>
     <context name="_groupId" expr="eval: id"/>
   </action-view>
+
+  <action-method name="action-budget-budget-level-method-view-budget-lines">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="viewBudgetLines"/>
+  </action-method>
 
 </object-views>
