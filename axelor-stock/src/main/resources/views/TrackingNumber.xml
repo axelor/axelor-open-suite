@@ -6,7 +6,7 @@
   <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
     <hilite
-      if="$moment(perishableExpirationDate).isBefore(__config__.date) || $moment(warrantyExpirationDate).isBefore(__config__.date)"
+      if="$moment(perishableExpirationDate).isBefore($moment()) || $moment(warrantyExpirationDate).isBefore($moment())"
       color="danger"/>
     <hilite
       if="$moment(perishableExpirationDate).isBefore($moment(_datePlusTwoMonths)) || $moment(warrantyExpirationDate).isBefore($moment(_datePlusTwoMonths))"

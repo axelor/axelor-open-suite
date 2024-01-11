@@ -5,7 +5,6 @@
 
   <grid name="leave-reason-grid" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason">
     <field name="name"/>
-    <field name="manageAccumulation"/>
     <field name="allowNegativeValue"/>
     <field name="allowInjection"/>
     <field name="isActive"/>
@@ -14,8 +13,8 @@
   <form name="leave-reason-form" title="Leave reason" model="com.axelor.apps.hr.db.LeaveReason"
     onNew="action-leave-reason-group-onnew">
     <panel name="mainPanel">
-      <field name="$viewerTags" showTitle="false" readonly="true"
-        showIf="$readonly() &amp;&amp; leaveReasonTypeSelect == 1" colSpan="9" depends="isActive">
+      <field name="$viewerTags" showTitle="false" readonly="true" showIf="$readonly()"
+        colSpan="9" depends="isActive">
         <viewer>
           <![CDATA[
             <>
@@ -28,20 +27,25 @@
 
       <field name="name" colSpan="4"/>
       <field name="leaveReasonTypeSelect" colSpan="4"/>
-      <field name="defaultDayNumberGain" colSpan="4"/>
-      <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="4"/>
+      <field name="defaultDayNumberGain" colSpan="4" showIf="leaveReasonTypeSelect != 2"/>
+      <field name="isActive" widget="boolean-switch" colSpan="3"/>
+      <field name="selectedByMgtOnly" widget="boolean-switch" colSpan="3"/>
       <field name="planningSet" colSpan="6" canNew="false" widget="TagSelect"
         placeholder="All"/>
-      <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"/>
+      <field name="allowNegativeValue" widget="boolean-switch" colSpan="4"
+        showIf="leaveReasonTypeSelect != 2"/>
       <field name="isDaysAddedProrated" widget="boolean-switch" colSpan="4"/>
-      <field name="isActive" widget="boolean-switch" colSpan="4"/>
+      <field name="isToBeResetYearly" widget="boolean-switch" readonlyIf="recoveryLeaveReason"
+        showIf="leaveReasonTypeSelect != 2"/>
+      <field name="recoveryLeaveReason"
+        showIf="isToBeResetYearly &amp;&amp; leaveReasonTypeSelect != 2"
+        onSelect="action-leave-reason-attrs-recovery-leave-reason-onselect"/>
       <field name="instruction" colSpan="12" widget="html"/>
 
-      <panel name="planningPanel" colSpan="12"
+      <panel name="planningPanel" colSpan="12" hideIf="leaveReasonTypeSelect == 2"
         if="__config__.app.getApp('leave')?.getUseWeeklyPlanningCoefficientSelect() == 2">
         <field name="useWeeklyPlanningCoef" widget="boolean-switch" colSpan="6"/>
       </panel>
-      <field name="manageAccumulation" widget="boolean-switch" colSpan="4" hidden="true"/>
     </panel>
 
     <panel name="exportsPanel"
@@ -61,5 +65,13 @@
     model="com.axelor.apps.hr.db.LeaveReason">
     <field name="unitSelect" expr="eval: 1"/>
   </action-record>
+
+  <action-attrs name="action-leave-reason-attrs-recovery-leave-reason-onselect">
+    <attribute for="recoveryLeaveReason" name="domain"
+      expr="eval: &quot; self.leaveReasonTypeSelect != 2 &quot;" if="!__id__"/>
+    <attribute for="recoveryLeaveReason" name="domain"
+      expr="eval: &quot; self.leaveReasonTypeSelect != 2 AND self.id != ${__this__.id} AND (self.recoveryLeaveReason.id != ${__this__.id} OR self.recoveryLeaveReason IS null)&quot;"
+      if="__id__"/>
+  </action-attrs>
 
 </object-views>

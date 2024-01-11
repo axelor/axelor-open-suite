@@ -1572,6 +1572,7 @@ InvoiceSet.length > 0))"
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-record-due-dates"/>
+    <action name="action-invoice-method-validate-invoice-terms-before-save"/>
     <action name="save"/>
     <action name="action-invoice-method-manage-pfp-status"
       if="statusSelect == 3 || statusSelect == 2"/>
@@ -1713,7 +1714,6 @@ InvoiceSet.length > 0))"
     <action name="action-invoice-line-check-distribution-template-account"/>
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount() &amp;&amp; [1,3].contains(operationTypeSelect) &amp;&amp; operationSubTypeSelect != 2"/>
-    <action name="action-invoice-method-validate"/>
   </action-group>
 
   <action-group name="action-invoice-group-payment-condition-onchange">
@@ -1884,7 +1884,7 @@ InvoiceSet.length > 0))"
     <field name="address"
       expr="call:com.axelor.apps.base.service.PartnerService:getInvoicingAddress(partner)"/>
     <field name="currency" expr="eval: partner?.currency"
-      if="eval: invoiceLineList?.isEmpty() &amp;&amp; partner"/>
+      if="eval: (!invoiceLineList || invoiceLineList?.length == 0) &amp;&amp; partner"/>
     <field name="bankDetails"
       expr="eval: partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} ? partner?.bankDetailsList.find{ it -&gt; it.isDefault &amp;&amp; it.active} : null"/>
     <field name="contactPartner"
@@ -1961,7 +1961,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-set-dummy-field-language"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$language"
-      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.language : partner?.language"
+      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.localization?.language : partner?.localization?.language"
       if="company"/>
   </action-record>
 

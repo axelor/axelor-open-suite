@@ -30,6 +30,7 @@ import com.axelor.db.Model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetToolsService {
 
@@ -73,4 +74,7 @@ public interface BudgetToolsService {
    * @return Integer
    */
   public Integer getBudgetControlLevel(Budget budget);
+
+  Map<String, BigDecimal> buildMapWithAmounts(
+      List<Budget> budgetList, List<BudgetLevel> budgetLevelList);
 }

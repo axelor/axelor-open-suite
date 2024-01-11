@@ -780,6 +780,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(stockMoveLine, false);
 
     newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
+
     newStockMoveLine.setRealQty(newStockMoveLine.getQty());
     return newStockMoveLine;
   }
@@ -1109,7 +1110,9 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   @Transactional
   public void copyQtyToRealQty(StockMove stockMove) {
-    for (StockMoveLine line : stockMove.getStockMoveLineList()) line.setRealQty(line.getQty());
+    for (StockMoveLine line : stockMove.getStockMoveLineList()) {
+      stockMoveLineService.fillRealQuantities(line, stockMove, line.getQty());
+    }
     stockMoveRepo.save(stockMove);
   }
 
@@ -1513,5 +1516,21 @@ public class StockMoveServiceImpl implements StockMoveService {
   @Override
   public void setMergedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_MERGED);
+  }
+
+  @Override
+  public StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException {
+
+    if (stockMove == null) {
+      return null;
+    }
+    if (stockMove.getCompany() == null) {
+      return null;
+    }
+
+    Company company = stockMove.getCompany();
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    return stockConfig.getVirtualOutsourcingStockLocation();
   }
 }

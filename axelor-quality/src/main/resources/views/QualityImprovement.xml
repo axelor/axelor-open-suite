@@ -19,7 +19,7 @@
     onNew="action-quality-improvement-method-set-default-values-on-new">
     <panel name="mainPanel">
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
-        widget="NavSelect"/>
+        widget="NavSelect" x-order="sequence"/>
       <field name="sequence" colSpan="4"/>
       <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
       <field name="type" colSpan="4"/>
@@ -352,10 +352,10 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-stock-move-domain">
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.saleOrder = :customerSaleOrder &quot;"
+      expr="eval: &quot; :customerSaleOrder MEMBER OF self.saleOrderSet  &quot;"
       if="qi?.qiDetection?.origin == 3"/>
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; self.purchaseOrder = :supplierPurchaseOrder &quot;"
+      expr="eval: &quot; :supplierPurchaseOrder MEMBER OF self.purchaseOrderSet &quot;"
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 

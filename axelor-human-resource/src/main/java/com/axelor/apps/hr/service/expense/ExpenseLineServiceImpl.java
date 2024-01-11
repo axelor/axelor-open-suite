@@ -18,9 +18,15 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
+import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -33,10 +39,13 @@ import org.apache.commons.collections.CollectionUtils;
 public class ExpenseLineServiceImpl implements ExpenseLineService {
 
   protected ExpenseLineRepository expenseLineRepository;
+  protected HRConfigService hrConfigService;
 
   @Inject
-  public ExpenseLineServiceImpl(ExpenseLineRepository expenseLineRepository) {
+  public ExpenseLineServiceImpl(
+      ExpenseLineRepository expenseLineRepository, HRConfigService hrConfigService) {
     this.expenseLineRepository = expenseLineRepository;
+    this.hrConfigService = hrConfigService;
   }
 
   @Override
@@ -119,5 +128,22 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     }
     String fileType = metaFile.getFileType();
     return "application/pdf".equals(fileType);
+  }
+
+  @Override
+  public Product getExpenseProduct(ExpenseLine expenseLine) throws AxelorException {
+    boolean isKilometricLine = expenseLine.getIsKilometricLine();
+    if (!isKilometricLine) {
+      return null;
+    }
+
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      Company activeCompany = user.getActiveCompany();
+      if (activeCompany != null) {
+        return hrConfigService.getHRConfig(activeCompany).getKilometricExpenseProduct();
+      }
+    }
+    return null;
   }
 }

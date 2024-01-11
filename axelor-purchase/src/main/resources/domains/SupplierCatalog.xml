@@ -25,6 +25,7 @@
       mappedBy="supplierCatalog" orderBy="multipleQty"/>
     <boolean name="isTakeProductMultipleQty" title="Take product multiple qty"/>
     <decimal name="minQty" title="Quantity min" precision="20" scale="10" min="0"/>
+    <decimal name="maxQty" title="Quantity max" precision="20" scale="10" min="0"/>
     <boolean name="isTakingProductPurchasePrice" title="Take product purchase price"
       default="false"/>
   </entity>

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -42,17 +43,21 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import com.axelor.meta.CallMethod;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import javax.persistence.Query;
+import java.util.Map;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,19 +198,30 @@ public class DoubtfulCustomerService {
 
     String origin = "";
     BigDecimal amountRemaining = BigDecimal.ZERO;
-    List<MoveLine> creditMoveLines = new ArrayList<MoveLine>();
+    BigDecimal totalCurrencyAmountRemaining = BigDecimal.ZERO;
+    BigDecimal currencyRate = BigDecimal.ONE;
+    List<MoveLine> creditMoveLines = new ArrayList<>();
+
     if (invoicePartnerMoveLines != null) {
       for (MoveLine moveLine : invoicePartnerMoveLines) {
         amountRemaining = amountRemaining.add(moveLine.getAmountRemaining().abs());
+        BigDecimal currencyAmountRemaining = this.getCurrencyAmountRemaining(moveLine);
+        totalCurrencyAmountRemaining = totalCurrencyAmountRemaining.add(currencyAmountRemaining);
+        currencyRate = moveLine.getCurrencyRate();
+
         // Credit move line on partner account
         MoveLine creditMoveLine =
             moveLineCreateService.createMoveLine(
                 newMove,
                 partner,
                 moveLine.getAccount(),
+                currencyAmountRemaining,
                 moveLine.getAmountRemaining(),
+                currencyRate,
                 false,
                 todayDate,
+                todayDate,
+                null,
                 1,
                 move.getOrigin(),
                 debtPassReason);
@@ -222,9 +238,13 @@ public class DoubtfulCustomerService {
             newMove,
             partner,
             doubtfulCustomerAccount,
+            totalCurrencyAmountRemaining,
             amountRemaining,
+            currencyRate,
             true,
             todayDate,
+            todayDate,
+            null,
             2,
             origin,
             debtPassReason);
@@ -233,6 +253,7 @@ public class DoubtfulCustomerService {
 
     newMove.addMoveLineListItem(debitMoveLine);
     creditMoveLines.forEach(newMove::addMoveLineListItem);
+    moveValidateService.accounting(newMove);
 
     for (MoveLine moveLine : invoicePartnerMoveLines) {
       invoiceTermReplaceService.replaceInvoiceTerms(
@@ -240,6 +261,17 @@ public class DoubtfulCustomerService {
     }
 
     this.invoiceProcess(newMove, doubtfulCustomerAccount, debtPassReason);
+  }
+
+  protected BigDecimal getCurrencyAmountRemaining(MoveLine moveLine) {
+    if (moveLine.getCurrencyRate().compareTo(BigDecimal.ONE) == 0) {
+      return moveLine.getAmountRemaining();
+    } else {
+      return moveLine.getInvoiceTermList().stream()
+          .map(InvoiceTerm::getAmountRemaining)
+          .reduce(BigDecimal::add)
+          .orElse(BigDecimal.ZERO);
+    }
   }
 
   public void createDoubtFulCustomerRejectMove(
@@ -409,146 +441,78 @@ public class DoubtfulCustomerService {
     return invoice;
   }
 
-  /**
-   * Fonction permettant de récupérer les écritures de facture à transférer sur le compte client
-   * douteux
-   *
-   * @param rule Le règle à appliquer :
-   *     <ul>
-   *       <li>0 = Créance de + 6 mois
-   *       <li>1 = Créance de + 3 mois
-   *     </ul>
-   *
-   * @param doubtfulCustomerAccount Le compte client douteux
-   * @param company La société
-   * @return Les écritures de facture à transférer sur le compte client douteux
-   */
-  public List<Move> getMove(int rule, Account doubtfulCustomerAccount, Company company) {
+  public List<Long> getMoveLineIds(
+      Company company, Account doubtfulCustomerAccount, int debtMonthNumber, boolean isReject) {
+    LocalDate date = appBaseService.getTodayDate(company).minusMonths(debtMonthNumber);
 
-    LocalDate date = null;
+    StringBuilder query =
+        new StringBuilder(
+            "self.move.company = :company "
+                + "AND self.account.useForPartnerBalance IS TRUE "
+                + "AND self.amountRemaining > 0.00 "
+                + "AND self.debit > 0.00 "
+                + "AND self.dueDate < :date "
+                + "AND self.account <> :doubtfulCustomerAccount ");
 
-    switch (rule) {
-
-        // Créance de + 6 mois
-      case 0:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-        break;
-
-        // Créance de + 3 mois
-      case 1:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-        break;
-
-      default:
-        break;
+    if (isReject) {
+      query.append(
+          "AND self.invoiceReject IS NOT NULL AND self.invoiceReject.operationTypeSelect = :operationTypeSale");
+    } else {
+      query.append("AND self.move.functionalOriginSelect = :functionalOriginSale");
     }
 
-    log.debug("Debt date taken into account : {} ", date);
-
-    String request =
-        "SELECT DISTINCT m "
-            + "FROM MoveLine ml "
-            + "JOIN ml.move m "
-            + "JOIN ml.invoiceTermList invoiceTermList "
-            + " WHERE m.company.id = "
-            + company.getId()
-            + " AND ml.account.useForPartnerBalance = true "
-            + " AND m.functionalOriginSelect = "
-            + MoveRepository.FUNCTIONAL_ORIGIN_SALE
-            + " AND ml.amountRemaining > 0.00 AND ml.debit > 0.00 "
-            + " AND ml.account.id != "
-            + doubtfulCustomerAccount.getId()
-            + " AND invoiceTermList.amountRemaining > 0.00 "
-            + " AND invoiceTermList.dueDate < '"
-            + date.toString()
-            + "'";
-
-    log.debug("Query : {} ", request);
-
-    Query query = JPA.em().createQuery(request);
-
-    @SuppressWarnings("unchecked")
-    List<Move> moveList = query.getResultList();
-
-    return moveList;
+    return moveLineRepo.all().filter(query.toString()).bind("company", company).bind("date", date)
+        .bind("doubtfulCustomerAccount", doubtfulCustomerAccount)
+        .bind("functionalOriginSale", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+        .bind("operationTypeSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE).fetch().stream()
+        .map(MoveLine::getId)
+        .collect(Collectors.toList());
   }
 
-  /**
-   * Fonction permettant de récupérer les lignes d'écriture de rejet de facture à transférer sur le
-   * compte client douteux
-   *
-   * @param rule Le règle à appliquer :
-   *     <ul>
-   *       <li>0 = Créance de + 6 mois
-   *       <li>1 = Créance de + 3 mois
-   *     </ul>
-   *
-   * @param doubtfulCustomerAccount Le compte client douteux
-   * @param company La société
-   * @return Les lignes d'écriture de rejet de facture à transférer sur le comtpe client douteux
-   */
-  public List<? extends MoveLine> getRejectMoveLine(
-      int rule, Account doubtfulCustomerAccount, Company company) {
+  public Map<Long, Pair<Integer, Boolean>> getMoveLineMap(
+      Company company, Account doubtfulCustomerAccount) {
+    Map<Long, Pair<Integer, Boolean>> moveLineMap = new HashMap<>();
 
-    LocalDate date = null;
-    List<? extends MoveLine> moveLineList = null;
-
-    switch (rule) {
-
-        // Créance de + 6 mois
-      case 0:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getSixMonthDebtMonthNumber());
-        moveLineList =
-            moveLineRepo
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
-                        + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3 "
-                        + "AND self.invoiceReject.operationTypeSelect = ?4",
-                    company,
-                    date,
-                    doubtfulCustomerAccount,
-                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .fetch();
-        break;
-
-        // Créance de + 3 mois
-      case 1:
-        date =
-            appBaseService
-                .getTodayDate(company)
-                .minusMonths(company.getAccountConfig().getThreeMonthDebtMontsNumber());
-        moveLineList =
-            moveLineRepo
-                .all()
-                .filter(
-                    "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
-                        + "AND self.invoiceReject IS NOT NULL AND self.amountRemaining > 0.00 AND self.debit > 0.00 AND self.dueDate < ?2 "
-                        + "AND self.account != ?3 "
-                        + "AND self.invoiceReject.operationTypeSelect = ?4",
-                    company,
-                    date,
-                    doubtfulCustomerAccount,
-                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-                .fetch();
-        break;
-
-      default:
-        break;
+    for (Pair<Integer, Boolean> pair : this.getPairList(company.getAccountConfig())) {
+      for (long id :
+          this.getMoveLineIds(company, doubtfulCustomerAccount, pair.getLeft(), pair.getRight())) {
+        moveLineMap.put(id, pair);
+      }
     }
 
-    log.debug("Debt date taken into account : {} ", date);
+    return moveLineMap;
+  }
 
-    return moveLineList;
+  public List<Pair<Integer, Boolean>> getPairList(AccountConfig accountConfig) {
+    int sixMonthDebtMonthNumber = accountConfig.getSixMonthDebtMonthNumber();
+    int threeMonthDebtMonthNumber = accountConfig.getThreeMonthDebtMontsNumber();
+
+    return Arrays.asList(
+        Pair.of(sixMonthDebtMonthNumber, false),
+        Pair.of(threeMonthDebtMonthNumber, true),
+        Pair.of(sixMonthDebtMonthNumber, true),
+        Pair.of(threeMonthDebtMonthNumber, false));
+  }
+
+  @CallMethod
+  public List<Long> getDoubtfulCustomerPreviewList(
+      Company company, Account doubtfulCustomerAccount) {
+    List<Long> idList = new ArrayList<>();
+    AccountConfig accountConfig = company.getAccountConfig();
+
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getSixMonthDebtMonthNumber(), true));
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getThreeMonthDebtMontsNumber(), true));
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getSixMonthDebtMonthNumber(), false));
+    idList.addAll(
+        this.getMoveLineIds(
+            company, doubtfulCustomerAccount, accountConfig.getThreeMonthDebtMontsNumber(), false));
+
+    return idList.stream().distinct().collect(Collectors.toList());
   }
 }

@@ -51,7 +51,7 @@
       title="Budget Level" mappedBy="globalBudget"/>
 
     <integer name="checkAvailableSelect" title="Check available amount"
-      selection="budget.budget.level.check.available" default="2"/>
+      selection="budget.global.budget.check.available" default="2"/>
 
     <many-to-one name="activeVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
       title="Active Version"/>
@@ -60,6 +60,9 @@
 
     <boolean name="automaticBudgetComputation" title="Automatic budget computation"
       help="If enabled, an automatic budget computation will be done at request/finalize for orders"/>
+
+    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
+      title="Projects" mappedBy="globalBudgetSet"/>
 
 
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
@@ -84,12 +87,10 @@
 				public static final int GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED = 3;
 
 				//budget control type select
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_DEFAULT_VALUE = 0;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET = 2;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_SECTION = 3;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_BUDGET_GROUP = 4;
-				public static final int BUDGET_LEVEL_AVAILABLE_AMOUNT_GLOBAL_BUDGET = 5;
+				public static final int GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE = 0;
+				public static final int GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET_LINE = 1;
+				public static final int GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET = 2;
+				public static final int GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET = 5;
 	      ]]>
     </extra-code>
 

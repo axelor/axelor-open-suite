@@ -27,8 +27,14 @@ import com.axelor.apps.helpdesk.rest.service.TicketUpdateRestServiceImpl;
 import com.axelor.apps.helpdesk.service.MailServiceHelpDeskImpl;
 import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketServiceImpl;
+import com.axelor.apps.helpdesk.service.TicketStatusService;
+import com.axelor.apps.helpdesk.service.TicketStatusServiceImpl;
+import com.axelor.apps.helpdesk.service.TicketWorkflowService;
+import com.axelor.apps.helpdesk.service.TicketWorkflowServiceImpl;
 import com.axelor.apps.helpdesk.service.TimerTicketService;
 import com.axelor.apps.helpdesk.service.TimerTicketServiceImpl;
+import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
+import com.axelor.apps.helpdesk.service.app.AppHelpdeskServiceImpl;
 
 public class HelpdeskModule extends AxelorModule {
 
@@ -40,5 +46,8 @@ public class HelpdeskModule extends AxelorModule {
     bind(MailServiceBaseImpl.class).to(MailServiceHelpDeskImpl.class);
     bind(TimerTicketService.class).to(TimerTicketServiceImpl.class);
     bind(TicketUpdateRestService.class).to(TicketUpdateRestServiceImpl.class);
+    bind(TicketWorkflowService.class).to(TicketWorkflowServiceImpl.class);
+    bind(AppHelpdeskService.class).to(AppHelpdeskServiceImpl.class);
+    bind(TicketStatusService.class).to(TicketStatusServiceImpl.class);
   }
 }

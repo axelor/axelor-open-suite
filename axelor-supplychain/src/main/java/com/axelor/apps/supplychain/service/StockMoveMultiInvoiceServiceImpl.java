@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -630,8 +631,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice createDummyOutInvoice(StockMove stockMove) {
     Invoice dummyInvoice = new Invoice();
 
-    if (stockMove.getSaleOrder() != null) {
-      SaleOrder saleOrder = stockMove.getSaleOrder();
+    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+      SaleOrder saleOrder = saleOrderSet.iterator().next();
       dummyInvoice.setCurrency(saleOrder.getCurrency());
       dummyInvoice.setPartner(saleOrder.getClientPartner());
       dummyInvoice.setCompany(saleOrder.getCompany());
@@ -672,8 +674,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected Invoice createDummyInInvoice(StockMove stockMove) {
     Invoice dummyInvoice = new Invoice();
 
-    if (stockMove.getPurchaseOrder() != null) {
-      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
+    if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+      PurchaseOrder purchaseOrder = purchaseOrderSet.iterator().next();
       dummyInvoice.setCurrency(purchaseOrder.getCurrency());
       dummyInvoice.setPartner(purchaseOrder.getSupplierPartner());
       dummyInvoice.setCompany(purchaseOrder.getCompany());
@@ -685,8 +688,9 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       dummyInvoice.setInAti(purchaseOrder.getInAti());
       dummyInvoice.setFiscalPosition(purchaseOrder.getFiscalPosition());
     } else {
-      if (stockMove.getSaleOrder() != null) {
-        SaleOrder saleOrder = stockMove.getSaleOrder();
+      if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+        Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+        SaleOrder saleOrder = saleOrderSet.iterator().next();
         if (appStockService.getAppStock().getIsIncotermEnabled()) {
           dummyInvoice.setIncoterm(saleOrder.getIncoterm());
         }
@@ -758,7 +762,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected void completeInvoiceInMultiOutgoingStockMove(
       Invoice dummyInvoice, StockMove stockMove) {
 
-    if (stockMove.getSaleOrder() != null) {
+    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
       return;
     }
 
@@ -801,7 +805,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected void completeInvoiceInMultiIncomingStockMove(
       Invoice dummyInvoice, StockMove stockMove) {
 
-    if (stockMove.getPurchaseOrder() != null) {
+    if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
       return;
     }
 
@@ -845,13 +849,15 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     List<String> externalRefList = new ArrayList<>();
     List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
-      SaleOrder saleOrder = stockMove.getSaleOrder();
-      if (saleOrder != null) {
-        externalRefList.add(saleOrder.getExternalReference());
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+      if (ObjectUtils.notEmpty(saleOrderSet)) {
+        for (SaleOrder saleOrder : saleOrderSet) {
+          externalRefList.add(saleOrder.getExternalReference());
+          internalRefList.add(
+              stockMove.getStockMoveSeq()
+                  + (saleOrder != null ? (":" + saleOrder.getSaleOrderSeq()) : ""));
+        }
       }
-      internalRefList.add(
-          stockMove.getStockMoveSeq()
-              + (saleOrder != null ? (":" + saleOrder.getSaleOrderSeq()) : ""));
     }
 
     String externalRef = String.join("|", externalRefList);
@@ -874,13 +880,16 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     List<String> externalRefList = new ArrayList<>();
     List<String> internalRefList = new ArrayList<>();
     for (StockMove stockMove : stockMoveList) {
-      PurchaseOrder purchaseOrder = stockMove.getPurchaseOrder();
-      if (purchaseOrder != null) {
-        externalRefList.add(purchaseOrder.getExternalReference());
+      Set<PurchaseOrder> purchaseOrderSet = stockMove.getPurchaseOrderSet();
+      if (ObjectUtils.notEmpty(purchaseOrderSet)) {
+        for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
+
+          externalRefList.add(purchaseOrder.getExternalReference());
+          internalRefList.add(
+              stockMove.getStockMoveSeq()
+                  + (purchaseOrder != null ? (":" + purchaseOrder.getPurchaseOrderSeq()) : ""));
+        }
       }
-      internalRefList.add(
-          stockMove.getStockMoveSeq()
-              + (purchaseOrder != null ? (":" + purchaseOrder.getPurchaseOrderSeq()) : ""));
     }
 
     String externalRef = String.join("|", externalRefList);

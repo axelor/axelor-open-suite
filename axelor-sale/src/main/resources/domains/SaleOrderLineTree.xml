@@ -28,8 +28,10 @@
     <decimal name="unitCost" title="Unit cost" nullable="true"/>
     <decimal name="unitPrice" title="Unit price" nullable="true" precision="20" scale="10"/>
     <decimal name="marginRate" title="Margin rate" nullable="true"/>
-    <decimal name="totalCost" title="Total cost" readonly="true" nullable="true"/>
-    <decimal name="totalPrice" title="Total price" readonly="true" nullable="true"/>
+    <decimal name="totalCost" title="Total cost" readonly="true" nullable="true" scale="3"
+      precision="20"/>
+    <decimal name="totalPrice" title="Total price" readonly="true" nullable="true" scale="3"
+      precision="20"/>
 
     <extra-code><![CDATA[
 

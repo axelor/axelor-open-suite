@@ -6,13 +6,13 @@
   <grid name="language-grid" title="Languages" model="com.axelor.apps.base.db.Language"
     editable="true">
     <field name="name"/>
-    <field name="code" x-bind="{{code|lowercase}}"/>
+    <field name="code" x-bind="{{code|lowercase}}" max="2"/>
   </grid>
 
   <form name="language-form" title="Language" model="com.axelor.apps.base.db.Language">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="code" x-bind="{{code|lowercase}}"/>
+      <field name="code" x-bind="{{code|lowercase}}" max="2"/>
     </panel>
   </form>
 </object-views>

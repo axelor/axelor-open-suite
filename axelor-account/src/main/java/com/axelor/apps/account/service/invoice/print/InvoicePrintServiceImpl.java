@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -259,14 +260,17 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
       String userLanguageCode =
-          Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
+          Optional.ofNullable(AuthUtils.getUser())
+              .map(User::getLocalization)
+              .map(Localization::getCode)
+              .orElse(null);
       String companyLanguageCode =
-          invoice.getCompany().getLanguage() != null
-              ? invoice.getCompany().getLanguage().getCode()
+          invoice.getCompany().getLocalization() != null
+              ? invoice.getCompany().getLocalization().getCode()
               : userLanguageCode;
       String partnerLanguageCode =
-          invoice.getPartner().getLanguage() != null
-              ? invoice.getPartner().getLanguage().getCode()
+          invoice.getPartner().getLocalization() != null
+              ? invoice.getPartner().getLocalization().getCode()
               : userLanguageCode;
       locale =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()

@@ -8,7 +8,6 @@
   <entity name="LeaveReason" cacheable="true">
 
     <string name="name" namecolumn="true" title="Leave reason" required="true"/>
-    <boolean name="manageAccumulation" title="Manage Accumulation"/>
     <boolean name="allowNegativeValue" title="Allow negative value for leaves"/>
     <boolean name="allowInjection" title="Allow Injection"/>
     <string name="instruction" title="Instruction" multiline="true" large="true"/>
@@ -29,11 +28,19 @@
     <many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning"
       title="Plannings"/>
     <boolean name="useWeeklyPlanningCoef" title="Use weekly plannning coef."/>
+    <boolean name="isToBeResetYearly" title="To be reset yearly"/>
+    <many-to-one name="recoveryLeaveReason" ref="com.axelor.apps.hr.db.LeaveReason"
+      title="Recovery leave reason"
+      help="All remaining leaves will be transferred to the selected leave type"/>
 
     <extra-code>
    		<![CDATA[
    			public static final int UNIT_SELECT_DAYS = 1;
    			public static final int UNIT_SELECT_HOURS = 2;
+
+            public static final int TYPE_SELECT_EVERY_MONTH = 1;
+   			public static final int TYPE_SELECT_EXCEPTIONAL_DAYS = 2;
+   			public static final int TYPE_SELECT_EVERY_YEAR = 3;
    		]]>
     </extra-code>
 

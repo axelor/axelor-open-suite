@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202203150031</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1067,23 +1067,19 @@ StockMove.gross_mass,
 ToStockLocationAddress.full_name as "to_stock_location_address",
 FromStockLocation.name as "from_stock_location_name",
 ToStockLocation.name as "to_stock_location_name",
+StockMove.origin as "origin",
 CASE
-	WHEN StockMove.sale_order IS NOT NULL THEN SaleOrder.sale_order_seq 
-	WHEN StockMove.purchase_order IS NOT NULL THEN PurchaseOrder.purchase_order_seq
-END
-as "origin",
-CASE
-	WHEN StockMove.sale_order IS NOT NULL THEN SaleOrder.external_reference
-	WHEN StockMove.purchase_order IS NOT NULL THEN PurchaseOrder.external_reference
+	WHEN SaleOrderSet.sale_order_set IS NOT NULL THEN SaleOrder.external_reference
+	WHEN PurchaseOrderSet.purchase_order_set IS NOT NULL THEN PurchaseOrder.external_reference
 END
 as "externalReference",
 CASE
-	WHEN StockMove.sale_order IS NOT NULL THEN SaleOrder.main_invoicing_address_str
+	WHEN SaleOrderSet.sale_order_set IS NOT NULL THEN SaleOrder.main_invoicing_address_str
 END
 as "invoicingAddress",
 CASE
-	WHEN StockMove.sale_order IS NOT NULL THEN SaleOrder.order_date
-	WHEN StockMove.purchase_order IS NOT NULL THEN PurchaseOrder.order_date
+	WHEN SaleOrderSet.sale_order_set IS NOT NULL THEN SaleOrder.order_date
+	WHEN PurchaseOrderSet.purchase_order_set IS NOT NULL THEN PurchaseOrder.order_date
 END
 as "orderDate",
 StockConfig.display_partner_seq_on_printing,
@@ -1105,8 +1101,12 @@ left outer join base_country as Country on (DeliveryAddress.addressl7country = C
 left outer join auth_user as AuthUser on (StockMove.updated_by = AuthUser.id)
 left outer join auth_user as AuthUserCreate on (StockMove.created_by = AuthUserCreate.id)
 left outer join base_printing_settings as PrintingSetting on (StockMove.printing_settings = PrintingSetting.id)
-left outer join sale_sale_order as SaleOrder on (StockMove.sale_order = SaleOrder.id)
-left outer join purchase_purchase_order as PurchaseOrder on (StockMove.purchase_order = PurchaseOrder.id)
+
+left join stock_stock_move_sale_order_set SaleOrderSet on (SaleOrderSet.stock_stock_move = StockMove.id)
+left join sale_sale_order as SaleOrder on (SaleOrderSet.sale_order_set = SaleOrder.id)
+left join stock_stock_move_purchase_order_set PurchaseOrderSet on (PurchaseOrderSet.stock_stock_move = StockMove.id)
+left join purchase_purchase_order as PurchaseOrder on (PurchaseOrderSet.purchase_order_set = PurchaseOrder.id)
+
 left outer join stock_stock_location as fromStockLocation on (StockMove.from_stock_location = FromStockLocation.id)
 left outer join stock_stock_location as ToStockLocation on (StockMove.to_stock_location = ToStockLocation.id)
 left outer join base_address as ToStockLocationAddress on (ToStockLocation.address = ToStockLocationAddress.id)
@@ -1285,7 +1285,7 @@ where StockMove.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1768,12 +1768,14 @@ left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = Sto
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line) 
 left join base_currency as Currency on (Currency.id = 
 (select CASE
-	WHEN SM.sale_order IS NOT NULL THEN SaleOrder.currency 
-	WHEN SM.purchase_order IS NOT NULL THEN PurchaseOrder.currency
-	WHEN SM.inventory IS NOT NULL THEN Company.currency
+	WHEN max(SaleOrderSet.sale_order_set) IS NOT NULL THEN max(SaleOrder.currency) 
+	WHEN max(PurchaseOrderSet.purchase_order_set) IS NOT NULL THEN max(PurchaseOrder.currency)
+	WHEN max(SM.inventory) IS NOT NULL THEN Company.currency
 END as currency from stock_stock_move as SM 
-left join sale_sale_order as SaleOrder on (SaleOrder.id = SaleOrderLine.sale_order)
-left join purchase_purchase_order as PurchaseOrder on (PurchaseOrder.id = PurchaseOrderLine.purchase_order) 
+left join stock_stock_move_sale_order_set SaleOrderSet on (SaleOrderSet.stock_stock_move = SM.id)
+left join sale_sale_order as SaleOrder on (SaleOrderSet.sale_order_set = SaleOrder.id)
+left join stock_stock_move_purchase_order_set PurchaseOrderSet on (PurchaseOrderSet.stock_stock_move = SM.id)
+left join purchase_purchase_order as PurchaseOrder on (PurchaseOrderSet.purchase_order_set = PurchaseOrder.id) 
 where SM.id = StockMove.id))
 left outer join sale_customer_catalog as CustomerCatalog on (CustomerCatalog.product = Product.id and CustomerCatalog.customer_partner = StockMove.partner) 
 left outer join stock_stock_location as FromLocation on (FromLocation.id = StockMove.from_stock_location and StockMove.type_select = 1)
