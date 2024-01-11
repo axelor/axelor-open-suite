@@ -14,20 +14,22 @@
     <many-to-one name="ifrsFixedAsset" ref="com.axelor.apps.account.db.FixedAsset"
       title="Fixed asset"/>
     <date name="depreciationDate" title="Depreciation date"/>
-    <decimal name="depreciation" title="Depreciation"/>
-    <decimal name="cumulativeDepreciation" title="Cumulative depreciation"/>
-    <decimal name="residualValue" title="Residual value"/>
+    <decimal name="depreciation" title="Depreciation" precision="20" scale="3"/>
+    <decimal name="cumulativeDepreciation" title="Cumulative depreciation" precision="20"
+      scale="3"/>
+    <decimal name="residualValue" title="Residual value" precision="20" scale="3"/>
     <integer name="statusSelect" title="Status"
       selection="account.fixed.asset.line.status.select"/>
     <many-to-one name="depreciationAccountMove" ref="com.axelor.apps.account.db.Move"
       title="Depreciation account move" readonly="true"/>
     <integer name="typeSelect" title="Type" selection="account.fixed.asset.line.type.select"
       default="1"/>
-    <decimal name="grossValue" title="Gross value"/>
-    <decimal name="depreciationBase" title="Depreciation Base"/>
-    <decimal name="accountingValue" title="Accounting value"/>
-    <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
-    <decimal name="impairmentValue" title="Impairment Value"/>
+    <decimal name="grossValue" title="Gross value" precision="20" scale="3"/>
+    <decimal name="depreciationBase" title="Depreciation Base" precision="20" scale="3"/>
+    <decimal name="accountingValue" title="Accounting value" precision="20" scale="3"/>
+    <decimal name="correctedAccountingValue" title="Corrected Accounting Value"
+      precision="20" scale="3"/>
+    <decimal name="impairmentValue" title="Impairment Value" precision="20" scale="3"/>
     <many-to-one ref="com.axelor.apps.account.db.Move" name="impairmentAccountMove"
       title="Impairment Account Move"/>
     <boolean name="isSimulated" title="Is Simulated ?"
