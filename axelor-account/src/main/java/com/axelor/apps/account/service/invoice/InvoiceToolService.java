@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -42,6 +43,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -55,7 +57,7 @@ public class InvoiceToolService {
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
     return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
         ? getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
-        : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
+        : getMaxDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
   protected static LocalDate getMaxDueDate(
@@ -70,6 +72,19 @@ public class InvoiceToolService {
             .max(Comparator.comparing(PaymentConditionLine::getSequence))
             .get(),
         defaultDate);
+  }
+
+  protected static LocalDate getMaxDueDate(
+      List<InvoiceTerm> invoiceTermList, LocalDate defaultDate) {
+    if (ObjectUtils.isEmpty(invoiceTermList)) {
+      return defaultDate;
+    }
+
+    return invoiceTermList.stream()
+        .map(InvoiceTerm::getDueDate)
+        .filter(Objects::nonNull)
+        .max(LocalDate::compareTo)
+        .orElse(defaultDate);
   }
 
   @CallMethod

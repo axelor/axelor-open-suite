@@ -305,23 +305,19 @@ public class InvoiceController {
           || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
+      LocalDate date = null;
+
       if (InvoiceToolService.isPurchase(invoice)) {
-        if (invoice.getOriginDate() != null) {
-          invoice = invoiceTermService.setDueDates(invoice, invoice.getOriginDate());
-        } else {
-          invoice =
-              invoiceTermService.setDueDates(
-                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        }
+        date = invoice.getOriginDate();
       } else {
-        if (invoice.getInvoiceDate() != null) {
-          invoice = invoiceTermService.setDueDates(invoice, invoice.getInvoiceDate());
-        } else {
-          invoice =
-              invoiceTermService.setDueDates(
-                  invoice, Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany()));
-        }
+        date = invoice.getInvoiceDate();
       }
+
+      if (date == null) {
+        date = Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
+      }
+
+      invoice = invoiceTermService.setDueDates(invoice, date);
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
 
     } catch (Exception e) {
@@ -1244,11 +1240,11 @@ public class InvoiceController {
   public void fillEstimatedPaymentDate(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     try {
-      if (invoice.getDueDate() == null) {
-        return;
-      }
-      invoice = Beans.get(InvoiceService.class).computeEstimatedPaymentDate(invoice);
-      response.setValues(invoice);
+      InvoiceService invoiceService = Beans.get(InvoiceService.class);
+
+      invoice = invoiceService.computeEstimatedPaymentDate(invoice);
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      response.setValue("nextDueDate", InvoiceToolService.getNextDueDate(invoice));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);

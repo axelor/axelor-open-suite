@@ -188,6 +188,8 @@ public interface InvoiceTermService {
    */
   public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
 
+  public Invoice computeTermsDueDate(Invoice invoice, LocalDate invoiceDate);
+
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
    * based on due date
