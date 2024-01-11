@@ -392,8 +392,25 @@ public class PartnerController {
       if (partnerService.isRegistrationCodeValid(partner)) {
         Map<String, Map<String, Object>> attrsMap =
             partnerService.getRegistrationCodeValidationAttrs(partner);
+
+        LOG.info("Attribute Map for registration code: {}", attrsMap);
         response.setAttrs(attrsMap);
       }
+
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+    }
+  }
+
+  public void getHideFieldOnPartnerTypeSelect(ActionRequest request, ActionResponse response) {
+    try {
+      Partner partner = request.getContext().asType(Partner.class);
+      PartnerService partnerService = Beans.get(PartnerService.class);
+
+      Map<String, Map<String, Object>> attrsMap = partnerService.getPartnerTypeSelectAttrs(partner);
+
+      LOG.info("Attribute Map for registration code: {}", attrsMap);
+      response.setAttrs(attrsMap);
 
     } catch (Exception e) {
       TraceBackService.trace(e);

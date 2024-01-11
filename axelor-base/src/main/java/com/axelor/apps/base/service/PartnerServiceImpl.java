@@ -807,4 +807,18 @@ public class PartnerServiceImpl implements PartnerService {
     }
     return null;
   }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerTypeSelectAttrs(Partner partner) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    attrsMap.put("siren", new HashMap<>());
+    attrsMap.put("nic", new HashMap<>());
+    attrsMap
+        .get("siren")
+        .put("hidden", partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    attrsMap
+        .get("nic")
+        .put("hidden", partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+    return attrsMap;
+  }
 }

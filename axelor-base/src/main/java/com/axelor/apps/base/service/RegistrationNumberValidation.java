@@ -10,6 +10,46 @@ import java.util.Map;
 public abstract class RegistrationNumberValidation {
   public abstract boolean computeRegistrationCodeValidity(String registrationCode);
 
+  public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    boolean useNic = false;
+    boolean useSiren = false;
+
+    attrsMap.put("nic", new HashMap<>());
+    attrsMap.put("siren", new HashMap<>());
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
+      RegistrationNumberTemplate registrationNumberTemplate =
+          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
+      if (!registrationNumberTemplate.getUseNic()) {
+        useNic = true;
+      }
+      if (!registrationNumberTemplate.getUseSiren()) {
+        useSiren = true;
+      }
+    }
+
+    attrsMap.get("nic").put("hidden", useNic);
+    attrsMap.get("nic").put("value", "");
+
+    attrsMap.get("siren").put("hidden", useSiren);
+    attrsMap.get("siren").put("value", "");
+
+    if (!StringUtils.isBlank(partner.getRegistrationCode())) {
+      String taxNbr = getTaxNbrFromRegistrationCode(partner);
+      String nic = getNicFromRegistrationCode(partner);
+      String siren = getSirenFromRegistrationCode(partner);
+
+      attrsMap.put("taxNbr", new HashMap<>());
+      attrsMap.get("taxNbr").put("value", taxNbr);
+
+      attrsMap.get("nic").put("value", nic);
+      attrsMap.get("siren").put("value", siren);
+    }
+    return attrsMap;
+  }
+
   protected String getTaxKeyFromSIREN(String sirenStr) {
     int siren = Integer.parseInt(sirenStr);
     int taxKey = Math.floorMod(siren, 97);
@@ -89,38 +129,5 @@ public abstract class RegistrationNumberValidation {
       }
     }
     return siren;
-  }
-
-  public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    boolean useNic = false;
-    boolean useSiren = false;
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      RegistrationNumberTemplate registrationNumberTemplate =
-          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
-      if (!registrationNumberTemplate.getUseNic()) {
-        useNic = true;
-      }
-      if (!registrationNumberTemplate.getUseSiren()) {
-        useSiren = true;
-      }
-    }
-
-    if (!StringUtils.isBlank(partner.getRegistrationCode())) {
-      String taxNbr = getTaxNbrFromRegistrationCode(partner);
-      String nic = getNicFromRegistrationCode(partner);
-      String siren = getSirenFromRegistrationCode(partner);
-
-      attrsMap.put("taxNbr", Map.of("value", taxNbr));
-      attrsMap.put("nic", Map.of("value", nic, "hidden", useNic));
-      attrsMap.put("siren", Map.of("value", siren, "hidden", useSiren));
-    } else {
-      attrsMap.put("nic", Map.of("value", "", "hidden", useNic));
-      attrsMap.put("siren", Map.of("value", "", "hidden", useSiren));
-    }
-
-    return attrsMap;
   }
 }

@@ -2080,7 +2080,7 @@
 "The generated sequence %s already exists. Please fix the configuration of sequence %s.","La séquence générée %s existe déjà. Merci de corriger la configuration de la séquence %s.",,
 "The geonames file type is invalid.","le type de fichier geonames est invalide.",,
 "The groovy condition result must be a boolean","Le résultat de l'expression Groovy doit être un booléen",,
-"The import configuration executed successfully.","",,
+"The import configuration executed successfully.",,,
 "The import file is empty or it has error format.","Le fichier importé est soit vide soit mal formaté.",,
 "The line cannot be imported (import : %s)","La ligne ne peut être importée (import : %s)",,
 "The method '%s' doesn't exist in the Faker API.","La méthode '%s' n'existe pas dans l'API Faker.",,

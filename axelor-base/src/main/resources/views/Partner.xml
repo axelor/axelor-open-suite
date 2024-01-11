@@ -344,8 +344,8 @@
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
           onChange="action-group-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2" colSpan="4" readonly="true"/>
+        <field name="siren" colSpan="4" readonly="true"/>
+        <field name="nic" colSpan="4" readonly="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form"/>
@@ -1095,7 +1095,9 @@
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
+    <action name="action-method-partner-siren-nic-onload"/>
     <action name="action-method-base-partner-business-country-change"/>
+    <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1127,6 +1129,7 @@
     <action name="action-partner-method-set-social-network-url"
       if="!__config__.app.isApp('crm')"/>
     <action name="action-partner-record-employee"/>
+    <action name="action-method-partner-siren-nic-onload"/>
   </action-group>
 
   <action-group name="action-partner-group-check-can-change-factor"
@@ -1211,6 +1214,11 @@
     <field name="isSupplier" expr="eval:true"/>
     <field name="supplierCantBeRemoved" expr="eval:false"/>
   </action-record>
+
+  <action-method name="action-method-partner-siren-nic-onload">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getHideFieldOnPartnerTypeSelect"/>
+  </action-method>
 
   <action-method name="action-partner-method-check-company-account-config">
     <call class="com.axelor.apps.account.web.PartnerController"
