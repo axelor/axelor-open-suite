@@ -4,7 +4,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.quality.db.QualityImprovement;
-import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.google.inject.Inject;
 import java.util.Map;
 
