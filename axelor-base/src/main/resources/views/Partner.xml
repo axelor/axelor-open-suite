@@ -332,8 +332,6 @@
         <field name="industrySector" colSpan="6" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
 
-        <field name="businessCountry" colSpan="6" widget="SuggestBox"
-          hideIf="partnerTypeSelect== 2" onChange="action-partner-group-business-country-onchange"/>
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
           form-view="source-form" grid-view="source-grid"/>
         <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
@@ -346,9 +344,9 @@
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
           onChange="action-group-partner-registration-code-onChange"/>
-        <field name="siren" hideIf="partnerTypeSelect== 2 || businessCountry == null"
+        <field name="siren" hideIf="partnerTypeSelect== 2"
           colSpan="4" readonly="true"/>
-        <field name="nic" hideIf="partnerTypeSelect== 2 || businessCountry == null"
+        <field name="nic" hideIf="partnerTypeSelect== 2 "
           colSpan="4" readonly="true"/>
         <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
@@ -1099,6 +1097,7 @@
     <action name="action-partner-attrs-partner-seq-editable"/>
     <action name="action-partner-method-check-name"/>
     <action name="action-partner-attrs-hide-invoice-and-delivery-address-text"/>
+    <action name="action-method-base-partner-business-country-change"/>
   </action-group>
 
   <action-group name="action-group-base-partner-onnew">
@@ -1167,9 +1166,9 @@
   <action-group name="action-partner-group-onsave">
     <action name="action-partner-iban-check-on-save"/>
     <action name="action-partner-validate-registration-code"/>
-    <action name="action-method-partner-check-registration-code"/>
     <action name="save"/>
     <action name="action-partner-method-set-user-partner"/>
+    <action name="action-method-partner-check-registration-code"/>
   </action-group>
 
   <action-validate name="action-partner-validate-registration-code">
@@ -1323,15 +1322,15 @@
     <action name="action-partner-attrs-set-customer"/>
   </action-group>
 
-  <action-group name="action-partner-group-business-country-onchange">
-    <action name="action-method-base-partner-business-country-change"/>
-    <action name="action-group-partner-registration-code-onChange"/>
-  </action-group>
-
   <action-group name="action-group-partner-registration-code-onChange">
     <action name="action-method-partner-registration-code-onChange"/>
   </action-group>
 
+  <action-record name="action-record-partner-registration-code-empty"
+                 model="com.axelor.apps.base.db.Partner">
+    <field name="siren" expr="eval: null"/>
+    <field name="nic" expr="eval: null"/>
+  </action-record>
 
   <action-record name="action-partner-empty-first-name"
     model="com.axelor.apps.base.db.Partner">

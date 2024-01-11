@@ -392,6 +392,7 @@ public class PartnerController {
       if (partnerService.isRegistrationCodeValid(partner)) {
         Map<String, Map<String, Object>> attrsMap =
             partnerService.getRegistrationCodeValidationAttrs(partner);
+        LOG.info("ARRTS: {}", attrsMap);
         response.setAttrs(attrsMap);
       }
 
@@ -417,7 +418,7 @@ public class PartnerController {
       response.setAttr(
           "registrationCode",
           "title",
-          registrationCodeTitle != null ? registrationCodeTitle : "Registration Number");
+          registrationCodeTitle != null ? registrationCodeTitle : "Registration number");
 
     } catch (Exception e) {
       TraceBackService.trace(e);

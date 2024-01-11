@@ -1,7 +1,10 @@
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.RegistrationNumberTemplate;
+import com.axelor.common.StringUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,10 +72,10 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
     String regCode = partner.getRegistrationCode();
     String nic = "";
 
-    if (partner.getBusinessCountry() != null
-        && partner.getBusinessCountry().getRegistrationNumberTemplate() != null) {
+    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+      Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
-          partner.getBusinessCountry().getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
       if (registrationNumberTemplate.getUseNic() && regCode != null) {
         regCode = regCode.replaceAll(" ", "");
 
@@ -94,10 +97,10 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
     String regCode = partner.getRegistrationCode();
     String siren = "";
 
-    if (partner.getBusinessCountry() != null
-        && partner.getBusinessCountry().getRegistrationNumberTemplate() != null) {
+    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+      Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
-          partner.getBusinessCountry().getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
       if (registrationNumberTemplate.getUseSiren() && regCode != null) {
         regCode = regCode.replaceAll(" ", "");
 
@@ -117,13 +120,32 @@ public class RegistrationNumberValidationFRA implements RegistrationNumberValida
   @Override
   public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-    String taxNbr = getTaxNbrFromRegistrationCode(partner);
-    String nic = getNicFromRegistrationCode(partner);
-    String siren = getSirenFromRegistrationCode(partner);
 
-    attrsMap.put("taxNbr", Map.of("value", taxNbr));
-    attrsMap.put("nic", Map.of("value", nic));
-    attrsMap.put("siren", Map.of("value", siren));
+    boolean useNic = false;
+    boolean useSiren = false;
+    if (partner.getMainAddress() != null && partner.getMainAddress().getAddressL7Country() != null) {
+      RegistrationNumberTemplate registrationNumberTemplate =
+              partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
+      if (!registrationNumberTemplate.getUseNic()) {
+        useNic = true;
+      }
+      if (!registrationNumberTemplate.getUseSiren()) {
+        useSiren = true;
+      }
+    }
+
+    if(!StringUtils.isBlank(partner.getRegistrationCode())) {
+      String taxNbr = getTaxNbrFromRegistrationCode(partner);
+      String nic = getNicFromRegistrationCode(partner);
+      String siren = getSirenFromRegistrationCode(partner);
+
+      attrsMap.put("taxNbr", Map.of("value", taxNbr));
+      attrsMap.put("nic", Map.of("value", nic, "hidden", useNic));
+      attrsMap.put("siren", Map.of("value", siren, "hidden", useSiren));
+    }else{
+      attrsMap.put("nic", Map.of("value", "", "hidden", useNic));
+      attrsMap.put("siren", Map.of("value", "", "hidden", useSiren));
+    }
 
     return attrsMap;
   }
