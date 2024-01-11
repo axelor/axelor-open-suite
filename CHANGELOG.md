@@ -1,3 +1,19 @@
+## [7.1.13] (2024-01-11)
+
+#### Fixed
+
+* Prospect: open grid view instead of kanban view by default.
+* Product: make the product unit field required for stock managed items.
+* Budget: fixed amount paid computation on move and invoices reconcile.
+* Reconcile: fixed invoice term amount remaining with multi currency.
+* Invoice/Move/Budget: manage the negative imputation when the invoice is a refund or an advance or when the move is a reverse move.
+* Stock move: fixed unable to select external stock location on receipt.
+* Invoice: Duplicating an invoice now correctly empties the origin date and the supplier invoice number.
+* Invoice: fixed error when we change partner in supplier invoice with invoice lines.
+* Account clearance: fixed the way tax and vat system are managed.
+* Indicators: fixed results display.
+* Sale order: keep attached files and internal notes when merging sale orders.
+
 ## [7.1.12] (2023-12-21)
 
 #### Fixed
@@ -779,6 +795,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.13]: https://github.com/axelor/axelor-open-suite/compare/v7.1.12...v7.1.13
 [7.1.12]: https://github.com/axelor/axelor-open-suite/compare/v7.1.11...v7.1.12
 [7.1.11]: https://github.com/axelor/axelor-open-suite/compare/v7.1.10...v7.1.11
 [7.1.10]: https://github.com/axelor/axelor-open-suite/compare/v7.1.9...v7.1.10
