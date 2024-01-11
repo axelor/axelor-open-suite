@@ -1,18 +1,30 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     implements CurrencyScaleServiceAccount {
+
+  protected FixedAssetLineService fixedAssetLineService;
+
+  @Inject
+  public CurrencyScaleServiceAccountImpl(FixedAssetLineService fixedAssetLineService) {
+    this.fixedAssetLineService = fixedAssetLineService;
+  }
 
   @Override
   public BigDecimal getScaledValue(Move move, BigDecimal amount) {
@@ -87,6 +99,18 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getCompanyScaledValue(FixedAsset fixedAsset, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(fixedAsset.getCompany()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(FixedAssetLine fixedAssetLine, BigDecimal amount)
+      throws AxelorException {
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    return this.getScaledValue(amount, this.getCompanyScale(fixedAsset));
+  }
+
+  @Override
   public int getScale(Move move) {
     return this.getScale(move.getCurrency());
   }
@@ -150,6 +174,17 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return invoicePayment.getInvoice() != null
         ? this.getCompanyScale(invoicePayment.getInvoice())
         : this.getCompanyScale(invoicePayment.getMove());
+  }
+
+  @Override
+  public int getCompanyScale(FixedAsset fixedAsset) {
+    return this.getCompanyScale(fixedAsset.getCompany());
+  }
+
+  @Override
+  public int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException {
+    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    return this.getCompanyScale(fixedAsset);
   }
 
   @Override

@@ -62,6 +62,7 @@
         <field name="fixedAssetCategory.fixedAssetType" hidden="true"/>
         <field name="fixedAssetCategory.fixedAssetType.technicalTypeSelect" hidden="true"/>
         <field name="fixedAssetCategory.depreciationPlanSelect" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
       </panel>
     </panel>
     <panel name="otherDetailsPanel">
@@ -91,7 +92,7 @@
         <button
           onClick="action-method-fixed-asset-analytic-distribution-template-personalize"
           name="personalizeBtn" title="Create personalized analytic template" colSpan="6"
-          hideIf="analyticDistributionTemplate != null &amp;&amp; analyticDistributionTemplate.isSpecific"
+          hideIf="analyticDistributionTemplate != null &amp;&amp; analyticDistributionTemplate.isSpecific"
           hidden="true"/>
         <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
       </panel>
@@ -128,7 +129,7 @@
           <field name="importFiscalNbrOfPastDepreciations" requiredIf="originSelect == 99"
             min="0"/>
           <field name="importFiscalAlreadyDepreciatedAmount" requiredIf="originSelect == 99"
-            min="0"/>
+            min="0" x-scale="company.currency.numberOfDecimals"/>
         </panel>
         <panel-related name="fiscalFixedAssetLineListPanel"
           readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList"
@@ -166,7 +167,8 @@
         <panel name="importValuesPanel" showIf="originSelect == 99" title="Import parameters"
           readonlyIf="statusSelect > 1" hidden="true">
           <field name="importNbrOfPastDepreciations" requiredIf="originSelect == 99" min="0"/>
-          <field name="importAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"/>
+          <field name="importAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"
+            x-scale="company.currency.numberOfDecimals"/>
         </panel>
         <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1"
           colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form"
@@ -210,7 +212,7 @@
           <field name="importIfrsNbrOfPastDepreciations" requiredIf="originSelect == 99"
             min="0"/>
           <field name="importIfrsAlreadyDepreciatedAmount" requiredIf="originSelect == 99"
-            min="0"/>
+            min="0" x-scale="company.currency.numberOfDecimals"/>
         </panel>
         <panel-related name="ifrsFixedAssetLineListPanel"
           readonlyIf="statusSelect > 1" colSpan="12" field="ifrsFixedAssetLineList"
@@ -266,12 +268,14 @@
     </panel>
     <panel name="allValuesPanel" sidebar="true">
       <field name="grossValue" requiredIf="originSelect == 99" readonlyIf="statusSelect > 1"
-        onChange="action-fixed-asset-record-set-residual-value,action-validate-gross-value-residual-value"/>
+        onChange="action-fixed-asset-record-set-residual-value,action-validate-gross-value-residual-value"
+        x-scale="company.currency.numberOfDecimals"/>
       <field name="residualValue" readonly="true"
-        onChange="action-validate-gross-value-residual-value"/>
+        onChange="action-validate-gross-value-residual-value"
+        x-scale="company.currency.numberOfDecimals"/>
       <field name="accountingValue"
         hideIf="depreciationPlanSelect.includes('0') || statusSelect == 1" readonly="true"
-        hidden="true"/>
+        hidden="true" x-scale="company.currency.numberOfDecimals"/>
     </panel>
     <panel name="importValuesPanel" showIf="originSelect == 99" title="Import parameters"
       sidebar="true" readonlyIf="statusSelect > 1" hidden="true">
@@ -281,7 +285,7 @@
       showIf="statusSelect == 2"
       readonlyIf="!$canUpdateDepreciation || accountingValue == null || accountingValue == 0 || statusSelect != 2 || isEqualToFiscalDepreciation"
       sidebar="true" hidden="true">
-      <field name="correctedAccountingValue"/>
+      <field name="correctedAccountingValue" x-scale="company.currency.numberOfDecimals"/>
       <field name="numberOfDepreciation"
         onChange="action-fixed-asset-category-record-compute-duration"/>
     </panel>
@@ -293,7 +297,8 @@
         hidden="true"/>
       <field name="disposalDate" readonly="true" showIf="statusSelect == 4" hidden="true"/>
       <field name="disposalValue" readonly="true"
-        showIf="statusSelect == 4 &amp;&amp; transferredReasonSelect == 2" hidden="true"/>
+        showIf="statusSelect == 4 &amp;&amp; transferredReasonSelect == 2" hidden="true"
+        x-scale="company.currency.numberOfDecimals"/>
       <field name="disposalMove" readonly="true" showIf="statusSelect == 4"
         form-view="move-form" grid-view="move-grid" hidden="true"/>
       <field name="saleAccountMove"

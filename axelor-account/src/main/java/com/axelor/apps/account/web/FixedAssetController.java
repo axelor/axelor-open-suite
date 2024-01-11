@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
@@ -36,6 +37,8 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -440,12 +443,19 @@ public class FixedAssetController {
               (String)
                   ((LinkedHashMap<String, Object>) request.getContext().get("_fixedAsset"))
                       .get("qty"));
+      Company company =
+          Beans.get(CompanyRepository.class)
+              .find(Long.parseLong(request.getContext().get("_id").toString()));
 
       response.setAttr(
           "splitTypeSelect",
           "value",
           qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0);
       response.setAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0);
+      response.setAttr(
+          "grossValue",
+          "scale",
+          Beans.get(CurrencyScaleServiceAccount.class).getCompanyScale(company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
