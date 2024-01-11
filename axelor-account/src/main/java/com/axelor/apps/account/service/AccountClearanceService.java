@@ -188,7 +188,7 @@ public class AccountClearanceService {
               tax,
               company,
               journal,
-              moveLine,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               MoveRepository.FUNCTIONAL_ORIGIN_SALE);

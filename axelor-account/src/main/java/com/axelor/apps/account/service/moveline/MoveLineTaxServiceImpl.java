@@ -95,8 +95,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     BigDecimal invoiceTotalAmount =
         invoiceCustomerMoveLine.getCredit().add(invoiceCustomerMoveLine.getDebit());
     for (MoveLine invoiceMoveLine : invoiceMove.getMoveLineList()) {
-      if (AccountTypeRepository.TYPE_TAX.equals(
-          invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+      if (moveLineToolService.isMoveLineTaxAccount(invoiceMoveLine)) {
         List<TaxPaymentMoveLine> taxPaymentMoveLineList =
             this.generateTaxPaymentMoveLine(
                 customerPaymentMoveLine,
@@ -110,8 +109,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         taxPaymentMoveLineList.forEach(
             tpm -> customerPaymentMoveLine.addTaxPaymentMoveLineListItem(tpm));
 
-      } else if (!AccountTypeRepository.TYPE_TAX.equals(
-              invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())
+      } else if (!moveLineToolService.isMoveLineTaxAccount(invoiceMoveLine)
           && CollectionUtils.isNotEmpty(invoiceMoveLine.getTaxLineSet())
           && taxService
                   .getTotalTaxRateInPercentage(invoiceMoveLine.getTaxLineSet())
@@ -334,19 +332,13 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       return;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (this.isMoveLineTaxAccount(moveLine) && this.isDuplicateTaxMoveLine(move, moveLine)) {
+      if (moveLineToolService.isMoveLineTaxAccount(moveLine)
+          && this.isDuplicateTaxMoveLine(move, moveLine)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_NO_VALUE,
             I18n.get(AccountExceptionMessage.SAME_TAX_MOVE_LINES));
       }
     }
-  }
-
-  protected boolean isMoveLineTaxAccount(MoveLine moveLine) {
-    return moveLine.getAccount() != null
-        && moveLine.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 
   protected boolean isDuplicateTaxMoveLine(Move move, MoveLine moveLine) {
@@ -394,7 +386,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
   @Override
   public boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect) {
-    return this.isMoveLineTaxAccount(moveLine)
+    return moveLineToolService.isMoveLineTaxAccount(moveLine)
         && Lists.newArrayList(
                 MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
             .contains(functionalOriginSelect);

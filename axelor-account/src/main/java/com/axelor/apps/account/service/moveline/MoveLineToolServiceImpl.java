@@ -336,10 +336,16 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && ml.getTaxLineSet().equals(taxLineSet)
         && Objects.equals(ml.getVatSystemSelect(), vatSystem)
         && !Objects.equals(ml.getId(), id)
-        && ml.getAccount().getAccountType() != null
-        && AccountTypeRepository.TYPE_TAX.equals(
-            ml.getAccount().getAccountType().getTechnicalTypeSelect())
+        && this.isMoveLineTaxAccount(ml)
         && ml.getAccount().equals(account);
+  }
+
+  @Override
+  public boolean isMoveLineTaxAccount(MoveLine moveLine) {
+    return moveLine.getAccount() != null
+        && moveLine.getAccount().getAccountType() != null
+        && AccountTypeRepository.TYPE_TAX.equals(
+            moveLine.getAccount().getAccountType().getTechnicalTypeSelect());
   }
 
   public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {

@@ -21,7 +21,6 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
@@ -43,7 +42,7 @@ public class TaxAccountService {
       Tax tax,
       Company company,
       Journal journal,
-      MoveLine originalMoveLine,
+      Account originalMoveLineAccount,
       int vatSystemSelect,
       boolean isFixedAssets,
       int functionalOrigin)
@@ -56,7 +55,7 @@ public class TaxAccountService {
         tax,
         company,
         journal,
-        originalMoveLine,
+        originalMoveLineAccount,
         vatSystemSelect,
         functionalOrigin,
         isFixedAssets);

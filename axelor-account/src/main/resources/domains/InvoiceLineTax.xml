@@ -8,6 +8,7 @@
   <entity name="InvoiceLineTax">
 
     <many-to-one name="invoice" ref="Invoice" title="Invoice"/>
+    <many-to-one name="invoiceLine" ref="InvoiceLine" title="Invoice line"/>
     <decimal name="exTaxBase" scale="3" precision="20" title="Base W.T."/>
     <decimal name="taxTotal" scale="3" precision="20" title="Amount Tax"/>
     <decimal name="inTaxTotal" scale="3" precision="20" title="Amount A.T.I."/>

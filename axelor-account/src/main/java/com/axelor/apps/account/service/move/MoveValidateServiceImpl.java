@@ -834,8 +834,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
       if (CollectionUtils.isNotEmpty(moveline.getTaxLineSet())
           && moveline.getAccount() != null
           && moveline.getAccount().getAccountType() != null
-          && !AccountTypeRepository.TYPE_TAX.equals(
-              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && !moveLineToolService.isMoveLineTaxAccount(moveline)
           && moveline.getAccount().getIsTaxAuthorizedOnMoveLine()
           && moveline.getAccount().getVatSystemSelect() != null
           && moveline.getAccount().getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
@@ -849,8 +848,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     for (MoveLine moveline : move.getMoveLineList()) {
       if (moveline.getAccount() != null
           && moveline.getAccount().getAccountType() != null
-          && AccountTypeRepository.TYPE_TAX.equals(
-              moveline.getAccount().getAccountType().getTechnicalTypeSelect())
+          && moveLineToolService.isMoveLineTaxAccount(moveline)
           && moveline.getVatSystemSelect() == MoveLineRepository.VAT_SYSTEM_DEFAULT) {
         return true;
       }
@@ -885,13 +883,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
     BigDecimal taxLinesAmount =
         moveLineList.stream()
-            .filter(
-                moveLine ->
-                    moveLine
-                        .getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))
+            .filter(moveLineToolService::isMoveLineTaxAccount)
             .map(this::getMoveLineSignedValue)
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);

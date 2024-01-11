@@ -23,9 +23,9 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.PaymentMoveLineDistributionRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
@@ -42,12 +42,14 @@ import java.util.Set;
 public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDistributionService {
 
   protected PaymentMoveLineDistributionRepository paymentMvlDistributionRepository;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public PaymentMoveLineDistributionServiceImpl(
-      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository) {
-
+      PaymentMoveLineDistributionRepository paymentMvlDistributionRepository,
+      MoveLineToolService moveLineToolService) {
     this.paymentMvlDistributionRepository = paymentMvlDistributionRepository;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -74,11 +76,7 @@ public class PaymentMoveLineDistributionServiceImpl implements PaymentMoveLineDi
 
     for (MoveLine moveLine : move.getMoveLineList()) {
       // ignore move lines related to taxes
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
+      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
         continue;
       }
       Set<TaxLine> taxLineSet = moveLine.getTaxLineSet();

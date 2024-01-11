@@ -5,6 +5,7 @@
 
   <grid name="invoice-line-tax-grid" title="Tax Lines"
     model="com.axelor.apps.account.db.InvoiceLineTax">
+    <field name="invoiceLine.name" title="Invoice line"/>
     <field name="taxLine" width="400%" grid-view="tax-line-grid" form-view="tax-line-form"/>
     <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
     <field name="exTaxBase"/>
@@ -26,6 +27,7 @@
       <field name="taxTotal"/>
       <field name="inTaxTotal"/>
       <field name="vatSystemSelect" readonly="true"/>
+      <field name="invoiceLine" readonly="true"/>
       <field name="subTotalExcludingFixedAssets" hidden="true"/>
       <field name="subTotalOfFixedAssets" hidden="true"/>
       <field name="companySubTotalExcludingFixedAssets" hidden="true"/>

@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.Journal;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
@@ -307,7 +306,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       Tax tax,
       Company company,
       Journal journal,
-      MoveLine originalMoveLine,
+      Account originalMoveLineAccount,
       int vatSystemSelect,
       int functionalOrigin,
       boolean isFixedAssets)
@@ -330,8 +329,8 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
           }
         } else if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
           if (tax.getIsNonDeductibleTax()) {
-            if (accountManagement.getChargeOnOriginalAccount() && originalMoveLine != null) {
-              account = originalMoveLine.getAccount();
+            if (accountManagement.getChargeOnOriginalAccount() && originalMoveLineAccount != null) {
+              account = originalMoveLineAccount;
             } else {
               account = accountManagement.getPurchaseAccount();
               error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_PURCHASE_ACCOUNT_MISSING_TAX;

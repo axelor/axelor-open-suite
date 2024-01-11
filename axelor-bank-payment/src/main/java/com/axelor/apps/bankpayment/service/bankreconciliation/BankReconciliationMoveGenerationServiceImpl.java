@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -37,6 +36,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -90,6 +90,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected MoveLineService moveLineService;
   protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -108,7 +109,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineCreateService moveLineCreateService,
       MoveLineService moveLineService,
       CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      MoveLineToolService moveLineToolService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -125,6 +127,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.moveLineService = moveLineService;
     this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -323,7 +326,7 @@ public class BankReconciliationMoveGenerationServiceImpl
                 taxLine != null ? taxLine.getTax() : null,
                 company,
                 journal,
-                moveLine,
+                moveLine.getAccount(),
                 vatSystemSelect,
                 false,
                 move.getFunctionalOriginSelect());
@@ -337,12 +340,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected void fixTaxAmountRounding(Move move, MoveLine counterPartMoveLine, MoveLine moveLine) {
     MoveLine taxMoveLine =
         move.getMoveLineList().stream()
-            .filter(
-                ml ->
-                    ml.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))
+            .filter(moveLineToolService::isMoveLineTaxAccount)
             .findFirst()
             .orElse(null);
     if (taxMoveLine == null) {

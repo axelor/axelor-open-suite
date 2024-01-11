@@ -28,7 +28,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.FinancialDiscountService;
@@ -143,12 +142,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     BigDecimal taxAmount =
         Optional.of(moveLine).map(MoveLine::getMove).map(Move::getMoveLineList).stream()
             .flatMap(Collection::stream)
-            .filter(
-                it ->
-                    it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX))
+            .filter(moveLineToolService::isMoveLineTaxAccount)
             .map(MoveLine::getCurrencyAmount)
             .map(BigDecimal::abs)
             .findFirst()
@@ -441,11 +435,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     Map<String, Account> vatSystemMap = new HashMap<>();
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
+      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
         vatSystemMap.put(
             taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getAccount());
       }
@@ -459,11 +449,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
     Map<String, Integer> vatSystemMap = new HashMap<>();
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLine
-          .getAccount()
-          .getAccountType()
-          .getTechnicalTypeSelect()
-          .equals(AccountTypeRepository.TYPE_TAX)) {
+      if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
         vatSystemMap.put(
             taxService.computeTaxCode(moveLine.getTaxLineSet()), moveLine.getVatSystemSelect());
       }
@@ -484,11 +470,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       BigDecimal taxTotal = BigDecimal.ZERO;
 
       for (MoveLine moveLineIt : moveLine.getMove().getMoveLineList()) {
-        if (moveLineIt
-            .getAccount()
-            .getAccountType()
-            .getTechnicalTypeSelect()
-            .equals(AccountTypeRepository.TYPE_TAX)) {
+        if (moveLineToolService.isMoveLineTaxAccount(moveLineIt)) {
           BigDecimal baseAmount =
               moveLine.getMove().getMoveLineList().stream()
                   .filter(

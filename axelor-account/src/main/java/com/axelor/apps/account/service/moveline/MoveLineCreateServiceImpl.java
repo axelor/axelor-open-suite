@@ -56,7 +56,6 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
@@ -524,7 +523,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   tax,
                   company,
                   move.getJournal(),
-                  this.getOriginalMoveLineFromTax(moveLines, tax),
+                  invoiceLineTax.getInvoiceLine().getAccount(),
                   vatSystemSelect,
                   true,
                   move.getFunctionalOriginSelect());
@@ -579,7 +578,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                   tax,
                   company,
                   move.getJournal(),
-                  this.getOriginalMoveLineFromTax(moveLines, tax),
+                  invoiceLineTax.getInvoiceLine().getAccount(),
                   vatSystemSelect,
                   false,
                   move.getFunctionalOriginSelect());
@@ -621,20 +620,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     }
 
     return moveLines;
-  }
-
-  protected MoveLine getOriginalMoveLineFromTax(List<MoveLine> moveLineList, Tax tax) {
-    return moveLineList.stream()
-        .filter(
-            it ->
-                !it.getAccount()
-                        .getAccountType()
-                        .getTechnicalTypeSelect()
-                        .equals(AccountTypeRepository.TYPE_TAX)
-                    && (StringUtils.notEmpty(it.getTaxCode())
-                        && it.getTaxCode().contains(tax.getCode())))
-        .findFirst()
-        .orElse(null);
   }
 
   @Override
@@ -1037,7 +1022,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
-              moveLine,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -1052,7 +1037,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
-              moveLine,
+              moveLine.getAccount(),
               vatSystemSelect,
               false,
               move.getFunctionalOriginSelect());
@@ -1074,7 +1059,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               taxLine.getTax(),
               company,
               journal,
-              moveLine,
+              moveLine.getAccount(),
               vatSystemSelect,
               true,
               move.getFunctionalOriginSelect());

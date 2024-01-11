@@ -22,10 +22,10 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FinancialDiscountRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -36,13 +36,16 @@ public class InvoiceTermFinancialDiscountServiceImpl
     implements InvoiceTermFinancialDiscountService {
   protected AppAccountService appAccountService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected MoveLineToolService moveLineToolService;
 
   @Inject
   public InvoiceTermFinancialDiscountServiceImpl(
       AppAccountService appAccountService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      MoveLineToolService moveLineToolService) {
     this.appAccountService = appAccountService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.moveLineToolService = moveLineToolService;
   }
 
   @Override
@@ -208,12 +211,7 @@ public class InvoiceTermFinancialDiscountServiceImpl
       return invoiceTerm.getInvoice().getTaxTotal();
     } else {
       return invoiceTerm.getMoveLine().getMove().getMoveLineList().stream()
-          .filter(
-              it ->
-                  it.getAccount()
-                      .getAccountType()
-                      .getTechnicalTypeSelect()
-                      .equals(AccountTypeRepository.TYPE_TAX))
+          .filter(moveLineToolService::isMoveLineTaxAccount)
           .map(MoveLine::getCurrencyAmount)
           .map(BigDecimal::abs)
           .reduce(BigDecimal::add)
