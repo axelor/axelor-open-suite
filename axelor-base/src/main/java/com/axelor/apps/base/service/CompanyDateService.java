@@ -33,6 +33,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.FormatStyle;
 import java.util.Locale;
+import java.util.Optional;
 
 public class CompanyDateService {
 
@@ -48,8 +49,11 @@ public class CompanyDateService {
 
   protected Locale checkLocale(Company company) throws AxelorException {
     Locale locale = null;
-    Localization localization = company.getLocalization();
-    String localeStr = localization.getCode();
+    String localeStr =
+            Optional.ofNullable(company)
+                    .map(Company::getLocalization)
+                    .map(Localization::getCode)
+                    .orElse(null);
 
     if (StringUtils.isEmpty(localeStr)) {
       localeStr = AppSettings.get().get(AvailableAppSettings.APPLICATION_LOCALE, null);
