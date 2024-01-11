@@ -721,7 +721,6 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     registrationCode = registrationCode.replace(" ", "");
-    LOG.info("Main Address - {}", partner.getMainAddress());
     if (partner.getMainAddress() != null
         && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();

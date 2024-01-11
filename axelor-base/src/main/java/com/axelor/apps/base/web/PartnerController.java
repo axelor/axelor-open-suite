@@ -392,7 +392,6 @@ public class PartnerController {
       if (partnerService.isRegistrationCodeValid(partner)) {
         Map<String, Map<String, Object>> attrsMap =
             partnerService.getRegistrationCodeValidationAttrs(partner);
-        LOG.info("ARRTS: {}", attrsMap);
         response.setAttrs(attrsMap);
       }
 
