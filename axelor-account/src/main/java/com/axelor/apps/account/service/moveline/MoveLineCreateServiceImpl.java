@@ -71,6 +71,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -553,6 +554,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
+    this.consolidateTaxMoveLines(moveLines);
+
     if (consolidate) {
       moveLineConsolidateService.consolidateMoveLines(moveLines);
     }
@@ -628,6 +631,17 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     moveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
 
     return moveLine;
+  }
+
+  protected void consolidateTaxMoveLines(List<MoveLine> moveLineList) {
+    List<MoveLine> taxMoveLineList =
+        moveLineList.stream()
+            .filter(moveLineToolService::isMoveLineTaxAccount)
+            .collect(Collectors.toList());
+
+    moveLineList.removeAll(taxMoveLineList);
+    moveLineConsolidateService.consolidateMoveLines(taxMoveLineList);
+    moveLineList.addAll(taxMoveLineList);
   }
 
   @Override
