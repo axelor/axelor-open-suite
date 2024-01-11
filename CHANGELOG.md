@@ -1,3 +1,22 @@
+## [7.2.6] (2024-01-11)
+
+#### Fixed
+
+* Prospect: open grid view instead of kanban view by default.
+* Invoice: fixed supplier refund imputation on invoices.
+* Product: make the product unit field required for stock managed items.
+* Accounting: fixed error preventing the import of demo data.
+* Budget: fixed amount paid computation on move and invoices reconcile.
+* Reconcile: fixed invoice term amount remaining with multi currency.
+* Accounting: rename subrogation to third-party payer.
+* Invoice/Move/Budget: manage the negative imputation when the invoice is a refund or an advance or when the move is a reverse move.
+* Stock move: fixed unable to select external stock location on receipt.
+* Invoice: Duplicating an invoice now correctly empties the origin date and the supplier invoice number.
+* Invoice: fixed error when we change partner in supplier invoice with invoice lines.
+* Account clearance: fixed the way tax and vat system are managed.
+* Indicators: fixed results display.
+* Sale order: keep attached files and internal notes when merging sale orders.
+
 ## [7.2.5] (2023-12-21)
 
 #### Fixed
@@ -490,6 +509,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.6]: https://github.com/axelor/axelor-open-suite/compare/v7.2.5...v7.2.6
 [7.2.5]: https://github.com/axelor/axelor-open-suite/compare/v7.2.4...v7.2.5
 [7.2.4]: https://github.com/axelor/axelor-open-suite/compare/v7.2.3...v7.2.4
 [7.2.3]: https://github.com/axelor/axelor-open-suite/compare/v7.2.2...v7.2.3
