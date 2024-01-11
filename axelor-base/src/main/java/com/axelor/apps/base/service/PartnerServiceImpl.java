@@ -783,6 +783,7 @@ public class PartnerServiceImpl implements PartnerService {
     }
     return null;
   }
+
   protected String getTaxKeyFromSIREN(String sirenStr) {
     int siren = Integer.parseInt(sirenStr);
     int taxKey = Math.floorMod(siren, 97);
@@ -794,7 +795,7 @@ public class PartnerServiceImpl implements PartnerService {
     String taxNbr = "";
 
     if (partner.getMainAddress() != null
-            && partner.getMainAddress().getAddressL7Country() != null) {
+        && partner.getMainAddress().getAddressL7Country() != null) {
       String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
       String regCode = partner.getRegistrationCode();
 
@@ -818,20 +819,20 @@ public class PartnerServiceImpl implements PartnerService {
     String nic = "";
 
     if (partner.getMainAddress() != null
-            && partner.getMainAddress().getAddressL7Country() != null) {
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
-              businessCountry.getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
       if (registrationNumberTemplate.getUseNic() && regCode != null) {
         regCode = regCode.replaceAll(" ", "");
 
         if (regCode.length() == registrationNumberTemplate.getRequiredSize()) {
           nic =
-                  regCode.substring(
-                          registrationNumberTemplate.getNicPos() - 1,
-                          registrationNumberTemplate.getNicPos()
-                                  + registrationNumberTemplate.getNicLength()
-                                  - 1);
+              regCode.substring(
+                  registrationNumberTemplate.getNicPos() - 1,
+                  registrationNumberTemplate.getNicPos()
+                      + registrationNumberTemplate.getNicLength()
+                      - 1);
         }
       }
     }
@@ -844,20 +845,20 @@ public class PartnerServiceImpl implements PartnerService {
     String siren = "";
 
     if (partner.getMainAddress() != null
-            && partner.getMainAddress().getAddressL7Country() != null) {
+        && partner.getMainAddress().getAddressL7Country() != null) {
       Country businessCountry = partner.getMainAddress().getAddressL7Country();
       RegistrationNumberTemplate registrationNumberTemplate =
-              businessCountry.getRegistrationNumberTemplate();
+          businessCountry.getRegistrationNumberTemplate();
       if (registrationNumberTemplate.getUseSiren() && regCode != null) {
         regCode = regCode.replaceAll(" ", "");
 
         if (regCode.length() == registrationNumberTemplate.getRequiredSize()) {
           siren =
-                  regCode.substring(
-                          registrationNumberTemplate.getSirenPos() - 1,
-                          registrationNumberTemplate.getSirenPos()
-                                  + registrationNumberTemplate.getSirenLength()
-                                  - 1);
+              regCode.substring(
+                  registrationNumberTemplate.getSirenPos() - 1,
+                  registrationNumberTemplate.getSirenPos()
+                      + registrationNumberTemplate.getSirenLength()
+                      - 1);
         }
       }
     }
@@ -871,9 +872,9 @@ public class PartnerServiceImpl implements PartnerService {
     boolean useNic = false;
     boolean useSiren = false;
     if (partner.getMainAddress() != null
-            && partner.getMainAddress().getAddressL7Country() != null) {
+        && partner.getMainAddress().getAddressL7Country() != null) {
       RegistrationNumberTemplate registrationNumberTemplate =
-              partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
+          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
       if (!registrationNumberTemplate.getUseNic()) {
         useNic = true;
       }

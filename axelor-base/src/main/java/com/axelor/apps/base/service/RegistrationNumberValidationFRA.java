@@ -1,12 +1,5 @@
 package com.axelor.apps.base.service;
 
-import com.axelor.apps.base.db.Country;
-import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.RegistrationNumberTemplate;
-import com.axelor.common.StringUtils;
-import java.util.HashMap;
-import java.util.Map;
-
 public class RegistrationNumberValidationFRA implements RegistrationNumberValidation {
   public boolean computeRegistrationCodeValidity(String registrationCode) {
     int sum = 0;
