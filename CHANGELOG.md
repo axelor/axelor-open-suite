@@ -1,3 +1,15 @@
+## [6.3.36] (2024-01-11)
+
+#### Fixed
+
+* Product: make the product unit field required for stock managed items.
+* Move line: fixed error when we select and remove analytic distribution template on move line from move line grid.
+* Stock move: fixed unable to select external stock location on receipt.
+* Invoice: Duplicating an invoice now correctly empties the origin date and the supplier invoice number.
+* Invoice: fixed error when we change partner in supplier invoice with invoice lines.
+* Indicators: fixed results display.
+* Sale order: keep attached files and internal notes when merging sale orders.
+
 ## [6.3.35] (2023-12-21)
 
 #### Fixed
@@ -990,6 +1002,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.36]: https://github.com/axelor/axelor-open-suite/compare/v6.3.35...v6.3.36
 [6.3.35]: https://github.com/axelor/axelor-open-suite/compare/v6.3.34...v6.3.35
 [6.3.34]: https://github.com/axelor/axelor-open-suite/compare/v6.3.33...v6.3.34
 [6.3.33]: https://github.com/axelor/axelor-open-suite/compare/v6.3.32...v6.3.33
