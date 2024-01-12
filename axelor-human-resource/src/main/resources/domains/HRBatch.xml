@@ -20,8 +20,8 @@
 
 
     <!-- Leave Management -->
-    <many-to-one name="leaveReason" ref="com.axelor.apps.hr.db.LeaveReason"
-      title="Leave Reason"/>
+    <many-to-many name="leaveReasonSet" ref="com.axelor.apps.hr.db.LeaveReason"
+      title="Leave Reasons"/>
     <decimal name="dayNumber" title="Number of days" scale="4" precision="8"/>
     <date name="startDate" title="Start date"/>
     <date name="endDate" title="End date"/>

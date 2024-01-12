@@ -12,7 +12,8 @@
         selection="supplychain.sale.order.invoicing.wizard.select" required="true"/>
     </panel>
     <panel name="amountPanel" showIf="$contains([2,3],$number($operationSelect))">
-      <field name="$isPercent" title="Is amount in %" type="boolean"/>
+      <field name="$isPercent" title="Is amount in %" type="boolean"
+        onChange="action-method-sale-order-invoicing-wizard-set-amount-to-invoice-scale"/>
       <field name="$amountToInvoice" title="Amount to invoice" type="decimal" min="0"
         showIf="$contains([3],$number($operationSelect))"/>
     </panel>
@@ -44,12 +45,14 @@
     <field name="qty" readonly="true" aggregate="sum" x-scale="2"/>
     <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
     <field name="price" readonly="true" x-scale="2"/>
-    <field name="exTaxTotal" readonly="true" aggregate="sum"/>
-    <field name="amountInvoiced" readonly="true"/>
+    <field name="exTaxTotal" readonly="true" aggregate="sum"
+      x-scale="saleOrder.currency.numberOfDecimals"/>
+    <field name="amountInvoiced" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
       min="0" x-scale="2"/>
     <field name="invoiceAll" title="Invoice all" type="boolean"
       onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="invoicing-wizard-timetable-grid" title="Select timetables to invoice"
@@ -57,19 +60,22 @@
     editable="true">
     <field name="toInvoice" type="boolean" title=" "/>
     <field name="estimatedDate" readonly="true"/>
-    <field name="amount" readonly="true"/>
+    <field name="amount" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonly="true"/>
     <field name="comments" readonly="true" width="300%"/>
+    <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="invoicing-wizard-timetable-form" title="Timetable"
     model="com.axelor.apps.supplychain.db.Timetable">
     <panel name="mainPanel" readonlyIf="invoice">
       <field name="estimatedDate" colSpan="4" readonly="true"/>
-      <field name="amount" colSpan="4" readonly="true"/>
+      <field name="amount" colSpan="4" readonly="true"
+        x-scale="saleOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" readonly="true"/>
       <field name="invoice" hideIf="!invoice" readonly="true"/>
       <field name="comments" colSpan="12" readonly="true"/>
+      <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
@@ -78,6 +84,7 @@
     <action name="action-attrs-sale-order-invoicing-wizard-amount-invoiced"/>
     <action name="action-method-sale-order-invoicing-wizard-operation-select-domain"/>
     <action name="action-record-sale-order-invoicing-wizard-set-uninvoiced-timetables-list"/>
+    <action name="action-method-sale-order-invoicing-wizard-set-amount-to-invoice-scale"/>
   </action-group>
 
   <action-attrs name="action-attrs-sale-order-line-invoicing-wizard-fill-qty">
@@ -112,6 +119,12 @@
   <action-method name="action-method-sale-order-invoicing-wizard-default">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="fillDefaultValueWizard"/>
+  </action-method>
+
+  <action-method
+    name="action-method-sale-order-invoicing-wizard-set-amount-to-invoice-scale">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="setAmountToInvoiceScale"/>
   </action-method>
 
   <action-group name="action-group-sale-order-invoicing-wizard-generate">

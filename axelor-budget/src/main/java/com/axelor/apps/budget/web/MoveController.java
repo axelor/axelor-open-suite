@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,9 +53,9 @@ public class MoveController {
           return;
         }
         String alertMessage = moveBudgetService.computeBudgetDistribution(move);
+        move.setBudgetDistributionGenerated(moveBudgetService.isBudgetInLines(move));
 
-        response.setValue("budgetDistributionGenerated", moveBudgetService.isBudgetInLines(move));
-        response.setValue("moveLineList", move.getMoveLineList());
+        response.setValues(move);
 
         if (!Strings.isNullOrEmpty(alertMessage)) {
           response.setInfo(

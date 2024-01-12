@@ -20,8 +20,9 @@
     <many-to-one name="analyticAccount" required="true"
       ref="com.axelor.apps.account.db.AnalyticAccount" title="Analytic Acc."/>
     <decimal name="percentage" title="%"/>
-    <decimal name="originalPieceAmount" title="Original piece amount" hidden="true"/>
-    <decimal name="amount" title="Amount"/>
+    <decimal name="originalPieceAmount" title="Original piece amount" hidden="true"
+      scale="3" precision="20"/>
+    <decimal name="amount" title="Amount" scale="3" precision="20"/>
     <date name="date" required="true" title="Date" column="date_val"/>
     <many-to-one name="analyticJournal" ref="com.axelor.apps.account.db.AnalyticJournal"
       title="Analytic Journal" required="true"/>

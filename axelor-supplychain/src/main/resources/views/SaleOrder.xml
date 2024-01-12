@@ -20,12 +20,6 @@
       <attribute name="onChange" value="supplychain-action-create-shipment-cost-line"/>
       <attribute name="readOnlyIf" value="statusSelect &gt; 1"/>
     </extend>
-    <extend target="//panel-related[@name='detailLinesPanel']">
-      <attribute name="onChange" value="action-sale-order-method-on-line-change"/>
-    </extend>
-    <extend target="//field[@name='saleOrderLineList']">
-      <attribute name="onChange" value="action-sale-order-method-on-line-change"/>
-    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -105,6 +99,8 @@
     </panel>
   </form>
 
+  <!-- ACTION GROUPs -->
+
   <action-group id="action-group-supplychain-sale-order-validate-changes"
     name="action-group-sale-order-validate-changes">
     <action name="action-supplychain-saleorder-onsave"/>
@@ -146,6 +142,8 @@
       name="action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
   </action-group>
 
+  <!-- ACTION METHOD -->
+
   <action-method name="action-supplychain-sale-order-method-get-stock-location">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="getStockLocation"/>
   </action-method>
@@ -179,11 +177,15 @@
       method="setNextInvoicingStartPeriodDate"/>
   </action-method>
 
+  <!-- ACTION VALIDATE -->
+
   <action-validate
     name="action-supplychain-sale-order-validate-check-amount-timetable">
     <alert message="The amount to be spread over the timetable is negative."
       if="amountToBeSpreadOverTheTimetable &lt; 0"/>
   </action-validate>
+
+  <!-- ACTION RECORD -->
 
   <action-record name="action-record-load-dummy-supplier-partner"
     model="com.axelor.apps.sale.db.SaleOrder">
@@ -226,6 +228,8 @@
       expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(deliveredPartner)"
       if="deliveredPartner != null"/>
   </action-record>
+
+  <!-- ACTION ATTRS -->
 
   <action-attrs name="action-sale-order-attrs-interco">
     <attribute for="interco" name="hidden"

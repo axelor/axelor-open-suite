@@ -12,8 +12,9 @@
 
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="Move Line" readonly="true"/>
-    <decimal name="dueAmount" title="Due amount" readonly="true"/>
-    <decimal name="amountRemaining" title="Amount remaining" readonly="true"/>
+    <decimal name="dueAmount" title="Due amount" readonly="true" precision="20" scale="3"/>
+    <decimal name="amountRemaining" title="Amount remaining" readonly="true" precision="20"
+      scale="3"/>
     <many-to-one name="invoiceTerm" title="Invoice term"
       ref="com.axelor.apps.account.db.InvoiceTerm"/>
 
@@ -24,10 +25,12 @@
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
     <date name="financialDiscountDeadlineDate" title="Fin. discount deadline date"/>
-    <decimal name="financialDiscountAmount" title="Fin. discount amount"/>
-    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax"/>
+    <decimal name="financialDiscountAmount" title="Fin. discount amount" precision="20"
+      scale="3"/>
+    <decimal name="financialDiscountTaxAmount" title="Fin. discount tax" precision="20"
+      scale="3"/>
     <decimal name="financialDiscountTotalAmount"
-      title="payvoucher.financialDiscountTotalAmount"/>
+      title="payvoucher.financialDiscountTotalAmount" precision="20" scale="3"/>
 
   </entity>
 

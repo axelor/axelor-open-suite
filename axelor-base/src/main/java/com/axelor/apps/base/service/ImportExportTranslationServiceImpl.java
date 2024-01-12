@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -310,9 +310,9 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     ImportExportTranslationHistory importExportTranslationHistory =
         saveHistory(importExportTranslation, "Import");
     Path filePath = MetaFiles.getPath(importExportTranslation.getUploadFile());
-    List<String[]> data;
+    List<CSVRecord> data;
     try {
-      data = CsvHelper.cSVFileReader(filePath.toString(), separator);
+      data = CsvHelper.csvFileReader(filePath.toString(), separator);
     } catch (Exception e) {
       Logger logger = LoggerFactory.getLogger(getClass());
       logger.error("Read CSV file failed.", e);
@@ -324,15 +324,13 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     if (data == null) {
       return null;
     }
-    List<String> headers = Arrays.asList(data.get(0));
     for (int i = 1; i < data.size(); i++) {
       if (i % FETCH_LIMIT == 0) {
         JPA.clear();
       }
-      List<String> dataLine = Arrays.asList(data.get(i));
+      CSVRecord dataLine = data.get(i);
       try {
-        countRecords +=
-            insertOrUpdateTranslation(dataLine, headers, importExportTranslationHistory);
+        countRecords += insertOrUpdateTranslation(dataLine, importExportTranslationHistory);
       } catch (AxelorException e) {
         Logger logger = LoggerFactory.getLogger(getClass());
         logger.error("Error processing data line: " + dataLine, e);
@@ -350,28 +348,19 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
    * This method insert/update each dataLine.
    *
    * @param dataLine
-   * @param headers
    * @param importExportTranslationHistory
    * @return total records imported or updated for the dataLine.
    */
   @Transactional
   protected int insertOrUpdateTranslation(
-      List<String> dataLine,
-      List<String> headers,
-      ImportExportTranslationHistory importExportTranslationHistory)
+      CSVRecord dataLine, ImportExportTranslationHistory importExportTranslationHistory)
       throws AxelorException {
     int importNumber = 0;
     String key = dataLine.get(0);
-    if (dataLine.size() != headers.size()) {
-      throw new AxelorException(
-          importExportTranslationHistory,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          "Data line process error: " + dataLine);
-    }
     for (int i = 1; i < dataLine.size(); i++) {
       // dataLine: messageKey, language1_value, language2_value, language3_value, ...
       String messageValue = dataLine.get(i);
-      String languageCode = headers.get(i);
+      String languageCode = dataLine.getParser().getHeaderNames().get(i);
       TypedQuery<String> keyExistenceQuery =
           JPA.em()
               .createQuery(

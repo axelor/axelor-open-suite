@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -208,7 +208,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             I18n.get(
                 isCompanyAmount
                     ? AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT
-                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT));
+                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
+            moveLine.getName());
       }
     }
   }

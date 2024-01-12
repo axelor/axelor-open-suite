@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -198,7 +198,18 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       invoiceTerm.setInvoice(null);
     }
 
+    replaceInvoiceTermsToRemoveWithCopy(invoiceTermListToRemove);
     invoiceRepo.save(invoice);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void replaceInvoiceTermsToRemoveWithCopy(List<InvoiceTerm> invoiceTermListToRemove) {
+    for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
+      InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
+      invoiceTerm.getMoveLine().addInvoiceTermListItem(newInvoiceTerm);
+      invoiceTerm.getMoveLine().removeInvoiceTermListItem(invoiceTerm);
+      invoiceTermRepo.remove(invoiceTerm);
+    }
   }
 
   protected void updateInvoiceTerms(MoveLine creditMoveLine, MoveLine debitMoveLine) {

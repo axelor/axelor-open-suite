@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="expense-line-merge-form" model="com.axelor.utils.db.Wizard"
+    title="Create expense" width="large" onNew="action-expense-create-wizard-group-onnew">
+    <panel name="mainPanel">
+      <field name="expense" type="many-to-one" target="com.axelor.apps.hr.db.Expense"
+        title="Expense" onSelect="action-expense-create-wizard-method-get-expense-domain"
+        form-view="expense-form" grid-view="expense-grid"/>
+    </panel>
+    <panel-related name="expenseLinesToMergePanel" field="$expenseLinesToMerge"
+      form-view="expense-line-orphan-form" grid-view="expense-line-orphan-grid"
+      title="Expense lines to merge" colSpan="12" type="many-to-many"
+      target="com.axelor.apps.hr.db.ExpenseLine" canNew="false" canEdit="false" canSelect="false"/>
+    <panel name="actionsPanel" sidebar="true" title="Actions">
+      <button name="createExpenseBtn" title="Create expense"
+        onClick="action-expense-create-wizard-method-create-expense" showIf="!expense"/>
+      <button name="addToExpenseBtn" title="Add to expense"
+        onClick="action-expense-create-wizard-method-add-to-expense" showIf="expense"/>
+    </panel>
+  </form>
+
+  <action-group name="action-expense-create-wizard-group-onnew">
+    <action name="action-expense-create-wizard-method-fill-list"/>
+  </action-group>
+
+  <action-method name="action-expense-create-wizard-method-create-expense">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController" method="createExpense"/>
+  </action-method>
+
+  <action-method name="action-expense-create-wizard-method-add-to-expense">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController" method="addToExpense"/>
+  </action-method>
+
+  <action-method name="action-expense-create-wizard-method-fill-list">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController" method="fillList"/>
+  </action-method>
+
+  <action-method name="action-expense-create-wizard-method-get-expense-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseCreateController"
+      method="getExpenseDomain"/>
+  </action-method>
+</object-views>
