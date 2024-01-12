@@ -84,7 +84,6 @@
 
   <action-view name="crm.all.prospects" title="All prospects"
     model="com.axelor.apps.base.db.Partner">
-    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>
@@ -126,6 +125,7 @@
 
   <action-view name="crm.closed.prospects" title="Closed prospects"
     model="com.axelor.apps.base.db.Partner">
+    <view type="kanban" name="partner-prospect-kanban"/>
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-prospect-grid"/>
     <view type="form" name="partner-customer-form"/>

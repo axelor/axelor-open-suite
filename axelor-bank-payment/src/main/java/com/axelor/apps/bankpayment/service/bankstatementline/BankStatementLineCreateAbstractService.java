@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.bankpayment.service.bankstatement.line;
+package com.axelor.apps.bankpayment.service.bankstatementline;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportService;
-import com.axelor.apps.bankpayment.service.bankstatement.line.afb120.StructuredContentLine;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.StructuredContentLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
