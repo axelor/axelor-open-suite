@@ -273,7 +273,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? invoice.getPartner().getLocalization().getCode()
               : userLocalizationCode;
       locale =
-          accountConfig.getIsPrintInvoicesInCompanyLocalization()
+          accountConfig.getIsPrintInvoicesInCompanyLanguage()
               ? companyLocalizationCode
               : partnerLocalizationCode;
     }

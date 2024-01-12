@@ -179,7 +179,7 @@
       default="true"/>
     <boolean name="fixedAssetCatReqOnInvoice"
       title="Fixed asset category required on invoices"/>
-    <boolean name="isPrintInvoicesInCompanyLocalization"
+    <boolean name="isPrintInvoicesInCompanyLanguage"
       title="Print invoices in company localization" default="true"/>
 
     <!-- Accounting config template -->
@@ -462,7 +462,7 @@
       <field name="generateMoveForInvoicePayment" on="UPDATE"/>
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
-      <field name="isPrintInvoicesInCompanyLocalization" on="UPDATE"/>
+      <field name="isPrintInvoicesInCompanyLanguage" on="UPDATE"/>
 
       <field name="accountingConfigTemplate" on="UPDATE"/>
       <field name="hasChartImported" on="UPDATE"/>

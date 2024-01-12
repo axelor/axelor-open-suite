@@ -1961,7 +1961,7 @@ InvoiceSet.length > 0))"
   <action-record name="action-invoice-record-set-dummy-field-localization"
     model="com.axelor.apps.account.db.Invoice">
     <field name="$localization"
-      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLocalization()) ? company?.localization : partner?.localization"
+      expr="eval: (__repo__(AccountConfig).all().filter('self.company = ?',company).fetchOne()?.getIsPrintInvoicesInCompanyLanguage()) ? company?.localization : partner?.localization"
       if="company"/>
   </action-record>
 
