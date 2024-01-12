@@ -59,7 +59,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import javax.persistence.Query;
@@ -258,16 +257,12 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
   }
 
   protected Partner getPartner(List<Pair<Long, Long>> accountAndPartnerPairList, Account account) {
-    Partner partner = null;
-    Optional<Long> partnerId =
-        accountAndPartnerPairList.stream()
-            .filter(pair -> pair.getLeft().equals(account.getId()))
-            .findFirst()
-            .map(Pair::getRight);
-    if (partnerId.isPresent()) {
-      partner = partnerRepository.find(partnerId.get());
-    }
-    return partner;
+    return accountAndPartnerPairList.stream()
+        .filter(pair -> pair.getLeft().equals(account.getId()))
+        .findFirst()
+        .map(Pair::getRight)
+        .map(id -> partnerRepository.find(id))
+        .orElse(null);
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
