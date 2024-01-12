@@ -286,8 +286,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   }
 
   @Override
-  public SaleOrderMergingResult mergeSaleOrders(List<SaleOrder> saleOrdersToMerge)
-      throws AxelorException {
+  public SaleOrderMergingResult mergeSaleOrders(
+      List<SaleOrder> saleOrdersToMerge, boolean dummySaleOrder) throws AxelorException {
     Objects.requireNonNull(saleOrdersToMerge);
     SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
 
@@ -295,19 +295,20 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       result.needConfirmation();
       return result;
     }
-    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result));
+    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result, dummySaleOrder));
     return result;
   }
 
   @Override
   public SaleOrderMergingResult mergeSaleOrdersWithContext(
-      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException {
+      List<SaleOrder> saleOrdersToMerge, Context context, boolean dummySaleOrder)
+      throws AxelorException {
     Objects.requireNonNull(saleOrdersToMerge);
     Objects.requireNonNull(context);
 
     SaleOrderMergingResult result = controlSaleOrdersToMerge(saleOrdersToMerge);
     updateResultWithContext(result, context);
-    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result));
+    result.setSaleOrder(mergeSaleOrders(saleOrdersToMerge, result, dummySaleOrder));
     return result;
   }
 
@@ -360,7 +361,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   }
 
   protected SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result) throws AxelorException {
+      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result, boolean dummySaleOrder)
+      throws AxelorException {
     return saleOrderCreateService.mergeSaleOrders(
         saleOrdersToMerge,
         getCommonFields(result).getCommonCurrency(),
@@ -370,7 +372,8 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
         getCommonFields(result).getCommonPriceList(),
         getCommonFields(result).getCommonTeam(),
         getCommonFields(result).getCommonTaxNumber(),
-        getCommonFields(result).getCommonFiscalPosition());
+        getCommonFields(result).getCommonFiscalPosition(),
+        dummySaleOrder);
   }
 
   protected void checkErrors(StringJoiner fieldErrors, SaleOrderMergingResult result) {

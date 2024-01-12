@@ -117,10 +117,12 @@ public interface SaleOrderMergingService {
 
   Checks getChecks(SaleOrderMergingResult result);
 
-  SaleOrderMergingResult mergeSaleOrders(List<SaleOrder> saleOrdersToMerge) throws AxelorException;
+  SaleOrderMergingResult mergeSaleOrders(List<SaleOrder> saleOrdersToMerge, boolean dummySaleOrder)
+      throws AxelorException;
 
   SaleOrderMergingResult mergeSaleOrdersWithContext(
-      List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException;
+      List<SaleOrder> saleOrdersToMerge, Context context, boolean dummySaleOrder)
+      throws AxelorException;
 
   List<SaleOrder> convertSelectedLinesToMergeLines(List<Integer> idList);
 }

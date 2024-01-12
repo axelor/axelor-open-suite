@@ -212,7 +212,7 @@
     </panel-related>
     <panel name="actionPanel">
       <button name="createInvoiceBtn" title="Generate the invoice"
-        onClick="action-supplychain-stock-move-method-generate-invoice"
+        onClick="action-supplychain-stock-move-method-generate-invoice,close"
         showIf="operationSelect &lt; 3"/>
     </panel>
   </form>
@@ -377,6 +377,12 @@
     name="action-stock-move-method-set-invoicing-status-invoiced-validated">
     <call class="com.axelor.apps.supplychain.web.StockMoveController"
       method="setInvoicingStatusInvoicedValidated"/>
+  </action-method>
+
+  <action-method
+    name="action-supplychain-stock-move-method-generate-invoice-from-pop-up">
+    <call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController"
+      method="generateInvoiceFromPopUp"/>
   </action-method>
 
   <search-filters id="supplychain-customer-deliveries-filter"

@@ -377,4 +377,7 @@ public final class SupplychainExceptionMessage {
   public static final String
       COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
           "Could not find recipients for message generated from stock rules: %s" /*)*/;
+
+  public static final String STOCK_MOVE_INVOICING_ERROR = /*$$(*/
+      "This stock move needs to be invoiced manually, manual intervention is needed : %s" /*)*/;
 }

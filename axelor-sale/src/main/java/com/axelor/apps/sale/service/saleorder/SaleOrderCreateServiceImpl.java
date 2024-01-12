@@ -33,6 +33,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.auth.AuthUtils;
@@ -58,6 +59,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
   protected SaleOrderService saleOrderService;
   protected SaleOrderComputeService saleOrderComputeService;
   protected DMSService dmsService;
+  protected SaleOrderLineRepository saleOrderLineRepository;
 
   @Inject
   public SaleOrderCreateServiceImpl(
@@ -66,7 +68,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       AppSaleService appSaleService,
       SaleOrderService saleOrderService,
       SaleOrderComputeService saleOrderComputeService,
-      DMSService dmsService) {
+      DMSService dmsService,
+      SaleOrderLineRepository saleOrderLineRepository) {
 
     this.partnerService = partnerService;
     this.saleOrderRepo = saleOrderRepo;
@@ -74,6 +77,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     this.saleOrderService = saleOrderService;
     this.saleOrderComputeService = saleOrderComputeService;
     this.dmsService = dmsService;
+    this.saleOrderLineRepository = saleOrderLineRepository;
   }
 
   @Override
@@ -175,7 +179,8 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       PriceList priceList,
       Team team,
       TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      boolean dummySaleOrder)
       throws AxelorException {
 
     String numSeq = "";
@@ -218,24 +223,30 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
 
     saleOrderMerged.setInternalNote(internalNote.toString());
 
-    this.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
+    this.attachToNewSaleOrder(saleOrderList, saleOrderMerged, dummySaleOrder);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
 
-    saleOrderRepo.save(saleOrderMerged);
+    if (!dummySaleOrder) {
+      saleOrderRepo.save(saleOrderMerged);
 
-    dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
+      dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
 
-    this.removeOldSaleOrders(saleOrderList);
+      this.removeOldSaleOrders(saleOrderList);
+    }
 
     return saleOrderMerged;
   }
 
   // Attachment of all sale order lines to new sale order
-  protected void attachToNewSaleOrder(List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged) {
+  protected void attachToNewSaleOrder(
+      List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged, boolean dummySaleOrder) {
     for (SaleOrder saleOrder : saleOrderList) {
       int countLine = 1;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+        if (dummySaleOrder) {
+          saleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+        }
         saleOrderLine.setSequence(countLine * 10);
         saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
         countLine++;

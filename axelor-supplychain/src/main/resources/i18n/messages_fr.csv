@@ -654,6 +654,7 @@
 "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Cette opération ne peut pas être réalisée. Stock disponible pour le produit %s : %s, stock nécessaire : %s. Veuillez désallouer.",,
 "This product is not stock managed.","Ce produit n'est pas géré en stock.",,
 "This quantity is not available in stock.","Ce montant n'est pas disponible en stock.",,
+"This stock move needs to be invoiced manually, manual intervention is needed : %s","Ce mouvement de stock doit être facturé manuellement, une intervention manuelle est nécessaire : %s",,
 "Timetable","Echéancier",,
 "Timetable computation date","Date pour le calcul de l’échéancier",,
 "Timetable template","Modèle d'échéancier",,

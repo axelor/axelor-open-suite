@@ -132,7 +132,8 @@ public interface SaleOrderCreateService {
       PriceList priceList,
       Team team,
       TaxNumber taxNumber,
-      FiscalPosition fiscalPosition)
+      FiscalPosition fiscalPosition,
+      boolean dummySaleOrder)
       throws AxelorException;
 
   SaleOrder createTemplate(SaleOrder context);

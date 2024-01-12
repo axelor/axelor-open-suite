@@ -168,6 +168,7 @@
       <field name="priceListToCheck" hidden="true" colSpan="12"/>
       <field name="locationToCheck" hidden="true" colSpan="12"/>
       <field name="contactPartnerToCheck" hidden="true" colSpan="12"/>
+      <field name="fromStockMove" hidden="true" colSpan="12"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList"
         domain="self.typeSelect = 2 and self.isActive = true" colSpan="6" colOffset="3"
@@ -185,7 +186,11 @@
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <button name="confirmBtn" title="Confirmer"
-        onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"/>
+        onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"
+        showIf="!fromStockMove"/>
+      <button name="confirmBtn" title="Confirmer"
+        onClick="action-supplychain-stock-move-method-generate-invoice-from-pop-up" colSpan="12"
+        width="200px" showIf="fromStockMove" if="__config__.app.isApp('supplychain')"/>
     </panel>
   </form>
 
