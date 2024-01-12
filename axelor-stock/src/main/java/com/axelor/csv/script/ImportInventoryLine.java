@@ -93,15 +93,17 @@ public class ImportInventoryLine {
 
       InventoryLine inventoryLineNew;
 
+      Inventory inventory = inventoryLine.getInventory();
+
       for (int i = 0; i < inventoryLine.getRealQty().intValue(); i += qtyByTracking.intValue()) {
 
         trackingNumber =
             trackingNumberService.createTrackingNumber(
                 inventoryLine.getProduct(),
-                inventoryLine.getInventory().getStockLocation().getCompany(),
-                appBaseService.getTodayDate(
-                    inventoryLine.getInventory().getStockLocation().getCompany()),
-                inventoryLine.getInventory().getInventorySeq());
+                company,
+                appBaseService.getTodayDate(company),
+                inventory.getInventorySeq(),
+                null);
 
         if (realQtyRemaning.compareTo(qtyByTracking) < 0) {
           trackingNumber.setCounter(realQtyRemaning);
