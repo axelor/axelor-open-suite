@@ -19,6 +19,7 @@
 package com.axelor.apps.production.service.bomimport;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.BillOfMaterialImportLine;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -48,5 +49,11 @@ public class BillOfMaterialImportLineServiceImpl implements BillOfMaterialImport
 
     billOfMaterialImportLine.setBomLevel(level);
     return level;
+  }
+
+  @Override
+  public Boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine) {
+    Product product = billOfMaterialImportLine.getProduct();
+    return product != null && product.getIsCreatedFromBOMImport();
   }
 }
