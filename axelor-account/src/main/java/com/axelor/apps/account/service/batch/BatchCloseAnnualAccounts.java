@@ -225,8 +225,9 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       boolean close,
       boolean open,
       LinkedHashMap<AccountByPartner, Map<Boolean, Boolean>> map) {
+    List<Long> idsDone = new ArrayList<>();
     for (Account account : getSortedAccountList(accountAndPartnerPairList)) {
-      Partner partner = getPartner(accountAndPartnerPairList, account);
+      Partner partner = getPartner(accountAndPartnerPairList, account, idsDone);
 
       Map<Boolean, Boolean> value = new HashMap<>();
       if (close) {
@@ -256,13 +257,23 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     return sortedAccountList;
   }
 
-  protected Partner getPartner(List<Pair<Long, Long>> accountAndPartnerPairList, Account account) {
-    return accountAndPartnerPairList.stream()
-        .filter(pair -> pair.getLeft().equals(account.getId()))
-        .findFirst()
-        .map(Pair::getRight)
-        .map(id -> partnerRepository.find(id))
-        .orElse(null);
+  protected Partner getPartner(
+      List<Pair<Long, Long>> accountAndPartnerPairList, Account account, List<Long> idsDone) {
+    Partner partner =
+        accountAndPartnerPairList.stream()
+            .filter(
+                pair ->
+                    pair.getLeft().equals(account.getId()) && !idsDone.contains(pair.getRight()))
+            .findFirst()
+            .map(Pair::getRight)
+            .map(id -> partnerRepository.find(id))
+            .orElse(null);
+
+    if (partner != null) {
+      idsDone.add(partner.getId());
+    }
+
+    return partner;
   }
 
   protected void generateMoves(Map<AccountByPartner, Map<Boolean, Boolean>> map) {
