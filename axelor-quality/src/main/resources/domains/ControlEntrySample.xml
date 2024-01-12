@@ -7,14 +7,20 @@
 
   <entity name="ControlEntrySample" cacheable="true">
     <integer name="entrySampleNbr" title="Number"/>
-    <string name="entrySampleRef" title="Reference" namecolumn="true"/>
+    <string name="entrySampleRef" title="Reference"/>
     <integer name="resultSelect" selection="quality.control.entry.sample.result.select"
-      title="Result"/>
+      title="Result" default="1"/>
     <many-to-one name="controlEntry" ref="com.axelor.apps.quality.db.ControlEntry"
       title="Control entry"/>
     <one-to-many name="controlEntryPlanLinesList"
       ref="com.axelor.apps.quality.db.ControlEntryPlanLine" title="Control entry sample lines"
       mappedBy="controlEntrySample"/>
+    <string name="fullName" title="Full name" namecolumn="true"><![CDATA[
+        if (controlEntry != null) {
+          return controlEntry.getName() + " " + entrySampleRef + " " + entrySampleNbr;
+        }
+        return entrySampleRef + " " + entrySampleNbr;
+    ]]></string>
 
     <extra-code>
 			<![CDATA[

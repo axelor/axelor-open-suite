@@ -22,6 +22,8 @@
     <boolean name="isCustomFrequency" title="Custom frequency"/>
     <many-to-one name="controlPlanFrequency"
       ref="com.axelor.apps.quality.db.ControlPlanFrequency" title="Frequency"/>
+    <many-to-one name="controlPlan" ref="com.axelor.apps.quality.db.ControlPlan"
+      title="Control plan"/>
 
     <many-to-one name="controlType" ref="com.axelor.apps.quality.db.ControlType"
       title="Type"/>
