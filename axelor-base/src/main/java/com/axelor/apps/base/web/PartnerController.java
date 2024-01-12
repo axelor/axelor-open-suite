@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.PrintFromBirtTemplateService;
+import com.axelor.apps.base.service.RegistrationNumberValidation;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
@@ -389,14 +390,18 @@ public class PartnerController {
     try {
       Partner partner = request.getContext().asType(Partner.class);
       PartnerService partnerService = Beans.get(PartnerService.class);
-      if (partnerService.isRegistrationCodeValid(partner)) {
-        Map<String, Map<String, Object>> attrsMap =
-            partnerService.getRegistrationCodeValidationAttrs(partner);
-
-        LOG.info("Attribute Map for registration code: {}", attrsMap);
-        response.setAttrs(attrsMap);
+      if (!partnerService.isRegistrationCodeValid(partner)) {
+        response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+        return;
       }
-
+      Class<? extends RegistrationNumberValidation> klass =
+          partnerService.getRegistrationNumberValidationClass(partner);
+      if (klass == null) {
+        return;
+      }
+      RegistrationNumberValidation registrationNumberValidation = Beans.get(klass);
+      registrationNumberValidation.setRegistrationCodeValidationValues(partner);
+      response.setValues(partner);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }
@@ -422,22 +427,6 @@ public class PartnerController {
     PartnerService partnerService = Beans.get(PartnerService.class);
     if (!partnerService.isRegistrationCodeValid(partner)) {
       response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
-    }
-  }
-
-  public void changeBusinessCountry(ActionRequest request, ActionResponse response) {
-    try {
-      Partner partner = request.getContext().asType(Partner.class);
-      PartnerService partnerService = Beans.get(PartnerService.class);
-
-      String registrationCodeTitle = partnerService.getRegistrationCodeTitleFromTemplate(partner);
-      response.setAttr(
-          "registrationCode",
-          "title",
-          registrationCodeTitle != null ? registrationCodeTitle : "Registration number");
-
-    } catch (Exception e) {
-      TraceBackService.trace(e);
     }
   }
 }

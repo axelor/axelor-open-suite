@@ -721,23 +721,18 @@ public class PartnerServiceImpl implements PartnerService {
     }
 
     registrationCode = registrationCode.replace(" ", "");
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      Country businessCountry = partner.getMainAddress().getAddressL7Country();
-      RegistrationNumberTemplate registrationNumberTemplate =
-          businessCountry.getRegistrationNumberTemplate();
-
-      if (registrationNumberTemplate != null) {
-        return validateRegistrationCode(registrationCode, registrationNumberTemplate);
-      }
-    }
-    return true;
+    return validateRegistrationCode(registrationCode, partner);
   }
 
-  private boolean validateRegistrationCode(
-      String registrationCode, RegistrationNumberTemplate registrationNumberTemplate) {
+  private boolean validateRegistrationCode(String registrationCode, Partner partner) {
     try {
-      String origin = registrationNumberTemplate.getValidationMethodSelect();
+      Class<? extends RegistrationNumberValidation> klass =
+          getRegistrationNumberValidationClass(partner);
+      if (klass == null) {
+        return true;
+      }
+      RegistrationNumberTemplate registrationNumberTemplate =
+          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
       if (registrationNumberTemplate.getIsRequiredForCompanies()
           && StringUtils.isBlank(registrationCode)) {
         throw new AxelorException(
@@ -750,23 +745,49 @@ public class PartnerServiceImpl implements PartnerService {
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
       }
-      if (origin != null) {
-        Class<? extends RegistrationNumberValidation> clazz =
-            Class.forName(origin).asSubclass(RegistrationNumberValidation.class);
-        boolean isValidRegistrationCode =
-            Beans.get(clazz).computeRegistrationCodeValidity(registrationCode);
-        if (!isValidRegistrationCode) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_MISSING_FIELD,
-              I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
-        }
+      boolean isValidRegistrationCode =
+          Beans.get(klass).computeRegistrationCodeValidity(registrationCode);
+      if (!isValidRegistrationCode) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
       }
-    } catch (ClassNotFoundException | AxelorException e) {
+    } catch (AxelorException e) {
       TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
       return false;
     }
 
     return true;
+  }
+
+  @Override
+  public Class<? extends RegistrationNumberValidation> getRegistrationNumberValidationClass(
+      Partner partner) {
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress == null || mainAddress.getAddressL7Country() == null) {
+      return null;
+    }
+    Country businessCountry = partner.getMainAddress().getAddressL7Country();
+    RegistrationNumberTemplate registrationNumberTemplate =
+        businessCountry.getRegistrationNumberTemplate();
+
+    if (registrationNumberTemplate != null) {
+      Class<? extends RegistrationNumberValidation> klass = null;
+      try {
+        String origin = registrationNumberTemplate.getValidationMethodSelect();
+        if (!Strings.isNullOrEmpty(origin)) {
+          klass = (Class<? extends RegistrationNumberValidation>) Class.forName(origin);
+        }
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
+      } finally {
+        if (klass == null) {
+          return RegistrationNumberValidationDefault.class;
+        }
+        return klass;
+      }
+    }
+    return null;
   }
 
   @Override
@@ -785,40 +806,31 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner) {
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      Country businessCountry = partner.getMainAddress().getAddressL7Country();
-      RegistrationNumberTemplate registrationNumberTemplate =
-          businessCountry.getRegistrationNumberTemplate();
-
-      if (registrationNumberTemplate != null) {
-        try {
-          String origin = registrationNumberTemplate.getValidationMethodSelect();
-          if (origin != null) {
-            Class<? extends RegistrationNumberValidation> clazz =
-                (Class<? extends RegistrationNumberValidation>) Class.forName(origin);
-            return Beans.get(clazz).getRegistrationCodeValidationAttrs(partner);
-          }
-        } catch (ClassNotFoundException e) {
-          TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
-        }
-      }
-    }
-    return null;
-  }
-
-  @Override
   public Map<String, Map<String, Object>> getPartnerTypeSelectAttrs(Partner partner) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
     attrsMap.put("siren", new HashMap<>());
     attrsMap.put("nic", new HashMap<>());
+    attrsMap.put("registrationCode", new HashMap<>());
+    boolean isIndividual =
+        partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
+    boolean hideNic = true, hideSiren = true;
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress != null && mainAddress.getAddressL7Country() != null) {
+      RegistrationNumberTemplate registrationNumberTemplate =
+          mainAddress.getAddressL7Country().getRegistrationNumberTemplate();
+      hideNic = isIndividual || !registrationNumberTemplate.getUseNic();
+      hideSiren = isIndividual || !registrationNumberTemplate.getUseSiren();
+    }
+    attrsMap.get("siren").put("hidden", hideSiren);
+    attrsMap.get("nic").put("hidden", hideNic);
+    String registrationCodeTitle = getRegistrationCodeTitleFromTemplate(partner);
     attrsMap
-        .get("siren")
-        .put("hidden", partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
-    attrsMap
-        .get("nic")
-        .put("hidden", partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
+        .get("registrationCode")
+        .put(
+            "title",
+            !Strings.isNullOrEmpty(registrationCodeTitle)
+                ? registrationCodeTitle
+                : I18n.get("Registration number"));
     return attrsMap;
   }
 }

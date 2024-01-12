@@ -155,7 +155,8 @@ public interface PartnerService {
 
   String getRegistrationCodeTitleFromTemplate(Partner partner);
 
-  Map<String, Map<String, Object>> getRegistrationCodeValidationAttrs(Partner partner);
-
   Map<String, Map<String, Object>> getPartnerTypeSelectAttrs(Partner partner);
+
+  public Class<? extends RegistrationNumberValidation> getRegistrationNumberValidationClass(
+      Partner partner);
 }
