@@ -56,7 +56,8 @@ public interface MoveLineService {
 
   MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
-  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+  Batch validatePreviewBatch(List<Long> recordIdList, Long batchId, int actionSelect)
+      throws AxelorException;
 
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 

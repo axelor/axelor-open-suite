@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.base.service.pricing.PricingGroupService;
@@ -36,6 +37,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PricingController {
 
@@ -129,6 +131,21 @@ public class PricingController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  @ErrorException
+  public void setModelDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    List<String> unavailableModels = Beans.get(PricingGenericService.class).getUnavailableModels();
+
+    if (!ObjectUtils.isEmpty(unavailableModels)) {
+      String unavailableModelsStr =
+          unavailableModels.stream()
+              .map(str -> String.format("'%s'", str))
+              .collect(Collectors.joining(","));
+      response.setAttr(
+          "concernedModel", "domain", String.format("self.name NOT IN (%s)", unavailableModelsStr));
     }
   }
 }

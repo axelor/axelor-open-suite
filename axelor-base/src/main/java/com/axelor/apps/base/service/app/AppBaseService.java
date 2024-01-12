@@ -72,7 +72,7 @@ public interface AppBaseService extends AppService {
 
   public int getGlobalTrackingLogPersistence();
 
-  public String getDefaultPartnerLanguageCode();
+  public String getDefaultPartnerLocale();
 
   // Conversion de devise
 

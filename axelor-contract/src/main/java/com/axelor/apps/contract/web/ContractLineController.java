@@ -29,6 +29,7 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
+import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.inject.Beans;
@@ -61,7 +62,8 @@ public class ContractLineController {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
 
     try {
-      contractLine = contractLineService.computeTotal(contractLine);
+      Contract contract = this.getContractFromContext(request);
+      contractLine = contractLineService.computeTotal(contractLine, contract);
       response.setValues(contractLine);
     } catch (Exception e) {
       response.setValues(contractLineService.reset(contractLine));
@@ -226,5 +228,16 @@ public class ContractLineController {
         "isToRevaluate",
         "hidden",
         Beans.get(ContractLineViewService.class).hideIsToRevaluate(contract, contractVersion));
+  }
+
+  public void setScaleAndPrecision(ActionRequest request, ActionResponse response) {
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+
+    if (contractLine != null) {
+      Contract contract = this.getContractFromContext(request);
+
+      response.setAttrs(
+          Beans.get(ContractLineAttrsService.class).setScaleAndPrecision(contract, ""));
+    }
   }
 }

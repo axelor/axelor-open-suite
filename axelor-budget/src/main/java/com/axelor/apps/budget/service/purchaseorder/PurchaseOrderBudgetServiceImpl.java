@@ -30,6 +30,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.apps.businessproject.service.PurchaseOrderWorkflowServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -63,6 +64,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AppBudgetService appBudgetService;
   protected BudgetToolsService budgetToolsService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public PurchaseOrderBudgetServiceImpl(
@@ -80,7 +82,8 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
       BudgetService budgetService,
       BudgetDistributionRepository budgetDistributionRepository,
       AppBudgetService appBudgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     super(
         purchaseOrderService,
         purchaseOrderRepo,
@@ -97,6 +100,7 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.appBudgetService = appBudgetService;
     this.budgetToolsService = budgetToolsService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -179,7 +183,9 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
                 budgetDistribution, purchaseOrderLine);
           }
 
-          budgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
+          budgetDistribution.setAmount(
+              currencyScaleServiceBudget.getCompanyScaledValue(
+                  budgetDistribution, purchaseOrderLine.getCompanyExTaxTotal()));
         } else if (purchaseOrderLine.getBudget() == null
             && appBudget != null
             && !appBudget.getManageMultiBudget()) {
@@ -269,7 +275,9 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
       BudgetDistribution newBudgetDistribution = new BudgetDistribution();
 
-      newBudgetDistribution.setAmount(purchaseOrderLine.getCompanyExTaxTotal());
+      newBudgetDistribution.setAmount(
+          currencyScaleServiceBudget.getCompanyScaledValue(
+              purchaseOrder.getBudget(), purchaseOrderLine.getCompanyExTaxTotal()));
       newBudgetDistribution.setBudget(purchaseOrder.getBudget());
       newBudgetDistribution.setPurchaseOrderLine(purchaseOrderLine);
 

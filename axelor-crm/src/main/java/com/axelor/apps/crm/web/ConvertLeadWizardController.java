@@ -236,7 +236,7 @@ public class ConvertLeadWizardController {
       partnerMap.put("partnerTypeSelect", 1);
       partnerMap.put("name", lead.getEnterpriseName());
     }
-    partnerMap.put("language", appBase.getDefaultPartnerLanguage());
+    partnerMap.put("localization", appBase.getDefaultPartnerLocalization());
     return partnerMap;
   }
 

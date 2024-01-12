@@ -19,7 +19,7 @@
     onNew="action-quality-improvement-method-set-default-values-on-new">
     <panel name="mainPanel">
       <field name="qiStatus" colSpan="12" showTitle="false" readonlyIf="!id"
-        widget="NavSelect"/>
+        widget="NavSelect" x-order="sequence"/>
       <field name="sequence" colSpan="4"/>
       <field name="company" colSpan="4" form-view="company-form" grid-view="company-grid"/>
       <field name="type" colSpan="4"/>

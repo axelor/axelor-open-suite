@@ -1,3 +1,0 @@
----
-title: "EXPENSE LINE: fix totalTax is not in readonly in form view when expense product blocks the taxes"
-type: fix

@@ -28,10 +28,14 @@ import org.apache.commons.collections.CollectionUtils;
 public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolService {
 
   private final BudgetResetToolService budgetService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
-  public BudgetLevelResetToolServiceImpl(BudgetResetToolService budgetResetToolService) {
+  public BudgetLevelResetToolServiceImpl(
+      BudgetResetToolService budgetResetToolService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetService = budgetResetToolService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -42,8 +46,12 @@ public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolServ
     budgetLevel.setArchived(false);
 
     budgetLevel.setTotalAmountCommitted(BigDecimal.ZERO);
-    budgetLevel.setTotalAmountAvailable(budgetLevel.getTotalAmountExpected());
-    budgetLevel.setAvailableAmountWithSimulated(budgetLevel.getTotalAmountExpected());
+    budgetLevel.setTotalAmountAvailable(
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel, budgetLevel.getTotalAmountExpected()));
+    budgetLevel.setAvailableAmountWithSimulated(
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel, budgetLevel.getTotalAmountExpected()));
     budgetLevel.setRealizedWithNoPo(BigDecimal.ZERO);
     budgetLevel.setRealizedWithPo(BigDecimal.ZERO);
     budgetLevel.setSimulatedAmount(BigDecimal.ZERO);

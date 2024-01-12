@@ -465,7 +465,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           .peek(cons -> cons.setInvoiceLine(invoiceLine))
           .forEach(cons -> cons.setIsInvoiced(true));
       line.setQty(BigDecimal.ZERO);
-      contractLineService.computeTotal(line);
+      contractLineService.computeTotal(line, contract);
     }
   }
 
@@ -497,7 +497,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
             tmp.getQty()
                 .multiply(ratio)
                 .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
-        tmp = this.contractLineService.computeTotal(tmp);
+        tmp = this.contractLineService.computeTotal(tmp, contract);
         InvoiceLine invLine = generate(invoice, tmp);
         invLine.setContractLine(line);
         setContractLineInAnalyticMoveLine(line, invLine);
@@ -618,7 +618,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
           consumptionLine.setIsError(true);
         } else {
           matchLine.setQty(matchLine.getQty().add(consumptionLine.getQty()));
-          contractLineService.computeTotal(matchLine);
+          contractLineService.computeTotal(matchLine, contract);
           consumptionLine.setIsError(false);
           consumptionLine.setContractLine(matchLine);
           mergedLines.put(matchLine, consumptionLine);
@@ -803,7 +803,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
         ContractLine newLine = contractLineRepo.copy(line, false);
         contractLineService.compute(newLine, contract, newLine.getProduct());
-        contractLineService.computeTotal(newLine);
+        contractLineService.computeTotal(newLine, contract);
         contractLineRepo.save(newLine);
         contract.addAdditionalBenefitContractLineListItem(newLine);
       }
@@ -826,7 +826,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
 
         ContractLine newLine = contractLineRepo.copy(line, false);
         contractLineService.compute(newLine, contract, newLine.getProduct());
-        contractLineService.computeTotal(newLine);
+        contractLineService.computeTotal(newLine, contract);
         contractLineRepo.save(newLine);
         version.addContractLineListItem(newLine);
       }

@@ -20,6 +20,8 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,6 +39,9 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
+    billOfMaterial = super.save(billOfMaterial);
+    billOfMaterial.setName(
+        Beans.get(BillOfMaterialComputeNameService.class).computeName(billOfMaterial));
 
     if (billOfMaterial.getVersionNumber() != null && billOfMaterial.getVersionNumber() > 1) {
       billOfMaterial.setFullName(
@@ -45,7 +50,7 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
       billOfMaterial.setFullName(billOfMaterial.getName());
     }
 
-    return super.save(billOfMaterial);
+    return billOfMaterial;
   }
 
   @Override

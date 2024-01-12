@@ -36,6 +36,7 @@ import com.axelor.apps.contract.db.repo.ContractTemplateRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractService;
+import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
@@ -49,6 +50,12 @@ import java.time.LocalDate;
 
 @Singleton
 public class ContractController {
+
+  protected Contract getContract(ActionRequest request) {
+    return Contract.class.equals(request.getContext().getContextClass())
+        ? request.getContext().asType(Contract.class)
+        : request.getContext().asType(ContractVersion.class).getContract();
+  }
 
   public void waiting(ActionRequest request, ActionResponse response) {
     Contract contract =
@@ -296,6 +303,34 @@ public class ContractController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void onChangeContractLines(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = this.getContract(request);
+
+      if (contract != null) {
+        response.setAttrs(
+            Beans.get(ContractLineAttrsService.class)
+                .setScaleAndPrecision(contract, "contractLineList."));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void onChangeAdditionalContractLines(ActionRequest request, ActionResponse response) {
+    try {
+      Contract contract = this.getContract(request);
+
+      if (contract != null) {
+        response.setAttrs(
+            Beans.get(ContractLineAttrsService.class)
+                .setScaleAndPrecision(contract, "additionalBenefitContractLineList."));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 }

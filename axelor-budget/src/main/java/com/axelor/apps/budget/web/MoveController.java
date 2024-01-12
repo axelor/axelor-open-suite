@@ -53,9 +53,9 @@ public class MoveController {
           return;
         }
         String alertMessage = moveBudgetService.computeBudgetDistribution(move);
+        move.setBudgetDistributionGenerated(moveBudgetService.isBudgetInLines(move));
 
-        response.setValue("budgetDistributionGenerated", moveBudgetService.isBudgetInLines(move));
-        response.setValue("moveLineList", move.getMoveLineList());
+        response.setValues(move);
 
         if (!Strings.isNullOrEmpty(alertMessage)) {
           response.setInfo(

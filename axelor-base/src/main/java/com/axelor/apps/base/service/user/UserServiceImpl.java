@@ -70,6 +70,8 @@ public class UserServiceImpl implements UserService {
 
   public static final String DEFAULT_LOCALE = "en";
 
+  public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
+
   private static final String PATTERN_ACCES_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
   private static final Pattern PATTERN =
@@ -281,6 +283,17 @@ public class UserServiceImpl implements UserService {
       return user.getLanguage();
     }
     return DEFAULT_LOCALE;
+  }
+
+  @Override
+  public String getLocalizationCode() {
+    User user = getUser();
+    if (user != null && user.getLocalization() != null) {
+      if (!Strings.isNullOrEmpty(user.getLocalization().getCode())) {
+        return user.getLocalization().getCode();
+      }
+    }
+    return DEFAULT_LOCALIZATION_CODE;
   }
 
   @Override

@@ -155,9 +155,9 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       BigDecimal invoiceTermAmount =
           isCompanyCurrency
               ? currencyScaleServiceAccount.getCompanyScaledValue(
-                  invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining())
+                  invoiceTermToPay, invoiceTermToPay.getAmountRemaining())
               : currencyScaleServiceAccount.getScaledValue(
-                  invoiceTermToPay, invoiceTermToPay.getAmountRemaining());
+                  invoiceTermToPay, invoiceTermToPay.getCompanyAmountRemaining());
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
@@ -298,17 +298,16 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     boolean isCompanyCurrency =
         invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
     invoiceTermPayment.setPaidAmount(
-        isCompanyCurrency ? this.computePaidAmount(invoiceTermToPay, paidAmount) : paidAmount);
+        isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
 
     if (paidAmount.compareTo(invoiceTermToPay.getAmount()) == 0) {
       manageInvoiceTermFinancialDiscount(
           invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
     }
-
     invoiceTermPayment.setCompanyPaidAmount(
         isCompanyCurrency
-            ? invoiceTermPayment.getPaidAmount()
-            : this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount()));
+            ? this.computeCompanyPaidAmount(invoiceTermToPay, invoiceTermPayment.getPaidAmount())
+            : invoiceTermPayment.getPaidAmount());
 
     return invoiceTermPayment;
   }

@@ -65,14 +65,6 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
   }
 
   @Override
-  public String computeName(BillOfMaterial bom) {
-
-    return bom.getProduct() != null
-        ? super.computeName(bom)
-        : bom.getMachineType().getName() + "-" + bom.getId();
-  }
-
-  @Override
   public String getReportLink(BillOfMaterial billOfMaterial, String name) throws AxelorException {
     billOfMaterial = billOfMaterialRepo.find(billOfMaterial.getId());
     Company company = billOfMaterial.getCompany();

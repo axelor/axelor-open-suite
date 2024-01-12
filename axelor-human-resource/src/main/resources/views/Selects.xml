@@ -90,7 +90,7 @@
   </selection>
 
   <selection name="ihr.batch.action.select">
-    <option value="1">Leave Management</option>
+    <option value="1">Leave correction</option>
     <option value="2">Seniority leave Management</option>
     <option value="3">Payroll preparation generation</option>
     <option value="4">Payroll preparation export</option>

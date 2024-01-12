@@ -27,4 +27,6 @@ public interface MoveLineConsolidateService {
       Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys);
 
   public List<MoveLine> consolidateMoveLines(List<MoveLine> moveLines);
+
+  MoveLine consolidateMoveLine(MoveLine moveLine, MoveLine consolidateMoveLine);
 }

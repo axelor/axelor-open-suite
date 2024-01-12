@@ -1517,4 +1517,20 @@ public class StockMoveServiceImpl implements StockMoveService {
   public void setMergedStatus(StockMove stockMove) {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_MERGED);
   }
+
+  @Override
+  public StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException {
+
+    if (stockMove == null) {
+      return null;
+    }
+    if (stockMove.getCompany() == null) {
+      return null;
+    }
+
+    Company company = stockMove.getCompany();
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    return stockConfig.getVirtualOutsourcingStockLocation();
+  }
 }

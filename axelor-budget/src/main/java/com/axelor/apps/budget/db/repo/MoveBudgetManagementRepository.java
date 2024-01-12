@@ -37,13 +37,13 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
   public Move save(Move move) {
     try {
       if (!CollectionUtils.isEmpty(move.getMoveLineList())
-          && move.getStatusSelect() != MoveRepository.STATUS_NEW
           && move.getStatusSelect() != MoveRepository.STATUS_CANCELED) {
         MoveLineBudgetService moveLineBudgetService = Beans.get(MoveLineBudgetService.class);
         moveLineBudgetService.manageMonoBudget(move);
 
         for (MoveLine moveLine : move.getMoveLineList()) {
           moveLineBudgetService.checkAmountForMoveLine(moveLine);
+          moveLineBudgetService.negateAmount(moveLine, move);
         }
       }
 

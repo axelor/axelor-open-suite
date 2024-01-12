@@ -302,7 +302,7 @@
     model="com.axelor.apps.account.db.MoveLine" groupBy="move">
     <toolbar>
       <button name="validateBtn" title="Validate" icon="fa-check"
-        onClick="action-move-line-method-validate-cut-off-batch"/>
+        onClick="action-move-line-method-validate-preview-batch"/>
     </toolbar>
     <hilite color="danger" if="$get('move.cutOffMoveGenerated')"/>
     <field name="move.reference"/>
@@ -321,6 +321,25 @@
     <field name="move.cutOffMoveGenerated" hidden="true"/>
     <field name="move" hidden="true"/>
     <field name="id" hidden="true"/>
+  </grid>
+
+  <grid name="move-line-doubtful-customer-grid" title="Move lines"
+    model="com.axelor.apps.account.db.MoveLine">
+    <toolbar>
+      <button name="validateBtn" title="Validate" icon="fa-check"
+        onClick="action-move-line-method-validate-preview-batch"/>
+    </toolbar>
+    <field name="name" title="Reference"/>
+    <field name="date"/>
+    <field name="move.period"/>
+    <field name="move.journal"/>
+    <field name="partner"/>
+    <field name="debit"/>
+    <field name="credit"/>
+    <field name="amountRemaining"/>
+    <field name="move.statusSelect"/>
+    <field name="description"/>
+    <field name="dueDate"/>
   </grid>
 
   <form name="incl-analytic-distribution-move-line-form"
@@ -811,8 +830,8 @@
       method="computeFinancialDiscount"/>
   </action-method>
 
-  <action-method name="action-move-line-method-validate-cut-off-batch">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="validateCutOffBatch"/>
+  <action-method name="action-move-line-method-validate-preview-batch">
+    <call class="com.axelor.apps.account.web.MoveLineController" method="validatePreviewBatch"/>
   </action-method>
 
   <action-method name="action-move-line-method-update-invoice-terms">

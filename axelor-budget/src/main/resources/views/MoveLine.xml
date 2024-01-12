@@ -11,9 +11,11 @@
         <field name="account.accountType.technicalTypeSelect"/>
         <field name="account.accountType"/>
         <field name="move.statusSelect"/>
+        <field name="move.invoice"/>
       </insert>
       <insert position="after">
-        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')"
+          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)">
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true"/>
@@ -21,7 +23,6 @@
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel" title="Budget"
-            showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
             field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
@@ -41,7 +42,8 @@
         <field name="move.statusSelect" hidden="true"/>
       </insert>
       <insert position="after">
-        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')"
+          showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)">
           <field name="budgetDistributionSumAmount" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             readonly="true"/>
@@ -49,7 +51,6 @@
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel" title="Budget"
-            showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
             field="budgetDistributionList" grid-view="move-line-budget-distribution-grid"
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"

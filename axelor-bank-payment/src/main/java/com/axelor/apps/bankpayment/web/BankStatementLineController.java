@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.bankpayment.web;
 
-import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineService;
+import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLinePrintAFB120Service;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -43,7 +43,7 @@ public class BankStatementLineController {
       String exportType = (String) request.getContext().get("exportTypeSelect");
 
       String fileLink =
-          Beans.get(BankStatementLineService.class)
+          Beans.get(BankStatementLinePrintAFB120Service.class)
               .print(fromDate, toDate, bankDetails, exportType);
       if (StringUtils.notEmpty(fileLink)) {
         response.setView(

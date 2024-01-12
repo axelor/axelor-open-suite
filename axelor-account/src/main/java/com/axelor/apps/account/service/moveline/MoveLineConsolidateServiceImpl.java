@@ -135,61 +135,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
 
       if (consolidateMoveLine != null) {
 
-        BigDecimal consolidateCurrencyAmount;
+        consolidateMoveLine = consolidateMoveLine(moveLine, consolidateMoveLine);
 
-        log.debug(
-            "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
-            moveLine.getDebit(),
-            moveLine.getCredit(),
-            moveLine.getCurrencyAmount().abs());
-        log.debug(
-            "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
-            consolidateMoveLine.getDebit(),
-            consolidateMoveLine.getCredit(),
-            consolidateMoveLine.getCurrencyAmount().abs());
-
-        if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
-            != consolidateMoveLine
-                .getDebit()
-                .subtract(consolidateMoveLine.getCredit())
-                .compareTo(BigDecimal.ZERO)) {
-          consolidateCurrencyAmount =
-              consolidateMoveLine
-                  .getCurrencyAmount()
-                  .abs()
-                  .subtract(moveLine.getCurrencyAmount().abs());
-        } else {
-          consolidateCurrencyAmount =
-              consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
-        }
-
-        consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
-        consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
-
-        boolean isDebit =
-            consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
-
-        consolidateCurrencyAmount =
-            moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
-
-        consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
-
-        if (consolidateMoveLine.getAnalyticMoveLineList() != null
-            && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
-          for (AnalyticMoveLine analyticDistributionLine :
-              consolidateMoveLine.getAnalyticMoveLineList()) {
-            for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
-              if (checkAnalyticDistributionLine(
-                  analyticDistributionLine, analyticDistributionLineIt)) {
-                analyticDistributionLine.setAmount(
-                    analyticDistributionLine
-                        .getAmount()
-                        .add(analyticDistributionLineIt.getAmount()));
-                break;
-              }
-            }
-          }
-        }
       } else {
         map.put(keys, moveLine);
       }
@@ -230,6 +177,65 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     }
 
     return moveLines;
+  }
+
+  @Override
+  public MoveLine consolidateMoveLine(MoveLine moveLine, MoveLine consolidateMoveLine) {
+    if (moveLine == null || consolidateMoveLine == null) {
+      return null;
+    }
+    BigDecimal consolidateCurrencyAmount;
+
+    log.debug(
+        "MoveLine :: Debit : {}, Credit : {}, Currency amount : {}",
+        moveLine.getDebit(),
+        moveLine.getCredit(),
+        moveLine.getCurrencyAmount().abs());
+    log.debug(
+        "Consolidate moveLine :: Debit : {}, Credit : {}, Currency amount : {}",
+        consolidateMoveLine.getDebit(),
+        consolidateMoveLine.getCredit(),
+        consolidateMoveLine.getCurrencyAmount().abs());
+
+    if (moveLine.getDebit().subtract(moveLine.getCredit()).compareTo(BigDecimal.ZERO)
+        != consolidateMoveLine
+            .getDebit()
+            .subtract(consolidateMoveLine.getCredit())
+            .compareTo(BigDecimal.ZERO)) {
+      consolidateCurrencyAmount =
+          consolidateMoveLine
+              .getCurrencyAmount()
+              .abs()
+              .subtract(moveLine.getCurrencyAmount().abs());
+    } else {
+      consolidateCurrencyAmount =
+          consolidateMoveLine.getCurrencyAmount().abs().add(moveLine.getCurrencyAmount().abs());
+    }
+
+    consolidateMoveLine.setCredit(consolidateMoveLine.getCredit().add(moveLine.getCredit()));
+    consolidateMoveLine.setDebit(consolidateMoveLine.getDebit().add(moveLine.getDebit()));
+
+    boolean isDebit = consolidateMoveLine.getDebit().compareTo(consolidateMoveLine.getCredit()) > 0;
+
+    consolidateCurrencyAmount =
+        moveToolService.computeCurrencyAmountSign(consolidateCurrencyAmount, isDebit);
+
+    consolidateMoveLine.setCurrencyAmount(consolidateCurrencyAmount);
+
+    if (consolidateMoveLine.getAnalyticMoveLineList() != null
+        && !consolidateMoveLine.getAnalyticMoveLineList().isEmpty()) {
+      for (AnalyticMoveLine analyticDistributionLine :
+          consolidateMoveLine.getAnalyticMoveLineList()) {
+        for (AnalyticMoveLine analyticDistributionLineIt : moveLine.getAnalyticMoveLineList()) {
+          if (checkAnalyticDistributionLine(analyticDistributionLine, analyticDistributionLineIt)) {
+            analyticDistributionLine.setAmount(
+                analyticDistributionLine.getAmount().add(analyticDistributionLineIt.getAmount()));
+            break;
+          }
+        }
+      }
+    }
+    return consolidateMoveLine;
   }
 
   protected boolean checkAnalyticDistributionLine(

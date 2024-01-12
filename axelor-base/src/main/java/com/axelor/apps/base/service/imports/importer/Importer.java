@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -212,7 +213,8 @@ public abstract class Importer {
   protected ImportHistory addHistory(ImporterListener listener) throws IOException {
 
     ImportHistory importHistory =
-        new ImportHistory(AuthUtils.getUser(), configuration.getDataMetaFile());
+        new ImportHistory(
+            AuthUtils.getUser(), JPA.find(MetaFile.class, configuration.getDataMetaFile().getId()));
     File logFile = File.createTempFile("importLog", ".log");
 
     try (FileWriter writer = new FileWriter(logFile)) {
@@ -225,7 +227,6 @@ public abstract class Importer {
             "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
     importHistory.setLogMetaFile(logMetaFile);
     importHistory.setImportConfiguration(configuration);
-
     return importHistory;
   }
 

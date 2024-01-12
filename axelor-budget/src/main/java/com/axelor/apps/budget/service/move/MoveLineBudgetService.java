@@ -48,4 +48,6 @@ public interface MoveLineBudgetService {
   String getBudgetDomain(Move move, MoveLine moveLine);
 
   void manageMonoBudget(Move move);
+
+  void negateAmount(MoveLine moveLine, Move move);
 }

@@ -30,9 +30,10 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="lastReminderDate"/>
     <field name="lastReminderComments"/>
@@ -67,11 +68,12 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="confirmationDateTime"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="amountInvoiced" hidden="true" aggregate="sum"
-      if="__config__.app.isApp('supplychain')"/>
+      if="__config__.app.isApp('supplychain')" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="deliveryState" if="__config__.app.isApp('supplychain')"/>
     <field name="statusSelect"/>
     <field name="salespersonUser"/>
@@ -99,8 +101,10 @@
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
@@ -117,9 +121,10 @@
     <field name="endOfValidityDate" hidden="true"/>
     <field name="saleOrderSeq" width="120"/>
     <field name="creationDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
@@ -415,6 +420,7 @@
             hidden="true" colSpan="6" name="interco" widget="boolean-switch"/>
           <field if="__config__.app.isApp('supplychain')" if-module="axelor-supplychain"
             colSpan="6" readonly="true" showIf="createdByInterco" name="createdByInterco"/>
+          <field name="currency.numberOfDecimals" hidden="true"/>
         </panel>
       </panel>
       <panel name="addressPanel" colSpan="12" hideIf="company == null">
@@ -597,7 +603,8 @@
           onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
         <field name="computationDate"
           onChange="action-sale-order-method-apply-timetable-template,action-sale-order-method-update-amount-to-be-spread-over-the-timetable"/>
-        <field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
+        <field name="amountToBeSpreadOverTheTimetable" colSpan="12"
+          x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" if-module="axelor-supplychain"
           colSpan="12" field="timetableList" form-view="timetable-form" grid-view="timetable-grid"
           onChange="action-sale-order-method-update-amount-to-be-spread-over-the-timetable,action-supplychain-sale-order-validate-check-amount-timetable"/>
@@ -608,7 +615,7 @@
           if="__config__.app.getApp('supplychain')?.manageAdvancePaymentsFromPaymentConditions">
           <field name="advancePaymentNeeded" readonlyIf="statusSelect &gt; 1"/>
           <field name="advancePaymentAmountNeeded" showIf="advancePaymentNeeded"
-            readonlyIf="statusSelect &gt; 1"/>
+            readonlyIf="statusSelect &gt; 1" x-scale="currency.numberOfDecimals"/>
         </panel>
         <field name="advancePaymentList"
           if="!__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
@@ -723,7 +730,7 @@
         if-module="axelor-supplychain"
         onClick="save,action-sale-order-method-set-status-to-confirmed"/>
       <field name="message" hidden="true" type="string"/>
-      <field name="amountInvoiced" hidden="true"/>
+      <field name="amountInvoiced" hidden="true" x-scale="currency.numberOfDecimals"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
@@ -736,11 +743,17 @@
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
-      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal"><![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -803,11 +816,11 @@
     </panel>
     <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null"
       itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
-      <field name="accountedRevenue">
+      <field name="accountedRevenue" x-scale="company.currency.numberOfDecimals">
         <hilite if="accountedRevenue &lt; companyExTaxTotal" color="warning"/>
       </field>
-      <field name="totalCostPrice"/>
-      <field name="totalGrossMargin">
+      <field name="totalCostPrice" x-scale="company.currency.numberOfDecimals"/>
+      <field name="totalGrossMargin" x-scale="company.currency.numberOfDecimals">
         <hilite if="totalGrossMargin &lt; 0" color="danger"/>
       </field>
       <field name="marginRate">
@@ -817,6 +830,7 @@
         <hilite if="markup &lt; 0" color="danger"/>
       </field>
       <field name="company.currency" title="Company currency" readonly="true"/>
+      <field name="company.currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel name="datesPanel" title="Dates" hideIf="clientPartner == null" sidebar="true"
       canCollapse="true" collapseIf="true">
@@ -868,9 +882,11 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
   </grid>
 
   <form name="sale-order-template-form-wizard" title="Template"
@@ -994,11 +1010,17 @@
 
     <panel name="inTaxTotalPanel" sidebar="true" readonly="true" colSpan="4">
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
-      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                     <![CDATA[
 	                  <>
@@ -1030,9 +1052,10 @@
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="creationDate"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
@@ -1100,11 +1123,17 @@
         </panel>
         <panel name="inTaxTotalPanel" readonly="true" colSpan="4">
           <field name="currency.symbol" hidden="true"/>
-          <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
-          <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
-          <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
-          <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
-          <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+          <field name="currency.numberOfDecimals" hidden="true"/>
+          <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals">
             <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal">
                         <![CDATA[
 		                  <>
@@ -1140,18 +1169,23 @@
     model="com.axelor.apps.sale.db.SaleOrder">
     <panel>
       <panel showFrame="false" colSpan="12">
-        <field name="advancePaymentAmountNeeded" readonly="true"/>
+        <field name="advancePaymentAmountNeeded" readonly="true"
+          x-scale="currency.numberOfDecimals"/>
         <field name="$isPercent" title="Is amount in % ?" type="boolean"/>
       </panel>
       <panel name="amountToInvoicePanel" showFrame="false">
         <field name="$amountToInvoice" title="Adv. payment amount" type="decimal"
-          onChange="action-sale-order-attrs-amount-to-invoice" colSpan="12"/>
+          onChange="action-sale-order-attrs-amount-to-invoice" colSpan="12"
+          x-scale="currency.numberOfDecimals"/>
       </panel>
       <spacer/>
       <panel name="amountToInvoiceHiddenPanel" hidden="true" showFrame="false">
         <field name="$amountToInvoice" title="Adv. payment amount" colSpan="12"
-          css="font-orange" type="decimal" onChange="action-sale-order-attrs-amount-to-invoice"/>
+          css="font-orange" type="decimal" onChange="action-sale-order-attrs-amount-to-invoice"
+          x-scale="currency.numberOfDecimals"/>
       </panel>
+      <field name="currency" hidden="true"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
     <panel>
       <button name="generateAdvancePaymentInvoiceBtn"
@@ -1229,12 +1263,13 @@
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal" x-currency="currency.symbol"/>
-    <field name="inTaxTotal" x-currency="currency.symbol"/>
+    <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="deliveryState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="orderBeingEdited"/>
     <field name="company"/>
     <field name="tradingName"/>
@@ -1303,12 +1338,13 @@
     <field name="externalReference"/>
     <field name="clientPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal" x-currency="currency.symbol"/>
-    <field name="inTaxTotal" x-currency="currency.symbol"/>
+    <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <field name="deliveryState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="company"/>
     <field name="tradingName"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
@@ -1827,7 +1863,7 @@
 
   <action-record name="action-record-so-contact-partner-change"
     model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="clientPartner" expr="eval: contactPartner.mainPartner" if="!clientPartner"/>
+    <field name="clientPartner" expr="eval: contactPartner?.mainPartner" if="!clientPartner"/>
   </action-record>
 
   <action-method name="action-sale-order-record-compute-end-of-validity-date">

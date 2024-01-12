@@ -28,6 +28,10 @@
     <many-to-many name="planningSet" ref="com.axelor.apps.base.db.WeeklyPlanning"
       title="Plannings"/>
     <boolean name="useWeeklyPlanningCoef" title="Use weekly plannning coef."/>
+    <boolean name="isToBeResetYearly" title="To be reset yearly"/>
+    <many-to-one name="recoveryLeaveReason" ref="com.axelor.apps.hr.db.LeaveReason"
+      title="Recovery leave reason"
+      help="All remaining leaves will be transferred to the selected leave type"/>
 
     <extra-code>
    		<![CDATA[

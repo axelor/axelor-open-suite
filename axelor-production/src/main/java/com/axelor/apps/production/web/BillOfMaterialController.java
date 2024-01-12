@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
@@ -187,7 +188,8 @@ public class BillOfMaterialController {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
 
     if (billOfMaterial.getName() == null) {
-      response.setValue("name", Beans.get(BillOfMaterialService.class).computeName(billOfMaterial));
+      response.setValue(
+          "name", Beans.get(BillOfMaterialComputeNameService.class).computeName(billOfMaterial));
     }
   }
 

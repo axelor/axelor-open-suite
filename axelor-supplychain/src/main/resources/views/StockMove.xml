@@ -83,7 +83,7 @@
     </extend>
     <extend target="//panel[@name='incomingMovePanel']/field[@name='toStockLocation']">
       <attribute name="domain"
-        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
+        value="self.company = :company AND self.typeSelect != 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
     </extend>
     <extend target="//panel[@name='configPanel']/field[@name='fromStockLocation']">
       <attribute name="domain"

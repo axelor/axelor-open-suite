@@ -85,7 +85,7 @@ public class GlobalBudgetWorkflowServiceImpl implements GlobalBudgetWorkflowServ
   public void archiveChildren(GlobalBudget globalBudget) {
     if (!ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
       for (BudgetLevel budgetLevel : globalBudget.getBudgetLevelList()) {
-        budgetLevelService.archiveBudgetLevel(budgetLevel);
+        budgetLevelService.archiveChildren(budgetLevel);
       }
     } else if (!ObjectUtils.isEmpty(globalBudget.getBudgetList())) {
       for (Budget budget : globalBudget.getBudgetList()) {

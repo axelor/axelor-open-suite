@@ -22,34 +22,70 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.helpdesk.db.Ticket;
+import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.TicketService;
-import com.google.inject.Inject;
+import com.axelor.apps.helpdesk.service.TicketStatusService;
+import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
+import com.axelor.inject.Beans;
+import com.axelor.studio.db.AppHelpdesk;
+import java.util.Map;
+import java.util.Optional;
 
 public class TicketManagementRepository extends TicketRepository {
-
-  @Inject private TicketService ticketService;
-  @Inject private AppBaseService appBaseService;
 
   @Override
   public Ticket save(Ticket ticket) {
 
+    TicketService ticketService = Beans.get(TicketService.class);
     try {
       ticketService.computeSeq(ticket);
+      ticketService.computeSLAAndDeadLine(ticket);
+      ticketService.checkSLAcompleted(ticket);
     } catch (AxelorException e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
     }
-    ticketService.computeSLA(ticket);
-    ticketService.checkSLAcompleted(ticket);
+
     return super.save(ticket);
   }
 
   @Override
   public Ticket copy(Ticket entity, boolean deep) {
     Ticket copy = super.copy(entity, deep);
-    copy.setStatusSelect(null);
+    copy.setTicketStatus(Beans.get(TicketStatusService.class).findDefaultStatus());
     copy.setProgressSelect(null);
-    copy.setStartDateT(appBaseService.getTodayDateTime().toLocalDateTime());
+    copy.setStartDateT(Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime());
     copy.setTicketSeq(null);
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+
+    AppHelpdesk appHelpdesk = Beans.get(AppHelpdeskService.class).getHelpdeskApp();
+
+    if (context.get("_model") != null
+        && context.get("_model").toString().equals(Ticket.class.getName())
+        && context.get("id") != null) {
+
+      Long id = (Long) json.get("id");
+      if (id != null) {
+        TicketStatus ticketStatus =
+            Optional.ofNullable(find(id)).map(Ticket::getTicketStatus).orElse(null);
+        json.put(
+            "$isClosed",
+            ticketStatus != null && ticketStatus.equals(appHelpdesk.getClosedTicketStatus()));
+        json.put(
+            "$isInProgress",
+            ticketStatus != null && ticketStatus.equals(appHelpdesk.getInProgressTicketStatus()));
+        json.put(
+            "$isResolved",
+            ticketStatus != null && ticketStatus.equals(appHelpdesk.getResolvedTicketStatus()));
+      } else {
+        json.put("$isClosed", false);
+        json.put("$isInProgress", false);
+        json.put("$isResolved", false);
+      }
+    }
+    return super.populate(json, context);
   }
 }

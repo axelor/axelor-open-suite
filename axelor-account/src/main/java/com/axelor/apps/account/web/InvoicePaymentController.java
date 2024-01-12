@@ -52,6 +52,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
 public class InvoicePaymentController {
@@ -225,10 +226,11 @@ public class InvoicePaymentController {
       Long invoiceId =
           Long.valueOf(
               (Integer) ((LinkedHashMap<?, ?>) request.getContext().get("_invoice")).get("id"));
-      List<Long> invoiceTermIdList =
+      Pair<List<Long>, Boolean> result =
           Beans.get(InvoicePaymentToolService.class).changeAmount(invoicePayment, invoiceId);
 
-      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, invoiceTermIdList));
+      response.setValues(this.getInvoiceTermValuesMap(null, invoicePayment, result.getLeft()));
+      response.setAttr("amountErrorPanel", "hidden", result.getRight());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

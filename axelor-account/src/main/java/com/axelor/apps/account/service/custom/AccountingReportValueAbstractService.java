@@ -42,6 +42,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,7 @@ public abstract class AccountingReportValueAbstractService {
   protected AccountingReportValueRepository accountingReportValueRepo;
   protected AnalyticAccountRepository analyticAccountRepo;
   protected DateService dateService;
+  protected Map<String, Integer> groupAccountMap;
 
   @Inject
   public AccountingReportValueAbstractService(
@@ -65,6 +67,8 @@ public abstract class AccountingReportValueAbstractService {
     this.accountingReportValueRepo = accountingReportValueRepo;
     this.analyticAccountRepo = analyticAccountRepo;
     this.dateService = dateService;
+
+    this.groupAccountMap = new HashMap<>(Map.of("nextValue", 0));
   }
 
   protected void addNullValue(
@@ -101,9 +105,26 @@ public abstract class AccountingReportValueAbstractService {
       throws AxelorException {
     DateTimeFormatter format = dateService.getDateFormat();
     String period = String.format("%s - %s", startDate.format(format), endDate.format(format));
-    int groupNumber = groupColumn == null ? 0 : groupColumn.getSequence();
+    String columnCode =
+        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
+
     int columnNumber = column.getSequence();
     int lineNumber = line.getSequence();
+    int groupNumber = 0;
+
+    if (groupColumn != null) {
+      if (groupColumn.getTypeSelect() == AccountingReportConfigLineRepository.TYPE_GROUP) {
+        groupNumber = groupColumn.getSequence();
+      }
+    } else if (StringUtils.notEmpty(parentTitle)) {
+      if (!this.groupAccountMap.containsKey(parentTitle)) {
+        int nextValue = groupAccountMap.get("nextValue");
+        groupAccountMap.put(parentTitle, nextValue++);
+        groupAccountMap.replace("nextValue", nextValue);
+      }
+
+      groupNumber = groupAccountMap.get(parentTitle);
+    }
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
@@ -128,9 +149,6 @@ public abstract class AccountingReportValueAbstractService {
             configAnalyticAccount);
 
     accountingReportValueRepo.save(accountingReportValue);
-
-    String columnCode =
-        this.getColumnCode(column.getCode(), parentTitle, groupColumn, configAnalyticAccount);
 
     if (valuesMapByColumn.containsKey(columnCode)) {
       valuesMapByColumn.get(columnCode).put(lineCode, accountingReportValue);
@@ -198,7 +216,7 @@ public abstract class AccountingReportValueAbstractService {
 
   protected List<String> getAccountFilters(
       Set<AccountType> accountTypeSet, String groupColumnFilter, boolean areAllAccountSetsEmpty) {
-    List<String> queryList = Arrays.asList("self.isRegulatoryAccount IS FALSE");
+    List<String> queryList = new ArrayList<>(Arrays.asList("self.isRegulatoryAccount IS FALSE"));
 
     if (!areAllAccountSetsEmpty) {
       queryList.add("(self IS NULL OR self IN :accountSet)");

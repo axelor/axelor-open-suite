@@ -317,10 +317,10 @@ public final class AccountExceptionMessage {
       "The accounting move line on the account %s can't have an amount equals to zero" /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_SUM_AMOUNT = /*$$(*/
-      "The sum of all invoice terms is not equal to the move line amount" /*)*/;
+      "Move line %s: The sum of all invoice terms is not equal to the move line amount" /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT = /*$$(*/
-      "The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
+      "Move line %s: The sum of all invoice terms in company currency is not equal to the move line amount" /*)*/;
 
   public static final String MOVE_LINE_INVOICE_TERM_HOLDBACK = /*$$(*/
       "The move payment condition is defining at least one holdback and there is no corresponding move line. Please manage invoice terms there manually." /*)*/;
@@ -935,9 +935,6 @@ public final class AccountExceptionMessage {
   public static final String INVOICE_PAYMENT_NO_AMOUNT_REMAINING = /*$$(*/
       "The payment cannot be done because the amount remaining on the invoice %s is inferior or equal to 0." /*)*/;
 
-  public static final String INVOICE_PAYMENT_AMOUNT_TOO_HIGH = /*$$(*/
-      "Paid amount is superior to remaining amount(s) on selected invoice term(s)." /*)*/;
-
   public static final String INVOICE_PAYMENT_CANNOT_RECONCILE = /*$$(*/
       "Invoice move line %s with account %s couldn't be reconciled with customer move line %s with account %s." /*)*/;
 
@@ -1471,8 +1468,11 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
 
-  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+  public static final String BATCH_NO_LINE = /*$$(*/
       "You must select at least one line to validate" /*)*/;
+
+  public static final String BATCH_NO_PREVIEW = /*$$(*/
+      "This batch does not support the preview feature." /*)*/;
 
   public static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
       "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;

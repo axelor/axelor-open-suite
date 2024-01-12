@@ -52,7 +52,7 @@ public class ContractRepository extends AbstractContractRepository {
             contract.getCurrentContractVersion().getContractLineList())) {
           for (ContractLine contractLine :
               contract.getCurrentContractVersion().getContractLineList()) {
-            contractLineService.computeTotal(contractLine);
+            contractLineService.computeTotal(contractLine, contract);
           }
         }
         Beans.get(ContractVersionServiceImpl.class)

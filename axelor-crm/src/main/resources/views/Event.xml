@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
-    orderBy="-startDateTime">
+    orderBy="-startDateTime" onNew="action-event-record-set-partner">
     <hilite color="primary"
       if="statusSelect == 1 &amp;&amp; (($moment(startDateTime) &lt;= $moment(_todayDateTime)) || ($moment(startDateTime) &lt;= $moment()))"/>
     <hilite color="warning"
@@ -469,6 +469,7 @@
     <action name="action-event-record-event-from-sale-order" if="_saleOrder != null"/>
     <action name="action-event-method-add-guest"/>
     <action name="action-event-record-event-from-opportunity" if="_opportunity != null"/>
+    <action name="action-event-record-set-partner"/>
   </action-group>
 
   <action-group name="action-event-type-select-onchange-group">
@@ -655,6 +656,12 @@
   <action-record name="action-event-record-reset-category"
     model="com.axelor.apps.crm.db.Event">
     <field name="eventCategory" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-event-record-set-partner"
+    model="com.axelor.apps.crm.db.Event">
+    <field name="partner" expr="eval: _parent?.partner"
+      if="_parent?._model == 'com.axelor.apps.crm.db.TourLine'"/>
   </action-record>
 
   <!-- ACTION METHOD -->

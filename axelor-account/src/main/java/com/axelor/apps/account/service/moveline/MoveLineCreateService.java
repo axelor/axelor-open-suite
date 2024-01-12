@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
@@ -116,6 +117,9 @@ public interface MoveLineCreateService {
       boolean consolidate,
       boolean isPurchase,
       boolean isDebitCustomer)
+      throws AxelorException;
+
+  MoveLine fillMoveLineWithInvoiceLine(MoveLine moveLine, InvoiceLine invoiceLine, Company company)
       throws AxelorException;
 
   MoveLine createMoveLineForAutoTax(

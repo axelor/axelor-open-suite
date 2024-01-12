@@ -157,6 +157,9 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public String computeAddressStr(Address address) {
+    if (address == null) {
+      return "";
+    }
     return address.getFormattedFullName();
   }
 
