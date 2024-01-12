@@ -20,7 +20,8 @@
     <field name="perishableExpirationDate"/>
     <field name="$availableQty" title="Available qty" type="decimal" width="120"/>
     <field name="origin"/>
-    <field name="supplier"/>
+    <field name="supplier" domain="self.isSupplier IS TRUE" grid-view="partner-supplier-grid"
+      form-view="partner-supplier-form"/>
   </grid>
 
   <form name="tracking-number-form" title="Tracking number"
@@ -35,7 +36,8 @@
       <field name="perishableExpirationDate"/>
       <field name="counter"/>
       <field name="origin"/>
-      <field name="supplier"/>
+      <field name="supplier" domain="self.isSupplier IS TRUE"
+        grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
       <field name="note" colSpan="12"/>
     </panel>
     <panel name="barcodePanel" title="Barcode"
@@ -57,7 +59,8 @@
       <field name="perishableExpirationDate" readonly="false"/>
       <field name="counter" hidden="true"/>
       <field name="origin"/>
-      <field name="supplier"/>
+      <field name="supplier" domain="self.isSupplier IS TRUE"
+        grid-view="partner-supplier-grid" form-view="partner-supplier-form"/>
       <field name="note" colSpan="12"/>
     </panel>
   </form>
@@ -112,8 +115,7 @@
     <action name="action-tracking-number-record-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-set-scale"/>
-    <action if="__config__.app.isApp('supplychain')"
-      name="action-tracking-number-record-set-supplier"/>
+    <action name="action-tracking-number-record-set-supplier"/>
   </action-group>
 
   <action-record name="action-tracking-number-record-product"
@@ -152,5 +154,11 @@
       expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
       if="id != null"/>
   </action-attrs>
+
+  <action-record name="action-tracking-number-record-set-supplier"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field if="eval: __parent__?.stockMove?.typeSelect == 3" name="supplier"
+      expr="eval: __parent__?.stockMove?.partner"/>
+  </action-record>
 
 </object-views>
