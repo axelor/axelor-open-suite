@@ -87,6 +87,8 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
+import com.axelor.apps.base.service.DMSService;
+import com.axelor.apps.base.service.DMSServiceImpl;
 import com.axelor.apps.base.service.DataBackupAnonymizeService;
 import com.axelor.apps.base.service.DataBackupAnonymizeServiceImpl;
 import com.axelor.apps.base.service.DataBackupService;
@@ -364,5 +366,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
+    bind(DMSService.class).to(DMSServiceImpl.class);
   }
 }
