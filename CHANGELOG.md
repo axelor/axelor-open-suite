@@ -1,3 +1,9 @@
+## [6.3.37] (2024-01-12)
+
+#### Fixed
+
+* Hotfix: add missing binding preventing server startup.
+
 ## [6.3.36] (2024-01-11)
 
 #### Fixed
@@ -1002,6 +1008,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.37]: https://github.com/axelor/axelor-open-suite/compare/v6.3.36...v6.3.37
 [6.3.36]: https://github.com/axelor/axelor-open-suite/compare/v6.3.35...v6.3.36
 [6.3.35]: https://github.com/axelor/axelor-open-suite/compare/v6.3.34...v6.3.35
 [6.3.34]: https://github.com/axelor/axelor-open-suite/compare/v6.3.33...v6.3.34
