@@ -16,7 +16,7 @@
     <string name="iconName" title="Icon name"
       help="Bootstrap icon name, see https://icons.getbootstrap.com/"/>
     <integer name="menuOrder" title="Menu order" nullable="true"
-      help="At the end of the menu list by default. To add a menu between two existing menu of the selected app, input index * 100"/>
+      help="Allows the user to define the position of the menu in the list. By default, the new menu entry is positioned at the end, but it can also be inserted between two existing menus. The order value for standard menus is its index in the list multiplied by 10. So to position a new menu between the first and second menu entries, you need to give it an order between 10 and 20."/>
     <many-to-one name="appMobileSettings" title="App mobile settings"
       ref="com.axelor.studio.db.AppMobileSettings"/>
     <one-to-many name="mobileDashboardLineList" title="Mobile dashboard line list"
