@@ -13,10 +13,10 @@
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
       title="Global Budget"/>
 
-    <decimal name="amount" title="Amount" precision="20" scale="2"/>
+    <decimal name="amount" title="Amount" precision="20" scale="3"/>
     <date name="imputationDate" title="Date"/>
-    <decimal name="assignedAmount" title="Assigned amount"/>
-    <decimal name="budgetAmountAvailable"/>
+    <decimal name="assignedAmount" title="Assigned amount" precision="20" scale="3"/>
+    <decimal name="budgetAmountAvailable" precision="20" scale="3"/>
 
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="MoveLine"/>
