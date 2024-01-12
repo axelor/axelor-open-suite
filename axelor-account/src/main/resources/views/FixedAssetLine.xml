@@ -69,7 +69,7 @@
         <field name="fixedAsset.statusSelect" hidden="true"/>
         <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
         <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
-        <field name="$currencyNumberOfDecimals" x-scale="$currencyNumberOfDecimals"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
