@@ -512,10 +512,6 @@ public class InvoiceController {
                     .find(Long.parseLong(localizationMap.get("id").toString()))
                     .getCode()
                 : null;
-        String locale = "en";
-        if (localizationCode != null) {
-          locale = localizationCode.substring(0, 2);
-        }
 
         fileLink =
             Beans.get(InvoicePrintService.class)
@@ -525,7 +521,7 @@ public class InvoiceController {
                     false,
                     format,
                     reportType,
-                    locale);
+                    localizationCode);
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
