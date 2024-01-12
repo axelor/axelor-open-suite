@@ -1,3 +1,9 @@
+## [6.5.26] (2024-01-12)
+
+#### Fixed
+
+* Hotfix: add missing binding preventing server startup.
+
 ## [6.5.25] (2024-01-11)
 
 #### Fixed
@@ -1076,6 +1082,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.26]: https://github.com/axelor/axelor-open-suite/compare/v6.5.25...v6.5.26
 [6.5.25]: https://github.com/axelor/axelor-open-suite/compare/v6.5.24...v6.5.25
 [6.5.24]: https://github.com/axelor/axelor-open-suite/compare/v6.5.23...v6.5.24
 [6.5.23]: https://github.com/axelor/axelor-open-suite/compare/v6.5.22...v6.5.23
