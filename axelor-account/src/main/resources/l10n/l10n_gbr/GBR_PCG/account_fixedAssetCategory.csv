@@ -1,0 +1,10 @@
+"importId";"name";"fixedAssetType.code";"journal.code";"depreciationPlanSelect";"numberOfDepreciation";"periodicityTypeSelect";"periodicityInMonth";"durationInMonth";"isProrataTemporis";"computationMethodSelect";"degressiveCoef";"chargeAccount_code";"depreciationAccount_code";"provisionFixedAssetAccount_code";"approExtraordDepreciationExpenseAccount_code";"appProvisionFixedAssetAccount_code";"wbProvisionFixedAssetAccount_code";"capitalDepreciationDerogatoryAccount_code";"expenseDepreciationDerogatoryAccount_code";"incomeDepreciationDerogatoryAccount_code";"ifrsDepreciationAccount_code";"ifrsChargeAccount_code";"debtReceivableAccount_code";"realisedAssetsValueAccount_code";"realisedAssetsIncomeAccount_code"
+"GBR_COA1";"Patents";"FA_IN";"MISC_AUTO";"1,2";5;12;12;60;"true";"linear";;"8001";"11";;;;;;;;;;;;
+"GBR_COA2";"Softwares";"FA_IN";"MISC_AUTO";"1,2";3;12;12;36;"true";"linear";;"8001";"21";;;;;;;;;;;;
+"GBR_COA3";"Equipment (D-PT)";"FA_TA";"MISC_AUTO";"1,2,3";7;12;12;84;"true";"linear";;"8000";"31";;;;;;;;;;;;
+"GBR_COA4";"Equipment (L-PT)";"FA_TA";"MISC_AUTO";"1,2";7;12;12;84;"true";"linear";;"8000";"31";;;;;;;;;;;;
+"GBR_COA5";"Equipment (L)";"FA_TA";"MISC_AUTO";"1,2,3";7;12;12;84;"true";"linear";;"8000";"31";;;;;;;;;;;;
+"GBR_COA6";"Furniture";"FA_TA";"MISC_AUTO";"1,2";10;12;12;120;"true";"linear";;"8000";"71";;;;;;;;;;;;
+"GBR_COA7";"IT Equipment";"FA_TA";"MISC_AUTO";"1,2,3";3;12;12;36;"true";"linear";;"8000";"61";;;;;;;;;;;;
+"GBR_COA8";"Tooling";"FA_TA";"MISC_AUTO";"1,2";6;12;12;72;"true";"linear";;"8000";"71";;;;;;;;;;;;
+"GBR_COA9";"Transportation equipment";"FA_TA";"MISC_AUTO";"1,2,3";5;12;12;60;"true";"linear";;"8000";"51";;;;;;;;;;;;

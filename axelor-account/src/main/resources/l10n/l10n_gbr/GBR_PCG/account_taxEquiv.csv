@@ -1,0 +1,11 @@
+"importId";"fiscalPosition.importId";"fromTax.code";"toTax.code";"reverseCharge";"reverseChargeTax.code"
+"GBR_T1";"GBR_COA1";"UK_SRT";"UK_IM_ZRP";"FALSE";
+"GBR_T2";"GBR_COA1";"UK_SRS_20";"UK_EX_ZRS";"FALSE";
+"GBR_T3";"GBR_COA1";"UK_ZRP_EC";"UK_IM_ZRP";"FALSE";
+"GBR_T4";"GBR_COA1";"UK_STC_EC";"UK_EX_ZRS";"FALSE";
+"GBR_T5";"GBR_COA1";"UK_LRP";"UK_IM_ZRP";"FALSE";
+"GBR_T6";"GBR_COA1";"UK_LRS";"UK_IM_ZRP";"FALSE";
+"GBR_T7";"GBR_COA1";"UK_EP";"UK_IM_ZRP";"FALSE";
+"GBR_T8";"GBR_COA1";"UK_ZRP";"UK_IM_ZRP";"FALSE";
+"GBR_T9";"GBR_COA1";"UK_ES";"UK_EX_ZRS";"FALSE";
+"GBR_T10";"GBR_COA1";"UK_ZRS";"UK_EX_ZRS";"FALSE";
