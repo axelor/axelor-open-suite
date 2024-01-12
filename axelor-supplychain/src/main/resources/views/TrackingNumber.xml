@@ -50,4 +50,11 @@
       </where>
     </select>
   </search>
+
+  <action-record name="action-tracking-number-record-set-supplier"
+    model="com.axelor.apps.stock.db.TrackingNumber">
+    <field
+      if="eval: __parent__?.stockMove?.typeSelect == 3 &amp;&amp; __parent__?.purchaseOrderLine?.purchaseOrder?.supplierPartner != null "
+      name="supplier" expr="eval: __parent__?.purchaseOrderLine?.purchaseOrder?.supplierPartner"/>
+  </action-record>
 </object-views>

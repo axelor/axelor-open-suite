@@ -48,7 +48,7 @@
 
   <form name="tracking-number-stock-move-line-form" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber" onLoad="action-tracking-number-attrs-set-scale"
-    onNew="action-tracking-number-attrs-product-stock-move-line,action-tracking-number-group-from-stock-move-line,action-tracking-number-attrs-set-scale,action-tracking-number-record-set-supplier">
+    onNew="action-tracking-number-stock-move-line-group-on-new">
     <panel name="mainPanel">
       <field name="trackingNumberSeq"/>
       <field name="product" form-view="product-form" grid-view="product-grid"
@@ -107,9 +107,13 @@
     </select>
   </search>
 
-  <action-group name="action-tracking-number-group-from-stock-move-line">
+  <action-group name="action-tracking-number-stock-move-line-group-on-new">
+    <action name="action-tracking-number-attrs-product-stock-move-line"/>
     <action name="action-tracking-number-record-from-stock-move-line"/>
     <action name="action-tracking-number-attrs-from-stock-move-line"/>
+    <action name="action-tracking-number-attrs-set-scale"/>
+    <action if="__config__.app.isApp('supplychain')"
+      name="action-tracking-number-record-set-supplier"/>
   </action-group>
 
   <action-record name="action-tracking-number-record-product"
@@ -148,12 +152,5 @@
       expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
       if="id != null"/>
   </action-attrs>
-
-  <action-record name="action-tracking-number-record-set-supplier"
-    model="com.axelor.apps.stock.db.TrackingNumber">
-    <field
-      if="eval: __parent__?.stockMove?.typeSelect == 3 &amp;&amp; __parent__?.purchaseOrderLine?.purchaseOrder?.supplierPartner != null "
-      name="supplier" expr="eval: __parent__?.purchaseOrderLine?.purchaseOrder?.supplierPartner"/>
-  </action-record>
 
 </object-views>
