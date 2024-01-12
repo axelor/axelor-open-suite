@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -145,7 +145,7 @@ public class IndicatorGeneratorService {
       htmlBuilder.append("</style>");
       htmlBuilder.append("</head>");
       htmlBuilder.append("<body>");
-      htmlBuilder.append("<div style='overflow:auto; height:100%; max-height:436px;'>");
+      htmlBuilder.append("<div style='overflow:auto; max-height:436px;'>");
       htmlBuilder.append("<table border='1'>");
 
       // Extracting columns for table header

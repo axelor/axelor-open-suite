@@ -20,6 +20,10 @@
       default="1"/>
     <integer name="firstLeaveMonthPeriod" title="First month of leave period" min="1"
       max="12" default="6"/>
+    <many-to-one name="monthlySchedule" title="Monthly schedule"
+      ref="com.axelor.meta.db.MetaSchedule"/>
+    <many-to-one name="annualSchedule" title="Annual schedule"
+      ref="com.axelor.meta.db.MetaSchedule"/>
 
     <extra-code>
       <![CDATA[

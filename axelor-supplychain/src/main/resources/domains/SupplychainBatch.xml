@@ -34,12 +34,16 @@
       ref="com.axelor.apps.base.db.ProductCategory"
       help="A list of all product categories for which to run the batch (children categories are automatically included). All products will be processed if this list is left empty (note that the batch may take a long time to run if you have a lot of products)."/>
 
+    <many-to-many name="usedStockRulesSet" title="Used stock rules"
+      ref="com.axelor.apps.stock.db.StockRules"/>
+
     <extra-code><![CDATA[
 
 	   	// ACTION TYPE
 		public static final int ACTION_INVOICE_OUTGOING_STOCK_MOVES = 2;
 		public static final int ACTION_INVOICE_ORDERS = 3;
 		public static final int ACTION_UPDATE_STOCK_HISTORY = 4;
+		public static final int ACTION_RUN_STOCK_RULES_BATCH = 5;
 
 		public static final String CODE_BATCH_BILL_SUB = "S_B_SUB";
 

@@ -111,7 +111,8 @@
           form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         <field name="publicHolidayEventsPlanning" form-view="events-planning-form"
           grid-view="events-planning-grid" canNew="true"/>
-        <field name="language" colSpan="6" canEdit="false"/>
+        <field name="localization" colSpan="6" canEdit="false" grid-view="localization-grid"
+          form-view="localization-form"/>
         <field name="locale" colSpan="6" onChange="action-company-method-validate-locale"/>
         <field name="timezone" colSpan="6"/>
         <field name="taxNumberList" colSpan="12" canSelect="true" canNew="false"

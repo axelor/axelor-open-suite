@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -166,13 +166,27 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
         expenseLineList.stream().map(ExpenseLine::getCurrency).collect(Collectors.toSet());
     Optional<Currency> expenseLineCurrency = currencySet.stream().findFirst();
 
-    if (currencySet.size() > 1
+    if (hasSeveralCurrencies(expenseLineList)
         || (expenseLineCurrency.isPresent()
             && !expense.getCurrency().equals(expenseLineCurrency.get()))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_CURRENCY_NOT_EQUAL));
     }
+  }
+
+  @Override
+  public boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList) {
+    Set<Currency> currencySet =
+        expenseLineList.stream().map(ExpenseLine::getCurrency).collect(Collectors.toSet());
+    return currencySet.size() > 1;
+  }
+
+  @Override
+  public boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList) {
+    Set<Employee> employeeSet =
+        expenseLineList.stream().map(ExpenseLine::getEmployee).collect(Collectors.toSet());
+    return employeeSet.size() > 1;
   }
 
   @Override

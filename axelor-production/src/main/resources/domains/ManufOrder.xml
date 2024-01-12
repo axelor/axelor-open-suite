@@ -117,6 +117,10 @@
     <string name="manualMOSeq" transient="true"/>
     <integer name="operationOrderMaxPriority" title="Operation orders maximum priority"/>
 
+
+    <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      title="Sale order line"/>
+
     <unique-constraint columns="manufOrderSeq,company"/>
 
     <extra-code><![CDATA[

@@ -1,5 +1,6 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.Invoice;
@@ -8,6 +9,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -99,6 +101,26 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getScaledValue(AnalyticMoveLine analyticMoveLine, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(analyticMoveLine.getCurrency()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(Company company, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(company));
+  }
+
+  @Override
+  public BigDecimal getScaledValue(PaymentVoucher paymentVoucher, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(paymentVoucher.getCurrency()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(PaymentVoucher paymentVoucher, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(paymentVoucher.getCompany()));
+  }
+
+  @Override
   public BigDecimal getCompanyScaledValue(FixedAsset fixedAsset, BigDecimal amount) {
     return this.getScaledValue(amount, this.getCompanyScale(fixedAsset.getCompany()));
   }
@@ -174,6 +196,21 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return invoicePayment.getInvoice() != null
         ? this.getCompanyScale(invoicePayment.getInvoice())
         : this.getCompanyScale(invoicePayment.getMove());
+  }
+
+  @Override
+  public int getScale(AnalyticMoveLine analyticMoveLine) {
+    return this.getScale(analyticMoveLine.getCurrency());
+  }
+
+  @Override
+  public int getScale(PaymentVoucher paymentVoucher) {
+    return this.getScale(paymentVoucher.getCurrency());
+  }
+
+  @Override
+  public int getCompanyScale(PaymentVoucher paymentVoucher) {
+    return this.getCompanyScale(paymentVoucher.getCompany());
   }
 
   @Override

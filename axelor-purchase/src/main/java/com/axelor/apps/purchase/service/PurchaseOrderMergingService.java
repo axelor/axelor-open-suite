@@ -102,4 +102,6 @@ public interface PurchaseOrderMergingService {
 
   PurchaseOrderMergingResult mergePurchaseOrdersWithContext(
       List<PurchaseOrder> saleOrdersToMerge, Context context) throws AxelorException;
+
+  List<PurchaseOrder> convertSelectedLinesToMergeLines(List<Integer> idList);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,14 +18,32 @@
  */
 package com.axelor.apps.stock.service;
 
+import com.axelor.apps.base.db.repo.CityRepository;
+import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.service.AddressServiceImpl;
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.db.JPA;
+import com.axelor.text.GroovyTemplates;
+import com.axelor.utils.helpers.address.AddressHelper;
+import com.google.inject.Inject;
 
 public class AddressServiceStockImpl extends AddressServiceImpl {
   static {
     registerCheckUsedFunc(AddressServiceStockImpl::checkAddressUsedStock);
+  }
+
+  @Inject
+  public AddressServiceStockImpl(
+      GroovyTemplates groovyTemplates,
+      AddressHelper ads,
+      MapService mapService,
+      CityRepository cityRepository,
+      StreetRepository streetRepository,
+      AppBaseService appBaseService) {
+    super(groovyTemplates, ads, mapService, cityRepository, streetRepository, appBaseService);
   }
 
   private static boolean checkAddressUsedStock(Long addressId) {

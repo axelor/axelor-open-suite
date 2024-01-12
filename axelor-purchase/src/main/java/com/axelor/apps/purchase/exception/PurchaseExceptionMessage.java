@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,8 @@ public final class PurchaseExceptionMessage {
   public static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   public static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
       "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
+  public static final String PURCHASE_ORDER_LINE_MAX_QTY = /*$$(*/
+      "The maximum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
   public static final String PURCHASE_ORDER_LINE_NO_SUPPLIER_CATALOG = /*$$(*/
       "This product is not available from the supplier." /*)*/;
 

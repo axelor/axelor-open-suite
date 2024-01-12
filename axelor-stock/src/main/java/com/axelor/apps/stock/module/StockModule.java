@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,6 +68,8 @@ import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockLocationPrintService;
+import com.axelor.apps.stock.service.StockLocationPrintServiceImpl;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveCheckWapService;
@@ -137,5 +139,6 @@ public class StockModule extends AxelorModule {
     bind(StockLocationLineHistoryService.class).to(StockLocationLineHistoryServiceImpl.class);
     bind(StockMoveMergingService.class).to(StockMoveMergingServiceImpl.class);
     bind(InventoryLineService.class).to(InventoryLineServiceImpl.class);
+    bind(StockLocationPrintService.class).to(StockLocationPrintServiceImpl.class);
   }
 }

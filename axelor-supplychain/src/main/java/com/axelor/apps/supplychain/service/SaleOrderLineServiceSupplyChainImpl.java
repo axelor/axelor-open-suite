@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -103,7 +104,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
       SaleOrderMarginService saleOrderMarginService,
       InvoiceLineRepository invoiceLineRepository,
       SaleInvoicingStateService saleInvoicingStateService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      CurrencyScaleServiceSale currencyScaleServiceSale) {
     super(
         currencyService,
         priceListService,
@@ -115,7 +117,8 @@ public class SaleOrderLineServiceSupplyChainImpl extends SaleOrderLineServiceImp
         saleOrderService,
         pricingService,
         taxService,
-        saleOrderMarginService);
+        saleOrderMarginService,
+        currencyScaleServiceSale);
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
     this.appSupplychainService = appSupplychainService;
