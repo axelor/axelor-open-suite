@@ -939,8 +939,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
-    return stockConfigProductionService.getProductionVirtualStockLocation(
-        stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
+    return stockConfigProductionService.getProductionVirtualStockLocation(stockConfig, false);
   }
 
   @Override
