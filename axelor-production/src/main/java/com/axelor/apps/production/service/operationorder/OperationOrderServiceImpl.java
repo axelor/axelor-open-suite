@@ -143,10 +143,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     operationOrder.setUseLineInGeneratedPurchaseOrder(
         prodProcessLine.getUseLineInGeneratedPurchaseOrder());
 
-    operationOrder.setOutsourcing(
-        manufOrder.getOutsourcing().equals(false)
-            ? prodProcessLine.getOutsourcing()
-            : manufOrder.getOutsourcing());
+    operationOrder.setOutsourcing(manufOrder.getOutsourcing() || prodProcessLine.getOutsourcing());
     operationOrder.setOutsourcingPartner(
         operationOrderOutsourceService.getOutsourcePartner(operationOrder).orElse(null));
 
