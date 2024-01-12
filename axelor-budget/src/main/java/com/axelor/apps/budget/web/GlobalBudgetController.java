@@ -37,6 +37,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 public class GlobalBudgetController {
 
@@ -170,5 +171,26 @@ public class GlobalBudgetController {
       Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
       response.setValues(globalBudget);
     }
+  }
+
+  @ErrorException
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    boolean isHidden = true;
+    if (globalBudget.getId() == null) {
+      isHidden = false;
+    } else if (globalBudget.getFromDate() != null && globalBudget.getToDate() != null) {
+      GlobalBudget savedGlobalBudget =
+          Beans.get(GlobalBudgetRepository.class).find(globalBudget.getId());
+      boolean datesMatch =
+          Objects.equals(savedGlobalBudget.getFromDate(), globalBudget.getFromDate())
+              && Objects.equals(savedGlobalBudget.getToDate(), globalBudget.getToDate());
+      if (!datesMatch) {
+        isHidden = false;
+      }
+    }
+
+    response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
 }

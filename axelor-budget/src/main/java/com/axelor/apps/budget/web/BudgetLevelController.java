@@ -23,6 +23,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
@@ -39,6 +40,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Objects;
 
 public class BudgetLevelController {
 
@@ -113,5 +115,26 @@ public class BudgetLevelController {
       budgetLevelService.getUpdatedBudgetList(budgetLevel.getBudgetList(), fromDate, toDate);
       response.setReload(true);
     }
+  }
+
+  @ErrorException
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    boolean isHidden = true;
+    if (budgetLevel.getId() == null) {
+      isHidden = false;
+    } else if (budgetLevel.getFromDate() != null && budgetLevel.getToDate() != null) {
+      BudgetLevel savedBudgetLevel =
+          Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
+      boolean datesMatch =
+          Objects.equals(savedBudgetLevel.getFromDate(), budgetLevel.getFromDate())
+              && Objects.equals(savedBudgetLevel.getToDate(), budgetLevel.getToDate());
+      if (!datesMatch) {
+        isHidden = false;
+      }
+    }
+
+    response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
 }
