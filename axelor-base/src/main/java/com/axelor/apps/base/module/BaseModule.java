@@ -75,6 +75,8 @@ import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.base.service.CompanyServiceImpl;
 import com.axelor.apps.base.service.DMSImportWizardService;
 import com.axelor.apps.base.service.DMSImportWizardServiceImpl;
+import com.axelor.apps.base.service.DMSService;
+import com.axelor.apps.base.service.DMSServiceImpl;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.DurationServiceImpl;
 import com.axelor.apps.base.service.FrequencyService;
@@ -287,5 +289,6 @@ public class BaseModule extends AxelorModule {
     bind(PrintHtmlGenerationService.class).to(PrintHtmlGenerationServiceImpl.class);
     bind(PrintPdfGenerationService.class).to(PrintPdfGenerationServiceImpl.class);
     bind(TaxEquivService.class).to(TaxEquivServiceImpl.class);
+    bind(DMSService.class).to(DMSServiceImpl.class);
   }
 }
