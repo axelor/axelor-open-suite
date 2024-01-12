@@ -1,3 +1,9 @@
+## [7.0.19] (2024-01-12)
+
+#### Fixed
+
+* Hotfix: add missing binding preventing server startup.
+
 ## [7.0.18] (2024-01-11)
 
 #### Fixed
@@ -818,6 +824,7 @@ closedWinOpportunityStatus, closedLostOpportunityStatus, salesPropositionStatus 
     </details>
 
 
+[7.0.19]: https://github.com/axelor/axelor-open-suite/compare/v7.0.18...v7.0.19
 [7.0.18]: https://github.com/axelor/axelor-open-suite/compare/v7.0.17...v7.0.18
 [7.0.17]: https://github.com/axelor/axelor-open-suite/compare/v7.0.16...v7.0.17
 [7.0.16]: https://github.com/axelor/axelor-open-suite/compare/v7.0.15...v7.0.16
