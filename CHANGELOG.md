@@ -1,3 +1,9 @@
+## [7.1.14] (2024-01-12)
+
+#### Fixed
+
+* Hotfix: add missing binding preventing server startup.
+
 ## [7.1.13] (2024-01-11)
 
 #### Fixed
@@ -795,6 +801,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.14]: https://github.com/axelor/axelor-open-suite/compare/v7.1.13...v7.1.14
 [7.1.13]: https://github.com/axelor/axelor-open-suite/compare/v7.1.12...v7.1.13
 [7.1.12]: https://github.com/axelor/axelor-open-suite/compare/v7.1.11...v7.1.12
 [7.1.11]: https://github.com/axelor/axelor-open-suite/compare/v7.1.10...v7.1.11
