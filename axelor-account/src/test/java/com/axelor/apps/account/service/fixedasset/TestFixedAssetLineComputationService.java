@@ -22,6 +22,7 @@ import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.asse
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAsset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetCategoryFromIsProrataTemporis;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetTestTool.createFixedAssetLine;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,10 +33,12 @@ import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 
 class TestFixedAssetLineComputationService {
 
@@ -43,13 +46,26 @@ class TestFixedAssetLineComputationService {
   private static FixedAssetDateService fixedAssetDateService;
 
   @BeforeAll
-  static void prepare() {
+  static void prepare() throws AxelorException {
     fixedAssetDateService = mock(FixedAssetDateService.class);
     AppBaseService appBaseService = mock(AppBaseService.class);
     FixedAssetFailOverControlService fixedAssetFailOverControlService =
         mock(FixedAssetFailOverControlService.class);
     CurrencyScaleServiceAccount currencyScaleServiceAccount =
         mock(CurrencyScaleServiceAccount.class);
+
+    when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAsset.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
+    when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAssetLine.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
+    when(currencyScaleServiceAccount.getCompanyScale(any(FixedAsset.class))).thenReturn(2);
+
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,

@@ -477,8 +477,10 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
     BigDecimal remainingNumberOfDepreciation =
         getNumberOfDepreciation(fixedAsset).subtract(numberOfDepreciationDone(fixedAsset));
     BigDecimal linearDepreciation =
-        currencyScaleServiceAccount.getCompanyScaledValue(
-            fixedAsset, previousAccountingValue.divide(remainingNumberOfDepreciation));
+        previousAccountingValue.divide(
+            remainingNumberOfDepreciation,
+            currencyScaleServiceAccount.getCompanyScale(fixedAsset),
+            RoundingMode.HALF_UP);
     BigDecimal depreciation;
     if (fixedAsset.getGrossValue().signum() > 0) {
       depreciation = degressiveDepreciation.max(linearDepreciation);

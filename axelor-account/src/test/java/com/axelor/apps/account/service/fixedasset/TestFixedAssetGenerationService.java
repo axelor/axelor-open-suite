@@ -27,6 +27,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -35,6 +36,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -61,15 +63,27 @@ class TestFixedAssetGenerationService {
     SequenceService sequenceService = mock(SequenceService.class);
     AppBaseService appBaseService = mock(AppBaseService.class);
     FixedAssetLineService fixedAssetLineService = mock(FixedAssetLineService.class);
+    CurrencyScaleServiceAccount currencyScaleServiceAccount =
+        mock(CurrencyScaleServiceAccount.class);
+
+    when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAsset.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
+    when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAssetLine.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
+    when(currencyScaleServiceAccount.getCompanyScale(any(FixedAsset.class))).thenReturn(2);
+
     FixedAssetLineComputationServiceFactory fixedAssetLineComputationServiceFactory =
         mock(FixedAssetLineComputationServiceFactory.class);
     FixedAssetFailOverControlService fixedAssetFailOverControlService =
         mock(FixedAssetFailOverControlService.class);
     FixedAssetValidateService fixedAssetValidateService = mock(FixedAssetValidateService.class);
     FixedAssetImportService fixedAssetImportService = mock(FixedAssetImportService.class);
-    CurrencyScaleServiceAccount currencyScaleServiceAccount =
-        mock(CurrencyScaleServiceAccount.class);
-
     FixedAssetLineComputationService fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,
@@ -119,7 +133,7 @@ class TestFixedAssetGenerationService {
             5,
             12,
             createFixedAssetCategoryFromIsProrataTemporis(false),
-            new BigDecimal("500.000"));
+            new BigDecimal("500.00"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
@@ -141,10 +155,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("400.000")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("400.00")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -154,10 +168,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("200.000"),
-            new BigDecimal("300.000")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("200.00"),
+            new BigDecimal("300.00")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -167,10 +181,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2022, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("300.000"),
-            new BigDecimal("200.000")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("300.00"),
+            new BigDecimal("200.00")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -180,10 +194,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2023, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("400.000"),
-            new BigDecimal("100.000")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("400.00"),
+            new BigDecimal("100.00")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -193,10 +207,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("500.000"),
-            new BigDecimal("0.000")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("500.00"),
+            new BigDecimal("0.00")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -216,7 +230,7 @@ class TestFixedAssetGenerationService {
             5,
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true),
-            new BigDecimal("500.000"));
+            new BigDecimal("500.00"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
@@ -239,10 +253,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("0.280"),
-            new BigDecimal("0.280"),
-            new BigDecimal("499.720")),
+            new BigDecimal("500.00"),
+            new BigDecimal("0.28"),
+            new BigDecimal("0.28"),
+            new BigDecimal("499.72")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -253,10 +267,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("100.280"),
-            new BigDecimal("399.720")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("100.28"),
+            new BigDecimal("399.72")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -267,10 +281,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2022, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("200.280"),
-            new BigDecimal("299.720")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("200.28"),
+            new BigDecimal("299.72")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -281,10 +295,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2023, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("300.280"),
-            new BigDecimal("199.720")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("300.28"),
+            new BigDecimal("199.72")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -295,10 +309,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("400.280"),
-            new BigDecimal("99.720")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("400.28"),
+            new BigDecimal("99.72")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -309,10 +323,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2025, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("99.720"),
-            new BigDecimal("500.000"),
-            new BigDecimal("0.000")),
+            new BigDecimal("500.00"),
+            new BigDecimal("99.72"),
+            new BigDecimal("500.00"),
+            new BigDecimal("0.00")),
         fixedAsset.getFixedAssetLineList().get(5));
   }
 
@@ -331,7 +345,7 @@ class TestFixedAssetGenerationService {
             5,
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true),
-            new BigDecimal("500.000"));
+            new BigDecimal("500.00"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
@@ -353,10 +367,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("23.890"),
-            new BigDecimal("23.890"),
-            new BigDecimal("476.110")),
+            new BigDecimal("500.00"),
+            new BigDecimal("23.89"),
+            new BigDecimal("23.89"),
+            new BigDecimal("476.11")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -366,10 +380,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("123.890"),
-            new BigDecimal("376.110")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("123.89"),
+            new BigDecimal("376.11")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -379,10 +393,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2022, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("223.890"),
-            new BigDecimal("276.110")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("223.89"),
+            new BigDecimal("276.11")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -392,10 +406,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2023, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("323.890"),
-            new BigDecimal("176.110")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("323.89"),
+            new BigDecimal("176.11")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -405,10 +419,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("100.000"),
-            new BigDecimal("423.890"),
-            new BigDecimal("76.110")),
+            new BigDecimal("500.00"),
+            new BigDecimal("100.00"),
+            new BigDecimal("423.89"),
+            new BigDecimal("76.11")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -427,7 +441,7 @@ class TestFixedAssetGenerationService {
             7,
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, true),
-            new BigDecimal("102638.350"));
+            new BigDecimal("102638.35"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2020, 12, 31));
@@ -449,10 +463,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2020, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("7372.040"),
-            new BigDecimal("7372.040"),
-            new BigDecimal("95266.310")),
+            new BigDecimal("500.00"),
+            new BigDecimal("7372.04"),
+            new BigDecimal("7372.04"),
+            new BigDecimal("95266.31")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -462,10 +476,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("14662.620"),
-            new BigDecimal("22034.660"),
-            new BigDecimal("80603.690")),
+            new BigDecimal("500.00"),
+            new BigDecimal("14662.62"),
+            new BigDecimal("22034.66"),
+            new BigDecimal("80603.69")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -475,10 +489,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2022, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("14662.620"),
-            new BigDecimal("36697.280"),
-            new BigDecimal("65941.070")),
+            new BigDecimal("500.00"),
+            new BigDecimal("14662.62"),
+            new BigDecimal("36697.28"),
+            new BigDecimal("65941.07")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -488,10 +502,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2023, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("14662.620"),
-            new BigDecimal("51359.900"),
-            new BigDecimal("51278.450")),
+            new BigDecimal("500.00"),
+            new BigDecimal("14662.62"),
+            new BigDecimal("51359.90"),
+            new BigDecimal("51278.45")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -501,10 +515,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("14662.620"),
-            new BigDecimal("66022.520"),
-            new BigDecimal("36615.830")),
+            new BigDecimal("500.00"),
+            new BigDecimal("14662.62"),
+            new BigDecimal("66022.52"),
+            new BigDecimal("36615.83")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -514,10 +528,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2025, 12, 31),
-            new BigDecimal("500.000"),
-            new BigDecimal("14662.620"),
-            new BigDecimal("80685.140"),
-            new BigDecimal("21953.210")),
+            new BigDecimal("500.00"),
+            new BigDecimal("14662.62"),
+            new BigDecimal("80685.14"),
+            new BigDecimal("21953.21")),
         fixedAsset.getFixedAssetLineList().get(5));
   }
 
@@ -527,10 +541,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2026, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("14662.620"),
-            new BigDecimal("95347.760"),
-            new BigDecimal("7290.590")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("14662.62"),
+            new BigDecimal("95347.76"),
+            new BigDecimal("7290.59")),
         fixedAsset.getFixedAssetLineList().get(6));
   }
 
@@ -544,13 +558,13 @@ class TestFixedAssetGenerationService {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
-            new BigDecimal("2.250"),
+            new BigDecimal("2.25"),
             LocalDate.of(2021, 7, 1),
             LocalDate.of(2021, 12, 31),
             7,
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
-            new BigDecimal("102638.350"));
+            new BigDecimal("102638.35"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
@@ -572,10 +586,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2021, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("16495.450"),
-            new BigDecimal("16495.450"),
-            new BigDecimal("86142.900")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("16495.45"),
+            new BigDecimal("16495.45"),
+            new BigDecimal("86142.90")),
         fixedAsset.getFixedAssetLineList().get(0));
   }
 
@@ -585,10 +599,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2022, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("27688.790"),
-            new BigDecimal("44184.240"),
-            new BigDecimal("58454.110")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("27688.79"),
+            new BigDecimal("44184.24"),
+            new BigDecimal("58454.11")),
         fixedAsset.getFixedAssetLineList().get(1));
   }
 
@@ -598,10 +612,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2023, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("18788.820"),
-            new BigDecimal("62973.060"),
-            new BigDecimal("39665.290")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("18788.82"),
+            new BigDecimal("62973.06"),
+            new BigDecimal("39665.29")),
         fixedAsset.getFixedAssetLineList().get(2));
   }
 
@@ -611,10 +625,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2024, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("12749.560"),
-            new BigDecimal("75722.620"),
-            new BigDecimal("26915.730")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("12749.56"),
+            new BigDecimal("75722.62"),
+            new BigDecimal("26915.73")),
         fixedAsset.getFixedAssetLineList().get(3));
   }
 
@@ -624,10 +638,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2025, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("8971.910"),
-            new BigDecimal("84694.530"),
-            new BigDecimal("17943.820")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("8971.91"),
+            new BigDecimal("84694.53"),
+            new BigDecimal("17943.82")),
         fixedAsset.getFixedAssetLineList().get(4));
   }
 
@@ -637,10 +651,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2026, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("8971.910"),
-            new BigDecimal("93666.440"),
-            new BigDecimal("8971.910")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("8971.91"),
+            new BigDecimal("93666.44"),
+            new BigDecimal("8971.91")),
         fixedAsset.getFixedAssetLineList().get(5));
   }
 
@@ -650,10 +664,10 @@ class TestFixedAssetGenerationService {
     assertFixedAssetLineEquals(
         createFixedAssetLine(
             LocalDate.of(2027, 12, 31),
-            new BigDecimal("102638.350"),
-            new BigDecimal("8971.910"),
-            new BigDecimal("102638.350"),
-            new BigDecimal("0.000")),
+            new BigDecimal("102638.35"),
+            new BigDecimal("8971.91"),
+            new BigDecimal("102638.35"),
+            new BigDecimal("0.00")),
         fixedAsset.getFixedAssetLineList().get(6));
   }
 
@@ -662,13 +676,13 @@ class TestFixedAssetGenerationService {
     FixedAsset fixedAsset =
         createFixedAsset(
             FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
-            new BigDecimal("2.250"),
+            new BigDecimal("2.25"),
             LocalDate.of(2021, 12, 31),
             LocalDate.of(2021, 12, 31),
             7,
             12,
             createFixedAssetCategoryFromIsProrataTemporis(true, false),
-            new BigDecimal("102638.350"));
+            new BigDecimal("102638.35"));
     when(fixedAssetDateService.computeLastDayOfPeriodicity(
             fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
         .thenReturn(LocalDate.of(2021, 12, 31));
