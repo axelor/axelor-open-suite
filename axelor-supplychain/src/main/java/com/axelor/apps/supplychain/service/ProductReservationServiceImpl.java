@@ -45,11 +45,11 @@ public class ProductReservationServiceImpl implements ProductReservationService 
   @Transactional
   public ProductReservation updateStatus(ProductReservation productReservation)
       throws AxelorException {
-    if (productReservation.getTypeSelect()
+    if (productReservation.getProductReservationTypeSelect()
         == ProductReservationRepository.TYPE_PRODUCT_RESERVATION_RESERVATION) {
       productReservation.setStatus(
           ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS);
-    } else if (productReservation.getTypeSelect()
+    } else if (productReservation.getProductReservationTypeSelect()
         == ProductReservationRepository.TYPE_PRODUCT_RESERVATION_ALLOCATION) {
       BigDecimal availableQty = this.getAvailableQty(productReservation);
 
@@ -82,7 +82,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
                         ? " AND self.trackingNumber = :trackingNumber"
                         : " AND self.product = :product"))
             .bind("product", productReservation.getProduct())
-            .bind("typeSelect", productReservation.getTypeSelect())
+            .bind("typeSelect", productReservation.getProductReservationTypeSelect())
             .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
             .bind("stockLocation", productReservation.getStockLocation())
             .bind("trackingNumber", productReservation.getTrackingNumber())
