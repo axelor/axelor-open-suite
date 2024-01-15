@@ -11,6 +11,7 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -30,13 +31,13 @@ import java.util.stream.Collectors;
 public class BankReconciliationReconciliationServiceImpl
     implements BankReconciliationReconciliationService {
 
-  protected static final int RETURNED_SCALE = 2;
   protected BankStatementQueryRepository bankStatementQueryRepository;
   protected MoveLineRepository moveLineRepository;
   protected BankReconciliationQueryService bankReconciliationQueryService;
   protected BankReconciliationLineService bankReconciliationLineService;
   protected CurrencyService currencyService;
   protected DateService dateService;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
 
   @Inject
   public BankReconciliationReconciliationServiceImpl(
@@ -45,13 +46,15 @@ public class BankReconciliationReconciliationServiceImpl
       BankReconciliationQueryService bankReconciliationQueryService,
       BankReconciliationLineService bankReconciliationLineService,
       CurrencyService currencyService,
-      DateService dateService) {
+      DateService dateService,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
     this.bankStatementQueryRepository = bankStatementQueryRepository;
     this.moveLineRepository = moveLineRepository;
     this.bankReconciliationQueryService = bankReconciliationQueryService;
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.currencyService = currencyService;
     this.dateService = dateService;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
   }
 
   @Override
@@ -236,7 +239,10 @@ public class BankReconciliationReconciliationServiceImpl
             .getCompany()
             .getBankPaymentConfig()
             .getBnkStmtAutoReconcileAmountMargin()
-            .divide(BigDecimal.valueOf(100), RETURNED_SCALE, RoundingMode.HALF_UP);
+            .divide(
+                BigDecimal.valueOf(100),
+                currencyScaleServiceBankPayment.getScale(bankReconciliation),
+                RoundingMode.HALF_UP);
 
     return BigDecimal.ONE.subtract(amountMargin);
   }
