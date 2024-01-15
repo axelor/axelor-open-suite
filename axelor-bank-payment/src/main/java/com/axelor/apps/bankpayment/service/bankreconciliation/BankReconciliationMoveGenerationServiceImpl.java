@@ -27,6 +27,7 @@ import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -50,7 +51,6 @@ import java.util.List;
 public class BankReconciliationMoveGenerationServiceImpl
     implements BankReconciliationMoveGenerationService {
 
-  protected static final int RETURNED_SCALE = 2;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected BankStatementRuleRepository bankStatementRuleRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
@@ -65,6 +65,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected TaxService taxService;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineService moveLineService;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -81,7 +82,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineTaxService moveLineTaxService,
       TaxService taxService,
       MoveLineCreateService moveLineCreateService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -96,6 +98,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.taxService = taxService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineService = moveLineService;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
   }
 
   @Override
@@ -342,8 +345,12 @@ public class BankReconciliationMoveGenerationServiceImpl
     String origin = move.getOrigin();
     TaxLine taxLine = null;
     if (isCounterpartLine) {
-      debit = bankReconciliationLine.getDebit();
-      credit = bankReconciliationLine.getCredit();
+      debit =
+          currencyScaleServiceBankPayment.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getDebit());
+      credit =
+          currencyScaleServiceBankPayment.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getCredit());
       account = bankStatementRule.getCounterpartAccount();
       if (account == null) {
         throw new AxelorException(
@@ -359,8 +366,12 @@ public class BankReconciliationMoveGenerationServiceImpl
         }
       }
     } else {
-      debit = bankReconciliationLine.getCredit();
-      credit = bankReconciliationLine.getDebit();
+      debit =
+          currencyScaleServiceBankPayment.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getCredit());
+      credit =
+          currencyScaleServiceBankPayment.getScaledValue(
+              bankReconciliationLine, bankReconciliationLine.getDebit());
       account = bankStatementRule.getAccountManagement().getCashAccount();
       if (account == null) {
         throw new AxelorException(
@@ -372,10 +383,15 @@ public class BankReconciliationMoveGenerationServiceImpl
 
     boolean isDebit = debit.compareTo(credit) > 0;
 
-    BigDecimal amount = debit.add(credit);
+    BigDecimal amount =
+        currencyScaleServiceBankPayment.getScaledValue(bankReconciliationLine, debit.add(credit));
     if (taxLine != null) {
       BigDecimal taxRate = taxLine.getValue().divide(BigDecimal.valueOf(100));
-      amount = amount.divide(BigDecimal.ONE.add(taxRate), RETURNED_SCALE, RoundingMode.HALF_UP);
+      amount =
+          amount.divide(
+              BigDecimal.ONE.add(taxRate),
+              currencyScaleServiceBankPayment.getScale(bankReconciliationLine),
+              RoundingMode.HALF_UP);
     }
 
     moveLine =
