@@ -22,4 +22,17 @@ public class ProductReservationController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void realiseReservation(ActionRequest request, ActionResponse response) {
+    try {
+      ProductReservation productReservation = request.getContext().asType(ProductReservation.class);
+      productReservation =
+          Beans.get(ProductReservationRepository.class).find(productReservation.getId());
+
+      Beans.get(ProductReservationService.class).realiseReservation(productReservation);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

@@ -7,4 +7,6 @@ public interface ProductReservationService {
   ProductReservation updateStatus(ProductReservation productReservation) throws AxelorException;
 
   void cancelReservation(ProductReservation productReservation);
+
+  void realiseReservation(ProductReservation productReservation);
 }

@@ -119,7 +119,7 @@
 
     <one-to-many name="productReservationList"
       ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservation"
-      mappedBy="originManufOrder"/>
+      mappedBy="originManufOrder" orphanRemoval="false"/>
 
     <unique-constraint columns="manufOrderSeq,company"/>
 

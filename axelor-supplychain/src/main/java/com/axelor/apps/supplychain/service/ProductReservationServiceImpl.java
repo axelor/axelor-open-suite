@@ -36,6 +36,13 @@ public class ProductReservationServiceImpl implements ProductReservationService 
 
   @Override
   @Transactional
+  public void realiseReservation(ProductReservation productReservation) {
+    productReservation.setStatus(ProductReservationRepository.PRODUCT_RESERVATION_STATUS_REALIZED);
+    productReservationRepository.save(productReservation);
+  }
+
+  @Override
+  @Transactional
   public ProductReservation updateStatus(ProductReservation productReservation)
       throws AxelorException {
     if (productReservation.getTypeSelect()

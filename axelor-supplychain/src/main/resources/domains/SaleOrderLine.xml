@@ -54,7 +54,7 @@
 
     <one-to-many name="productReservationList"
       ref="com.axelor.apps.supplychain.db.ProductReservation" title="Product reservations"
-      mappedBy="originSaleOrderLine"/>
+      mappedBy="originSaleOrderLine" orphanRemoval="false"/>
 
     <extra-code>
   		<![CDATA[
