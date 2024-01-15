@@ -125,6 +125,19 @@
             <![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
+								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+							</Box>
+						</>
+					]]>
+          </viewer>
+        </field>
+        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
+        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
+          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
+          <viewer>
+            <![CDATA[
+						<>
+							<Box d="flex" justifyContent="flex-end">
 								{$areLinesOutsourced && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracting service')}</Badge>}
 							</Box>
 						</>
