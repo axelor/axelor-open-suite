@@ -256,8 +256,12 @@ public class BankReconciliationReconciliationServiceImpl
     Context scriptContext =
         new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
 
-    BigDecimal debit = bankReconciliationLine.getDebit();
-    BigDecimal credit = bankReconciliationLine.getCredit();
+    BigDecimal debit =
+        currencyScaleServiceBankPayment.getScaledValue(
+            bankReconciliation, bankReconciliationLine.getDebit());
+    BigDecimal credit =
+        currencyScaleServiceBankPayment.getScaledValue(
+            bankReconciliation, bankReconciliationLine.getCredit());
 
     BigDecimal currencyAmount = debit.compareTo(BigDecimal.ZERO) == 0 ? credit : debit;
     currencyAmount =
