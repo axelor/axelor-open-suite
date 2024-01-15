@@ -338,7 +338,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
             .bind("operationOrderId", operationOrder.getId())
             .order("priority")
-            .order("plannedStartDateT")
+            .order("plannedStartWithWaitingDateT")
             .fetchOne();
 
     LocalDateTime manufOrderPlannedEndDateT = manufOrder.getPlannedEndDateT();
@@ -348,7 +348,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
 
     LocalDateTime plannedStartDateT =
         nextOperationOrder
-            .getPlannedStartDateT()
+            .getPlannedStartWithWaitingDateT()
             .minusSeconds(operationOrder.getProdProcessLine().getTimeBeforeNextOperation());
 
     if (Objects.equals(nextOperationOrder.getPriority(), operationOrder.getPriority())) {
@@ -386,7 +386,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .bind("machine", operationOrder.getMachine())
             .bind("operationOrderId", operationOrder.getId())
             .order("-priority")
-            .order("-plannedEndWithWaitingDateT")
+            .order("-plannedEndDateT")
             .fetchOne();
 
     LocalDateTime manufOrderPlannedStartDateT = manufOrder.getPlannedStartDateT();
