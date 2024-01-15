@@ -143,7 +143,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
     return Beans.get(ProductReservationRepository.class)
         .all()
         .filter(
-            "self.product = :product AND self.status = :status AND self.productReservationType = :type"
+            "self.product = :product AND self.status = :status AND self.typeSelect = :type"
                 + (stockLocation != null ? " AND self.stockLocation = :stockLocation" : ""))
         .bind("stockLocation", stockLocation)
         .bind("product", product)
