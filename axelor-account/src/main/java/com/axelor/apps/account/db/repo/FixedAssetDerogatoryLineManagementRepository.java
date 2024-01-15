@@ -1,0 +1,24 @@
+package com.axelor.apps.account.db.repo;
+
+import com.axelor.apps.account.db.FixedAssetDerogatoryLine;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.inject.Beans;
+import java.util.Map;
+
+public class FixedAssetDerogatoryLineManagementRepository
+    extends FixedAssetDerogatoryLineRepository {
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    if (json != null && json.get("id") != null) {
+      FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
+          Beans.get(FixedAssetDerogatoryLineRepository.class).find((Long) json.get("id"));
+      json.put(
+          "$currencyNumberOfDecimals",
+          Beans.get(CurrencyScaleServiceAccount.class)
+              .getCompanyScale(fixedAssetDerogatoryLine.getFixedAsset()));
+    }
+
+    return super.populate(json, context);
+  }
+}

@@ -36,6 +36,8 @@ import com.axelor.apps.account.db.repo.DebtRecoveryAccountRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
 import com.axelor.apps.account.db.repo.DepositSlipAccountRepository;
 import com.axelor.apps.account.db.repo.DepositSlipRepository;
+import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineManagementRepository;
+import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
@@ -775,5 +777,8 @@ public class AccountModule extends AxelorModule {
     bind(FixedAssetAttrsService.class).to(FixedAssetAttrsServiceImpl.class);
 
     bind(FixedAssetRecordService.class).to(FixedAssetRecordServiceImpl.class);
+
+    bind(FixedAssetDerogatoryLineRepository.class)
+        .to(FixedAssetDerogatoryLineManagementRepository.class);
   }
 }
