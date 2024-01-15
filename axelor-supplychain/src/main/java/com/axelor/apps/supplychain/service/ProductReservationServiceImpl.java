@@ -74,7 +74,7 @@ public class ProductReservationServiceImpl implements ProductReservationService 
         productReservationRepository
             .all()
             .filter(
-                "self.typeSelect = :typeSelect AND self.status = :status"
+                "self.productReservationTypeSelect = :typeSelect AND self.status = :status"
                     + (productReservation.getStockLocation() != null
                         ? " AND self.stockLocation = :stockLocation"
                         : "")
