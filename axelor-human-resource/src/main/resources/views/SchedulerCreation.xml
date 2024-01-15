@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form name="scheduler-creation-wizard-form" title="App Leave"
+    model="com.axelor.utils.db.Wizard" onNew="action-scheduler-creation-group-onnew" width="large">
+    <panel name="mainPanel" colSpan="12">
+      <field name="name" type="string" title="Name" required="true" colSpan="4"/>
+      <field name="code" type="string" title="Code" required="true" colSpan="4"/>
+      <field name="leaveReasonTypeSelect" title="Leave type"
+        selection="hr.leave.reason.type.select" type="integer" colSpan="4" default="1"
+        onChange="action-scheduler-creation-attrs-type-onchange" required="true"/>
+      <field name="description" title="Description" colSpan="12"/>
+    </panel>
+    <panel name="cronMonthlyPanel" title="Launched every" showIf="leaveReasonTypeSelect == 1">
+      <field name="cronDay" title="Day" type="integer" required="true" min="1" max="31"/>
+      <field name="cronHour" title="Hour" type="integer" required="true" min="0" max="23"/>
+    </panel>
+    <panel name="cronAnnualPanel" title="Launched every" itemSpan="4"
+      showIf="leaveReasonTypeSelect == 3">
+      <field name="cronMonth" title="Month" type="integer" required="true"
+        readonlyIf="leaveReasonTypeSelect == 1" min="1" max="12"/>
+      <field name="cronDay" title="Day" type="integer" required="true" min="1" max="31"/>
+      <field name="cronHour" title="Hour" type="integer" required="true" min="0" max="23"/>
+    </panel>
+    <panel name="actionPanel" sidebar="true">
+      <button name="createSchedulerBtn" title="Create scheduler"
+        onClick="action-scheduler-creation-method-create-scheduler" hidden="true"
+        readonlyIf="!leaveReasonTypeSelect || !name || !code"/>
+      <button name="updateSchedulerBtn" title="Update scheduler"
+        onClick="action-scheduler-creation-method-update-scheduler" hidden="true"
+        readonlyIf="!leaveReasonTypeSelect || !name || !code"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-scheduler-creation-attrs-default-value">
+    <attribute for="leaveReasonTypeSelect" name="value" expr="eval: 1"/>
+    <attribute for="cronHour" name="value" expr="eval: 0"/>
+    <attribute for="cronDay" name="value" expr="eval: _firstLeaveDayPeriod"/>
+    <attribute for="cronMonth" name="value" expr="eval: _firstLeaveMonthPeriod"/>
+  </action-attrs>
+
+  <action-attrs name="action-scheduler-creation-attrs-type-onchange">
+    <attribute for="createSchedulerBtn" name="hidden"
+      expr="eval: (leaveReasonTypeSelect == 1 &amp;&amp; __config__.app.getApp('leave')?.monthlySchedule) || (leaveReasonTypeSelect == 3 &amp;&amp; __config__.app.getApp('leave')?.annualSchedule)"/>
+    <attribute for="updateSchedulerBtn" name="hidden"
+      expr="eval: (leaveReasonTypeSelect == 1 &amp;&amp; !__config__.app.getApp('leave')?.monthlySchedule) || (leaveReasonTypeSelect == 3 &amp;&amp; !__config__.app.getApp('leave')?.annualSchedule) || !leaveReasonTypeSelect"/>
+
+    <attribute for="name" name="value"
+      expr="eval: __config__.app.getApp('leave')?.monthlySchedule?.name"
+      if="eval: leaveReasonTypeSelect == 1"/>
+    <attribute for="code" name="value"
+      expr="eval: __config__.app.getApp('leave')?.monthlySchedule?.batchCode"
+      if="eval: leaveReasonTypeSelect == 1"/>
+    <attribute for="description" name="value"
+      expr="eval: __config__.app.getApp('leave')?.monthlySchedule?.description"
+      if="eval: leaveReasonTypeSelect == 1"/>
+
+    <attribute for="name" name="value"
+      expr="eval: __config__.app.getApp('leave')?.annualSchedule?.name"
+      if="eval: leaveReasonTypeSelect == 3"/>
+    <attribute for="code" name="value"
+      expr="eval: __config__.app.getApp('leave')?.annualSchedule?.batchCode"
+      if="eval: leaveReasonTypeSelect == 3"/>
+    <attribute for="description" name="value"
+      expr="eval: __config__.app.getApp('leave')?.annualSchedule?.description"
+      if="eval: leaveReasonTypeSelect == 3"/>
+  </action-attrs>
+
+  <action-group name="action-scheduler-creation-group-onnew">
+    <action name="action-hr-batch-method-get-leave-reason-type-selects"/>
+    <action name="action-scheduler-creation-attrs-default-value"/>
+    <action name="action-scheduler-creation-attrs-type-onchange"/>
+  </action-group>
+
+  <action-method name="action-scheduler-creation-method-create-scheduler">
+    <call class="com.axelor.apps.hr.web.SchedulerCreationController" method="createScheduler"/>
+  </action-method>
+
+  <action-method name="action-scheduler-creation-method-update-scheduler">
+    <call class="com.axelor.apps.hr.web.SchedulerCreationController" method="updateScheduler"/>
+  </action-method>
+
+</object-views>

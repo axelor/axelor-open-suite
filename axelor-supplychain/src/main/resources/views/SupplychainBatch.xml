@@ -67,6 +67,10 @@
         <field name="productCategorySet" colSpan="12" canNew="false" canEdit="false"
           canSelect="true"/>
       </panel>
+      <panel name="filterPanel" title="Filters" hideIf="actionSelect != 5">
+        <field name="usedStockRulesSet" domain="self.useCaseSelect=2" canNew="false"
+          canSelect="true" colSpan="12"/>
+      </panel>
       <panel name="informationPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
@@ -84,6 +88,8 @@
       <button name="invoiceOrdersBatchBtn" title="Update stock history"
         showIf="actionSelect == 4"
         onClick="save,action-supplychain-batch-method-update-stock-history" colSpan="12"/>
+      <button name="runStockBatch" title="Run stock batch"
+        onClick="save,action-supplychain-batch-method-run-batch" showIf="actionSelect == 5"/>
     </panel>
   </form>
 

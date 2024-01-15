@@ -132,9 +132,7 @@
       <field name="opportunitySeq" showTitle="false" colSpan="2">
         <viewer depends="opportunitySeq"><![CDATA[
                  	<>
-                 		<h3>
-                 			<span>{opportunitySeq}</span>
-                 		</h3>
+                 		<Box as="h3" fontWeight="bold" mt={2}>{opportunitySeq}</Box>
                  	</>
               	]]></viewer>
         <editor>
@@ -146,7 +144,7 @@
         <viewer depends="name">
                     <![CDATA[
 						<>
-							<Box as="span" fontSize={4} fontWeight="bold">{name}</Box>
+							<Box as="h3" fontWeight="bold" mt={2}>{name}</Box>
 						</>
 					]]>
         </viewer>
@@ -575,13 +573,14 @@
     <field name="bankDetails" hidden="true"
       if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
     <field name="saleOrderList" hidden="true" if="!__config__.app.isApp('sale')"/>
-    <filter title="My opportunities">
+    <filter name="opportunity-filters-my-opportunities" title="My opportunities">
       <domain>self.user.id = :_internalUserId</domain>
     </filter>
-    <filter title="Unassigned opportunities">
+    <filter name="opportunity-filters-unassigned-opportunities"
+      title="Unassigned opportunities">
       <domain>self.user IS NULL</domain>
     </filter>
-    <filter title="My team opportunities">
+    <filter name="opportunity-filters-my-team-opportunities" title="My team opportunities">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>

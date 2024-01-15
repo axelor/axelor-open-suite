@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -162,6 +162,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       return false;
     }
     return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+  }
+
+  @Override
+  public void setOperationOrdersOutsourcing(ManufOrder manufOrder) {
+    if (manufOrder != null && manufOrder.getOperationOrderList() != null) {
+      manufOrder
+          .getOperationOrderList()
+          .forEach(oo -> oo.setOutsourcing(manufOrder.getOutsourcing()));
+    }
   }
 
   @Override

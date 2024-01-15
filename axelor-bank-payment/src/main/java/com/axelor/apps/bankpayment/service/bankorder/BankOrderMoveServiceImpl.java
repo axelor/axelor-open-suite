@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -381,8 +381,8 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
 
   protected BankDetails getPartnerBankDetails(BankOrderLine bankOrderLine) {
     if (bankOrderLine.getBankOrderLineOriginList().size() == 1
-        && bankOrderLine.getBankOrderLineOriginList().get(0).getRelatedToSelect()
-            == BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM) {
+        && BankOrderLineOriginRepository.RELATED_TO_INVOICE_TERM.equals(
+            bankOrderLine.getBankOrderLineOriginList().get(0).getRelatedToSelect())) {
       BankOrderLineOrigin origin = bankOrderLine.getBankOrderLineOriginList().get(0);
       if (origin.getRelatedToSelectId() != null) {
         InvoiceTerm invoiceTerm = invoiceTermRepository.find(origin.getRelatedToSelectId());

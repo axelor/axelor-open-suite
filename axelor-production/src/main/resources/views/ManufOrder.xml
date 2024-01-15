@@ -125,6 +125,19 @@
             <![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
+								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+							</Box>
+						</>
+					]]>
+          </viewer>
+        </field>
+        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
+        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
+          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
+          <viewer>
+            <![CDATA[
+						<>
+							<Box d="flex" justifyContent="flex-end">
 								{$areLinesOutsourced && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracting service')}</Badge>}
 							</Box>
 						</>
@@ -151,7 +164,8 @@
         <field name="outsourcing" colSpan="3"
           hideIf="prodProcess.prodProcessLinesOutsourcable
            || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
-          readonlyIf="prodProcess.outsourcing"/>
+          readonlyIf="prodProcess.outsourcing"
+          onChange="action-manuf-order-method-set-operation-orders-outsourcing"/>
         <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
           domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
@@ -914,6 +928,12 @@
     <call class="com.axelor.apps.production.web.ManufOrderController" method="checkMergeValues"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setOperationOrdersOutsourcing"/>
+  </action-method>
+
   <action-method name="action-manuf-order-method-generate-merge-manuf-order"
     model="com.axelor.apps.production.db.ManufOrder">
     <call class="com.axelor.apps.production.web.ManufOrderController"
@@ -992,31 +1012,31 @@
       if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <field name="invoiced" hidden="true"
       if="!__config__.app.getApp('production')?.getManageBusinessProduction()"/>
-    <filter title="Draft MOs">
+    <filter name="manuf-order-filters-draft-mos" title="Draft MOs">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Planned MOs">
+    <filter name="manuf-order-filters-planned-mos" title="Planned MOs">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="MOs In Progress">
+    <filter name="manuf-order-filters-mos-in-progress" title="MOs In Progress">
       <domain>self.statusSelect = 4</domain>
     </filter>
-    <filter title="MOs In Standby">
+    <filter name="manuf-order-filters-mos-in-standby" title="MOs In Standby">
       <domain>self.statusSelect = 5</domain>
     </filter>
-    <filter title="Finished MOs">
+    <filter name="manuf-order-filters-finished-mos" title="Finished MOs">
       <domain>self.statusSelect = 6</domain>
     </filter>
-    <filter title="MOs to invoice">
+    <filter name="manuf-order-filters-mos-to-invoice" title="MOs to invoice">
       <domain>self.isToInvoice = true</domain>
     </filter>
-    <filter title="Cancelled MOs">
+    <filter name="manuf-order-filters-cancelled-mos" title="Cancelled MOs">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Late Planned MOs">
+    <filter name="manuf-order-filters-late-planned-mos" title="Late Planned MOs">
       <domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>
     </filter>
-    <filter title="MOs Finished late">
+    <filter name="manuf-order-filters-mos-finished-late" title="MOs Finished late">
       <domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
     </filter>
   </search-filters>

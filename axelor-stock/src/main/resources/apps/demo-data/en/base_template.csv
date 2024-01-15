@@ -1,4 +1,4 @@
-"name";"metaModel.name";"language.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"name";"metaModel.name";"localization.importId";"target";"birtTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
 "Envoi BL Client";"StockMove";2;;;;"true";;"Commande $StockMove.origin$ expédiée";"<p>Bonjour,</p>
 
 <p>Nous tenons à vous informer que votre commande $StockMove.origin$ a été expédiée.<br/>
