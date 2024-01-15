@@ -24,33 +24,20 @@
   </grid>
 
   <grid name="product-reservation-editable-grid" title="Product reservation"
-<<<<<<< HEAD
     model="com.axelor.apps.supplychain.db.ProductReservation" canDelete="false"
     groupBy="productReservationTypeSelect" editable="true"
     onNew="product-reservation-editable-grid-record-on-new">
     <field name="productReservationTypeSelect" required="true" selection-in="[1,2]"/>
-=======
-    model="com.axelor.apps.supplychain.db.ProductReservation" canDelete="false" groupBy="typeSelect"
-    editable="true" onNew="product-reservation-editable-grid-record-on-new">
-    <field name="typeSelect" required="true"/>
->>>>>>> RM67467
     <field name="product" readonly="true"/>
-    <field name="qty" required="true" title="Quantity" readonlyIf="!typeSelect"/>
+    <field name="qty" required="true" title="Quantity" readonlyIf="!productReservationTypeSelect"/>
     <field name="reservationTypeSelect" readonly="true"/>
-    <field name="stockLocation" readonlyIf="!typeSelect || typeSelect == 1"
-      requiredIf="typeSelect == 2"/>
-    <field name="trackingNumber" readonlyIf="!typeSelect || typeSelect == 1"
-<<<<<<< HEAD
-      requiredIf="typeSelect == 2 &amp;&amp; product.trackingNumberConfiguration"/>
+    <field name="stockLocation" readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
+      requiredIf="productReservationTypeSelect == 2"/>
+    <field name="trackingNumber" readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
+      requiredIf="productReservationTypeSelect == 2 &amp;&amp; product.trackingNumberConfiguration"/>
     <field name="$availableQty" title="Available Qty." type="decimal" readonly="true"/>
     <field name="status" readonly="true"/>
     <field name="product.trackingNumberConfiguration" hidden="true"/>
-=======
-      requiredIf="typeSelect == 2 &amp;&amp; product.trackingNumerConfiguration"/>
-    <field name="$availableQty" title="Available Qty." type="decimal" readonly="true"/>
-    <field name="status" readonly="true"/>
-    <field name="product.trackingNumerConfiguration" hidden="true"/>
->>>>>>> RM67467
   </grid>
 
   <form name="product-reservation-form" title="Reservations / allocations" canDelete="false"
@@ -72,13 +59,13 @@
         <field name="description" colSpan="12" showIf="productReservationTypeSelect"
           widget="html" large="true"/>
       </panel>
-      <panel name="reservation" showIf="typeSelect == 1 &amp;&amp; product">
-        <field name="priorityReservationDateTime" colSpan="6" requiredIf="typeSelect == 1"
+      <panel name="reservation" showIf="productReservationTypeSelect == 1 &amp;&amp; product">
+        <field name="priorityReservationDateTime" colSpan="6" requiredIf="productReservationTypeSelect == 1"
           widget="date-time"/>
-        <field name="reservationTypeSelect" colSpan="6" requiredIf="typeSelect == 1"/>
+        <field name="reservationTypeSelect" colSpan="6" requiredIf="productReservationTypeSelect == 1"/>
       </panel>
-      <panel name="allocation" showIf="typeSelect == 2 &amp;&amp; product">
-        <field name="stockLocation" requiredIf="typeSelect == 2"/>
+      <panel name="allocation" showIf="productReservationTypeSelect == 2 &amp;&amp; product">
+        <field name="stockLocation" requiredIf="productReservationTypeSelect == 2"/>
         <field name="trackingNumber" title="Tracking number"
           showIf="product.trackingNumberConfiguration != null"
           requiredIf="product.trackingNumberConfiguration != null"/>
