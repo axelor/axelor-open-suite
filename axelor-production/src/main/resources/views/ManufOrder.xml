@@ -224,6 +224,9 @@
           hidden="true"/>
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
           showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
+        <button name="declareOutsourcedDelieveryBtn" title="Outsource declaration"
+          hidden="true" showIf="(outsourcing || $areLinesOutsourced) &amp;&amp; statusSelect >= 2"
+          colSpan="12" onClick="action-manuf-order-view-declare-delivery"/>
         <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
           showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
           hidden="true"/>
@@ -403,6 +406,8 @@
       <panel name="outsourcingPanel" title="Outsourcing"
         showIf="outsourcing || $areLinesOutsourced">
         <panel-related field="purchaseOrderSet" colSpan="12"/>
+        <panel-related field="outsourcingStockMoveList" colSpan="12"
+          title="Outgoing outsource stock move"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
@@ -506,6 +511,7 @@
     </panel>
   </form>
 
+
   <grid name="generated-manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
     canEdit="false" canDelete="false">
@@ -516,6 +522,35 @@
     <button name="openManufOrderBtn" title="Manufacturing Order" icon="fa-file-text-o"
       onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
+
+
+  <form model="com.axelor.apps.production.db.ManufOrder" title="Outsource declaration"
+    name="manuf-order-outsource-declaration-form"
+    onNew="action-manuf-order-method-outsource-declaration-form-on-new">
+    <panel name="mainPanel">
+      <panel-related field="$prodProductsList" type="one-to-many"
+        target="com.axelor.apps.production.db.ProdProduct"
+        grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
+        orderBy="product.code" x-selector="checkbox" colSpan="12" canNew="false" canEdit="false"
+        canRemove="false" title="Products"/>
+      <field name="$partnerToDeclare" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" title="Partner" required="true" colSpan="4"/>
+
+      <button name="declareDeliveryBtn" title="Declare delivery to outsource partner"
+        onClick="action-manuf-order-method-declare-delivery,close" colOffset="5" colSpan="4"/>
+    </panel>
+  </form>
+
+
+  <action-method name="action-manuf-order-method-outsource-declaration-form-on-new">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="outsourceDeclarationOnNew"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-declare-delivery">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="declareDelivery"/>
+  </action-method>
+
 
   <action-attrs name="action-manuf-order-attrs-multi-level-wizard-onnew">
     <attribute name="value" for="$draftManufOrderList" expr="eval:_moList"/>
@@ -554,6 +589,17 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord" expr="eval: __this__.id"/>
     <context name="_xApplicationType" expr="eval: _model"/>
+  </action-view>
+
+  <action-view name="action-manuf-order-view-declare-delivery"
+    title="Outsource declaration" model="com.axelor.apps.production.db.ManufOrder">
+    <view type="form" name="manuf-order-outsource-declaration-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_manufOrderId" expr="eval: __self__?.id"/>
   </action-view>
 
   <action-record name="action-manuf-order-record-set-status-to-draft"
@@ -926,6 +972,12 @@
   <action-method name="action-manuf-order-method-check-merge-values"
     model="com.axelor.apps.production.db.ManufOrder">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="checkMergeValues"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setOperationOrdersOutsourcing"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"

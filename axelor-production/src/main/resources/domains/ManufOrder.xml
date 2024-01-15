@@ -123,6 +123,11 @@
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Sale order line"/>
 
+    <one-to-many name="outsourcingStockMoveList"
+      ref="com.axelor.apps.stock.db.StockMove" title="Outsourcing stock moves"
+      mappedBy="outsourcingManufOrder"/>
+
+
     <unique-constraint columns="manufOrderSeq,company"/>
 
     <extra-code><![CDATA[

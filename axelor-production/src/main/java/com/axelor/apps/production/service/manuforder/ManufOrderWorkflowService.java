@@ -75,6 +75,8 @@ public interface ManufOrderWorkflowService {
 
   List<Partner> getOutsourcePartnersForGenerationPO(ManufOrder manufOrder) throws AxelorException;
 
+  List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException;
+
   void setOperationOrderMaxPriority(ManufOrder manufOrder);
 
   String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;

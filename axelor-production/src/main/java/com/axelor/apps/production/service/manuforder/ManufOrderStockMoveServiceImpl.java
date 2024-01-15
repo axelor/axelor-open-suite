@@ -476,7 +476,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         StockMoveRepository.TYPE_INTERNAL);
   }
 
-  protected StockMoveLine _createStockMoveLine(
+  @Override
+  public StockMoveLine _createStockMoveLine(
       ProdProduct prodProduct,
       StockMove stockMove,
       int inOrOutType,
@@ -933,16 +934,17 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
   }
 
-  protected StockLocation _getVirtualProductionStockLocation(ManufOrder manufOrder, Company company)
+  @Override
+  public StockLocation _getVirtualProductionStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
-    return stockConfigProductionService.getProductionVirtualStockLocation(
-        stockConfig, manufOrderOutsourceService.isOutsource(manufOrder));
+    return stockConfigProductionService.getProductionVirtualStockLocation(stockConfig, false);
   }
 
-  protected StockLocation _getVirtualOutsourcingStockLocation(
-      ManufOrder manufOrder, Company company) throws AxelorException {
+  @Override
+  public StockLocation _getVirtualOutsourcingStockLocation(ManufOrder manufOrder, Company company)
+      throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
     return stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig);

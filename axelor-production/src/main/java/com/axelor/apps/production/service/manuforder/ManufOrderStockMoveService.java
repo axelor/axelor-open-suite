@@ -77,6 +77,14 @@ public interface ManufOrderStockMoveService {
       ProdProduct prodProduct,
       StockMove stockMove,
       int inOrOutType,
+      StockLocation fromStockLocation,
+      StockLocation toStockLocation)
+      throws AxelorException;
+
+  StockMoveLine _createStockMoveLine(
+      ProdProduct prodProduct,
+      StockMove stockMove,
+      int inOrOutType,
       BigDecimal qty,
       StockLocation fromStockLocation,
       StockLocation toStockLocation)
@@ -179,6 +187,12 @@ public interface ManufOrderStockMoveService {
       throws AxelorException;
 
   StockLocation getVirtualStockLocationForConsumedStockMove(ManufOrder manufOrder, Company company)
+      throws AxelorException;
+
+  StockLocation _getVirtualProductionStockLocation(ManufOrder manufOrder, Company company)
+      throws AxelorException;
+
+  StockLocation _getVirtualOutsourcingStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException;
 
   StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
