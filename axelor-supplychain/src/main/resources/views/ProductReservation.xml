@@ -29,11 +29,14 @@
     onNew="product-reservation-editable-grid-record-on-new">
     <field name="productReservationTypeSelect" required="true" selection-in="[1,2]"/>
     <field name="product" readonly="true"/>
-    <field name="qty" required="true" title="Quantity" readonlyIf="!productReservationTypeSelect"/>
+    <field name="qty" required="true" title="Quantity"
+      readonlyIf="!productReservationTypeSelect"/>
     <field name="reservationTypeSelect" readonly="true"/>
-    <field name="stockLocation" readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
+    <field name="stockLocation"
+      readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
       requiredIf="productReservationTypeSelect == 2"/>
-    <field name="trackingNumber" readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
+    <field name="trackingNumber"
+      readonlyIf="!productReservationTypeSelect || productReservationTypeSelect == 1"
       requiredIf="productReservationTypeSelect == 2 &amp;&amp; product.trackingNumberConfiguration"/>
     <field name="$availableQty" title="Available Qty." type="decimal" readonly="true"/>
     <field name="status" readonly="true"/>
@@ -60,9 +63,10 @@
           widget="html" large="true"/>
       </panel>
       <panel name="reservation" showIf="productReservationTypeSelect == 1 &amp;&amp; product">
-        <field name="priorityReservationDateTime" colSpan="6" requiredIf="productReservationTypeSelect == 1"
-          widget="date-time"/>
-        <field name="reservationTypeSelect" colSpan="6" requiredIf="productReservationTypeSelect == 1"/>
+        <field name="priorityReservationDateTime" colSpan="6"
+          requiredIf="productReservationTypeSelect == 1" widget="date-time"/>
+        <field name="reservationTypeSelect" colSpan="6"
+          requiredIf="productReservationTypeSelect == 1"/>
       </panel>
       <panel name="allocation" showIf="productReservationTypeSelect == 2 &amp;&amp; product">
         <field name="stockLocation" requiredIf="productReservationTypeSelect == 2"/>
