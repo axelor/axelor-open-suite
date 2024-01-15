@@ -1067,9 +1067,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockMoveLine originalStockMoveLine,
       StockMoveLine modifiedStockMoveLine) {
 
-    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(modifiedStockMoveLine, false);
+    StockMoveLine newStockMoveLine = stockMoveLineRepo.copy(originalStockMoveLine, false);
     newStockMoveLine.setQty(modifiedStockMoveLine.getQty());
     newStockMoveLine.setRealQty(modifiedStockMoveLine.getQty());
+    newStockMoveLine.setUnitPriceUntaxed(modifiedStockMoveLine.getUnitPriceUntaxed());
 
     // Update quantity in original stock move.
     // If the remaining quantity is 0, remove the stock move line
