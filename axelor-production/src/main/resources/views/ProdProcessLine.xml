@@ -46,6 +46,8 @@
           x-seconds="true" if="!__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
         <field name="humanDuration" colSpan="6" widget="duration" x-big="true"
           x-seconds="true" if="!__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
+        <field name="timeBeforeNextOperation" colSpan="6" widget="duration" x-big="true"
+          x-seconds="true"/>
         <field name="durationPerCycleDecimal" colSpan="6"
           if="__config__.app.getApp('production')?.getIsInputInHundredthHours()"/>
         <field name="humanDurationDecimal" colSpan="6"

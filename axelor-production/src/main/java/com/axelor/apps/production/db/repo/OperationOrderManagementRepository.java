@@ -21,6 +21,7 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.google.inject.Inject;
+import java.util.Map;
 
 public class OperationOrderManagementRepository extends OperationOrderRepository {
 
@@ -35,5 +36,16 @@ public class OperationOrderManagementRepository extends OperationOrderRepository
     }
 
     return super.save(entity);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    OperationOrder operationOrder = find((long) json.get("id"));
+    if (operationOrder != null) {
+      json.put(
+          "$isTimeBeforeNextOperation",
+          operationOrderService.isTimeBeforeNextOperation(operationOrder));
+    }
+    return super.populate(json, context);
   }
 }

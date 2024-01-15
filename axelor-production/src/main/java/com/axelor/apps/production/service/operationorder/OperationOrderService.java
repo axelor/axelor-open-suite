@@ -120,4 +120,6 @@ public interface OperationOrderService {
   List<OperationOrder> getSortedOperationOrderList(List<OperationOrder> operationOrders);
 
   List<OperationOrder> getReversedSortedOperationOrderList(List<OperationOrder> operationOrders);
+
+  public boolean isTimeBeforeNextOperation(OperationOrder operationOrder);
 }
