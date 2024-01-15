@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -159,8 +159,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.taxLine = taxLine;
     this.discountTypeSelect = discountTypeSelect;
     this.discountAmount = discountAmount;
-    this.exTaxTotal = exTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
-    this.inTaxTotal = inTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
+    this.exTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, exTaxTotal);
+    this.inTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, inTaxTotal);
   }
 
   public Invoice getInvoice() {

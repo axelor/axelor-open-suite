@@ -20,42 +20,45 @@
 
     <decimal name="totalAmountCommitted" title="Committed amount"
       help="Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice."
-      precision="20" scale="2"/>
+      precision="20" scale="3"/>
 
     <decimal name="totalAmountExpected" title="Expected amount"
       help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
-      precision="20" scale="2"/>
+      precision="20" scale="3"/>
     <decimal name="totalAmountRealized" title="Realized total amount" precision="20"
-      scale="2"/>
+      scale="3"/>
     <one-to-many name="budgetLineList" ref="com.axelor.apps.budget.db.BudgetLine"
       title="Budget Lines" mappedBy="budget"/>
     <integer name="periodDurationSelect" title="Period duration"
       selection="account.year.period.duration.select" default="0"/>
-    <decimal name="amountForGeneration" title="Amount for each line"/>
+    <decimal name="amountForGeneration" title="Amount for each line" precision="20"
+      scale="3"/>
 
     <many-to-one name="budgetLevel" ref="com.axelor.apps.budget.db.BudgetLevel"
       title="Parent Level"/>
 
     <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
       title="Global budget"/>
+    <many-to-one name="budgetStructure" ref="com.axelor.apps.budget.db.BudgetStructure"
+      title="Budget structure"/>
 
     <string name="typeSelect" title="Type" selection="budget.budget.type.select"
       readonly="true"/>
     <string name="sourceSelect" title="Source" selection="budget.budget.source.select"
       readonly="true"/>
 
-    <decimal name="totalAmountPaid" title="Paid total amount" precision="20" scale="2"/>
-    <decimal name="availableAmount" title="Available amount" precision="20" scale="2"/>
-    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+    <decimal name="totalAmountPaid" title="Paid total amount" precision="20" scale="3"/>
+    <decimal name="availableAmount" title="Available amount" precision="20" scale="3"/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="3"
       help="Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice."/>
-    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="3"
       help="Represents the sum of ventilated invoices with an order."/>
-    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="2"
+    <decimal name="totalFirmGap" title="Firm gap" precision="20" scale="3"
       help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
-    <decimal name="simulatedAmount" title="Simulated amount" precision="20" scale="2"
+    <decimal name="simulatedAmount" title="Simulated amount" precision="20" scale="3"
       help="Represents the sum of moves of status simulated."/>
     <decimal name="availableAmountWithSimulated"
-      title="Available amount with simulated moves"
+      title="Available amount with simulated moves" precision="20" scale="3"
       help="Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.">
     </decimal>
 

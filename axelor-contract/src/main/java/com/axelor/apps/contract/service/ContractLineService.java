@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,7 +77,7 @@ public interface ContractLineService {
    * @param contractLine to compute ex/in tax total.
    * @return ContractLine with ex/in tax total computed.
    */
-  ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
+  ContractLine computeTotal(ContractLine contractLine, Contract contract) throws AxelorException;
 
   ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
       throws AxelorException;

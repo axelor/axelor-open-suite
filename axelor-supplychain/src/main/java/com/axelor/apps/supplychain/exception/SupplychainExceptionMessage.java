@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -370,4 +370,11 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
       "Carriage paid threshold is exceeded, all shipment cost lines are removed" /*)*/;
+
+  public static final String COULD_NOT_FIND_ELIGIBLE_EMAIL_TEMPLATE_FOR_STOCK_RULES = /*$$(*/
+      "Could not find eligible email template for stock rules: %s" /*)*/;
+
+  public static final String
+      COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
+          "Could not find recipients for message generated from stock rules: %s" /*)*/;
 }

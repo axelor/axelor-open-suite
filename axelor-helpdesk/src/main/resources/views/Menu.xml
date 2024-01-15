@@ -16,7 +16,6 @@
     <view type="form" name="ticket-form"/>
     <view type="calendar" name="ticket-calendar"/>
     <view-param name="search-filters" value="ticket-filters"/>
-    <domain>self.statusSelect in (0,1)</domain>
     <context name="_user" expr="eval: __user__"/>
   </action-view>
 
@@ -123,11 +122,22 @@
     action="helpdesk.sla.policies.all" parent="helpdesk-config"
     if="__config__.app.getApp('helpdesk')?.getIsSla()" order="100"/>
 
+  <menuitem title="Ticket statuses" name="helpdesk-ticket-statuses-all"
+    action="helpdesk.ticket-statuses.all" parent="helpdesk-config" order="110"/>
+
   <action-view name="helpdesk.sla.policies.all" title="SLA policies"
     model="com.axelor.apps.helpdesk.db.Sla">
     <view type="grid" name="sla-grid"/>
     <view type="form" name="sla-form"/>
   </action-view>
+
+  <action-view name="helpdesk.ticket-statuses.all" title="Ticket statuses"
+    model="com.axelor.apps.helpdesk.db.TicketStatus">
+    <view type="grid" name="ticket-status-grid"/>
+    <view type="form" name="ticket-status-form"/>
+  </action-view>
+
+
 
   <menuitem title="Ticket types" name="helpdesk-ticket-types-all"
     action="helpdesk-ticket-types-all" parent="helpdesk-config" order="200"/>

@@ -11,10 +11,11 @@
         <field name="account.accountType.technicalTypeSelect"/>
         <field name="account.accountType"/>
         <field name="move.statusSelect"/>
+        <field name="move.invoice"/>
       </insert>
       <insert position="after">
         <panel-related name="budgetDistributionListPanel" title="Budget"
-          if="__config__.app.isApp('budget')"
+          if="__config__.app.isApp('budget')" readonlyIf="move.invoice"
           onChange="action-method-move-line-budget-distribution-validate-amount"
           showIf="['charge', 'income', 'immobilisation'].includes(account.accountType.technicalTypeSelect)"
           field="budgetDistributionList" form-view="move-line-budget-distribution-form"

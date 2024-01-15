@@ -18,7 +18,6 @@
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-grid"/>
     <view type="form" name="bank-order-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 2</domain>
     <context name="_orderTypeSelect" expr="2"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 2"/>
@@ -49,7 +48,6 @@
     title="International Direct Debits" model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-grid"/>
     <view type="form" name="bank-order-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 4</domain>
     <context name="_orderTypeSelect" expr="4"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 4"/>
@@ -67,7 +65,6 @@
     title="SEPA Credit Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-grid"/>
     <view type="form" name="bank-order-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 1</domain>
     <context name="_orderTypeSelect" expr="1"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 1"/>
@@ -81,7 +78,6 @@
     title="International Credit Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-grid"/>
     <view type="form" name="bank-order-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 3</domain>
     <context name="_orderTypeSelect" expr="3"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 3"/>
@@ -99,7 +95,6 @@
     title="SEPA Bank to Bank Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-bank-to-bank-grid"/>
     <view type="form" name="bank-order-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 5 AND self.partnerTypeSelect = 4</domain>
     <context name="_orderTypeSelect" expr="5"/>
     <context name="_partnerTypeSelect" expr="4"/>
@@ -116,7 +111,6 @@
     title="International Bank to Bank Transfers" model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-bank-to-bank-grid"/>
     <view type="form" name="bank-order-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 6 AND self.partnerTypeSelect = 4</domain>
     <context name="_orderTypeSelect" expr="6"/>
     <context name="_partnerTypeSelect" expr="4"/>
@@ -132,26 +126,9 @@
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <view type="grid" name="bank-order-send-grid"/>
     <view type="form" name="bank-order-send-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
     <domain>self.orderTypeSelect = 7</domain>
     <context name="_orderTypeSelect" expr="7"/>
     <context name="_linesDomain" expr="self.bankOrder.orderTypeSelect = 7"/>
-  </action-view>
-
-  <menuitem name="account-root-bank-order-awaiting-for-signature"
-    parent="account-root-bank-orders" title="Bank Orders awaiting for signature"
-    if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').enableEbicsModule"
-    action="account.bank.order.awaiting.for.signature" tag-count="true" tag-style="default"
-    order="600"/>
-
-
-  <action-view name="account.bank.order.awaiting.for.signature"
-    title="Bank Orders awaiting for signature" model="com.axelor.apps.bankpayment.db.BankOrder">
-    <view type="grid" name="bank-order-awaiting-signature-grid"/>
-    <view type="form" name="bank-order-awaiting-signature-form"/>
-    <view-param name="search-filters" value="bank-order-filters"/>
-    <domain>self.statusSelect = 2</domain>
-    <context name="_linesDomain" expr="self.bankOrder.statusSelect = 2"/>
   </action-view>
 
 
@@ -166,7 +143,6 @@
     model="com.axelor.apps.bankpayment.db.BankStatement">
     <view type="grid" name="bank-statement-grid"/>
     <view type="form" name="bank-statement-form"/>
-    <view-param name="search-filters" value="bank-statement-filters"/>
     <context name="todayDate" expr="eval:__config__.date"/>
   </action-view>
 
@@ -219,69 +195,11 @@
     <view type="form" name="bank-order-economic-reason-form"/>
   </action-view>
 
-
-  <menuitem name="account-conf-ebics" parent="account-conf" title="Ebics"
-    if-module="axelor-bank-payment" if="__config__.app.getApp('bank-payment').enableEbicsModule"
-    order="700"/>
-
-  <menuitem name="account-conf-ebics-ebics-user" parent="account-conf-ebics"
-    title="Ebics users" action="account.conf.ebics.ebics.user" order="100"/>
-
-  <menuitem name="account-conf-ebics-ebics-partner" parent="account-conf-ebics"
-    title="Ebics partners" action="account.conf.ebics.ebics.partner" order="200"/>
-
-  <menuitem name="account-conf-ebics-ebics-bank" parent="account-conf-ebics"
-    title="Ebics banks" action="account.conf.ebics.ebics.bank" order="300"/>
-
-  <!-- <menuitem name="account-conf-ebics-ebics-transfer-state" parent="account-conf-ebics" -->
-  <!-- title="Ebics transfer states" action="account.conf.ebics.ebics.transfer.state" /> -->
-
-  <menuitem name="account-conf-ebics-ebics-certificate" parent="account-conf-ebics"
-    title="Ebics certificates" action="account.conf.ebics.ebics.certificate" order="400"/>
-
-  <menuitem name="admin-root-batch-bank-payment" parent="admin-root-batch"
-    title="Bank payment batches" action="admin.root.batch.bank.payment"
-    if="__config__.app.isApp('bank-payment')" order="600"/>
-
-  <action-view name="admin.root.batch.bank.payment" title="Bank payment batches"
-    model="com.axelor.apps.bankpayment.db.BankPaymentBatch">
-    <view type="grid" name="bank-payment-batch-grid"/>
-    <view type="form" name="bank-payment-batch-form"/>
-    <view-param name="search-filters" value="bank-payment-batch-filters"/>
-  </action-view>
-
-  <action-view name="account.conf.ebics.ebics.user" title="Ebics users"
-    model="com.axelor.apps.bankpayment.db.EbicsUser">
-    <view type="grid" name="ebics-user-group-grid"/>
-    <view type="form" name="ebics-user-form"/>
-  </action-view>
-
-  <action-view name="account.conf.ebics.ebics.partner" title="Ebics partner"
-    model="com.axelor.apps.bankpayment.db.EbicsPartner">
-    <view type="grid" name="ebics-partner-grid"/>
-    <view type="form" name="ebics-partner-form"/>
-  </action-view>
-
-  <action-view name="account.conf.ebics.ebics.bank" title="Ebics bank"
-    model="com.axelor.apps.bankpayment.db.EbicsBank">
-    <view type="grid" name="ebics-bank-grid"/>
-    <view type="form" name="ebics-bank-form"/>
-  </action-view>
-
-  <!-- <action-view name="account.conf.ebics.ebics.transfer.state" title="Ebics transfer state" -->
-  <!-- model="com.axelor.apps.bankpayment.db.EbicsTransferState" > -->
-  <!-- <view type="grid" name="ebics-transfer-state-grid" /> -->
-  <!-- <view type="form" name="ebics-transfer-state-form"/> -->
-  <!-- </action-view> -->
-
-  <action-view name="account.conf.ebics.ebics.certificate" title="Ebics certificate"
-    model="com.axelor.apps.bankpayment.db.EbicsCertificate">
-    <view type="grid" name="ebics-certificate-grid"/>
-    <view type="form" name="ebics-certificate-form"/>
-  </action-view>
+  <menuitem name="account-conf-bank-statement" parent="account-conf" title="Bank statement"
+    order="610"/>
 
   <menuitem name="account-conf-ebics-bank-statement-file-format"
-    parent="account-conf-ebics" title="Bank statements file formats"
+    parent="account-conf-bank-statement" title="Bank statements file formats"
     action="account.conf.ebics.bank.statement.file.format" order="500"/>
 
   <action-view name="account.conf.ebics.bank.statement.file.format"

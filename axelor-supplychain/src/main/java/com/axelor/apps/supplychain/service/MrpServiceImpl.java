@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -528,7 +528,11 @@ public class MrpServiceImpl implements MrpService {
     LocalDate initialMaturityDate = maturityDate;
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_PURCHASE_PROPOSAL) {
-      maturityDate = maturityDate.minusDays(product.getSupplierDeliveryTime());
+      maturityDate =
+          maturityDate
+              .minusDays(product.getSupplierDeliveryTime())
+              .minusDays(mrpLineType.getSecurityDelay());
+      initialMaturityDate = initialMaturityDate.minusDays(mrpLineType.getSecurityDelay());
       reorderQty = reorderQty.max(this.getSupplierCatalogMinQty(product));
       if (appPurchaseService.getAppPurchase() != null
           && appPurchaseService.getAppPurchase().getManageMultiplePurchaseQuantity()) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -769,5 +769,12 @@ public class ManufOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setOperationOrdersOutsourcing(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+
+    Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
+    response.setValue("operationOrderList", manufOrder.getOperationOrderList());
   }
 }

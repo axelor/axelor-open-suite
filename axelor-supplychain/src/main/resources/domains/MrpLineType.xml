@@ -38,6 +38,8 @@
       title="Project identically over the next few months"/>
     <integer name="nbrOfMonthProjection" title="Projection' s number of month" default="1"/>
 
+    <integer name="securityDelay" title="Security delay (days)" default="0"/>
+
     <extra-code><![CDATA[
 
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -164,10 +164,16 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
                   getTypeSelect(),
                   FixedAssetLineRepository.STATUS_REALIZED));
         } else {
+          LocalDate depreciationEndDate = getFailOverDepreciationEndDate(fixedAsset);
+          if (depreciationEndDate == null) {
+            depreciationEndDate =
+                LocalDateHelper.plusMonths(
+                    fixedAsset.getFirstDepreciationDate(), getDurationInMonth(fixedAsset));
+          }
           return Optional.ofNullable(
               createFixedAssetLine(
                   fixedAsset,
-                  getFailOverDepreciationEndDate(fixedAsset),
+                  depreciationEndDate,
                   BigDecimal.ZERO,
                   depreciationBase,
                   BigDecimal.ZERO,
