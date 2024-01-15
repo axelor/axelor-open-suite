@@ -760,4 +760,21 @@ public class ManufOrderController {
             .context("ids", ids)
             .map());
   }
+
+  public void updateLinesOutsourced(ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      response.setValue(
+          "$areLinesOutsourced", Beans.get(ManufOrderService.class).areLinesOutsourced(manufOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setOperationOrdersOutsourcing(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+
+    Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
+    response.setValue("operationOrderList", manufOrder.getOperationOrderList());
+  }
 }

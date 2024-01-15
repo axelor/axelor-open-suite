@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import java.time.LocalDateTime;
@@ -61,7 +62,7 @@ public interface ManufOrderWorkflowService {
   void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
       throws AxelorException;
 
-  void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException;
+  void createPurchaseOrders(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Method that will update planned dates of manuf order. Unlike the other methods, this will not
@@ -71,6 +72,8 @@ public interface ManufOrderWorkflowService {
    * @param manufOrder
    */
   void updatePlannedDates(ManufOrder manufOrder);
+
+  List<Partner> getOutsourcePartnersForGenerationPO(ManufOrder manufOrder) throws AxelorException;
 
   void setOperationOrderMaxPriority(ManufOrder manufOrder);
 
