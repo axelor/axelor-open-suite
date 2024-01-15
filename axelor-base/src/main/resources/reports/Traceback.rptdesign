@@ -287,7 +287,7 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
 				LangTranslate.message_value
 			END) as "translation"
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TracebackDS" id="4546">
             <property name="nullsOrdering">nulls lowest</property>

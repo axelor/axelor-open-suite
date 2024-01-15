@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,6 +40,8 @@ import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentManagementRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -729,6 +731,8 @@ public class AccountModule extends AxelorModule {
     bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
 
     bind(InvoiceTermReplaceService.class).to(InvoiceTermReplaceServiceImpl.class);
+
+    bind(InvoiceLineRepository.class).to(InvoiceLineManagementRepository.class);
 
     bind(CurrencyScaleServiceAccount.class).to(CurrencyScaleServiceAccountImpl.class);
 

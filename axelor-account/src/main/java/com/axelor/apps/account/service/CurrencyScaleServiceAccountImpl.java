@@ -1,11 +1,13 @@
 package com.axelor.apps.account.service;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
@@ -87,6 +89,26 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   }
 
   @Override
+  public BigDecimal getScaledValue(AnalyticMoveLine analyticMoveLine, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(analyticMoveLine.getCurrency()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(Company company, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(company));
+  }
+
+  @Override
+  public BigDecimal getScaledValue(PaymentVoucher paymentVoucher, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(paymentVoucher.getCurrency()));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(PaymentVoucher paymentVoucher, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getCompanyScale(paymentVoucher.getCompany()));
+  }
+
+  @Override
   public int getScale(Move move) {
     return this.getScale(move.getCurrency());
   }
@@ -150,6 +172,21 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     return invoicePayment.getInvoice() != null
         ? this.getCompanyScale(invoicePayment.getInvoice())
         : this.getCompanyScale(invoicePayment.getMove());
+  }
+
+  @Override
+  public int getScale(AnalyticMoveLine analyticMoveLine) {
+    return this.getScale(analyticMoveLine.getCurrency());
+  }
+
+  @Override
+  public int getScale(PaymentVoucher paymentVoucher) {
+    return this.getScale(paymentVoucher.getCurrency());
+  }
+
+  @Override
+  public int getCompanyScale(PaymentVoucher paymentVoucher) {
+    return this.getCompanyScale(paymentVoucher.getCompany());
   }
 
   @Override

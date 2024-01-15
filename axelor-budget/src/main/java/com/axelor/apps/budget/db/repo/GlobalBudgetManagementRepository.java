@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,8 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.GlobalBudget;
-import com.axelor.apps.budget.service.GlobalBudgetResetToolService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.inject.Beans;
 
 public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
@@ -31,5 +32,17 @@ public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
     Beans.get(GlobalBudgetResetToolService.class).resetGlobalBudget(copy);
 
     return copy;
+  }
+
+  @Override
+  public GlobalBudget save(GlobalBudget entity) {
+
+    GlobalBudgetToolsService globalBudgetToolsService = Beans.get(GlobalBudgetToolsService.class);
+
+    globalBudgetToolsService.fillGlobalBudgetOnBudget(entity);
+
+    entity = super.save(entity);
+
+    return entity;
   }
 }

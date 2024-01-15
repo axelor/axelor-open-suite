@@ -83,7 +83,7 @@
     </extend>
     <extend target="//panel[@name='incomingMovePanel']/field[@name='toStockLocation']">
       <attribute name="domain"
-        value="self.company = :company AND self.typeSelect = 1 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
+        value="self.company = :company AND self.typeSelect != 3 AND (self.usableOnPurchaseOrder = true AND :isReversion = false OR self.usableOnSaleOrder = true AND :isReversion = true)"/>
     </extend>
     <extend target="//panel[@name='configPanel']/field[@name='fromStockLocation']">
       <attribute name="domain"
@@ -382,19 +382,21 @@
   <search-filters id="supplychain-customer-deliveries-filter"
     name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove"
     title="Customer deliveries filters">
-    <filter title="Deliveries to prepare">
+    <filter name="customer-deliveries-filters-deliveries-to-prepare"
+      title="Deliveries to prepare">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Late Deliveries">
+    <filter name="customer-deliveries-filters-late-deliveries" title="Late Deliveries">
       <domain>self.estimatedDate &lt; CURRENT_DATE</domain>
     </filter>
-    <filter title="Deliveries History">
+    <filter name="customer-deliveries-filters-deliveries-history" title="Deliveries History">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Deliveries Cancelled">
+    <filter name="customer-deliveries-filters-deliveries-cancelled"
+      title="Deliveries Cancelled">
       <domain>self.statusSelect = 4</domain>
     </filter>
-    <filter title="Invoicing Blocking">
+    <filter name="customer-deliveries-filters-invoicing-blocking" title="Invoicing Blocking">
       <domain>self.invoiceBlocking IS TRUE AND (self.invoiceBlockedToDate IS NULL OR
         self.invoiceBlockedToDate &gt; CURRENT_DATE)</domain>
     </filter>

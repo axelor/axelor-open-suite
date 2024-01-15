@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -414,6 +414,22 @@ public class StockMoveLineController {
         response.setValue("realQty", stockMoveLine.getRealQty());
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(
+      ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine =
+          Beans.get(StockMoveLineRepository.class)
+              .find(request.getContext().asType(StockMoveLine.class).getId());
+      if (stockMoveLine != null) {
+        Beans.get(StockMoveLineService.class)
+            .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockMoveLine);
+        response.setReload(true);
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

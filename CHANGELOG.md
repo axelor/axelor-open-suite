@@ -1,3 +1,62 @@
+## [7.2.6] (2024-01-11)
+
+#### Fixed
+
+* Prospect: open grid view instead of kanban view by default.
+* Invoice: fixed supplier refund imputation on invoices.
+* Product: make the product unit field required for stock managed items.
+* Accounting: fixed error preventing the import of demo data.
+* Budget: fixed amount paid computation on move and invoices reconcile.
+* Reconcile: fixed invoice term amount remaining with multi currency.
+* Accounting: rename subrogation to third-party payer.
+* Invoice/Move/Budget: manage the negative imputation when the invoice is a refund or an advance or when the move is a reverse move.
+* Stock move: fixed unable to select external stock location on receipt.
+* Invoice: Duplicating an invoice now correctly empties the origin date and the supplier invoice number.
+* Invoice: fixed error when we change partner in supplier invoice with invoice lines.
+* Account clearance: fixed the way tax and vat system are managed.
+* Indicators: fixed results display.
+* Sale order: keep attached files and internal notes when merging sale orders.
+
+## [7.2.5] (2023-12-21)
+
+#### Fixed
+
+* Stock location: Issue on Edition of Location financial data report
+* Wrong quote sequence number on finalize
+* Invoice : Fix partner account related errors consistency when validating and ventilating
+* Invoice : Fix invoice term sum check not being done
+* [Ticket]: Fix Ticket timer buttons
+* INVOICE : currency not updated on first partner onChange
+* HR API - now computes total on kilometric expense line
+* Move Line : Prevent from updating tax line when the move is accounted
+* Custom accounting report : Disable group by account feature as it cannot be fixed until 8.1
+* GDPR: Fix response email couldn't be changed.
+* Doubtful customer : now works with multi currency
+* Custom accounting report : Fix an issue with custom rule priority
+* MAINTENANCE ORDER : fix NPE when we try to plan
+* Deposit Slip : Fix critical error when we try to load no one payment line
+* Move lettering : Fill the date of lettering when the status becomes Temporary
+* EXPENSE LINE: fix totalTax is not in readonly in form view when expense product blocks the taxes
+* Sale / Purchase / Invoice : Fix cases where price decimal config wasn't being used
+* Fixed asset : fix depreciation date when failover is complete
+* Move line : Fix move function original select being wrongly displayed
+* EVENT : some highlights conditions in grids use __datetime__
+* Invoice payment : Fix an issue where it was possible to set a higher amount that maximum one allowed
+* Printing template / Printing setting: fix translation issue in position fields.
+* Move line: Added reference of move line in sum's control error message
+* Sale Order/Purchase Order: Error when emptying contact
+* Bank order: Fixed issue in code generating move
+* Business Support: TaskDeadLine field not hidden when the app is installed anymore.
+* Sale order : Fix an issue when updating tax number
+* PurchaseOrderLine : rework budget override
+* Analytic account : Only accounts with an analytic level of 1 can be selected
+* MOVE TEMPLATE : Demo data - missing partner
+* UNITCOSTCALCULATION : Irrelevant message when no product has been found
+* Account clearance : Fix an issue where move lines could be created or edited there
+* Reconcile : Fix an issue where a payment was created for a reconcile with an account not being used for partner balance
+* Sale order : Fix technical error linked to budget management
+* Analytic Move Line : Fix type select when we create a new analytic move line from orders, invoices, contract and moves
+
 ## [7.2.4] (2023-12-07)
 
 #### Fixed
@@ -450,6 +509,8 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.6]: https://github.com/axelor/axelor-open-suite/compare/v7.2.5...v7.2.6
+[7.2.5]: https://github.com/axelor/axelor-open-suite/compare/v7.2.4...v7.2.5
 [7.2.4]: https://github.com/axelor/axelor-open-suite/compare/v7.2.3...v7.2.4
 [7.2.3]: https://github.com/axelor/axelor-open-suite/compare/v7.2.2...v7.2.3
 [7.2.2]: https://github.com/axelor/axelor-open-suite/compare/v7.2.1...v7.2.2

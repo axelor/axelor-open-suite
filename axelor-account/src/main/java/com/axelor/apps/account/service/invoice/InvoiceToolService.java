@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -347,6 +347,8 @@ public class InvoiceToolService {
     copy.setReasonOfRefusalToPayStr(null);
     copy.setSubrogationRelease(null);
     copy.setSubrogationReleaseMove(null);
+    copy.setOriginDate(null);
+    copy.setSupplierInvoiceNb(null);
   }
 
   /**
@@ -391,5 +393,17 @@ public class InvoiceToolService {
         && invoice.getCurrency() != null
         && invoice.getCompany() != null
         && !Objects.equals(invoice.getCurrency(), invoice.getCompany().getCurrency());
+  }
+
+  public static void checkUseForPartnerBalanceAndReconcileOk(Invoice invoice)
+      throws AxelorException {
+    if (invoice.getPartnerAccount() != null
+        && (!invoice.getPartnerAccount().getReconcileOk()
+            || !invoice.getPartnerAccount().getUseForPartnerBalance())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.ACCOUNT_USE_FOR_PARTNER_BALANCE_AND_RECONCILE_OK),
+          invoice.getPartnerAccount().getName());
+    }
   }
 }
