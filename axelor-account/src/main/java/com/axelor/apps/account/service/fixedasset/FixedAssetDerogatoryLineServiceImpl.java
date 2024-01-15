@@ -97,7 +97,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
             computeDerogatoryBalanceAmount(
                 previousFixedAssetDerogatoryLine,
                 line.getDerogatoryAmount(),
-                line.getIncomeDepreciationAmount()));
+                line.getIncomeDepreciationAmount(),
+                line.getFixedAsset()));
         previousFixedAssetDerogatoryLine = line;
       }
     }
@@ -119,7 +120,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
               extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_ECONOMIC),
               extractLineWithType(entry.getValue(), FixedAssetLineRepository.TYPE_SELECT_FISCAL),
               previousFixedAssetDerogatoryLine,
-              entry.getKey());
+              entry.getKey(),
+              fixedAsset);
       derogatoryLine.setFixedAsset(fixedAsset);
       fixedAssetDerogatoryLineList.add(derogatoryLine);
       previousFixedAssetDerogatoryLine = derogatoryLine;
@@ -132,7 +134,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       FixedAssetLine economicFixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
-      LocalDate date)
+      LocalDate date,
+      FixedAsset fixedAsset)
       throws AxelorException {
     // Initialisation of fiscal and economic depreciation
     BigDecimal depreciationAmount = BigDecimal.ZERO;
@@ -141,7 +144,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
           economicFixedAssetLine.getDepreciation() == null
               ? BigDecimal.ZERO
               : currencyScaleServiceAccount.getCompanyScaledValue(
-                  economicFixedAssetLine, economicFixedAssetLine.getDepreciation());
+                  fixedAsset, economicFixedAssetLine.getDepreciation());
     }
 
     BigDecimal fiscalDepreciationAmount = BigDecimal.ZERO;
@@ -150,7 +153,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
           fiscalFixedAssetLine.getDepreciation() == null
               ? BigDecimal.ZERO
               : currencyScaleServiceAccount.getCompanyScaledValue(
-                  fiscalFixedAssetLine, fiscalFixedAssetLine.getDepreciation());
+                  fixedAsset, fiscalFixedAssetLine.getDepreciation());
     }
 
     BigDecimal derogatoryAmount = null;
@@ -161,18 +164,19 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
       derogatoryAmount =
           currencyScaleServiceAccount.getCompanyScaledValue(
-              previousFixedAssetDerogatoryLine.getFixedAsset(),
-              fiscalDepreciationAmount.subtract(depreciationAmount));
+              fixedAsset, fiscalDepreciationAmount.subtract(depreciationAmount));
     } else {
       incomeDepreciationAmount =
           currencyScaleServiceAccount.getCompanyScaledValue(
-              previousFixedAssetDerogatoryLine.getFixedAsset(),
-              depreciationAmount.subtract(fiscalDepreciationAmount));
+              fixedAsset, depreciationAmount.subtract(fiscalDepreciationAmount));
     }
 
     BigDecimal derogatoryBalanceAmount =
         computeDerogatoryBalanceAmount(
-            previousFixedAssetDerogatoryLine, derogatoryAmount, incomeDepreciationAmount);
+            previousFixedAssetDerogatoryLine,
+            derogatoryAmount,
+            incomeDepreciationAmount,
+            fixedAsset);
     return createFixedAssetDerogatoryLine(
         date,
         depreciationAmount,
@@ -198,7 +202,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   protected BigDecimal computeDerogatoryBalanceAmount(
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
       BigDecimal derogatoryAmount,
-      BigDecimal incomeDepreciationAmount) {
+      BigDecimal incomeDepreciationAmount,
+      FixedAsset fixedAsset) {
     BigDecimal derogatoryBalanceAmount;
     BigDecimal previousDerogatoryBalanceAmount =
         previousFixedAssetDerogatoryLine == null
@@ -211,8 +216,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       derogatoryBalanceAmount =
           derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        previousFixedAssetDerogatoryLine.getFixedAsset(), derogatoryBalanceAmount);
+    return currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, derogatoryBalanceAmount);
   }
 
   @Override

@@ -75,7 +75,8 @@ public interface FixedAssetDerogatoryLineService {
       FixedAssetLine economicFixedAssetLine,
       FixedAssetLine fiscalFixedAssetLine,
       FixedAssetDerogatoryLine previousFixedAssetDerogatoryLine,
-      LocalDate date)
+      LocalDate date,
+      FixedAsset fixedAsset)
       throws AxelorException;
 
   /**
