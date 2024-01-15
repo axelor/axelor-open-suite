@@ -3,7 +3,7 @@ package com.axelor.apps.bankpayment.service.bankreconciliation.load;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationComputeService;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import java.util.List;
@@ -12,14 +12,14 @@ import org.apache.commons.collections.CollectionUtils;
 public abstract class BankReconciliationLoadBankStatementAbstractService {
 
   protected BankReconciliationRepository bankReconciliationRepository;
-  protected BankReconciliationService bankReconciliationService;
+  protected BankReconciliationComputeService bankReconciliationComputeService;
 
   @Inject
   public BankReconciliationLoadBankStatementAbstractService(
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationService bankReconciliationService) {
+      BankReconciliationComputeService bankReconciliationComputeService) {
     this.bankReconciliationRepository = bankReconciliationRepository;
-    this.bankReconciliationService = bankReconciliationService;
+    this.bankReconciliationComputeService = bankReconciliationComputeService;
   }
 
   public abstract void loadBankStatement(
@@ -31,7 +31,7 @@ public abstract class BankReconciliationLoadBankStatementAbstractService {
   public void loadBankStatementAndCompute(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
     loadBankStatement(bankReconciliation, includeBankStatement);
-    bankReconciliationService.compute(bankReconciliation);
+    bankReconciliationComputeService.compute(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
 

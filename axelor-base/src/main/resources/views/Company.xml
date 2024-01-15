@@ -10,7 +10,7 @@
   </grid>
 
   <form name="company-form" title="Company" model="com.axelor.apps.base.db.Company"
-    onSave="action-company-check-multi-banks,action-company-method-validate-locale" canNew="_canNew">
+    onSave="action-company-check-multi-banks" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
         <field name="logo" widget="Image" colSpan="12"/>
@@ -113,7 +113,6 @@
           grid-view="events-planning-grid" canNew="true"/>
         <field name="localization" colSpan="6" canEdit="false" grid-view="localization-grid"
           form-view="localization-form"/>
-        <field name="locale" colSpan="6" onChange="action-company-method-validate-locale"/>
         <field name="timezone" colSpan="6"/>
         <field name="taxNumberList" colSpan="12" canSelect="true" canNew="false"
           canEdit="false" domain="self.company.id = :id"
@@ -185,10 +184,6 @@
 
   <action-method name="action-company-check-multi-banks">
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
-  </action-method>
-
-  <action-method name="action-company-method-validate-locale">
-    <call class="com.axelor.apps.base.web.CompanyController" method="validateLocale"/>
   </action-method>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
