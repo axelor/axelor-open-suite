@@ -18,12 +18,73 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
+import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.db.QITask;
+import com.axelor.apps.quality.db.QualityConfig;
+import com.axelor.apps.quality.db.repo.QIActionDistributionRepository;
+import com.axelor.apps.quality.db.repo.QIAnalysisRepository;
+import com.axelor.apps.quality.service.config.QualityConfigService;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.i18n.I18n;
+import com.axelor.message.db.Message;
+import com.axelor.message.db.Template;
+import com.axelor.message.service.MessageService;
+import com.axelor.message.service.TemplateMessageService;
+import com.axelor.meta.MetaFiles;
+import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.mail.MessagingException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class QIAnalysisServiceImpl implements QIAnalysisService {
+
+  protected QIActionDistributionRepository qiActionDistributionRepository;
+  protected QualityConfigService qualityConfigService;
+  protected QIAnalysisRepository qiAnalysisRepository;
+  protected SequenceService sequenceService;
+  protected BirtTemplateService birtTemplateService;
+  protected TemplateMessageService templateMessageService;
+  protected MessageService messageService;
+  protected MetaFiles metaFiles;
+
+  @Inject
+  public QIAnalysisServiceImpl(
+      QIActionDistributionRepository qiActionDistributionRepository,
+      QIAnalysisRepository qiAnalysisRepository,
+      SequenceService sequenceService,
+      BirtTemplateService birtTemplateService,
+      MessageService messageService,
+      TemplateMessageService templateMessageService,
+      MetaFiles metaFiles,
+      QualityConfigService qualityConfigService) {
+    this.qiActionDistributionRepository = qiActionDistributionRepository;
+    this.qiAnalysisRepository = qiAnalysisRepository;
+    this.sequenceService = sequenceService;
+    this.birtTemplateService = birtTemplateService;
+    this.messageService = messageService;
+    this.templateMessageService = templateMessageService;
+    this.metaFiles = metaFiles;
+    this.qualityConfigService = qualityConfigService;
+  }
 
   @Override
   public int setAdvancement(QIAnalysis qiAnalysis) {
@@ -34,5 +95,163 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
     int totalAdvancement =
         qiTasksList.stream().map(QITask::getAdvancement).reduce((x, y) -> (x + y)).orElse(0);
     return totalAdvancement / qiTasksList.size();
+  }
+
+  @Override
+  public List<QIActionDistribution> generateQIActionDistribution(QIAnalysis qiAnalysis)
+      throws AxelorException, IOException {
+
+    Company company = qiAnalysis.getQi().getCompany();
+    QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
+    Sequence qiActionDistributionSequence =
+        qualityConfigService.getQiActionDistributionSequence(qualityConfig);
+
+    List<QITask> qiTasksList =
+        qiAnalysis.getQiTasksList().stream()
+            .filter(line -> line.isSelected())
+            .collect(Collectors.toList());
+
+    Map<Partner, List<QITask>> qiTasksGroupedByPartner =
+        qiTasksList.stream().collect(Collectors.groupingBy(QITask::getResponsiblePartner));
+    qiAnalysis = qiAnalysisRepository.find(qiAnalysis.getId());
+
+    List<QIActionDistribution> generatedQiActionDistributionList = new ArrayList<>();
+    for (Map.Entry<Partner, List<QITask>> entry : qiTasksGroupedByPartner.entrySet()) {
+      Partner responsiblePartner = entry.getKey();
+      List<QITask> qiTasks = entry.getValue();
+      createQIActionDistribution(
+          qiAnalysis,
+          company,
+          qiActionDistributionSequence,
+          generatedQiActionDistributionList,
+          responsiblePartner,
+          qiTasks);
+    }
+    return generatedQiActionDistributionList;
+  }
+
+  @Override
+  public List<QIActionDistribution> generateQIActionDistributionForOthers(
+      QIAnalysis qiAnalysis, Integer recepient, Partner recepientPartner)
+      throws AxelorException, IOException {
+
+    qiAnalysis = qiAnalysisRepository.find(qiAnalysis.getId());
+    Company company = qiAnalysis.getQi().getCompany();
+    QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
+    Sequence qiActionDistributionSequence =
+        qualityConfigService.getQiActionDistributionSequence(qualityConfig);
+
+    List<QIActionDistribution> generatedQiActionDistributionListForOthers = new ArrayList<>();
+    createQIActionDistributionForOthers(
+        qiAnalysis,
+        recepient,
+        recepientPartner,
+        company,
+        qiActionDistributionSequence,
+        generatedQiActionDistributionListForOthers);
+    return generatedQiActionDistributionListForOthers;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void createQIActionDistribution(
+      QIAnalysis qiAnalysis,
+      Company company,
+      Sequence qiActionDistributionSequence,
+      List<QIActionDistribution> generatedQiActionDistributionList,
+      Partner responsiblePartner,
+      List<QITask> qiTasks)
+      throws AxelorException, FileNotFoundException, IOException {
+    QIActionDistribution qiActionDistribution = new QIActionDistribution();
+    qiActionDistribution.setSequence(
+        sequenceService.getSequenceNumber(
+            qiActionDistributionSequence,
+            QIActionDistribution.class,
+            "sequence",
+            qiActionDistribution));
+    qiActionDistribution.setRecipient(qiTasks.get(0).getResponsible());
+    qiActionDistribution.setRecipientPartner(responsiblePartner);
+    qiActionDistribution.setQiDecision(qiTasks.get(0).getQiDecision());
+    qiActionDistribution.setQiTaskSet(new HashSet<>(qiTasks));
+    qiActionDistributionRepository.save(qiActionDistribution);
+    generatedQiActionDistributionList.add(qiActionDistribution);
+    qiAnalysis.addQiActionDistributionListItem(qiActionDistribution);
+    qiActionDistribution.setGeneratedFile(getGeneratedFile(company, qiActionDistribution));
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  protected void createQIActionDistributionForOthers(
+      QIAnalysis qiAnalysis,
+      Integer recepient,
+      Partner recepientPartner,
+      Company company,
+      Sequence qiActionDistributionSequence,
+      List<QIActionDistribution> generatedQiActionDistributionListForOthers)
+      throws AxelorException, FileNotFoundException, IOException {
+    QIActionDistribution qiActionDistribution = new QIActionDistribution();
+    qiActionDistribution.setSequence(
+        sequenceService.getSequenceNumber(
+            qiActionDistributionSequence,
+            QIActionDistribution.class,
+            "sequence",
+            qiActionDistribution));
+    qiActionDistribution.setRecipient(recepient);
+    qiActionDistribution.setRecipientPartner(recepientPartner);
+    qiActionDistributionRepository.save(qiActionDistribution);
+    generatedQiActionDistributionListForOthers.add(qiActionDistribution);
+    qiAnalysis.addQiActionDistributionListItem(qiActionDistribution);
+    qiActionDistribution.setGeneratedFile(getGeneratedFile(company, qiActionDistribution));
+  }
+
+  protected DMSFile getGeneratedFile(Company company, QIActionDistribution qiActionDistribution)
+      throws AxelorException, FileNotFoundException, IOException {
+    QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
+    BirtTemplate qiActionDistributionBirtTemplate =
+        qualityConfig.getQiActionDistributionBirtTemplate();
+    if (qiActionDistributionBirtTemplate == null) {
+      return null;
+    }
+    String fileName = getFileName(qiActionDistribution);
+    File file =
+        birtTemplateService.generateBirtTemplateFile(
+            qiActionDistributionBirtTemplate, qiActionDistribution, fileName);
+    DMSFile generatedFile = null;
+    if (file != null) {
+      try (InputStream is = new FileInputStream(file)) {
+        generatedFile = metaFiles.attach(is, file.getName(), qiActionDistribution);
+      }
+    }
+    return generatedFile;
+  }
+
+  protected String getFileName(QIActionDistribution qiActionDistribution) {
+    return I18n.get("QI Action distribution") + " " + qiActionDistribution.getSequence();
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
+  public void sendQIActionDistributions(
+      List<QIActionDistribution> qiActionDistributionList,
+      Template qiActionDistributionMessageTemplate)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException {
+    for (QIActionDistribution qiActionDistribution : qiActionDistributionList) {
+      qiActionDistribution = qiActionDistributionRepository.find(qiActionDistribution.getId());
+      if (qiActionDistribution.getGeneratedFile() == null) {
+        continue;
+      }
+      sendEmail(qiActionDistributionMessageTemplate, qiActionDistribution);
+      qiActionDistribution.setDistributionSent(true);
+      qiActionDistributionRepository.save(qiActionDistribution);
+    }
+  }
+
+  protected void sendEmail(Template template, QIActionDistribution qiActionDistribution)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException {
+    Message message = templateMessageService.generateMessage(qiActionDistribution, template);
+    message.addToEmailAddressSetItem(qiActionDistribution.getRecipientPartner().getEmailAddress());
+    messageService.attachMetaFiles(
+        message, Set.of(qiActionDistribution.getGeneratedFile().getMetaFile()));
+    messageService.sendByEmail(message);
   }
 }
