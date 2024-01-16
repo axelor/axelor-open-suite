@@ -1,6 +1,7 @@
 package com.axelor.apps.mobilesettings.rest.dto;
 
 import com.axelor.utils.api.ResponseStructure;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class MobileSettingsResponse extends ResponseStructure {
@@ -78,82 +79,102 @@ public class MobileSettingsResponse extends ResponseStructure {
     return apps;
   }
 
+  @JsonProperty(value = "isLoginUserQrcodeEnabled")
   public Boolean getLoginUserQrcodeEnabled() {
     return isLoginUserQrcodeEnabled;
   }
 
+  @JsonProperty(value = "isTrackerMessageEnabled")
   public Boolean getTrackerMessageEnabled() {
     return isTrackerMessageEnabled;
   }
 
+  @JsonProperty(value = "isInventoryValidationEnabled")
   public Boolean getInventoryValidationEnabled() {
     return isInventoryValidationEnabled;
   }
 
+  @JsonProperty(value = "isStockCorrectionValidationEnabled")
   public Boolean getStockCorrectionValidationEnabled() {
     return isStockCorrectionValidationEnabled;
   }
 
+  @JsonProperty(value = "isCustomerDeliveryLineAdditionEnabled")
   public Boolean getCustomerDeliveryLineAdditionEnabled() {
     return isCustomerDeliveryLineAdditionEnabled;
   }
 
+  @JsonProperty(value = "isSupplierArrivalLineAdditionEnabled")
   public Boolean getSupplierArrivalLineAdditionEnabled() {
     return isSupplierArrivalLineAdditionEnabled;
   }
 
+  @JsonProperty(value = "isVerifyCustomerDeliveryLineEnabled")
   public Boolean getVerifyCustomerDeliveryLineEnabled() {
     return isVerifyCustomerDeliveryLineEnabled;
   }
 
+  @JsonProperty(value = "isVerifySupplierArrivalLineEnabled")
   public Boolean getVerifySupplierArrivalLineEnabled() {
     return isVerifySupplierArrivalLineEnabled;
   }
 
+  @JsonProperty(value = "isVerifyInternalMoveLineEnabled")
   public Boolean getVerifyInternalMoveLineEnabled() {
     return isVerifyInternalMoveLineEnabled;
   }
 
+  @JsonProperty(value = "isVerifyInventoryLineEnabled")
   public Boolean getVerifyInventoryLineEnabled() {
     return isVerifyInventoryLineEnabled;
   }
 
+  @JsonProperty(value = "isMultiCurrencyEnabled")
   public Boolean getMultiCurrencyEnabled() {
     return isMultiCurrencyEnabled;
   }
 
+  @JsonProperty(value = "isExpenseProjectInvoicingEnabled")
   public Boolean getExpenseProjectInvoicingEnabled() {
     return isExpenseProjectInvoicingEnabled;
   }
 
+  @JsonProperty(value = "isKilometricExpenseLineAllowed")
   public Boolean getKilometricExpenseLineAllowed() {
     return isKilometricExpenseLineAllowed;
   }
 
+  @JsonProperty(value = "isManualCreationOfExpenseAllowed")
   public Boolean getManualCreationOfExpenseAllowed() {
     return isManualCreationOfExpenseAllowed;
   }
 
+  @JsonProperty(value = "isLineCreationOfExpenseDetailsAllowed")
   public Boolean getLineCreationOfExpenseDetailsAllowed() {
     return isLineCreationOfExpenseDetailsAllowed;
   }
 
+  @JsonProperty(value = "isManualCreationOfTimesheetAllowed")
   public Boolean getManualCreationOfTimesheetAllowed() {
     return isManualCreationOfTimesheetAllowed;
   }
 
+  @JsonProperty(value = "isLineCreationOfTimesheetDetailsAllowed")
   public Boolean getLineCreationOfTimesheetDetailsAllowed() {
     return isLineCreationOfTimesheetDetailsAllowed;
   }
 
+  @JsonProperty(value = "isEditionOfDateAllowed")
   public Boolean getEditionOfDateAllowed() {
     return isEditionOfDateAllowed;
   }
 
+  @JsonProperty(value = "isTimesheetProjectInvoicingEnabled")
   public Boolean getTimesheetProjectInvoicingEnabled() {
     return isTimesheetProjectInvoicingEnabled;
   }
 
+  @JsonProperty(value = "isStockLocationManagementEnabled")
   public Boolean getStockLocationManagementEnabled() {
     return isStockLocationManagementEnabled;
   }

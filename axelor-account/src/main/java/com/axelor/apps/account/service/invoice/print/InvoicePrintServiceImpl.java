@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -259,23 +259,23 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
-      String userLanguageCode =
+      String userLocalizationCode =
           Optional.ofNullable(AuthUtils.getUser())
               .map(User::getLocalization)
               .map(Localization::getCode)
               .orElse(null);
-      String companyLanguageCode =
+      String companyLocalizationCode =
           invoice.getCompany().getLocalization() != null
               ? invoice.getCompany().getLocalization().getCode()
-              : userLanguageCode;
-      String partnerLanguageCode =
+              : userLocalizationCode;
+      String partnerLocalizationCode =
           invoice.getPartner().getLocalization() != null
               ? invoice.getPartner().getLocalization().getCode()
-              : userLanguageCode;
+              : userLocalizationCode;
       locale =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()
-              ? companyLanguageCode
-              : partnerLanguageCode;
+              ? companyLocalizationCode
+              : partnerLocalizationCode;
     }
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
