@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.BillOfMaterialImportLine;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import java.util.Objects;
 
 public class BillOfMaterialImportLineServiceImpl implements BillOfMaterialImportLineService {
 
@@ -54,6 +55,10 @@ public class BillOfMaterialImportLineServiceImpl implements BillOfMaterialImport
   @Override
   public Boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine) {
     Product product = billOfMaterialImportLine.getProduct();
-    return product != null && product.getIsCreatedFromBOMImport();
+    return product != null
+        && product.getCreatedFromBOMImportId() != null
+        && Objects.equals(
+            product.getCreatedFromBOMImportId(),
+            billOfMaterialImportLine.getBillOfMaterialImport().getId());
   }
 }

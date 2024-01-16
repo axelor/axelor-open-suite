@@ -22,7 +22,7 @@
       <field name="documentMetaFile" widget="binary-link"/>
       <field name="mainBillOfMaterialGenerated" readonly="true"/>
     </panel>
-    <panel-tabs>
+    <panel-tabs showIf="statusSelect > 1">
       <panel-related field="billOfMaterialImportLineList"
         name="billOfMaterialImportLineListPanel" title="Result grid" colSpan="12" orderBy="bomLevel"
         grid="bill-of-material-import-line-grid" form-view="bill-of-material-import-line-form"/>

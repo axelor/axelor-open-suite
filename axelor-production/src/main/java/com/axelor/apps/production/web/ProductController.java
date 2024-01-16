@@ -61,7 +61,8 @@ public class ProductController {
       response.setValue("code", billOfMaterialImportLine.getCode());
       response.setValue("name", billOfMaterialImportLine.getName());
       response.setValue("productTypeSelect", ProductRepository.PRODUCT_TYPE_STORABLE);
-      response.setValue("isCreatedFromBOMImport", true);
+      response.setValue(
+          "createdFromBOMImportId", billOfMaterialImportLine.getBillOfMaterialImport().getId());
     }
   }
 }

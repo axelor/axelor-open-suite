@@ -25,7 +25,7 @@
     <many-to-one name="productApproval"
       ref="com.axelor.apps.production.db.ProductApproval" title="Approval"/>
 
-    <boolean name="isCreatedFromBOMImport"/>
+    <long name="createdFromBOMImportId"/>
 
     <extra-code>
 	   		<![CDATA[
