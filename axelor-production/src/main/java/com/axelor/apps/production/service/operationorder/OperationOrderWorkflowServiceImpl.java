@@ -104,7 +104,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(OperationOrder operationOrder) throws AxelorException {
-    operationOrderPlanningService.plan(List.of(operationOrder));
+    operationOrderPlanningService.plan(List.of(operationOrder), false);
   }
 
   /**

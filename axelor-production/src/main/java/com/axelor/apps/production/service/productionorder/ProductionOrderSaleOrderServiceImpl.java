@@ -198,8 +198,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
           productionConfigService.getProductionConfig(saleOrder.getCompany());
 
       LocalDateTime endDate = null;
-      if (productionConfig.getScheduling()
-          != ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
+      Integer scheduling = productionConfig.getScheduling();
+      if (scheduling != ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
         if (saleOrderLine.getEstimatedShippingDate() == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -209,8 +209,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
         }
         endDate = saleOrderLine.getEstimatedShippingDate().atStartOfDay();
         // Start date will be filled at plan
-        startDate = null;
       }
+      startDate = null;
 
       List<BillOfMaterial> tempChildBomList = new ArrayList<>();
 
@@ -218,6 +218,11 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
 
       for (BillOfMaterial childBom : childBomList) {
 
+        ManufOrder manufOrderParent = subBomManufOrderParentMap.get(childBom);
+        if (manufOrderParent != null
+            && scheduling == ProductionConfigRepository.AT_THE_LATEST_SCHEDULING) {
+          endDate = manufOrderParent.getPlannedStartDateT();
+        }
         ManufOrder manufOrder =
             productionOrderService.generateManufOrder(
                 childBom.getProduct(),
@@ -228,7 +233,8 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
                 saleOrder,
                 saleOrderLine,
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_SALE_ORDER,
-                subBomManufOrderParentMap.get(childBom));
+                manufOrderParent,
+                true);
 
         productionOrderService.addManufOrder(productionOrder, manufOrder);
 

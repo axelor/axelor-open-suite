@@ -38,7 +38,7 @@ public class ManufOrderRestServiceImpl implements ManufOrderRestService {
       throws AxelorException {
     if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT
         && targetStatus == ManufOrderRepository.STATUS_PLANNED) {
-      manufOrderWorkflowService.plan(manufOrder);
+      manufOrderWorkflowService.plan(manufOrder, false);
     } else if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_PLANNED
         && targetStatus == ManufOrderRepository.STATUS_IN_PROGRESS) {
       manufOrderWorkflowService.start(manufOrder);

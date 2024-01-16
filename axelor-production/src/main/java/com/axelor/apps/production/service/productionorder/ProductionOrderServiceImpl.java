@@ -151,7 +151,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             saleOrder,
             saleOrderLine,
             manufOrderOriginType,
-            null);
+            null,
+            false);
 
     return addManufOrder(productionOrder, manufOrder);
   }
@@ -177,7 +178,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
       ManufOrderOriginType manufOrderOriginType,
-      ManufOrder manufOrderParent)
+      ManufOrder manufOrderParent,
+      boolean isMultiLevelPlanning)
       throws AxelorException {
     ManufOrder manufOrder =
         manufOrderService.generateManufOrder(
@@ -188,7 +190,8 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
             billOfMaterial,
             startDate,
             endDate,
-            manufOrderOriginType);
+            manufOrderOriginType,
+            isMultiLevelPlanning);
 
     if (manufOrder != null) {
       if (saleOrder != null) {

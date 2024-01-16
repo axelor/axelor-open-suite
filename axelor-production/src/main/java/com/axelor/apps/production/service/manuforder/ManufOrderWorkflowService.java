@@ -28,11 +28,14 @@ import java.util.List;
 
 public interface ManufOrderWorkflowService {
 
-  ManufOrder plan(ManufOrder manufOrder) throws AxelorException;
+  ManufOrder plan(ManufOrder manufOrder, boolean isMultiLevelPlanning) throws AxelorException;
 
-  List<ManufOrder> plan(List<ManufOrder> manufOrderList) throws AxelorException;
+  List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean isMultiLevelPlanning)
+      throws AxelorException;
 
-  List<ManufOrder> plan(List<ManufOrder> manufOrderList, boolean quickSolve) throws AxelorException;
+  List<ManufOrder> plan(
+      List<ManufOrder> manufOrderList, boolean quickSolve, boolean isMultiLevelPlanning)
+      throws AxelorException;
 
   void start(ManufOrder manufOrder) throws AxelorException;
 
