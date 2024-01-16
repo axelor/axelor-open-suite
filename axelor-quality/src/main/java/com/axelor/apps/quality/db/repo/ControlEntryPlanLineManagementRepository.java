@@ -12,7 +12,7 @@ public class ControlEntryPlanLineManagementRepository extends ControlEntryPlanLi
   public ControlEntryPlanLine save(ControlEntryPlanLine entity) {
 
     try {
-      if (entity.getTypeSelect().equals(TYPE_ENTRY_SAMPLE_LINE)) {
+      if (TYPE_ENTRY_SAMPLE_LINE == entity.getTypeSelect()) {
         Beans.get(ControlEntryPlanLineService.class).conformityEval(entity);
       }
       if (entity.getControlEntrySample() != null) {

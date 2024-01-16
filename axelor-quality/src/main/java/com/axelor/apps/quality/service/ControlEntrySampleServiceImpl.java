@@ -48,9 +48,8 @@ public class ControlEntrySampleServiceImpl implements ControlEntrySampleService 
         && controlEntrySample.getControlEntryPlanLinesList().stream()
             .allMatch(
                 controlEntryPlanLine ->
-                    controlEntryPlanLine
-                        .getResultSelect()
-                        .equals(ControlEntryPlanLineRepository.RESULT_COMPLIANT))) {
+                    ControlEntryPlanLineRepository.RESULT_COMPLIANT
+                        == controlEntryPlanLine.getResultSelect())) {
       controlEntrySample.setResultSelect(ControlEntrySampleRepository.RESULT_COMPLIANT);
     } else {
       controlEntrySample.setResultSelect(ControlEntrySampleRepository.RESULT_NOT_COMPLIANT);

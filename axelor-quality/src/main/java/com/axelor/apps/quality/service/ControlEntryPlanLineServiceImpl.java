@@ -36,8 +36,8 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
 
     Objects.requireNonNull(controlEntryPlanLine);
 
-    if (controlEntryPlanLine.getTypeSelect()
-        == ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE) {
+    if (ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE
+        == controlEntryPlanLine.getTypeSelect()) {
       eval(controlEntryPlanLine);
     }
   }
@@ -88,9 +88,7 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
 
     Objects.requireNonNull(controlEntryPlanLine);
 
-    if (!controlEntryPlanLine
-        .getTypeSelect()
-        .equals(ControlEntryPlanLineRepository.TYPE_PLAN_LINE)) {
+    if (ControlEntryPlanLineRepository.TYPE_PLAN_LINE != controlEntryPlanLine.getTypeSelect()) {
       return null;
     }
     ControlEntryPlanLine res = controlEntryPlanLineRepository.copy(controlEntryPlanLine, false);
