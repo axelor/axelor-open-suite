@@ -39,7 +39,6 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -445,8 +444,9 @@ public class FixedAssetController {
                   ((LinkedHashMap<String, Object>) request.getContext().get("_fixedAsset"))
                       .get("qty"));
       Company company =
-          Beans.get(CompanyRepository.class)
-              .find(Long.parseLong(request.getContext().get("_id").toString()));
+          Beans.get(FixedAssetRepository.class)
+              .find(Long.parseLong(request.getContext().get("_id").toString()))
+              .getCompany();
 
       response.setAttr(
           "splitTypeSelect",

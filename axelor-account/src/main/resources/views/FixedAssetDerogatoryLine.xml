@@ -45,7 +45,7 @@
       <field name="isSimulated" widget="boolean" colSpan="3"
         showIf="statusSelect == 1 ||  $get('fixedAsset.journal.authorizeSimulatedMove') == true"/>
       <field name="fixedAsset.statusSelect" hidden="true"/>
-      <field name="$currencyNumberOfDecimals" hidden="false"/>
+      <field name="$currencyNumberOfDecimals" hidden="true"/>
     </panel>
   </form>
 
