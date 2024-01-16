@@ -27,7 +27,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.supplychain.db.ProductReservation;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.ProductReservationService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.common.ObjectUtils;
@@ -39,6 +42,7 @@ import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -72,6 +76,60 @@ public class StockMoveLineController {
     }
 
     return moveLines;
+  }
+
+  public void fillAllocationWizard(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().get("_id") != null) {
+        Long stockMoveLineId = Long.valueOf(request.getContext().get("_id").toString());
+        StockMoveLine stockMoveLine =
+            Beans.get(StockMoveLineRepository.class).find(stockMoveLineId);
+        List<ProductReservation> productReservations =
+            Beans.get(ProductReservationRepository.class)
+                .all()
+                .filter(
+                    "self.stockLocation = :stockLocation AND self.status = :status AND self.product = :product")
+                .bind("stockLocation", stockMoveLine.getFromStockLocation())
+                .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
+                .bind("product", stockMoveLine.getProduct())
+                .fetch();
+        response.setValue("$productReservationSelect", productReservations);
+        response.setValue("$realQty", stockMoveLine.getRealQty());
+        response.setValue(
+            "$availableStockQty",
+            Beans.get(ProductReservationService.class)
+                .getAvailableQtyForAllocation(
+                    stockMoveLine.getProduct(), stockMoveLine.getFromStockLocation()));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateAllocations(ActionRequest request, ActionResponse response) {
+    try {
+      if (request.getContext().get("_id") != null) {
+        Long stockMoveLineId = Long.valueOf(request.getContext().get("_id").toString());
+        StockMoveLine stockMoveLine =
+            Beans.get(StockMoveLineRepository.class).find(stockMoveLineId);
+        List<HashMap<String, Object>> productReservationList =
+            (List<HashMap<String, Object>>) request.getContext().get("productReservationSelect");
+        Boolean fillWithStock = false;
+        if (request.getContext().get("useStock") != null) {
+          fillWithStock = Boolean.parseBoolean(request.getContext().get("useStock").toString());
+        }
+        if ((productReservationList != null && !productReservationList.isEmpty())
+            || fillWithStock) {
+          Beans.get(StockMoveLineServiceSupplychain.class)
+              .updateAllocationFromStockMoveLine(
+                  productReservationList, stockMoveLine, fillWithStock);
+        }
+      }
+      response.setCanClose(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public List<StockMoveLine> updateRealQty(

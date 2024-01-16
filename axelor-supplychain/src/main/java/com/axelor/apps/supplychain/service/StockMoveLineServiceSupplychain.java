@@ -29,6 +29,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 public interface StockMoveLineServiceSupplychain {
@@ -107,4 +108,14 @@ public interface StockMoveLineServiceSupplychain {
       throws AxelorException;
 
   Batch validateCutOffBatch(List<Long> recordIdList, Long batchId) throws AxelorException;
+
+  void updateAllocationFromStockMoveLine(
+      List<HashMap<String, Object>> productReservationList,
+      StockMoveLine stockMoveLine,
+      Boolean fillWithStock)
+      throws AxelorException;
+
+  boolean isAllocationToBeSelected(StockMoveLine stockMoveLine);
+
+  void realizeProductReservations(StockMoveLine stockMoveLine) throws AxelorException;
 }

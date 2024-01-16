@@ -53,9 +53,12 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
+import com.axelor.apps.supplychain.db.ProductReservation;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
+import com.axelor.apps.supplychain.db.repo.ProductReservationRepository;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
@@ -64,10 +67,12 @@ import com.axelor.inject.Beans;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -81,6 +86,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
   protected SupplychainBatchRepository supplychainBatchRepo;
   protected SupplyChainConfigService supplychainConfigService;
   protected InvoiceLineRepository invoiceLineRepository;
+  protected ProductReservationRepository productReservationRepository;
+  protected AppSupplychainService appSupplychainService;
+  protected ProductReservationService productReservationService;
 
   @Inject
   public StockMoveLineServiceSupplychainImpl(
@@ -100,7 +108,10 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       SupplychainBatchRepository supplychainBatchRepo,
       SupplyChainConfigService supplychainConfigService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      ProductReservationRepository productReservationRepository,
+      ProductReservationService productReservationService,
+      AppSupplychainService appSupplychainService) {
     super(
         trackingNumberService,
         appBaseService,
@@ -119,6 +130,9 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     this.supplychainBatchRepo = supplychainBatchRepo;
     this.supplychainConfigService = supplychainConfigService;
     this.invoiceLineRepository = invoiceLineRepository;
+    this.productReservationRepository = productReservationRepository;
+    this.productReservationService = productReservationService;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -650,5 +664,105 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
           .fetch();
     }
     return new ArrayList<>();
+  }
+
+  @Override
+  @Transactional
+  public void updateAllocationFromStockMoveLine(
+      List<HashMap<String, Object>> productReservationList,
+      StockMoveLine stockMoveLine,
+      Boolean fillWithStock)
+      throws AxelorException {
+    BigDecimal filledQty = BigDecimal.ZERO;
+    if (productReservationList != null) {
+      for (HashMap<String, Object> productReservationSelected : productReservationList) {
+        if (productReservationSelected.get("selectQty") != null) {
+          BigDecimal selectedQty =
+              new BigDecimal(productReservationSelected.get("selectQty").toString());
+          if (BigDecimal.ZERO.compareTo(selectedQty) != 0) {
+            ProductReservation productReservation =
+                productReservationRepository.find(
+                    Long.valueOf(productReservationSelected.get("id").toString()));
+            if (productReservation.getQty().compareTo(selectedQty) != 0) {
+              productReservation.setQty(productReservation.getQty().subtract(selectedQty));
+              ProductReservation productReservationDuplicated =
+                  productReservationRepository.copy(productReservation, true);
+              productReservationDuplicated.setQty(selectedQty);
+              productReservationDuplicated.setOriginStockMoveLine(stockMoveLine);
+              productReservationRepository.save(productReservation);
+              productReservationRepository.save(productReservationDuplicated);
+            } else {
+              productReservation.setOriginStockMoveLine(stockMoveLine);
+              productReservationRepository.save(productReservation);
+            }
+            filledQty.add(selectedQty);
+          }
+        }
+      }
+    }
+    if ((!fillWithStock && filledQty.compareTo(stockMoveLine.getRealQty()) != 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_LINE_NOT_ENOUGH_QTY_SELECTED));
+    }
+  }
+
+  @Override
+  public boolean isAllocationToBeSelected(StockMoveLine stockMoveLine) {
+    if (stockMoveLine
+            .getQty()
+            .compareTo(
+                stockMoveLine.getProductReservationList().stream()
+                    .map(it -> it.getQty())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add))
+        != 0) {
+      List<ProductReservation> productReservations =
+          Beans.get(ProductReservationRepository.class)
+              .all()
+              .filter(
+                  "self.stockLocation = :stockLocation AND self.status = :status AND self.product = :product AND self.originStockMoveLine != :stockMoveLine")
+              .bind("stockLocation", stockMoveLine.getFromStockLocation())
+              .bind("status", ProductReservationRepository.PRODUCT_RESERVATION_STATUS_IN_PROGRESS)
+              .bind("product", stockMoveLine.getProduct())
+              .bind("stockMoveLine", stockMoveLine)
+              .fetch();
+      if (productReservations.stream()
+          .anyMatch(
+              it ->
+                  stockMoveLine.getSaleOrderLine() != null
+                      && stockMoveLine.getSaleOrderLine().equals(it.getOriginSaleOrderLine())
+                      && stockMoveLine.getQty().compareTo(it.getQty()) <= 0)) {
+        return false;
+      }
+      if (productReservations.stream()
+              .map(it -> it.getOriginSaleOrderLine())
+              .distinct()
+              .collect(Collectors.toList())
+              .size()
+          > 1) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void realizeProductReservations(StockMoveLine stockMoveLine) throws AxelorException {
+    if (appSupplychainService.getAppSupplychain().getManageStockReservation()) {
+      BigDecimal allocatedQty =
+          stockMoveLine.getProductReservationList().stream()
+              .map(it -> it.getQty())
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      if (allocatedQty.compareTo(stockMoveLine.getRealQty()) != 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(SupplychainExceptionMessage.STOCK_MOVE_LINE_INCORECT_ALLOCATION));
+      } else {
+        for (ProductReservation productReservation : stockMoveLine.getProductReservationList()) {
+          productReservationService.realizeProductReservation(
+              productReservation, stockMoveLine.getToStockLocation());
+        }
+      }
+    }
   }
 }
