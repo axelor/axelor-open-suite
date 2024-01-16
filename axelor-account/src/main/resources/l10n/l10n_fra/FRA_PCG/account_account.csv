@@ -351,37 +351,37 @@
 351200;351000;"Produits intermédiaires (ou groupe) B";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
 355000;350;"Produits finis";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
 355100;355000;"Produits finis (ou groupe) A";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
-355200;355000;"Produits finis (ou groupe) B";"FRA_PCG4";"false";2;;;;;;;0;"false";"NDAS";"false";1
-358000;350;"Produits résiduels (ou matières de récupération)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-358100;358000;"Déchets";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-358500;358000;"Rebuts";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-358600;358000;"Matières de récupération";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
+355200;355000;"Produits finis (ou groupe) B";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
+358000;350;"Produits résiduels (ou matières de récupération)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+358100;358000;"Déchets";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+358500;358000;"Rebuts";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+358600;358000;"Matières de récupération";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
 360;"CL3";"Stocks provenant d'immobilisations";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 370;"CL3";"Stocks de marchandises";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
-371000;370;"Marchandises (ou groupe) A";"FRA_PCG4";"false";2;;;;;;;0;"false";"NDAS";"false";1
-372000;370;"Marchandises (ou groupe) B";"FRA_PCG4";"false";2;;;;;;;0;"false";"NDAS";"false";1
+371000;370;"Marchandises (ou groupe) A";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
+372000;370;"Marchandises (ou groupe) B";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
 380;"CL3";"Stocks en voie d'acheminement, mis en dépôt ou donnés en consignation";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 390;"CL3";"Dépréciations des stocks et en-cours";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
-391000;390;"Dépréciations des matières premières (et fournitures)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-391100;391000;"Matières (ou groupe) A";"FRA_PCG4";"false";0;;;;;;;0;"false";"NDAS";"false";1
-391200;391000;"Matières (ou groupe) B";"FRA_PCG4";"false";2;;;;;;;0;"false";"NDAS";"false";1
-391700;391000;"Fournitures A, B, C, ..";"FRA_PCG4";"false";2;;;;;;;0;"false";"NDAS";"false";1
-392000;390;"Dépréciations des autres approvisionnements";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-392100;392000;"Matières consommables (même ventilation que celle du compte 321)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-392200;392000;"Fournitures consommables (même ventilation que celle du compte 322)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-392600;392000;"Emballages (même ventilation que celle du compte 326)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-393000;390;"Dépréciations des en-cours de production de biens";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-393100;393000;"Produits en cours (même ventilation que celle du compte 331)";"FRA_PCG4";"true";1;;;;;;;0;"false";"NDAS";"false";1
-393500;393000;"Travaux en cours (même ventilation que celle du compte 335)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-394000;390;"Dépréciations des en-cours de production de services";"FRA_PCG4";"true";1;;;;;;;0;"false";"NDAS";"false";1
-394100;394000;"Études en cours (même ventilation que celle du compte 341)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-394500;394000;"Prestations de services en cours (même ventilation que celle du compte 345)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-395000;390;"Dépréciations des stocks de produits";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-395100;395000;"Produits intermédiaires (même ventilation que celle du compte 351)";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-395500;395000;"Produits finis (même ventilation que celle du compte 355)";"FRA_PCG4";"true";0;;;;;;;0;"false";"NDAS";"false";1
-397000;390;"Dépréciations des stocks de marchandises";"FRA_PCG4";"true";2;;;;;;;0;"false";"NDAS";"false";1
-397100;397000;"Marchandises (ou groupe) A";"FRA_PCG4";"false";0;;;;;;;0;"false";"NDAS";"false";1
-397200;397000;"Marchandises (ou groupe) B";"FRA_PCG4";"false";2;;;;;;;0;"false";"NDAS";"false";1
+391000;390;"Dépréciations des matières premières (et fournitures)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+391100;391000;"Matières (ou groupe) A";"FRA_PCG120";"false";0;;;;;;;0;"false";"NDAS";"false";1
+391200;391000;"Matières (ou groupe) B";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
+391700;391000;"Fournitures A, B, C, ..";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
+392000;390;"Dépréciations des autres approvisionnements";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+392100;392000;"Matières consommables (même ventilation que celle du compte 321)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+392200;392000;"Fournitures consommables (même ventilation que celle du compte 322)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+392600;392000;"Emballages (même ventilation que celle du compte 326)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+393000;390;"Dépréciations des en-cours de production de biens";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+393100;393000;"Produits en cours (même ventilation que celle du compte 331)";"FRA_PCG120";"true";1;;;;;;;0;"false";"NDAS";"false";1
+393500;393000;"Travaux en cours (même ventilation que celle du compte 335)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+394000;390;"Dépréciations des en-cours de production de services";"FRA_PCG120";"true";1;;;;;;;0;"false";"NDAS";"false";1
+394100;394000;"Études en cours (même ventilation que celle du compte 341)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+394500;394000;"Prestations de services en cours (même ventilation que celle du compte 345)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+395000;390;"Dépréciations des stocks de produits";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+395100;395000;"Produits intermédiaires (même ventilation que celle du compte 351)";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+395500;395000;"Produits finis (même ventilation que celle du compte 355)";"FRA_PCG120";"true";0;;;;;;;0;"false";"NDAS";"false";1
+397000;390;"Dépréciations des stocks de marchandises";"FRA_PCG120";"true";2;;;;;;;0;"false";"NDAS";"false";1
+397100;397000;"Marchandises (ou groupe) A";"FRA_PCG120";"false";0;;;;;;;0;"false";"NDAS";"false";1
+397200;397000;"Marchandises (ou groupe) B";"FRA_PCG120";"false";2;;;;;;;0;"false";"NDAS";"false";1
 400;"CL4";"Fournisseurs et comptes rattachés";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 400000;400;"Fournisseurs et comptes rattachés ";"FRA_PCG240";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 401;400;"Fournisseurs";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
@@ -398,11 +398,11 @@
 408800;408000;"Fournisseurs - Intérêts courus";"FRA_PCG240";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 409;400;"Fournisseurs débiteurs";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 409100;409;"Fournisseurs - Avances et acomptes versés sur commandes";"FRA_PCG240";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
-409600;409;"Fournisseurs - Créances pour emballages et matériel à rendre";"FRA_PCG4";"true";2;"true";;;;;;0;"false";"NDAS";"false";1
-409700;409;"Fournisseurs - Autres avoirs";"FRA_PCG4";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
-409710;409700;"Fournisseurs d'exploitation";"FRA_PCG4";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
-409740;409700;"Fournisseurs d'immobilisations";"FRA_PCG4";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
-409800;409;"Rabais, remises, ristournes à obtenir et autres avoirs non encore reçus";"FRA_PCG4";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
+409600;409;"Fournisseurs - Créances pour emballages et matériel à rendre";"FRA_PCG120";"true";2;"true";;;;;;0;"false";"NDAS";"false";1
+409700;409;"Fournisseurs - Autres avoirs";"FRA_PCG120";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
+409710;409700;"Fournisseurs d'exploitation";"FRA_PCG120";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
+409740;409700;"Fournisseurs d'immobilisations";"FRA_PCG120";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
+409800;409;"Rabais, remises, ristournes à obtenir et autres avoirs non encore reçus";"FRA_PCG120";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 410;"CL4";"Clients et comptes rattachés";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 410000;410;"Clients et comptes rattachés ";"FRA_PCG140";"true";2;"true";;"true";;;;0;"false";"NDAS";"false";1
 411;410;"Clients";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
@@ -608,10 +608,10 @@
 519300;519000;"Mobilisation de créances nées à l'étranger";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";1
 519800;519000;"Intérêts courus sur concours bancaires courants";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";1
 520;"CL5";"Instruments financiers à terme et jetons détenus";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
-521000;520;"Instruments financiers à terme";;"true";0;;;;;;;;;;;
-522000;520;"Jetons détenus";;"true";0;;;;;;;;;;;
-523000;520;"Jetons auto-détenus";;"true";0;;;;;;;;;;;
-524000;520;"Jetons empruntés";;"true";0;;;;;;;;;;;
+521000;520;"Instruments financiers à terme";"FRA_PCG130";"true";0;;;;;;;;;;;
+522000;520;"Jetons détenus";"FRA_PCG130";"true";0;;;;;;;;;;;
+523000;520;"Jetons auto-détenus";"FRA_PCG130";"true";0;;;;;;;;;;;
+524000;520;"Jetons empruntés";"FRA_PCG130";"true";0;;;;;;;;;;;
 530;"CL5";"Caisse";"FRA_PCG0";"true";2;;;;;;;0;"false";"NDAS";"false";1
 531000;530;"Caisse siège social";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";1
 531100;531000;"Caisse en monnaie nationale";"FRA_PCG130";"true";2;;;;;;;0;"false";"NDAS";"false";1
