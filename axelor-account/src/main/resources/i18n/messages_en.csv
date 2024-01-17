@@ -2139,6 +2139,7 @@
 "Monthly direct debit(s) treated",,,
 "Monthly payments",,,
 "Move",,,
+"Move %s has a move line with a tax account but no tax assigned. Please fix this in order to proceed with this reconcile.","L'écriture %s possède une ligne associée à un compte de taxe mais sans taxe renseignée. Merci de corriger cela afin de pouvoir procéder à cette réconciliation.",,
 "Move Consistency Control",,,
 "Move Description",,,
 "Move From Template",,,
