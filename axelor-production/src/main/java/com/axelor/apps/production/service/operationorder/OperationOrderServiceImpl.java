@@ -338,7 +338,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             .bind("statusStandby", OperationOrderRepository.STATUS_STANDBY)
             .bind("operationOrderId", operationOrder.getId())
             .order("priority")
-            .order("plannedStartWithWaitingDateT")
+            .order("plannedStartDateT")
             .fetchOne();
 
     LocalDateTime manufOrderPlannedEndDateT = manufOrder.getPlannedEndDateT();
