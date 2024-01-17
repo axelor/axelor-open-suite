@@ -44,7 +44,7 @@ public class MobileDashboardResponseComputeServiceImpl
         new MobileDashboardResponse(mobileDashboard, mobileDashboardLineResponseList));
   }
 
-  protected Boolean checkAuthorizationToDashboard(Set<Role> authorizedRoleSet) {
+  protected boolean checkAuthorizationToDashboard(Set<Role> authorizedRoleSet) {
     if (authorizedRoleSet == null || authorizedRoleSet.isEmpty()) {
       return true;
     }
