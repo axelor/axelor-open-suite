@@ -51,7 +51,7 @@ public class BankReconciliationValidateService {
   protected MoveLineCreateService moveLineCreateService;
   protected BankReconciliationRepository bankReconciliationRepository;
   protected BankReconciliationLineService bankReconciliationLineService;
-  protected BankReconciliationService bankReconciliationService;
+  protected BankReconciliationComputeService bankReconciliationComputeService;
 
   @Inject
   public BankReconciliationValidateService(
@@ -62,7 +62,7 @@ public class BankReconciliationValidateService {
       MoveLineCreateService moveLineCreateService,
       BankReconciliationRepository bankReconciliationRepository,
       BankReconciliationLineService bankReconciliationLineService,
-      BankReconciliationService bankReconciliationService) {
+      BankReconciliationComputeService bankReconciliationComputeService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
@@ -71,7 +71,7 @@ public class BankReconciliationValidateService {
     this.moveLineCreateService = moveLineCreateService;
     this.bankReconciliationRepository = bankReconciliationRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
-    this.bankReconciliationService = bankReconciliationService;
+    this.bankReconciliationComputeService = bankReconciliationComputeService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -102,7 +102,7 @@ public class BankReconciliationValidateService {
         Beans.get(AppBaseService.class)
             .getTodayDateTime(bankReconciliation.getCompany())
             .toLocalDateTime());
-    bankReconciliation = bankReconciliationService.computeEndingBalance(bankReconciliation);
+    bankReconciliation = bankReconciliationComputeService.computeEndingBalance(bankReconciliation);
     bankReconciliationRepository.save(bankReconciliation);
   }
 

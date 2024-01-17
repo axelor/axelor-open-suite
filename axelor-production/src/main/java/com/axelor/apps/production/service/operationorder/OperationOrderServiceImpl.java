@@ -41,7 +41,6 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -67,6 +66,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProdProcessLineService prodProcessLineService;
   protected OperationOrderRepository operationOrderRepository;
+  protected OperationOrderOutsourceService operationOrderOutsourceService;
 
   @Inject
   public OperationOrderServiceImpl(
@@ -74,12 +74,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       AppProductionService appProductionService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
-      OperationOrderRepository operationOrderRepository) {
+      OperationOrderRepository operationOrderRepository,
+      OperationOrderOutsourceService operationOrderOutsourceService) {
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
     this.operationOrderRepository = operationOrderRepository;
+    this.operationOrderOutsourceService = operationOrderOutsourceService;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -116,7 +118,8 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       WorkCenter workCenter,
       Machine machine,
       MachineTool machineTool,
-      ProdProcessLine prodProcessLine) {
+      ProdProcessLine prodProcessLine)
+      throws AxelorException {
 
     logger.debug(
         "Creation of an operation {} for the manufacturing order {}",
@@ -137,10 +140,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             prodProcessLine,
             machineTool);
 
-    operationOrder.setUseLineInGeneratedPurchaseOrder(
-        prodProcessLine.getUseLineInGeneratedPurchaseOrder());
-
-    operationOrder.setOutsourcing(prodProcessLine.getOutsourcing());
+    operationOrder.setOutsourcing(manufOrder.getOutsourcing() || prodProcessLine.getOutsourcing());
+    operationOrder.setOutsourcingPartner(
+        operationOrderOutsourceService.getOutsourcePartner(operationOrder).orElse(null));
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
@@ -252,11 +254,14 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       stockMove = stockMoveOpt.get();
     } else {
       stockMove =
-          Beans.get(ManufOrderStockMoveService.class)
-              ._createToConsumeStockMove(
-                  manufOrder, company, fromStockLocation, virtualStockLocation);
-      operationOrder.addInStockMoveListItem(stockMove);
-      Beans.get(StockMoveService.class).plan(stockMove);
+          manufOrderStockMoveService
+              .createAndPlanToConsumeStockMove(manufOrder)
+              .map(
+                  sm -> {
+                    operationOrder.addInStockMoveListItem(sm);
+                    return sm;
+                  })
+              .orElse(null);
     }
 
     Beans.get(ManufOrderService.class)

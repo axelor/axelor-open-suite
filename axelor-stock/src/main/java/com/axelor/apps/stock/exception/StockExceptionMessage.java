@@ -164,6 +164,8 @@ public final class StockExceptionMessage {
       "You must configure a default receipt stock location for the company %s" /*)*/;
   public static final String STOCK_CONFIG_PICKUP = /*$$(*/
       "You must configure a default pickup stock location for the company %s" /*)*/;
+  public static final String STOCK_CONFIG_VIRTUAL_OUTSOURCE_STOCK_LOCATION = /*$$(*/
+      "You must configure a default virtual outsource stock location for the company %s" /*)*/;
   public static final String PO_MISSING_DEFAULT_STOCK_LOCATION = /*$$(*/
       "Please add a quality control default stock location for company %s in the app stock configuration" /*)*/;
 
