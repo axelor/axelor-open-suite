@@ -51,6 +51,8 @@
     <integer name="operationContinuitySelect" title="Operation Continuity"
       selection="production.manuf.operation.continuity.select"/>
     <boolean name="manageOutsourcing" title="Manage outsourcing"/>
+    <boolean name="generatePurchaseOrderOnMoPlanning"
+      title="Generate a purchase order on MO planning"/>
     <boolean name="manageMpsCharge" title="Manage Master Production Scheduling Charge"/>
     <boolean name="enableToolManagement" title="Enable Tool Management"/>
 
