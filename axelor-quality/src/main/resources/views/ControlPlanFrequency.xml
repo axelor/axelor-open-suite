@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="control-plan-frequency-grid" title="Control plan frequencies"
+    model="com.axelor.apps.quality.db.ControlPlanFrequency">
+    <field name="name"/>
+  </grid>
+
+  <form name="control-plan-frequency-form" title="Control plan frequency"
+    model="com.axelor.apps.quality.db.ControlPlanFrequency">
+    <panel name="mainPanel" colSpan="12">
+      <field name="sampleTypeSelect" colSpan="2"/>
+      <field name="sampleQty" colSpan="2"/>
+      <field name="sampleQtyUnit" colSpan="2"/>
+      <label name="eachLabel" title="each" colSpan="2"/>
+      <field name="sampleFrequency" colSpan="2"/>
+      <field name="sampleFrequencyUnit" colSpan="2"/>
+    </panel>
+  </form>
+</object-views>

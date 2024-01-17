@@ -28,6 +28,8 @@
       <field name="managePartnerComplementaryProduct" widget="boolean-switch"/>
       <field name="considerZeroCost" widget="boolean-switch"/>
       <field name="isEditableGridEnabled" widget="boolean-switch"/>
+      <field name="isDiscountEnabledOnEditableGrid" widget="boolean-switch"
+        showIf="isEditableGridEnabled"/>
       <field name="isEnableCalculationEntireQuotationUsingPricing" widget="boolean-switch"
         hidden="true"/>
       <field name="activateMultiLevelSaleOrderLines" widget="boolean-switch"/>

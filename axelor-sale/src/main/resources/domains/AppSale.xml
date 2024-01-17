@@ -42,6 +42,8 @@
     <boolean name="isEditableGridEnabled"
       title="Enable editable grid on quotation / sales order lines"
       help="This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view."/>
+    <boolean name="isDiscountEnabledOnEditableGrid"
+      title="Enable discount on editable lines"/>
 
     <track>
       <field name="manageSaleOrderVersion" on="UPDATE"/>
