@@ -33,20 +33,6 @@ public class OperationOrderManagementRepository extends OperationOrderRepository
       entity = super.save(entity);
       operationOrderService.createBarcode(entity);
     }
-
-    if (entity.getPlannedStartDateT() != null) {
-      entity.setPlannedStartWithWaitingDateT(
-          entity
-              .getPlannedStartDateT()
-              .minusSeconds(entity.getProdProcessLine().getTimeBeforeNextOperation()));
-    }
-
-    if (entity.getPlannedEndDateT() != null) {
-      entity.setPlannedEndWithWaitingDateT(
-          entity
-              .getPlannedEndDateT()
-              .plusSeconds(entity.getProdProcessLine().getTimeBeforeNextOperation()));
-    }
     return super.save(entity);
   }
 }
