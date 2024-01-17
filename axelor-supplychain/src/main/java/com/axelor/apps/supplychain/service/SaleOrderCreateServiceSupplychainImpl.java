@@ -31,6 +31,7 @@ import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
@@ -72,7 +73,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderRepository saleOrderRepository,
       SaleOrderSupplychainService saleOrderSupplychainService,
       DMSService dmsService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      SaleOrderLineRepository saleOrderLineRepository) {
 
     super(
         partnerService,
@@ -80,7 +82,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
         appSaleService,
         saleOrderService,
         saleOrderComputeService,
-        dmsService);
+        dmsService,
+        saleOrderLineRepository);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
@@ -264,7 +267,8 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       FiscalPosition fiscalPosition,
       Incoterm incoterm,
       Partner invoicedPartner,
-      Partner deliveredPartner)
+      Partner deliveredPartner,
+      boolean dummySaleOrder)
       throws AxelorException {
 
     StringBuilder numSeq = new StringBuilder();
@@ -312,15 +316,17 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     saleOrderMerged.setInternalNote(internalNote.toString());
 
-    super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
+    super.attachToNewSaleOrder(saleOrderList, saleOrderMerged, dummySaleOrder);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
 
-    saleOrderRepository.save(saleOrderMerged);
+    if (!dummySaleOrder) {
+      saleOrderRepository.save(saleOrderMerged);
 
-    dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
+      dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
 
-    super.removeOldSaleOrders(saleOrderList);
+      super.removeOldSaleOrders(saleOrderList);
+    }
 
     return saleOrderMerged;
   }
