@@ -24,6 +24,7 @@ import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -37,13 +38,16 @@ import java.util.List;
 public class BankReconciliationServiceImpl implements BankReconciliationService {
   protected BankStatementLineRepository bankStatementLineRepository;
   protected BankReconciliationLineRepository bankReconciliationLineRepository;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
 
   @Inject
   public BankReconciliationServiceImpl(
       BankStatementLineRepository bankStatementLineRepository,
-      BankReconciliationLineRepository bankReconciliationLineRepository) {
+      BankReconciliationLineRepository bankReconciliationLineRepository,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
   }
 
   @Override
@@ -114,9 +118,13 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
           alreadyMergedBankReconciliationLineList.add(bankReconciliationLineToMerge);
         }
         if (bankReconciliationLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-          bankReconciliationLine.setCredit(bankStatementLine.getAmountRemainToReconcile());
+          bankReconciliationLine.setCredit(
+              currencyScaleServiceBankPayment.getScaledValue(
+                  bankStatementLine, bankStatementLine.getAmountRemainToReconcile()));
         } else {
-          bankReconciliationLine.setDebit(bankStatementLine.getAmountRemainToReconcile());
+          bankReconciliationLine.setDebit(
+              currencyScaleServiceBankPayment.getScaledValue(
+                  bankStatementLine, bankStatementLine.getAmountRemainToReconcile()));
         }
         bankReconciliationLineRepository.save(bankReconciliationLine);
       }

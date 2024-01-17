@@ -12,6 +12,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.move.MoveCreateService;
@@ -66,6 +67,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineService moveLineService;
   protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -83,7 +85,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       TaxService taxService,
       MoveLineCreateService moveLineCreateService,
       MoveLineService moveLineService,
-      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -99,6 +102,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineService = moveLineService;
     this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -324,9 +328,9 @@ public class BankReconciliationMoveGenerationServiceImpl
             .subtract(counterPartMoveLine.getDebit().max(counterPartMoveLine.getCredit()))
             .abs();
     if (taxMoveLine.getDebit().signum() > 0) {
-      taxMoveLine.setDebit(taxAmount);
+      taxMoveLine.setDebit(currencyScaleServiceAccount.getScaledValue(move, taxAmount));
     } else {
-      taxMoveLine.setCredit(taxAmount);
+      taxMoveLine.setCredit(currencyScaleServiceAccount.getScaledValue(move, taxAmount));
     }
   }
 
