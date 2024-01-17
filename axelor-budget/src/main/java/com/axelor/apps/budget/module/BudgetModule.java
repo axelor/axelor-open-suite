@@ -38,8 +38,6 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.PurchaseOrderManagementBudgetRepository;
-import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
-import com.axelor.apps.budget.export.ExportGlobalBudgetLevelServiceImpl;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.AppBudgetServiceImpl;
 import com.axelor.apps.budget.service.BudgetAccountConfigService;
@@ -135,7 +133,6 @@ public class BudgetModule extends AxelorModule {
     bind(PurchaseOrderSupplychainRepository.class)
         .to(PurchaseOrderManagementBudgetRepository.class);
     bind(AppBudgetService.class).to(AppBudgetServiceImpl.class);
-    bind(ExportGlobalBudgetLevelService.class).to(ExportGlobalBudgetLevelServiceImpl.class);
     bind(AdvancedExportRepository.class).to(AdvancedExportBudgetRepository.class);
     bind(BudgetLineService.class).to(BudgetLineServiceImpl.class);
     bind(BudgetToolsService.class).to(BudgetToolsServiceImpl.class);
