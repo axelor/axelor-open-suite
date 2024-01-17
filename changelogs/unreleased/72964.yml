@@ -1,0 +1,3 @@
+---
+title: "StockMove: changed information message when trying to invoice a outgoing stock move with out stock move partial invoicing activated"
+type: feature
