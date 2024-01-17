@@ -288,7 +288,11 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
       BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
       if (bankStatementLine != null) {
         bankStatementLine.setAmountRemainToReconcile(
-            bankStatementLine.getAmountRemainToReconcile().add(moveLine.getBankReconciledAmount()));
+            currencyScaleServiceBankPayment.getScaledValue(
+                bankStatementLine,
+                bankStatementLine
+                    .getAmountRemainToReconcile()
+                    .add(moveLine.getBankReconciledAmount())));
       }
       moveLine.setBankReconciledAmount(BigDecimal.ZERO);
       moveLineRepository.save(moveLine);
