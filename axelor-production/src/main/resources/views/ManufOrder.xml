@@ -980,12 +980,6 @@
       method="setOperationOrdersOutsourcing"/>
   </action-method>
 
-  <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"
-    model="com.axelor.apps.production.db.ManufOrder">
-    <call class="com.axelor.apps.production.web.ManufOrderController"
-      method="setOperationOrdersOutsourcing"/>
-  </action-method>
-
   <action-method name="action-manuf-order-method-generate-merge-manuf-order"
     model="com.axelor.apps.production.db.ManufOrder">
     <call class="com.axelor.apps.production.web.ManufOrderController"
