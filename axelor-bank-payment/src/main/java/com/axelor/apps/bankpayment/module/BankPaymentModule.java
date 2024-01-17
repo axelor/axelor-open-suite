@@ -41,9 +41,13 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineManagementRepository;
+import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementManagementRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.db.repo.MoveBankPaymentRepository;
@@ -246,5 +250,8 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankReconciliationSelectedLineComputationService.class)
         .to(BankReconciliationSelectedLineComputationServiceImpl.class);
     bind(CurrencyScaleServiceBankPayment.class).to(CurrencyScaleServiceBankPaymentImpl.class);
+    bind(BankReconciliationLineRepository.class)
+        .to(BankReconciliationLineManagementRepository.class);
+    bind(BankStatementLineRepository.class).to(BankStatementLineManagementRepository.class);
   }
 }

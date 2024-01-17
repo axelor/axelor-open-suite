@@ -2,6 +2,7 @@ package com.axelor.apps.bankpayment.service;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
+import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
@@ -38,6 +39,11 @@ public class CurrencyScaleServiceBankPaymentImpl extends CurrencyScaleServiceImp
   }
 
   @Override
+  public BigDecimal getScaledValue(BankStatementLine bankStatementLine, BigDecimal amount) {
+    return this.getScaledValue(amount, this.getScale(bankStatementLine.getCurrency()));
+  }
+
+  @Override
   public int getScale(BankReconciliation bankReconciliation) {
     return this.getScale(bankReconciliation.getCurrency());
   }
@@ -59,6 +65,11 @@ public class CurrencyScaleServiceBankPaymentImpl extends CurrencyScaleServiceImp
     return bankReconciliationLine.getBankReconciliation() != null
         ? this.getCompanyScale(bankReconciliationLine.getBankReconciliation())
         : this.getScale();
+  }
+
+  @Override
+  public int getScale(BankStatementLine bankStatementLine) {
+    return this.getCurrencyScale(bankStatementLine.getCurrency());
   }
 
   @Override
