@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -258,20 +259,23 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
-      String userLanguageCode =
-          Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
-      String companyLanguageCode =
-          invoice.getCompany().getLanguage() != null
-              ? invoice.getCompany().getLanguage().getCode()
-              : userLanguageCode;
-      String partnerLanguageCode =
-          invoice.getPartner().getLanguage() != null
-              ? invoice.getPartner().getLanguage().getCode()
-              : userLanguageCode;
+      String userLocalizationCode =
+          Optional.ofNullable(AuthUtils.getUser())
+              .map(User::getLocalization)
+              .map(Localization::getCode)
+              .orElse(null);
+      String companyLocalizationCode =
+          invoice.getCompany().getLocalization() != null
+              ? invoice.getCompany().getLocalization().getCode()
+              : userLocalizationCode;
+      String partnerLocalizationCode =
+          invoice.getPartner().getLocalization() != null
+              ? invoice.getPartner().getLocalization().getCode()
+              : userLocalizationCode;
       locale =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()
-              ? companyLanguageCode
-              : partnerLanguageCode;
+              ? companyLocalizationCode
+              : partnerLocalizationCode;
     }
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();

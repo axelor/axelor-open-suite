@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -597,24 +597,24 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   /**
-   * Get the partner language code. If null, return the default partner language.
+   * Get the partner Localization.code. If null, return the default partner locale.
    *
    * @param partner
    * @return
    */
   @Override
-  public String getPartnerLanguageCode(Partner partner) {
+  public String getPartnerLocale(Partner partner) {
 
     String locale = null;
 
-    if (partner != null && partner.getLanguage() != null) {
-      locale = partner.getLanguage().getCode();
+    if (partner != null && partner.getLocalization() != null) {
+      locale = partner.getLocalization().getCode();
     }
     if (!Strings.isNullOrEmpty(locale)) {
       return locale;
     }
 
-    return appBaseService.getDefaultPartnerLanguageCode();
+    return appBaseService.getDefaultPartnerLocale();
   }
 
   /**

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Country;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -313,6 +314,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
     }
+    Partner supplier =
+        stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+                && !stockMove.getIsReversion()
+            ? stockMove.getPartner()
+            : null;
     while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
 
       BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
@@ -325,7 +331,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
-              stockMove.getOrigin()));
+              stockMove.getOrigin(),
+              supplier));
 
       generateTrakingNumberCounter++;
 
@@ -336,14 +343,14 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
     }
     if (stockMoveLine.getTrackingNumber() == null) {
-
       stockMoveLine.setTrackingNumber(
           trackingNumberService.getTrackingNumber(
               product,
               qtyByTracking,
               stockMove.getCompany(),
               stockMove.getEstimatedDate(),
-              stockMove.getOrigin()));
+              stockMove.getOrigin(),
+              supplier));
     }
   }
 
@@ -369,7 +376,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setProductName(productName);
     stockMoveLine.setDescription(description);
     stockMoveLine.setQty(quantity);
-    stockMoveLine.setRealQty(quantity);
+
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceTaxed);
     stockMoveLine.setUnit(unit);
@@ -378,7 +385,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     stockMoveLine.setFromStockLocation(fromStockLocation);
     stockMoveLine.setToStockLocation(toStockLocation);
-
+    this.fillRealQuantities(stockMoveLine, stockMove, stockMoveLine.getQty());
     if (fromStockLocation == null) {
       stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
@@ -474,7 +481,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             stockMoveLine.getToStockLocation());
 
     stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
-    stockMoveLine.setRealQty(stockMoveLine.getRealQty().subtract(qty));
+
+    this.fillRealQuantities(
+        stockMoveLine, stockMoveLine.getStockMove(), stockMoveLine.getRealQty().subtract(qty));
 
     return newStockMoveLine;
   }
@@ -1704,5 +1713,33 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           trackingNumberConfiguration,
           type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
     }
+  }
+
+  @Override
+  public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
+    if (stockMoveLine != null) {
+      stockMoveLine.setRealQty(qty);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine) {
+    StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, false);
+    this.updateStockMoveLinesOfSplit(newStockMoveLine, stockMoveLine);
+    stockMoveLineRepository.save(newStockMoveLine);
+  }
+
+  protected void updateStockMoveLinesOfSplit(
+      StockMoveLine unfulfilledStockMoveLine, StockMoveLine fulfilledStockMoveLine) {
+    BigDecimal realQty = fulfilledStockMoveLine.getRealQty();
+    unfulfilledStockMoveLine.setQty(fulfilledStockMoveLine.getQty().subtract(realQty));
+    fulfilledStockMoveLine.setQty(realQty);
+    unfulfilledStockMoveLine.setTrackingNumber(null);
+    unfulfilledStockMoveLine.setTotalNetMass(BigDecimal.ZERO);
+    unfulfilledStockMoveLine.setNetMass(BigDecimal.ZERO);
+    unfulfilledStockMoveLine.setRealQty(BigDecimal.ZERO);
+    unfulfilledStockMoveLine.setStockMove(fulfilledStockMoveLine.getStockMove());
+    unfulfilledStockMoveLine.setConformitySelect(0);
   }
 }

@@ -58,6 +58,7 @@
     </panel>
     <panel-tabs name="appConfigPanelTab">
       <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
+        <field name="isStockLocationManagementEnabled" widget="boolean-switch" colSpan="12"/>
         <panel name="generalStockConfigPanel" title="Enable validation" colSpan="6"
           help="If this configuration is enabled, users will be able to directly validate the enabled feature on mobile application.">
           <field name="isInventoryValidationEnabled" widget="boolean-switch" colSpan="6"

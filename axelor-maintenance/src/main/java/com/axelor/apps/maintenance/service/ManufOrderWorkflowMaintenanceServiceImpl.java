@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,12 +29,17 @@ import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.config.StockConfigProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
+import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
+import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -58,7 +63,14 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
       OperationOrderService operationOrderService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService) {
+      OperationOrderPlanningService operationOrderPlanningService,
+      ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
+      ManufOrderService manufOrderService,
+      SequenceService sequenceService,
+      ProductionOrderService productionOrderService,
+      ManufOrderOutsourceService manufOrderOutsourceService,
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      StockConfigProductionService stockConfigProductionService) {
     super(
         operationOrderWorkflowService,
         operationOrderRepo,
@@ -71,7 +83,14 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
         operationOrderService,
         appProductionService,
         productionConfigService,
-        operationOrderPlanningService);
+        operationOrderPlanningService,
+        manufOrderOutgoingStockMoveService,
+        manufOrderService,
+        sequenceService,
+        productionOrderService,
+        manufOrderOutsourceService,
+        operationOrderOutsourceService,
+        stockConfigProductionService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

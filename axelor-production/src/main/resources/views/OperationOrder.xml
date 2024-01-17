@@ -65,6 +65,7 @@
 
   <grid name="operation-order-grid" title="Operations"
     model="com.axelor.apps.production.db.OperationOrder" orderBy="priority" canNew="false">
+    <hilite if="outsourcing" color="orange"/>
     <field name="priority" width="80"/>
     <field name="operationName" readonlyIf="statusSelect == 6"/>
     <field name="machine" grid-view="machine-grid" form-view="machine-form"/>
@@ -76,6 +77,7 @@
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>
+    <field name="outsourcing" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
     <button name="planBtn" icon="fa-calendar"
@@ -113,16 +115,28 @@
       <field name="priority" colSpan="3" readonlyIf="statusSelect == 6"/>
       <field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
       <field name="manufOrder" colSpan="3" hidden="true" readonly="true"/>
-      <field name="outsourcing" colSpan="3"/>
+      <field name="prodProcessLine.outsourcable" hidden="true"/>
+      <panel name="outsourcePanel" showTitle="false" colSpan="12">
+        <field name="outsourcing" colSpan="4"
+          hideIf="!prodProcessLine.outsourcable &amp;&amp; !prodProcessLine.outsourcing &amp;&amp; !manufOrder.outsourcing "
+          readonlyIf="!prodProcessLine.outsourcable"/>
+        <field name="outsourcingPartner"
+          showIf="outsourcing &amp;&amp; !manufOrder.outsourcing"
+          domain="self.isSubcontractor = true" colSpan="4"/>
+      </panel>
       <field name="isToInvoice" colSpan="3"/>
       <field name="prodProcessLine" hidden="true"/>
+      <field name="generatePurchaseOrderOnMoPlanning" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
         <viewer>
 		  <![CDATA[<>{prodProcessLine.optional && <Badge style={{ backgroundColor: "#FC6355" }}>{_t('Optional')}</Badge>}</>]]>
         </viewer>
       </field>
       <field name="manufOrder.statusSelect" hidden="true"/>
-      <field name="useLineInGeneratedPurchaseOrder"/>
+      <field name="prodProcessLine.outsourcing" hidden="true"/>
+      <field name="manufOrder.outsourcing" hidden="true"/>
+      <field name="prodProcessLine.outsourcing" hidden="true"/>
+      <field name="manufOrder.outsourcing" hidden="true"/>
     </panel>
     <panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
       <panel name="plannedDates" title="Planned dates" colSpan="6">
@@ -367,34 +381,40 @@
       if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <field name="timesheetLineList" hidden="true"
       if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
-    <filter title="Draft Operations">
+    <filter name="operation-order-filters-draft-operations" title="Draft Operations">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Planned Operations">
+    <filter name="operation-order-filters-planned-operations" title="Planned Operations">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Operations In Progress">
+    <filter name="operation-order-filters-operations-in-progress"
+      title="Operations In Progress">
       <domain>self.statusSelect = 4</domain>
     </filter>
-    <filter title="Operations In Standby">
+    <filter name="operation-order-filters-operations-in-standby"
+      title="Operations In Standby">
       <domain>self.statusSelect = 5</domain>
     </filter>
-    <filter title="Finished Operations">
+    <filter name="operation-order-filters-finished-operations" title="Finished Operations">
       <domain>self.statusSelect = 6</domain>
     </filter>
-    <filter title="Cancelled Operations">
+    <filter name="operation-order-filters-cancelled-operations" title="Cancelled Operations">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Operations to invoice">
+    <filter name="operation-order-filters-operations-to-invoice"
+      title="Operations to invoice">
       <domain>self.isToInvoice = true</domain>
     </filter>
-    <filter title="Late Planned Operations">
+    <filter name="operation-order-filters-late-planned-operations"
+      title="Late Planned Operations">
       <domain>self.statusSelect = 3 AND self.plannedStartDateT &lt; :_todayDateTime</domain>
     </filter>
-    <filter title="Operations Finished late">
+    <filter name="operation-order-filters-operations-finished-late"
+      title="Operations Finished late">
       <domain>self.statusSelect = 6 AND self.plannedEndDateT &lt; self.realEndDateT</domain>
     </filter>
-    <filter title="Operations with difference">
+    <filter name="operation-order-filters-operations-with-difference"
+      title="Operations with difference">
       <domain>self.isWithDifference = true</domain>
     </filter>
   </search-filters>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,14 +23,17 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.AdvancedExport;
 import com.axelor.apps.base.db.repo.AdvancedExportRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
+import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
+import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.service.BudgetLevelService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -39,27 +42,9 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 public class BudgetLevelController {
-
-  public void importBudgetLevel(ActionRequest request, ActionResponse response) {
-
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      MetaFile errorLogMetaFile = null;
-      Beans.get(BudgetLevelService.class).importBudgetLevel(budgetLevel);
-      if (errorLogMetaFile != null) {
-        response.setAttr("$errorLogMetaFile", "value", errorLogMetaFile);
-      } else {
-        response.setInfo(I18n.get(BaseExceptionMessage.ADVANCED_IMPORT_IMPORT_DATA));
-        response.setReload(true);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
 
   public void exportBudgetLevel(ActionRequest request, ActionResponse response) {
 
@@ -120,41 +105,49 @@ public class BudgetLevelController {
   @SuppressWarnings("unchecked")
   public void setDates(ActionRequest request, ActionResponse response) throws AxelorException {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    List<BudgetLevel> budgetLevelList = budgetLevel.getBudgetLevelList();
-    String levelTypeSelect = budgetLevel.getLevelTypeSelect();
     LocalDate fromDate = budgetLevel.getFromDate();
     LocalDate toDate = budgetLevel.getToDate();
     BudgetLevelService budgetLevelService = Beans.get(BudgetLevelService.class);
 
-    switch (levelTypeSelect) {
-      case "group":
-        budgetLevelService.getUpdatedSectionBudgetList(budgetLevelList, fromDate, toDate);
-        response.setReload(true);
-        break;
-      case "section":
-        List<Budget> budgetList = (List<Budget>) request.getContext().get("budgetList");
-        budgetLevelService.getUpdatedBudgetList(budgetList, fromDate, toDate);
-        response.setReload(true);
-        break;
-      default:
-        break;
+    if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
+      budgetLevelService.getUpdatedBudgetLevelList(
+          budgetLevel.getBudgetLevelList(), fromDate, toDate);
+      response.setReload(true);
+    } else if (!ObjectUtils.isEmpty(budgetLevel.getBudgetList())) {
+      budgetLevelService.getUpdatedBudgetList(budgetLevel.getBudgetList(), fromDate, toDate);
+      response.setReload(true);
     }
   }
 
-  public void setProjectBudget(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void validate(ActionRequest request, ActionResponse response) throws AxelorException {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    budgetLevel = Beans.get(BudgetLevelRepository.class).find(budgetLevel.getId());
-    if (budgetLevel.getProject() != null) {
-      Beans.get(BudgetLevelService.class).setProjectBudget(budgetLevel);
-    }
+    Beans.get(BudgetLevelService.class).validateChildren(budgetLevel);
+    response.setReload(true);
   }
 
-  public void computeChildrenKey(ActionRequest request, ActionResponse response) {
-    try {
-      BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-      Beans.get(BudgetLevelService.class).computeChildrenKey(budgetLevel);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+  @ErrorException
+  public void draft(ActionRequest request, ActionResponse response) throws AxelorException {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    Beans.get(BudgetLevelService.class).draftChildren(budgetLevel);
+    response.setReload(true);
+  }
+
+  public void showButtonFields(ActionRequest request, ActionResponse response) {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    GlobalBudget globalBudget =
+        Beans.get(BudgetToolsService.class).getGlobalBudgetUsingBudgetLevel(budgetLevel);
+    if (globalBudget != null
+        && globalBudget.getStatusSelect()
+            != GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_VALID_STRUCTURE) {
+      return;
+    }
+    response.setAttr("buttonsPanel", "hidden", false);
+    if (BudgetLevelRepository.BUDGET_LEVEL_STATUS_SELECT_DRAFT.equals(
+        budgetLevel.getStatusSelect())) {
+      response.setAttr("validateBtn", "hidden", false);
+    } else {
+      response.setAttr("draftBtn", "hidden", false);
     }
   }
 }

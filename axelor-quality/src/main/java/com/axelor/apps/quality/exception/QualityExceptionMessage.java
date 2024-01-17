@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,4 +30,10 @@ public final class QualityExceptionMessage {
 
   public static final String DEFAULT_QI_STATUS_NOT_FOUND = /*$$(*/
       "No status have been found for the QA, please register at least one in the configurations" /*)*/;
+
+  public static final String EXPECTED_BOOLEAN_RESULT_FORMULA = /*$$(*/
+      "Excepted result for formula is either true (compliant) or false (not compliant). Current result = %s" /*)*/;
+
+  public static final String CAN_NOT_FETCH_FORMULA = /*$$(*/
+      "Conformity formula can not be fetched" /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -397,5 +397,41 @@ public class StockMoveLineController {
       }
     }
     return stockMove;
+  }
+
+  public void setRealQty(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    StockMoveLine stockMoveLine = context.asType(StockMoveLine.class);
+    StockMove stockMove =
+        context.getParent() != null
+            ? context.getParent().asType(StockMove.class)
+            : stockMoveLine.getStockMove();
+
+    try {
+      if (stockMove.getStatusSelect() <= StockMoveRepository.STATUS_PLANNED) {
+        Beans.get(StockMoveLineService.class)
+            .fillRealQuantities(stockMoveLine, stockMove, stockMoveLine.getQty());
+        response.setValue("realQty", stockMoveLine.getRealQty());
+      }
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void splitIntoFulfilledMoveLineAndUnfulfilledOne(
+      ActionRequest request, ActionResponse response) {
+    try {
+      StockMoveLine stockMoveLine =
+          Beans.get(StockMoveLineRepository.class)
+              .find(request.getContext().asType(StockMoveLine.class).getId());
+      if (stockMoveLine != null) {
+        Beans.get(StockMoveLineService.class)
+            .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockMoveLine);
+        response.setReload(true);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -10,12 +10,14 @@
     <field name="invoiceTerm.dueDate"/>
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="totalAmount" aggregate="sum"/>
-    <field name="remainingAmount" aggregate="sum"/>
-    <field name="remainingAmountAfterPayment" aggregate="sum"/>
-    <field name="amountToPay" aggregate="sum"/>
+    <field name="totalAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="remainingAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="remainingAmountAfterPayment" aggregate="sum"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="amountToPay" aggregate="sum" x-scale="currency.numberOfDecimals"/>
   </grid>
 
   <form name="pay-voucher-element-to-pay-form" title="Payment voucher invoices to pay"
@@ -29,12 +31,14 @@
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="totalAmount"/>
-      <field name="remainingAmount"/>
-      <field name="remainingAmountAfterPayment"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="totalAmount" x-scale="currency.numberOfDecimals"/>
+      <field name="remainingAmount" x-scale="currency.numberOfDecimals"/>
+      <field name="remainingAmountAfterPayment" x-scale="currency.numberOfDecimals"/>
       <field name="amountToPay"
         validIf="$readonly() || $number(amountToPay) &lt;= $number($maxAmountToPay)"
-        onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
+        onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"
+        x-scale="currency.numberOfDecimals"/>
       <field name="applyFinancialDiscount" readonlyIf="$isFinancialDiscountReadonly"
         showIf="invoiceTerm.applyFinancialDiscount"
         onChange="action-pay-voucher-element-to-pay-method-update-financial-discount"
@@ -42,7 +46,8 @@
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"
         showIf="moveLineGenerated"/>
       <field name="invoiceTerm.applyFinancialDiscount" hidden="true"/>
-      <field name="$maxAmountToPay" type="decimal" hidden="true"/>
+      <field name="$maxAmountToPay" type="decimal" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
       <field name="$isFinancialDiscountReadonly" type="boolean" hidden="true"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
@@ -50,10 +55,13 @@
       showIf="applyFinancialDiscount">
       <field name="financialDiscount"/>
       <field name="financialDiscountDeadlineDate" showIf="financialDiscountDeadlineDate"/>
-      <field name="totalAmountWithFinancialDiscount"/>
-      <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
-      <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
-      <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
+      <field name="totalAmountWithFinancialDiscount" x-scale="currency.numberOfDecimals"/>
+      <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"
+        x-scale="currency.numberOfDecimals"/>
     </panel>
   </form>
 

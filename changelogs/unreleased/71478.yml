@@ -1,0 +1,3 @@
+---
+title: "SupplyChain : add securityDelay in MrpLineType and use it to delay maturityDate for purchase and manufacturing proposals"
+type: feature
