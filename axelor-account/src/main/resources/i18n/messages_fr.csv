@@ -2122,6 +2122,7 @@
 "Monthly direct debit(s) treated","Prélèvements(s) mensualité(s) traité(s)",,
 "Monthly payments","Mensualisation de paiements",,
 "Move","Écriture",,
+"Move %s has a move line with a tax account but no tax assigned. Please fix this in order to proceed with this reconcile.",,,
 "Move Consistency Control","Contrôle des écritures",,
 "Move From Template","Écriture à partir du modèle",,
 "Move Line","Ligne d'écriture",,

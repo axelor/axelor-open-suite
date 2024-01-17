@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.ReconcileGroup;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
@@ -344,6 +345,26 @@ public class ReconcileServiceImpl implements ReconcileService {
           creditMoveLine.getName(),
           creditMoveLine.getAccount().getLabel(),
           creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
+    }
+
+    // Check tax lines
+    this.taxLinePrecondition(creditMoveLine.getMove());
+    this.taxLinePrecondition(debitMoveLine.getMove());
+  }
+
+  protected void taxLinePrecondition(Move move) throws AxelorException {
+    if (move.getMoveLineList().stream()
+        .anyMatch(
+            it ->
+                it.getTaxLine() == null
+                    && it.getAccount()
+                        .getAccountType()
+                        .getTechnicalTypeSelect()
+                        .equals(AccountTypeRepository.TYPE_TAX))) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          AccountExceptionMessage.RECONCILE_MISSING_TAX,
+          move.getReference());
     }
   }
 
