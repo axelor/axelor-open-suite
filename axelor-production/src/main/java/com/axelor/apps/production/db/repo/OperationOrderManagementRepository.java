@@ -33,6 +33,7 @@ public class OperationOrderManagementRepository extends OperationOrderRepository
       entity = super.save(entity);
       operationOrderService.createBarcode(entity);
     }
+
     return super.save(entity);
   }
 }
