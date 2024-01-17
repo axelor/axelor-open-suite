@@ -10,15 +10,35 @@ import com.axelor.apps.project.db.ProjectTask;
 public interface TimesheetTimerCreateService {
 
   TSTimer createOrUpdateTimer(
-      Employee employee, Project project, ProjectTask projectTask, Product product)
+      Employee employee,
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment)
+      throws AxelorException;
+
+  TSTimer createOrUpdateTimer(
+      Project project, ProjectTask projectTask, Product product, Long duration, String comment)
       throws AxelorException;
 
   TSTimer createTSTimer(
-      Employee employee, Project project, ProjectTask projectTask, Product product)
+      Employee employee,
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment)
       throws AxelorException;
 
   TSTimer updateTimer(
-      TSTimer timer, Employee employee, Project project, ProjectTask projectTask, Product product)
+      TSTimer timer,
+      Employee employee,
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment)
       throws AxelorException;
 
   void resetTimer(TSTimer timer);

@@ -25,6 +25,11 @@ import java.math.BigDecimal;
 
 public interface TimesheetTimerService {
 
+  String TS_TIMER_UPDATE_START = "start";
+  String TS_TIMER_UPDATE_PAUSE = "pause";
+  String TS_TIMER_UPDATE_STOP = "stop";
+  String TS_TIMER_UPDATE_RESET = "reset";
+
   void start(TSTimer timer);
 
   public void pause(TSTimer timer);

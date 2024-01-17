@@ -341,4 +341,10 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_TIMER_UPDATE_STATUS_ISSUE = /*$$(*/
       "You can only update a drafted timer" /*)*/;
+
+  public static final String TIMESHEET_TIMER_TIMER_STOP_CONFIG_DISABLED = /*$$(*/
+      "Editing timer on stop need to be enabled to set a duration." /*)*/;
+
+  public static final String TIMESHEET_TIMER_USER_NO_EMPLOYEE = /*$$(*/
+      "Current user doesn't have an employee." /*)*/;
 }

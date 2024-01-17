@@ -10,6 +10,7 @@ import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
+import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -36,15 +37,17 @@ public class TimesheetTimerRestController {
   @POST
   @HttpExceptionHandler
   public Response createTSTimer(TSTimerPostRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
 
     TSTimer timer =
         Beans.get(TimesheetTimerCreateService.class)
             .createOrUpdateTimer(
-                requestBody.fetchEmployee(),
                 requestBody.fetchProject(),
                 requestBody.fetchProjectTask(),
-                requestBody.fetchProduct());
+                requestBody.fetchProduct(),
+                requestBody.getDuration(),
+                requestBody.getComments());
     return ResponseConstructor.build(
         Response.Status.OK, "Timer successfully created.", new TSTimerResponse(timer));
   }
@@ -57,98 +60,54 @@ public class TimesheetTimerRestController {
   @HttpExceptionHandler
   public Response updateTSTimer(@PathParam("timerId") Long timerId, TSTimerPutRequest requestBody)
       throws AxelorException {
+    RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
 
-    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
+    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, requestBody.getVersion());
 
     Beans.get(TimesheetTimerCreateService.class)
         .updateTimer(
             timer,
-            requestBody.fetchEmployee(),
+            null,
             requestBody.fetchProject(),
             requestBody.fetchProjectTask(),
-            requestBody.fetchProduct());
+            requestBody.fetchProduct(),
+            requestBody.getDuration(),
+            requestBody.getComments());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
   }
 
   @Operation(
-      summary = "Reset TSTimer",
+      summary = "Update TSTimer status",
       tags = {"TSTimer"})
-  @Path("/timer/reset/{timerId}")
+  @Path("/timer/status/{timerId}")
   @PUT
   @HttpExceptionHandler
-  public Response resetTSTimer(@PathParam("timerId") Long timerId) {
+  public Response updateStatusTSTimer(
+      @PathParam("timerId") Long timerId, TSTimerPutRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
+    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, requestBody.getVersion());
+    TimesheetTimerService timesheetTimerService = Beans.get(TimesheetTimerService.class);
 
-    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
-    Beans.get(TimesheetTimerCreateService.class).resetTimer(timer);
-
-    return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
-  }
-
-  @Operation(
-      summary = "Start TSTimer",
-      tags = {"TSTimer"})
-  @Path("/timer/start/{timerId}")
-  @PUT
-  @HttpExceptionHandler
-  public Response startTSTimer(@PathParam("timerId") Long timerId) {
-    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
-
-    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
-    Beans.get(TimesheetTimerService.class).start(timer);
-
-    return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
-  }
-
-  @Operation(
-      summary = "Pause TSTimer",
-      tags = {"TSTimer"})
-  @Path("/timer/pause/{timerId}")
-  @PUT
-  @HttpExceptionHandler
-  public Response pauseTSTimer(@PathParam("timerId") Long timerId) {
-    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
-
-    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
-    Beans.get(TimesheetTimerService.class).pause(timer);
-    return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
-  }
-
-  @Operation(
-      summary = "Stop TSTimer",
-      tags = {"TSTimer"})
-  @Path("/timer/stop/{timerId}")
-  @PUT
-  @HttpExceptionHandler
-  public Response stopTSTimer(@PathParam("timerId") Long timerId) throws AxelorException {
-    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
-
-    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
-    Beans.get(TimesheetTimerService.class).stop(timer);
-
-    return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
-  }
-
-  @Operation(
-      summary = "Update TSTimer duration",
-      tags = {"TSTimer"})
-  @Path("/timer/duration/{timerId}")
-  @PUT
-  @HttpExceptionHandler
-  public Response updateDurationTSTimer(
-      @PathParam("timerId") Long timerId, TSTimerPutRequest requestBody) {
-    new SecurityCheck().writeAccess(TSTimer.class).createAccess(TSTimer.class).check();
-
-    TSTimer timer = ObjectFinder.find(TSTimer.class, timerId, ObjectFinder.NO_VERSION);
-    Beans.get(TimesheetTimerService.class).setUpdatedDuration(timer, requestBody.getDuration());
-
+    switch (requestBody.getToStatus()) {
+      case TimesheetTimerService.TS_TIMER_UPDATE_START:
+        timesheetTimerService.start(timer);
+        break;
+      case TimesheetTimerService.TS_TIMER_UPDATE_PAUSE:
+        timesheetTimerService.pause(timer);
+        break;
+      case TimesheetTimerService.TS_TIMER_UPDATE_STOP:
+        timesheetTimerService.stop(timer);
+        break;
+      case TimesheetTimerService.TS_TIMER_UPDATE_RESET:
+        Beans.get(TimesheetTimerCreateService.class).resetTimer(timer);
+        break;
+      default:
+        break;
+    }
     return ResponseConstructor.build(
         Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));
   }

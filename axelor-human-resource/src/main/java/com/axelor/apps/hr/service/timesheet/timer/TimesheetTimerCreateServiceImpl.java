@@ -10,6 +10,9 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppTimesheet;
 import com.google.inject.Inject;
@@ -32,7 +35,12 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
 
   @Override
   public TSTimer createOrUpdateTimer(
-      Employee employee, Project project, ProjectTask projectTask, Product product)
+      Employee employee,
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment)
       throws AxelorException {
     checkFields(employee, project, projectTask, product);
     AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
@@ -40,11 +48,11 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     TSTimer timer;
 
     if (isMultipleTimer) {
-      return createTSTimer(employee, project, projectTask, product);
+      return createTSTimer(employee, project, projectTask, product, duration, comment);
     } else {
       timer = timesheetTimerService.getCurrentTSTimer();
       if (timer == null) {
-        return createTSTimer(employee, project, projectTask, product);
+        return createTSTimer(employee, project, projectTask, product, duration, comment);
       }
       if (timer.getStatusSelect() == TSTimerRepository.STATUS_START) {
         throw new AxelorException(
@@ -52,10 +60,27 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
             "A timer is already started, stop it before starting a new one.");
       }
       resetTimer(timer);
-      updateTimer(timer, employee, project, projectTask, product);
+      updateTimer(timer, employee, project, projectTask, product, duration, comment);
     }
 
     return timer;
+  }
+
+  @Override
+  public TSTimer createOrUpdateTimer(
+      Project project, ProjectTask projectTask, Product product, Long duration, String comment)
+      throws AxelorException {
+    Employee employee = null;
+    User user = AuthUtils.getUser();
+    if (user != null) {
+      employee = user.getEmployee();
+    }
+    if (employee == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_USER_NO_EMPLOYEE));
+    }
+    return createOrUpdateTimer(employee, project, projectTask, product, duration, comment);
   }
 
   @Transactional
@@ -65,9 +90,6 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     timer.setStartDateTime(null);
     timer.setDuration(0L);
     timer.setComments(null);
-    timer.setProject(null);
-    timer.setProjectTask(null);
-    timer.setProduct(null);
     timer.setLastStartDateT(null);
     timer.setUpdatedDuration(null);
   }
@@ -75,25 +97,46 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public TSTimer createTSTimer(
-      Employee employee, Project project, ProjectTask projectTask, Product product)
+      Employee employee,
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment)
       throws AxelorException {
     checkFields(employee, project, projectTask, product);
     TSTimer timer = new TSTimer();
     timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
-    updateTimer(timer, employee, project, projectTask, product);
+    updateTimer(timer, employee, project, projectTask, product, duration, comment);
     return tsTimerRepository.save(timer);
   }
 
   @Transactional
   @Override
   public TSTimer updateTimer(
-      TSTimer timer, Employee employee, Project project, ProjectTask projectTask, Product product)
+      TSTimer timer,
+      Employee employee,
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment)
       throws AxelorException {
-    if (timer.getStatusSelect() != TSTimerRepository.STATUS_DRAFT) {
+    AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
+
+    if (timer.getStatusSelect() != TSTimerRepository.STATUS_DRAFT
+        && (employee != null || project != null || projectTask != null || product != null)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_UPDATE_STATUS_ISSUE));
     }
+
+    if (duration != null && !appTimesheet.getEditModeTSTimer()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_TIMER_STOP_CONFIG_DISABLED));
+    }
+
     checkRelation(project, projectTask, product);
 
     if (employee != null) {
@@ -108,7 +151,12 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     if (product != null) {
       timer.setProduct(product);
     }
-
+    if (duration != null) {
+      timer.setUpdatedDuration(duration);
+    }
+    if (StringUtils.notEmpty(comment)) {
+      timer.setComments(comment);
+    }
     return timer;
   }
 

@@ -1,7 +1,6 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
@@ -10,10 +9,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class TSTimerPostRequest extends RequestPostStructure {
-
-  @NotNull
-  @Min(0)
-  private Long employeeId;
 
   @Min(0)
   private Long projectId;
@@ -25,13 +20,10 @@ public class TSTimerPostRequest extends RequestPostStructure {
   @Min(0)
   private Long productId;
 
-  public Long getEmployeeId() {
-    return employeeId;
-  }
+  @Min(0)
+  private Long duration;
 
-  public void setEmployeeId(Long employeeId) {
-    this.employeeId = employeeId;
-  }
+  private String comments;
 
   public Long getProjectId() {
     return projectId;
@@ -57,11 +49,20 @@ public class TSTimerPostRequest extends RequestPostStructure {
     this.productId = productId;
   }
 
-  public Employee fetchEmployee() {
-    if (employeeId == null || employeeId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(Employee.class, employeeId, ObjectFinder.NO_VERSION);
+  public Long getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Long duration) {
+    this.duration = duration;
+  }
+
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
   }
 
   public Project fetchProject() {

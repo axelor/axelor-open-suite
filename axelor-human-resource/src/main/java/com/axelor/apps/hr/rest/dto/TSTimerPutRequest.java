@@ -1,19 +1,15 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 public class TSTimerPutRequest extends RequestStructure {
-
-  @NotNull
-  @Min(0)
-  private Long employeeId;
 
   @Min(0)
   private Long projectId;
@@ -27,13 +23,19 @@ public class TSTimerPutRequest extends RequestStructure {
   @Min(0)
   private Long duration;
 
-  public Long getEmployeeId() {
-    return employeeId;
-  }
+  private String comments;
 
-  public void setEmployeeId(Long employeeId) {
-    this.employeeId = employeeId;
-  }
+  @Pattern(
+      regexp =
+          TimesheetTimerService.TS_TIMER_UPDATE_START
+              + "|"
+              + TimesheetTimerService.TS_TIMER_UPDATE_PAUSE
+              + "|"
+              + TimesheetTimerService.TS_TIMER_UPDATE_STOP
+              + "|"
+              + TimesheetTimerService.TS_TIMER_UPDATE_RESET,
+      flags = Pattern.Flag.CASE_INSENSITIVE)
+  private String toStatus;
 
   public Long getProjectId() {
     return projectId;
@@ -67,11 +69,20 @@ public class TSTimerPutRequest extends RequestStructure {
     this.duration = duration;
   }
 
-  public Employee fetchEmployee() {
-    if (employeeId == null || employeeId == 0L) {
-      return null;
-    }
-    return ObjectFinder.find(Employee.class, employeeId, ObjectFinder.NO_VERSION);
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public String getToStatus() {
+    return toStatus;
+  }
+
+  public void setToStatus(String toStatus) {
+    this.toStatus = toStatus;
   }
 
   public Project fetchProject() {
