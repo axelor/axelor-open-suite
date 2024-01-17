@@ -194,6 +194,10 @@
                 onChange="action-quality-improvement-method-set-advancement"
                 form-view="qi-task-form" grid-view="qi-task-grid"/>
             </panel>
+            <panel name="distributionPanel" title="Distribution" colSpan="12">
+              <field name="qiActionDistributionList" showTitle="false" colSpan="12"
+                form-view="qi-action-distribution-form" grid-view="qi-action-distribution-grid"/>
+            </panel>
           </editor>
         </field>
       </panel>
