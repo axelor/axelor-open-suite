@@ -46,12 +46,12 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
       FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      FixedAssetLineToolService fixedAssetLineToolService) {
     super(
         fixedAssetDateService,
         fixedAssetFailOverControlService,
         appBaseService,
-        currencyScaleServiceAccount);
+        fixedAssetLineToolService);
   }
 
   @Override
@@ -142,12 +142,7 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
                         .count())
             .orElse(0l)
             .intValue();
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        fixedAsset,
-        computeDepreciationNumerator(
-                baseValue,
-                getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines)))
-            .multiply(ddRate));
+    return fixedAssetLineToolService.getCompanyScaledValue(computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines))), fixedAsset, ddRate);
   }
 
   @Override

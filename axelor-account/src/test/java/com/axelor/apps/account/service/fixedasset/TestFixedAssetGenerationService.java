@@ -84,12 +84,14 @@ class TestFixedAssetGenerationService {
         mock(FixedAssetFailOverControlService.class);
     FixedAssetValidateService fixedAssetValidateService = mock(FixedAssetValidateService.class);
     FixedAssetImportService fixedAssetImportService = mock(FixedAssetImportService.class);
+    FixedAssetLineToolService fixedAssetLineToolService =
+            mock(FixedAssetLineToolService.class);
     FixedAssetLineComputationService fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,
             fixedAssetFailOverControlService,
             appBaseService,
-            currencyScaleServiceAccount);
+            fixedAssetLineToolService);
     when(fixedAssetLineComputationServiceFactory.getFixedAssetComputationService(
             any(FixedAsset.class), any(Integer.TYPE)))
         .thenReturn(fixedAssetLineComputationService);

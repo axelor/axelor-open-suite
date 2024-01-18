@@ -448,15 +448,7 @@ public class FixedAssetController {
               .find(Long.parseLong(request.getContext().get("_id").toString()))
               .getCompany();
 
-      response.setAttr(
-          "splitTypeSelect",
-          "value",
-          qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0);
-      response.setAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0);
-      response.setAttr(
-          "grossValue",
-          "scale",
-          Beans.get(CurrencyScaleServiceAccount.class).getCompanyScale(company));
+      response.setValues(Beans.get(FixedAssetGroupService.class).getInitSplitWizardAttrsMap(qty, company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

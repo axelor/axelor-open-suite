@@ -42,8 +42,8 @@ public class FixedAssetLineEconomicComputationServiceImpl
       FixedAssetDateService fixedAssetDateService,
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       AppBaseService appBaseService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    super(fixedAssetFailOverControlService, appBaseService, currencyScaleServiceAccount);
+      FixedAssetLineToolService fixedAssetLineToolService) {
+    super(fixedAssetFailOverControlService, appBaseService, fixedAssetLineToolService);
     this.fixedAssetDateService = fixedAssetDateService;
   }
 
@@ -61,15 +61,12 @@ public class FixedAssetLineEconomicComputationServiceImpl
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return currencyScaleServiceAccount.getCompanyScaledValue(
-          fixedAsset, fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)));
+      return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)), fixedAsset, BigDecimal.ONE);
     }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
-      return currencyScaleServiceAccount.getCompanyScaledValue(
-          fixedAsset, fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
+      return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()), fixedAsset, BigDecimal.ONE);
     }
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        fixedAsset, fixedAsset.getGrossValue());
+    return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getGrossValue(), fixedAsset, BigDecimal.ONE);
   }
 
   @Override
@@ -138,8 +135,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
 
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        fixedAsset, fixedAsset.getImportAlreadyDepreciatedAmount());
+    return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getImportAlreadyDepreciatedAmount(), fixedAsset, BigDecimal.ONE);
   }
 
   @Override
@@ -150,8 +146,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
-    return currencyScaleServiceAccount.getCompanyScaledValue(
-        fixedAsset, fixedAsset.getDepreciatedAmountCurrentYear());
+    return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getDepreciatedAmountCurrentYear(), fixedAsset, BigDecimal.ONE);
   }
 
   @Override

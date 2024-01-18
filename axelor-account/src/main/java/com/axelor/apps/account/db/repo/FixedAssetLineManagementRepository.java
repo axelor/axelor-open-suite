@@ -12,8 +12,7 @@ public class FixedAssetLineManagementRepository extends FixedAssetLineRepository
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (json != null && json.get("id") != null) {
-      FixedAssetLine fixedAssetLine =
-          Beans.get(FixedAssetLineRepository.class).find((Long) json.get("id"));
+      FixedAssetLine fixedAssetLine = this.find((Long) json.get("id"));
       try {
         json.put(
             "$currencyNumberOfDecimals",

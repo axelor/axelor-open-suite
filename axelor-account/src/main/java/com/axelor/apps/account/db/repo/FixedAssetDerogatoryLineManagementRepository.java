@@ -11,8 +11,7 @@ public class FixedAssetDerogatoryLineManagementRepository
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     if (json != null && json.get("id") != null) {
-      FixedAssetDerogatoryLine fixedAssetDerogatoryLine =
-          Beans.get(FixedAssetDerogatoryLineRepository.class).find((Long) json.get("id"));
+      FixedAssetDerogatoryLine fixedAssetDerogatoryLine = this.find((Long) json.get("id"));
       json.put(
           "$currencyNumberOfDecimals",
           Beans.get(CurrencyScaleServiceAccount.class)

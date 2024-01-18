@@ -53,6 +53,8 @@ class TestFixedAssetLineComputationService {
         mock(FixedAssetFailOverControlService.class);
     CurrencyScaleServiceAccount currencyScaleServiceAccount =
         mock(CurrencyScaleServiceAccount.class);
+    FixedAssetLineToolService fixedAssetLineToolService =
+            mock(FixedAssetLineToolService.class);
 
     when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAsset.class), any()))
         .then(
@@ -71,7 +73,7 @@ class TestFixedAssetLineComputationService {
             fixedAssetDateService,
             fixedAssetFailOverControlService,
             appBaseService,
-            currencyScaleServiceAccount);
+                fixedAssetLineToolService);
   }
 
   @Test

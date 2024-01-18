@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.time.LocalDate;
@@ -32,13 +33,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import static org.mockito.Mockito.mock;
+
 class TestFixedAssetLineToolService {
 
   private static FixedAssetLineToolService fixedAssetLineToolService;
 
   @BeforeAll
   static void prepare() {
-    fixedAssetLineToolService = new FixedAssetLineToolServiceImpl();
+    CurrencyScaleServiceAccount currencyScaleServiceAccount =
+            mock(CurrencyScaleServiceAccount.class);
+    fixedAssetLineToolService = new FixedAssetLineToolServiceImpl(currencyScaleServiceAccount);
   }
 
   @Test

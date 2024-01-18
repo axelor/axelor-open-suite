@@ -1,8 +1,14 @@
 package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
+import com.axelor.apps.base.db.Company;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +50,17 @@ public class FixedAssetGroupServiceImpl implements FixedAssetGroupService {
     fixedAssetAttrsService.addDisposalAmountTitle(disposalTypeSelect, attrsMap);
     fixedAssetAttrsService.addDisposalAmountReadonly(disposalTypeSelect, attrsMap);
     fixedAssetAttrsService.addDisposalAmountScale(fixedAsset, attrsMap);
+
+    return attrsMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getInitSplitWizardAttrsMap(BigDecimal qty, Company company) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+
+    fixedAssetAttrsService.addSplitTypeSelectValue(qty, attrsMap);
+    fixedAssetAttrsService.addSplitTypeSelectReadonly(qty, attrsMap);
+    fixedAssetAttrsService.addGrossValueScale(company, attrsMap);
 
     return attrsMap;
   }

@@ -32,12 +32,12 @@ import java.util.Objects;
 
 public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverControlService {
 
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected FixedAssetLineToolService fixedAssetLineToolService;
 
   @Inject
   public FixedAssetFailOverControlServiceImpl(
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+      FixedAssetLineToolService fixedAssetLineToolService) {
+    this.fixedAssetLineToolService = fixedAssetLineToolService;
   }
 
   /**
@@ -49,37 +49,27 @@ public class FixedAssetFailOverControlServiceImpl implements FixedAssetFailOverC
   public void controlFailOver(FixedAsset fixedAsset) throws AxelorException {
     Objects.requireNonNull(fixedAsset);
     FixedAssetCategory fixedAssetCategory = fixedAsset.getFixedAssetCategory();
-    BigDecimal grossValue =
-        currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, fixedAsset.getGrossValue());
-    BigDecimal importAlreadyDepreciatedAmount =
-        currencyScaleServiceAccount.getCompanyScaledValue(
-            fixedAsset, fixedAsset.getImportAlreadyDepreciatedAmount());
-    BigDecimal importFiscalAlreadyDepreciationAmount =
-        currencyScaleServiceAccount.getCompanyScaledValue(
-            fixedAsset, fixedAsset.getImportFiscalAlreadyDepreciatedAmount());
-    BigDecimal importIfrsAlreadyDepreciatedAmount =
-        currencyScaleServiceAccount.getCompanyScaledValue(
-            fixedAsset, fixedAsset.getImportIfrsAlreadyDepreciatedAmount());
+    BigDecimal grossValue = fixedAsset.getGrossValue();
+    BigDecimal importAlreadyDepreciatedAmount = fixedAsset.getImportAlreadyDepreciatedAmount();
+    BigDecimal importFiscalAlreadyDepreciationAmount = fixedAsset.getImportFiscalAlreadyDepreciatedAmount();
+    BigDecimal importIfrsAlreadyDepreciatedAmount = fixedAsset.getImportIfrsAlreadyDepreciatedAmount();
 
     if (isFailOver(fixedAsset) && fixedAssetCategory != null) {
-      if (importAlreadyDepreciatedAmount != null
-          && importAlreadyDepreciatedAmount.compareTo(grossValue) > 0) {
+      if (fixedAssetLineToolService.isGreaterThan(importAlreadyDepreciatedAmount, grossValue, fixedAsset)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
                 AccountExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
-      if (importFiscalAlreadyDepreciationAmount != null
-          && importFiscalAlreadyDepreciationAmount.compareTo(grossValue) > 0) {
+      if (fixedAssetLineToolService.isGreaterThan(importFiscalAlreadyDepreciationAmount, grossValue, fixedAsset)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
                 AccountExceptionMessage
                     .IMMO_FIXED_ASSET_FAILOVER_CONTROL_PAST_DEPRECIATION_GREATER_THAN_GROSS_VALUE));
       }
-      if (importIfrsAlreadyDepreciatedAmount != null
-          && importIfrsAlreadyDepreciatedAmount.compareTo(grossValue) > 0) {
+      if (fixedAssetLineToolService.isGreaterThan(importIfrsAlreadyDepreciatedAmount, grossValue, fixedAsset)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(
