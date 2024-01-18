@@ -47,7 +47,8 @@ public class TimesheetTimerRestController {
                 requestBody.fetchProjectTask(),
                 requestBody.fetchProduct(),
                 requestBody.getDuration(),
-                requestBody.getComments());
+                requestBody.getComments(),
+                requestBody.getStartDateTime());
     return ResponseConstructor.build(
         Response.Status.OK, "Timer successfully created.", new TSTimerResponse(timer));
   }
@@ -73,7 +74,8 @@ public class TimesheetTimerRestController {
             requestBody.fetchProjectTask(),
             requestBody.fetchProduct(),
             requestBody.getDuration(),
-            requestBody.getComments());
+            requestBody.getComments(),
+            requestBody.getStartDateTime());
 
     return ResponseConstructor.build(
         Response.Status.OK, "Timer successfully updated.", new TSTimerResponse(timer));

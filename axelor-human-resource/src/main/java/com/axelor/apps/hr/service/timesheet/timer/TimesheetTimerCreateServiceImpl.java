@@ -17,6 +17,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppTimesheet;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDateTime;
 
 public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateService {
   protected TSTimerRepository tsTimerRepository;
@@ -40,7 +41,8 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
       ProjectTask projectTask,
       Product product,
       Long duration,
-      String comment)
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException {
     checkFields(employee, project, projectTask, product);
     AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
@@ -48,11 +50,13 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     TSTimer timer;
 
     if (isMultipleTimer) {
-      return createTSTimer(employee, project, projectTask, product, duration, comment);
+      return createTSTimer(
+          employee, project, projectTask, product, duration, comment, startDateTime);
     } else {
       timer = timesheetTimerService.getCurrentTSTimer();
       if (timer == null) {
-        return createTSTimer(employee, project, projectTask, product, duration, comment);
+        return createTSTimer(
+            employee, project, projectTask, product, duration, comment, startDateTime);
       }
       if (timer.getStatusSelect() == TSTimerRepository.STATUS_START) {
         throw new AxelorException(
@@ -60,7 +64,7 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
             "A timer is already started, stop it before starting a new one.");
       }
       resetTimer(timer);
-      updateTimer(timer, employee, project, projectTask, product, duration, comment);
+      updateTimer(timer, employee, project, projectTask, product, duration, comment, startDateTime);
     }
 
     return timer;
@@ -68,7 +72,12 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
 
   @Override
   public TSTimer createOrUpdateTimer(
-      Project project, ProjectTask projectTask, Product product, Long duration, String comment)
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException {
     Employee employee = null;
     User user = AuthUtils.getUser();
@@ -80,7 +89,8 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_USER_NO_EMPLOYEE));
     }
-    return createOrUpdateTimer(employee, project, projectTask, product, duration, comment);
+    return createOrUpdateTimer(
+        employee, project, projectTask, product, duration, comment, startDateTime);
   }
 
   @Transactional
@@ -102,12 +112,13 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
       ProjectTask projectTask,
       Product product,
       Long duration,
-      String comment)
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException {
     checkFields(employee, project, projectTask, product);
     TSTimer timer = new TSTimer();
     timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
-    updateTimer(timer, employee, project, projectTask, product, duration, comment);
+    updateTimer(timer, employee, project, projectTask, product, duration, comment, startDateTime);
     return tsTimerRepository.save(timer);
   }
 
@@ -120,7 +131,8 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
       ProjectTask projectTask,
       Product product,
       Long duration,
-      String comment)
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException {
     AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
 
@@ -156,6 +168,9 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     }
     if (StringUtils.notEmpty(comment)) {
       timer.setComments(comment);
+    }
+    if (startDateTime != null) {
+      timer.setStartDateTime(startDateTime);
     }
     return timer;
   }

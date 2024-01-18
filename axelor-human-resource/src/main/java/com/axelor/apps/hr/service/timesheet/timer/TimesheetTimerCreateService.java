@@ -6,6 +6,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import java.time.LocalDateTime;
 
 public interface TimesheetTimerCreateService {
 
@@ -15,11 +16,17 @@ public interface TimesheetTimerCreateService {
       ProjectTask projectTask,
       Product product,
       Long duration,
-      String comment)
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException;
 
   TSTimer createOrUpdateTimer(
-      Project project, ProjectTask projectTask, Product product, Long duration, String comment)
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Long duration,
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException;
 
   TSTimer createTSTimer(
@@ -28,7 +35,8 @@ public interface TimesheetTimerCreateService {
       ProjectTask projectTask,
       Product product,
       Long duration,
-      String comment)
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException;
 
   TSTimer updateTimer(
@@ -38,7 +46,8 @@ public interface TimesheetTimerCreateService {
       ProjectTask projectTask,
       Product product,
       Long duration,
-      String comment)
+      String comment,
+      LocalDateTime startDateTime)
       throws AxelorException;
 
   void resetTimer(TSTimer timer);

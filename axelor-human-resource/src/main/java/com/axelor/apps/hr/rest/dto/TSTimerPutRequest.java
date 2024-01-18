@@ -6,6 +6,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import java.time.LocalDateTime;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
@@ -36,6 +37,8 @@ public class TSTimerPutRequest extends RequestStructure {
               + TimesheetTimerService.TS_TIMER_UPDATE_RESET,
       flags = Pattern.Flag.CASE_INSENSITIVE)
   private String toStatus;
+
+  private LocalDateTime startDateTime;
 
   public Long getProjectId() {
     return projectId;
@@ -79,6 +82,14 @@ public class TSTimerPutRequest extends RequestStructure {
 
   public String getToStatus() {
     return toStatus;
+  }
+
+  public LocalDateTime getStartDateTime() {
+    return startDateTime;
+  }
+
+  public void setStartDateTime(LocalDateTime startDateTime) {
+    this.startDateTime = startDateTime;
   }
 
   public void setToStatus(String toStatus) {

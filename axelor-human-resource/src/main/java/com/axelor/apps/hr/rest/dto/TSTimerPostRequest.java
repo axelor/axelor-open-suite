@@ -5,6 +5,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import java.time.LocalDateTime;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -24,6 +25,8 @@ public class TSTimerPostRequest extends RequestPostStructure {
   private Long duration;
 
   private String comments;
+
+  private LocalDateTime startDateTime;
 
   public Long getProjectId() {
     return projectId;
@@ -63,6 +66,14 @@ public class TSTimerPostRequest extends RequestPostStructure {
 
   public void setComments(String comments) {
     this.comments = comments;
+  }
+
+  public LocalDateTime getStartDateTime() {
+    return startDateTime;
+  }
+
+  public void setStartDateTime(LocalDateTime startDateTime) {
+    this.startDateTime = startDateTime;
   }
 
   public Project fetchProject() {
