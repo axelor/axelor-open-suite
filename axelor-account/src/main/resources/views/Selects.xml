@@ -870,4 +870,9 @@
     id="account.partner.link.type.type.select">
     <option value="Payed by">Payed by</option>
   </selection>
+
+  <selection name='account.import.fec.type.select'>
+    <option value="import-FEC-config.xml">FEC</option>
+    <option value="input-config-with-tva.xml">FEC with TVA</option>
+  </selection>
 </object-views>

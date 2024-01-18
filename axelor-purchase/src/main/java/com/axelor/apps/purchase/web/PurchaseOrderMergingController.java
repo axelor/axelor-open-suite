@@ -8,6 +8,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderMergingViewService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.MapHelper;
@@ -48,6 +49,33 @@ public class PurchaseOrderMergingController {
         PurchaseOrderMergingResult result =
             Beans.get(PurchaseOrderMergingService.class)
                 .mergePurchaseOrdersWithContext(purchaseOrdersToMerge, request.getContext());
+        setResponseView(response, result);
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void convertSelectedLinesToMergeLines(ActionRequest request, ActionResponse response) {
+    try {
+      @SuppressWarnings("unchecked")
+      List<Integer> idList = (List<Integer>) request.getContext().get("_ids");
+      List<PurchaseOrder> purchaseOrdersToMerge =
+          Beans.get(PurchaseOrderMergingService.class).convertSelectedLinesToMergeLines(idList);
+      if (purchaseOrdersToMerge == null || purchaseOrdersToMerge.isEmpty()) {
+        response.setError(I18n.get("You have to choose at least one purchase quotation"));
+        return;
+      }
+      if (CollectionUtils.isNotEmpty(purchaseOrdersToMerge)) {
+        PurchaseOrderMergingResult result =
+            Beans.get(PurchaseOrderMergingService.class).mergePurchaseOrders(purchaseOrdersToMerge);
+        if (result.isConfirmationNeeded()) {
+          ActionViewBuilder confirmView =
+              Beans.get(PurchaseOrderMergingViewService.class)
+                  .buildConfirmView(result, purchaseOrdersToMerge);
+          response.setView(confirmView.map());
+          return;
+        }
         setResponseView(response, result);
       }
     } catch (Exception e) {

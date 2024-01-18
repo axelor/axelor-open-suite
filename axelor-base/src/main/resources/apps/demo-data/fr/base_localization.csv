@@ -1,0 +1,6 @@
+"importId";"name";"code";"language.importId";"dateFormat";"numbersFormat";"country.importId"
+1;"Anglais (ROYAUME-UNI)";"en_GB";1;"dd/MM/yyyy";"#,###.00";148
+2;"Français (FRANCE)";"fr_FR";2;"dd/MM/yyyy";"#,###.00";67
+3;"Français (CANADA)";"fr_CA";2;"yyyy-MM-dd";"#,###.00";35
+4;"Anglais (CANADA)";"en_CA";1;"yyyy-MM-dd";"#,###.00";35
+5;"Anglais (ETATS-UNIS)";"en_US";1;"MM/dd/yyyy";"#,###.00";62

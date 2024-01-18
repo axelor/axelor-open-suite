@@ -6,9 +6,9 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -19,15 +19,18 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
   protected ReconcileService reconcileService;
   protected MoveReverseService moveReverseService;
   protected InvoiceRepository invoiceRepository;
+  protected InvoiceTermReplaceService invoiceTermReplaceService;
 
   @Inject
   public InvoiceBankPaymentServiceImpl(
       ReconcileService reconcileService,
       MoveReverseService moveReverseService,
-      InvoiceRepository invoiceRepository) {
+      InvoiceRepository invoiceRepository,
+      InvoiceTermReplaceService invoiceTermReplaceService) {
     this.reconcileService = reconcileService;
     this.moveReverseService = moveReverseService;
     this.invoiceRepository = invoiceRepository;
+    this.invoiceTermReplaceService = invoiceTermReplaceService;
   }
 
   @Override
@@ -84,7 +87,7 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
     invoice.setPartnerAccount(debitMoveLine.getAccount());
 
     resetInvoiceTermAmounts(invoice, oldInvoiceTermList);
-    replaceInvoiceTerms(invoice, oldInvoiceTermList, lcrInvoiceTermList);
+    invoiceTermReplaceService.replaceInvoiceTerms(invoice, oldInvoiceTermList, lcrInvoiceTermList);
   }
 
   protected void resetInvoiceTermAmounts(Invoice invoice, List<InvoiceTerm> oldInvoiceTermList) {
@@ -95,27 +98,5 @@ public class InvoiceBankPaymentServiceImpl implements InvoiceBankPaymentService 
         invoiceTerm.setIsPaid(false);
       }
     }
-  }
-
-  // Look for the one in InvoiceTermReplaceServiceImpl after the merge of the 72187
-  @Transactional(rollbackOn = {Exception.class})
-  protected void replaceInvoiceTerms(
-      Invoice invoice,
-      List<InvoiceTerm> newInvoiceTermList,
-      List<InvoiceTerm> invoiceTermListToRemove) {
-    if (ObjectUtils.isEmpty(newInvoiceTermList) || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
-      return;
-    }
-
-    for (InvoiceTerm invoiceTerm : newInvoiceTermList) {
-      invoice.addInvoiceTermListItem(invoiceTerm);
-    }
-
-    for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
-      invoice.removeInvoiceTermListItem(invoiceTerm);
-      invoiceTerm.setInvoice(null);
-    }
-
-    invoiceRepository.save(invoice);
   }
 }

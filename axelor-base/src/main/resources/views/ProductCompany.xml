@@ -6,12 +6,13 @@
   <grid name="product-company-grid" title="Product per company"
     model="com.axelor.apps.base.db.ProductCompany">
     <field name="company"/>
-    <field name="lastPurchasePrice" x-scale="2" width="250px"/>
-    <field name="costPrice" x-scale="2"/>
-    <field name="avgPrice" x-scale="2"/>
+    <field name="lastPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" width="250px"/>
+    <field name="costPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="avgPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="company.currency" title="Company currency"/>
-    <field name="salePrice" x-scale="2"/>
+    <field name="salePrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="saleCurrency"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="product-company-form" title="Product per company"
@@ -50,6 +51,10 @@
       <field name="customsCodeNomenclature"
         if="__config__.app.isApp('stock') &amp;&amp;__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'customsCodeNomenclature'})"
         if-module="axelor-stock"/>
+      <field name="trackingNumberConfiguration"
+        if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"
+        if-module="axelor-stock"/>
+
     </panel>
   </form>
 

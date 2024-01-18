@@ -70,6 +70,9 @@
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization" massUpdate="true"/>
+
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>
 
@@ -89,6 +92,7 @@
       <field name="electronicSignature" on="UPDATE"/>
       <field name="group" on="UPDATE"/>
       <field name="language" on="UPDATE"/>
+      <field name="localization" on="UPDATE"/>
       <field name="singleTab" on="UPDATE"/>
       <field name="noHelp" on="UPDATE"/>
       <field name="blocked" on="UPDATE"/>

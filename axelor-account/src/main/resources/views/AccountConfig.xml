@@ -145,8 +145,6 @@
               domain="self.statusSelect = 1 AND self.company = :company"/>
             <field name="saleFinancialDiscountAccount"
               domain="self.statusSelect = 1 AND self.company = :company"/>
-            <field name="purchFinancialDiscountTax"/>
-            <field name="saleFinancialDiscountTax"/>
           </panel>
           <panel title="AccountConfig.Employees" colSpan="12">
             <field name="employeeAccount"

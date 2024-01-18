@@ -1,3 +1,0 @@
----
-title: "FEC Import : Fix the way the currency amount is imported to make sure it's correctly signed"
-type: fix

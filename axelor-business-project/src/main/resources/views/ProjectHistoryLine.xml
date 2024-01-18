@@ -27,250 +27,300 @@
 
     <panel title="Time follow-up" colSpan="12">
       <panel-dashlet action="action-project-history-view-sold-time-custom" colSpan="3"
-        showTitle="false"/>
+        showTitle="false" height="125"/>
       <panel-dashlet action="action-project-history-view-updated-time-custom"
-        colSpan="3" showTitle="false"/>
+        colSpan="3" showTitle="false" height="125"/>
       <panel-dashlet action="action-project-history-view-planned-time-custom"
-        colSpan="3" showTitle="false"/>
+        colSpan="3" showTitle="false" height="125"/>
       <panel-dashlet action="action-project-history-view-spent-time-custom"
-        colSpan="3" showTitle="false"/>
+        colSpan="3" showTitle="false" height="125"/>
 
       <panel-dashlet action="action-project-history-view-percentage-progress-custom"
-        colSpan="3" showTitle="false"/>
+        colSpan="3" showTitle="false" height="125"/>
       <panel-dashlet
         action="action-project-history-view-percentage-consumption-custom" colSpan="3"
-        showTitle="false"/>
+        showTitle="false" height="125"/>
       <panel-dashlet action="action-project-history-view-remaining-to-do-custom"
-        colSpan="3" showTitle="false"/>
+        colSpan="3" showTitle="false" height="125"/>
     </panel>
 
     <panel title="Financial follow-up" colSpan="12">
       <panel name="initialPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
         <panel-dashlet action="action-project-history-view-turnover-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-initial-costs-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-initial-margin-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-initial-markup-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
       </panel>
       <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
         <panel-dashlet action="action-project-history-view-forecast-costs-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-forecast-margin-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-forecast-markup-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
       </panel>
       <panel name="realPanel" title="ProjectTask.Real" colSpan="12">
         <panel-dashlet action="action-project-history-view-real-turnover-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-real-costs-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-real-margin-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-real-markup-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
       </panel>
       <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
         <panel-dashlet action="action-project-history-view-landing-costs-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-landing-margin-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
         <panel-dashlet action="action-project-history-view-landing-markup-custom"
-          colSpan="3"/>
+          colSpan="3" height="125"/>
       </panel>
     </panel>
   </form>
 
-  <custom title="Sold time" name="project-history-sold-time-custom"
-    css="report-box dashlet-no-dropdown small">
+  <custom title="Sold time" name="project-history-sold-time-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-calendar-check-o'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.soldTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="calendar-check" fontSize="30px"/> {first.soldTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Updated time" name="project-history-updated-time-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-refresh'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.updatedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="arrow-repeat" fontSize="30px"/> {first.updatedTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Planned time" name="project-history-planned-time-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-calendar'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.plannedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="calendar" fontSize="30px"/> {first.plannedTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Spent time" name="project-history-spent-time-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-hourglass-end'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.spentTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="hourglass-top" fontSize="30px"/> {first.spentTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="% of progress" name="project-history-percentage-progress-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-line-chart'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.progress}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="graph-up-arrow" fontSize="30px"/> {first.progress}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="% of consumption" name="project-history-percentage-consumption-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-hourglass-half'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.consumption}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="hourglass-split" fontSize="30px"/> {first.consumption}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Remaining amount to do" name="project-history-remaining-to-do-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-tasks'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.remaining}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="list-task" fontSize="30px"/> {first.remaining} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
   <!-- financial follow up -->
   <!-- INITIAL -->
   <custom title="ProjectTask.Turnover" name="project-history-turnover-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.turnover}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.turnover}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Costs" name="project-history-initial-costs-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.initialCosts}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.initialCosts}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-history-initial-margin-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.initialMargin}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.initialMargin}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-history-initial-markup-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.initialMarkup}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.initialMarkup}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <!-- REAL -->
   <custom title="Real turnover" name="project-history-real-turnover-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realTurnover}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.realTurnover}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Costs" name="project-history-real-costs-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realCosts}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.realCosts}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-history-real-margin-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realMargin}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.realMargin}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-history-real-markup-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.realMarkup}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.realMarkup}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
@@ -278,76 +328,98 @@
 
   <!-- FORECAST -->
   <custom title="ProjectTask.Costs" name="project-history-forecast-costs-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.forecastCosts}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.forecastCosts}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-history-forecast-margin-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.forecastMargin}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.forecastMargin}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-history-forecast-markup-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.forecastMarkup}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.forecastMarkup}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <!-- LANDING -->
   <custom title="ProjectTask.Costs" name="project-history-landing-costs-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.landingCosts}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.landingCosts}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-history-landing-margin-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.landingMargin}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.landingMargin}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-history-landing-markup-custom"
-    css="report-box dashlet-no-dropdown small">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectHistoryData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.landingMarkup}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.landingMarkup}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="Localization">
+    <many-to-one name="country" ref="com.axelor.apps.base.db.Country" title="Country"/>
+    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"/>
+    <string name="name" title="Name" required="true"/>
+    <string name="code" title="Code" required="true" search="language,country">
+     <![CDATA[
+     String code = "";
+     if (language == null && country != null) {
+     code = country.getAlpha2Code();
+     }
+     if (language != null && country == null) {
+     code = language.getCode();
+     }
+     if (language != null && country != null) {
+     code = language.getCode() + "_" + country.getAlpha2Code();
+     }
+     return code;
+     ]]>
+    </string>
+    <string name="dateFormat" title="Date Format" help="DD/MM/YYYY"/>
+    <string name="numbersFormat" title="Numbers Format" help="#,###.00"/>
+
+  </entity>
+
+</domain-models>

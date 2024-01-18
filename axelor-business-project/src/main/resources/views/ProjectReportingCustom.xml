@@ -32,193 +32,239 @@
     <view type="custom" name="project-remaining-to-do-custom"/>
   </action-view>
 
-  <custom title="Sold time" name="project-sold-time-custom"
-    css="report-box dashlet-no-dropdown">
+  <custom title="Sold time" name="project-sold-time-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-calendar-check-o'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.soldTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="calendar-check" fontSize="30px"/> {first.soldTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
-  <custom title="Updated time" name="project-updated-time-custom"
-    css="report-box dashlet-no-dropdown">
+  <custom title="Updated time" name="project-updated-time-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-refresh'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.updatedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="arrow-repeat" fontSize="30px"/> {first.updatedTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
-  <custom title="Planned time" name="project-planned-time-custom"
-    css="report-box dashlet-no-dropdown">
+  <custom title="Planned time" name="project-planned-time-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-calendar'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.plannedTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="calendar" fontSize="30px"/> {first.plannedTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
-  <custom title="Spent time" name="project-spent-time-custom"
-    css="report-box dashlet-no-dropdown">
+  <custom title="Spent time" name="project-spent-time-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-hourglass-end'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.spentTime}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="hourglass-top" fontSize="30px"/> {first.spentTime} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="% of progress" name="project-percentage-progress-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-line-chart'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.progress}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="graph-up-arrow" fontSize="30px"/> {first.progress}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="% of consumption" name="project-percentage-consumption-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-hourglass-half'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.consumption}}</h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="hourglass-split" fontSize="30px"/> {first.consumption}
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Remaining amount to do" name="project-remaining-to-do-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectTimeFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-tasks'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.remaining}} <span style="font-size:20px;">{{first.unit}}</span></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="list-task" fontSize="30px"/> {first.remaining} <Box as="span" fontSize={5}>{first.unit}</Box>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
   <!-- financial follow up -->
   <!-- INITIAL -->
   <custom title="ProjectTask.Turnover" name="project-turnover-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.turnover}} <i class="fa {{first.turnoverProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.turnover} <Icon icon={first.turnoverProgress} fontSize={first.turnoverProgress == 'equal' ? "24px" : "14px"} color={first.turnoverProgress == 'arrow-90deg-up' ? "success" : first.turnoverProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Costs" name="project-initial-costs-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.initialCosts}} <i class="fa {{first.initialCostsProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.initialCosts} <Icon icon={first.initialCostsProgress} fontSize={first.initialCostsProgress == 'equal' ? "24px" : "14px"} color={first.initialCostsProgress == 'arrow-90deg-up' ? "success" : first.initialCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-initial-margin-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.initialMargin}} <i class="fa {{first.initialMarginProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.initialMargin} <Icon icon={first.initialMarginProgress} fontSize={first.initialMarginProgress == 'equal' ? "24px" : "14px"} color={first.initialMarginProgress == 'arrow-90deg-up' ? "success" : first.initialMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-initial-markup-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.initialMarkup}} <i class="fa {{first.initialMarkupProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.initialMarkup} <Icon icon={first.initialMarkupProgress} fontSize={first.initialMarkupProgress == 'equal' ? "24px" : "14px"} color={first.initialMarkupProgress == 'arrow-90deg-up' ? "success" : first.initialMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <!-- REAL -->
-  <custom title="Real turnover" name="project-real-turnover-custom"
-    css="report-box dashlet-no-dropdown">
+  <custom title="Real turnover" name="project-real-turnover-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realTurnover}} <i class="fa {{first.realTurnoverProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.realTurnover} <Icon icon={first.realTurnoverProgress} fontSize={first.realTurnoverProgress == 'equal' ? "24px" : "14px"} color={first.realTurnoverProgress == 'arrow-90deg-up' ? "success" : first.realTurnoverProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Costs" name="project-real-costs-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realCosts}} <i class="fa {{first.realCostsProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.realCosts} <Icon icon={first.realCostsProgress} fontSize={first.realCostsProgress == 'equal' ? "24px" : "14px"} color={first.realCostsProgress == 'arrow-90deg-up' ? "success" : first.realCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-real-margin-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.realMargin}} <i class="fa {{first.realMarginProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.realMargin} <Icon icon={first.realMarginProgress} fontSize={first.realMarginProgress == 'equal' ? "24px" : "14px"} color={first.realMarginProgress == 'arrow-90deg-up' ? "success" : first.realMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-real-markup-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.realMarkup}} <i class="fa {{first.realMarkupProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.realMarkup} <Icon icon={first.realMarkupProgress} fontSize={first.realMarkupProgress == 'equal' ? "24px" : "14px"} color={first.realMarkupProgress == 'arrow-90deg-up' ? "success" : first.realMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
@@ -226,124 +272,161 @@
 
   <!-- FORECAST -->
   <custom title="ProjectTask.Costs" name="project-forecast-costs-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.forecastCosts}} <i class="fa {{first.forecastCostsProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.forecastCosts} <Icon icon={first.forecastCostsProgress} fontSize={first.forecastCostsProgress == 'equal' ? "24px" : "14px"} color={first.forecastCostsProgress == 'arrow-90deg-up' ? "success" : first.forecastCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-forecast-margin-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.forecastMargin}} <i class="fa {{first.forecastMarginProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.forecastMargin} <Icon icon={first.forecastMarginProgress} fontSize={first.forecastMarginProgress == 'equal' ? "24px" : "14px"} color={first.forecastMarginProgress == 'arrow-90deg-up' ? "success" : first.forecastMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-forecast-markup-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.forecastMarkup}} <i class="fa {{first.forecastMarkupProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.forecastMarkup} <Icon icon={first.forecastMarkupProgress} fontSize={first.forecastMarkupProgress == 'equal' ? "24px" : "14px"} color={first.forecastMarkupProgress == 'arrow-90deg-up' ? "success" : first.forecastMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <!-- LANDING -->
   <custom title="ProjectTask.Costs" name="project-landing-costs-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.landingCosts}} <i class="fa {{first.landingCostsProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.landingCosts} <Icon icon={first.landingCostsProgress} fontSize={first.landingCostsProgress == 'equal' ? "24px" : "14px"} color={first.landingCostsProgress == 'arrow-90deg-up' ? "success" : first.landingCostsProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Margin" name="project-landing-margin-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.landingMargin}} <i class="fa {{first.landingMarginProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.landingMargin} <Icon icon={first.landingMarginProgress} fontSize={first.landingMarginProgress == 'equal' ? "24px" : "14px"} color={first.landingMarginProgress == 'arrow-90deg-up' ? "success" : first.landingMarginProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="ProjectTask.Markup" name="project-landing-markup-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <i class='report-icon fa fa-percent'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.landingMarkup}} <i class="fa {{first.landingMarkupProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<Icon icon="percent" fontSize="30px"/> {first.landingMarkup} <Icon icon={first.landingMarkupProgress} fontSize={first.landingMarkupProgress == 'equal' ? "24px" : "14px"} color={first.landingMarkupProgress == 'arrow-90deg-up' ? "success" : first.landingMarkupProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Total invoiced" name="project-total-invoiced-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.totalInvoiced}} <i class="fa {{first.totalInvoicedProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.totalInvoiced} <Icon icon={first.totalInvoicedProgress} fontSize={first.totalInvoicedProgress == 'equal' ? "24px" : "14px"} color={first.totalInvoicedProgress == 'arrow-90deg-up' ? "success" : first.totalInvoicedProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Invoiced this month" name="project-invoiced-this-month-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.invoicedThisMonth}} <i class="fa {{first.invoicedThisMonthProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.invoicedThisMonth} <Icon icon={first.invoicedThisMonthProgress} fontSize={first.invoicedThisMonthProgress == 'equal' ? "24px" : "14px"} color={first.invoicedThisMonthProgress == 'arrow-90deg-up' ? "success" : first.invoicedThisMonthProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
   <custom title="Invoiced last month" name="project-invoiced-last-month-custom"
-    css="report-box dashlet-no-dropdown">
+    css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.invoicedLastMonth}} <i class="fa {{first.invoicedLastMonthProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.invoicedLastMonth} <Icon icon={first.invoicedLastMonthProgress} fontSize={first.invoicedLastMonthProgress == 'equal' ? "24px" : "14px"} color={first.invoicedLastMonthProgress == 'arrow-90deg-up' ? "success" : first.invoicedLastMonthProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>
 
-  <custom title="Total paid" name="project-total-paid-custom"
-    css="report-box dashlet-no-dropdown">
+  <custom title="Total paid" name="project-total-paid-custom" css="dashlet-no-dropdown">
     <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectController:getProjectFinancialFollowUpData</dataset>
     <template>
       <![CDATA[
-        <div style='display:inline-block;'>
-          <h1><b>{{first.currencySymbol}}</b> {{first.totalPaid}} <i class="fa {{first.totalPaidProgress}}"></i></h1>
-        </div>
+        <>
+        	<Box ms={3}>
+        		<h1>
+        			<b>{first.currencySymbol}</b> {first.totalPaid} <Icon icon={first.totalPaidProgress} fontSize={first.totalPaidProgress == 'equal' ? "24px" : "14px"} color={first.totalPaidProgress == 'arrow-90deg-up' ? "success" : first.totalPaidProgress == 'arrow-90deg-down' ? "danger" : "body"}/>
+        		</h1>
+        	</Box>
+        </>
       ]]>
     </template>
   </custom>

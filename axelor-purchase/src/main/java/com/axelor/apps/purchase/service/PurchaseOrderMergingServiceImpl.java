@@ -9,6 +9,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
@@ -16,7 +17,9 @@ import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingService {
 
@@ -239,9 +242,13 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
 
   protected PurchaseOrderService purchaseOrderService;
 
+  protected PurchaseOrderRepository purchaseOrderRepository;
+
   @Inject
-  public PurchaseOrderMergingServiceImpl(PurchaseOrderService purchaseOrderService) {
+  public PurchaseOrderMergingServiceImpl(
+      PurchaseOrderService purchaseOrderService, PurchaseOrderRepository purchaseOrderRepository) {
     this.purchaseOrderService = purchaseOrderService;
+    this.purchaseOrderRepository = purchaseOrderRepository;
   }
 
   @Override
@@ -457,5 +464,16 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
         .findFirst()
         .ifPresent(commonFields::setCommonFiscalPosition);
     commonFields.setAllFiscalPositionsAreNull(commonFields.getCommonFiscalPosition() == null);
+  }
+
+  @Override
+  public List<PurchaseOrder> convertSelectedLinesToMergeLines(List<Integer> idList) {
+    return Optional.ofNullable(idList)
+        .map(
+            list ->
+                list.stream()
+                    .map(id -> purchaseOrderRepository.find(Long.valueOf(id)))
+                    .collect(Collectors.toList()))
+        .orElse(List.of());
   }
 }

@@ -205,7 +205,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key as message_key, coalesce(nullif(LangTranslate.message_value, ''), LangTranslate.message_key) as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -1227,7 +1227,7 @@ where AccountingReport.id = ?
 				OR AssetLine.depreciation_date < AccountingReport.date_from
    			THEN assetLine.depreciation 
    		END
-   	), 0) AS year_start_value,
+   	), 0) + Asset.already_depreciated_amount AS year_start_value,
 	SUM(
 		CASE 
 			WHEN (date_from IS NULL OR depreciation_date >= date_from)
@@ -1236,19 +1236,19 @@ where AccountingReport.id = ?
    		END
    	) AS depreciation_charge,
     COALESCE(SUM(
-        CASE
-            WHEN
-                AccountingReport.date_from IS NULL
-                OR AssetLine.depreciation_date < AccountingReport.date_from
-            THEN assetLine.depreciation
-        END
-    ), 0) + SUM(
-        CASE
-            WHEN (date_from IS NULL OR depreciation_date >= date_from)
-                AND (date_to IS NULL OR depreciation_date <= date_to)
-            THEN depreciation
-        END
-    ) AS year_end_value2,
+		CASE 
+			WHEN 
+				AccountingReport.date_from IS NULL 
+				OR AssetLine.depreciation_date < AccountingReport.date_from
+   			THEN assetLine.depreciation 
+   		END
+   	), 0) + Asset.already_depreciated_amount + SUM(
+		CASE 
+			WHEN (date_from IS NULL OR depreciation_date >= date_from)
+				AND (date_to IS NULL OR depreciation_date <= date_to)
+   			THEN depreciation 
+   		END
+   	) AS year_end_value2,
     MIN(assetLine.accounting_value)
     as accounting_value
 	

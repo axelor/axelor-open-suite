@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
-    orderBy="-startDateTime">
+    orderBy="-startDateTime" onNew="action-event-record-set-partner">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; (($moment(startDateTime) &lt;= $moment(_todayDateTime)) || ($moment(startDateTime) &lt;= $moment()))"/>
     <hilite color="warning"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; (($moment(startDateTime) &gt; $moment(_todayDateTime)) || ($moment(startDateTime) &gt; $moment()))"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
@@ -45,21 +45,24 @@
   <grid name="my-event-grid" orderBy="-startDateTime" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
     <field name="subject"/>
     <field name="typeSelect"/>
     <field name="duration" widget="duration" x-big="true"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <grid name="my-event-grouped-by-team-grid" orderBy="-startDateTime" groupBy="team"
     title="Events" model="com.axelor.apps.crm.db.Event">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
@@ -67,13 +70,15 @@
     <field name="typeSelect"/>
     <field name="duration" widget="duration" x-big="true"/>
     <field name="team" hidden="true"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <grid name="my-event-grouped-by-user-grid" orderBy="-startDateTime" groupBy="user"
     title="Events" model="com.axelor.apps.crm.db.Event">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
@@ -81,19 +86,22 @@
     <field name="typeSelect"/>
     <field name="duration" widget="duration" x-big="true"/>
     <field name="user" hidden="true"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <grid name="lead-event-grid" title="Events" model="com.axelor.apps.crm.db.Event"
     orderBy="-startDateTime">
     <hilite color="primary"
-      if="statusSelect == 1 &amp;&amp; startDateTime  &lt;= __datetime__"/>
-    <hilite color="info" if="statusSelect == 1 &amp;&amp; startDateTime  &gt; __datetime__"/>
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &lt;= $moment()"/>
+    <hilite color="info"
+      if="statusSelect == 1 &amp;&amp; $moment(startDateTime) &gt; $moment()"/>
     <hilite color="success" if="statusSelect == 2"/>
     <hilite color="danger" if="statusSelect == 3"/>
     <field name="startDateTime"/>
     <field name="subject"/>
     <field name="user"/>
     <field name="description" widget="html"/>
+    <field name="statusSelect" hidden="true"/>
   </grid>
 
   <form name="event-form" title="Events" model="com.axelor.apps.crm.db.Event"
@@ -461,6 +469,7 @@
     <action name="action-event-record-event-from-sale-order" if="_saleOrder != null"/>
     <action name="action-event-method-add-guest"/>
     <action name="action-event-record-event-from-opportunity" if="_opportunity != null"/>
+    <action name="action-event-record-set-partner"/>
   </action-group>
 
   <action-group name="action-event-type-select-onchange-group">
@@ -567,7 +576,7 @@
     <field name="contactPartner" expr="eval: _opportunity.contact"/>
     <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
     <field name="relatedToSelectId" expr="eval: _opportunity.id"/>
-    <field name="typeSelect" expr="eval: EventRepository.TYPE_EVENT" if="_call"/>
+    <field name="typeSelect" expr="eval: EventRepository.TYPE_CALL" if="_call"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_MEETING" if="_meeting"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_TASK" if="_task"/>
     <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>
@@ -649,6 +658,12 @@
     <field name="eventCategory" expr="eval: null"/>
   </action-record>
 
+  <action-record name="action-event-record-set-partner"
+    model="com.axelor.apps.crm.db.Event">
+    <field name="partner" expr="eval: _parent?.partner"
+      if="_parent?._model == 'com.axelor.apps.crm.db.TourLine'"/>
+  </action-record>
+
   <!-- ACTION METHOD -->
 
   <action-method name="action-event-method-compute-from-start-date-time">
@@ -686,18 +701,18 @@
   <search-filters name="crm-tasks-filters" model="com.axelor.apps.crm.db.Event"
     title="Tasks filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Tasks">
+    <filter name="crm-tasks-filters-my-tasks" title="My Tasks">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="My Today Tasks">
+    <filter name="crm-tasks-filters-my-today-tasks" title="My Today Tasks">
       <domain>self.user = :__user__ and self.startDateTime &lt;= :_todayDateTime</domain>
     </filter>
-    <filter title="My Upcoming Tasks">
+    <filter name="crm-tasks-filters-my-upcoming-tasks" title="My Upcoming Tasks">
       <domain>self.user = :__user__ and self.startDateTime &lt; :_newDate and (self.statusSelect =
         1
         or self.statusSelect = 2)</domain>
     </filter>
-    <filter title="My Project Tasks">
+    <filter name="crm-tasks-filters-my-project-tasks" title="My Project Tasks">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
@@ -705,13 +720,13 @@
   <search-filters name="meeting-filters" model="com.axelor.apps.crm.db.Event"
     title="Meeting filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Meetings">
+    <filter name="meeting-filters-my-meetings" title="My Meetings">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="My Upcoming Meetings">
+    <filter name="meeting-filters-my-upcoming-meetings" title="My Upcoming Meetings">
       <domain>self.user = :__user__ and self.startDateTime &lt; :_newDate</domain>
     </filter>
-    <filter title="My Team Meetings">
+    <filter name="meeting-filters-my-team-meetings" title="My Team Meetings">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
@@ -719,13 +734,13 @@
   <search-filters name="call-filters" model="com.axelor.apps.crm.db.Event"
     title="Call filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Calls">
+    <filter name="call-filters-my-calls" title="My Calls">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="My Today Calls">
+    <filter name="call-filters-my-today-calls" title="My Today Calls">
       <domain>self.user = :__user__ and self.startDateTime &lt;= :_todayDateTime</domain>
     </filter>
-    <filter title="My Team Calls">
+    <filter name="call-filters-my-team-calls" title="My Team Calls">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>
@@ -733,16 +748,16 @@
   <search-filters name="event-filters" model="com.axelor.apps.crm.db.Event"
     title="Event filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My upcoming events">
+    <filter name="event-filters-my-upcoming-events" title="My upcoming events">
       <domain>self.user = :__user__ AND self.startDateTime &gt;= :_currentDate</domain>
     </filter>
-    <filter title="My past events">
+    <filter name="event-filters-my-past-events" title="My past events">
       <domain>self.user = :__user__ AND self.startDateTime &lt;= :_currentDate</domain>
     </filter>
-    <filter title="All upcoming events">
+    <filter name="event-filters-all-upcoming-events" title="All upcoming events">
       <domain>self.startDateTime &gt;= :_currentDate</domain>
     </filter>
-    <filter title="All past events">
+    <filter name="event-filters-all-past-events" title="All past events">
       <domain>self.startDateTime &lt;= :_currentDate</domain>
     </filter>
   </search-filters>

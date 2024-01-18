@@ -42,16 +42,6 @@
       domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
       if-module="axelor-account" form-view="account-form" grid-view="account-grid"
       if="__config__.app.isApp('account')" canEdit="false"/>
-    <field name="allowedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
-      form-view="account-form" grid-view="account-grid"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageFinancialDiscount()"
-      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
-    <field name="obtainedFinDiscountTaxVatSystem1Account" if-module="axelor-account"
-      form-view="account-form" grid-view="account-grid"
-      if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFinancialDiscount()"
-      domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'tax'"
-      canEdit="false"/>
   </grid>
 
   <grid name="account-management-editable-grid" title="Account management list"

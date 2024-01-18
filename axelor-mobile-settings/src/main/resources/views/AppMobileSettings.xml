@@ -40,6 +40,8 @@
           onClick="action.mobile.settings.translation.view"/>
         <button name="viewTracebacksBtn" title="View tracebacks"
           onClick="action.mobile.settings.tracebacks.view"/>
+        <button name="viewDashboardBtn" title="View dashboards"
+          onClick="action.hr.config.mobile.dashboards.view"/>
       </panel>
       <panel name="configAppPanel" title="App configuration">
         <button name="stockAppBtn" title="Config Stock" hidden="true"
@@ -56,6 +58,7 @@
     </panel>
     <panel-tabs name="appConfigPanelTab">
       <panel name="stockValidationPanel" title="Stock" hideIf="!isStockAppEnabled">
+        <field name="isStockLocationManagementEnabled" widget="boolean-switch" colSpan="12"/>
         <panel name="generalStockConfigPanel" title="Enable validation" colSpan="6"
           help="If this configuration is enabled, users will be able to directly validate the enabled feature on mobile application.">
           <field name="isInventoryValidationEnabled" widget="boolean-switch" colSpan="6"
@@ -186,6 +189,12 @@
     <view-param name="forceEdit" value="true"/>
     <context name="_showRecord"
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-hr').fetchOne()?.id"/>
+  </action-view>
+
+  <action-view name="action.hr.config.mobile.dashboards.view" title="Mobile dashboards"
+    model="com.axelor.apps.mobilesettings.db.MobileDashboard">
+    <view type="grid" name="mobile-dashboard-grid"/>
+    <view type="form" name="mobile-dashboard-form"/>
   </action-view>
 
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">

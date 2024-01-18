@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -79,9 +79,9 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected InvoiceRepository invoiceRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
-  public static final String FA_LEVEL_UP = "fa-level-up";
-  public static final String FA_LEVEL_DOWN = "fa-level-down";
-  public static final String ICON_EQUAL = "icon-equal";
+  public static final String FA_LEVEL_UP = "arrow-90deg-up";
+  public static final String FA_LEVEL_DOWN = "arrow-90deg-down";
+  public static final String ICON_EQUAL = "equal";
 
   @Inject
   public ProjectBusinessServiceImpl(

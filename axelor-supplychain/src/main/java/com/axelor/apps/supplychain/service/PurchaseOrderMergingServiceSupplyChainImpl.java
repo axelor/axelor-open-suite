@@ -2,6 +2,7 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderMergingServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -54,8 +55,9 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
   @Inject
   public PurchaseOrderMergingServiceSupplyChainImpl(
       PurchaseOrderService purchaseOrderService,
+      PurchaseOrderRepository purchaseOrderRepository,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
-    super(purchaseOrderService);
+    super(purchaseOrderService, purchaseOrderRepository);
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
   }
 

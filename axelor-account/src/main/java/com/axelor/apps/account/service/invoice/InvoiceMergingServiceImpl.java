@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -653,8 +654,12 @@ public class InvoiceMergingServiceImpl implements InvoiceMergingService {
 
   @Override
   public List<Invoice> convertSelectedLinesToMergeLines(List<Integer> idList) {
-    return idList.stream()
-        .map(id -> invoiceRepository.find(Long.valueOf(id)))
-        .collect(Collectors.toList());
+    return Optional.ofNullable(idList)
+        .map(
+            list ->
+                list.stream()
+                    .map(id -> invoiceRepository.find(Long.valueOf(id)))
+                    .collect(Collectors.toList()))
+        .orElse(List.of());
   }
 }

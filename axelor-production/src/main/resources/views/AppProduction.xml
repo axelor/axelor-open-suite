@@ -45,10 +45,14 @@
 
       <panel name="secondConfigurationPanel" colSpan="6" itemSpan="12">
         <panel name="mainConfiguratorPanel" title="Main configurations">
+          <field name="employeeScheduling" widget="boolean-switch"/>
           <field name="enableConfigurator" widget="boolean-switch"/>
           <field name="enableToolManagement" widget="boolean-switch"/>
           <field name="manageOutsourcing" widget="boolean-switch"
             onChange="action-app-production-validate-manage-outsourcing-onchange"/>
+          <field name="generatePurchaseOrderOnMoPlanning" widget="boolean-switch"
+            showIf="manageOutsourcing"
+            help="When enabled, new prod process and prod process line will have their option to generate purchase order set to true."/>
           <field name="manageMpsCharge" widget="boolean-switch"/>
           <panel name="manageWorkshopPanel" colSpan="6" itemSpan="12">
             <field name="manageWorkshop" widget="boolean-switch"/>

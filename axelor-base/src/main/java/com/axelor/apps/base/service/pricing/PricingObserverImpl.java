@@ -16,6 +16,11 @@ public class PricingObserverImpl implements PricingObserver {
   public PricingObserverImpl() {}
 
   @Override
+  public StringBuilder getLogs() {
+    return logs;
+  }
+
+  @Override
   public void updatePricing(Pricing pricing) {
     if (logs.length() > 0) {
       logs.append("\n");

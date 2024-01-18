@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="bill-of-material-import-grid" title="Bill of materials imports"
+    model="com.axelor.apps.production.db.BillOfMaterialImport">
+    <field name="name"/>
+    <field name="mainBillOfMaterialGenerated"/>
+    <field name="statusSelect"/>
+  </grid>
+
+  <form name="bill-of-material-import-form" title="Bill of materials import"
+    model="com.axelor.apps.production.db.BillOfMaterialImport">
+    <panel name="mainPanel">
+      <field name="statusSelect" showTitle="true" readonly="true" colSpan="12"
+        widget="NavSelect"/>
+      <field name="name"/>
+      <field name="importSource"/>
+      <field name="importMetaFile" widget="binary-link"/>
+      <field name="documentMetaFile" widget="binary-link"/>
+      <field name="mainBillOfMaterialGenerated" readonly="true"/>
+    </panel>
+    <panel-tabs>
+      <panel-related field="billOfMaterialImportLineList"
+        name="billOfMaterialImportLineListPanel" title="Result grid" colSpan="12" orderBy="bomLevel"
+        grid="bill-of-material-import-line-grid" form-view="bill-of-material-import-line-form"/>
+      <panel-dashlet name="taskTreePanel" title="Result Tree" colSpan="12"
+        action="action-bill-of-material-import-line-view-tree"/>
+    </panel-tabs>
+    <panel name="actionPanel" sidebar="true" showIf="statusSelect != 3">
+      <button name="importBtn" title="Import" hidden="true" showIf="statusSelect == 1"
+        onClick="save, action-bill-of-material-import-method-import"/>
+      <button name="validateBtn" title="Validate" hidden="true" showIf="statusSelect == 2"
+        onClick="save, action-bill-of-material-import-method-validate"/>
+    </panel>
+  </form>
+
+  <action-method name="action-bill-of-material-import-method-import">
+    <call class="com.axelor.apps.production.web.BillOfMaterialImportController"
+      method="runImport"/>
+  </action-method>
+
+  <action-method name="action-bill-of-material-import-method-validate">
+    <call class="com.axelor.apps.production.web.BillOfMaterialImportController"
+      method="createBoMFromImport"/>
+  </action-method>
+
+</object-views>
+
+

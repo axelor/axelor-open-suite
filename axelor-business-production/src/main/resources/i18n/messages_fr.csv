@@ -1,4 +1,8 @@
 "key","message","comment","context"
+"Calendar per employee","Calendrier par employé",,
+"Employee planned operations","Opérations planifiées par employé",,
+"Employee planning","Planning employé",,
+"Employee real operations","Opérations réelles par employé",,
 "Employees",,,
 "Enable timesheet on manuf order","Activer les feuilles de temps pour les OFs",,
 "Generate timesheet line on operation order stop","Générer ligne de feuille de temps",,

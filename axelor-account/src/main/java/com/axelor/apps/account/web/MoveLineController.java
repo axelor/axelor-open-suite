@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineGroupService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -278,7 +279,7 @@ public class MoveLineController {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
 
-      Beans.get(MoveLineService.class).computeFinancialDiscount(moveLine);
+      Beans.get(MoveLineFinancialDiscountService.class).computeFinancialDiscount(moveLine);
 
       response.setValue("financialDiscountRate", moveLine.getFinancialDiscountRate());
       response.setValue("financialDiscountTotalAmount", moveLine.getFinancialDiscountTotalAmount());
@@ -291,16 +292,17 @@ public class MoveLineController {
   }
 
   @SuppressWarnings("unchecked")
-  public void validateCutOffBatch(ActionRequest request, ActionResponse response) {
+  public void validatePreviewBatch(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
 
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       }
 
+      Long id = (long) (int) context.get("_batchId");
+      int actionSelect = (int) context.get("_actionSelect");
       List<Long> ids =
           (List)
               (((List) context.get("_ids"))
@@ -308,14 +310,12 @@ public class MoveLineController {
                       .filter(ObjectUtils::notEmpty)
                       .map(input -> Long.parseLong(input.toString()))
                       .collect(Collectors.toList()));
-      Long id = (long) (int) context.get("_batchId");
 
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       } else {
-        Batch batch = Beans.get(MoveLineService.class).validateCutOffBatch(ids, id);
+        Batch batch = Beans.get(MoveLineService.class).validatePreviewBatch(ids, id, actionSelect);
         response.setInfo(batch.getComments());
       }
 

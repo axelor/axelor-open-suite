@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,6 +47,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyService;
@@ -390,10 +391,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
     BigDecimal amountInCurrency;
     MoveLine cutOffMoveLine;
     Map<Account, MoveLine> cutOffMoveLineMap = new HashMap<>();
+    Currency companyCurrency = move.getCompanyCurrency();
 
     BigDecimal currencyRate =
-        currencyService.getCurrencyConversionRate(
-            move.getCurrency(), move.getCompanyCurrency(), moveDate);
+        currencyService.getCurrencyConversionRate(move.getCurrency(), companyCurrency, moveDate);
 
     // Sorting so that move lines with analytic move lines are computed first
     List<MoveLine> sortedMoveLineList = new ArrayList<>(move.getMoveLineList());
@@ -419,7 +420,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         amountInCurrency = moveLineService.getCutOffProrataAmount(moveLine, originMoveDate);
         BigDecimal convertedAmount =
             currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-                amountInCurrency, currencyRate);
+                amountInCurrency, currencyRate, companyCurrency);
 
         // Check if move line already exists with that account
         if (cutOffMoveLineMap.containsKey(moveLineAccount)) {

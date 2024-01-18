@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -145,8 +145,11 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
               String.format("axis%dAnalyticAccount", i),
               "domain",
               String.format(
-                  "self.id IN (%s) AND self.statusSelect = %d AND (self.company IS NULL OR self.company.id = %d)",
-                  idList, AnalyticAccountRepository.STATUS_ACTIVE, company.getId()),
+                  "%s AND self.id IN (%s) AND self.statusSelect = %d AND (self.company IS NULL OR self.company.id = %d)",
+                  analyticAccountService.getIsNotParentAnalyticAccountQuery(),
+                  idList,
+                  AnalyticAccountRepository.STATUS_ACTIVE,
+                  company.getId()),
               attrsMap);
         }
       }

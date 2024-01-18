@@ -48,9 +48,6 @@
     <boolean name="defWorkshopStockLocationAsFormula" title="Define with a script"
       default="false"/>
 
-    <!--we don't want a real database relation between configurator and bill of materials, so we just
-      save the id -->
-    <long name="billOfMaterialId"/>
 
   </entity>
 

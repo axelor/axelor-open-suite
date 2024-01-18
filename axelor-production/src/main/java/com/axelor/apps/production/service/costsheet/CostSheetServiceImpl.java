@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -63,7 +63,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,10 +322,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   origin,
                   unitCostCalculation);
 
-          BigDecimal wasteRate =
-              Optional.ofNullable(billOfMaterialLine.getBillOfMaterial())
-                  .map(BillOfMaterial::getWasteRate)
-                  .orElse(null);
+          BigDecimal wasteRate = billOfMaterialLine.getWasteRate();
 
           if (wasteRate != null && wasteRate.compareTo(BigDecimal.ZERO) > 0) {
             costSheetLineService.createConsumedProductWasteCostSheetLine(
@@ -875,7 +871,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       Unit pieceUnit,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate) {
+      LocalDate previousCostSheetDate)
+      throws AxelorException {
     int costType =
         appProductionService.getIsCostPerProcessLine()
             ? operationOrder.getProdProcessLine().getCostTypeSelect()

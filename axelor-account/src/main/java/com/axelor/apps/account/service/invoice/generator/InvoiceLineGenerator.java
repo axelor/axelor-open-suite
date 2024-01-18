@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,7 @@ import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.CurrencyServiceImpl;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
@@ -127,7 +128,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
     this.today = appAccountService.getTodayDate(invoice.getCompany());
-    this.currencyService = new CurrencyService(this.appBaseService, this.today);
+    this.currencyService = new CurrencyServiceImpl(this.appBaseService, this.today);
     this.currencyScale = this.currencyScaleServiceAccount.getScale(invoice);
     this.companyCurrencyScale = this.currencyScaleServiceAccount.getCompanyScale(invoice);
   }
@@ -158,8 +159,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.taxLine = taxLine;
     this.discountTypeSelect = discountTypeSelect;
     this.discountAmount = discountAmount;
-    this.exTaxTotal = exTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
-    this.inTaxTotal = inTaxTotal.setScale(this.currencyScale, RoundingMode.HALF_UP);
+    this.exTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, exTaxTotal);
+    this.inTaxTotal = this.currencyScaleServiceAccount.getScaledValue(invoice, inTaxTotal);
   }
 
   public Invoice getInvoice() {
