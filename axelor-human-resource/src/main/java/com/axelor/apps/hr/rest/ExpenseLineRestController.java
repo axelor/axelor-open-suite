@@ -22,8 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
+import com.axelor.apps.hr.rest.dto.ExpenseLinePutRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateService;
+import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
 import com.axelor.apps.project.db.Project;
@@ -42,6 +44,7 @@ import java.time.LocalDate;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -125,5 +128,46 @@ public class ExpenseLineRestController {
         Response.Status.OK,
         I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
         Beans.get(ExpenseLineCheckResponseService.class).createResponse(expenseLine));
+  }
+
+  @Operation(
+      summary = "Update expense line",
+      tags = {"Expense line"})
+  @Path("/update/{expenseLineId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response updateExpenseLine(
+      @PathParam("expenseLineId") Long expenseLineId, ExpenseLinePutRequest requestBody)
+      throws AxelorException {
+    new SecurityCheck().writeAccess(ExpenseLine.class).createAccess(ExpenseLine.class).check();
+    RequestValidator.validateBody(requestBody);
+    ExpenseLine expenseLine =
+        ObjectFinder.find(ExpenseLine.class, expenseLineId, requestBody.getVersion());
+
+    expenseLine =
+        Beans.get(ExpenseLineUpdateService.class)
+            .updateExpenseLine(
+                expenseLine,
+                requestBody.fetchProject(),
+                requestBody.fetchExpenseProduct(),
+                requestBody.getExpenseDate(),
+                requestBody.fetchKilometricAllowParam(),
+                requestBody.getKilometricTypeSelect(),
+                requestBody.getDistance(),
+                requestBody.getFromCity(),
+                requestBody.getToCity(),
+                requestBody.getTotalAmount(),
+                requestBody.getTotalTax(),
+                requestBody.fetchjustificationMetaFile(),
+                requestBody.getComments(),
+                requestBody.fetchEmployee(),
+                requestBody.fetchCurrency(),
+                requestBody.getToInvoice(),
+                requestBody.fetchExpense());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Expense line successfully updated.",
+        new ExpenseLineResponse(expenseLine));
   }
 }
