@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.persist.Transactional;
 import java.util.List;
 
 public interface InvoiceTermReplaceService {
@@ -32,7 +31,6 @@ public interface InvoiceTermReplaceService {
       Invoice invoice, Move move, List<MoveLine> invoiceMoveLineList, Account partnerAccount)
       throws AxelorException;
 
-  @Transactional(rollbackOn = {Exception.class})
   void replaceInvoiceTerms(
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,

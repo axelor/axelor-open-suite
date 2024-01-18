@@ -225,7 +225,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
    * @throws AxelorException
    */
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public Move createMove(
       Journal journal,
       Company company,
