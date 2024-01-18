@@ -68,6 +68,9 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
+        <field name="isMassStockMoveManaged" widget="boolean-switch" colSpan="4"/>
+        <field name="cartStockLocation" domain="self.typeSelect != 3" colSpan="4"
+          showIf="isMassStockMoveManaged"/>
       </panel>
     </panel>
     <panel name="stockRuleInfoPanel" title="Stock rule information">

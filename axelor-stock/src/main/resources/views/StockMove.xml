@@ -652,6 +652,8 @@
             <field name="operationOrder" hidden="true" showIf="operationOrder != null"
               if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
+            <field name="massStockMove" hidden="true" showIf="massStockMove != null"
+              title="Mass move"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
             showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
