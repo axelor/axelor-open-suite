@@ -13,4 +13,17 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="appBase" search="self.id = '1'"/>
+  </input>
+
+  <input file="quality_controlType.csv" separator=";"
+    type="com.axelor.apps.quality.db.ControlType" search="self.importId = :importId"/>
+
+  <input file="quality_controlEntryPlanLineMetaJsonField.csv" separator=";"
+    type="com.axelor.meta.db.MetaJsonField" search="self.importId = :importId"/>
+
 </csv-inputs>

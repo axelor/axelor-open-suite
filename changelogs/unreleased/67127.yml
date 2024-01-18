@@ -1,6 +1,0 @@
----
-title: "Leave request: fix employee filter"
-type: fix
-description: |
-  A HR manager can now create a leave request for every employee.
-  Else, if an employee is not a manager, he can only create leave request for himself or for employee he is responsible of.

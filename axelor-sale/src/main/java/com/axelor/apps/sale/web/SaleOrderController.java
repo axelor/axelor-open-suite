@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,12 +45,15 @@ import com.axelor.apps.sale.db.repo.PackRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.SaleOrderDomainService;
+import com.axelor.apps.sale.service.SaleOrderGroupService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.common.ObjectUtils;
@@ -542,9 +545,9 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder.setSaleOrderLineList(
-          Beans.get(SaleOrderService.class).handleComplementaryProducts(saleOrder));
-      response.setValues(saleOrder);
+      List<SaleOrderLine> saleOrderLineList =
+          Beans.get(SaleOrderOnLineChangeService.class).handleComplementaryProducts(saleOrder);
+      response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -558,7 +561,7 @@ public class SaleOrderController {
       return;
     }
     try {
-      Beans.get(SaleOrderService.class).updateProductQtyWithPackHeaderQty(saleOrder);
+      Beans.get(SaleOrderOnLineChangeService.class).updateProductQtyWithPackHeaderQty(saleOrder);
     } catch (AxelorException e) {
       TraceBackService.trace(response, e);
     }
@@ -646,5 +649,82 @@ public class SaleOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void isIncotermRequired(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    response.setAttr(
+        "incoterm", "required", Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder));
+  }
+
+  public void onLineChange(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    try {
+      if (saleOrder == null) {
+        return;
+      }
+
+      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+
+      response.setValues(saleOrder);
+      response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void createNewVersion(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    if (saleOrder.getSaleOrderLineList().isEmpty()) {
+      throw new AxelorException(
+          saleOrder,
+          TraceBackRepository.CATEGORY_NO_VALUE,
+          I18n.get(SaleExceptionMessage.SALE_ORDER_NO_DETAIL_LINE));
+    }
+    Beans.get(SaleOrderVersionService.class).createNewVersion(saleOrder);
+    response.setReload(true);
+  }
+
+  public void getLastVersion(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = saleOrder.getVersionNumber() - 1;
+    versionNumber =
+        Beans.get(SaleOrderVersionService.class)
+            .getCorrectedVersionNumber(saleOrder.getVersionNumber(), versionNumber);
+    response.setValue("$previousVersionNumber", versionNumber);
+    response.setAttr("pastVersionsPanel", "refresh", true);
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void getPreviousVersionNumberOnChange(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    versionNumber =
+        Beans.get(SaleOrderVersionService.class)
+            .getCorrectedVersionNumber(saleOrder.getVersionNumber(), versionNumber);
+    response.setValue("$previousVersionNumber", versionNumber);
+    response.setAttr("pastVersionsPanel", "refresh", true);
+    response.setValue(
+        "$versionDateTime",
+        Beans.get(SaleOrderVersionService.class).getVersionDateTime(saleOrder, versionNumber));
+  }
+
+  public void recoverVersion(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+    Integer versionNumber = (Integer) request.getContext().get("previousVersionNumber");
+    boolean saveActualVersion = (Boolean) request.getContext().get("saveActualVersion");
+    if (Beans.get(SaleOrderVersionService.class)
+        .recoverVersion(saleOrder, versionNumber, saveActualVersion)) {
+      response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NEW_VERSION));
+    } else {
+      response.setNotify(I18n.get(SaleExceptionMessage.SALE_ORDER_NO_NEW_VERSION));
+    }
+    response.setReload(true);
   }
 }

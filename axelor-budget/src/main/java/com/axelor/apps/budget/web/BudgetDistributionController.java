@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,13 +22,12 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.service.BudgetDistributionService;
+import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
+import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -50,10 +49,10 @@ public class BudgetDistributionController {
       Context parentContext = request.getContext().getParent();
       Context grandParentContext = null;
       LocalDate date = null;
-      if (parentContext == null) {
+      if (parentContext == null || budgetDistribution.getBudget() == null) {
         return;
       }
-      grandParentContext = request.getContext().getParent().getParent();
+      grandParentContext = parentContext.getParent();
       if (grandParentContext == null) {
         return;
       }
@@ -66,15 +65,13 @@ public class BudgetDistributionController {
                   ? invoice.getInvoiceDate()
                   : Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
         }
-      }
-      if (PurchaseOrderLine.class.equals(parentContext.getContextClass())
+      } else if (PurchaseOrderLine.class.equals(parentContext.getContextClass())
           && budgetDistribution.getBudget() != null) {
         PurchaseOrder purchaseOrder = grandParentContext.asType(PurchaseOrder.class);
         if (purchaseOrder != null && purchaseOrder.getOrderDate() != null) {
           date = purchaseOrder.getOrderDate();
         }
-      }
-      if (MoveLine.class.equals(parentContext.getContextClass())
+      } else if (MoveLine.class.equals(parentContext.getContextClass())
           && budgetDistribution.getBudget() != null) {
         Move move = grandParentContext.asType(Move.class);
         if (move != null && move.getDate() != null) {
@@ -82,18 +79,20 @@ public class BudgetDistributionController {
         } else {
           date = parentContext.asType(MoveLine.class).getDate();
         }
+      } else if (SaleOrderLine.class.equals(parentContext.getContextClass())
+          && budgetDistribution.getBudget() != null) {
+        SaleOrder saleOrder = grandParentContext.asType(SaleOrder.class);
+        if (saleOrder != null) {
+          date =
+              saleOrder.getOrderDate() != null
+                  ? saleOrder.getOrderDate()
+                  : saleOrder.getCreationDate();
+        }
       }
 
       Beans.get(BudgetDistributionService.class)
           .computeBudgetDistributionSumAmount(budgetDistribution, date);
       response.setValues(budgetDistribution);
-
-      if (SaleOrderLine.class.equals(parentContext.getContextClass())
-          && budgetDistribution.getBudget() != null) {
-        budgetDistribution.setBudgetAmountAvailable(
-            budgetDistribution.getBudget().getAvailableAmount());
-        response.setValues(budgetDistribution);
-      }
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -103,13 +102,15 @@ public class BudgetDistributionController {
   public void setBudgetDomain(ActionRequest request, ActionResponse response) {
     try {
       Context parentContext = request.getContext().getParent();
-      String query = "self.totalAmountExpected > 0 AND self.statusSelect = 2";
+      String query = "";
       if (parentContext != null
           && PurchaseOrderLine.class.equals(parentContext.getContextClass())) {
         PurchaseOrderLine purchaseOrderLine = parentContext.asType(PurchaseOrderLine.class);
-        PurchaseOrder purchaseOrder = null;
+        PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
 
-        if (PurchaseOrder.class.equals(parentContext.getParent().getContextClass())) {
+        if (purchaseOrder == null
+            && parentContext.getParent() != null
+            && PurchaseOrder.class.equals(parentContext.getParent().getContextClass())) {
           purchaseOrder = parentContext.getParent().asType(PurchaseOrder.class);
         }
         query =
@@ -117,115 +118,37 @@ public class BudgetDistributionController {
                 .getBudgetDomain(purchaseOrderLine, purchaseOrder);
 
       } else if (parentContext != null && MoveLine.class.equals(parentContext.getContextClass())) {
-        Move move = null;
         MoveLine moveLine = parentContext.asType(MoveLine.class);
-        if (parentContext.getParent() != null
+        Move move = moveLine.getMove();
+        if (move == null
+            && parentContext.getParent() != null
             && Move.class.equals(parentContext.getParent().getContextClass())) {
           move = parentContext.getParent().asType(Move.class);
-        } else if (parentContext.asType(MoveLine.class).getMove() != null) {
-          move = parentContext.asType(MoveLine.class).getMove();
         }
-        if (move != null) {
-          query =
-              query.concat(
-                  String.format(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d",
-                      move.getCompany() != null ? move.getCompany().getId() : 0));
-          if (move.getDate() != null) {
-            query =
-                query.concat(
-                    String.format(
-                        " AND self.fromDate <= '%s' AND self.toDate >= '%s'",
-                        move.getDate(), move.getDate()));
-          }
-        }
-        if (moveLine != null) {
-          if (AccountTypeRepository.TYPE_INCOME.equals(
-              moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-            query =
-                query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = "
-                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE);
-          } else if (AccountTypeRepository.TYPE_CHARGE.equals(
-              moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-            query =
-                query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
-                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
-                        + ","
-                        + BudgetLevelRepository
-                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                        + ")");
-          } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
-              moveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-            query =
-                query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
-                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
-                        + ","
-                        + BudgetLevelRepository
-                            .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                        + ")");
-          }
-        }
+        query = Beans.get(MoveLineBudgetService.class).getBudgetDomain(move, moveLine);
 
       } else if (parentContext != null
           && InvoiceLine.class.equals(parentContext.getContextClass())) {
 
         if (Invoice.class.equals(parentContext.getParent().getContextClass())) {
-          Invoice invoice = parentContext.getParent().asType(Invoice.class);
-
-          query =
-              query.concat(
-                  String.format(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.company.id = %d ",
-                      invoice.getCompany() != null ? invoice.getCompany().getId() : 0));
-          if (invoice.getOperationTypeSelect() >= InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
-            query =
-                query.concat(
-                    " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect = "
-                        + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_SALE);
-          } else {
-            InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
-            if (AccountTypeRepository.TYPE_CHARGE.equals(
-                invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-              query =
-                  query.concat(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
-                          + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE
-                          + ","
-                          + BudgetLevelRepository
-                              .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                          + ")");
-            } else if (AccountTypeRepository.TYPE_IMMOBILISATION.equals(
-                invoiceLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-              query =
-                  query.concat(
-                      " AND self.budgetLevel.parentBudgetLevel.parentBudgetLevel.budgetTypeSelect in ("
-                          + BudgetLevelRepository.BUDGET_LEVEL_BUDGET_TYPE_SELECT_INVESTMENT
-                          + ","
-                          + BudgetLevelRepository
-                              .BUDGET_LEVEL_BUDGET_TYPE_SELECT_PURCHASE_AND_INVESTMENT
-                          + ")");
-            } else {
-              query = "self.id = 0";
-            }
+          InvoiceLine invoiceLine = parentContext.asType(InvoiceLine.class);
+          Invoice invoice = invoiceLine.getInvoice();
+          if (invoice == null
+              && parentContext.getParent() != null
+              && Invoice.class.equals(parentContext.getParent().getContextClass())) {
+            invoice = parentContext.getParent().asType(Invoice.class);
           }
-          LocalDate date =
-              invoice.getInvoiceDate() != null
-                  ? invoice.getInvoiceDate()
-                  : Beans.get(AppBaseService.class).getTodayDate(invoice.getCompany());
-          if (date != null) {
-            query =
-                query.concat(
-                    String.format(
-                        " AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
-          }
+          query = Beans.get(BudgetInvoiceLineService.class).getBudgetDomain(invoice, invoiceLine);
         }
       } else if (parentContext != null
           && SaleOrderLine.class.equals(parentContext.getContextClass())) {
         SaleOrderLine saleOrderLine = parentContext.asType(SaleOrderLine.class);
-        SaleOrder saleOrder = parentContext.getParent().asType(SaleOrder.class);
+        SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+        if (saleOrder == null
+            && parentContext.getParent() != null
+            && SaleOrder.class.equals(parentContext.getParent().getContextClass())) {
+          saleOrder = parentContext.getParent().asType(SaleOrder.class);
+        }
         query =
             Beans.get(SaleOrderLineBudgetService.class).getBudgetDomain(saleOrderLine, saleOrder);
       }

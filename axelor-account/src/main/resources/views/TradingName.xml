@@ -5,12 +5,47 @@
 
   <form id="account-trading-name-form" model="com.axelor.apps.base.db.TradingName"
     title="Trading name" name="trading-name-form" extension="true">
+    <extend target="/">
+      <attribute name="onLoad" value="action-trading-name-method-show-analytic-panel"/>
+    </extend>
+
+    <extend target="//panel-related[@name='companySetPanel']">
+      <attribute name="onChange" value="action-trading-name-group-company-onchange"/>
+    </extend>
+
     <extend target="//panel[@name='mainPanel']">
       <insert position="after">
-        <panel title="Analytic distribution template" name="analyticDistributionPanel">
-          <field name="analyticDistributionTemplate" showTitle="false"/>
+        <panel title="Analytic distribution template" name="analyticDistributionPanel"
+          hidden="true">
+          <field name="analyticDistributionTemplate" showTitle="false"
+            grid-view="analytic-distribution-template-grid"
+            form-view="analytic-distribution-template-form"
+            onSelect="action-trading-name-method-domain-analytic-distribution-template"/>
+          <field name="company.accountConfig" hidden="true"/>
+          <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
         </panel>
       </insert>
     </extend>
   </form>
+
+  <action-group name="action-trading-name-group-company-onchange">
+    <action name="action-trading-name-method-show-analytic-panel"/>
+    <action name="action-trading-name-method-empty-analytic-distribution-template"/>
+  </action-group>
+
+  <action-method name="action-trading-name-method-show-analytic-panel">
+    <call class="com.axelor.apps.account.web.TradingNameController" method="showAnalyticPanel"/>
+  </action-method>
+
+  <action-method
+    name="action-trading-name-method-empty-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.TradingNameController"
+      method="emptyAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-trading-name-method-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.TradingNameController"
+      method="setAnalyticDistributionTemplate"/>
+  </action-method>
 </object-views>

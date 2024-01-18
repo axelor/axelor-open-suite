@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,6 +66,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
   protected MoveCancelService moveCancelService;
   protected BankOrderRepository bankOrderRepository;
   protected ExpenseRepository expenseRepository;
+  protected ExpenseFetchMoveService expenseFetchMoveService;
 
   @Inject
   public ExpensePaymentServiceImpl(
@@ -79,7 +80,8 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       BankOrderService bankOrderService,
       MoveCancelService moveCancelService,
       BankOrderRepository bankOrderRepository,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      ExpenseFetchMoveService expenseFetchMoveService) {
     this.bankOrderCreateServiceHr = bankOrderCreateServiceHr;
     this.accountConfigService = accountConfigService;
     this.paymentModeService = paymentModeService;
@@ -91,6 +93,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     this.moveCancelService = moveCancelService;
     this.bankOrderRepository = bankOrderRepository;
     this.expenseRepository = expenseRepository;
+    this.expenseFetchMoveService = expenseFetchMoveService;
   }
 
   @Override
@@ -122,12 +125,8 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
           .getGenerateMoveForInvoicePayment()) {
         this.createMoveForExpensePayment(expense);
       }
-      if (paymentMode.getAutomaticTransmission()) {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-      } else {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-      }
+      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
     }
     expense.setPaymentAmount(
         expense
@@ -145,6 +144,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BigDecimal paymentAmount = expense.getInTaxTotal();
     BankDetails bankDetails = expense.getBankDetails();
     String origin = expense.getExpenseSeq();
+    Move move = expenseFetchMoveService.getExpenseMove(expense);
 
     Account employeeAccount;
 
@@ -157,11 +157,11 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     }
     employeeAccount = expenseMoveLine.getAccount();
 
-    Move move =
+    Move movePayment =
         moveCreateService.createMove(
             journal,
             company,
-            expense.getMove().getCurrency(),
+            move.getCurrency(),
             partner,
             paymentDate,
             paymentDate,
@@ -173,9 +173,9 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
             null,
             bankDetails);
 
-    move.addMoveLineListItem(
+    movePayment.addMoveLineListItem(
         moveLineCreateService.createMoveLine(
-            move,
+            movePayment,
             partner,
             paymentModeService.getPaymentModeAccount(paymentMode, company, bankDetails),
             paymentAmount,
@@ -188,7 +188,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
 
     MoveLine employeeMoveLine =
         moveLineCreateService.createMoveLine(
-            move,
+            movePayment,
             partner,
             employeeAccount,
             paymentAmount,
@@ -200,21 +200,26 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
             null);
     employeeMoveLine.setTaxAmount(expense.getTaxTotal());
 
-    move.addMoveLineListItem(employeeMoveLine);
+    movePayment.addMoveLineListItem(employeeMoveLine);
 
-    moveValidateService.accounting(move);
-    expense.setPaymentMove(move);
+    moveValidateService.accounting(movePayment);
+    expense.setPaymentMove(movePayment);
+    movePayment.setExpensePayment(expense);
 
     reconcileService.reconcile(expenseMoveLine, employeeMoveLine, true, false);
 
     expenseRepository.save(expense);
 
-    return move;
+    return movePayment;
   }
 
   protected MoveLine getExpenseEmployeeMoveLineByLoop(Expense expense) {
     MoveLine expenseEmployeeMoveLine = null;
-    for (MoveLine moveline : expense.getMove().getMoveLineList()) {
+    Move move = expenseFetchMoveService.getExpenseMove(expense);
+    if (move == null) {
+      return null;
+    }
+    for (MoveLine moveline : move.getMoveLineList()) {
       if (moveline.getCredit().compareTo(BigDecimal.ZERO) > 0) {
         expenseEmployeeMoveLine = moveline;
       }
@@ -244,8 +249,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BankOrder bankOrder = expense.getBankOrder();
 
     if (bankOrder != null) {
-      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-          || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
+      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));

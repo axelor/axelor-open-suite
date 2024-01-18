@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.file.PdfHelper;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,8 +53,8 @@ public class CatalogController {
       String title = catalog.getName();
       Path path = MetaFiles.getPath(pdf.getFilePath());
       String fileLink =
-          PdfTool.getFileLinkFromPdfFile(
-              PdfTool.printCopiesToFile(path.toFile(), 1), title + ".pdf");
+          PdfHelper.getFileLinkFromPdfFile(
+              PdfHelper.printCopiesToFile(path.toFile(), 1), title + ".pdf");
       response.setView(ActionView.define(title).add("html", fileLink).map());
 
     } catch (Exception e) {

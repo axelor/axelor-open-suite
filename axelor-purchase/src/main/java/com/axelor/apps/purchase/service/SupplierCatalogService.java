@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -78,7 +78,16 @@ public interface SupplierCatalogService {
   BigDecimal getMinQty(Product product, Partner supplierPartner, Company company)
       throws AxelorException;
 
-  void checkMinQty(
+  boolean checkMinQty(
+      Product product,
+      Partner supplierPartner,
+      Company company,
+      BigDecimal qty,
+      ActionRequest request,
+      ActionResponse response)
+      throws AxelorException;
+
+  boolean checkMaxQty(
       Product product,
       Partner supplierPartner,
       Company company,

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ public interface MoveGroupService {
 
   void checkBeforeSave(Move move) throws AxelorException;
 
-  void onSave(Move move, boolean paymentConditionChange, boolean headerChange)
+  void onSave(Move move, boolean paymentConditionChange, boolean dateChange, boolean headerChange)
       throws AxelorException;
 
   Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
@@ -111,5 +111,11 @@ public interface MoveGroupService {
 
   Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move);
 
+  Map<String, Map<String, Object>> getSubrogationPartnerOnSelectAttrsMap(Move move);
+
   Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate);
+
+  Map<String, Map<String, Object>> getMassEntryAttrsMap(Move move) throws AxelorException;
+
+  Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,9 +21,11 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -32,6 +34,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -53,6 +56,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected TimesheetRepository timesheetRepo;
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
+  protected DateService dateService;
 
   @Inject
   public TimesheetLineServiceImpl(
@@ -60,12 +64,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       EmployeeRepository employeeRepository,
       TimesheetRepository timesheetRepo,
       AppHumanResourceService appHumanResourceService,
-      UserHrService userHrService) {
+      UserHrService userHrService,
+      DateService dateService) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
+    this.dateService = dateService;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -197,6 +203,25 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
+  public TimesheetLine createTimesheetLine(
+      Project project,
+      ProjectTask projectTask,
+      Product product,
+      Employee employee,
+      LocalDate date,
+      Timesheet timesheet,
+      BigDecimal hours,
+      String comments,
+      TSTimer timer) {
+    TimesheetLine timesheetLine =
+        createTimesheetLine(project, product, employee, date, timesheet, hours, comments);
+    timesheetLine.setProjectTask(projectTask);
+    timesheetLine.setTimer(timer);
+
+    return timesheetLine;
+  }
+
+  @Override
   public TimesheetLine updateTimesheetLine(
       TimesheetLine timesheetLine,
       Project project,
@@ -262,5 +287,51 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
 
     return projectTimeSpentMap;
+  }
+
+  public void checkDailyLimit(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
+      throws AxelorException {
+    Integer dailyLimit = getDailyLimitFromApp();
+
+    if (dailyLimit == 0) {
+      return;
+    }
+
+    BigDecimal totalHoursDuration = calculateTotalHoursDuration(timesheet, currentTimesheetLine);
+
+    if (isExceedingDailyLimit(totalHoursDuration, hoursDuration, dailyLimit)) {
+      handleExceedingDailyLimit(dailyLimit, currentTimesheetLine.getDate());
+    }
+  }
+
+  protected Integer getDailyLimitFromApp() {
+    return appHumanResourceService.getAppTimesheet().getDailyLimit();
+  }
+
+  protected BigDecimal calculateTotalHoursDuration(
+      Timesheet timesheet, TimesheetLine currentTimesheetLine) {
+    return timesheet.getTimesheetLineList().stream()
+        .filter(
+            l ->
+                !l.equals(currentTimesheetLine)
+                    && l.getDate().equals(currentTimesheetLine.getDate()))
+        .map(TimesheetLine::getHoursDuration)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+  }
+
+  protected boolean isExceedingDailyLimit(
+      BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
+    return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
+  }
+
+  protected void handleExceedingDailyLimit(Integer dailyLimit, LocalDate date)
+      throws AxelorException {
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        String.format(
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_LINES_EXCEED_DAILY_LIMIT),
+            dailyLimit,
+            date.format(dateService.getDateFormat())));
   }
 }

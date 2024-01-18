@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,22 +58,6 @@ public class SubrogationReleaseController {
       subrogationRelease =
           Beans.get(SubrogationReleaseRepository.class).find(subrogationRelease.getId());
       Beans.get(SubrogationReleaseService.class).transmitRelease(subrogationRelease);
-      response.setReload(true);
-    } catch (Exception e) {
-      response.setError(e.getMessage());
-      TraceBackService.trace(e);
-    }
-  }
-
-  public void printToPDF(ActionRequest request, ActionResponse response) {
-    try {
-      SubrogationRelease subrogationRelease = request.getContext().asType(SubrogationRelease.class);
-      String name =
-          String.format(
-              "%s %s", I18n.get("Subrogation release"), subrogationRelease.getSequenceNumber());
-      String fileLink =
-          Beans.get(SubrogationReleaseService.class).printToPDF(subrogationRelease, name);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
       response.setReload(true);
     } catch (Exception e) {
       response.setError(e.getMessage());

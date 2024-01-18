@@ -10,17 +10,19 @@
     <field name="invoiceTerm.dueDate"/>
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="totalAmount" aggregate="sum"/>
-    <field name="remainingAmount" aggregate="sum"/>
-    <field name="remainingAmountAfterPayment" aggregate="sum"/>
-    <field name="amountToPay" aggregate="sum"/>
+    <field name="totalAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="remainingAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="remainingAmountAfterPayment" aggregate="sum"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="amountToPay" aggregate="sum" x-scale="currency.numberOfDecimals"/>
   </grid>
 
   <form name="pay-voucher-element-to-pay-form" title="Payment voucher invoices to pay"
     model="com.axelor.apps.account.db.PayVoucherElementToPay"
-    onLoad="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay">
+    onLoad="action-pay-voucher-element-to-pay-group-onload">
     <panel name="mainPanel">
       <field name="sequence" readonly="true"/>
       <field name="moveLine.origin"/>
@@ -29,38 +31,62 @@
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="totalAmount"/>
-      <field name="remainingAmount"/>
-      <field name="remainingAmountAfterPayment"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="totalAmount" x-scale="currency.numberOfDecimals"/>
+      <field name="remainingAmount" x-scale="currency.numberOfDecimals"/>
+      <field name="remainingAmountAfterPayment" x-scale="currency.numberOfDecimals"/>
       <field name="amountToPay"
         validIf="$readonly() || $number(amountToPay) &lt;= $number($maxAmountToPay)"
-        onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"/>
+        onChange="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="applyFinancialDiscount" readonlyIf="$isFinancialDiscountReadonly"
+        showIf="invoiceTerm.applyFinancialDiscount"
+        onChange="action-pay-voucher-element-to-pay-method-update-financial-discount"
+        if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
       <field name="moveLineGenerated" form-view="move-line-form" grid-view="move-line-grid"
         showIf="moveLineGenerated"/>
-      <field name="$maxAmountToPay" type="decimal" hidden="true"/>
+      <field name="invoiceTerm.applyFinancialDiscount" hidden="true"/>
+      <field name="$maxAmountToPay" type="decimal" hidden="true"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="$isFinancialDiscountReadonly" type="boolean" hidden="true"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
       name="discountPanel" title="Financial discount" readonly="true"
       showIf="applyFinancialDiscount">
-      <field name="applyFinancialDiscount"/>
       <field name="financialDiscount"/>
-      <field name="financialDiscountDeadlineDate"/>
-      <field name="totalAmountWithFinancialDiscount"/>
-      <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
-      <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
-      <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
+      <field name="financialDiscountDeadlineDate" showIf="financialDiscountDeadlineDate"/>
+      <field name="totalAmountWithFinancialDiscount" x-scale="currency.numberOfDecimals"/>
+      <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"
+        x-scale="currency.numberOfDecimals"/>
     </panel>
   </form>
 
   <action-group name="action-pay-voucher-element-to-pay-group-amount-to-pay-onchange">
     <action name="action-method-account-payment-voucher-element-pay-amount"/>
-    <action name="action-pay-voucher-element-to-pay-method-update-financial-discount"
+    <action name="action-pay-voucher-element-to-pay-method-reset-financial-discount"
       if="applyFinancialDiscount"/>
+    <action name="action-pay-voucher-element-to-pay-attrs-set-financial-discount-readonly"/>
+    <action name="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay"/>
+  </action-group>
+
+  <action-group name="action-pay-voucher-element-to-pay-group-onload">
+    <action name="action-pay-voucher-element-to-pay-attrs-set-max-amount-to-pay"/>
+    <action name="action-pay-voucher-element-to-pay-attrs-set-financial-discount-readonly"/>
   </action-group>
 
   <action-method name="action-method-account-payment-voucher-element-pay-amount">
     <call class="com.axelor.apps.account.web.PayVoucherElementToPayController"
       method="updateAmountToPayCurrency"/>
+  </action-method>
+
+  <action-method
+    name="action-pay-voucher-element-to-pay-method-reset-financial-discount">
+    <call class="com.axelor.apps.account.web.PayVoucherElementToPayController"
+      method="resetFinancialDiscount"/>
   </action-method>
 
   <action-method
@@ -74,5 +100,11 @@
       if="!applyFinancialDiscount"/>
     <attribute name="value" for="$maxAmountToPay"
       expr="eval: invoiceTerm.amountRemainingAfterFinDiscount" if="applyFinancialDiscount"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-pay-voucher-element-to-pay-attrs-set-financial-discount-readonly">
+    <attribute name="value" for="$isFinancialDiscountReadonly"
+      expr="call: com.axelor.apps.account.service.payment.paymentvoucher.PayVoucherElementToPayService:isFinancialDiscountReadonly(__this__)"/>
   </action-attrs>
 </object-views>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <menuitem name="manufacturing-root-calendars-per-employee"
+    parent="manufacturing-root-calendars" title="Calendar per employee" order="300"
+    if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
+
+  <menuitem name="manufacturing-root-calendars-employee-planned-operations"
+    parent="manufacturing-root-calendars-per-employee" title="Employee planned operations"
+    action="manufacturing.root.calendars.employee.planned.operations" order="100"/>
+
+  <action-view name="manufacturing.root.calendars.employee.planned.operations"
+    title="Employee planned operations" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="operation-order-employee-planned-calendar"/>
+    <view type="grid" name="operation-order-grid"/>
+    <view type="form" name="operation-order-form"/>
+    <view-param name="search-filters" value="operation-order-filters"/>
+    <domain>self.manufOrder.statusSelect IN (3,4,5,6)</domain>
+  </action-view>
+
+  <menuitem name="manufacturing-root-calendars-employee-real-operations"
+    parent="manufacturing-root-calendars-per-employee" title="Employee real operations"
+    action="manufacturing.root.calendars.employee.real.operations" order="200"/>
+
+  <action-view name="manufacturing.root.calendars.employee.real.operations"
+    title="Employee real operations" model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="operation-order-employee-real-calendar"/>
+    <view type="grid" name="operation-order-grid"/>
+    <view type="form" name="operation-order-form"/>
+    <view-param name="search-filters" value="operation-order-filters"/>
+    <domain>self.statusSelect = 6</domain>
+  </action-view>
+
+</object-views>

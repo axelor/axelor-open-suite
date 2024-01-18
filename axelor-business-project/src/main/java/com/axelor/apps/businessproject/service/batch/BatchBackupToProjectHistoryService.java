@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,13 +64,11 @@ public class BatchBackupToProjectHistoryService extends AbstractBatch {
         } catch (Exception e) {
           incrementAnomaly();
           TraceBackService.trace(
-              new Exception(
-                  String.format(
-                      I18n.get(
-                          BusinessProjectExceptionMessage.BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR),
-                      project.getId()),
-                  e),
-              batch.getId().toString());
+              e,
+              String.format(
+                  I18n.get(BusinessProjectExceptionMessage.BATCH_BACKUP_TO_PROJECT_HISTORY_ERROR),
+                  project.getId()),
+              batch.getId());
         }
       }
       JPA.clear();

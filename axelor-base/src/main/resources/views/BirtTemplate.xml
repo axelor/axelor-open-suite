@@ -20,19 +20,20 @@
       <field name="name" colSpan="5"/>
       <field name="templateLink" colSpan="5"/>
       <field name="format" colSpan="2"/>
-      <field name="templateMetaFile" widget="binary-link" colSpan="5"/>
+      <field name="templateMetaFile" widget="binary-link" colSpan="5" x-accept=".rptdesign"/>
       <field name="metaModel" colSpan="5"/>
       <field name="templateEngineSelect" colSpan="2"/>
+      <field name="attach"/>
       <panel name="parametersPanel" title="Parameters" colSpan="12">
         <field name="birtTemplateParameterList" showTitle="false" colSpan="12">
           <viewer depends="name,value">
 						<![CDATA[
-	        				<birtTemplateParameterList>{{record.name}} : {{$fmt('value')}}</birtTemplateParameterList>
+	        				<>{name} : {$fmt('value')}</>
 	        			]]>
           </viewer>
           <editor x-show-titles="false" itemSpan="4">
             <field name="name"/>
-            <field name="value"/>
+            <field name="value" widget="CodeEditor" height="60"/>
             <field name="type"/>
           </editor>
         </field>
@@ -75,6 +76,10 @@
     <call class="com.axelor.apps.base.web.PrintingModelController" method="print"/>
   </action-method>
 
+  <action-method name="action-method-print-birt-list">
+    <call class="com.axelor.apps.base.web.PrintingModelController" method="printList"/>
+  </action-method>
+
   <action-record name="action-birt-template-record-default"
     model="com.axelor.apps.base.db.BirtTemplate">
     <field name="format" expr="pdf"/>
@@ -101,5 +106,4 @@
     <call method="setStandardReportTemplate"
       class="com.axelor.apps.base.web.BirtTemplateController"/>
   </action-method>
-
 </object-views>

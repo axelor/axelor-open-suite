@@ -46,6 +46,18 @@
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
   </action-view>
 
+  <menuitem name="line-expense" parent="my-hr-root" title="OrphanExpenseLine.title"
+    action="expense.line" order="350"
+    if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.getIsOrphanExpenseLineManaged()"
+    icon="fa-receipt" icon-background="#84429f"/>
+
+  <action-view name="expense.line" title="Expense line"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <view type="grid" name="expense-line-orphan-grid"/>
+    <view type="form" name="expense-line-orphan-form"/>
+    <domain>self.expense IS NULL</domain>
+  </action-view>
+
   <menuitem name="all-my-timesheet" parent="my-hr-root" title="Timesheets"
     action="action.timesheet.view.my.timesheet" order="400" if="__config__.app.isApp('timesheet')"
     icon="fa-clock-o" icon-background="#84429f"/>
@@ -58,6 +70,28 @@
     <domain>self.employee.user.id = :user_id</domain>
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
+
+  <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="my-hr-root"
+    action="time.sheet.timer" order="450"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; !__config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
+    icon="fa-play" icon-background="#84429f"/>
+
+  <action-method name="time.sheet.timer">
+    <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
+      method="editTimesheetTimer"/>
+  </action-method>
+
+  <menuitem title="Multiple Start&amp;Stop Timer" name="time-sheet-multiple-timer"
+    parent="my-hr-root" action="action.timesheet.view.multiple.timer"
+    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; __config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
+    order="460" icon="fa-play" icon-background="#84429f"/>
+
+  <action-view name="action.timesheet.view.multiple.timer"
+    model="com.axelor.apps.hr.db.TSTimer" title="Multiple timer">
+    <view name="ts-multiple-timer-grid" type="grid"/>
+    <view name="ts-multi-timer-form" type="form"/>
+  </action-view>
+
 
   <menuitem name="all-extra-hours" parent="my-hr-root" title="Extra hours"
     action="extra.hours.all" order="500" if="__config__.app.isApp('exthrs')" icon="fa-hourglass-end"
@@ -353,6 +387,16 @@
     <view type="form" name="health-mutual-rejection-reason-form"/>
   </action-view>
 
+  <menuitem name="hr-root-configuration-medical-visit-reason" parent="hr-root-emp-mgt-conf"
+    title="Medical visit reason" order="1400" action="hr.root.configuration.medical.visit.reason"
+    if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getIsMedicalVisitEnabled()"/>
+
+  <action-view name="hr.root.configuration.medical.visit.reason"
+    title="Medical visit reason" model="com.axelor.apps.hr.db.MedicalVisitReason">
+    <view type="grid" name="medical-visit-reason-grid"/>
+    <view type="form" name="medical-visit-reason-form"/>
+  </action-view>
+
   <!-- Leave App -->
   <menuitem name="leave-request-root" parent="hr-root" if="__config__.app.isApp('leave')"
     icon="fa-plane" icon-background="#84429f" title="Leave Requests" order="500"/>
@@ -454,7 +498,6 @@
     <view-param name="search-filters" value="product-expense-filters"/>
     <view-param name="forceTitle" value="true"/>
     <domain>self.isModel = false AND self.expense = true AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_payCompany"
       expr="eval: __user__.employee?.mainEmploymentContract?.payCompany ?: __user__.activeCompany"/>
@@ -492,16 +535,6 @@
   <action-method name="timesheet.validate">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
       method="validateTimesheet"/>
-  </action-method>
-
-  <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="timesheet-root"
-    action="time.sheet.timer"
-    if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"
-    order="400"/>
-
-  <action-method name="time.sheet.timer">
-    <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
-      method="editTimesheetTimer"/>
   </action-method>
 
   <menuitem title="Timesheet report" name="time-sheet-report" parent="timesheet-root"
@@ -559,7 +592,6 @@
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = :_isModel AND self.productTypeSelect = :_productTypeSelect AND
       self.expense = false AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_isModel" expr="false"/>
     <context name="_productTypeSelect" expr="storable"/>
   </action-view>

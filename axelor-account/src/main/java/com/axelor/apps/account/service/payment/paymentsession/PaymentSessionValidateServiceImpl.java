@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,26 +27,30 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.axelor.apps.account.service.move.MoveComputeService;
 import com.axelor.apps.account.service.move.MoveCreateService;
+import com.axelor.apps.account.service.move.MoveCutOffService;
+import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -80,7 +84,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AppBaseService appBaseService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
-  protected MoveComputeService moveComputeService;
+  protected MoveCutOffService moveCutOffService;
   protected MoveLineCreateService moveLineCreateService;
   protected ReconcileService reconcileService;
   protected InvoiceTermService invoiceTermService;
@@ -95,6 +99,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected AccountConfigService accountConfigService;
   protected PartnerService partnerService;
   protected PaymentModeService paymentModeService;
+  protected MoveLineInvoiceTermService moveLineInvoiceTermService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected MoveLineFinancialDiscountService moveLineFinancialDiscountService;
+  protected FinancialDiscountService financialDiscountService;
   protected int counter = 0;
 
   @Inject
@@ -102,7 +110,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       AppBaseService appBaseService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
-      MoveComputeService moveComputeService,
+      MoveCutOffService moveCutOffService,
       MoveLineCreateService moveLineCreateService,
       ReconcileService reconcileService,
       InvoiceTermService invoiceTermService,
@@ -116,11 +124,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       InvoicePaymentRepository invoicePaymentRepo,
       AccountConfigService accountConfigService,
       PartnerService partnerService,
-      PaymentModeService paymentModeService) {
+      PaymentModeService paymentModeService,
+      MoveLineInvoiceTermService moveLineInvoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
+      FinancialDiscountService financialDiscountService) {
     this.appBaseService = appBaseService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
-    this.moveComputeService = moveComputeService;
+    this.moveCutOffService = moveCutOffService;
     this.moveLineCreateService = moveLineCreateService;
     this.reconcileService = reconcileService;
     this.invoiceTermService = invoiceTermService;
@@ -135,6 +147,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.accountConfigService = accountConfigService;
     this.partnerService = partnerService;
     this.paymentModeService = paymentModeService;
+    this.moveLineInvoiceTermService = moveLineInvoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
+    this.financialDiscountService = financialDiscountService;
   }
 
   @Override
@@ -263,11 +279,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
+            offset++;
+
             this.processInvoiceTerm(
                 paymentSession,
                 invoiceTerm,
@@ -293,6 +310,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         && invoiceTermService.isNotAwaitingPayment(invoiceTerm);
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
       InvoiceTerm invoiceTerm,
@@ -357,11 +375,12 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     if (invoiceTerm.getMoveLine() == null) {
       return null;
     }
+    AccountConfig accountConfig = null;
 
     if (invoiceTerm.getMoveLine().getMove() != null
         && invoiceTerm.getMoveLine().getMove().getCompany() != null
         && invoiceTerm.getMoveLine().getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK) {
-      AccountConfig accountConfig =
+      accountConfig =
           accountConfigService.getAccountConfig(invoiceTerm.getMoveLine().getMove().getCompany());
       if (accountConfig.getAccountingDaybook() && accountConfig.getAccountAtPayment()) {
         moveValidateService.accounting(invoiceTerm.getMoveLine().getMove());
@@ -378,14 +397,14 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       List<Pair<InvoiceTerm, BigDecimal>> invoiceTermByAmountList =
           invoiceTermLinkWithRefundList.stream()
               .filter(pair -> pair.getLeft().equals(invoiceTerm))
-              .map(pair -> pair.getRight())
+              .map(Pair::getRight)
               .collect(Collectors.toList());
       if (!CollectionUtils.isEmpty(invoiceTermByAmountList)) {
         for (Pair<InvoiceTerm, BigDecimal> pair : invoiceTermByAmountList) {
           reconciledAmount = reconciledAmount.add(pair.getRight());
 
           createAndReconcileMoveLineFromPair(
-              paymentSession, move, invoiceTerm, pair, out, paymentAmountMap);
+              paymentSession, move, invoiceTerm, pair, accountConfig, out, paymentAmountMap);
         }
       }
     }
@@ -405,7 +424,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       this.createFinancialDiscountMoveLine(paymentSession, invoiceTerm, move, out);
     }
 
-    moveComputeService.autoApplyCutOffDates(move);
+    moveCutOffService.autoApplyCutOffDates(move);
 
     return moveRepo.save(move);
   }
@@ -432,11 +451,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         || !moveMap.containsKey(partner)
         || (isGlobal && !partner.getIsCompensation())) {
       BankDetails partnerBankDetails = null;
+      Partner subrogationPartner = null;
+
       if (paymentSession.getAccountingMethodSelect()
           == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
-        partnerBankDetails = invoiceTerm.getBankDetails();
+        subrogationPartner = invoiceTerm.getSubrogationPartner();
+        partnerBankDetails = this.getBankDetails(invoiceTerm);
       }
-      move = this.createMove(paymentSession, partner, accountingDate, partnerBankDetails);
+
+      move =
+          this.createMove(
+              paymentSession, partner, subrogationPartner, accountingDate, partnerBankDetails);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -453,9 +478,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     return move;
   }
 
+  protected BankDetails getBankDetails(InvoiceTerm invoiceTerm) {
+    return Optional.of(invoiceTerm)
+        .map(InvoiceTerm::getSubrogationPartner)
+        .map(partnerService::getDefaultBankDetails)
+        .orElse(invoiceTerm.getBankDetails());
+  }
+
   protected Move createMove(
       PaymentSession paymentSession,
       Partner partner,
+      Partner subrogationPartner,
       LocalDate accountingDate,
       BankDetails partnerBankDetails)
       throws AxelorException {
@@ -475,8 +508,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             "",
             paymentSession.getBankDetails());
 
-    move.setPaymentSession(paymentSession);
     move.setPartnerBankDetails(partnerBankDetails);
+    move.setPaymentSession(paymentSession);
+    move.setPaymentCondition(null);
+    move.setSubrogationPartner(subrogationPartner);
 
     return move;
   }
@@ -549,6 +584,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             description);
 
     move.addMoveLineListItem(moveLine);
+
+    moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, move.getDate(), false);
 
     return moveLine;
   }
@@ -623,7 +660,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       if (!moveMapIt.isEmpty()) {
         this.generateCashMoveLines(paymentSession, moveMapIt, paymentAmountMap, out, isGlobal);
 
-        if (isGlobal && moveDateMap != null && moveDateMap.get(accountingDate) != null) {
+        if (isGlobal && moveDateMap.get(accountingDate) != null) {
           BigDecimal paymentAmount = BigDecimal.ZERO;
           for (Move move : paymentAmountMap.keySet()) {
             if (accountingDate == null || accountingDate.equals(move.getDate())) {
@@ -643,7 +680,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       boolean out)
       throws AxelorException {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
-    Move move = this.createMove(paymentSession, null, accountingDate, null);
+    Move move = this.createMove(paymentSession, null, null, accountingDate, null);
     String description = this.getMoveLineDescription(paymentSession);
 
     this.generateCashMoveLine(
@@ -651,7 +688,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     this.generateCashMoveLine(
         move, null, this.getCashAccount(paymentSession, false), paymentAmount, description, out);
 
-    moveComputeService.autoApplyCutOffDates(move);
+    moveCutOffService.autoApplyCutOffDates(move);
 
     moveRepo.save(move);
 
@@ -687,9 +724,33 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       for (Partner partner : moveMap.keySet()) {
         for (Move move : moveMap.get(partner)) {
           move = moveRepo.find(move.getId());
+          Map<MoveLine, TaxLine> taxLineMap = this.extractTaxLinesFromFinancialDiscountLines(move);
+
           moveLineTaxService.autoTaxLineGenerate(move, null, false);
+
+          this.applyTaxes(taxLineMap);
         }
       }
+    }
+  }
+
+  protected Map<MoveLine, TaxLine> extractTaxLinesFromFinancialDiscountLines(Move move)
+      throws AxelorException {
+    Map<MoveLine, TaxLine> taxLineMap = new HashMap<>();
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+        taxLineMap.put(moveLine, moveLine.getTaxLine());
+        moveLine.setTaxLine(null);
+      }
+    }
+
+    return taxLineMap;
+  }
+
+  protected void applyTaxes(Map<MoveLine, TaxLine> taxLineMap) {
+    for (MoveLine moveLine : taxLineMap.keySet()) {
+      moveLine.setTaxLine(taxLineMap.get(moveLine));
     }
   }
 
@@ -780,7 +841,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       moveValidateService.completeMoveLines(move);
       moveValidateService.freezeFieldsOnMoveLines(move);
     } else {
-      moveComputeService.autoApplyCutOffDates(move);
+      moveCutOffService.autoApplyCutOffDates(move);
       moveValidateService.accounting(move);
     }
   }
@@ -822,52 +883,38 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         + (isGlobal ? moveDateMap.values().size() : 0);
   }
 
-  protected MoveLine createFinancialDiscountMoveLine(
+  protected void createFinancialDiscountMoveLine(
       PaymentSession paymentSession, InvoiceTerm invoiceTerm, Move move, boolean out)
       throws AxelorException {
     Account financialDiscountAccount =
-        this.getFinancialDiscountAccount(paymentSession.getCompany(), out);
+        financialDiscountService.getFinancialDiscountAccount(paymentSession.getCompany(), out);
     BigDecimal financialDiscountTaxAmount =
-        invoiceTermService.getFinancialDiscountTaxAmount(invoiceTerm);
+        invoiceTermFinancialDiscountService.getFinancialDiscountTaxAmount(invoiceTerm);
+    BigDecimal financialDiscountAmount =
+        invoiceTerm.getFinancialDiscountAmount().subtract(financialDiscountTaxAmount);
+    Map<Tax, Pair<BigDecimal, BigDecimal>> financialDiscountTaxMap =
+        moveLineFinancialDiscountService.getFinancialDiscountTaxMap(invoiceTerm.getMoveLine());
+    Map<Tax, Integer> vatSystemTaxMap =
+        moveLineFinancialDiscountService.getVatSystemTaxMap(invoiceTerm.getMoveLine().getMove());
+    Map<Tax, Account> accountTaxMap =
+        moveLineFinancialDiscountService.getAccountTaxMap(invoiceTerm.getMoveLine().getMove());
 
-    MoveLine moveLine =
-        this.generateMoveLine(
+    counter =
+        moveLineFinancialDiscountService.createFinancialDiscountMoveLine(
             move,
             null,
+            financialDiscountTaxMap,
+            vatSystemTaxMap,
+            accountTaxMap,
             financialDiscountAccount,
-            invoiceTerm.getFinancialDiscountAmount().subtract(financialDiscountTaxAmount),
             move.getOrigin(),
             move.getDescription(),
-            !out);
-
-    if (financialDiscountTaxAmount.signum() > 0) {
-      Tax financialDiscountTax = this.getFinancialDiscountTax(paymentSession.getCompany(), out);
-
-      if (financialDiscountTax != null && financialDiscountTax.getActiveTaxLine() != null) {
-        moveLine.setTaxLine(financialDiscountTax.getActiveTaxLine());
-        moveLine.setTaxRate(financialDiscountTax.getActiveTaxLine().getValue());
-        moveLine.setTaxCode(financialDiscountTax.getCode());
-      }
-    }
-
-    return moveLine;
-  }
-
-  protected Account getFinancialDiscountAccount(Company company, boolean out)
-      throws AxelorException {
-    return out
-        ? accountConfigService.getPurchFinancialDiscountAccount(
-            accountConfigService.getAccountConfig(company))
-        : accountConfigService.getSaleFinancialDiscountAccount(
-            accountConfigService.getAccountConfig(company));
-  }
-
-  protected Tax getFinancialDiscountTax(Company company, boolean out) throws AxelorException {
-    return out
-        ? accountConfigService.getPurchFinancialDiscountTax(
-            accountConfigService.getAccountConfig(company))
-        : accountConfigService.getSaleFinancialDiscountTax(
-            accountConfigService.getAccountConfig(company));
+            financialDiscountAmount,
+            financialDiscountTaxAmount,
+            move.getDate(),
+            counter,
+            !out,
+            financialDiscountTaxAmount.signum() > 0);
   }
 
   @Override
@@ -999,16 +1046,43 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public void createAndReconcileMoveLineFromPair(
       PaymentSession paymentSession,
       Move move,
       InvoiceTerm invoiceTerm,
       Pair<InvoiceTerm, BigDecimal> pair,
+      AccountConfig accountConfig,
       boolean out,
       Map<Move, BigDecimal> paymentAmountMap)
       throws AxelorException {
 
     MoveLine moveLine = null;
+
+    InvoiceTerm pairInvoiceTerm =
+        Optional.ofNullable(pair)
+            .map(Pair::getLeft)
+            .map(InvoiceTerm::getId)
+            .map(invoiceTermRepo::find)
+            .orElse(null);
+
+    if (pairInvoiceTerm == null) {
+      return;
+    }
+
+    MoveLine pairMoveLine = pairInvoiceTerm.getMoveLine();
+
+    if (pairMoveLine == null) {
+      return;
+    }
+
+    Move pairMove = pairMoveLine.getMove();
+    if (accountConfig != null
+        && pairMove.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
+        && accountConfig.getAccountingDaybook()
+        && accountConfig.getAccountAtPayment()) {
+      moveValidateService.accounting(pairMove);
+    }
 
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       moveLine =
@@ -1016,29 +1090,22 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
               .filter(
                   ml ->
                       ml.getOrigin() != null
-                          && pair.getLeft().getMoveLine().getOrigin() != null
-                          && ml.getOrigin().equals(pair.getLeft().getMoveLine().getOrigin()))
+                          && pairMoveLine.getOrigin() != null
+                          && ml.getOrigin().equals(pairMoveLine.getOrigin()))
               .findFirst()
               .orElse(null);
     }
 
     if (moveLine != null) {
-      if (out) {
-        moveLine.setCredit(moveLine.getCredit().add(pair.getRight()));
-      } else {
-        moveLine.setDebit(moveLine.getDebit().add(pair.getRight()));
-      }
-
-      moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(pair.getRight()));
-
+      this.updateMoveLine(moveLine, pair.getRight(), out);
     } else {
       moveLine =
           this.generateMoveLine(
               move,
               invoiceTerm.getMoveLine().getPartner(),
-              pair.getLeft().getMoveLine().getAccount(),
+              pairMoveLine.getAccount(),
               pair.getRight(),
-              pair.getLeft().getMoveLine().getOrigin(),
+              pairMoveLine.getOrigin(),
               this.getMoveLineDescription(paymentSession),
               !out);
     }
@@ -1047,13 +1114,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
     MoveLine creditMoveLine = null;
     MoveLine debitMoveLine = null;
-    if (pair.getLeft().getMoveLine().getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+    if (pairMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
       creditMoveLine = moveLine;
-      debitMoveLine = pair.getLeft().getMoveLine();
-    } else if (pair.getLeft().getMoveLine().getMove().getFunctionalOriginSelect()
-        == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
-      creditMoveLine = pair.getLeft().getMoveLine();
+      debitMoveLine = pairMoveLine;
+    } else if (pairMove.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
+      creditMoveLine = pairMoveLine;
       debitMoveLine = moveLine;
     }
 
@@ -1063,19 +1128,36 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     reconcileService.confirmReconcile(invoiceTermsReconcile, false, false);
 
     invoiceTermService.updateInvoiceTermsAmounts(
-        invoiceTerm,
-        pair.getRight(),
-        invoiceTermsReconcile,
-        pair.getLeft().getMoveLine().getMove(),
-        paymentSession,
-        false);
+        invoiceTerm, pair.getRight(), invoiceTermsReconcile, pairMove, paymentSession, false);
     invoiceTermService.updateInvoiceTermsAmounts(
-        pair.getLeft(),
+        pairInvoiceTerm,
         pair.getRight(),
         invoiceTermsReconcile,
         invoiceTerm.getMoveLine().getMove(),
         paymentSession,
         true);
+  }
+
+  protected void updateMoveLine(MoveLine moveLine, BigDecimal amountToAdd, boolean out) {
+    if (out) {
+      moveLine.setCredit(moveLine.getCredit().add(amountToAdd));
+    } else {
+      moveLine.setDebit(moveLine.getDebit().add(amountToAdd));
+    }
+
+    moveLine.setCurrencyAmount(moveLine.getCurrencyAmount().add(amountToAdd));
+
+    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      InvoiceTerm invoiceTerm = moveLine.getInvoiceTermList().get(0);
+
+      BigDecimal newAmount = moveLine.getCurrencyAmount().abs();
+      BigDecimal amountPaid = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
+
+      invoiceTerm.setAmountRemaining(newAmount.subtract(amountPaid));
+      invoiceTerm.setAmount(newAmount);
+      invoiceTerm.setCompanyAmountRemaining(invoiceTerm.getAmountRemaining());
+      invoiceTerm.setCompanyAmount(invoiceTerm.getAmount());
+    }
   }
 
   @Override
@@ -1102,13 +1184,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected void recomputeAmountPaid(MoveLine moveLine) {
     if (!CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
-      Optional<BigDecimal> amountPaid =
-          moveLine.getInvoiceTermList().stream()
-              .map(it -> it.getPaymentAmount())
-              .reduce(BigDecimal::add);
-      if (amountPaid.isPresent()) {
-        moveLine.setAmountPaid(amountPaid.get());
-      }
+      moveLine.getInvoiceTermList().stream()
+          .filter(InvoiceTerm::getIsPaid)
+          .map(InvoiceTerm::getPaymentAmount)
+          .reduce(BigDecimal::add)
+          .ifPresent(moveLine::setAmountPaid);
     }
   }
 }

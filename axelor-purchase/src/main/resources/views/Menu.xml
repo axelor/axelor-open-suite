@@ -48,7 +48,6 @@
     <view type="form" name="product-form"/>
     <view-param name="search-filters" value="products-filters"/>
     <domain>self.isModel = false AND self.purchasable = true AND self.dtype = 'Product'</domain>
-    <context name="_activeCompany" expr="eval:__user__.activeCompany"/>
     <context name="_fromPurchase" expr="eval:true"/>
   </action-view>
 

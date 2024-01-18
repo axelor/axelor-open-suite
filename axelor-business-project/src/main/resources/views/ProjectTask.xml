@@ -80,12 +80,12 @@
           <panel name="reportingPanel" showIf="!parentTask" colSpan="12">
             <panel-dashlet
               action="action-project-task-view-percentage-progress-custom" colSpan="3"
-              showTitle="false"/>
+              showTitle="false" height="125"/>
             <panel-dashlet
               action="action-project-task-view-percentage-consumption-custom" colSpan="3"
-              showTitle="false"/>
+              showTitle="false" height="125"/>
             <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-              colSpan="3" showTitle="false"/>
+              colSpan="3" showTitle="false" height="125"/>
           </panel>
         </panel>
       </insert>
@@ -95,7 +95,7 @@
         <panel name="purchasePanel" title="Purchase" colSpan="12"
           if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
           <button name="generatePurchaseOrderBtn" title="Generate Purchase Order"
-            onClick="action-project-task-generate-purchase-order"/>
+            onClick="action-project-task-method-generate-purchase-order"/>
           <field name="purchaseOrderList" colSpan="12" canNew="false"/>
           <field name="purchaseOrderLineList" colSpan="12" canNew="false"/>
         </panel>
@@ -130,10 +130,11 @@
             <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
               showTitle="false" colSpan="1">
               <viewer><![CDATA[
-                     <h4 class="text-right">
-                         <span class="label label-success" ng-show="record.invoiced" x-translate>Invoiced</span>
-                         <span class="label label-important" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                     </h4>
+                     <>
+                     	<Box d="flex" justifyContent="flex-end">
+                     		<Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge>
+                     	</Box>
+                     </>
 					]]></viewer>
             </field>
             <panel name="discountPanel" readonly="true" colSpan="12"
@@ -153,13 +154,13 @@
             width="120" widget="Image"/>
           <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-turnover-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-initial-costs-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-initial-margin-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-initial-markup-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <field name="turnover" hidden="true"/>
             <field name="initialCosts" hidden="true"/>
             <field name="initialMargin" hidden="true"/>
@@ -167,11 +168,11 @@
           </panel>
           <panel name="forecastPanel" title="ProjectTask.Forecast" colSpan="12">
             <panel-dashlet action="action-project-task-view-forecast-costs-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-forecast-margin-custom"
-              colSpan="3" hidden="true" showIf="!parentTask"/>
+              colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
             <panel-dashlet action="action-project-task-view-forecast-markup-custom"
-              colSpan="3" hidden="true" showIf="!parentTask"/>
+              colSpan="3" hidden="true" showIf="!parentTask" height="125"/>
             <field name="forecastCosts" hidden="true"/>
             <field name="forecastMargin" hidden="true"/>
             <field name="forecastMarkup" hidden="true"/>
@@ -179,13 +180,13 @@
           <panel name="realPanel" title="ProjectTask.Real" colSpan="12" hidden="true"
             showIf="!parentTask">
             <panel-dashlet action="action-project-task-view-real-turnover-custom"
-              colSpan="3" showIf="timeUnit"/>
+              colSpan="3" showIf="timeUnit" height="125"/>
             <panel-dashlet action="action-project-task-view-real-costs-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-real-margin-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-real-markup-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <field name="realTurnover" hidden="true"/>
             <field name="realCosts" hidden="true"/>
             <field name="realMargin" hidden="true"/>
@@ -193,16 +194,16 @@
           </panel>
           <panel name="realCostPanel" title="" colSpan="12" hidden="true" showIf="parentTask">
             <panel-dashlet action="action-project-task-view-real-costs-custom"
-              title="Real costs" colSpan="3"/>
+              title="Real costs" colSpan="3" height="125"/>
             <field name="realCosts" hidden="true"/>
           </panel>
           <panel name="landingPanel" title="ProjectTask.Landing" colSpan="12">
             <panel-dashlet action="action-project-task-view-landing-costs-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-landing-margin-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <panel-dashlet action="action-project-task-view-landing-markup-custom"
-              colSpan="3"/>
+              colSpan="3" height="125"/>
             <field name="landingCosts" hidden="true"/>
             <field name="landingMargin" hidden="true"/>
             <field name="landingMarkup" hidden="true"/>
@@ -215,21 +216,33 @@
   <tree id="business-project-project-task-tree" name="project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
+    <column name="initial" type="decimal"/>
+    <column name="forecast" type="decimal"/>
+    <column name="real" type="decimal"/>
+    <column name="landing" type="decimal"/>
     <column name="assignedTo" type="reference"/>
-    <column name="openTaskBtn" type="button"/>
+    <column name="createSubtaskBtn" type="button"/>
     <column name="generatePurchaseOrderBtn" type="button"/>
     <column name="deleteTaskBtn" type="button"/>
+    <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
       onClick="action-project-task-view-task" domain="self.project.id = :_id" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
+      <field name="initialMarkup" as="initial"/>
+      <field name="forecastMarkup" as="forecast"/>
+      <field name="realMarkup" as="real"/>
+      <field name="landingMarkup" as="landing"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
         onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
     <node model="com.axelor.apps.project.db.ProjectTask" parent="parentTask"
       onClick="action-project-task-view-task" draggable="true" orderBy="taskDate">
@@ -237,67 +250,16 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="createSubtaskBtn" icon="fa-plus"
+        onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
         onClick="save, action-project-task-method-generate-purchase-order"/>
       <button name="deleteTaskBtn" icon="fa-times-circle"
         onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+      <button name="openTaskBtn" icon="fa-external-link"
+        onClick="action-project-task-open-task"/>
     </node>
   </tree>
-
-  <action-view name="action-project-task-view-percentage-progress-custom"
-    title="% of progress">
-    <view type="custom" name="project-task-percentage-progress-custom"/>
-  </action-view>
-
-  <action-view name="action-project-task-view-percentage-consumption-custom"
-    title="% of consumption">
-    <view type="custom" name="project-task-percentage-consumption-custom"/>
-  </action-view>
-
-  <action-view name="action-project-task-view-remaining-to-do-custom"
-    title="Remaining amount to do">
-    <view type="custom" name="project-task-remaining-to-do-custom"/>
-  </action-view>
-
-  <custom title="% of progress" name="project-task-percentage-progress-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfProgress</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-line-chart' style='font-size:30px;top:40px;'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.progress}}</h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="% of consumption" name="project-task-percentage-consumption-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getPercentageOfConsumption</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-hourglass-half' style='font-size:30px;top:40px;'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.consumption}}</h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
-
-  <custom title="Remaining amount to do" name="project-task-remaining-to-do-custom"
-    css="report-box dashlet-no-dropdown">
-    <dataset type="rpc">com.axelor.apps.businessproject.web.ProjectTaskController:getRemainingToDo</dataset>
-    <template>
-      <![CDATA[
-        <i class='report-icon fa fa-tasks' style='font-size:30px;top:40px;'></i>
-        <div style='display:inline-block;'>
-          <h1>{{first.remaining}}</h1>
-        </div>
-      ]]>
-    </template>
-  </custom>
 
   <action-method name="action-project-task-method-update-to-invoice">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"

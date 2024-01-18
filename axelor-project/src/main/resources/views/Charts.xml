@@ -11,7 +11,7 @@
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
  GROUP BY p.id
   ]]>
     </dataset>
@@ -27,7 +27,7 @@
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
  GROUP BY p.id,e.id
   ]]>
     </dataset>
@@ -43,7 +43,7 @@
  FROM Project p
  INNER JOIN ProjectPlanningTime t ON t.project = p.id
  INNER JOIN Employee e ON t.employee = e.id
- WHERE MONTH(t.date) = MONTH(CURRENT_DATE)
+ WHERE MONTH(t.startDateTime) = MONTH(CURRENT_DATE)
  GROUP BY e.id
   ]]>
     </dataset>

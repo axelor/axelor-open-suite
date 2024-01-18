@@ -45,6 +45,12 @@
     <boolean name="activateOutStockMovePartialInvoicing"
       title="Activate partial invoicing for outgoing moves" default="false"/>
 
+    <many-to-one name="declarationOfExchGoodsBirtTemplate"
+      title="Declaration of exchanges of goods template" ref="com.axelor.apps.base.db.BirtTemplate"/>
+    <many-to-one name="declarationOfExchServicesBirtTemplate"
+      title="Declaration of exchanges of services template"
+      ref="com.axelor.apps.base.db.BirtTemplate"/>
+
     <extra-code><![CDATA[
 
       // Default estimated Date
@@ -82,6 +88,8 @@
       <field name="numberOfDaysForPurchaseOrder" on="UPDATE"/>
       <field name="activateIncStockMovePartialInvoicing" on="UPDATE"/>
       <field name="activateOutStockMovePartialInvoicing" on="UPDATE"/>
+      <field name="declarationOfExchGoodsBirtTemplate" on="UPDATE"/>
+      <field name="declarationOfExchServicesBirtTemplate" on="UPDATE"/>
     </track>
 
   </entity>

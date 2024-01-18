@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ResearchResultLine" lang="java">
+  <entity name="ResearchResultLine">
 
     <many-to-one name="researchRequest" ref="com.axelor.apps.base.db.ResearchRequest"/>
 

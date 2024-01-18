@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -36,8 +38,16 @@ public class ProductionOrderSaleOrderServiceBusinessImpl
       UnitConversionService unitConversionService,
       ProductionOrderService productionOrderService,
       ProductionOrderRepository productionOrderRepo,
-      AppProductionService appProductionService) {
-    super(unitConversionService, productionOrderService, productionOrderRepo, appProductionService);
+      AppProductionService appProductionService,
+      BillOfMaterialService billOfMaterialService,
+      ProductionConfigService productionConfigService) {
+    super(
+        unitConversionService,
+        productionOrderService,
+        productionOrderRepo,
+        appProductionService,
+        billOfMaterialService,
+        productionConfigService);
   }
 
   @Override

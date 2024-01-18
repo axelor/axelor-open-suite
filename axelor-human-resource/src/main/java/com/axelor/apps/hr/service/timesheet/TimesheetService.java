@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -97,7 +97,7 @@ public interface TimesheetService {
       Product product)
       throws AxelorException;
 
-  public Timesheet getCurrentTimesheet();
+  public Timesheet getCurrentTimesheet() throws AxelorException;
 
   public Timesheet getCurrentOrCreateTimesheet() throws AxelorException;
 
@@ -151,4 +151,8 @@ public interface TimesheetService {
 
   @CallMethod
   public Set<Long> getContextProjectIds();
+
+  Timesheet getOrCreateOpenTimesheet(Employee employee, LocalDate date) throws AxelorException;
+
+  Timesheet getDraftTimesheet(Employee employee, LocalDate date);
 }

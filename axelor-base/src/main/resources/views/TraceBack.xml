@@ -35,7 +35,7 @@
     <toolbar>
       <button name="cancel" title="" hidden="true" onClick=""/>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="action-trace-back-method-print-trace-back"/>
+        onClick="action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel" sidebar="true">
       <field name="date"/>
@@ -83,10 +83,6 @@
 
   <action-method name="action-traceback-show-reference">
     <call class="com.axelor.apps.base.web.TraceBackController" method="showReference"/>
-  </action-method>
-
-  <action-method name="action-trace-back-method-print-trace-back">
-    <call class="com.axelor.apps.base.web.TraceBackController" method="printTraceback"/>
   </action-method>
 
 </object-views>

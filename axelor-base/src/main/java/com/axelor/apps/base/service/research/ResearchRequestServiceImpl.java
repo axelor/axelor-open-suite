@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,13 +28,17 @@ import com.axelor.apps.base.db.repo.ResearchPrimaryKeyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.Inflector;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaViewRepository;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Joiner;
@@ -46,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 public class ResearchRequestServiceImpl implements ResearchRequestService {
 
@@ -252,7 +255,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
 
     if (fields.length == 1 || !value.isPresent()) {
       // simple case
-      return value.map(Object::toString).orElse(StringUtils.EMPTY);
+      return value.map(Object::toString).orElse("");
     } else {
       // handle subobject case
       MetaField metaField =
@@ -300,7 +303,10 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
                 .collect(Collectors.toList()));
       }
     }
-    domain += " AND " + String.format("self.id in (%s) ", Joiner.on(",").join(primarykeyIdList));
+
+    if (!primarykeyIdList.isEmpty()) {
+      domain += String.format(" AND self.id in (%s) ", Joiner.on(",").join(primarykeyIdList));
+    }
 
     if (researchRequest.getResearch1() != null) {
       domain += " AND self.id != " + researchRequest.getResearch1().getId();
@@ -345,5 +351,39 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
     }
 
     return domain;
+  }
+
+  @Override
+  public Map<String, Object> getResultObjectView(ResearchResultLine researchResultLine)
+      throws AxelorException {
+    String origin = researchResultLine.getOriginTypeSelect();
+
+    try {
+      Class<?> resultClass = Class.forName(origin);
+      final Inflector inflector = Inflector.getInstance();
+
+      String simpleName = resultClass.getSimpleName();
+      String viewName = inflector.underscore(simpleName) + "-form";
+      String viewTitle = simpleName;
+
+      viewName = inflector.dasherize(viewName);
+      viewTitle = inflector.humanize(viewTitle);
+
+      if (Beans.get(MetaViewRepository.class).findByName(viewName) == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            String.format(
+                I18n.get(BaseExceptionMessage.RESEARCH_RESULT_NO_VIEW_CONFIGURED), simpleName));
+      }
+
+      return ActionView.define(I18n.get(viewTitle))
+          .add("form", viewName)
+          .model(resultClass.getName())
+          .context("_showRecord", researchResultLine.getOriginId())
+          .map();
+
+    } catch (ClassNotFoundException e) {
+      throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
+    }
   }
 }

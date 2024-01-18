@@ -12,10 +12,9 @@
       <insert position="after">
         <field name="outsourcingOrderReceiptState" readonly="true" showTitle="false"
           colSpan="2">
-          <viewer><![CDATA[
-                  <span/>
-                  <span class="label label-success" ng-show="record.outsourcingOrder" style="background-color: #00008B" x-translate>Outsourcing</span>
-            ]]></viewer>
+          <viewer>
+         	<![CDATA[<>{outsourcingOrder && <Badge style={{ backgroundColor: "#00008B"}}>{_t('Outsourcing')}</Badge>}</>]]>
+          </viewer>
         </field>
       </insert>
 

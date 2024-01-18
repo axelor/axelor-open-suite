@@ -68,6 +68,10 @@
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.partner.select" default="0"/>
 
+    <many-to-one name="analyticDistributionTemplate"
+      title="Analytic distribution template"
+      ref="com.axelor.apps.account.db.AnalyticDistributionTemplate" index="false"/>
+
     <string name="name">
 			<![CDATA[
 			String name = "";

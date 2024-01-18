@@ -1,0 +1,8 @@
+"importId";"subject";"startDateTime";"endDateTime";"description";"qiDecision.importId";"qiAction.importId";"advancement";"qiProcess.importId";"fixedAmount";"directCost";"totalCost";"qiResolutionDefaultsSet"
+"100";"Review packaging with supplier";"NOW[-5M09H00m]";"NOW[-5M09H30m]";;"8";"1";"20";"4";"500";"1000";;"1"
+"101";"Review the process";"NOW[-4M09H00m]";"NOW[-4M09H45m]";;"8";;;"5";;"600";;"2"
+"102";"Drafting a new procedure";"NOW[-3M09H15m]";"NOW[-3M09H45m]";;"8";"2";;"5";;"400";;"3"
+"103";"Plan audit";"NOW[-2M09H00m]";"NOW[-2M09H45m]";;"8";"1";;"1";"500";;;"4"
+"104";"Review packing procedure";"NOW[-1M09H00m]";"NOW[-1M10H00m]";;"8";"5";"100";"1";"200";"200";;"5"
+"105";"Supplier audit";"NOW[-21d09H00m]";"NOW[-21d09H50m]";;"8";"1";"20";;;"800";;"6"
+"106";"Review of procedures";"NOW[-14d11H00m]";"NOW[-14d12H00m]";;"8";"6";;"1";;"100";;"6"

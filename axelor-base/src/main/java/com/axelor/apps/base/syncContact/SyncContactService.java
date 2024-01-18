@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,7 +49,7 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.rpc.Response;
-import com.axelor.utils.EmailTool;
+import com.axelor.utils.helpers.EmailHelper;
 import com.google.api.services.people.v1.model.Name;
 import com.google.api.services.people.v1.model.Organization;
 import com.google.api.services.people.v1.model.Person;
@@ -237,7 +237,7 @@ public class SyncContactService {
     partner.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     String seq =
         Beans.get(SequenceService.class)
-            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq");
+            .getSequenceNumber(SequenceRepository.PARTNER, Partner.class, "partnerSeq", partner);
     partner.setUser(userService.getUser());
     partner.setPartnerSeq(seq);
     partner.setIsContact(true);
@@ -262,7 +262,7 @@ public class SyncContactService {
             com.google.api.services.people.v1.model.EmailAddress.class,
             googlePerson.getEmailAddresses().get(0));
     if (Strings.isNullOrEmpty(googleEmail.getValue())
-        || !EmailTool.isValidEmailAddress(googleEmail.getValue())) {
+        || !EmailHelper.isValidEmailAddress(googleEmail.getValue())) {
       return;
     }
     if (partner.getEmailAddress() == null

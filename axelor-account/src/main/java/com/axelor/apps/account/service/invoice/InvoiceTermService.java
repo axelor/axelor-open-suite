@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
@@ -37,7 +36,6 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.auth.db.User;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.meta.CallMethod;
-import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -58,21 +56,10 @@ public interface InvoiceTermService {
   public InvoiceTerm computeInvoiceTerm(Invoice invoice, PaymentConditionLine paymentConditionLine)
       throws AxelorException;
 
-  void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate);
-
-  void computeFinancialDiscount(InvoiceTerm invoiceTerm, Invoice invoice);
-
-  void computeFinancialDiscount(InvoiceTerm invoiceTerm, MoveLine moveLine);
-
-  void computeFinancialDiscount(
-      InvoiceTerm invoiceTerm,
-      BigDecimal totalAmount,
-      FinancialDiscount financialDiscount,
-      BigDecimal financialDiscountAmount,
-      BigDecimal remainingAmountAfterFinDiscount);
+  void computeCompanyAmounts(InvoiceTerm invoiceTerm, boolean isUpdate, boolean isHoldback);
 
   @CallMethod
-  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine);
+  boolean getPfpValidatorUserCondition(Invoice invoice, MoveLine moveLine) throws AxelorException;
 
   /**
    * Method that creates a customized invoiceTerm
@@ -185,14 +172,6 @@ public interface InvoiceTermService {
   public BigDecimal computePercentageSum(Invoice invoice);
 
   /**
-   * Update invoice terms financial discount if not paid with invoice financial discount
-   *
-   * @param invoice
-   * @return
-   */
-  public List<InvoiceTerm> updateFinancialDiscount(Invoice invoice);
-
-  /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
    * based on due date
    *
@@ -272,13 +251,9 @@ public interface InvoiceTermService {
 
   public BigDecimal computeCustomizedPercentage(BigDecimal amount, BigDecimal inTaxTotal);
 
-  BigDecimal computeCustomizedPercentageUnscaled(BigDecimal amount, BigDecimal inTaxTotal);
-
-  public BigDecimal getFinancialDiscountTaxAmount(InvoiceTerm invoiceTerm) throws AxelorException;
-
   BigDecimal getAmountRemaining(InvoiceTerm invoiceTerm, LocalDate date, boolean isCompanyCurrency);
 
-  BigDecimal getCustomizedAmount(InvoiceTerm invoiceTerm, BigDecimal total);
+  void setCustomizedAmounts(InvoiceTerm invoiceTerm);
 
   public List<InvoiceTerm> reconcileMoveLineInvoiceTermsWithFullRollBack(
       List<InvoiceTerm> invoiceTermList,
@@ -290,8 +265,6 @@ public interface InvoiceTermService {
   boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm);
 
   boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
-
-  BigDecimal computeParentTotal(Context context);
 
   void roundPercentages(List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
@@ -333,7 +306,7 @@ public interface InvoiceTermService {
   List<InvoiceTerm> recomputeInvoiceTermsPercentage(
       List<InvoiceTerm> invoiceTermList, BigDecimal total);
 
-  boolean isThresholdNotOnLastInvoiceTerm(
+  boolean isThresholdNotOnLastUnpaidInvoiceTerm(
       MoveLine moveLine, BigDecimal thresholdDistanceFromRegulation);
 
   InvoiceTerm initInvoiceTermWithParents(InvoiceTerm invoiceTerm) throws AxelorException;
@@ -346,7 +319,13 @@ public interface InvoiceTermService {
 
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
-  void computeCustomizedAmount(InvoiceTerm invoiceTerm);
+  BigDecimal adjustAmountInCompanyCurrency(
+      List<InvoiceTerm> invoiceTermList,
+      BigDecimal companyAmountRemaining,
+      BigDecimal amountToPayInCompanyCurrency,
+      BigDecimal amountToPay,
+      BigDecimal currencyRate,
+      Company company);
 
-  void computeFinancialDiscount(InvoiceTerm invoiceTerm);
+  boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
 }

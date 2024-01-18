@@ -10,10 +10,18 @@
     <option value="app-manufacturing">Manufacturing</option>
     <option value="app-crm">CRM</option>
     <option value="app-helpdesk">Helpdesk</option>
+    <option value="app-hr">HR</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">
     <option value="mobile app">Mobile app</option>
+  </selection>
+
+  <selection name='mobilesettings.mobile.chart.type.select'>
+    <option value="bar">Bar</option>
+    <option value="line">Line</option>
+    <option value="pie">Pie</option>
+    <option value="donut">Donut</option>
   </selection>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,7 +50,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
-import java.nio.charset.StandardCharsets;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +58,6 @@ import java.util.stream.Collectors;
 import javax.mail.MessagingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 public class MessageServiceBaseImpl extends MessageServiceImpl implements MessageBaseService {
 
@@ -208,9 +206,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
     }
 
     PrintingSettings printSettings = company.getPrintingSettings();
-    if (printSettings == null
-        || printSettings.getDefaultMailBirtTemplate() == null
-        || printSettings.getDefaultMailBirtTemplate().getTemplateMetaFile() == null) {
+    if (printSettings == null || printSettings.getDefaultMailBirtTemplate() == null) {
       return null;
     }
 
@@ -249,7 +245,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Message sendSMS(Message message) throws IOException, JSONException {
+  public Message sendSMS(Message message) throws IOException {
 
     if (appBaseService.getAppBase().getActivateSendingEmail()) {
       return super.sendSMS(message);
@@ -291,10 +287,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
   public String getFullEmailAddress(EmailAddress emailAddress) {
     String partnerName = "";
     if (emailAddress.getPartner() != null) {
-      partnerName =
-          new String(
-              emailAddress.getPartner().getSimpleFullName().getBytes(),
-              StandardCharsets.ISO_8859_1);
+      partnerName = emailAddress.getPartner().getSimpleFullName();
     }
 
     return "\"" + partnerName + "\" <" + emailAddress.getAddress() + ">";

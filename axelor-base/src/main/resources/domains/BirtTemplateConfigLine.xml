@@ -10,6 +10,7 @@
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"/>
     <many-to-one name="birtTemplate" ref="com.axelor.apps.base.db.BirtTemplate"
       title="Birt template"/>
+    <many-to-one name="appBase" ref="com.axelor.studio.db.AppBase"/>
 
   </entity>
 

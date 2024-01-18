@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,6 +45,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   protected InvoiceTermService invoiceTermService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
   protected AccountConfigService accountConfigService;
   protected InvoiceTermRepository invoiceTermRepo;
   protected InvoiceRepository invoiceRepo;
@@ -53,11 +54,13 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   @Inject
   public InvoiceTermPfpServiceImpl(
       InvoiceTermService invoiceTermService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
       AccountConfigService accountConfigService,
       InvoiceTermRepository invoiceTermRepo,
       InvoiceRepository invoiceRepo,
       MoveRepository moveRepo) {
     this.invoiceTermService = invoiceTermService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
     this.accountConfigService = accountConfigService;
     this.invoiceTermRepo = invoiceTermRepo;
     this.invoiceRepo = invoiceRepo;
@@ -253,7 +256,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
             originalInvoiceTerm.getIsHoldBack());
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermService.computeFinancialDiscount(invoiceTerm, invoice);
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm, invoice);
     }
 
     invoiceTerm.setOriginInvoiceTerm(originalInvoiceTerm);
@@ -332,12 +335,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public boolean getManagePfpCondition(Company company) throws AxelorException {
-    return company != null
-        && accountConfigService.getAccountConfig(company).getIsManagePassedForPayment();
-  }
-
-  @Override
   public boolean getUserCondition(User pfpValidatorUser, User user) {
     return user.equals(pfpValidatorUser) || user.getIsSuperPfpUser();
   }
@@ -375,7 +372,7 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
                     .max(originalInvoiceTerm.getMoveLine().getDebit())));
 
     if (originalInvoiceTerm.getApplyFinancialDiscount()) {
-      invoiceTermService.computeFinancialDiscount(
+      invoiceTermFinancialDiscountService.computeFinancialDiscount(
           originalInvoiceTerm, originalInvoiceTerm.getInvoice());
     }
 

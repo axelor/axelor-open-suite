@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.db.Model;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,15 +37,12 @@ public interface PricingService {
    * @param product {@link Product}: can be null
    * @param productCategory {@link ProductCategory}: can be null
    * @param modelName {@link String}: can be null or empty
-   * @param previousPricing {@link Pricing}: can be null
+   * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
-  Optional<Pricing> getRandomPricing(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing previousPricing);
+  Optional<Pricing> getRandomPricing(Company company, Model model, Pricing pricing);
+
+  Optional<Pricing> getRootPricingForNextPricings(Company company, Model model);
 
   /**
    * This method will get all pricings filtered with company, product, productCategory, modelName,
@@ -54,15 +52,12 @@ public interface PricingService {
    * @param product {@link Product}: can be null
    * @param productCategory {@link ProductCategory}: can be null
    * @param modelName {@link String}: can be null or empty
-   * @param previousPricing {@link Pricing}: can be null
+   * @param pricing {@link Pricing}: can be null
    * @return a {@link Optional} of Pricing.
    */
-  List<Pricing> getPricings(
-      Company company,
-      Product product,
-      ProductCategory productCategory,
-      String modelName,
-      Pricing previousPricing);
+  List<Pricing> getPricings(Company company, Model model, Pricing pricing);
+
+  List<Pricing> getAllPricings(Company company, Model model);
 
   public void historizePricing(Pricing pricing) throws AxelorException;
 

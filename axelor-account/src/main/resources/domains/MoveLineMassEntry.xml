@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLineMassEntry" lang="java" extends="MoveLine">
+  <entity name="MoveLineMassEntry" extends="MoveLine">
 
     <many-to-one name="moveMassEntry" ref="Move" title="Mass entry" initParam="true"/>
     <integer name="temporaryMoveNumber" title="N°"/>

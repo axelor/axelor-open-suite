@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.apps.supplychain.service.SaleOrderInvoiceService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import java.util.ArrayList;
@@ -67,14 +67,14 @@ public class BatchOrderInvoicingSale extends BatchOrderInvoicing {
 
     if (!Strings.isNullOrEmpty(supplychainBatch.getDeliveryOrReceiptState())) {
       List<Integer> delivereyStateList =
-          StringTool.getIntegerList(supplychainBatch.getDeliveryOrReceiptState());
+          StringHelper.getIntegerList(supplychainBatch.getDeliveryOrReceiptState());
       filterList.add("self.deliveryState IN (:delivereyStateList)");
       query.bind("delivereyStateList", delivereyStateList);
     }
 
     if (!Strings.isNullOrEmpty(supplychainBatch.getStatusSelect())) {
       List<Integer> statusSelectList =
-          StringTool.getIntegerList(supplychainBatch.getStatusSelect());
+          StringHelper.getIntegerList(supplychainBatch.getStatusSelect());
       filterList.add("self.statusSelect IN (:statusSelectList)");
       query.bind("statusSelectList", statusSelectList);
     }

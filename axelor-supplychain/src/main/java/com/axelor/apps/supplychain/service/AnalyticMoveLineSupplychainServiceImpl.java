@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,8 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
+import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -44,7 +46,9 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
       AccountConfigService accountConfigService,
       AccountConfigRepository accountConfigRepository,
       AccountRepository accountRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AccountingSituationService accountingSituationService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         analyticMoveLineRepository,
         appAccountService,
@@ -52,7 +56,9 @@ public class AnalyticMoveLineSupplychainServiceImpl extends AnalyticMoveLineServ
         accountConfigService,
         accountConfigRepository,
         accountRepository,
-        appBaseService);
+        appBaseService,
+        accountingSituationService,
+        currencyScaleServiceAccount);
   }
 
   @Override

@@ -9,13 +9,13 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <decimal name="dailyWorkHours" title="Daily work hours"/>
     <boolean name="advanceManagement" default="true"/>
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>
     <boolean name="employeeBonus" title="Employee bonus"/>
     <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
       help="Activate MyHR enables the HR menu entries for employees."/>
+    <boolean name="isMedicalVisitEnabled" title="Medical visit"/>
 
     <extra-code>
    		<![CDATA[
@@ -25,7 +25,6 @@
     </extra-code>
 
     <track>
-      <field name="dailyWorkHours" on="UPDATE"/>
       <field name="advanceManagement" on="UPDATE"/>
       <field name="payrollPreparation" on="UPDATE"/>
       <field name="lunchVoucher" on="UPDATE"/>

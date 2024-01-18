@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.Frequency;
 import com.axelor.apps.base.db.repo.FrequencyRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.date.DateTool;
+import com.axelor.utils.helpers.date.LocalDateHelper;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -353,7 +353,7 @@ public class FrequencyServiceImpl implements FrequencyService {
             for (Integer occurence : occurences) {
               LocalDate date = getDay(day, occurence, year, month);
 
-              if (DateTool.isBetween(startDate, endDate, date)) {
+              if (LocalDateHelper.isBetween(startDate, endDate, date)) {
                 dates.add(date);
               }
             }
@@ -375,7 +375,7 @@ public class FrequencyServiceImpl implements FrequencyService {
               LocalDate date =
                   LocalDate.of(year, cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DATE));
 
-              if (DateTool.isBetween(startDate, endDate, date)) {
+              if (LocalDateHelper.isBetween(startDate, endDate, date)) {
                 dates.add(date);
               }
             }

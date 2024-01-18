@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.DMSService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -37,6 +38,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.Team;
@@ -56,6 +58,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
   protected SaleOrderRepository saleOrderRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderSupplychainService saleOrderSupplychainService;
+  protected AppStockService appStockService;
 
   @Inject
   public SaleOrderCreateServiceSupplychainImpl(
@@ -67,14 +70,23 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       SaleOrderComputeService saleOrderComputeService,
       AccountConfigService accountConfigService,
       SaleOrderRepository saleOrderRepository,
-      SaleOrderSupplychainService saleOrderSupplychainService) {
+      SaleOrderSupplychainService saleOrderSupplychainService,
+      DMSService dmsService,
+      AppStockService appStockService) {
 
-    super(partnerService, saleOrderRepo, appSaleService, saleOrderService, saleOrderComputeService);
+    super(
+        partnerService,
+        saleOrderRepo,
+        appSaleService,
+        saleOrderService,
+        saleOrderComputeService,
+        dmsService);
 
     this.accountConfigService = accountConfigService;
     this.saleOrderRepository = saleOrderRepository;
     this.appBaseService = appBaseService;
     this.saleOrderSupplychainService = saleOrderSupplychainService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -216,7 +228,9 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     saleOrder.setPaymentMode(clientPartner.getInPaymentMode());
     saleOrder.setPaymentCondition(clientPartner.getPaymentCondition());
-    saleOrder.setIncoterm(incoterm);
+    if (appStockService.getAppStock().getIsIncotermEnabled()) {
+      saleOrder.setIncoterm(incoterm);
+    }
     saleOrder.setInvoicedPartner(invoicedPartner);
     saleOrder.setDeliveredPartner(deliveredPartner);
 
@@ -255,6 +269,7 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
 
     StringBuilder numSeq = new StringBuilder();
     StringBuilder externalRef = new StringBuilder();
+    StringBuilder internalNote = new StringBuilder();
     for (SaleOrder saleOrderLocal : saleOrderList) {
       if (numSeq.length() > 0) {
         numSeq.append("-");
@@ -266,6 +281,12 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
       }
       if (saleOrderLocal.getExternalReference() != null) {
         externalRef.append(saleOrderLocal.getExternalReference());
+      }
+      if (internalNote.length() > 0) {
+        internalNote.append("<br>");
+      }
+      if (saleOrderLocal.getInternalNote() != null) {
+        internalNote.append(saleOrderLocal.getInternalNote());
       }
     }
 
@@ -288,11 +309,16 @@ public class SaleOrderCreateServiceSupplychainImpl extends SaleOrderCreateServic
             incoterm,
             invoicedPartner,
             deliveredPartner);
+
+    saleOrderMerged.setInternalNote(internalNote.toString());
+
     super.attachToNewSaleOrder(saleOrderList, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
 
     saleOrderRepository.save(saleOrderMerged);
+
+    dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
 
     super.removeOldSaleOrders(saleOrderList);
 

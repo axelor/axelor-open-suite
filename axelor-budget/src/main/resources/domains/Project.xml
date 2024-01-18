@@ -6,8 +6,8 @@
   <module name="project" package="com.axelor.apps.project.db"/>
 
   <entity name="Project">
-    <many-to-one name="budget" ref="com.axelor.apps.budget.db.BudgetLevel"
-      title="Budget"/>
+    <many-to-many name="globalBudgetSet" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global budgets"/>
   </entity>
 
 </domain-models>

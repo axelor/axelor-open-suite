@@ -1,5 +1,0 @@
-title: "Stock details : fix stock details by product productionIndicators visibility"
-type: fix
-description:
-  "Changed `if-module` attribut by `if` attribut since the first one only checks if the module is in the source code and the second one checks in the database if the module is active.
-  And changed reserved quantities indicators visibility"

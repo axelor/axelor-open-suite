@@ -5,10 +5,10 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="AccountConfig" lang="java" cacheable="true">
+  <entity name="AccountConfig" cacheable="true">
 
     <boolean name="enableBudgetKey" title="Enable budget key"/>
-    <many-to-many ref="com.axelor.auth.db.Role" name="budgetDistributionRoleList"
+    <many-to-many ref="com.axelor.auth.db.Role" name="budgetDistributionRoleSet"
       title="Budget distribution role"/>
 
     <track>

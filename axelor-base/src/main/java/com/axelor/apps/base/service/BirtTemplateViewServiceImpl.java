@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,7 +54,8 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
     }
   }
 
-  protected MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
+  @Override
+  public MetaFile getTemplateFile(String templateFileName) throws AxelorException, IOException {
     MetaFile standardTemplateFile = null;
     InputStream templateFileInputStream =
         this.getClass().getResourceAsStream("/reports/" + templateFileName);
@@ -63,7 +64,7 @@ public class BirtTemplateViewServiceImpl implements BirtTemplateViewService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           String.format(
-              I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_MESSAGE_STANDARD_TEMPLATE_NOT_FOUND),
+              I18n.get(BaseExceptionMessage.FILE_NOT_FOUND_IN_STANDARD_APPLICATION),
               templateFileName));
     }
     standardTemplateFile = metaFiles.upload(templateFileInputStream, templateFileName);

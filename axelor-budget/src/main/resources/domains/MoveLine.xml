@@ -5,7 +5,7 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" lang="java">
+  <entity name="MoveLine">
 
     <one-to-many ref="com.axelor.apps.budget.db.BudgetDistribution"
       name="budgetDistributionList" mappedBy="moveLine" title="Budget Distribution"/>

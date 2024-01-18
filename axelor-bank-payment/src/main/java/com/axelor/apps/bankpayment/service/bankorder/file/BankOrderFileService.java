@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,8 +34,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
-import com.axelor.utils.file.FileTool;
-import com.axelor.utils.xml.Marschaller;
+import com.axelor.utils.helpers.file.FileHelper;
+import com.axelor.utils.xml.MarshallingHelper;
 import com.google.common.base.Strings;
 import java.io.File;
 import java.io.IOException;
@@ -134,12 +134,12 @@ public class BankOrderFileService {
 
     switch (fileExtension) {
       case FILE_EXTENSION_XML:
-        return Marschaller.marschalFile(
+        return MarshallingHelper.marshallFile(
             fileToCreate, context, this.getFolderPath(), this.computeFileName());
 
       case FILE_EXTENSION_TXT:
         try {
-          return FileTool.writer(
+          return FileHelper.writer(
               this.getFolderPath(), this.computeFileName(), (List<String>) fileToCreate);
         } catch (IOException e) {
           throw new AxelorException(

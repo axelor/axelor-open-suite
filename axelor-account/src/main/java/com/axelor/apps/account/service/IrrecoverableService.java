@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -161,18 +161,15 @@ public class IrrecoverableService {
     Company company = irrecoverable.getCompany();
 
     this.testCompanyField(company);
-
-    if (irrecoverable.getName() == null) {
-      irrecoverable.setName(this.getSequence(company));
-    }
-
     irrecoverable.setInvoiceSet(new HashSet<Invoice>());
     irrecoverable.getInvoiceSet().addAll(this.getInvoiceList(company));
     irrecoverable.getInvoiceSet().addAll(this.getRejectInvoiceList(company));
 
     irrecoverable.setPaymentScheduleLineSet(new HashSet<PaymentScheduleLine>());
     irrecoverable.getPaymentScheduleLineSet().addAll(this.getPaymentScheduleLineList(company));
-
+    if (irrecoverable.getName() == null) {
+      irrecoverable.setName(this.getSequence(company, irrecoverable));
+    }
     irrecoverableRepo.save(irrecoverable);
   }
 
@@ -824,7 +821,7 @@ public class IrrecoverableService {
     BigDecimal prorataRate = null;
     if (isInvoiceReject) {
       prorataRate =
-          (invoice.getRejectMoveLine().getAmountRemaining())
+          (invoice.getRejectMoveLine().getAmountRemaining().abs())
               .divide(invoice.getCompanyInTaxTotal(), 6, RoundingMode.HALF_UP);
     } else {
       prorataRate =
@@ -895,7 +892,7 @@ public class IrrecoverableService {
     }
 
     if (isInvoiceReject) {
-      creditAmount = invoice.getRejectMoveLine().getAmountRemaining();
+      creditAmount = invoice.getRejectMoveLine().getAmountRemaining().abs();
     } else {
       creditAmount = invoice.getCompanyInTaxTotalRemaining();
     }
@@ -927,27 +924,23 @@ public class IrrecoverableService {
         }
       } else {
         amount =
-            invoiceMoveLine.getCredit().multiply(prorataRate).setScale(2, RoundingMode.HALF_UP);
+            invoiceMoveLine
+                .getCredit()
+                .multiply(prorataRate)
+                .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         if (AccountTypeRepository.TYPE_TAX.equals(
             invoiceMoveLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-          if (invoiceMoveLine.getAccount().getVatSystemSelect() == null
-              || invoiceMoveLine.getAccount().getVatSystemSelect() == 0) {
+          if (invoiceMoveLine.getVatSystemSelect() == null
+              || invoiceMoveLine.getVatSystemSelect() == 0) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_ACCOUNT),
-                invoiceMoveLine.getAccount().getCode());
+                AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_INVOICE_TAX);
           }
           debitMoveLine =
               moveLineCreateService.createMoveLine(
                   move,
                   payerPartner,
-                  taxAccountService.getAccount(
-                      invoiceMoveLine.getTaxLine().getTax(),
-                      company,
-                      move.getJournal(),
-                      invoiceMoveLine.getAccount().getVatSystemSelect(),
-                      false,
-                      move.getFunctionalOriginSelect()),
+                  invoiceMoveLine.getAccount(),
                   amount,
                   true,
                   invoiceMoveLine.getTaxLine(),
@@ -1003,7 +996,7 @@ public class IrrecoverableService {
 
     Company company = moveLine.getMove().getCompany();
     Partner payerPartner = moveLine.getPartner();
-    BigDecimal amount = moveLine.getAmountRemaining();
+    BigDecimal amount = moveLine.getAmountRemaining().abs();
 
     AccountConfig accountConfig = company.getAccountConfig();
 
@@ -1148,11 +1141,11 @@ public class IrrecoverableService {
     accountConfigService.getIrrecoverableStandardRateTax(accountConfig);
   }
 
-  public String getSequence(Company company) throws AxelorException {
+  public String getSequence(Company company, Irrecoverable irrecoverable) throws AxelorException {
 
     String seq =
         sequenceService.getSequenceNumber(
-            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name");
+            SequenceRepository.IRRECOVERABLE, company, Irrecoverable.class, "name", irrecoverable);
     if (seq == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -1347,7 +1340,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }
@@ -1386,7 +1383,11 @@ public class IrrecoverableService {
 
     for (PaymentScheduleLine paymentScheduleLine : paymentSchedule.getPaymentScheduleLineList()) {
       if (paymentScheduleLine.getRejectMoveLine() != null
-          && paymentScheduleLine.getRejectMoveLine().getAmountRemaining().compareTo(BigDecimal.ZERO)
+          && paymentScheduleLine
+                  .getRejectMoveLine()
+                  .getAmountRemaining()
+                  .abs()
+                  .compareTo(BigDecimal.ZERO)
               > 0) {
         paymentScheduleLineRejectMoveLineList.add(paymentScheduleLine.getRejectMoveLine());
       }

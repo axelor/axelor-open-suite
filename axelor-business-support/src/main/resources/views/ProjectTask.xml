@@ -41,16 +41,17 @@
       <field name="$viewerTags" showTitle="false" readonly="true"
         showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">
         <viewer>
-					<![CDATA[
-						<h4 class="text-right">
-							<span class="label label-important" ng-show="record.assignment == 1" x-translate>Task assigned to the client</span>
-							<span class="label label-success" ng-show="record.assignment == 2 && record.$provider == null" x-translate>Task assigned to the provider</span>
-							<span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.3em;" ng-show="record.assignment == 2 && record.$provider != null" x-translate>Task assigned to</span><span class="label label-success" style="background-color: #5cb85c; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0; padding-left: 0.0em;" ng-show="record.assignment == 2 && record.$provider != null">{{record.$provider}}</span>
-
-							<span class="label label-important" ng-show="(!record.isOrderAccepted && record.invoicingType == 2 && record.exTaxTotal != 0) || (!record.isOrderAccepted && record.invoicingType == 1)" x-translate>Order Proposed</span>
-							<span class="label label-success" ng-show="record.isOrderAccepted" x-translate>Order Accepted</span>
-						</h4>
-					]]>
+        	<![CDATA[
+                   <>
+                       <Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+                           {assignment == 1 && <Badge bg="danger">{_t('Task assigned to the client')}</Badge>}
+                           {assignment == 2 && !$provider && <Badge bg="success">{_t('Task assigned to the provider')}</Badge>}
+                           {assignment == 2 && $provider && <Badge bg="success">{_t('Task assigned to')} {$provider}</Badge>}
+                           {((!isOrderAccepted && invoicingType == 2 && exTaxTotal != 0) || (!isOrderAccepted && invoicingType == 1)) && <Badge bg="danger">{_t('Order Proposed')}</Badge>}
+                           {isOrderAccepted && <Badge bg="success">{_t('Order Accepted')}</Badge>}
+                       </Box>
+                   </>
+            ]]>
         </viewer>
       </field>
       <field name="$provider" hidden="true" type="string"/>
@@ -58,9 +59,11 @@
         <field name="fullName" showTitle="false" colSpan="12">
           <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-						</h3>
+						<>
+							<h3>
+								<span>{name}</span>
+							</h3>
+						</>
 					]]>
           </viewer>
           <editor>

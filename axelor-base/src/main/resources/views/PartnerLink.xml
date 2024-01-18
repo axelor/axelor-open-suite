@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="partner-link-grid" title="Partner relations"
+    model="com.axelor.apps.base.db.PartnerLink" editable="true">
+    <field name="partner1" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid"
+      onSelect="action-partner-link-attrs-set-partner-link-type-domain"/>
+    <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
+  </grid>
+
+  <grid name="partner-link-partner-1-grid" title="Partner relations"
+    model="com.axelor.apps.base.db.PartnerLink" editable="true">
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid" target-name="link2Name"/>
+    <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
+  </grid>
+
+  <grid name="partner-link-partner-2-grid" title="Partner relations"
+    model="com.axelor.apps.base.db.PartnerLink" editable="true">
+    <field name="partnerLinkType" form-view="partner-link-type-form"
+      grid-view="partner-link-type-grid" target-name="link1Name"
+      onSelect="action-partner-link-attrs-set-partner-link-type-domain"/>
+    <field name="partner1" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-partner-link-attrs-set-partners-domain"/>
+  </grid>
+
+  <form title="Partner relation" name="partner-link-partner-1-form"
+    model="com.axelor.apps.base.db.PartnerLink"
+    onLoad="action-partner-link-attrs-set-partner-1-readonly">
+    <panel-include view="partner-link-form"/>
+  </form>
+
+  <form title="Partner relation" name="partner-link-partner-2-form"
+    model="com.axelor.apps.base.db.PartnerLink"
+    onLoad="action-partner-link-attrs-set-partner-2-readonly">
+    <panel-include view="partner-link-form"/>
+  </form>
+
+  <form title="Partner relation" name="partner-link-form"
+    model="com.axelor.apps.base.db.PartnerLink">
+    <panel name="mainPanel" itemSpan="4">
+      <field name="partner1" form-view="partner-form" grid-view="partner-grid"
+        onSelect="action-partner-link-attrs-set-partners-domain"/>
+      <field name="partnerLinkType" form-view="partner-link-type-form"
+        grid-view="partner-link-type-grid"/>
+      <field name="partner2" form-view="partner-form" grid-view="partner-grid"
+        onSelect="action-partner-link-attrs-set-partners-domain"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-partner-link-attrs-set-partners-domain">
+    <attribute name="domain" for="partner1"
+      expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"/>
+    <attribute name="domain" for="partner2"
+      expr="eval: &quot; self.isContact IS FALSE AND (self.isCustomer IS TRUE OR self.isProspect IS TRUE) AND NOT self.id = ${__parent__?.id} &quot;"
+      if="partnerLinkType?.typeSelect != 'Payed by'"/>
+    <attribute name="domain" for="partner2"
+      expr="eval: &quot; self.isSubrogation IS TRUE AND NOT self.id = ${__parent__?.id} &quot;"
+      if="partnerLinkType?.typeSelect == 'Payed by'"/>
+    <attribute name="domain" for="partner2" expr="eval: &quot; self.id = 0 &quot;"
+      if="partnerLinkType == null"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-link-attrs-set-partner-link-type-domain">
+    <attribute name="domain" for="partnerLinkType"
+      expr="eval: &quot; NOT self.typeSelect = 'Payed by' &quot;" if="!__parent__?.isSubrogation"/>
+    <attribute name="domain" for="partnerLinkType" expr="" if="__parent__?.isSubrogation"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-link-attrs-set-partner-1-readonly">
+    <attribute name="readonly" for="partner1" expr="eval: __parent__?.id = partner1?.id"/>
+  </action-attrs>
+
+  <action-attrs name="action-partner-link-attrs-set-partner-2-readonly">
+    <attribute name="readonly" for="partner2" expr="eval: __parent__?.id = partner2?.id"/>
+  </action-attrs>
+
+</object-views>

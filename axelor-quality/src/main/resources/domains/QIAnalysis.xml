@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIAnalysis">
+
+    <one-to-one name="qi" ref="com.axelor.apps.quality.db.QualityImprovement"
+      title="Quality improvement" mappedBy="qiAnalysis" required="true" readonly="true"/>
+    <one-to-many name="qiAnalysisCausesList" title="Causes"
+      ref="com.axelor.apps.quality.db.QIAnalysisCause" mappedBy="qiAnalysis"/>
+    <many-to-one name="causesWrittenBy" title="Causes written by"
+      ref="com.axelor.auth.db.User"/>
+    <datetime name="causesWrittenOn" title="Causes written on"/>
+    <many-to-one name="planOwner" title="Plan owner" ref="com.axelor.auth.db.User"
+      required="true"/>
+    <date name="earliestDate" title="Earliest date"/>
+    <date name="latestDate" title="Latest date"/>
+    <integer name="advancement" title="Advancement" min="0" max="100" readonly="true"/>
+    <string name="objective" title="Objective" large="true"/>
+    <string name="efficiencyCriteria" title="Efficiency Criteria" large="true"/>
+    <string name="analysisCheck" title="Check" large="true"/>
+    <integer name="efficiencySelect" title="Efficiency"
+      selection="quality.qi.analysis.efficiency.select" default="1"/>
+    <many-to-one name="efficiencyCheckedBy" title="Efficiency checked by"
+      ref="com.axelor.auth.db.User"/>
+    <datetime name="efficiencyCheckedOn" title="Efficiency checked on"/>
+    <one-to-many name="qiTasksList" title="Tasks"
+      ref="com.axelor.apps.quality.db.QITask" mappedBy="qiAnalysis"/>
+
+    <extra-code><![CDATA[
+	    public static final int EFFICIENCY_NO_CHECKED = 1;
+		public static final int EFFICIENCY_YES = 2;
+		public static final int EFFICIENCY_NO = 3;
+    ]]></extra-code>
+
+    <track>
+      <field name="qi"/>
+      <field name="causesWrittenBy"/>
+      <field name="causesWrittenOn"/>
+      <field name="planOwner"/>
+      <field name="earliestDate"/>
+      <field name="latestDate"/>
+      <field name="advancement"/>
+      <field name="objective"/>
+      <field name="efficiencyCriteria"/>
+      <field name="analysisCheck"/>
+      <field name="efficiencySelect"/>
+      <field name="efficiencyCheckedBy"/>
+      <field name="efficiencyCheckedOn"/>
+    </track>
+
+  </entity>
+
+</domain-models>

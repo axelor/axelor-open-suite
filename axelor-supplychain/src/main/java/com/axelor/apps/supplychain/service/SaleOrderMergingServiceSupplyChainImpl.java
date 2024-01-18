@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,18 +20,20 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMergingServiceImpl;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
-import com.axelor.utils.MapTools;
+import com.axelor.utils.helpers.MapHelper;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.StringJoiner;
@@ -128,16 +130,20 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
   }
 
   protected AppSaleService appSaleService;
-  protected AppSupplychainService appSupplyChainService;
+  protected AppBaseService appBaseService;
+  protected AppStockService appStockService;
 
   @Inject
   public SaleOrderMergingServiceSupplyChainImpl(
       SaleOrderCreateService saleOrdreCreateService,
+      SaleOrderRepository saleOrderRepository,
       AppSaleService appSaleService,
-      AppSupplychainService appSupplyChainService) {
-    super(saleOrdreCreateService);
+      AppBaseService appBaseService,
+      AppStockService appStockService) {
+    super(saleOrdreCreateService, saleOrderRepository);
     this.appSaleService = appSaleService;
-    this.appSupplyChainService = appSupplyChainService;
+    this.appBaseService = appBaseService;
+    this.appStockService = appStockService;
   }
 
   @Override
@@ -169,7 +175,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     if (appSaleService.isApp("supplychain")) {
       getCommonFields(result).setCommonStockLocation(firstSaleOrder.getStockLocation());
       getCommonFields(result).setCommonIncoterm(firstSaleOrder.getIncoterm());
-      if (appSupplyChainService.getAppSupplychain().getActivatePartnerRelations()) {
+      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         getCommonFields(result).setCommonInvoicedPartner(firstSaleOrder.getInvoicedPartner());
         getCommonFields(result).setCommonDeliveredPartner(firstSaleOrder.getDeliveredPartner());
       }
@@ -192,9 +198,9 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
           || (commonFields.getCommonIncoterm() != saleOrder.getIncoterm()
               && !commonFields.getCommonIncoterm().equals(saleOrder.getIncoterm()))) {
         commonFields.setCommonIncoterm(null);
-        checks.setExistIncotermDiff(true);
+        checks.setExistIncotermDiff(appStockService.getAppStock().getIsIncotermEnabled());
       }
-      if (appSupplyChainService.getAppSupplychain().getActivatePartnerRelations()) {
+      if (appBaseService.getAppBase().getActivatePartnerRelations()) {
         if ((commonFields.getCommonInvoicedPartner() == null
                 ^ saleOrder.getInvoicedPartner() == null)
             || (commonFields.getCommonInvoicedPartner() != saleOrder.getInvoicedPartner()
@@ -266,8 +272,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     if (appSaleService.isApp("supplychain")) {
       if (context.get("stockLocation") != null) {
         getCommonFields(result)
-            .setCommonStockLocation(
-                MapTools.findObject(StockLocation.class, context.get("stockLocation")));
+            .setCommonStockLocation(MapHelper.get(context, StockLocation.class, "stockLocation"));
       }
     }
   }

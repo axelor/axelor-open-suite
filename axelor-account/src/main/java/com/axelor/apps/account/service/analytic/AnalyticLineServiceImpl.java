@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,34 +28,36 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.service.AccountService;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AnalyticLineServiceImpl implements AnalyticLineService {
 
-  private static final int RETURN_SCALE = 2;
   protected AccountConfigService accountConfigService;
   protected AppBaseService appBaseService;
   protected AnalyticToolService analyticToolService;
   protected AnalyticAccountRepository analyticAccountRepository;
   protected AccountService accountService;
-  protected ListToolService listToolService;
+  protected ListHelper listHelper;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public AnalyticLineServiceImpl(
@@ -64,15 +66,17 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       AnalyticToolService analyticToolService,
       AnalyticAccountRepository analyticAccountRepository,
       AccountService accountService,
-      ListToolService listToolService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      ListHelper listHelper,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.accountConfigService = accountConfigService;
     this.appBaseService = appBaseService;
     this.analyticToolService = analyticToolService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.accountService = accountService;
-    this.listToolService = listToolService;
+    this.listHelper = listHelper;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -83,6 +87,15 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           .getAnalyticJournal();
     }
     return null;
+  }
+
+  @Override
+  public Currency getCompanyCurrency(AnalyticLine analyticLine) {
+    return Optional.of(analyticLine)
+        .map(AnalyticLine::getAccount)
+        .map(Account::getCompany)
+        .map(Company::getCurrency)
+        .orElse(null);
   }
 
   @Override
@@ -103,11 +116,14 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   public BigDecimal getAnalyticAmountFromParent(
       AnalyticLine parent, AnalyticMoveLine analyticMoveLine) {
 
-    if (parent.getLineAmount().signum() > 0) {
+    if (parent != null && parent.getLineAmount().signum() > 0) {
       return analyticMoveLine
           .getPercentage()
           .multiply(parent.getLineAmount())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+          .divide(
+              new BigDecimal(100),
+              currencyScaleServiceAccount.getScale(analyticMoveLine),
+              RoundingMode.HALF_UP);
     }
     return BigDecimal.ZERO;
   }
@@ -117,16 +133,17 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<>();
 
-    AnalyticAxis analyticAxis = new AnalyticAxis();
-
     if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
 
-      for (AnalyticAxisByCompany axis :
-          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList()) {
-        if (axis.getSequence() + 1 == position) {
-          analyticAxis = axis.getAnalyticAxis();
-        }
-      }
+      AnalyticAxis analyticAxis =
+          accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList().stream()
+              .filter(it -> it.getSequence() + 1 == position)
+              .findFirst()
+              .stream()
+              .map(AnalyticAxisByCompany::getAnalyticAxis)
+              .findFirst()
+              .orElse(null);
+
       analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
     }
     return analyticAccountListByAxis;
@@ -134,13 +151,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   @Override
   public List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis) {
-    List<Long> analyticAccountListByAxis = new ArrayList<>();
     List<Long> analyticAccountListByRules = new ArrayList<>();
+    List<Long> analyticAccountListByAxis =
+        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch().stream()
+            .map(AnalyticAccount::getId)
+            .collect(Collectors.toList());
 
-    for (AnalyticAccount analyticAccount :
-        analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch()) {
-      analyticAccountListByAxis.add(analyticAccount.getId());
-    }
     if (line.getAccount() != null) {
       List<Long> analyticAccountIdList = accountService.getAnalyticAccountsIds(line.getAccount());
       if (CollectionUtils.isNotEmpty(analyticAccountIdList)) {
@@ -149,7 +165,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
         }
         if (!CollectionUtils.isEmpty(analyticAccountListByRules)) {
           analyticAccountListByAxis =
-              listToolService.intersection(analyticAccountListByAxis, analyticAccountListByRules);
+              listHelper.intersection(analyticAccountListByAxis, analyticAccountListByRules);
         }
       }
     }
@@ -159,18 +175,15 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   @Override
   public boolean isAxisRequired(AnalyticLine line, Company company, int position)
       throws AxelorException {
-    if (company != null
-        && moveLineComputeAnalyticService.checkManageAnalytic(company)
+    if (analyticToolService.isManageAnalytic(company)
         && line != null
         && line.getAccount() != null
         && line.getAccount().getCompany() != null) {
       Account account = line.getAccount();
-      Integer nbrAxis =
-          accountConfigService.getAccountConfig(account.getCompany()).getNbrOfAnalyticAxisSelect();
       return account.getAnalyticDistributionAuthorized()
           && account.getAnalyticDistributionRequiredOnMoveLines()
           && line.getAnalyticDistributionTemplate() == null
-          && position <= nbrAxis;
+          && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position);
     }
     return false;
   }
@@ -201,7 +214,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   }
 
   @Override
-  public AnalyticLine printAnalyticAccount(AnalyticLine analyticLine, Company company)
+  public AnalyticLine setAnalyticAccount(AnalyticLine analyticLine, Company company)
       throws AxelorException {
     if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
       this.resetAxisAnalyticAccount(analyticLine);
@@ -220,6 +233,25 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
     }
 
     return analyticLine;
+  }
+
+  @Override
+  public boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
+      throws AxelorException {
+    if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
+      return false;
+    }
+
+    List<AnalyticAxisByCompany> analyticAxisByCompany =
+        accountConfigService.getAccountConfig(company).getAnalyticAxisByCompanyList();
+    if (ObjectUtils.notEmpty(analyticAxisByCompany)
+        && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
+      return analyticToolService.isAxisAccountSumValidated(
+          analyticLine.getAnalyticMoveLineList(),
+          analyticAxisByCompany.get(position - 1).getAnalyticAxis());
+    }
+
+    return false;
   }
 
   protected boolean checkAnalyticAxisPercentage(
@@ -269,15 +301,6 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       default:
         break;
     }
-  }
-
-  protected void addAttr(
-      String field, String attr, Object value, Map<String, Map<String, Object>> attrsMap) {
-    if (!attrsMap.containsKey(field)) {
-      attrsMap.put(field, new HashMap<>());
-    }
-
-    attrsMap.get(field).put(attr, value);
   }
 
   protected void resetAxisAnalyticAccount(AnalyticLine analyticLine) {

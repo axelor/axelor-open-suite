@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,9 +35,12 @@ import com.axelor.apps.sale.db.PackLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -61,7 +64,10 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
       PricingService pricingService,
       TaxService taxService,
       SaleOrderMarginService saleOrderMarginService,
-      InvoiceLineRepository invoiceLineRepository) {
+      InvoiceLineRepository invoiceLineRepository,
+      SaleInvoicingStateService saleInvoicingStateService,
+      AnalyticLineModelService analyticLineModelService,
+      CurrencyScaleServiceSale currencyScaleServiceSale) {
     super(
         currencyService,
         priceListService,
@@ -78,7 +84,10 @@ public class SaleOrderLineBusinessProductionServiceImpl extends SaleOrderLinePro
         pricingService,
         taxService,
         saleOrderMarginService,
-        invoiceLineRepository);
+        invoiceLineRepository,
+        saleInvoicingStateService,
+        analyticLineModelService,
+        currencyScaleServiceSale);
   }
 
   @Override

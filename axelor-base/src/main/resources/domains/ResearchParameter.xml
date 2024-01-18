@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="ResearchParameter" lang="java">
+  <entity name="ResearchParameter">
 
     <many-to-one name="researchParameterConfig"
       ref="com.axelor.apps.base.db.ResearchParameterConfig" required="true"

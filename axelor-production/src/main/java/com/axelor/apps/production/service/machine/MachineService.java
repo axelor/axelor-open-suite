@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,25 @@ public interface MachineService {
    * @throws AxelorException
    */
   MachineTimeSlot getClosestAvailableTimeSlotFrom(
+      Machine machine,
+      LocalDateTime startDateT,
+      LocalDateTime endDateT,
+      OperationOrder operationOrder)
+      throws AxelorException;
+
+  /**
+   * Method that return the furthest available dateTime for a operation starting from startDateT and
+   * end at endDateT. It takes into account the weekly planning, the days event planning and the
+   * other operations order of the machine.
+   *
+   * @param machine
+   * @param startDateT
+   * @param endDateT
+   * @param operationOrder
+   * @return the furthest available date
+   * @throws AxelorException
+   */
+  MachineTimeSlot getFurthestAvailableTimeSlotFrom(
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,

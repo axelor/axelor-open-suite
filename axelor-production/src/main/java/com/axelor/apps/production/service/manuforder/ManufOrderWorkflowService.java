@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.CancelReason;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import java.time.LocalDateTime;
@@ -35,11 +36,13 @@ public interface ManufOrderWorkflowService {
 
   void start(ManufOrder manufOrder) throws AxelorException;
 
-  void pause(ManufOrder manufOrder);
+  void pause(ManufOrder manufOrder) throws AxelorException;
 
   void resume(ManufOrder manufOrder);
 
   boolean finish(ManufOrder manufOrder) throws AxelorException;
+
+  void finishManufOrder(ManufOrder manufOrder) throws AxelorException;
 
   boolean partialFinish(ManufOrder manufOrder) throws AxelorException;
 
@@ -59,7 +62,7 @@ public interface ManufOrderWorkflowService {
   void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
       throws AxelorException;
 
-  void createPurchaseOrder(ManufOrder manufOrder) throws AxelorException;
+  void createPurchaseOrders(ManufOrder manufOrder) throws AxelorException;
 
   /**
    * Method that will update planned dates of manuf order. Unlike the other methods, this will not
@@ -69,4 +72,16 @@ public interface ManufOrderWorkflowService {
    * @param manufOrder
    */
   void updatePlannedDates(ManufOrder manufOrder);
+
+  List<Partner> getOutsourcePartnersForGenerationPO(ManufOrder manufOrder) throws AxelorException;
+
+  List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException;
+
+  void setOperationOrderMaxPriority(ManufOrder manufOrder);
+
+  String planManufOrders(List<ManufOrder> manufOrderList) throws AxelorException;
+
+  boolean sendPartialFinishMail(ManufOrder manufOrder);
+
+  boolean sendFinishedMail(ManufOrder manufOrder);
 }

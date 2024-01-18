@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.advancedExport.AdvancedExportService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLevel;
-import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.apps.budget.db.repo.BudgetManagementRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -71,16 +70,6 @@ public class ExportGlobalBudgetLevelServiceImpl implements ExportGlobalBudgetLev
       AdvancedExport budgetAdvanceExport,
       AdvancedExport purchaseOrderLineAdvanceExport)
       throws AxelorException, IOException {
-
-    if (!budgetLevel
-        .getLevelTypeSelect()
-        .equals(BudgetLevelRepository.BUDGET_LEVEL_LEVEL_TYPE_SELECT_GLOBAL)) {
-      budgetLevel = budgetLevel.getParentBudgetLevel();
-      budgetLevel =
-          budgetLevel.getParentBudgetLevel() != null
-              ? budgetLevel.getParentBudgetLevel()
-              : budgetLevel;
-    }
 
     List<Long> budgetRecordIds =
         Beans.get(BudgetManagementRepository.class).all()

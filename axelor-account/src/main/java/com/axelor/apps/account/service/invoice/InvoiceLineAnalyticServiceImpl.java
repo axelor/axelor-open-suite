@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -33,7 +34,7 @@ import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.utils.service.ListToolService;
+import com.axelor.utils.helpers.ListHelper;
 import com.google.common.base.MoreObjects;
 import com.google.inject.Inject;
 import java.time.LocalDate;
@@ -48,8 +49,9 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AnalyticToolService analyticToolService;
   protected AccountConfigService accountConfigService;
-  protected ListToolService listToolService;
+  protected ListHelper listHelper;
   protected AppAccountService appAccountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public InvoiceLineAnalyticServiceImpl(
@@ -57,14 +59,16 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       AnalyticMoveLineService analyticMoveLineService,
       AnalyticToolService analyticToolService,
       AccountConfigService accountConfigService,
-      ListToolService listToolService,
-      AppAccountService appAccountService) {
+      ListHelper listHelper,
+      AppAccountService appAccountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticMoveLineService = analyticMoveLineService;
     this.analyticToolService = analyticToolService;
     this.accountConfigService = accountConfigService;
-    this.listToolService = listToolService;
+    this.listHelper = listHelper;
     this.appAccountService = appAccountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -83,6 +87,7 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
             invoiceLine.getProduct(),
             invoice.getCompany(),
             invoice.getTradingName(),
+            invoiceLine.getAccount(),
             InvoiceToolService.isPurchase(invoice));
     invoiceLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
@@ -109,7 +114,10 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
       if (invoiceLine.getAnalyticMoveLineList() != null) {
         for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
           analyticMoveLineService.updateAnalyticMoveLine(
-              analyticMoveLine, invoiceLine.getCompanyExTaxTotal(), date);
+              analyticMoveLine,
+              currencyScaleServiceAccount.getScaledValue(
+                  analyticMoveLine, invoiceLine.getCompanyExTaxTotal()),
+              date);
         }
       }
       return analyticMoveLineList;
@@ -128,7 +136,8 @@ public class InvoiceLineAnalyticServiceImpl implements InvoiceLineAnalyticServic
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             invoiceLine.getAnalyticDistributionTemplate(),
-            invoiceLine.getCompanyExTaxTotal(),
+            currencyScaleServiceAccount.getScaledValue(
+                invoiceLine, invoiceLine.getCompanyExTaxTotal()),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 

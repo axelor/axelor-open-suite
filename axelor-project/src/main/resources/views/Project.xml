@@ -84,10 +84,18 @@
         <field name="$viewerProjectTags" showTitle="false" colSpan="4" readonly="true">
           <viewer depends="isBusinessProject,$toInvoiceCounter,id">
 							<![CDATA[
-								<h4 style="text-align: right;">
-									<span class="label label-default" style="background-color: #FD6217; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" ng-show="record.isBusinessProject" x-translate>To Invoice</span><span class="label label-default" style="background-color: #FFAA00; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;" ng-show="record.isBusinessProject &amp;&amp; record.id">{{$fmt('$toInvoiceCounter')}}</span>
-									<span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.isBusinessProject" x-translate>Business</span>
-								</h4>
+								<>
+									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
+										<Box>
+											{isBusinessProject &&
+												<Badge style={{ backgroundColor: "#FD6217" }}>
+													{_t('To Invoice')} {id && <Badge style={{ backgroundColor: "#FFAA00", fontSize: "12px" }}>{$fmt('$toInvoiceCounter')}</Badge>}
+												</Badge>
+											}
+										</Box>
+										{isBusinessProject && <Badge style={{ backgroundColor: "#2185D0" }}>{_t('Business')}</Badge>}
+									</Box>
+								</>
 							]]>
           </viewer>
         </field>
@@ -597,10 +605,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -613,10 +621,10 @@
     <field name="sequence"/>
     <template>
 		<![CDATA[
-		<h4>{{fullName}}</h4>
-		<div class="card-body">
-		 <div ng-bind-html="description"></div>
-	    </div>
+	    <>
+	    	<h4>{fullName}</h4>
+	    	<Box dangerouslySetInnerHTML={{__html : description}}></Box>
+	    </>
 		]]>
     </template>
   </kanban>
@@ -672,9 +680,6 @@
 
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
-    <column name="initial" type="decimal"/>
-    <column name="real" type="decimal"/>
-    <column name="forecast" type="decimal"/>
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
     <column name="createSubtaskBtn" type="button"/>
@@ -684,9 +689,6 @@
       onClick="action-project-task-view-task" orderBy="taskDate">
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
-      <field name="initialMarkup" as="initial"/>
-      <field name="realMarkup" as="real"/>
-      <field name="forecastMarkup" as="forecast"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progressSelect" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
@@ -1026,7 +1028,7 @@
     model="com.axelor.apps.account.db.Invoice">
     <view type="grid" name="invoice-grid"/>
     <view type="form" name="invoice-form"/>
-    <domain>self.contract.project.id = :_id</domain>
+    <domain>:_id IN self.contractSet.project.id</domain>
   </action-view>
 
   <action-attrs name="action-project-gantt-user-wizard-user-domain">
@@ -1055,10 +1057,10 @@
 
   <search-filters name="project-topic-filters"
     model="com.axelor.apps.project.db.Topic" title="Topics">
-    <filter title="My topics">
+    <filter name="project-topic-filters-my-topics" title="My topics">
       <domain>self.createdBy.id = :userId</domain>
     </filter>
-    <filter title="New topics">
+    <filter name="project-topic-filters-new-topics" title="New topics">
       <domain>self.createdOn &gt; date(now())</domain>
     </filter>
   </search-filters>

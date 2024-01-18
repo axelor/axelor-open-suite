@@ -5,14 +5,18 @@
 
   <module name="budget" package="com.axelor.apps.budget.db"/>
 
-  <entity name="BudgetDistribution" lang="java" cacheable="true">
+  <entity name="BudgetDistribution" cacheable="true">
 
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
       required="true"/>
 
-    <decimal name="amount" title="Amount" precision="20" scale="2"/>
-    <decimal name="assignedAmount" title="Assigned amount"/>
-    <decimal name="budgetAmountAvailable"/>
+    <many-to-one name="globalBudget" ref="com.axelor.apps.budget.db.GlobalBudget"
+      title="Global Budget"/>
+
+    <decimal name="amount" title="Amount" precision="20" scale="3"/>
+    <date name="imputationDate" title="Date"/>
+    <decimal name="assignedAmount" title="Assigned amount" precision="20" scale="3"/>
+    <decimal name="budgetAmountAvailable" precision="20" scale="3"/>
 
     <many-to-one name="moveLine" ref="com.axelor.apps.account.db.MoveLine"
       title="MoveLine"/>

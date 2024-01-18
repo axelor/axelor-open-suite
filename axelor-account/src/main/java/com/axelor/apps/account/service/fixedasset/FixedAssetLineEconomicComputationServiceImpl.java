@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,8 +46,9 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected LocalDate computeStartDepreciationDate(FixedAsset fixedAsset) {
-    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
-      return fixedAsset.getFailoverDate();
+    if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
+        && fixedAsset.getImportDepreciationDate().isAfter(fixedAsset.getFirstDepreciationDate())) {
+      return fixedAsset.getImportDepreciationDate();
     }
     return fixedAsset.getFirstDepreciationDate();
   }
@@ -105,7 +106,7 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected Boolean isProrataTemporis(FixedAsset fixedAsset) {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
-        && fixedAsset.getNbrOfPastDepreciations() > 0) {
+        && fixedAsset.getImportNbrOfPastDepreciations() > 0) {
       // This case means that prorata temporis was already computed in another software.
       return false;
     }
@@ -125,13 +126,13 @@ public class FixedAssetLineEconomicComputationServiceImpl
 
   @Override
   protected BigDecimal getNumberOfPastDepreciation(FixedAsset fixedAsset) {
-    return BigDecimal.valueOf(fixedAsset.getNbrOfPastDepreciations());
+    return BigDecimal.valueOf(fixedAsset.getImportNbrOfPastDepreciations());
   }
 
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
 
-    return fixedAsset.getAlreadyDepreciatedAmount();
+    return fixedAsset.getImportAlreadyDepreciatedAmount();
   }
 
   @Override

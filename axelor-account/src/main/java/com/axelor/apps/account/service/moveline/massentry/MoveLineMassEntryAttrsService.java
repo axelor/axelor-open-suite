@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.JournalType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import java.util.Map;
@@ -45,7 +46,8 @@ public interface MoveLineMassEntryAttrsService {
       MoveLineMassEntry moveLine, Map<String, Map<String, Object>> attrsMap);
 
   void addMovePfpValidatorUserRequired(
-      Account account, Journal journal, Map<String, Map<String, Object>> attrsMap);
+      Account account, Journal journal, Company company, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
   void addTemporaryMoveNumberFocus(Move move, Map<String, Map<String, Object>> attrsMap);
 

@@ -34,8 +34,8 @@
       <field name="dateThreshold"/>
     </panel>
 
-    <panel-related name="moveLineSetPanel" field="moveLineSet"
-      form-view="move-line-form" grid-view="move-line-grid"/>
+    <panel-related name="moveLineSetPanel" field="moveLineSet" canNew="false"
+      canSelect="false" form-view="move-line-form" grid-view="move-line-grid"/>
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
       <button name="getExcessPaymentBtn" title="Get overdue payments"

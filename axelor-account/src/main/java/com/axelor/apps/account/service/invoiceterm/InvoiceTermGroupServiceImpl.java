@@ -2,6 +2,8 @@ package com.axelor.apps.account.service.invoiceterm;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
@@ -15,15 +17,21 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
   protected InvoiceTermService invoiceTermService;
   protected InvoiceTermAttrsService invoiceTermAttrsService;
   protected InvoiceTermPfpService invoiceTermPfpService;
+  protected InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public InvoiceTermGroupServiceImpl(
       InvoiceTermService invoiceTermService,
       InvoiceTermAttrsService invoiceTermAttrsService,
-      InvoiceTermPfpService invoiceTermPfpService) {
+      InvoiceTermPfpService invoiceTermPfpService,
+      InvoiceTermFinancialDiscountService invoiceTermFinancialDiscountService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.invoiceTermService = invoiceTermService;
     this.invoiceTermAttrsService = invoiceTermAttrsService;
     this.invoiceTermPfpService = invoiceTermPfpService;
+    this.invoiceTermFinancialDiscountService = invoiceTermFinancialDiscountService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -53,6 +61,9 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     valuesMap.put(
         "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
+    valuesMap.put("$isMultiCurrency", invoiceTermService.isMultiCurrency(invoiceTerm));
+    valuesMap.put(
+        "$companyCurrencyScale", currencyScaleServiceAccount.getCompanyScale(invoiceTerm));
 
     return valuesMap;
   }
@@ -63,6 +74,8 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     Map<String, Object> valuesMap = this.checkPfpValidatorUser(invoiceTerm);
 
     valuesMap.put("$isMultiCurrency", invoiceTermService.isMultiCurrency(invoiceTerm));
+    valuesMap.put(
+        "$companyCurrencyScale", currencyScaleServiceAccount.getCompanyScale(invoiceTerm));
 
     valuesMap.put(
         "$showFinancialDiscount", invoiceTermService.setShowFinancialDiscount(invoiceTerm));
@@ -78,7 +91,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     Map<String, Object> valuesMap = new HashMap<>();
 
     invoiceTermService.computeCustomizedPercentage(invoiceTerm);
-    invoiceTermService.computeFinancialDiscount(invoiceTerm);
+    invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
 
     valuesMap.put("percentage", invoiceTerm.getPercentage());
     valuesMap.put("amountRemaining", invoiceTerm.getAmountRemaining());
@@ -100,8 +113,8 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
   public Map<String, Object> getPercentageOnChangeValuesMap(InvoiceTerm invoiceTerm) {
     Map<String, Object> valuesMap = new HashMap<>();
 
-    invoiceTermService.computeCustomizedAmount(invoiceTerm);
-    invoiceTermService.computeFinancialDiscount(invoiceTerm);
+    invoiceTermService.setCustomizedAmounts(invoiceTerm);
+    invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
 
     valuesMap.put("amount", invoiceTerm.getAmount());
     valuesMap.put("amountRemaining", invoiceTerm.getAmountRemaining());

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,9 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceControlService;
 import com.axelor.apps.account.service.invoice.InvoiceDomainService;
 import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
+import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
+import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -46,7 +48,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -56,6 +58,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -65,14 +68,15 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.StringTool;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -332,14 +336,14 @@ public class InvoiceController {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
       invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
 
       if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+          || Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
         return;
       }
 
-      List<InvoiceTerm> invoiceTermList = invoiceTermService.updateFinancialDiscount(invoice);
+      List<InvoiceTerm> invoiceTermList =
+          Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
       response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
@@ -496,16 +500,16 @@ public class InvoiceController {
                 ? Integer.parseInt(context.get("reportType").toString())
                 : null;
 
-        Map languageMap =
+        Map localizationMap =
             reportType != null
                     && (reportType == 1 || reportType == 3)
-                    && context.get("language") != null
-                ? (Map<String, Object>) request.getContext().get("language")
+                    && context.get("localization") != null
+                ? (Map<String, Object>) request.getContext().get("localization")
                 : null;
-        String locale =
-            languageMap != null && languageMap.get("id") != null
-                ? Beans.get(LanguageRepository.class)
-                    .find(Long.parseLong(languageMap.get("id").toString()))
+        String localizationCode =
+            localizationMap != null && localizationMap.get("id") != null
+                ? Beans.get(LocalizationRepository.class)
+                    .find(Long.parseLong(localizationMap.get("id").toString()))
                     .getCode()
                 : null;
 
@@ -517,7 +521,7 @@ public class InvoiceController {
                     false,
                     format,
                     reportType,
-                    locale);
+                    localizationCode);
         title = I18n.get("Invoice");
       } else {
         throw new AxelorException(
@@ -1043,7 +1047,7 @@ public class InvoiceController {
   public void showCustomerInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
       String idList =
-          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
       response.setView(
           ActionView.define(I18n.get("Customer Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1107,7 +1111,7 @@ public class InvoiceController {
   public void showSupplierInvoiceLines(ActionRequest request, ActionResponse response) {
     try {
       String idList =
-          StringTool.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
+          StringHelper.getIdListString(request.getCriteria().createQuery(Invoice.class).fetch());
       response.setView(
           ActionView.define(I18n.get("Supplier Invoice Line"))
               .model(InvoiceLine.class.getName())
@@ -1205,7 +1209,7 @@ public class InvoiceController {
       Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
 
       if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceTermService.class).updateFinancialDiscount(invoice);
+        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
         response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       }
 
@@ -1267,6 +1271,34 @@ public class InvoiceController {
         response.setValue("pfpValidateStatusSelect", pfpStatus);
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  @ErrorException
+  public void updateSubrogationPartner(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void setInvoiceLinesScale(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+        return;
+      }
+
+      Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+      Beans.get(InvoiceLineGroupService.class)
+          .setInvoiceLineScale(invoice, attrsMap, "invoiceLineList.");
+      Beans.get(InvoiceLineTaxGroupService.class)
+          .setInvoiceLineTaxScale(invoice, attrsMap, "invoiceLineTaxList.");
+
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,11 +43,12 @@ public class InvoiceMergingServiceBusinessProjectImpl extends InvoiceMergingServ
   @Inject
   public InvoiceMergingServiceBusinessProjectImpl(
       InvoiceService invoiceService,
+      InvoiceRepository invoiceRepository,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
       SaleOrderInvoiceService saleOrderInvoiceService,
       PurchaseOrderInvoiceProjectServiceImpl purchaseOrderInvoiceProjectServiceImpl,
       SaleOrderInvoiceProjectServiceImpl saleOrderInvoiceProjectServiceImpl) {
-    super(invoiceService, purchaseOrderInvoiceService, saleOrderInvoiceService);
+    super(invoiceService, invoiceRepository, purchaseOrderInvoiceService, saleOrderInvoiceService);
     this.purchaseOrderInvoiceProjectServiceImpl = purchaseOrderInvoiceProjectServiceImpl;
     this.saleOrderInvoiceProjectServiceImpl = saleOrderInvoiceProjectServiceImpl;
   }

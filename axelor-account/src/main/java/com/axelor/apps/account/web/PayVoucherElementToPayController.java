@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,13 +44,31 @@ public class PayVoucherElementToPayController {
     }
   }
 
+  public void resetFinancialDiscount(ActionRequest request, ActionResponse response) {
+    try {
+      PayVoucherElementToPay payVoucherElementToPay =
+          request.getContext().asType(PayVoucherElementToPay.class);
+      PayVoucherElementToPayService payVoucherElementToPayService =
+          Beans.get(PayVoucherElementToPayService.class);
+
+      if (payVoucherElementToPayService.isPartialPayment(
+          payVoucherElementToPay, payVoucherElementToPay.getFinancialDiscountTotalAmount())) {
+        payVoucherElementToPayService.resetFinancialDiscount(payVoucherElementToPay);
+      }
+
+      response.setValues(payVoucherElementToPay);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       PayVoucherElementToPay payVoucherElementToPay =
           request.getContext().asType(PayVoucherElementToPay.class);
 
       Beans.get(PayVoucherElementToPayService.class)
-          .updateFinancialDiscount(payVoucherElementToPay);
+          .updateRemainingAmountsWithFinancialDiscount(payVoucherElementToPay);
 
       response.setValues(payVoucherElementToPay);
     } catch (Exception e) {

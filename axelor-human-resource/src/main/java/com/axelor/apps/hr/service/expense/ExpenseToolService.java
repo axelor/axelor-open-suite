@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,8 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.ExpenseLine;
+import java.util.List;
 
 public interface ExpenseToolService {
 
@@ -35,4 +37,16 @@ public interface ExpenseToolService {
   public void setDraftSequence(Expense expense) throws AxelorException;
 
   public Expense updateMoveDateAndPeriod(Expense expense);
+
+  void addExpenseLinesToExpense(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException;
+
+  void addExpenseLinesToExpenseAndCompute(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException;
+
+  boolean isKilometricExpenseLine(ExpenseLine expenseLine);
+
+  boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList);
+
+  boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList);
 }

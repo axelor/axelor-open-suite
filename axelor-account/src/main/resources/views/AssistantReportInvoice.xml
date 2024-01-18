@@ -34,7 +34,6 @@
     </panel>
     <panel name="optionsPanel" title="Options" sidebar="true">
       <field name="graphTypeSelect" widget="RadioSelect"/>
-      <field name="formatSelect" widget="RadioSelect" selection-in="['pdf','xlsx','ods']"/>
       <field name="turnoverTypeSelect" widget="RadioSelect"/>
       <button name="printReportBtn" title="Print"
         onClick="action-print-invoices-details-group-print-sales"/>
@@ -60,7 +59,6 @@
     </panel>
     <panel name="optionsPanel" title="Options" sidebar="true">
       <field name="graphTypeSelect" widget="RadioSelect"/>
-      <field name="formatSelect" widget="RadioSelect" selection-in="['pdf','xlsx','ods']"/>
       <field name="turnoverTypeSelect" widget="RadioSelect"/>
       <button name="printReportBtn" title="Print"
         onClick="action-print-invoices-details-group-print-purchases"/>
@@ -94,7 +92,7 @@
   <action-group name="action-print-invoices-details-group-print-sales">
     <action name="action-print-invoices-details-record-set-publication-date-time"/>
     <action name="save"/>
-    <action name="action-print-invoices-details-method-print-sales"/>
+    <action name="action-method-print-birt"/>
   </action-group>
 
   <action-group name="action-print-invoices-details-group-print-purchases">
@@ -102,11 +100,6 @@
     <action name="save"/>
     <action name="action-print-invoices-details-method-print-purchases"/>
   </action-group>
-
-  <action-method name="action-print-invoices-details-method-print-sales">
-    <call class="com.axelor.apps.account.web.AssistantReportInvoiceController"
-      method="printSales"/>
-  </action-method>
 
   <action-method name="action-print-invoices-details-method-print-purchases">
     <call class="com.axelor.apps.account.web.AssistantReportInvoiceController"
