@@ -10,9 +10,10 @@
     <field name="productSupplierName"/>
     <field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="updateDate"/>
-    <field name="minQty" x-scale="2"/>
+    <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="supplier-catalog-partner-grid" title="Supplier Catalog"
@@ -23,9 +24,10 @@
     <field name="productSupplierName"/>
     <field name="supplierPartner.currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="updateDate"/>
-    <field name="minQty" x-scale="2"/>
+    <field name="minQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="supplier-catalog-form" title="Supplier Catalog"
