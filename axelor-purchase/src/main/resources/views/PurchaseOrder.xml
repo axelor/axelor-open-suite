@@ -842,7 +842,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>:purchaseOrder MEMBER OF self.purchaseOrderSet</domain>
+    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
