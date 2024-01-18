@@ -189,17 +189,15 @@ public class ContractVersionServiceImpl extends ContractVersionRepository
 
   public void computeTotals(ContractVersion contractVersion) {
     List<ContractLine> contractLineList = contractVersion.getContractLineList();
-    if (CollectionUtils.isNotEmpty(contractLineList)) {
-      contractVersion.setInitialExTaxTotalPerYear(
-          contractLineList.stream()
-              .map(ContractLine::getInitialPricePerYear)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO));
-      contractVersion.setYearlyExTaxTotalRevalued(
-          contractLineList.stream()
-              .map(ContractLine::getYearlyPriceRevalued)
-              .reduce(BigDecimal::add)
-              .orElse(BigDecimal.ZERO));
-    }
+    contractVersion.setInitialExTaxTotalPerYear(
+        contractLineList.stream()
+            .map(ContractLine::getInitialPricePerYear)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO));
+    contractVersion.setYearlyExTaxTotalRevalued(
+        contractLineList.stream()
+            .map(ContractLine::getYearlyPriceRevalued)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO));
   }
 }
