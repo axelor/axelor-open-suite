@@ -921,30 +921,31 @@
     <field name="usedInDEB" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="customsCodeNomenclature" hidden="true" if="!__config__.app.isApp('stock')"/>
     <field name="countryOfOrigin" hidden="true" if="!__config__.app.isApp('stock')"/>
-    <filter title="Current Products">
+    <filter name="products-filters-current-products" title="Current Products">
       <domain>self.endDate IS NULL or CURRENT_DATE &lt; self.endDate</domain>
     </filter>
-    <filter title="Storable Products">
+    <filter name="products-filters-storable-products" title="Storable Products">
       <domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect =
         'storable'</domain>
     </filter>
-    <filter title="Service Products">
+    <filter name="products-filters-service-products" title="Service Products">
       <domain>(self.endDate IS NULL or CURRENT_DATE &lt; self.endDate) and self.productTypeSelect =
         'service'</domain>
     </filter>
-    <filter title="Products With Variant">
+    <filter name="products-filters-products-with-variant" title="Products With Variant">
       <domain>self.productVariantConfig != null</domain>
     </filter>
-    <filter title="Define sub bill of material">
+    <filter name="products-filters-define-sub-bill-of-material"
+      title="Define sub bill of material">
       <domain>self.productSubTypeSelect = 3</domain>
     </filter>
-    <filter title="Obsolete Products">
+    <filter name="products-filters-obsolete-products" title="Obsolete Products">
       <domain>CURRENT_DATE &gt; self.endDate</domain>
     </filter>
-    <filter title="Classic products">
+    <filter name="products-filters-classic-products" title="Classic products">
       <domain>self.configurator IS NULL</domain>
     </filter>
-    <filter title="Customised products">
+    <filter name="products-filters-customised-products" title="Customised products">
       <domain>self.configurator IS NOT NULL</domain>
     </filter>
   </search-filters>
