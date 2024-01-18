@@ -430,8 +430,8 @@
             onChange="action-move-method-company-onchange" form-view="company-form"
             grid-view="company-grid" colSpan="3" onSelect="action-move-method-company-onselect"/>
           <field name="journal" domain="self.statusSelect = 1 AND self.company = :company"
-            readonlyIf="($validatePeriod &amp;&amp; moveLineMassEntryList.length &gt; 0) || statusSelect == 3"
-            canNew="false" form-view="journal-form" grid-view="journal-grid" canEdit="false"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3" canNew="false"
+            form-view="journal-form" grid-view="journal-grid" canEdit="false"
             onChange="action-account-move-method-journal-onchange" colSpan="3"/>
           <field if="__config__.app.getApp('base')?.getManageMultiBanks()"
             name="companyBankDetails" colSpan="3" canEdit="false"
@@ -441,7 +441,7 @@
             hideIf="(journal.authorizedFunctionalOriginSelect.split(',').length == 1 &amp;&amp; journal.authorizedFunctionalOriginSelect == functionalOriginSelect) || (!journal.authorizedFunctionalOriginSelect &amp;&amp; !functionalOriginSelect) || !journal || !journal.authorizedFunctionalOriginSelect.split(',').length"
             onChange="action-move-mass-entry-method-get-mass-entry-attribute"/>
           <field name="currency"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3 || (companyBankDetails == null &amp;&amp; $journalTechnicalTypeSelect == 1)"
             colSpan="3" onChange="action-move-method-currency-onchange" required="true"
             hidden="true"/>
           <field name="createdOn" title="Created on" readonly="true" colSpan="3"
@@ -451,7 +451,7 @@
           <field name="updatedBy" title="Updated by" readonly="true" colSpan="3"
             if="updatedBy != null"/>
           <field name="massEntryManageCutOff" colSpan="3" title="Manage Cut off period"
-            readonlyIf="$validatePeriod || moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
+            readonlyIf="moveLineMassEntryList.length &gt; 0 || statusSelect == 3"
             widget="boolean-switch"
             onChange="action-move-mass-entry-method-get-mass-entry-attribute"
             if="__config__.app.getApp('account').manageCutOffPeriod"/>
