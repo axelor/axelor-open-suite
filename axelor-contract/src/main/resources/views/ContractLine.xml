@@ -8,22 +8,24 @@
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
-    <field name="qty"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="isConsumptionLine"/>
-    <field name="price"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isToRevaluate"/>
     <field name="initialPricePerYear" readonly="true"/>
     <field name="yearlyPriceRevalued" readonly="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isInvoiced" background="success"/>
     <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isInvoiced" hidden="true"/>
@@ -31,22 +33,28 @@
     <field name="subscriptionFromDate" type="date" title="From"/>
     <field name="subscriptionToDate" type="date" title="To"/>
     <field name="statusSelect" type="string" title="Status"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="contract-line-grid-for-template" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="isConsumptionLine" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
