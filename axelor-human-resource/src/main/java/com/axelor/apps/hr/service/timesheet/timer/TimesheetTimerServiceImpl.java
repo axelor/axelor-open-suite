@@ -147,6 +147,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     return Beans.get(TSTimerRepository.class)
         .all()
         .filter("self.employee.user.id = ?1", AuthUtils.getUser().getId())
+        .order("-createdOn")
         .fetchOne();
   }
 
