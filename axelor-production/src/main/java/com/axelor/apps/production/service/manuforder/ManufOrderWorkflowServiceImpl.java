@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.CancelReason;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
@@ -33,7 +32,6 @@ import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -41,7 +39,6 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProductionConfig;
-import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -59,8 +56,6 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMove;
@@ -706,72 +701,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return true;
   }
 
-  protected void createPurchaseOrderLineProduction(
-      OperationOrder operationOrder, PurchaseOrder purchaseOrder) throws AxelorException {
-
-    UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
-    PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
-    PurchaseOrderLine purchaseOrderLine;
-    BigDecimal quantity;
-    Unit startUnit = appBaseService.getAppBase().getUnitHours();
-
-    if (ObjectUtils.isEmpty(startUnit)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT));
-    }
-
-    Product product = getHrProduct(operationOrder);
-    if (product != null) {
-      Unit purchaseUnit = product.getPurchasesUnit();
-      Unit stockUnit = product.getUnit();
-
-      Unit endUnit = (purchaseUnit != null) ? purchaseUnit : stockUnit;
-
-      if (endUnit == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_END_UNIT));
-      }
-      final int COMPUTATION_SCALE = 20;
-      quantity =
-          unitConversionService.convert(
-              startUnit,
-              endUnit,
-              new BigDecimal(operationOrder.getWorkCenter().getHrDurationPerCycle())
-                  .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
-              appBaseService.getNbDecimalDigitForQty(),
-              product);
-      // have to force the scale as the conversion service will not round if the start unit and the
-      // end unit are equals.
-      quantity = quantity.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
-
-      purchaseOrderLine =
-          purchaseOrderLineService.createPurchaseOrderLine(
-              purchaseOrder, product, null, null, quantity, purchaseUnit);
-
-      purchaseOrder.getPurchaseOrderLineList().add(purchaseOrderLine);
-    }
-  }
-
-  protected Product getHrProduct(OperationOrder operationOrder) {
-    boolean isCostPerProcessLine = appProductionService.getIsCostPerProcessLine();
-
-    if (isCostPerProcessLine) {
-      ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
-      if (prodProcessLine != null && prodProcessLine.getHrProduct() != null) {
-        return prodProcessLine.getHrProduct();
-      }
-    } else {
-      WorkCenter workCenter = operationOrder.getWorkCenter();
-      if (workCenter != null && workCenter.getHrProduct() != null) {
-        return workCenter.getHrProduct();
-      }
-    }
-
-    return null;
-  }
-
   protected PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
       throws AxelorException {
     Partner supplierPartner = purchaseOrder.getSupplierPartner();
@@ -882,7 +811,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
               .collect(Collectors.toList());
 
       for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
-        this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+        operationOrderOutsourceService.createPurchaseOrderLines(operationOrder, purchaseOrder);
       }
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
     }

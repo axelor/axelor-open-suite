@@ -46,6 +46,10 @@
           showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="4"/>
         <field name="useLineInGeneratedPurchaseOrder"
           showIf="prodProcess.outsourcing || prodProcess.outsourcable || (prodProcess.prodProcessLinesOutsourcable &amp;&amp; (outsourcing || outsourcable))"/>
+        <panel-related name="generatedPurchaseOrderProductPanel"
+          field="generatedPurchaseOrderProductList"
+          showIf="prodProcess.outsourcing || prodProcess.outsourcable || (prodProcess.prodProcessLinesOutsourcable &amp;&amp; (outsourcing || outsourcable)) &amp;&amp; useLineInGeneratedPurchaseOrder"
+          colSpan="12" canEdit="false" canNew="false" canSelect="true"/>
       </panel>
 
       <field name="optional"/>
