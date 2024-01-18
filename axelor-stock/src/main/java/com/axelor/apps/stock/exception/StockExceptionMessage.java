@@ -300,4 +300,9 @@ public final class StockExceptionMessage {
   public static final String STOCK_MOVE_MERGE_ERROR_MANUF_ORDER = /*$$(*/ "Same manuf order" /*)*/;
   public static final String STOCK_MOVE_DIFF_SHIPMENT_FIELDS = /*$$(*/
       "Fields linked to the shipment are differents, the value of the oldest will be kept." /*)*/;
+  public static final String MASS_STOCK_MOVE_NO_SEQUENCE = /*$$(*/
+      "There's no configured sequence for stock's mass moves for the company %s" /*)*/;
+
+  public static final String MASS_STOCK_MOVE_NO_COMPANY = /*$$(*/
+      "There's no company in this stock's mass moves" /*)*/;
 }
