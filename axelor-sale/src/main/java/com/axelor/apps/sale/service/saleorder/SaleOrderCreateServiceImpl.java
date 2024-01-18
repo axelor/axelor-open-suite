@@ -108,6 +108,41 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
       Partner clientPartner,
       Team team,
       TaxNumber taxNumber,
+      String internalNote,
+      FiscalPosition fiscalPosition)
+      throws AxelorException {
+    SaleOrder saleOrder =
+        createSaleOrder(
+            salespersonUser,
+            company,
+            contactPartner,
+            currency,
+            estimatedShippingDate,
+            internalReference,
+            externalReference,
+            priceList,
+            clientPartner,
+            team,
+            taxNumber,
+            fiscalPosition,
+            null);
+    saleOrder.setInternalNote(internalNote);
+    return saleOrder;
+  }
+
+  @Override
+  public SaleOrder createSaleOrder(
+      User salespersonUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate estimatedShippingDate,
+      String internalReference,
+      String externalReference,
+      PriceList priceList,
+      Partner clientPartner,
+      Team team,
+      TaxNumber taxNumber,
       FiscalPosition fiscalPosition,
       TradingName tradingName)
       throws AxelorException {
@@ -166,99 +201,6 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     saleOrderService.computeEndOfValidityDate(saleOrder);
 
     return saleOrder;
-  }
-
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public SaleOrder mergeSaleOrders(
-      List<SaleOrder> saleOrderList,
-      Currency currency,
-      Partner clientPartner,
-      Company company,
-      Partner contactPartner,
-      PriceList priceList,
-      Team team,
-      TaxNumber taxNumber,
-      FiscalPosition fiscalPosition,
-      boolean dummySaleOrder)
-      throws AxelorException {
-
-    String numSeq = "";
-    String externalRef = "";
-    StringBuilder internalNote = new StringBuilder();
-    for (SaleOrder saleOrderLocal : saleOrderList) {
-      if (!numSeq.isEmpty()) {
-        numSeq += "-";
-      }
-      numSeq += saleOrderLocal.getSaleOrderSeq();
-
-      if (!externalRef.isEmpty()) {
-        externalRef += "|";
-      }
-      if (saleOrderLocal.getExternalReference() != null) {
-        externalRef += saleOrderLocal.getExternalReference();
-      }
-      if (internalNote.length() > 0) {
-        internalNote.append("<br>");
-      }
-      if (saleOrderLocal.getInternalNote() != null) {
-        internalNote.append(saleOrderLocal.getInternalNote());
-      }
-    }
-
-    SaleOrder saleOrderMerged =
-        this.createSaleOrder(
-            AuthUtils.getUser(),
-            company,
-            contactPartner,
-            currency,
-            null,
-            numSeq,
-            externalRef,
-            priceList,
-            clientPartner,
-            team,
-            taxNumber,
-            fiscalPosition);
-
-    saleOrderMerged.setInternalNote(internalNote.toString());
-
-    this.attachToNewSaleOrder(saleOrderList, saleOrderMerged, dummySaleOrder);
-
-    saleOrderComputeService.computeSaleOrder(saleOrderMerged);
-
-    if (!dummySaleOrder) {
-      saleOrderRepo.save(saleOrderMerged);
-
-      dmsService.addLinkedDMSFiles(saleOrderList, saleOrderMerged);
-
-      this.removeOldSaleOrders(saleOrderList);
-    }
-
-    return saleOrderMerged;
-  }
-
-  // Attachment of all sale order lines to new sale order
-  protected void attachToNewSaleOrder(
-      List<SaleOrder> saleOrderList, SaleOrder saleOrderMerged, boolean dummySaleOrder) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      int countLine = 1;
-      for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        if (dummySaleOrder) {
-          saleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
-        }
-        saleOrderLine.setSequence(countLine * 10);
-        saleOrderMerged.addSaleOrderLineListItem(saleOrderLine);
-        countLine++;
-      }
-    }
-  }
-
-  // Remove old sale orders after merge
-  protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
-    for (SaleOrder saleOrder : saleOrderList) {
-      saleOrderRepo.remove(saleOrder);
-    }
   }
 
   @Override

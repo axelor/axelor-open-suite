@@ -90,7 +90,7 @@ public class StockMoveInvoiceController {
         if (ObjectUtils.notEmpty(saleOrderSet)) {
           SaleOrderMergingResult result =
               Beans.get(SaleOrderMergingService.class)
-                  .mergeSaleOrders(new ArrayList<>(saleOrderSet), true);
+                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
           if (result.isConfirmationNeeded()) {
             ActionViewBuilder confirmView =
                 Beans.get(SaleOrderMergingViewService.class)
@@ -148,8 +148,8 @@ public class StockMoveInvoiceController {
       if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class)
-                .mergeSaleOrdersWithContext(
-                    new ArrayList<>(stockMove.getSaleOrderSet()), context, true);
+                .simulateMergeSaleOrdersWithContext(
+                    new ArrayList<>(stockMove.getSaleOrderSet()), context);
         invoice =
             Beans.get(StockMoveInvoiceService.class)
                 .createInvoiceFromSaleOrder(stockMove, result.getSaleOrder(), qtyToInvoiceMap);
@@ -666,7 +666,7 @@ public class StockMoveInvoiceController {
         if (ObjectUtils.notEmpty(saleOrderSet)) {
           SaleOrderMergingResult result =
               Beans.get(SaleOrderMergingService.class)
-                  .mergeSaleOrders(new ArrayList<>(saleOrderSet), true);
+                  .simulateMergeSaleOrders(new ArrayList<>(saleOrderSet));
           if (result.isConfirmationNeeded()) {
             ActionViewBuilder confirmView =
                 Beans.get(SaleOrderMergingViewService.class)

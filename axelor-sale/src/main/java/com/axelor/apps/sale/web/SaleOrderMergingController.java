@@ -42,7 +42,7 @@ public class SaleOrderMergingController {
           MapHelper.getCollection(request.getContext(), SaleOrder.class, lineToMerge);
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
-            Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge, false);
+            Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge);
         if (result.isConfirmationNeeded()) {
           ActionViewBuilder confirmView =
               Beans.get(SaleOrderMergingViewService.class)
@@ -65,7 +65,7 @@ public class SaleOrderMergingController {
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
             Beans.get(SaleOrderMergingService.class)
-                .mergeSaleOrdersWithContext(saleOrdersToMerge, request.getContext(), false);
+                .mergeSaleOrdersWithContext(saleOrdersToMerge, request.getContext());
         setResponseView(response, result);
       }
     } catch (Exception e) {
@@ -85,7 +85,7 @@ public class SaleOrderMergingController {
       }
       if (CollectionUtils.isNotEmpty(saleOrdersToMerge)) {
         SaleOrderMergingResult result =
-            Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge, false);
+            Beans.get(SaleOrderMergingService.class).mergeSaleOrders(saleOrdersToMerge);
         if (result.isConfirmationNeeded()) {
           ActionViewBuilder confirmView =
               Beans.get(SaleOrderMergingViewService.class)
