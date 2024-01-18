@@ -935,7 +935,9 @@ public class MoveValidateServiceImpl implements MoveValidateService {
 
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLine.getFinancialDiscount() != null
+          && moveLineFinancialDiscountService.isFinancialDiscountLine(
+              moveLine, move.getCompany())) {
         return true;
       }
     }
