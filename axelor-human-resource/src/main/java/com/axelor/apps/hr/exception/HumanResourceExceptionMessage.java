@@ -314,4 +314,13 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_DISTANCE_ERROR = /*$$(*/
       "This is a kilometric expense line. Distance must be greater than 0." /*)*/;
+
+  public static final String EXPENSE_LINE_PARENT_NOT_DRAFT = /*$$(*/
+      "This expense line is related to an expense which is not in draft." /*)*/;
+
+  public static final String EXPENSE_LINE_NEW_EXPENSE_NOT_DRAFT = /*$$(*/
+      "The new expense is not in draft." /*)*/;
+
+  public static final String EXPENSE_LINE_EXPENSE_NOT_DRAFT = /*$$(*/
+      "You can not update a line from an expense which is not in draft." /*)*/;
 }

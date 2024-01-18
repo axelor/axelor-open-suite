@@ -10,6 +10,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -161,12 +162,13 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (oldExpense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("This expense line is related to an expense which is not in draft."));
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_PARENT_NOT_DRAFT));
     }
 
     if (newExpense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
       throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY, I18n.get("The new expense is not in draft."));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_NEW_EXPENSE_NOT_DRAFT));
     }
 
     ExpenseLine copyExpenseLine = expenseLineRepository.copy(expenseLine, true);
@@ -249,7 +251,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (expense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get("You can not update a line from an expense which is not in draft."));
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_NOT_DRAFT));
     }
   }
 }
