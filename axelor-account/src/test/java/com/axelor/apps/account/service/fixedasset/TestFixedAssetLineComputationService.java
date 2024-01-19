@@ -35,6 +35,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -66,22 +67,49 @@ class TestFixedAssetLineComputationService {
     when(currencyScaleServiceAccount.getCompanyScale(any(FixedAsset.class))).thenReturn(2);
 
     FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
-    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAsset.class), any()))
+    when(fixedAssetLineToolService.getCompanyScaledValue(
+            any(),
+            any(),
+            any(FixedAsset.class),
+            any(FixedAssetLineToolService.ArithmeticOperation.class)))
         .then(
             (Answer<BigDecimal>)
                 invocation ->
                     currencyScaleServiceAccount.getCompanyScaledValue(
-                        ((FixedAsset) invocation.getArguments()[1]),
-                        ((BigDecimal) invocation.getArguments()[2])
-                            .multiply(((BigDecimal) invocation.getArguments()[0]))));
-    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class), any()))
+                        ((FixedAsset) invocation.getArguments()[2]),
+                        ((FixedAssetLineToolService.ArithmeticOperation)
+                                invocation.getArguments()[3])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(
+            any(),
+            any(),
+            any(FixedAssetLine.class),
+            any(FixedAssetLineToolService.ArithmeticOperation.class)))
         .then(
             (Answer<BigDecimal>)
                 invocation ->
                     currencyScaleServiceAccount.getCompanyScaledValue(
-                        ((FixedAssetLine) invocation.getArguments()[1]),
-                        ((BigDecimal) invocation.getArguments()[2])
-                            .multiply(((BigDecimal) invocation.getArguments()[0]))));
+                        ((FixedAssetLine) invocation.getArguments()[2]),
+                        ((FixedAssetLineToolService.ArithmeticOperation)
+                                invocation.getArguments()[3])
+                            .operate(
+                                ((BigDecimal) invocation.getArguments()[0]),
+                                ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.isGreaterThan(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<Boolean>)
+                invocation ->
+                    invocation.getArguments()[0] != null
+                        && (((BigDecimal) invocation.getArguments()[0])
+                                .compareTo(((BigDecimal) invocation.getArguments()[1]))
+                            > 0));
+    when(fixedAssetLineToolService.equals(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<Boolean>)
+                invocation ->
+                    Objects.equals(invocation.getArguments()[0], invocation.getArguments()[1]));
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,

@@ -447,7 +447,7 @@ public class FixedAssetController {
               .find(Long.parseLong(request.getContext().get("_id").toString()))
               .getCompany();
 
-      response.setValues(
+      response.setAttrs(
           Beans.get(FixedAssetGroupService.class).getInitSplitWizardAttrsMap(qty, company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

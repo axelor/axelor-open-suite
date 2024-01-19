@@ -61,18 +61,20 @@ public class FixedAssetLineEconomicComputationServiceImpl
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return fixedAssetLineToolService.getCompanyScaledValue(
-          fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)),
+          fixedAsset.getGrossValue(),
+          getAlreadyDepreciatedAmount(fixedAsset),
           fixedAsset,
-          BigDecimal.ONE);
+          BigDecimal::subtract);
     }
     if (!fixedAsset.getIsEqualToFiscalDepreciation()) {
       return fixedAssetLineToolService.getCompanyScaledValue(
-          fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()),
+          fixedAsset.getGrossValue(),
+          fixedAsset.getResidualValue(),
           fixedAsset,
-          BigDecimal.ONE);
+          BigDecimal::subtract);
     }
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getGrossValue(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getGrossValue(), BigDecimal.ONE, fixedAsset, BigDecimal::multiply);
   }
 
   @Override
@@ -142,7 +144,10 @@ public class FixedAssetLineEconomicComputationServiceImpl
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
 
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getImportAlreadyDepreciatedAmount(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getImportAlreadyDepreciatedAmount(),
+        BigDecimal.ONE,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   @Override
@@ -154,7 +159,10 @@ public class FixedAssetLineEconomicComputationServiceImpl
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getDepreciatedAmountCurrentYear(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getDepreciatedAmountCurrentYear(),
+        BigDecimal.ONE,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   @Override

@@ -106,19 +106,27 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
 
   @Override
   public BigDecimal getCompanyScaledValue(
-      BigDecimal amount, FixedAsset fixedAsset, BigDecimal prorata) {
-    return amount == null
+      BigDecimal amount1,
+      BigDecimal amount2,
+      FixedAsset fixedAsset,
+      ArithmeticOperation arithmeticOperation) {
+    return amount1 == null
         ? BigDecimal.ZERO
-        : currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, prorata.multiply(amount));
+        : currencyScaleServiceAccount.getCompanyScaledValue(
+            fixedAsset, arithmeticOperation.operate(amount1, amount2));
   }
 
   @Override
   public BigDecimal getCompanyScaledValue(
-      BigDecimal amount, FixedAssetLine fixedAssetLine, BigDecimal prorata) throws AxelorException {
-    return amount == null
+      BigDecimal amount1,
+      BigDecimal amount2,
+      FixedAssetLine fixedAssetLine,
+      ArithmeticOperation arithmeticOperation)
+      throws AxelorException {
+    return amount1 == null
         ? BigDecimal.ZERO
         : currencyScaleServiceAccount.getCompanyScaledValue(
-            fixedAssetLine, prorata.multiply(amount));
+            fixedAssetLine, arithmeticOperation.operate(amount1, amount2));
   }
 
   @Override

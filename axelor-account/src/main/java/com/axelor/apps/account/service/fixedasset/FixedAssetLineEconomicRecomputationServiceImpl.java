@@ -145,8 +145,9 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
         computeDepreciationNumerator(
             baseValue,
             getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines))),
+        ddRate,
         fixedAsset,
-        ddRate);
+        BigDecimal::multiply);
   }
 
   @Override

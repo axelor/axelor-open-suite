@@ -41,12 +41,26 @@ public interface FixedAssetLineToolService {
   LinkedHashMap<LocalDate, List<FixedAssetLine>> groupAndSortByDateFixedAssetLine(
       FixedAsset fixedAsset);
 
-  BigDecimal getCompanyScaledValue(BigDecimal amount, FixedAsset fixedAsset, BigDecimal prorata);
+  BigDecimal getCompanyScaledValue(
+      BigDecimal amount1,
+      BigDecimal amount2,
+      FixedAsset fixedAsset,
+      ArithmeticOperation arithmeticOperation);
 
   BigDecimal getCompanyScaledValue(
-      BigDecimal amount, FixedAssetLine fixedAssetLine, BigDecimal prorata) throws AxelorException;
+      BigDecimal amount1,
+      BigDecimal amount2,
+      FixedAssetLine fixedAssetLine,
+      ArithmeticOperation arithmeticOperation)
+      throws AxelorException;
 
   boolean isGreaterThan(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 
   boolean equals(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
+
+  @FunctionalInterface
+  interface ArithmeticOperation {
+
+    BigDecimal operate(BigDecimal a, BigDecimal b);
+  }
 }

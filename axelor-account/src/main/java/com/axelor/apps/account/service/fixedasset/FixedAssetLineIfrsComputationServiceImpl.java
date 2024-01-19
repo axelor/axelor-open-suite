@@ -53,21 +53,23 @@ public class FixedAssetLineIfrsComputationServiceImpl
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
     if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()) {
       return fixedAssetLineToolService.getCompanyScaledValue(
-          fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()),
+          fixedAsset.getGrossValue(),
+          fixedAsset.getResidualValue(),
           fixedAsset,
-          BigDecimal.ONE);
+          BigDecimal::subtract);
     }
 
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return fixedAssetLineToolService.getCompanyScaledValue(
-          fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)),
+          fixedAsset.getGrossValue(),
+          getAlreadyDepreciatedAmount(fixedAsset),
           fixedAsset,
-          BigDecimal.ONE);
+          BigDecimal::subtract);
     }
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getGrossValue(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getGrossValue(), BigDecimal.ONE, fixedAsset, BigDecimal::multiply);
   }
 
   @Override
@@ -135,7 +137,10 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getImportIfrsAlreadyDepreciatedAmount(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getImportIfrsAlreadyDepreciatedAmount(),
+        BigDecimal.ONE,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   @Override
@@ -146,7 +151,10 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getIfrsDepreciatedAmountCurrentYear(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getIfrsDepreciatedAmountCurrentYear(),
+        BigDecimal.ONE,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   @Override

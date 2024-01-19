@@ -144,14 +144,18 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
               fixedAsset,
               failOverDate,
               fixedAssetLineToolService.getCompanyScaledValue(
-                  fiscalDepreciatedAmountCurrentYear, fixedAsset, BigDecimal.ONE),
-              fixedAssetLineToolService.getCompanyScaledValue(
-                  fiscalAlreadyDepreciatedAmount.add(fiscalDepreciatedAmountCurrentYear),
+                  fiscalDepreciatedAmountCurrentYear,
+                  BigDecimal.ONE,
                   fixedAsset,
-                  BigDecimal.ONE),
+                  BigDecimal::multiply),
+              fixedAssetLineToolService.getCompanyScaledValue(
+                  fiscalAlreadyDepreciatedAmount,
+                  fiscalDepreciatedAmountCurrentYear,
+                  fixedAsset,
+                  BigDecimal::add),
               BigDecimal.ZERO,
               fixedAssetLineToolService.getCompanyScaledValue(
-                  depreciationBase, fixedAsset, BigDecimal.ONE),
+                  depreciationBase, BigDecimal.ONE, fixedAsset, BigDecimal::multiply),
               FixedAssetLineRepository.TYPE_SELECT_FISCAL,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLine);
@@ -175,14 +179,15 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
               fixedAsset,
               failOverDate,
               fixedAssetLineToolService.getCompanyScaledValue(
-                  depreciatedAmountCurrentYear, fixedAsset, BigDecimal.ONE),
+                  depreciatedAmountCurrentYear, BigDecimal.ONE, fixedAsset, BigDecimal::multiply),
               fixedAssetLineToolService.getCompanyScaledValue(
-                  alreadyDepreciatedAmount.add(depreciatedAmountCurrentYear),
+                  alreadyDepreciatedAmount,
+                  depreciatedAmountCurrentYear,
                   fixedAsset,
-                  BigDecimal.ONE),
+                  BigDecimal::add),
               BigDecimal.ZERO,
               fixedAssetLineToolService.getCompanyScaledValue(
-                  depreciationBase, fixedAsset, BigDecimal.ONE),
+                  depreciationBase, BigDecimal.ONE, fixedAsset, BigDecimal::multiply),
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);

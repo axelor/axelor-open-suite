@@ -58,14 +58,16 @@ public class FixedAssetLineFiscalComputationServiceImpl
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
       return fixedAssetLineToolService.getCompanyScaledValue(
-          fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset)),
+          fixedAsset.getGrossValue(),
+          getAlreadyDepreciatedAmount(fixedAsset),
           fixedAsset,
-          BigDecimal.ONE);
+          BigDecimal::subtract);
     }
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()),
+        fixedAsset.getGrossValue(),
+        fixedAsset.getResidualValue(),
         fixedAsset,
-        BigDecimal.ONE);
+        BigDecimal::subtract);
   }
 
   @Override
@@ -134,7 +136,10 @@ public class FixedAssetLineFiscalComputationServiceImpl
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getImportFiscalAlreadyDepreciatedAmount(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getImportFiscalAlreadyDepreciatedAmount(),
+        BigDecimal.ONE,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   @Override
@@ -145,7 +150,10 @@ public class FixedAssetLineFiscalComputationServiceImpl
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getFiscalDepreciatedAmountCurrentYear(), fixedAsset, BigDecimal.ONE);
+        fixedAsset.getFiscalDepreciatedAmountCurrentYear(),
+        BigDecimal.ONE,
+        fixedAsset,
+        BigDecimal::multiply);
   }
 
   @Override
