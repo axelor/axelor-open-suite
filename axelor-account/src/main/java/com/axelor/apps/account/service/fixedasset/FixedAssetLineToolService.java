@@ -21,7 +21,6 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.base.AxelorException;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
@@ -44,7 +43,8 @@ public interface FixedAssetLineToolService {
 
   BigDecimal getCompanyScaledValue(BigDecimal amount, FixedAsset fixedAsset, BigDecimal prorata);
 
-  BigDecimal getCompanyScaledValue(BigDecimal amount, FixedAssetLine fixedAssetLine, BigDecimal prorata) throws AxelorException;
+  BigDecimal getCompanyScaledValue(
+      BigDecimal amount, FixedAssetLine fixedAssetLine, BigDecimal prorata) throws AxelorException;
 
   boolean isGreaterThan(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 

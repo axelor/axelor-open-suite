@@ -25,7 +25,6 @@ import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -106,13 +105,20 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
   }
 
   @Override
-  public BigDecimal getCompanyScaledValue(BigDecimal amount, FixedAsset fixedAsset, BigDecimal prorata) {
-    return amount == null ? BigDecimal.ZERO : currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, prorata.multiply(amount));
+  public BigDecimal getCompanyScaledValue(
+      BigDecimal amount, FixedAsset fixedAsset, BigDecimal prorata) {
+    return amount == null
+        ? BigDecimal.ZERO
+        : currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, prorata.multiply(amount));
   }
 
   @Override
-  public BigDecimal getCompanyScaledValue(BigDecimal amount, FixedAssetLine fixedAssetLine, BigDecimal prorata) throws AxelorException {
-    return amount == null ? BigDecimal.ZERO : currencyScaleServiceAccount.getCompanyScaledValue(fixedAssetLine, prorata.multiply(amount));
+  public BigDecimal getCompanyScaledValue(
+      BigDecimal amount, FixedAssetLine fixedAssetLine, BigDecimal prorata) throws AxelorException {
+    return amount == null
+        ? BigDecimal.ZERO
+        : currencyScaleServiceAccount.getCompanyScaledValue(
+            fixedAssetLine, prorata.multiply(amount));
   }
 
   @Override

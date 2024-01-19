@@ -5,9 +5,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.db.Company;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
-
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,16 +64,22 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
 
   @Override
   public void addSplitTypeSelectValue(BigDecimal qty, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("splitTypeSelect", "value", qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0, attrsMap);
+    this.addAttr(
+        "splitTypeSelect",
+        "value",
+        qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0,
+        attrsMap);
   }
 
   @Override
-  public void addSplitTypeSelectReadonly(BigDecimal qty, Map<String, Map<String, Object>> attrsMap) {
+  public void addSplitTypeSelectReadonly(
+      BigDecimal qty, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0, attrsMap);
   }
 
   @Override
   public void addGrossValueScale(Company company, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("grossValue", "scale", currencyScaleServiceAccount.getCompanyScale(company), attrsMap);
+    this.addAttr(
+        "grossValue", "scale", currencyScaleServiceAccount.getCompanyScale(company), attrsMap);
   }
 }

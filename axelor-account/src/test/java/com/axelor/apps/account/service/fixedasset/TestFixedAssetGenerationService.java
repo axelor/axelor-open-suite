@@ -84,8 +84,24 @@ class TestFixedAssetGenerationService {
         mock(FixedAssetFailOverControlService.class);
     FixedAssetValidateService fixedAssetValidateService = mock(FixedAssetValidateService.class);
     FixedAssetImportService fixedAssetImportService = mock(FixedAssetImportService.class);
-    FixedAssetLineToolService fixedAssetLineToolService =
-            mock(FixedAssetLineToolService.class);
+    FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAsset.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[2])
+                            .multiply(((BigDecimal) invocation.getArguments()[0]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAssetLine) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[2])
+                            .multiply(((BigDecimal) invocation.getArguments()[0]))));
+
     FixedAssetLineComputationService fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,

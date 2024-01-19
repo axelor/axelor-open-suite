@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service.fixedasset;
 
+import static org.mockito.Mockito.mock;
+
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
@@ -33,8 +35,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.mock;
-
 class TestFixedAssetLineToolService {
 
   private static FixedAssetLineToolService fixedAssetLineToolService;
@@ -42,7 +42,7 @@ class TestFixedAssetLineToolService {
   @BeforeAll
   static void prepare() {
     CurrencyScaleServiceAccount currencyScaleServiceAccount =
-            mock(CurrencyScaleServiceAccount.class);
+        mock(CurrencyScaleServiceAccount.class);
     fixedAssetLineToolService = new FixedAssetLineToolServiceImpl(currencyScaleServiceAccount);
   }
 

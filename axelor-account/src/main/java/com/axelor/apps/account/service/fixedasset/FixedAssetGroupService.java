@@ -2,7 +2,6 @@ package com.axelor.apps.account.service.fixedasset;
 
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.base.db.Company;
-
 import java.math.BigDecimal;
 import java.util.Map;
 

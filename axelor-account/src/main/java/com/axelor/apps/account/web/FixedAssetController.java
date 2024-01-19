@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.FixedAssetTypeRepository;
 import com.axelor.apps.account.db.repo.TaxLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
@@ -448,7 +447,8 @@ public class FixedAssetController {
               .find(Long.parseLong(request.getContext().get("_id").toString()))
               .getCompany();
 
-      response.setValues(Beans.get(FixedAssetGroupService.class).getInitSplitWizardAttrsMap(qty, company));
+      response.setValues(
+          Beans.get(FixedAssetGroupService.class).getInitSplitWizardAttrsMap(qty, company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

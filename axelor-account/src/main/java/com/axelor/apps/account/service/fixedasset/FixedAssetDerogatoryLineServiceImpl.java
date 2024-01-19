@@ -140,12 +140,16 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     // Initialisation of fiscal and economic depreciation
     BigDecimal depreciationAmount = BigDecimal.ZERO;
     if (economicFixedAssetLine != null) {
-      depreciationAmount = fixedAssetLineToolService.getCompanyScaledValue(economicFixedAssetLine.getDepreciation(), fixedAsset, BigDecimal.ONE);
+      depreciationAmount =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              economicFixedAssetLine.getDepreciation(), fixedAsset, BigDecimal.ONE);
     }
 
     BigDecimal fiscalDepreciationAmount = BigDecimal.ZERO;
     if (fiscalFixedAssetLine != null) {
-      fiscalDepreciationAmount = fixedAssetLineToolService.getCompanyScaledValue(fiscalFixedAssetLine.getDepreciation(), fixedAsset, BigDecimal.ONE);
+      fiscalDepreciationAmount =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              fiscalFixedAssetLine.getDepreciation(), fixedAsset, BigDecimal.ONE);
     }
 
     BigDecimal derogatoryAmount = null;
@@ -154,9 +158,13 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     // If fiscal depreciation is greater than economic depreciation then we fill
     // derogatoryAmount, else incomeDepreciation.
     if (fiscalDepreciationAmount.abs().compareTo(depreciationAmount.abs()) > 0) {
-      derogatoryAmount = fixedAssetLineToolService.getCompanyScaledValue(fiscalDepreciationAmount.subtract(depreciationAmount), fixedAsset, BigDecimal.ONE);
+      derogatoryAmount =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              fiscalDepreciationAmount.subtract(depreciationAmount), fixedAsset, BigDecimal.ONE);
     } else {
-      incomeDepreciationAmount = fixedAssetLineToolService.getCompanyScaledValue(depreciationAmount.subtract(fiscalDepreciationAmount), fixedAsset, BigDecimal.ONE);
+      incomeDepreciationAmount =
+          fixedAssetLineToolService.getCompanyScaledValue(
+              depreciationAmount.subtract(fiscalDepreciationAmount), fixedAsset, BigDecimal.ONE);
     }
 
     BigDecimal derogatoryBalanceAmount =
@@ -204,7 +212,8 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       derogatoryBalanceAmount =
           derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
     }
-    return fixedAssetLineToolService.getCompanyScaledValue(derogatoryBalanceAmount, fixedAsset, BigDecimal.ONE);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        derogatoryBalanceAmount, fixedAsset, BigDecimal.ONE);
   }
 
   @Override
@@ -219,11 +228,21 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
   protected void multiplyLineBy(FixedAssetDerogatoryLine line, BigDecimal prorata) {
     FixedAsset fixedAsset = line.getFixedAsset();
 
-    line.setDepreciationAmount(fixedAssetLineToolService.getCompanyScaledValue(line.getDepreciationAmount(), fixedAsset, prorata));
-    line.setFiscalDepreciationAmount(fixedAssetLineToolService.getCompanyScaledValue(line.getFiscalDepreciationAmount(), fixedAsset, prorata));
-    line.setDerogatoryAmount(fixedAssetLineToolService.getCompanyScaledValue(line.getDerogatoryAmount(), fixedAsset, prorata));
-    line.setIncomeDepreciationAmount(fixedAssetLineToolService.getCompanyScaledValue(line.getIncomeDepreciationAmount(), fixedAsset, prorata));
-    line.setDerogatoryBalanceAmount(fixedAssetLineToolService.getCompanyScaledValue(line.getDerogatoryBalanceAmount(), fixedAsset, prorata));
+    line.setDepreciationAmount(
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDepreciationAmount(), fixedAsset, prorata));
+    line.setFiscalDepreciationAmount(
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getFiscalDepreciationAmount(), fixedAsset, prorata));
+    line.setDerogatoryAmount(
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDerogatoryAmount(), fixedAsset, prorata));
+    line.setIncomeDepreciationAmount(
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getIncomeDepreciationAmount(), fixedAsset, prorata));
+    line.setDerogatoryBalanceAmount(
+        fixedAssetLineToolService.getCompanyScaledValue(
+            line.getDerogatoryBalanceAmount(), fixedAsset, prorata));
   }
 
   /**
@@ -252,7 +271,14 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
         lastRealizedDerogatoryLine == null
             ? BigDecimal.ZERO
             : lastRealizedDerogatoryLine.getDerogatoryBalanceAmount();
-    BigDecimal amount = fixedAssetLineToolService.getCompanyScaledValue(firstPlannedDerogatoryLine.getDerogatoryBalanceAmount().subtract(lastDerogatoryBalanceAmount).abs(), firstPlannedDerogatoryLine.getFixedAsset(), BigDecimal.ONE);
+    BigDecimal amount =
+        fixedAssetLineToolService.getCompanyScaledValue(
+            firstPlannedDerogatoryLine
+                .getDerogatoryBalanceAmount()
+                .subtract(lastDerogatoryBalanceAmount)
+                .abs(),
+            firstPlannedDerogatoryLine.getFixedAsset(),
+            BigDecimal.ONE);
     if (amount.signum() == 0) {
       return;
     }

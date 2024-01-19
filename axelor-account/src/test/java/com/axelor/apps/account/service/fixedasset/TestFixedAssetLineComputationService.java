@@ -53,9 +53,6 @@ class TestFixedAssetLineComputationService {
         mock(FixedAssetFailOverControlService.class);
     CurrencyScaleServiceAccount currencyScaleServiceAccount =
         mock(CurrencyScaleServiceAccount.class);
-    FixedAssetLineToolService fixedAssetLineToolService =
-            mock(FixedAssetLineToolService.class);
-
     when(currencyScaleServiceAccount.getCompanyScaledValue(any(FixedAsset.class), any()))
         .then(
             (Answer<BigDecimal>)
@@ -68,12 +65,29 @@ class TestFixedAssetLineComputationService {
                     ((BigDecimal) invocation.getArguments()[1]).setScale(2, RoundingMode.HALF_UP));
     when(currencyScaleServiceAccount.getCompanyScale(any(FixedAsset.class))).thenReturn(2);
 
+    FixedAssetLineToolService fixedAssetLineToolService = mock(FixedAssetLineToolService.class);
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAsset.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[2])
+                            .multiply(((BigDecimal) invocation.getArguments()[0]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class), any()))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAssetLine) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[2])
+                            .multiply(((BigDecimal) invocation.getArguments()[0]))));
     fixedAssetLineComputationService =
         new FixedAssetLineEconomicComputationServiceImpl(
             fixedAssetDateService,
             fixedAssetFailOverControlService,
             appBaseService,
-                fixedAssetLineToolService);
+            fixedAssetLineToolService);
   }
 
   @Test

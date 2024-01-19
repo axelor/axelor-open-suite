@@ -66,7 +66,8 @@ public interface FixedAssetLineComputationService {
    * @param line
    * @param prorata
    */
-  void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata) throws AxelorException;
+  void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata)
+      throws AxelorException;
 
   FixedAssetLine createFixedAssetLine(
       FixedAsset fixedAsset,

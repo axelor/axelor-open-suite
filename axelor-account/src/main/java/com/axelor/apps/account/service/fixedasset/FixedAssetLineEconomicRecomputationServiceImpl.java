@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -142,7 +141,12 @@ public class FixedAssetLineEconomicRecomputationServiceImpl
                         .count())
             .orElse(0l)
             .intValue();
-    return fixedAssetLineToolService.getCompanyScaledValue(computeDepreciationNumerator(baseValue, getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines))), fixedAsset, ddRate);
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        computeDepreciationNumerator(
+            baseValue,
+            getNumberOfDepreciation(fixedAsset).add(BigDecimal.valueOf(nbRealizedLines))),
+        fixedAsset,
+        ddRate);
   }
 
   @Override
