@@ -64,8 +64,7 @@
 
     <panel name="selectPanel" sidebar="true">
       <field name="name"/>
-      <field name="leaveReasonTypeSelect"
-        onChange="action-leave-reason-attrs-auto-increment-false"/>
+      <field name="leaveReasonTypeSelect" onChange="action-leave-reason-attrs-auto-increment"/>
       <field name="isAutoIncrement" widget="boolean-switch" colSpan="12"
         showIf="!$readonly() &amp;&amp; leaveReasonTypeSelect != 2"/>
       <field name="unitSelect"/>
@@ -91,9 +90,11 @@
       if="__id__"/>
   </action-attrs>
 
-  <action-attrs name="action-leave-reason-attrs-auto-increment-false">
+  <action-attrs name="action-leave-reason-attrs-auto-increment">
     <attribute for="isAutoIncrement" name="value" expr="eval: false"
       if="leaveReasonTypeSelect == 2"/>
+    <attribute for="isAutoIncrement" name="value" expr="eval: true"
+      if="leaveReasonTypeSelect != 2"/>
   </action-attrs>
 
 </object-views>
