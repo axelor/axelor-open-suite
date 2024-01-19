@@ -89,15 +89,21 @@ public class ProductMultipleQtyServiceImpl implements ProductMultipleQtyService 
       String spanClass =
           allowToForce ? ContextHelper.SPAN_CLASS_WARNING : ContextHelper.SPAN_CLASS_IMPORTANT;
 
-      String message =
-          String.format(
-              I18n.get("Quantity should be a multiple of %s"),
-              this.toStringMultipleQty(productMultipleQties));
+      String message = getMultipleQuantityErrorMessage(productMultipleQties);
       String title = ContextHelper.formatLabel(message, spanClass, 75);
 
       response.setAttr("multipleQtyNotRespectedLabel", "title", title);
       response.setAttr("multipleQtyNotRespectedLabel", "hidden", false);
       response.setValue("$qtyValid", allowToForce);
     }
+  }
+
+  @Override
+  public String getMultipleQuantityErrorMessage(List<ProductMultipleQty> productMultipleQties) {
+    String message =
+        String.format(
+            I18n.get("Quantity should be a multiple of %s"),
+            this.toStringMultipleQty(productMultipleQties));
+    return message;
   }
 }

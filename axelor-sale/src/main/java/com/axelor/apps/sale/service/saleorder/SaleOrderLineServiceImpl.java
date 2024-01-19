@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -668,11 +669,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return;
     }
 
-    productMultipleQtyService.checkMultipleQty(
-        saleOrderLine.getQty(),
-        product.getSaleProductMultipleQtyList(),
-        product.getAllowToForceSaleQty(),
-        response);
+    BigDecimal qty = saleOrderLine.getQty();
+    List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
+    boolean allowToForce = product.getAllowToForceSaleQty();
+
+    productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList, allowToForce, response);
+
+    if (appSaleService.getAppSale().getIsEditableGridEnabled()
+        && !productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList)) {
+      response.setNotify(
+          productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList));
+    }
   }
 
   @Override
