@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.ReconcileGroupService;
 import com.axelor.apps.account.service.ReconcileSequenceService;
 import com.axelor.apps.account.service.ReconcileServiceImpl;
 import com.axelor.apps.account.service.SubrogationReleaseWorkflowService;
@@ -85,7 +86,8 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
       CurrencyScaleServiceAccount currencyScaleServiceAccount,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      ReconcileGroupService reconcileGroupService) {
     super(
         moveToolService,
         accountCustomerService,
@@ -109,7 +111,8 @@ public class ReconcileBudgetServiceImpl extends ReconcileServiceImpl {
         moveCreateService,
         moveLineCreateService,
         moveValidateService,
-        currencyScaleServiceAccount);
+        currencyScaleServiceAccount,
+        reconcileGroupService);
     this.budgetDistributionService = budgetDistributionService;
   }
 

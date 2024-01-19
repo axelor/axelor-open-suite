@@ -111,6 +111,7 @@ public class ReconcileServiceImpl implements ReconcileService {
   protected MoveLineCreateService moveLineCreateService;
   protected MoveValidateService moveValidateService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected ReconcileGroupService reconcileGroupService;
 
   @Inject
   public ReconcileServiceImpl(
@@ -136,7 +137,8 @@ public class ReconcileServiceImpl implements ReconcileService {
       MoveCreateService moveCreateService,
       MoveLineCreateService moveLineCreateService,
       MoveValidateService moveValidateService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      ReconcileGroupService reconcileGroupService) {
 
     this.moveToolService = moveToolService;
     this.accountCustomerService = accountCustomerService;
@@ -161,6 +163,7 @@ public class ReconcileServiceImpl implements ReconcileService {
     this.moveLineCreateService = moveLineCreateService;
     this.moveValidateService = moveValidateService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.reconcileGroupService = reconcileGroupService;
   }
 
   /**
@@ -306,8 +309,6 @@ public class ReconcileServiceImpl implements ReconcileService {
 
   @Override
   public void addToReconcileGroup(Reconcile reconcile) throws AxelorException {
-    ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
-
     ReconcileGroup reconcileGroup = reconcileGroupService.findOrCreateGroup(reconcile);
 
     reconcileGroupService.addAndValidate(reconcileGroup, reconcile);
@@ -869,7 +870,7 @@ public class ReconcileServiceImpl implements ReconcileService {
       subrogationReleaseWorkflowService.goBackToAccounted(invoice.getSubrogationRelease());
     }
     // Update reconcile group
-    Beans.get(ReconcileGroupService.class).remove(reconcile);
+    reconcileGroupService.remove(reconcile);
   }
 
   protected void reverseTaxPaymentMoveLines(Reconcile reconcile) throws AxelorException {
@@ -1282,5 +1283,16 @@ public class ReconcileServiceImpl implements ReconcileService {
     }
 
     return newReconcile;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void unletter(ReconcileGroup reconcileGroup) throws AxelorException {
+    List<Reconcile> reconcileList =
+        reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
+
+    for (Reconcile reconcile : reconcileList) {
+      this.unreconcile(reconcile);
+    }
   }
 }

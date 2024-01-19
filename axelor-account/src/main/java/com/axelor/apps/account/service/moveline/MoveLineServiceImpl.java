@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingCutOffService;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.ReconcileGroupService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.batch.BatchAccountingCutOff;
 import com.axelor.apps.account.service.batch.BatchDoubtfulCustomer;
@@ -88,6 +90,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   protected MoveLineTaxService moveLineTaxService;
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
   protected AccountingBatchRepository accountingBatchRepo;
+  protected ReconcileGroupService reconcileGroupService;
 
   @Inject
   public MoveLineServiceImpl(
@@ -101,7 +104,8 @@ public class MoveLineServiceImpl implements MoveLineService {
       AccountingCutOffService cutOffService,
       MoveLineTaxService moveLineTaxService,
       CurrencyScaleServiceAccount currencyScaleServiceAccount,
-      AccountingBatchRepository accountingBatchRepo) {
+      AccountingBatchRepository accountingBatchRepo,
+      ReconcileGroupService reconcileGroupService) {
     this.moveLineRepository = moveLineRepository;
     this.invoiceRepository = invoiceRepository;
     this.paymentService = paymentService;
@@ -113,6 +117,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     this.moveLineTaxService = moveLineTaxService;
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
     this.accountingBatchRepo = accountingBatchRepo;
+    this.reconcileGroupService = reconcileGroupService;
   }
 
   @Override
@@ -474,5 +479,20 @@ public class MoveLineServiceImpl implements MoveLineService {
       moveLineList.add(moveLine);
     }
     return moveLineList;
+  }
+
+  @Override
+  public void validateProposal(ReconcileGroup reconcileGroup) throws AxelorException {
+    this.letter(reconcileGroup);
+    reconcileGroup.setIsProposal(false);
+    reconcileGroupService.removeDraftReconciles(reconcileGroup);
+    reconcileGroupService.updateStatus(reconcileGroup);
+  }
+
+  @Override
+  public void letter(ReconcileGroup reconcileGroup) throws AxelorException {
+    List<MoveLine> moveLineList = moveLineRepository.findByReconcileGroup(reconcileGroup).fetch();
+    this.reconcileMoveLines(moveLineList);
+    reconcileGroupService.updateStatus(reconcileGroup);
   }
 }

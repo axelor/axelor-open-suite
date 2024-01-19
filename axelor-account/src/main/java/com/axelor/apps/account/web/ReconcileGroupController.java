@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
 import com.axelor.apps.account.service.ReconcileGroupService;
+import com.axelor.apps.account.service.ReconcileService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -31,68 +33,48 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.ContextHelper;
 
 public class ReconcileGroupController {
 
   public void letter(ActionRequest request, ActionResponse response) {
+    try {
+      ReconcileGroup reconcileGroup = request.getContext().asType(ReconcileGroup.class);
+      reconcileGroup = Beans.get(ReconcileGroupRepository.class).find(reconcileGroup.getId());
 
-    ReconcileGroupRepository reconcileGroupRepo = Beans.get(ReconcileGroupRepository.class);
-    ReconcileGroup reconcileGroup =
-        reconcileGroupRepo.find(request.getContext().asType(ReconcileGroup.class).getId());
-
-    if (reconcileGroup != null) {
-      try {
-        ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
-        reconcileGroupService.letter(reconcileGroup);
-        reconcileGroup = reconcileGroupRepo.find(reconcileGroup.getId());
-        reconcileGroupService.updateStatus(reconcileGroup);
-      } catch (AxelorException e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-      }
+      Beans.get(MoveLineService.class).letter(reconcileGroup);
+      response.setReload(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-    response.setReload(true);
   }
 
   public void unletter(ActionRequest request, ActionResponse response) {
+    try {
+      ReconcileGroup reconcileGroup = request.getContext().asType(ReconcileGroup.class);
+      reconcileGroup = Beans.get(ReconcileGroupRepository.class).find(reconcileGroup.getId());
 
-    ReconcileGroup reconcileGroup =
-        Beans.get(ReconcileGroupRepository.class)
-            .find(request.getContext().asType(ReconcileGroup.class).getId());
-
-    if (reconcileGroup != null) {
-      try {
-        Beans.get(ReconcileGroupService.class).unletter(reconcileGroup);
-      } catch (AxelorException e) {
-        TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-      }
+      Beans.get(ReconcileService.class).unletter(reconcileGroup);
+      response.setReload(true);
+    } catch (AxelorException e) {
+      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
-    response.setReload(true);
   }
 
   public void validateProposal(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      ReconcileGroup reconcileGroup;
+      ReconcileGroup reconcileGroup =
+          ContextHelper.getContextParent(context, ReconcileGroup.class, 0);
 
-      boolean isReconcileGroupForm =
-          ReconcileGroup.class.equals(request.getContext().getContextClass());
-
-      if (isReconcileGroupForm) {
-        reconcileGroup = context.asType(ReconcileGroup.class);
-      } else {
-        reconcileGroup = context.asType(MoveLine.class).getReconcileGroup();
+      if (reconcileGroup == null) {
+        reconcileGroup = ContextHelper.getContextParent(context, ReconcileGroup.class, 1);
       }
 
       if (reconcileGroup != null && reconcileGroup.getIsProposal()) {
-        ReconcileGroupRepository reconcileGroupRepository =
-            Beans.get(ReconcileGroupRepository.class);
-        ReconcileGroupService reconcileGroupService = Beans.get(ReconcileGroupService.class);
-        reconcileGroup = reconcileGroupRepository.find(reconcileGroup.getId());
+        reconcileGroup = Beans.get(ReconcileGroupRepository.class).find(reconcileGroup.getId());
 
-        reconcileGroupService.letter(reconcileGroup);
-        reconcileGroup.setIsProposal(false);
-        reconcileGroupService.removeDraftReconciles(reconcileGroup);
-        reconcileGroupService.updateStatus(reconcileGroup);
+        Beans.get(MoveLineService.class).validateProposal(reconcileGroup);
       }
 
       response.setReload(true);

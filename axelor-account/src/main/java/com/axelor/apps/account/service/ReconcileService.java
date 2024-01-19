@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
+import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import java.math.BigDecimal;
@@ -116,4 +117,6 @@ public interface ReconcileService {
   List<Long> getAllowedCreditMoveLines(Reconcile reconcile);
 
   List<Long> getAllowedDebitMoveLines(Reconcile reconcile);
+
+  void unletter(ReconcileGroup reconcileGroup) throws AxelorException;
 }

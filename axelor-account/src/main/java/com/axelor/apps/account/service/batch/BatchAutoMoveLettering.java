@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.ReconcileGroupRepository;
+import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.ReconcileGroupService;
 import com.axelor.apps.account.service.ReconcileService;
@@ -73,6 +74,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
 
   protected AccountingBatch accountingBatch;
   protected Set<MoveLine> moveLineReconciledSet;
+  protected ReconcileRepository reconcileRepository;
 
   @Inject
   public BatchAutoMoveLettering(
@@ -82,7 +84,8 @@ public class BatchAutoMoveLettering extends BatchStrategy {
       MoveLineControlService moveLineControlService,
       PaymentService paymentService,
       ReconcileService reconcileService,
-      ReconcileGroupService reconcileGroupService) {
+      ReconcileGroupService reconcileGroupService,
+      ReconcileRepository reconcileRepository) {
     super();
     this.accountingBatchRepository = accountingBatchRepository;
     this.moveLineRepository = moveLineRepository;
@@ -91,6 +94,7 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     this.paymentService = paymentService;
     this.reconcileService = reconcileService;
     this.reconcileGroupService = reconcileGroupService;
+    this.reconcileRepository = reconcileRepository;
   }
 
   @Override
@@ -328,7 +332,8 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         }
         reconcileGroup.setIsProposal(true);
 
-        List<Reconcile> reconcileList = reconcileGroupService.getReconcileList(reconcileGroup);
+        List<Reconcile> reconcileList =
+            reconcileRepository.findByReconcileGroup(reconcileGroup).fetch();
         reconcileList.add(reconcile);
         reconcileGroupService.addToReconcileGroup(reconcileGroup, reconcile);
       } else {
