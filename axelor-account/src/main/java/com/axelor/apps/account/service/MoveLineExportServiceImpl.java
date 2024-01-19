@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -346,53 +347,57 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    String moveLineQueryStr =
-        String.format("(self.move.statusSelect = %s", MoveRepository.STATUS_ACCOUNTED);
-    if (!administration) {
-      moveLineQueryStr +=
-          String.format(" OR self.move.statusSelect = %s", MoveRepository.STATUS_DAYBOOK);
-    }
-    moveLineQueryStr += ")";
+    List<String> moveLineQueryList = new ArrayList<>();
 
-    moveLineQueryStr += String.format(" AND self.move.company = %s", company.getId());
+    moveLineQueryList.add(
+        String.format(
+            "self.move.statusSelect IN (%d, %d)",
+            MoveRepository.STATUS_ACCOUNTED,
+            administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK));
+
+    moveLineQueryList.add(String.format("self.move.company = %s", company.getId()));
     if (accountingReport.getYear() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.move.period.year = %s", accountingReport.getYear().getId());
+      moveLineQueryList.add(
+          String.format("self.move.period.year = %s", accountingReport.getYear().getId()));
     }
 
     if (accountingReport.getPeriod() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.move.period = %s", accountingReport.getPeriod().getId());
+      moveLineQueryList.add(
+          String.format("self.move.period = %s", accountingReport.getPeriod().getId()));
     } else {
       if (accountingReport.getDateFrom() != null) {
-        moveLineQueryStr +=
-            String.format(" AND self.date >= '%s'", accountingReport.getDateFrom().toString());
+        moveLineQueryList.add(
+            String.format("self.date >= '%s'", accountingReport.getDateFrom().toString()));
       }
       if (accountingReport.getDateTo() != null) {
-        moveLineQueryStr +=
-            String.format(" AND self.date <= '%s'", accountingReport.getDateTo().toString());
+        moveLineQueryList.add(
+            String.format("self.date <= '%s'", accountingReport.getDateTo().toString()));
       }
     }
 
     if (accountingReport.getDate() != null) {
-      moveLineQueryStr +=
-          String.format(" AND self.date <= '%s'", accountingReport.getDate().toString());
+      moveLineQueryList.add(
+          String.format("self.date <= '%s'", accountingReport.getDate().toString()));
     }
 
-    moveLineQueryStr += " AND self.move.ignoreInAccountingOk = false";
+    moveLineQueryList.add("self.move.ignoreInAccountingOk = false");
 
     if (!administration) {
-      moveLineQueryStr += " AND self.move.journal.notExportOk = false";
+      moveLineQueryList.add("self.move.journal.notExportOk = false");
+      moveLineQueryList.add(
+          String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
 
       if (replay) {
-        moveLineQueryStr +=
+        moveLineQueryList.add(
             String.format(
-                " AND self.move.accountingOk = true AND self.move.accountingReport.id = %s",
-                accountingReport.getId());
+                "self.move.accountingOk = true AND self.move.accountingReport.id = %s",
+                accountingReport.getId()));
       } else {
-        moveLineQueryStr += " AND self.move.accountingOk = false";
+        moveLineQueryList.add("self.move.accountingOk = false");
       }
     }
+
+    String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
 
     com.axelor.db.Query<MoveLine> moveLineQuery =
         moveLineRepo
