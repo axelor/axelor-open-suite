@@ -821,6 +821,6 @@
 
   <action-validate name="action-partner-validate-default-status">
     <error message="Please fill default partner status in App CRM configuration."
-      if="!__config__.app.getApp('crm')?.partnerDefaultStatus"/>
+      if="__config__.app.getApp('crm')?.crmProcessOnPartner &amp;&amp; !__config__.app.getApp('crm')?.partnerDefaultStatus "/>
   </action-validate>
 </object-views>
