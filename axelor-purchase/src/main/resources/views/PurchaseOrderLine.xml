@@ -487,23 +487,25 @@
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: __parent__?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="__parent__"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.supplierPartner?.language?.code?.toUpperCase()" if="__parent__"/>
+      expr="eval: __parent__?.supplierPartner?.localization?.language?.code?.toUpperCase()"
+      if="__parent__"/>
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="purchaseOrder"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()" if="purchaseOrder"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.toUpperCase()"
+      if="purchaseOrder"/>
   </action-attrs>
 
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.toUpperCase()"/>
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-refresh-order-history-dashlet">

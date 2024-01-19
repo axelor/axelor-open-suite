@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -115,6 +115,8 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
 import com.axelor.apps.base.service.LanguageService;
 import com.axelor.apps.base.service.LanguageServiceImpl;
+import com.axelor.apps.base.service.LocalizationService;
+import com.axelor.apps.base.service.LocalizationServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
@@ -190,6 +192,8 @@ import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileServiceImpl;
 import com.axelor.apps.base.service.imports.ImportCityService;
 import com.axelor.apps.base.service.imports.ImportCityServiceImpl;
+import com.axelor.apps.base.service.imports.ImportConfigurationService;
+import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
@@ -421,5 +425,7 @@ public class BaseModule extends AxelorModule {
     bind(LanguageService.class).to(LanguageServiceImpl.class);
     bind(LanguageRepository.class).to(LanguageBaseRepository.class);
     bind(ImportExportTranslationService.class).to(ImportExportTranslationServiceImpl.class);
+    bind(ImportConfigurationService.class).to(ImportConfigurationServiceImpl.class);
+    bind(LocalizationService.class).to(LocalizationServiceImpl.class);
   }
 }

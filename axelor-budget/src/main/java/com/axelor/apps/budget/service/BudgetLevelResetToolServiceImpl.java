@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,14 @@ import org.apache.commons.collections.CollectionUtils;
 public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolService {
 
   protected BudgetResetToolService budgetResetToolService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
-  public BudgetLevelResetToolServiceImpl(BudgetResetToolService budgetResetToolService) {
+  public BudgetLevelResetToolServiceImpl(
+      BudgetResetToolService budgetResetToolService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetResetToolService = budgetResetToolService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -42,8 +46,12 @@ public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolServ
     budgetLevel.setArchived(false);
 
     budgetLevel.setTotalAmountCommitted(BigDecimal.ZERO);
-    budgetLevel.setTotalAmountAvailable(budgetLevel.getTotalAmountExpected());
-    budgetLevel.setAvailableAmountWithSimulated(budgetLevel.getTotalAmountExpected());
+    budgetLevel.setTotalAmountAvailable(
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel, budgetLevel.getTotalAmountExpected()));
+    budgetLevel.setAvailableAmountWithSimulated(
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel, budgetLevel.getTotalAmountExpected()));
     budgetLevel.setRealizedWithNoPo(BigDecimal.ZERO);
     budgetLevel.setRealizedWithPo(BigDecimal.ZERO);
     budgetLevel.setSimulatedAmount(BigDecimal.ZERO);

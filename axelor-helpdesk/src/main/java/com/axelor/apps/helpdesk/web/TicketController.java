@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -320,5 +320,15 @@ public class TicketController {
       response.setValue("$isClosed", false);
       response.setValue("$isInProgress", false);
     }
+  }
+
+  public void computeSlaAndDeadLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    TicketRepository ticketRepo = Beans.get(TicketRepository.class);
+    Ticket ticket = request.getContext().asType(Ticket.class);
+
+    Beans.get(TicketService.class).computeSLAAndDeadLine(ticket);
+    response.setValue("slaPolicy", ticket.getSlaPolicy());
+    response.setValue("deadlineDateT", ticket.getDeadlineDateT());
   }
 }

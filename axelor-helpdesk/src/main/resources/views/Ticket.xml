@@ -41,8 +41,7 @@
   </grid>
 
   <form model="com.axelor.apps.helpdesk.db.Ticket" title="Ticket" name="ticket-form"
-    onNew="action-ticket-group-on-new"
-    onLoad="action-ticket-group-timer-process,action-ticket-method-update-dummy-status">
+    onNew="action-ticket-group-on-new" onLoad="action-ticket-group-on-load">
     <panel name="mainPanel" colSpan="12">
 
       <field name="ticketStatus" colSpan="12" readonly="true" showTitle="false"
@@ -124,16 +123,22 @@
 
     <panel name="characteristicsPanel" title="Characteristics" sidebar="true"
       canCollapse="true">
-      <field name="ticketType" colSpan="12"/>
-      <field name="slaPolicy" colSpan="12"
-        hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority" readonly="true"
-        if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
-      <field name="prioritySelect" colSpan="6" widget="single-select"/>
+      <field name="ticketType" colSpan="12"
+        onChange="action-ticket-group-compute-sla-deadline"/>
+      <field name="prioritySelect" colSpan="6" widget="single-select"
+        onChange="action-ticket-group-compute-sla-deadline"/>
+      <panel name="slaPanel" showTitle="false">
+        <field name="slaPolicy" colSpan="12"
+          hideIf="ticketStatus.priority >= slaPolicy.reachStageTicketStatus.priority"
+          readonly="true" if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
+        <field name="slaPolicy.reachStageTicketStatus" readonly="true" title="Stage to reach"/>
+      </panel>
       <field name="deadlineDateT" colSpan="6"/>
       <field name="isSlaCompleted" hidden="true"/>
     </panel>
     <panel name="followupPanel" title="Follow-up" sidebar="true" canCollapse="true">
-      <field name="assignedToUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
+      <field name="assignedToUser" colSpan="6" form-view="user-form" grid-view="user-grid"
+        onChange="action-ticket-group-compute-sla-deadline"/>
       <field name="responsibleUser" colSpan="6" form-view="user-form" grid-view="user-grid"/>
     </panel>
     <panel name="datesPanel" title="Dates" sidebar="true" canCollapse="true">
@@ -257,11 +262,28 @@
       if="__user__?.partner?.isCustomer"/>
   </action-record>
 
+  <action-attrs name="action-ticket-attrs-set-hide-readonly-sla"
+    model="com.axelor.apps.helpdesk.db.Ticket">
+    <attribute for="slaPanel" name="hidden"
+      expr="eval:!__config__.app.getApp('helpdesk')?.getIsSla()"/>
+    <attribute for="deadlineDateT" name="readonly"
+      expr="eval:__config__.app.getApp('helpdesk')?.getIsSla()"/>
+  </action-attrs>
+
   <action-group name="action-ticket-group-on-new">
     <action name="action-ticket-record-to-fill-startDate"/>
     <action name="action-ticket-record-set-customer"/>
     <action name="action-ticket-method-open-ticket"/>
     <action name="action-ticket-method-update-dummy-status"/>
+    <action name="action-ticket-attrs-set-hide-readonly-sla"/>
+  </action-group>
+
+  <action-group name="action-ticket-group-on-load">
+    <action name="action-ticket-method-update-dummy-status"/>
+    <action name="action-ticket-group-timer-process"/>
+    <action name="action-ticket-attrs-set-hide-readonly-sla"/>
+    <action name="action-ticket-method-update-dummy-status"/>
+
   </action-group>
 
   <action-group name="action-ticket-group-on-start">
@@ -314,6 +336,15 @@
     <call class="com.axelor.apps.helpdesk.web.TicketController"
       method="computeFromStartDateTime"/>
   </action-method>
+
+  <action-method name="action-ticket-method-compute-sla-deadline">
+    <call class="com.axelor.apps.helpdesk.web.TicketController" method="computeSlaAndDeadLine"/>
+  </action-method>
+
+  <action-group name="action-ticket-group-compute-sla-deadline">
+    <action name="action-ticket-method-compute-sla-deadline"
+      if="__config__.app.getApp('helpdesk')?.getIsSla()"/>
+  </action-group>
 
   <action-method name="action-ticket-method-compute-from-duration">
     <call class="com.axelor.apps.helpdesk.web.TicketController" method="computeFromDuration"/>

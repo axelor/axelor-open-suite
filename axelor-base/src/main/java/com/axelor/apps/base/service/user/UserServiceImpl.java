@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,6 +69,8 @@ public class UserServiceImpl implements UserService {
   @Inject private MetaFiles metaFiles;
 
   public static final String DEFAULT_LOCALE = "en";
+
+  public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
   private static final String PATTERN_ACCES_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
@@ -281,6 +283,17 @@ public class UserServiceImpl implements UserService {
       return user.getLanguage();
     }
     return DEFAULT_LOCALE;
+  }
+
+  @Override
+  public String getLocalizationCode() {
+    User user = getUser();
+    if (user != null && user.getLocalization() != null) {
+      if (!Strings.isNullOrEmpty(user.getLocalization().getCode())) {
+        return user.getLocalization().getCode();
+      }
+    }
+    return DEFAULT_LOCALIZATION_CODE;
   }
 
   @Override

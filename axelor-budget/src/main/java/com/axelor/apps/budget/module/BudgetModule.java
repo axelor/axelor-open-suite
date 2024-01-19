@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,6 +70,8 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetToolsServiceImpl;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.BudgetVersionServiceImpl;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudgetImpl;
 import com.axelor.apps.budget.service.ReconcileBudgetServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupServiceImpl;
@@ -186,5 +188,6 @@ public class BudgetModule extends AxelorModule {
     bind(MoveLineConsolidateServiceImpl.class).to(MoveLineConsolidateBudgetServiceImpl.class);
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
+    bind(CurrencyScaleServiceBudget.class).to(CurrencyScaleServiceBudgetImpl.class);
   }
 }

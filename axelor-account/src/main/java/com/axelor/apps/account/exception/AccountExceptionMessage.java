@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -1468,8 +1468,11 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNTING_CUT_OFF_MOVE_PROCESSED = /*$$(*/ "Move(s) processed" /*)*/;
 
-  public static final String CUT_OFF_BATCH_NO_LINE = /*$$(*/
+  public static final String BATCH_NO_LINE = /*$$(*/
       "You must select at least one line to validate" /*)*/;
+
+  public static final String BATCH_NO_PREVIEW = /*$$(*/
+      "This batch does not support the preview feature." /*)*/;
 
   public static final String ACCOUNT_TAX_CONFIG_MISSING = /*$$(*/
       "Accounting configuration is missing for Tax: %s (company: %s)" /*)*/;

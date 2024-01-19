@@ -34,8 +34,8 @@
     <panel-tabs name="mainPanelTab" showIf="id">
       <panel name="identificationPanel" title="Identification">
         <field name="qiIdentification" showTitle="false" colSpan="12" canSelect="false"
-          canView="false" canRemove="false">
-          <editor>
+          canRemove="false">
+          <editor x-viewer="true">
             <panel title="Partner" name="nonIntPanel" colSpan="12">
               <field name="customerPartner"
                 onChange="action-quality-improvement-group-customer-partner-on-change"
@@ -134,8 +134,8 @@
       </panel>
       <panel name="resolutionPanel" title="Resolution">
         <field name="qiResolution" showTitle="false" colSpan="12" canSelect="false"
-          canView="false" canRemove="false">
-          <editor>
+          canRemove="false">
+          <editor x-viewer="true">
             <field name="qi.qiIdentification.nonConformingQuantity" readonly="true"
               hideIf="$get('qi.type') == 2"/>
             <panel name="defaultPanel" title="Observed defaults" colSpan="12">
@@ -164,8 +164,8 @@
       </panel>
       <panel name="analysisPanel" title="Analysis">
         <field name="qiAnalysis" showTitle="false" colSpan="12" canSelect="false"
-          canView="false" canRemove="false">
-          <editor>
+          canRemove="false">
+          <editor x-viewer="true">
             <panel name="planPanel" title="Plan" colSpan="12">
               <field name="planOwner" colSpan="3" form-view="user-form" grid-view="user-grid"/>
               <field name="advancement" colSpan="3" widget="progress"/>
@@ -352,10 +352,10 @@
 
   <action-attrs name="action-quality-improvement-attrs-set-stock-move-domain">
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; :customerSaleOrder MEMBER OF self.saleOrderSet  &quot;"
+      expr="eval: &quot; self.saleOrder = :customerSaleOrder &quot;"
       if="qi?.qiDetection?.origin == 3"/>
     <attribute name="domain" for="stockMove"
-      expr="eval: &quot; :supplierPurchaseOrder MEMBER OF self.purchaseOrderSet &quot;"
+      expr="eval: &quot; self.purchaseOrder = :supplierPurchaseOrder &quot;"
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 
