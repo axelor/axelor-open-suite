@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -141,14 +141,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
   public Invoice createInvoiceFromStockMove(
       StockMove stockMove, Map<Long, BigDecimal> qtyToInvoiceMap) throws AxelorException {
     Invoice invoice;
-    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+    if (stockMove.getSaleOrder() != null) {
+      invoice = createInvoiceFromSaleOrder(stockMove, stockMove.getSaleOrder(), qtyToInvoiceMap);
+    } else if (stockMove.getPurchaseOrder() != null) {
       invoice =
-          createInvoiceFromSaleOrder(
-              stockMove, stockMove.getSaleOrderSet().iterator().next(), qtyToInvoiceMap);
-    } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
-      invoice =
-          createInvoiceFromPurchaseOrder(
-              stockMove, stockMove.getPurchaseOrderSet().iterator().next(), qtyToInvoiceMap);
+          createInvoiceFromPurchaseOrder(stockMove, stockMove.getPurchaseOrder(), qtyToInvoiceMap);
     } else {
       invoice = createInvoiceFromOrderlessStockMove(stockMove, qtyToInvoiceMap);
     }
@@ -393,11 +390,11 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
     List<StockMoveLine> stockMoveLineToInvoiceList;
-    if ((ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
+    if ((stockMove.getPurchaseOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateIncStockMovePartialInvoicing())
-        || (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
+        || (stockMove.getSaleOrder() != null
             && supplyChainConfigService
                 .getSupplyChainConfig(invoice.getCompany())
                 .getActivateOutStockMovePartialInvoicing())) {

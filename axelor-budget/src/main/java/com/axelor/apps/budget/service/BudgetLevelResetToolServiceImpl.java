@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,14 +27,14 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolService {
 
-  private final BudgetResetToolService budgetService;
+  protected BudgetResetToolService budgetResetToolService;
   protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetLevelResetToolServiceImpl(
       BudgetResetToolService budgetResetToolService,
       CurrencyScaleServiceBudget currencyScaleServiceBudget) {
-    this.budgetService = budgetResetToolService;
+    this.budgetResetToolService = budgetResetToolService;
     this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
@@ -61,7 +61,7 @@ public class BudgetLevelResetToolServiceImpl implements BudgetLevelResetToolServ
     if (!ObjectUtils.isEmpty(budgetLevel.getBudgetLevelList())) {
       budgetLevel.getBudgetLevelList().forEach(child -> resetBudgetLevel(child));
     } else if (!CollectionUtils.isEmpty(budgetLevel.getBudgetList())) {
-      budgetLevel.getBudgetList().forEach(budgetService::resetBudget);
+      budgetLevel.getBudgetList().forEach(budgetResetToolService::resetBudget);
     }
   }
 }
