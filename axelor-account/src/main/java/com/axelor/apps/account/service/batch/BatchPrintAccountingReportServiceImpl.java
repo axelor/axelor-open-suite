@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -86,6 +87,7 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setExportTypeSelect("pdf");
     accountingReport.setRef(accountingReportService.getSequence(accountingReport));
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
+    accountingReport.setMoveStatusSelect(Integer.toString(MoveRepository.STATUS_ACCOUNTED));
 
     accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
     accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
