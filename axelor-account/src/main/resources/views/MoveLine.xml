@@ -158,7 +158,7 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80"/>
     <field name="vatSystemSelect"
-      readonlyIf="account &amp;&amp; !['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect)"
+      readonlyIf="account &amp;&amp; !['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect)"
       width="80"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"

@@ -333,7 +333,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     String[] technicalTypeSelects = {
       AccountTypeRepository.TYPE_CHARGE,
       AccountTypeRepository.TYPE_INCOME,
-      AccountTypeRepository.TYPE_TAX,
+      AccountTypeRepository.TYPE_DEBT,
       AccountTypeRepository.TYPE_IMMOBILISATION
     };
 
