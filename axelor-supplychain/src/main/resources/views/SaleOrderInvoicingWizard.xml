@@ -41,10 +41,9 @@
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <field name="product.code" width="120"/>
     <field name="productName" readonly="true"/>
-    <field name="qty" readonly="true" aggregate="sum" x-scale="2"/>
-    <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"
-      x-scale="$nbDecimalDigitForQty"/>
-    <field name="price" readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="qty" readonly="true" aggregate="sum"/>
+    <field name="unit" readonly="true" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="price" readonly="true"/>
     <field name="exTaxTotal" readonly="true" aggregate="sum"/>
     <field name="amountInvoiced" readonly="true"/>
     <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
