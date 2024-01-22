@@ -55,7 +55,7 @@
         <field name="toDate" colSpan="4" required="true"
           onChange="action-budget-level-group-from-to-dates-onchange"/>
         <button name="updateDatesBtn" colSpan="4" title="Update dates" hidden="true"
-          onClick="save,action-budget-budget-level-method-set-dates" css="btn-light"
+          onClick="save,action-budget-budget-level-method-set-dates" css="btn-danger"
           readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
