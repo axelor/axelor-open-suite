@@ -12,6 +12,7 @@
       <field name="logoPositionSelect"/>
       <field name="colorCode"/>
       <field name="addressPositionSelect"/>
+      <field name="tableFontSize"/>
       <panel name="companyHeaderPanel" title="Company Header" colSpan="12">
         <field name="pdfHeader" colSpan="12" widget="html" showTitle="false"/>
         <field name="pdfHeaderHeight"/>

@@ -43,7 +43,7 @@
       </panel>
       <panel name="detailsPanel" colSpan="12">
         <field name="id" title="Ref"/>
-        <field name="forecastDate"/>
+        <field name="forecastDate" onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"
           domain="self.dtype = 'Product'"/>
         <field name="qty"/>

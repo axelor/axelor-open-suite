@@ -6,13 +6,13 @@
   <action-record name="action-product-set-stock"
     model="com.axelor.apps.base.db.Product" if-module="axelor-stock">
     <field name="$realQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQty(id, null,null)"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getRealQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('stock')"/>
     <field name="$futureQtyBtn"
-      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQty(id, null,null)"
+      expr="call:com.axelor.apps.stock.service.StockLocationService:getFutureQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('stock')"/>
     <field name="$reservedQtyBtn"
-      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQty(id, null,null)"
+      expr="call:com.axelor.apps.supplychain.service.StockLocationServiceSupplychain:getReservedQtyOfProductInStockLocations(id, null,null)"
       if="__config__.app.isApp('supplychain')"/>
   </action-record>
 

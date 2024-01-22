@@ -24,7 +24,6 @@
     <many-to-many name="printSet" title="Print sublist"
       ref="com.axelor.apps.base.db.Print"/>
 
-    <boolean name="isFooterUnderLine" title="UnderLine"/>
     <decimal name="footerFontSize" title="Font Size"/>
     <string name="footerTextAlignment" title="Text Alignment"
       selection="base.print.settings.footer.text.alignment.select"/>

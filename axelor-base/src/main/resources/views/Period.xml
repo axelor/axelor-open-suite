@@ -77,7 +77,7 @@
         prompt="Closing a period brings irrevocable integration of a move in Moves book"/>
       <button name="adjustBtn" title="Adjust period"
         onClick="action-validate-period-is-adjusting-year,action-method-period-adjust"
-        showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 2 &amp;&amp; !$popup()"/>
+        showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 3 &amp;&amp; !$popup()"/>
       <button name="openBtn" title="Open period"
         onClick="save,action-method-period-status-open"
         showIf="statusSelect == 2 &amp;&amp; year.statusSelect == 1 &amp;&amp; !$popup()"/>

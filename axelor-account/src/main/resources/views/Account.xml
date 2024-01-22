@@ -95,7 +95,8 @@
           readonlyIf="parentAccount != null &amp;&amp; accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"
           form-view="company-form" grid-view="company-grid"/>
         <field name="parentAccount" onChange="action-account-validate"
-          domain="self.company = :company" form-view="account-form" grid-view="account-grid"
+          onSelect="action-account-method-set-parent-account-domain" form-view="account-form"
+          grid-view="account-grid"
           readonlyIf="accountType.technicalTypeSelect == 'view' &amp;&amp; isRegulatoryAccount"/>
         <field name="useForPartnerBalance" widget="boolean-switch" colSpan="3"
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
@@ -148,7 +149,8 @@
         </panel>
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
           if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="manageCutOffPeriod" widget="boolean-switch"/>
+          <field name="manageCutOffPeriod" widget="boolean-switch"
+            onChange="action-account-record-manage-cut-off-onChange"/>
           <field name="hasAutomaticApplicationAccountingDate" widget="boolean-switch"
             showIf="manageCutOffPeriod"/>
         </panel>
@@ -440,6 +442,11 @@
       if="isTaxAuthorizedOnMoveLine &amp;&amp; vatSystemSelect == 0"/>
   </action-record>
 
+  <action-record name="action-account-record-manage-cut-off-onChange"
+    model="com.axelor.apps.account.db.Account">
+    <field name="hasAutomaticApplicationAccountingDate" expr="eval: false"/>
+  </action-record>
+
   <action-method name="action-account-method-compute-balance">
     <call class="com.axelor.apps.account.web.AccountController" method="computeBalance"/>
   </action-method>
@@ -503,6 +510,10 @@
   <action-method name="action-account-method-wizard-reconcile-line">
     <call class="com.axelor.apps.account.web.AccountController"
       method="setAmountRemainingReconciliableMoveLines"/>
+  </action-method>
+
+  <action-method name="action-account-method-set-parent-account-domain">
+    <call class="com.axelor.apps.account.web.AccountController" method="setParentAccountDomain"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">

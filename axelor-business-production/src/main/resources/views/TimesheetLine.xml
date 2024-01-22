@@ -29,8 +29,7 @@
     onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
     <hilite if="$get('timesheet.statusSelect') == 5" color="danger"/>
     <field name="date" width="100" onChange="action-timesheet-line-validate-date"/>
-    <field name="user" form-view="user-form" grid-view="user-grid" canEdit="false"
-      canView="false"/>
+    <field name="employee" canEdit="false" canView="false"/>
     <field name="duration" width="100"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>

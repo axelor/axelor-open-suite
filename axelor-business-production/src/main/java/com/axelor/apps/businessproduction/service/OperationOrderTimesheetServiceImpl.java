@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.date.DurationTool;
 import com.google.inject.persist.Transactional;
@@ -111,8 +111,8 @@ public class OperationOrderTimesheetServiceImpl implements OperationOrderTimeshe
             .filter(Objects::nonNull)
             .distinct()
             .collect(Collectors.toList());
-    OperationOrderWorkflowService operationOrderWorkflowService =
-        Beans.get(OperationOrderWorkflowService.class);
-    operationOrderList.forEach(operationOrderWorkflowService::updateRealDuration);
+    OperationOrderPlanningService operationOrderPlanningService =
+        Beans.get(OperationOrderPlanningService.class);
+    operationOrderList.forEach(operationOrderPlanningService::updateRealDuration);
   }
 }

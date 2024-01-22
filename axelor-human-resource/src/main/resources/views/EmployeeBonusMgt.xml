@@ -16,7 +16,7 @@
   <form name="employee-bonus-mgt-form" title="Employee bonus management"
     model="com.axelor.apps.hr.db.EmployeeBonusMgt" onNew="action-employee-bonus-mgt-record-default">
     <toolbar>
-      <button name="printBtn" title="Print" onClick="action-employee-bonus-mgt-method-print"/>
+      <button name="printBtn" title="Print" onClick="save,action-method-print-birt"/>
     </toolbar>
     <panel name="mainPanel" readonlyIf="statusSelect == 2">
       <field name="company" canEdit="false" required="true"/>
@@ -48,10 +48,6 @@
 
   <action-method name="action-employee-bonus-mgt-method-compute">
     <call class="com.axelor.apps.hr.web.EmployeeBonusController" method="compute"/>
-  </action-method>
-
-  <action-method name="action-employee-bonus-mgt-method-print">
-    <call class="com.axelor.apps.hr.web.EmployeeBonusController" method="print"/>
   </action-method>
 
   <search-filters name="employee-bonus-mgt-filters"

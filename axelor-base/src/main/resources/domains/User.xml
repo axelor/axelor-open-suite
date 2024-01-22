@@ -11,7 +11,8 @@
       title="Company"/>
     <many-to-one name="activeCompany" ref="com.axelor.apps.base.db.Company"
       title="Active company" massUpdate="true"/>
-    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
+    <one-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"
+      unique="true"/>
     <datetime name="todayDateT" title="Today date" tz="true"/>
     <many-to-many name="teamSet" ref="com.axelor.team.db.Team" title="Teams"
       mappedBy="members"/>
@@ -65,7 +66,9 @@
     <string name="emailSignature" title="Email signature" large="true"/>
 
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Trading name"></many-to-one>
+      title="Trading name"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
 
     <finder-method name="findByCode" using="code"
       filter="LOWER(self.code) = LOWER(:code)"/>

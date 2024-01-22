@@ -13,13 +13,11 @@
     <panel name="mainPanel">
       <field name="productCategory" canEdit="false"/>
       <field name="company" canEdit="false"/>
-      <field name="stockLocationSet" colSpan="12"/>
-      <panel name="generationPanel"
-        showIf="productCategory &amp;&amp; company &amp;&amp; stockLocationSet &amp;&amp; stockLocationSet != ''"
+      <panel name="generationPanel" showIf="productCategory &amp;&amp; company"
         canCollapse="true" title="Sales and Operations Planning Lines generation" colSpan="12">
-        <field name="year" domain="self.typeSelect = 3"/>
+        <field name="periodYear" domain="self.typeSelect = 3"/>
         <field name="isForecastOnHistoric" widget="boolean-switch"/>
-        <field name="yearbasedHistoric" domain="self.typeSelect = 3"
+        <field name="historicPeriodYear" domain="self.typeSelect = 3"
           showIf="isForecastOnHistoric == true"/>
         <field name="growthCoef" showIf="isForecastOnHistoric == true"/>
         <button name="generateSOPLines" title="Generate Sales and Operations Planning Lines"

@@ -91,14 +91,11 @@
       for="invoiceBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 2, 3, 4]"
       for="statusBatchBtn"/>
-    <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 3, 4]"
-      for="alarmBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 4]"
       for="memoryBatch"/>
     <attribute name="hidden" expr="eval: actionSelect in [null, 0, 1, 2, 3]"
       for="confirmMemoryBatch"/>
     <attribute name="hidden" expr="eval: actionSelect != 1" for="toStatusSelect"/>
-    <attribute name="hidden" expr="eval: actionSelect != 2" for="clearAlarmsOk"/>
     <attribute name="hidden" expr="eval: actionSelect != 2" for="fromStatusSelect"/>
   </action-attrs>
 

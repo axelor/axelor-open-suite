@@ -18,7 +18,7 @@
     width="large" onNew="action-inventory-record-new">
     <menubar>
       <menu title="Tools" icon="fa-wrench" name="inventoryMenu">
-        <item name="showStockMoveItem" action="action-inventory-method-show-stockmoves"
+        <item name="showStockMoveItem" action="save,action-inventory-method-show-stockmoves"
           title="Show stock move(s)" readonlyIf="statusSelect != 5"/>
       </menu>
     </menubar>
@@ -282,10 +282,10 @@
     model="com.axelor.apps.stock.db.Inventory" title="Inventories filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <filter title="Planned Inventories">
+    <filter name="inventories-filters-planned-inventories" title="Planned Inventories">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Inventories History">
+    <filter name="inventories-filters-inventories-history" title="Inventories History">
       <domain>self.statusSelect = 2</domain>
     </filter>
   </search-filters>

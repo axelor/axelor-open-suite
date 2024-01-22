@@ -7,7 +7,7 @@
 
   <entity name="AppAccount" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <!-- Comptabilité -->
     <many-to-one name="transferAndDirectDebitInterbankCode"

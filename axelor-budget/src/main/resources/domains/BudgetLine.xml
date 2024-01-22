@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="BudgetLine">
+
+    <date name="fromDate" title="From"/>
+    <date name="toDate" title="To"/>
+
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget"/>
+
+    <decimal name="amountCommitted" title="Committed amount"
+      help="Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice."
+      precision="20" scale="2"/>
+
+    <decimal name="amountExpected" title="Expected amount"
+      help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
+      precision="20" scale="2"/>
+    <decimal name="amountRealized" title="Realized amount" precision="20" scale="2"/>
+
+    <decimal name="amountPaid" title="Paid amount" precision="20" scale="2"/>
+    <decimal name="availableAmount" title="Available Amount"
+      help="Represents the expected amount minus the sum of realized amounts."/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with no purchase order and daybook and accounted moves with no invoice."/>
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+      help="Represents the sum of ventilated invoices with an order."/>
+    <decimal name="toBeCommittedAmount" title="To be committed amount" precision="20"
+      scale="2"/>
+    <decimal name="firmGap" title="Firm gap" precision="20" scale="2"
+      help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
+  </entity>
+
+</domain-models>

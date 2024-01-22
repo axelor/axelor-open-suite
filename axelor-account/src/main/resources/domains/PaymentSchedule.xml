@@ -15,7 +15,7 @@
     <date name="startDate" title="Schedule start Date"/>
     <integer name="nbrTerm" title="Nbr. of terms"/>
     <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails"
-      title="Bank Details"/>
+      title="Partner bank details"/>
     <many-to-one name="companyBankDetails" ref="com.axelor.apps.base.db.BankDetails"/>
     <many-to-one name="paymentMode" ref="com.axelor.apps.account.db.PaymentMode"
       title="Payment Mode" required="true"/>

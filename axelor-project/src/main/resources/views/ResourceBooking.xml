@@ -54,6 +54,8 @@
   <action-record name="action-resource-booking-defaults"
     model="com.axelor.apps.project.db.ResourceBooking">
     <field name="project" expr="eval:_project" if="_project != null"/>
+    <field name="project" expr="eval:__parent__"
+      if="__this__?.project == null &amp;&amp; __parent__?.getContextClass() == Project.class"/>
     <field name="projectTask" expr="eval:_task" if="_task != null"/>
     <field name="resource" expr="eval:_resource" if="_resource != null"/>
     <field name="user" expr="eval:__user__"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -110,5 +110,16 @@ public class StockConfigService {
           stockConfig.getCompany().getName());
     }
     return stockConfig.getPickupDefaultStockLocation();
+  }
+
+  public StockLocation getQualityControlDefaultStockLocation(StockConfig stockConfig)
+      throws AxelorException {
+    if (stockConfig.getQualityControlDefaultStockLocation() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.PO_MISSING_DEFAULT_STOCK_LOCATION),
+          stockConfig.getCompany().getName());
+    }
+    return stockConfig.getQualityControlDefaultStockLocation();
   }
 }

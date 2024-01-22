@@ -180,19 +180,14 @@
     model="com.axelor.apps.project.db.ProjectStatus">
     <view type="grid" name="project-status-grid"/>
     <view type="form" name="project-status-form"/>
-    <domain>self.relatedToSelect = :relatedToSelect</domain>
-    <context name="relatedToSelect"
-      expr="eval: __repo__(ProjectStatus).PROJECT_STATUS_PROJECT"/>
   </action-view>
 
   <menuitem name="project-configurations-task-status" parent="project-configurations"
     title="Task status" action="project.configurations.task.status" order="500"/>
   <action-view name="project.configurations.task.status" title="Task status"
-    model="com.axelor.apps.project.db.ProjectStatus">
-    <view type="grid" name="project-status-grid"/>
-    <view type="form" name="project-status-form"/>
-    <domain>self.relatedToSelect = :relatedToSelect</domain>
-    <context name="relatedToSelect" expr="eval: __repo__(ProjectStatus).PROJECT_STATUS_TASK"/>
+    model="com.axelor.apps.project.db.TaskStatus">
+    <view type="grid" name="task-status-grid"/>
+    <view type="form" name="task-status-form"/>
   </action-view>
 
   <menuitem name="project-task-project-priority" parent="project-configurations"

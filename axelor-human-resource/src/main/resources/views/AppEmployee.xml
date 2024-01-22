@@ -10,7 +10,8 @@
       <field name="payrollPreparation" colSpan="3" widget="boolean-switch"/>
       <field name="lunchVoucher" colSpan="3" widget="boolean-switch"/>
       <field name="employeeBonus" colSpan="3" widget="boolean-switch"/>
-      <field name="dailyWorkHours" colSpan="3"/>
+      <field name="isMyHrEnabled" colSpan="3" widget="boolean-switch"/>
+      <field name="isMedicalVisitEnabled" colSpan="3" widget="boolean-switch"/>
     </panel>
     <panel name="configPanel">
       <button name="generateHrConfigurationsBtn" colSpan="4"

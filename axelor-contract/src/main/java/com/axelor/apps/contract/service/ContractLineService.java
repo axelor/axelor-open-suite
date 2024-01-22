@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractVersion;
+import java.util.Map;
 
 public interface ContractLineService {
   /**
@@ -30,7 +32,7 @@ public interface ContractLineService {
    * @param contractLine to reset.
    * @return ContractLine reset.
    */
-  ContractLine reset(ContractLine contractLine);
+  Map<String, Object> reset(ContractLine contractLine);
 
   /**
    * Fill ContractLine with Product information.
@@ -40,6 +42,10 @@ public interface ContractLineService {
    * @return ContractLine filled with Product information.
    */
   ContractLine fill(ContractLine contractLine, Product product) throws AxelorException;
+
+  ContractLine fillDefault(ContractLine contractLine, ContractVersion contractVersion);
+
+  void updateContractLinesFromContractVersion(ContractVersion contractVersion);
 
   /**
    * Compute price and tax of Product to ContractLine.
@@ -71,13 +77,10 @@ public interface ContractLineService {
    * @param contractLine to compute ex/in tax total.
    * @return ContractLine with ex/in tax total computed.
    */
-  ContractLine computeTotal(ContractLine contractLine);
+  ContractLine computeTotal(ContractLine contractLine) throws AxelorException;
 
-  /**
-   * Create analytic move lines using analytic distribution template
-   *
-   * @param contractLine
-   * @return ContractLine filled with analytic move lines
-   */
-  ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
+  ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
+      throws AxelorException;
+
+  void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException;
 }

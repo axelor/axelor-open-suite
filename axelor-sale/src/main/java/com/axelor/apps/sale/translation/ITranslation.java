@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,4 +43,7 @@ public interface ITranslation {
       "Populated field: %s"; /*)*/
   public static final String SALE_ORDER_LINE_OBSERVER_POPULATED_CUSTOM_FIELD = /*$$(*/
       "Populated custom field: %s"; /*)*/
+  public static final String PRICING_CUSTOM_TITLE_PREVIOUS_PRICING = /*$$(*/
+      "Previous pricing"; /*)*/
+  public static final String PRICING_CUSTOM_TITLE_NEXT_PRICING = /*$$(*/ "Next pricing"; /*)*/
 }

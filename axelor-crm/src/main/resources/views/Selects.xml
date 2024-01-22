@@ -111,6 +111,7 @@
   </selection>
 
   <selection name="crm.convert.lead.wizard.lead.to.contact.select">
+    <option value="0">No contact creation</option>
     <option value="1">Create new contact</option>
     <option value="2">Select existing contact</option>
   </selection>
@@ -131,21 +132,6 @@
 
   <selection name="sequence.generic.code.select" id="crm.sequence.generic.code.select">
     <option value="opportunity">Opportunity</option>
-  </selection>
-
-  <selection name="crm.month.name.selection">
-    <option value="1">January</option>
-    <option value="2">February</option>
-    <option value="3">March</option>
-    <option value="4">April</option>
-    <option value="5">May</option>
-    <option value="6">June</option>
-    <option value="7">July</option>
-    <option value="8">August</option>
-    <option value="9">September</option>
-    <option value="10">October</option>
-    <option value="11">November</option>
-    <option value="12">December</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="crm.batch.batch.type.select">
@@ -172,6 +158,12 @@
   <selection name="crm.reporting.type.select">
     <option value="com.axelor.apps.crm.db.Lead">Lead</option>
     <option value="com.axelor.apps.base.db.Partner">Partner</option>
+  </selection>
+
+  <selection id="crm.research.model.selection" name="research.model.selection">
+    <option value="com.axelor.apps.crm.db.Lead">Lead</option>
+    <option value="com.axelor.apps.crm.db.Event">Event</option>
+    <option value="com.axelor.apps.crm.db.Opportunity">Opportunity</option>
   </selection>
 
 </object-views>

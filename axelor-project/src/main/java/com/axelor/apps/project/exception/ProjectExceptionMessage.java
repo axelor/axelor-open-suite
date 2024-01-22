@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,4 +42,7 @@ public final class ProjectExceptionMessage {
       "The parent task creates a loop in the task tree." /*)*/;
   public static final String RESOURCE_ALREADY_BOOKED_ERROR_MSG = /*$$(*/
       "This resource is already booked for this period" /*)*/;
+
+  public static final String PROJECT_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for Project" /*)*/;
 }

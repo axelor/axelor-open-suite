@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.cash.management.web;
 import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.repo.ForecastGeneratorRepository;
 import com.axelor.apps.cash.management.service.ForecastService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -33,5 +34,20 @@ public class ForecastController {
         Beans.get(ForecastGeneratorRepository.class).find(forecastGenerator.getId());
     Beans.get(ForecastService.class).generate(forecastGenerator);
     response.setReload(true);
+  }
+
+  public void resetForecast(ActionRequest request, ActionResponse response) {
+    ForecastGenerator forecastGenerator = request.getContext().asType(ForecastGenerator.class);
+    if (forecastGenerator.getId() != null) {
+      ForecastGenerator forecastGeneratorDb =
+          Beans.get(ForecastGeneratorRepository.class).find(forecastGenerator.getId());
+      if (!forecastGenerator
+          .getPeriodicitySelect()
+          .equals(forecastGeneratorDb.getPeriodicitySelect())) {
+        Beans.get(ForecastService.class).reset(forecastGeneratorDb);
+        response.setAttr("generateBtn", "title", I18n.get("Generate"));
+        response.setAttr("forecastListPanel", "refresh", true);
+      }
+    }
   }
 }

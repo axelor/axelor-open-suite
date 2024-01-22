@@ -1,3 +1,0 @@
-"importId";"name";"code";"fromDate";"toDate";"company.importId";"inChargeUser.importId";"totalAmountExpected";"periodDurationSelect";"amountForGeneration"
-1;"budget 2";"bud2";"TODAY[-2M]";"TODAY[+2M]";1;1;15.00;2;2.00
-2;"budget 3";"bud3";"TODAY[-5M]";"TODAY[+5M]";1;1;12.00;3;3.00

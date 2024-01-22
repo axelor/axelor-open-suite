@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ public class ReconcileGroupSequenceServiceImpl implements ReconcileGroupSequence
   public void fillCodeFromSequence(ReconcileGroup reconcileGroup) throws AxelorException {
     String sequenceCode;
     String exceptionMessage;
-    if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_FINAL) {
+    if (reconcileGroup.getStatusSelect() == ReconcileGroupRepository.STATUS_BALANCED) {
       sequenceCode = SequenceRepository.RECONCILE_GROUP_FINAL;
       exceptionMessage = AccountExceptionMessage.RECONCILE_GROUP_NO_FINAL_SEQUENCE;
     } else {

@@ -25,7 +25,7 @@
       <field name="password" colSpan="6"/>
       <field name="$helpViewer" showTitle="false" readonly="true" colSpan="12">
         <viewer><![CDATA[
-			<p>The application does not support key starting with <code>-----BEGIN OPENSSH PRIVATE KEY-----</code>. Using those keys will result in a <code>Invalid private key error</code> </p>
+		<span x-translate>The application does not support key starting with -----BEGIN OPENSSH PRIVATE KEY-----</span><span x-translate>. Using those keys will result in a Invalid private key error </span>
 ]]>
         </viewer>
       </field>

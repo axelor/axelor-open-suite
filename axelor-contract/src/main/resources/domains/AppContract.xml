@@ -7,7 +7,7 @@
 
   <entity name="AppContract" cacheable="true">
 
-    <one-to-one ref="com.axelor.studio.db.App" name="app"/>
+    <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="isUnchangableContract" title="Unchangable contract"/>
     <boolean name="isAmendmentManagement" title="Amendment management"/>

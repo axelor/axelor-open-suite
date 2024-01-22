@@ -44,14 +44,13 @@
     <string name="maxCapacityPerCycleFormula" title="Max. capacity / cycle" large="true"/>
     <boolean name="defMaxCapacityFormula" title="Define with a script"/>
 
-    <long name="durationPerCycle" title="Duration / cycle (hh:mm:ss)"/>
-    <string name="durationPerCycleFormula" title="Duration / cycle (hh:mm:ss)" large="true"/>
+    <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <string name="durationPerCycleFormula" title="Duration / cycle (hhh:mm:ss)" large="true"/>
     <boolean name="defDurationFormula" title="Define with a script"/>
 
-    <long name="timingOfImplementation" title="Timing of implementation (hh:mm:ss)"/>
-    <string name="timingOfImplementationFormula" title="Timing of implementation (hh:mm:ss)"
-      large="true"/>
-    <boolean name="defTimingOfImplementationFormula" title="Define with a script"/>
+    <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
+    <string name="humanDurationFormula" title="Human Duration (hh:mm:ss)" large="true"/>
+    <boolean name="defHrDurationFormula" title="Define with a script"/>
 
     <string name="useCondition" title="Condition" large="true"/>
 

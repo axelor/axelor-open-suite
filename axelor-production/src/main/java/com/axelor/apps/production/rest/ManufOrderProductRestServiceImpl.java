@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -290,7 +290,15 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
 
     StockMoveLine stockMoveLine =
         stockMoveLineService.createStockMoveLine(
-            stockMove, product, trackingNumber, qty, BigDecimal.ZERO, null, null);
+            stockMove,
+            product,
+            trackingNumber,
+            qty,
+            BigDecimal.ZERO,
+            null,
+            null,
+            stockMove.getFromStockLocation(),
+            stockMove.getToStockLocation());
 
     addProductInManufOrder(manufOrder, stockMoveLine, productType);
 

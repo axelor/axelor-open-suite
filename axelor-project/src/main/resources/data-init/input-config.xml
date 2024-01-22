@@ -34,6 +34,9 @@
   <input file="project_status.csv" separator=";"
     type="com.axelor.apps.project.db.ProjectStatus" search="self.importId = :importId"/>
 
+  <input file="task_status.csv" separator=";" type="com.axelor.apps.project.db.TaskStatus"
+    search="self.importId = :importId"/>
+
   <input file="project_priority.csv" separator=";"
     type="com.axelor.apps.project.db.ProjectPriority" search="self.importId = :importId"/>
 

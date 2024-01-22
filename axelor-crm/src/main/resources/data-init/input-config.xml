@@ -15,10 +15,6 @@
   <input file="crm_eventCategory.csv" separator=";"
     type="com.axelor.apps.crm.db.EventCategory" search="self.importId = :importId"/>
 
-  <input file="base_importConfiguration.csv" separator=";"
-    type="com.axelor.apps.base.db.ImportConfiguration"
-    call="com.axelor.csv.script.ImportLeadConfiguration:importFiles"/>
-
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
     <bind to="language" eval="'en'"/>
     <bind to="type" eval="'tooltip'"/>
@@ -37,5 +33,20 @@
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true"/>
+
+  <input file="base_birtTemplate.csv" separator=";"
+    call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
+    type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind to="metaModel" search="self.fullName = :modelName"/>
+  </input>
+
+  <input file="base_birtTemplateParameter.csv" separator=";"
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+
+  <input file="base_birtTemplateConfigLine.csv"
+    type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
+    search="self.importId = :importId">
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+  </input>
 
 </csv-inputs>

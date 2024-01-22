@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,7 +43,10 @@ public interface AnalyticLineService {
 
   AnalyticLine checkAnalyticLineForAxis(AnalyticLine line);
 
-  AnalyticLine printAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
+  AnalyticLine setAnalyticAccount(AnalyticLine line, Company company) throws AxelorException;
+
+  boolean checkAnalyticLinesByAxis(AnalyticLine analyticLine, int position, Company company)
+      throws AxelorException;
 
   List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis);
 }

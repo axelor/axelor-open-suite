@@ -46,7 +46,7 @@
             <property name="dataType">string</property>
             <property name="distinct">true</property>
             <simple-property-list name="defaultValue">
-                <value type="constant">jdbc:postgresql://localhost:5432/axelor-open-suite</value>
+                <value type="constant">jdbc:postgresql://localhost:5432/</value>
             </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -60,9 +60,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">axelor</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -1565,7 +1562,7 @@ from stock_logistical_form_line as LogisticalFormLine
 left join stock_stock_move_line as StockMoveLine on LogisticalFormLine.stock_move_line = StockMoveLine.id
 left join stock_stock_move as StockMove on StockMoveLine.stock_move = StockMove.id
 left join base_product as Product on StockMoveLine.product = Product.id
-left join sale_sale_order as SaleOrder on StockMove.origin_id = SaleOrder.id
+left join sale_sale_order as SaleOrder on StockMove.sale_order = SaleOrder.id
 left join meta_translation as translat on translat.language = ?
 and translat.message_key = case LogisticalFormLine.type_select
 when 1 then 'LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>'

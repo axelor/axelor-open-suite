@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -94,4 +94,14 @@ public interface PaymentService {
   BigDecimal getAmountRemainingFromPaymentMove(PaymentScheduleLine psl);
 
   BigDecimal getAmountRemainingFromPaymentMove(Invoice invoice);
+
+  void createReconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      BigDecimal debitTotalRemaining,
+      BigDecimal creditTotalRemaining)
+      throws AxelorException;
+
+  boolean reconcileMoveLinesWithCompatibleAccounts(List<MoveLine> moveLineList)
+      throws AxelorException;
 }

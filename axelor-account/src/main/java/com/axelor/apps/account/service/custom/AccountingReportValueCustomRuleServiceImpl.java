@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -159,6 +159,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
 
     BigDecimal result =
         this.getResultFromCustomRule(
+            accountingReport,
             column,
             line,
             groupColumn,
@@ -174,7 +175,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     }
 
     String lineTitle = line.getLabel();
-    if (column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+    if ((column.getRuleTypeSelect() == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+            && (line.getRuleTypeSelect()
+                    != AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE
+                || column.getPriority() > line.getPriority()))
         || (groupColumn != null
             && groupColumn.getRuleTypeSelect()
                 == AccountingReportConfigLineRepository.RULE_TYPE_CUSTOM_RULE)) {
@@ -238,6 +242,7 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
   }
 
   protected BigDecimal getResultFromCustomRule(
+      AccountingReport accountingReport,
       AccountingReportConfigLine column,
       AccountingReportConfigLine line,
       AccountingReportConfigLine groupColumn,
@@ -258,6 +263,10 @@ public class AccountingReportValueCustomRuleServiceImpl extends AccountingReport
     try {
       return (BigDecimal) scriptHelper.eval(rule);
     } catch (Exception e) {
+      if (accountingReport.getTraceAnomalies()) {
+        this.traceException(e, accountingReport, groupColumn, column, line);
+      }
+
       this.addNullValue(
           column,
           groupColumn,

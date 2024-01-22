@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <form id="budget-move-form" name="move-form" title="Account move"
+    model="com.axelor.apps.account.db.Move" extension="true">
+
+    <extend target="//button[@name='autoTaxLineGenerateBtn']">
+      <insert position="after">
+        <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
+          colSpan="3"
+          if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
+          onClick="action-account-move-group-compute-budget-distribution" css="btn-custom text-left"
+          icon="fa-plus"
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; technicalOriginSelect == 1
+			&amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2)
+			&amp;&amp; (statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; moveLineList &amp;&amp; moveLineList.length != 0"/>
+      </insert>
+    </extend>
+
+    <extend target="//button[@name='accountingBtn' and @title='Accounting.toAccount']">
+      <attribute name="onClick" value="action-budget-move-accounting-click"/>
+    </extend>
+
+    <extend target="//field[@name='rejectOk']">
+      <insert position="after">
+        <field name="budgetDistributionGenerated" hidden="true"/>
+        <field name="company.accountConfig" hidden="true"/>
+        <field name="company.accountConfig.enableBudgetKey" hidden="true"/>
+        <field name="journal.journalType.technicalTypeSelect" hidden="true"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-method-budget-move-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.MoveController" method="computeBudgetDistribution"/>
+  </action-method>
+
+  <action-group name="action-account-move-group-compute-budget-distribution">
+    <action name="action-validate-budget-recompute-budget-distribution"/>
+    <action name="action-method-budget-move-compute-budget-distribution"/>
+  </action-group>
+
+  <action-group name="action-budget-move-accounting-validate-group">
+    <action name="action-method-validate-budget-no-compute-budget-distribution"/>
+    <action name="action-method-budget-move-validate-budget-balance"/>
+  </action-group>
+
+  <action-group name="action-budget-move-accounting-click">
+    <action name="action-budget-move-accounting-validate-group"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-account-move-group-accounting-click"/>
+  </action-group>
+
+  <action-method name="action-method-budget-move-validate-budget-balance">
+    <call class="com.axelor.apps.budget.web.MoveController" method="validateBudgetBalance"/>
+  </action-method>
+
+  <action-method name="action-method-validate-budget-no-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.MoveController" method="checkBudgetDistribution"/>
+  </action-method>
+
+</object-views>

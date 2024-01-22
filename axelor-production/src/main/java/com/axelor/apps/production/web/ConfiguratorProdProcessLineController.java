@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,9 +40,8 @@ public class ConfiguratorProdProcessLineController {
           request.getContext().asType(ConfiguratorProdProcessLine.class);
       WorkCenter workCenter = confProdProcessLine.getWorkCenter();
       if (workCenter != null) {
-        response.setValue(
-            "durationPerCycle",
-            Beans.get(WorkCenterService.class).getDurationFromWorkCenter(workCenter));
+        response.setValue("durationPerCycle", workCenter.getDurationPerCycle());
+        response.setValue("humanDuration", workCenter.getHrDurationPerCycle());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

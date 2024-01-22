@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ResearchPrimaryKey">
+
+    <string name="name" title="Name" namecolumn="true"/>
+    <string name="code" title="Code" unique="true"/>
+    <string name="typeSelect" title="Type" selection="research.primary.key.type.select"
+      default="String"/>
+    <one-to-many name="researchParameterList"
+      ref="com.axelor.apps.base.db.ResearchParameter" title="Research parameters"
+      mappedBy="researchPrimaryKey"/>
+
+
+    <extra-code>
+	<![CDATA[
+		public static final String RESEARCH_PRIMARY_TYPE_SELECT_TEXT = "String";
+		public static final String RESEARCH_PRIMARY_TYPE_SELECT_LOCAL_DATE = "LocalDate";
+	]]>
+    </extra-code>
+  </entity>
+
+
+</domain-models>

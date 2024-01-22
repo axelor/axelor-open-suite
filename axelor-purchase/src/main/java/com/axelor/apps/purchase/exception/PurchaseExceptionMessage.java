@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -67,8 +67,6 @@ public final class PurchaseExceptionMessage {
       "Please select the purchase order(s) to print." /*)*/;
   public static final String PURCHASE_ORDER_MISSING_PRINTING_SETTINGS = /*$$(*/
       "Please fill printing settings on purchase order %s" /*)*/;
-  public static final String PURCHASE_ORDERS_MISSING_PRINTING_SETTINGS = /*$$(*/
-      "Please fill printing settings on following purchase orders: %s" /*)*/;
 
   public static final String PURCHASE_REQUEST_1 = /*$$(*/
       "There is no sequence set for the purchase requests for the company %s" /*)*/;

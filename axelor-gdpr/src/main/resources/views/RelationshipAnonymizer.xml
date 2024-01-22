@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Relationship anonymizer" name="gdpr-relationship-anonymizer-grid"
+    model="com.axelor.apps.gdpr.db.RelationshipAnonymizer">
+    <field name="model"/>
+    <field name="modelId"/>
+  </grid>
+  <form model="com.axelor.apps.gdpr.db.RelationshipAnonymizer" title="Relationship Anonymizer"
+    name="gdpr-relationship-anonymizer-form">
+    <panel name="mainPanel">
+      <field name="model"/>
+      <field name="modelId"/>
+    </panel>
+  </form>
+
+
+</object-views>

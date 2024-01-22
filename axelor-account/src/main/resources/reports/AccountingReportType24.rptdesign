@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202108150822</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1596,7 +1596,7 @@ LEFT JOIN account_invoice_term as InvoiceTerm on (InvoiceTerm.invoice = Invoice.
 LEFT JOIN account_invoice_term_payment as InvoiceTermPayment on (InvoiceTermPayment.invoice_term = InvoiceTerm.id) 
 LEFT JOIN account_invoice_payment as InvoicePayment on (InvoiceTermPayment.invoice_payment = InvoicePayment.id) 
 WHERE Invoice.status_select = 3 AND
-(AccountingReport.currency = Move.company_currency) AND
+(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.company_currency) AND
 (AccountingReport.date_from IS NULL OR Invoice.invoice_date >= AccountingReport.date_from) AND 
 (AccountingReport.date_to IS NULL OR Invoice.invoice_date <= AccountingReport.date_to) AND
 (Move.company = AccountingReport.company) AND

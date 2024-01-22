@@ -50,7 +50,6 @@
         <field name="footerTextAlignment" colSpan="4"/>
         <field name="footerFontSize" colSpan="4"/>
         <field name="footerFontColor" colSpan="4"/>
-        <field name="isFooterUnderLine" colSpan="4"/>
       </panel>
       <panel-related name="printTemplateLineListPanel" field="printTemplateLineList"
         grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12"

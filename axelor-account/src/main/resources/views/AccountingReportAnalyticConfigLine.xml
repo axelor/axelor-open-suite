@@ -15,8 +15,10 @@
   <form title="Analytic rule" name="accounting-report-analytic-config-line-form"
     model="com.axelor.apps.account.db.AccountingReportAnalyticConfigLine">
     <panel name="mainPanel">
-      <field name="ruleLevel"/>
+      <field name="ruleLevel" validIf="!$isNotValidRuleLevel"
+        onChange="action-accounting-report-analytic-config-line-attrs-set-is-valid-rule-level"/>
       <field name="typeSelect"/>
+      <field name="$isNotValidRuleLevel" type="boolean" hidden="true"/>
       <panel name="analyticAccountPanel" stacked="true" colSpan="12" itemSpan="12">
         <field name="analyticAccountCode" showIf="typeSelect == 1"
           requiredIf="typeSelect == 1"/>
@@ -29,4 +31,10 @@
       </panel>
     </panel>
   </form>
+
+  <action-attrs
+    name="action-accounting-report-analytic-config-line-attrs-set-is-valid-rule-level">
+    <attribute name="value" for="$isNotValidRuleLevel"
+      expr="call: com.axelor.apps.account.service.AccountingReportAnalyticConfigLineService:getIsNotValidRuleLevel(ruleLevel)"/>
+  </action-attrs>
 </object-views>

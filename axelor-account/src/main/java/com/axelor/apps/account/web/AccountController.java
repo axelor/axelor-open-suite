@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -44,6 +45,8 @@ import com.axelor.utils.MassUpdateTool;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class AccountController {
@@ -108,7 +111,11 @@ public class AccountController {
     try {
       Account account = request.getContext().asType(Account.class);
       Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
+          .checkAnalyticAxis(
+              account,
+              account.getAnalyticDistributionTemplate(),
+              account.getAnalyticDistributionRequiredOnMoveLines(),
+              account.getAnalyticDistributionRequiredOnInvoiceLines());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -270,7 +277,11 @@ public class AccountController {
       analyticDistributionTemplateService.verifyTemplateValues(
           account.getAnalyticDistributionTemplate());
       Beans.get(AccountService.class)
-          .checkAnalyticAxis(account, account.getAnalyticDistributionTemplate());
+          .checkAnalyticAxis(
+              account,
+              account.getAnalyticDistributionTemplate(),
+              account.getAnalyticDistributionRequiredOnMoveLines(),
+              account.getAnalyticDistributionRequiredOnInvoiceLines());
       analyticDistributionTemplateService.validateTemplatePercentages(
           account.getAnalyticDistributionTemplate());
     } catch (Exception e) {
@@ -287,6 +298,29 @@ public class AccountController {
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void setParentAccountDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Account account = request.getContext().asType(Account.class);
+      String domain =
+          "self.company.id = "
+              + Optional.ofNullable(account.getCompany()).map(Company::getId).orElse(null);
+      if (account.getId() != null) {
+        List<Long> allAccountsSubAccountIncluded =
+            Beans.get(AccountService.class)
+                .getAllAccountsSubAccountIncluded(List.of(account.getId()));
+        domain +=
+            " AND self.id NOT IN ("
+                + allAccountsSubAccountIncluded.stream()
+                    .map(Object::toString)
+                    .collect(Collectors.joining(","))
+                + ")";
+      }
+      response.setAttr("parentAccount", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

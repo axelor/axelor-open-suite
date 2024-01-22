@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,20 +35,6 @@ import java.util.Map;
 
 @Singleton
 public class ProdProcessLineController {
-
-  public void updateDuration(ActionRequest request, ActionResponse response) {
-    try {
-      ProdProcessLine prodProcess = request.getContext().asType(ProdProcessLine.class);
-      WorkCenter workCenter = prodProcess.getWorkCenter();
-      if (workCenter != null) {
-        response.setValue(
-            "durationPerCycle",
-            Beans.get(WorkCenterService.class).getDurationFromWorkCenter(workCenter));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
 
   public void updateCapacitySettings(ActionRequest request, ActionResponse response) {
     try {

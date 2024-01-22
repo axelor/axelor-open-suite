@@ -29,6 +29,8 @@ jobs:
       run: cd open-suite-webapp && ./gradlew spotlessCheck
     - name: Check that CSV files use the correct CR/LF EOL char (\r\n)
       run: cd open-suite-webapp && ./gradlew checkCsvEOL
+    - name: Check that rptdesign files do not have credentials
+      run: cd open-suite-webapp && ./gradlew checkBirtCredentials
     - name: Check changelog generation with gradle task
       run: cd open-suite-webapp && ./gradlew generateChangelog
     - name: Build without tests

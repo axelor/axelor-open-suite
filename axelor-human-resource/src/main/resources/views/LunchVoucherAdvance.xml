@@ -12,7 +12,7 @@
     <field name="lunchVoucherEmployersShare"/>
     <field name="comments"/>
     <button name="printLunchVoucherAdvanceBtn" title="Print" icon="fa-print"
-      onClick="action-lunch-voucher-advance-print"/>
+      onClick="action-method-print-birt"/>
   </grid>
 
   <form name="lunch-voucher-advance-form" title="Lunch voucher advance"
@@ -93,11 +93,6 @@
   <action-method name="action-lunch-voucher-advance-checkNewAdvance">
     <call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherAdvanceController"
       method="checkOnNewAdvance"/>
-  </action-method>
-
-  <action-method name="action-lunch-voucher-advance-print">
-    <call class="com.axelor.apps.hr.web.lunch.voucher.LunchVoucherAdvanceController"
-      method="print"/>
   </action-method>
 
 </object-views>

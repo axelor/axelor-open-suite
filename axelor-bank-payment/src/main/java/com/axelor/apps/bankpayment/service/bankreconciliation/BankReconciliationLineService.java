@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -121,20 +121,10 @@ public class BankReconciliationLineService {
     BigDecimal moveLineCredit;
 
     if (isDebit) {
-      if (BankReconciliationToolService.isForeignCurrency(
-          bankReconciliationLine.getBankReconciliation())) {
-        moveLineCredit = moveLine.getCurrencyAmount();
-      } else {
-        moveLineCredit = moveLine.getCredit();
-      }
+      moveLineCredit = moveLine.getCurrencyAmount().abs();
       moveLineDebit = moveLine.getDebit();
     } else {
-      if (BankReconciliationToolService.isForeignCurrency(
-          bankReconciliationLine.getBankReconciliation())) {
-        moveLineDebit = moveLine.getCurrencyAmount();
-      } else {
-        moveLineDebit = moveLine.getDebit();
-      }
+      moveLineDebit = moveLine.getCurrencyAmount().abs();
       moveLineCredit = moveLine.getCredit();
     }
 

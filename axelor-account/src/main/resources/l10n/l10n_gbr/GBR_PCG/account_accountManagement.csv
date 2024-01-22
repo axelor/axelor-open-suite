@@ -1,0 +1,13 @@
+"typeSelect";"product_importId";"tax_code";"productFamily_importId";"paymentMode_importId";"saleAccount_code";"saleTaxVatSystem1Account_code";"saleTaxVatSystem2Account_code";"saleTax_code";"purchaseAccount_code";"purchaseTaxVatSystem1Account_code";"purchaseTaxVatSystem2Account_code";"purchaseTax_code";"cashAccount_code";"journal_importId";"sequence_importId";"bankDetails_importId";"purchFixedAssetsAccount_code";"purchFixedAssetsTaxVatSystem1Account_code";"purchFixedAssetsTaxVatSystem2Account_code";"fixedAssetCategory_importId";"interbankCodeLine_importId";"allowedFinDiscountTaxVatSystem1Account_code";"allowedFinDiscountTaxVatSystem2Account_code";"obtainedFinDiscountTaxVatSystem1Account_code";"obtainedFinDiscountTaxVatSystem2Account_code";"purchVatRegulationAccount_code";"saleVatRegulationAccount_code";"globalAccountingCashAccount_code";"chequeDepositJournal_code";"financialDiscountAccount_code"
+2;;"UK_SRT";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_SRS_20";;;220000;220000;220000;;;;;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_SRS_17";;;220000;220000;220000;;;;;;;;;;;;;;;;;;;;;;;
+2;;"UK_ZRP";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_ZRP_EC";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_STC_EC";;;220000;220000;220000;;;;;;;;;;;;;;;;;;;;;;;
+2;;"UK_LRP";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_SRP";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_SRP_EC";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_EP";;;;;;;;220100;220100;;;;;;220100;220100;220100;;;;;;;;;;;
+2;;"UK_ES";;;220000;220000;220000;;;;;;;;;;;;;;;;;;;;;;;
+2;;"UK_ZRS";;;220000;220000;220000;;;;;;;;;;;;;;;;;;;;;;;

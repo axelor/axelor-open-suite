@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveManagementRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
+import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
@@ -44,8 +45,14 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       LeaveManagementService leaveManagementService,
       LeaveLineRepository leaveLineRepository,
       LeaveManagementRepository leaveManagementRepository,
-      EmployeeService employeeService) {
-    super(leaveManagementService, leaveLineRepository, leaveManagementRepository, employeeService);
+      EmployeeService employeeService,
+      LeaveLineService leaveLineService) {
+    super(
+        leaveManagementService,
+        leaveLineRepository,
+        leaveManagementRepository,
+        employeeService,
+        leaveLineService);
   }
 
   @Override

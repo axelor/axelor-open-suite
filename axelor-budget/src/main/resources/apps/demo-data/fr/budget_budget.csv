@@ -1,0 +1,63 @@
+"importId";"budgetLevel.importId";"globalBudget.importId";"code";"name";"totalAmountExpected";"availableAmount";"availableAmountWithSimulated";"fromDate";"toDate";"typeSelect";"statusSelect";"companyImportId";"accountSet";"analyticAxis.importId";"analyticAccount.importId";"category"
+11;14;11;"SITE WEB";"SITE WEB";400;400;400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602110;1;1;1
+12;14;11;"RADIO";"RADIO";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602120;1;1;1
+13;15;11;"BUREAUX";"BUREAUX";1600;1600;1600;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602110;1;2;1
+14;15;11;"ORDINATEUR";"ORDINATEUR";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602200;1;1;1
+31;34;31;"SITE WEB";"SITE WEB";400;400;400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;203000;1;1;1
+32;34;31;"RADIO";"RADIO";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;206000;1;1;1
+33;35;31;"BUREAUX";"BUREAUX";1600;1600;1600;"TODAY[1d]";"TODAY[30d]";"budget";1;1;203000;1;2;1
+34;35;31;"ORDINATEUR";"ORDINATEUR";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;207000;1;1;1
+200;204;21;"Signés";"Signés";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;701000;1;1;6
+201;204;21;"Terminés";"Terminés";49900;49900;49900;"TODAY[1d]";"TODAY[30d]";"budget";1;1;701200;1;1;6
+202;205;21;"Salle 1";"Salle 1";9000;9000;9000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;702000;1;1;6
+203;205;21;"Salle 2";"Salle 2";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;703000;1;1;6
+204;206;21;"Espèces";"Espèces";5000;5000;5000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;704000;1;1;6
+205;206;21;"Cartes bancaires";"Cartes bancaires";8000;8000;8000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;704100;1;1;6
+206;206;21;"Chèques";"Chèques";2700;2700;2700;"TODAY[1d]";"TODAY[30d]";"budget";1;1;704200;1;1;6
+207;207;21;"URSSAF";"URSSAF";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;705000;1;1;7
+208;208;21;"Prime d’emploi";"Prime d’emploi";1200;1200;1200;"TODAY[1d]";"TODAY[30d]";"budget";1;1;706000;1;1;7
+209;209;21;"Caisse d’épargne";"Caisse d’épargne";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707000;1;1;7
+210;210;21;"CIC";"CIC";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707100;1;1;7
+211;211;21;"Apports personnels";"Apports personnels";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;707200;1;1;7
+400;412;41;"Matériaux 1";"Matériaux 1";13000;13000;13000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201000;1;1;6
+401;412;41;"Matériaux 2";"Matériaux 2";9000;9000;9000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201100;1;1;6
+402;413;41;"Produits pour vente 1";"Produits pour vente 1";15000;15000;15000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201200;1;1;6
+403;413;41;"Produits pour vente 2";"Produits pour vente 2";6500;6500;6500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201210;1;1;6
+404;414;41;"Immobilisations";"Immobilisations";2000;2000;2000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;201300;1;1;8
+405;415;41;"Intérim";"Intérim";3500;3500;3500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;203000;1;1;6
+406;416;41;"Salariés";"Salariés";3400;3400;3400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;205000;1;1;6
+407;417;41;"Gérant";"Gérant";2800;2800;2800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;206000;1;1;6
+408;418;41;"Cotisations sociales";"Cotisations sociales";3300;3300;3300;"TODAY[1d]";"TODAY[30d]";"budget";1;1;207000;1;1;6
+409;418;41;"URSSAF";"URSSAF";1400;1400;1400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;208000;1;1;6
+410;418;41;"Mutuelle";"Mutuelle";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;211000;1;1;6
+411;419;41;"Internet";"Internet";79;79;79;"TODAY[1d]";"TODAY[30d]";"budget";1;1;211100;1;1;6
+412;420;41;"Logiciel 1";"Logiciel 1";48;48;48;"TODAY[1d]";"TODAY[30d]";"budget";1;1;211200;1;1;8
+413;420;41;"Logiciel 2";"Logiciel 2";69;69;69;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601000;1;1;8
+414;421;41;"Flotte téléphonique";"Flotte téléphonique";220;220;220;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601100;1;1;6
+415;422;41;"Electricité des locaux";"Electricité des locaux";890;890;890;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601200;1;1;6
+416;423;41;"Eau";"Eau";190;190;190;"TODAY[1d]";"TODAY[30d]";"budget";1;1;601700;1;1;6
+417;424;41;"Moteurs de recherche";"Moteurs de recherche";380;380;380;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602000;1;1;6
+418;425;41;"Réseaux sociaux";"Réseaux sociaux";630;630;630;"TODAY[1d]";"TODAY[30d]";"budget";1;1;602100;1;1;6
+419;426;41;"Salons";"Salons";1300;1300;1300;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603000;1;1;6
+420;427;41;"Expert comptable";"Expert comptable";450;450;450;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603100;1;1;6
+421;428;41;"Juridique";"Juridique";900;900;900;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603200;1;1;6
+422;429;41;"Sous traitance";"Sous traitance";4500;4500;4500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;603700;1;1;6
+423;430;41;"Transports/péages/Carburant";"Transports/péages/Carburant";900;900;900;"TODAY[1d]";"TODAY[30d]";"budget";1;1;604000;1;1;6
+424;431;41;"Hotels";"Hotels";2000;2000;2000;"TODAY[1d]";"TODAY[30d]";"budget";1;1;605000;1;1;6
+425;432;41;"Restaurants";"Restaurants";1800;1800;1800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606000;1;1;6
+426;433;41;"Local entreprise";"Local entreprise";2200;2200;2200;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606100;1;1;6
+427;434;41;"Locaux & Salles";"Locaux & Salles";550;550;550;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606300;1;1;6
+428;435;41;"Véhicules";"Véhicules";710;710;710;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606400;1;1;6
+429;436;41;"Gérant";"Gérant";79;79;79;"TODAY[1d]";"TODAY[30d]";"budget";1;1;606800;1;1;6
+430;437;41;"Assurance liés à l’exercice de l’activité";"Assurance liés à l’exercice de l’activité";1100;1100;1100;"TODAY[1d]";"TODAY[30d]";"budget";1;1;607000;1;1;6
+431;438;41;"Caisse d’épargne";"Caisse d’épargne";2300;2300;2300;"TODAY[1d]";"TODAY[30d]";"budget";1;1;607100;1;1;7
+432;438;41;"CIC";"CIC";800;800;800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;607200;1;1;7
+433;439;41;"Taux d’intérêts";"Taux d’intérêts";149;149;149;"TODAY[1d]";"TODAY[30d]";"budget";1;1;608000;1;1;6
+434;439;41;"Frais de tenue de compte";"Frais de tenue de compte";119;119;119;"TODAY[1d]";"TODAY[30d]";"budget";1;1;609000;1;1;6
+435;440;41;"Cotisation foncière";"Cotisation foncière";800;800;800;"TODAY[1d]";"TODAY[30d]";"budget";1;1;609100;1;1;6
+436;441;41;"Taxe d’apprentissage";"Taxe d’apprentissage";490;490;490;"TODAY[1d]";"TODAY[30d]";"budget";1;1;611000;1;1;6
+437;442;41;"Impôt sur les sociétés (IS)";"Impôt sur les sociétés (IS)";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;612000;1;1;9
+438;443;41;"TVA";"TVA";0;0;0;"TODAY[1d]";"TODAY[30d]";"budget";1;1;612200;1;1;9
+439;444;41;"Cadeaux et fournitures clients";"Cadeaux et fournitures clients";500;500;500;"TODAY[1d]";"TODAY[30d]";"budget";1;1;612500;1;1;6
+440;445;41;"Remboursement clients";"Remboursement clients";3400;3400;3400;"TODAY[1d]";"TODAY[30d]";"budget";1;1;613000;1;1;6
+441;446;41;"Courses diverses";"Courses diverses";430;430;430;"TODAY[1d]";"TODAY[30d]";"budget";1;1;613200;1;1;6

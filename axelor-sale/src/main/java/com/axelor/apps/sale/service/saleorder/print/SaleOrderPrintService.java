@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,8 +33,9 @@ public interface SaleOrderPrintService {
    * @param ids ids of the sale order.
    * @return the link to the generated file.
    * @throws IOException
+   * @throws AxelorException
    */
-  String printSaleOrders(List<Long> ids) throws IOException;
+  String printSaleOrders(List<Long> ids) throws IOException, AxelorException;
 
   ReportSettings prepareReportSettings(SaleOrder saleOrder, boolean proforma, String format)
       throws AxelorException;

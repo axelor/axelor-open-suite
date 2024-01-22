@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,14 +20,11 @@ package com.axelor.apps.account.service.app;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppAccount;
-import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.AppInvoice;
 
 public interface AppAccountService extends AppBaseService {
 
   public AppAccount getAppAccount();
-
-  public AppBudget getAppBudget();
 
   public AppInvoice getAppInvoice();
 

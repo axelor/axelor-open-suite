@@ -41,12 +41,6 @@
     <option value="forecast">Forecast</option>
   </selection>
 
-  <selection name="forecast.recap.report.type.select">
-    <option value="pdf">PDF</option>
-    <option value="xlsx">XLS</option>
-    <option value="ods">ODS</option>
-  </selection>
-
   <selection name="forecast.recap.line.type.element.select">
     <option value="1">Invoice</option>
     <option value="2">Sale order</option>

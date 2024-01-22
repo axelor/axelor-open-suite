@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,9 @@ import java.math.BigDecimal;
 
 public interface WorkCenterService {
 
-  public Long getDurationFromWorkCenter(WorkCenter workCenter);
+  public long getMachineDurationFromWorkCenter(WorkCenter workCenter);
+
+  public long getHumanDurationFromWorkCenter(WorkCenter workCenter);
 
   public BigDecimal getMinCapacityPerCycleFromWorkCenter(WorkCenter workCenter);
 

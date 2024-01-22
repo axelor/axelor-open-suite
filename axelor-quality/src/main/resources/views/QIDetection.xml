@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="qi-detection-grid" title="Detections"
+    model="com.axelor.apps.quality.db.QIDetection">
+    <field name="code"/>
+    <field name="name"/>
+    <field name="origin"/>
+    <field name="isProductOrigin"/>
+    <field name="isSystemOrigin"/>
+    <field name="isCausalAnalysis"/>
+  </grid>
+
+  <form name="qi-detection-form" title="Detection"
+    model="com.axelor.apps.quality.db.QIDetection">
+    <panel name="mainPanel">
+      <field name="code"/>
+      <field name="name"/>
+      <field name="origin" colSpan="12" hideIf="!isProductOrigin"
+        validIf="!isProductOrigin || (isProductOrigin &amp;&amp; origin > 0)"/>
+      <field name="isProductOrigin" colSpan="4"
+        onChange="action-qi-detection-record-set-is-system-origin"/>
+      <field name="isSystemOrigin" colSpan="4"
+        onChange="action-qi-detection-group-is-system-origin-on-change"/>
+      <field name="isCausalAnalysis" colSpan="4"/>
+    </panel>
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <action-group name="action-qi-detection-group-is-system-origin-on-change">
+    <action name="action-qi-detection-record-set-is-product-origin"/>
+    <action name="action-qi-detection-record-set-origin"/>
+  </action-group>
+
+  <action-record name="action-qi-detection-record-set-is-product-origin"
+    model="com.axelor.apps.quality.db.QIDetection">
+    <field name="isProductOrigin" expr="false" if="isSystemOrigin"/>
+  </action-record>
+
+  <action-record name="action-qi-detection-record-set-is-system-origin"
+    model="com.axelor.apps.quality.db.QIDetection">
+    <field name="isSystemOrigin" expr="false" if="isProductOrigin"/>
+  </action-record>
+
+  <action-record name="action-qi-detection-record-set-origin"
+    model="com.axelor.apps.quality.db.QIDetection">
+    <field name="origin" expr="eval: 0" if="!isProductOrigin"/>
+  </action-record>
+
+</object-views>

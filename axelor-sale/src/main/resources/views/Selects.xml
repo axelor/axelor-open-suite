@@ -48,6 +48,8 @@
   </selection>
 
   <selection name="product.periodicity.subscription.select">
+    <option value="7">Weekly</option>
+    <option value="14">Fortnightly</option>
     <option value="1">Monthly</option>
     <option value="2">Bi-monthly</option>
     <option value="3">Quarterly</option>
@@ -92,6 +94,15 @@
 
   <selection name="batch.batch.type.select" id="sale.batch.batch.type.select">
     <option value="800">Sale batch</option>
+  </selection>
+
+  <selection id="sale.research.model.selection" name="research.model.selection">
+    <option value="com.axelor.apps.sale.db.SaleOrder">Sale Order</option>
+  </selection>
+
+  <selection name="sale.sale.order.line.tree.select">
+    <option value="1">View</option>
+    <option value="2">Product</option>
   </selection>
 
 </object-views>

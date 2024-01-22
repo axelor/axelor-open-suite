@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIResolutionDecision">
+
+    <many-to-one name="qiResolution" title="Resolution"
+      ref="com.axelor.apps.quality.db.QIResolution" required="true" readonly="true"/>
+    <many-to-one name="qiDecision" title="Decision"
+      ref="com.axelor.apps.quality.db.QIDecision" required="true"/>
+    <decimal name="quantity" title="Quantity"/>
+    <string name="description" title="Description" large="true"/>
+    <many-to-one name="qiResolutionDefault" title="Default"
+      ref="com.axelor.apps.quality.db.QIResolutionDefault" required="true"/>
+    <integer name="responsible" title="Responsible" required="true"
+      selection="quality.qi.resolution.decision.responsible.select" default="1"/>
+    <many-to-one name="responsiblePartner" title="Responsible name"
+      ref="com.axelor.apps.base.db.Partner" required="true"/>
+    <string name="documentReference" title="Document reference"/>
+    <decimal name="fixedAmount" title="Fixed amount"/>
+    <decimal name="directCost" title="Direct cost"/>
+    <decimal name="totalCost" title="Total Cost"/>
+    <integer name="acceptance" title="Acceptance" readonly="true"
+      selection="quality.qi.resolution.decision.acceptance.select" default="1"/>
+    <decimal name="acceptedQty" title="Accepted quantity"/>
+    <decimal name="rejectedQty" title="Rejected quantity"/>
+
+    <extra-code><![CDATA[
+	    public static final int RESPONSIBLE_EMPLOYEE = 1;
+	    public static final int RESPONSIBLE_CUSTOMER = 2;
+	    public static final int RESPONSIBLE_SUPPLIER = 3;
+	    public static final int RESPONSIBLE_CUSTOMER_CONTACT = 4;
+	    public static final int RESPONSIBLE_SUPPLIER_CONTACT = 5;
+
+	    public static final int ACCEPTANCE_NONE = 1;
+	    public static final int ACCEPTANCE_WAITING = 2;
+	    public static final int ACCEPTANCE_ACCEPTED = 3;
+	    public static final int ACCEPTANCE_REJECTED = 4;
+	    public static final int ACCEPTANCE_PARTIALLY_ACCEPTED = 5;
+	]]></extra-code>
+
+    <track>
+      <field name="qiResolution"/>
+      <field name="qiDecision"/>
+      <field name="quantity"/>
+      <field name="description"/>
+      <field name="qiResolutionDefault"/>
+      <field name="responsible"/>
+      <field name="responsiblePartner"/>
+      <field name="documentReference"/>
+      <field name="fixedAmount"/>
+      <field name="directCost"/>
+      <field name="totalCost"/>
+      <field name="acceptance"/>
+      <field name="acceptedQty"/>
+      <field name="rejectedQty"/>
+    </track>
+
+  </entity>
+
+</domain-models>

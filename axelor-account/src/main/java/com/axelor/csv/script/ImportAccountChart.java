@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,11 +54,11 @@ public class ImportAccountChart {
     String[] files =
         new String[] {
           "account_account.csv",
+          "account_fiscalPosition.csv",
           "account_accountEquiv.csv",
           "account_accountType.csv",
-          "account_fiscalPosition.csv",
           "account_tax.csv",
-          "account_taxAccount.csv",
+          "account_accountManagement.csv",
           "account_taxEquiv.csv",
           "account_taxLine.csv"
         };
@@ -88,7 +88,7 @@ public class ImportAccountChart {
   protected File getZipFile(AccountChart accountChart) throws IOException {
 
     File directory = this.getDataFile(accountChart);
-    String fileName = accountChart.getCode() + "_" + accountChart.getCountryCode() + ".zip";
+    String fileName = accountChart.getCode() + ".zip";
 
     File zipFile = new File(directory.getParent(), fileName);
 

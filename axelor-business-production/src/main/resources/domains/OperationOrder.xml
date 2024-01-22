@@ -11,7 +11,8 @@
 
     <one-to-many name="timesheetLineList" ref="com.axelor.apps.hr.db.TimesheetLine"
       mappedBy="operationOrder" title="Timesheet lines"/>
-
+    <many-to-many name="employeeSet" ref="com.axelor.apps.hr.db.Employee"
+      title="Employees"/>
 
   </entity>
 </domain-models>

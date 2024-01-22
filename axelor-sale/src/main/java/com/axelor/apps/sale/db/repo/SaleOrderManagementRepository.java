@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,7 +55,6 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
     copy.setTotalCostPrice(null);
     copy.setTotalGrossMargin(null);
     copy.setMarginRate(null);
-    copy.setEndOfValidityDate(null);
     copy.setEstimatedShippingDate(null);
     copy.setOrderBeingEdited(false);
     if (copy.getAdvancePaymentAmountNeeded().compareTo(copy.getAdvanceTotal()) <= 0) {
@@ -71,6 +70,7 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
         saleOrderLine.setDiscountDerogation(null);
       }
     }
+    Beans.get(SaleOrderService.class).computeEndOfValidityDate(copy);
 
     return copy;
   }

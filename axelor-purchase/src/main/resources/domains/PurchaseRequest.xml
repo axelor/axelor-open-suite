@@ -12,7 +12,7 @@
       title="Supplier"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="purchaseOrder" ref="com.axelor.apps.purchase.db.PurchaseOrder"
-      title="Purchase order"/>
+      title="Purchase order" copy="false"/>
     <integer name="statusSelect" title="Status" selection="purchase.request.status.select"
       default="1"/>
     <string name="purchaseRequestSeq" title="Ref."/>

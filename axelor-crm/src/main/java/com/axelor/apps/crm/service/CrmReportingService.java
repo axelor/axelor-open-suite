@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,15 @@
 package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.crm.db.CrmReporting;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import java.util.Set;
 
 public interface CrmReportingService {
 
   public ActionViewBuilder createActionViewBuilder(CrmReporting crmReporting, Class<?> klass)
       throws ClassNotFoundException, AxelorException;
+
+  Set<Company> prefillCompanySet(CrmReporting crmReporting);
 }

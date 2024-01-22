@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -210,8 +210,7 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
   protected void createBankOrders(Batch batch, Reconcile reconcile)
       throws AxelorException, JAXBException, IOException, DatatypeConfigurationException {
 
-    for (InvoicePayment invoicePayment :
-        invoicePaymentRepo.findByReconcileId(reconcile.getId()).fetch()) {
+    for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       if (invoicePayment.getBankOrder() != null) {
         continue;
       }

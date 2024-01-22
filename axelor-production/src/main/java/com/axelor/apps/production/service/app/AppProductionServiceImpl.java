@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,7 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).fetchOne();
+    return Query.of(AppProduction.class).autoFlush(false).fetchOne();
   }
 
   @Override
@@ -89,5 +89,10 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
         .createQuery(
             "UPDATE Partner self SET self.isSubcontractor = FALSE WHERE self.isSubcontractor IS TRUE")
         .executeUpdate();
+  }
+
+  @Override
+  public boolean getIsCostPerProcessLine() {
+    return getAppProduction().getIsCostPerProcessLine();
   }
 }

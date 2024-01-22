@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,12 @@ public final class QualityExceptionMessage {
 
   private QualityExceptionMessage() {}
 
-  public static final String QUALITY_CONTROL_MISSING_PRINTING_SETTINGS = /*$$(*/
-      "Please fill printing settings on quality control" /*)*/;
+  public static final String QUALITY_IMPROVEMENT_SEQUENCE_ERROR = /*$$(*/
+      "The company %s doesn't have any configured sequence for Quality improvement" /*)*/;
+
+  public static final String QI_RESOLUTION_DECISION_INVALID_SUM_OF_QUANTITIES = /*$$(*/
+      "Sum of quantities of the decisions for a default must not be greater than the default's quantity" /*)*/;
+
+  public static final String DEFAULT_QI_STATUS_NOT_FOUND = /*$$(*/
+      "No status have been found for the QA, please register at least one in the configurations" /*)*/;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,12 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
+import java.util.List;
 
 public interface MoveLineTaxService {
 
-  void autoTaxLineGenerate(Move move, Account account) throws AxelorException;
+  void autoTaxLineGenerate(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException;
 
   void autoTaxLineGenerateNoSave(Move move) throws AxelorException;
 
@@ -36,7 +38,8 @@ public interface MoveLineTaxService {
    * @param move
    * @throws AxelorException
    */
-  void autoTaxLineGenerateNoSave(Move move, Account account) throws AxelorException;
+  void autoTaxLineGenerateNoSave(Move move, Account account, boolean percentMoveTemplate)
+      throws AxelorException;
 
   MoveLine computeTaxAmount(MoveLine moveLine) throws AxelorException;
 
@@ -47,7 +50,13 @@ public interface MoveLineTaxService {
       MoveLine customerPaymentMoveLine, MoveLine invoiceMoveLine, Reconcile reconcile)
       throws AxelorException;
 
+  boolean isGenerateMoveLineForAutoTax(String accountType);
+
   int getVatSystem(Move move, MoveLine moveline) throws AxelorException;
 
-  void checkTaxMoveLines(Move move) throws AxelorException;
+  void checkDuplicateTaxMoveLines(Move move) throws AxelorException;
+
+  void checkEmptyTaxLines(List<MoveLine> moveLineList) throws AxelorException;
+
+  boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect);
 }

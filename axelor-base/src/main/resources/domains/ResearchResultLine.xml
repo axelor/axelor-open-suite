@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ResearchResultLine">
+
+    <many-to-one name="researchRequest" ref="com.axelor.apps.base.db.ResearchRequest"/>
+
+    <string name="originTypeSelect" title="Origin Type" selection="research.model.selection"/>
+    <long name="originId" title="Origin Id"/>
+    <string name="origin" readonly="true" title="Origin"/>
+    <string name="research1Value" title="Value 1"/>
+    <string name="research2Value" title="Value 2"/>
+    <string name="research3Value" title="Value 3"/>
+    <string name="research4Value" title="Value 4"/>
+    <date name="dateResearch1Value" title="Date 1"/>
+
+  </entity>
+
+
+</domain-models>

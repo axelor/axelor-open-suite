@@ -382,7 +382,7 @@
                     <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name, 
+            <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name,
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
@@ -400,7 +400,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "<30days",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 30
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 60
@@ -409,7 +409,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "30<days<60",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 60
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 90
@@ -418,7 +418,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "60<days<90",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 90
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 120
@@ -427,7 +427,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "90<days<120",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 120
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 150
@@ -436,7 +436,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "120<days<150",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 150
 	AND AccountingReport.date_val - InvoiceTerm.due_date <= 180
@@ -445,7 +445,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "150<days<180",
 SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 180
 then
@@ -453,7 +453,7 @@ then
 THEN InvoiceTerm.company_amount_remaining * -1
 ELSE InvoiceTerm.company_amount_remaining
 END)
-else 0   
+else 0
 END) as "180<days",
 SUM(CASE WHEN MoveLine.debit - MoveLine.credit < 0
 THEN InvoiceTerm.company_amount_remaining * -1
@@ -471,14 +471,14 @@ left outer join public.account_accounting_report_account_set as AccountSet on (A
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
-(AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND 
+(AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND
 (AccountingReport.date_to IS NULL OR InvoiceTerm.due_date <= AccountingReport.date_to) AND
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
 (Move.functional_origin_select = 3 or Move.functional_origin_select = 4) and
 Account.reconcile_ok = true AND InvoiceTerm.amount_remaining != 0
-AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR Move.status_select = 2 OR (Move.status_select = 5 AND AccountingReport.display_simulated_move))
+AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (AccountingReport.display_closing_accounting_moves is true 
 	OR(AccountingReport.display_closing_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 2)))
@@ -546,12 +546,6 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                     <text-property name="heading">currency</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">display_simulated_move</property>
-                    <property name="analysis">measure</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <text-property name="heading">display_simulated_move</text-property>
-                </structure>
-                <structure>
                     <property name="columnName">ref</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">ref</text-property>
@@ -615,11 +609,6 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">display_simulated_move</property>
-                        <property name="dataType">integer</property>
-                    </structure>
-                    <structure>
-                        <property name="position">10</property>
                         <property name="name">ref</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -685,13 +674,6 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">display_simulated_move</property>
-                    <property name="nativeName">display_simulated_move</property>
-                    <property name="dataType">integer</property>
-                    <property name="nativeDataType">-7</property>
-                </structure>
-                <structure>
-                    <property name="position">10</property>
                     <property name="name">ref</property>
                     <property name="nativeName">ref</property>
                     <property name="dataType">string</property>
@@ -700,7 +682,7 @@ group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,Move
             </list-property>
             <xml-property name="queryText"><![CDATA[select Company.name as comapny_name, Period.name as period_name, AccountingReport.detailed , 
 AccountingReport.date_to, AccountingReport.date_from, AccountingReport.date_val as "date", AccountingReport.publication_date_time as "ReportDateEdition" ,
-Currency.code as currency, AccountingReport.display_simulated_move as display_simulated_move, AccountingReport.ref
+Currency.code as currency, AccountingReport.ref
 from public.account_accounting_report as AccountingReport
 inner join public.base_company as Company on (AccountingReport.id = ? and AccountingReport.company = Company.id)
 left outer join public.base_period as Period on (AccountingReport.period = Period.id)
@@ -1133,13 +1115,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-prope
                     <text-property name="displayName">currency</text-property>
                     <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                     <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">display_simulated_move</property>
-                    <text-property name="displayName">display_simulated_move</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["display_simulated_move"]</expression>
-                    <property name="dataType">boolean</property>
-                    <property name="allowExport">true</property>
                 </structure>
             </list-property>
             <column id="491">

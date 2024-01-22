@@ -32,15 +32,9 @@
         showIf="typeSelect == 1"/>
       <button name="sendReminderBtn" title="Send reminder"
         onClick="save,action-human-resource-method-send-timesheet-reminder" showIf="typeSelect == 1"/>
-      <button name="printBtn" title="Print"
-        onClick="save,action-human-resource-method-print-timesheet-report"/>
+      <button name="printBtn" title="Print" onClick="save,action-method-print-birt"/>
     </panel>
   </form>
-
-  <action-method name="action-human-resource-method-print-timesheet-report">
-    <call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController"
-      method="printEmployeeTimesheetReport"/>
-  </action-method>
 
   <action-method name="action-human-resource-method-set-employee-to-be-reminded">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetReportController"

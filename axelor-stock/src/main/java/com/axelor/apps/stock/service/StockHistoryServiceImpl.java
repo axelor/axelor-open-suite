@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -212,7 +212,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.company.id = :companyId "
             + "AND self.stockMove.realDate >= :beginDate "
             + "AND self.stockMove.realDate < :endDate "
-            + "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
+            + "AND self.fromStockLocation.id IN :stockLocationIdList ";
 
     List<StockMoveLine> stockMoveLineList =
         stockMoveLineRepository
@@ -263,9 +263,9 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             + "AND self.stockMove.realDate < :endDate ";
 
     if (incoming) {
-      filter += "AND self.stockMove.toStockLocation.id IN :stockLocationIdList ";
+      filter += "AND self.toStockLocation.id IN :stockLocationIdList ";
     } else {
-      filter += "AND self.stockMove.fromStockLocation.id IN :stockLocationIdList ";
+      filter += "AND self.fromStockLocation.id IN :stockLocationIdList ";
     }
 
     List<StockMoveLine> stockMoveLineList =

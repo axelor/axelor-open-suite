@@ -15,3 +15,8 @@
 "14";"crm_menu_contact";"Contact"
 "15";"crm_menu_catalog";"Catalogue"
 "16";"crm_menu_event";"Événement"
+"17";"helpdesk_menu_createTicket";"Créer un ticket"
+"18";"helpdesk_menu_myTickets";"Mes tickets"
+"19";"helpdesk_menu_myTeamTickets";"Les tickets de mon équipe"
+"20";"hr_menu_expenses";"Notes de frais"
+"21";"hr_menu_expenseLines";"Frais"

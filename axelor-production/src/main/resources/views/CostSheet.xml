@@ -58,7 +58,7 @@
       <field name="currency" readonly="true" grid-view="currency-grid"
         form-view="currency-form"/>
       <button name="printTheCostSheetLineDetailBtn" title="Print the cost sheet line detail"
-        readonly="false" onClick="action-cost-sheet-method-print-cost-sheet-line-detail"/>
+        readonly="false" onClick="action-method-print-birt,close"/>
       <panel-dashlet name="costSheetLineTreePanel"
         action="action-cost-sheet-line-view-tree" readonly="true" colSpan="12" height="600"/>
     </panel>
@@ -68,9 +68,4 @@
     <attribute name="scale" for="billOfMaterial.qty"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
   </action-attrs>
-
-  <action-method name="action-cost-sheet-method-print-cost-sheet-line-detail">
-    <call class="com.axelor.apps.production.web.CostSheetController"
-      method="printCostSheetLineDetail"/>
-  </action-method>
 </object-views>

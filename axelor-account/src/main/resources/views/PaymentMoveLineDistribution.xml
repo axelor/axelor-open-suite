@@ -26,7 +26,7 @@
     model="com.axelor.apps.account.db.PaymentMoveLineDistribution" groupBy="partner"
     orderBy="partner">
     <hilite color="danger"
-      if="excludeFromDas2Report || moveLine.account.serviceType.n4dsCode == null"/>
+      if="excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
     <field name="excludeFromDas2Report" hidden="true"/>
     <field name="moveLine.account.serviceType.n4dsCode" hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
@@ -48,7 +48,7 @@
     <button
       onClick="action-account-payment-move-line-distribution-method-include-line-in-das2"
       icon="fa-check" help="Include in DAS2 report" name="includeInDas2Btn"
-      readonlyIf="!excludeFromDas2Report || moveLine.account.serviceType.n4dsCode == null"/>
+      readonlyIf="!excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
   </grid>
 
   <form name="payment-move-line-distribution-form" title="Payment move line distribution"

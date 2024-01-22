@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
+import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
@@ -41,8 +42,9 @@ public class ProductionOrderServiceBusinessImpl extends ProductionOrderServiceIm
   public ProductionOrderServiceBusinessImpl(
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      ProductionOrderRepository productionOrderRepo) {
-    super(manufOrderService, sequenceService, productionOrderRepo);
+      ProductionOrderRepository productionOrderRepo,
+      ProductionConfigService productionConfigService) {
+    super(manufOrderService, sequenceService, productionOrderRepo, productionConfigService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -75,17 +75,18 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
                       DateTool.isBetween(
                           currentStartDate, currentEndDate, fixedAssetLine.getDepreciationDate()))
               .collect(Collectors.toList());
-      if (subFixedAssetLineList.isEmpty()) {
-        continue;
+
+      if (!subFixedAssetLineList.isEmpty()) {
+        fixedAssetLineList.removeAll(subFixedAssetLineList);
+        // depreciation date is required and sub fixed asset line list is not empty, so we can get()
+        LocalDate maxDateInSubList =
+            subFixedAssetLineList.stream()
+                .map(FixedAssetLine::getDepreciationDate)
+                .max(Comparator.naturalOrder())
+                .get();
+        returnedHashMap.put(maxDateInSubList, subFixedAssetLineList);
       }
-      fixedAssetLineList.removeAll(subFixedAssetLineList);
-      // depreciation date is required and sub fixed asset line list is not empty, so we can get()
-      LocalDate maxDateInSubList =
-          subFixedAssetLineList.stream()
-              .map(FixedAssetLine::getDepreciationDate)
-              .max(Comparator.naturalOrder())
-              .get();
-      returnedHashMap.put(maxDateInSubList, subFixedAssetLineList);
+
       startDate = endDate.plusDays(1);
       endDate = startDate.plusMonths(periodicityInMonth).minusDays(1);
     }

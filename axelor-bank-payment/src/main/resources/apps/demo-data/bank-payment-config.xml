@@ -34,8 +34,7 @@
     type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId"/>
 
   <input file="bankpayment_bankStatement.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankStatement" search="self.importId = :importId"
-    call="com.axelor.csv.script.ImportBankStatement:importBankStatement">
+    type="com.axelor.apps.bankpayment.db.BankStatement" search="self.importId = :importId">
     <bind to="bankStatementFileFormat" column="bankStatementFileFormat_importId"
       search="self.importId = :bankStatementFileFormat_importId"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
@@ -59,6 +58,17 @@
       search="self.importId = :operationInterbankCodeLine_importId"
       if="operationInterbankCodeLine_importId"/>
     <bind to="currency" column="currency_code" search="self.code = :currency_code"/>
+  </input>
+
+  <input file="bankpayment_bankStatement.csv" separator=";"
+    type="com.axelor.apps.bankpayment.db.BankStatement" search="self.importId = :importId"
+    call="com.axelor.csv.script.ImportBankStatement:importBankStatement">
+    <bind to="bankStatementFileFormat" column="bankStatementFileFormat_importId"
+      search="self.importId = :bankStatementFileFormat_importId"/>
+    <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
+      column="fromDate"/>
+    <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(toDate)"
+      column="toDate"/>
   </input>
 
   <input file="base_template_context.csv" separator=";"

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIDecisionConfigCompany">
+
+    <many-to-one name="qiDecision" title="Decision"
+      ref="com.axelor.apps.quality.db.QIDecision" required="true"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"
+      required="true"/>
+    <decimal name="fixedAmount" title="Fixed amount" required="true"/>
+    <boolean name="isEditable" title="Editable"/>
+
+    <unique-constraint columns="company,qiDecision"/>
+
+    <track>
+      <field name="qiDecision"/>
+      <field name="company"/>
+      <field name="fixedAmount"/>
+      <field name="isEditable"/>
+    </track>
+
+  </entity>
+
+</domain-models>

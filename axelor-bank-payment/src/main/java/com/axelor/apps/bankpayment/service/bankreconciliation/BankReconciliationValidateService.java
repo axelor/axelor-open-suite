@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -223,22 +223,14 @@ public class BankReconciliationValidateService {
         BigDecimal credit;
 
         if (isDebit) {
-          BigDecimal amountMoveLine =
-              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
-                  ? moveLine.getCurrencyAmount()
-                  : moveLine.getCredit();
           debit =
-              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
+              (moveLine.getCredit().subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
           credit = BigDecimal.ZERO;
         } else {
-          BigDecimal amountMoveLine =
-              BankReconciliationToolService.isForeignCurrency(bankReconciliation)
-                  ? moveLine.getCurrencyAmount()
-                  : moveLine.getDebit();
           debit = BigDecimal.ZERO;
           credit =
-              (amountMoveLine.subtract(moveLine.getBankReconciledAmount()))
+              (moveLine.getDebit().subtract(moveLine.getBankReconciledAmount()))
                   .min(bankStatementAmountRemaining);
         }
 

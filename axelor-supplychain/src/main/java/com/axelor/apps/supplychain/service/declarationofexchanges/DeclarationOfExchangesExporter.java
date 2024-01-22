@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,9 @@ package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
+import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -59,6 +61,8 @@ public abstract class DeclarationOfExchangesExporter {
   protected final String name;
 
   protected List<String> columnHeadersList;
+  protected SupplyChainConfigService supplyChainConfigService;
+  protected BirtTemplateService birtTemplateService;
 
   public DeclarationOfExchangesExporter(
       DeclarationOfExchanges declarationOfExchanges,

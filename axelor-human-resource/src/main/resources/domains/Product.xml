@@ -13,6 +13,7 @@
     <boolean name="blockExpenseTax" title="Block expense tax modification" default="false"/>
     <boolean name="personalExpense" title="Personal expense"/>
     <boolean name="unavailableToUsers" title="Unavailable to users" default="false"/>
+    <decimal name="amountLimit" title="Amount limit" min="0"/>
   </entity>
 
 </domain-models>

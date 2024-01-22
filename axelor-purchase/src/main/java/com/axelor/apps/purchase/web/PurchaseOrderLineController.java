@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -335,16 +335,19 @@ public class PurchaseOrderLineController {
       Context context = request.getContext();
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = getPurchaseOrder(context);
+      Company company = purchaseOrder.getCompany();
+      Partner supplierPartner = purchaseOrder.getSupplierPartner();
 
       Beans.get(SupplierCatalogService.class)
           .checkMinQty(
               purchaseOrderLine.getProduct(),
-              purchaseOrder.getSupplierPartner(),
-              purchaseOrder.getCompany(),
+              supplierPartner,
+              company,
               purchaseOrderLine.getQty(),
               request,
               response);
-      Beans.get(PurchaseOrderLineService.class).checkMultipleQty(purchaseOrderLine, response);
+      Beans.get(PurchaseOrderLineService.class)
+          .checkMultipleQty(company, supplierPartner, purchaseOrderLine, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

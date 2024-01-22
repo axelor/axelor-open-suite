@@ -1,0 +1,4 @@
+"name";"metaModel.name";"language.importId";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect"
+"Catalog sending";"Catalog";"1";"true";;"Catalog $Catalog.name$";"<p>Hello,<br/>
+You will find our catalog $Catalog.name$ linked to this email.</p>
+<p>Regards.</p>";;;;2

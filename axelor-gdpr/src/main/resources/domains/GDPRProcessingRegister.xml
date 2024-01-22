@@ -17,6 +17,7 @@
       title="Pseudonymizer"/>
     <one-to-many ref="com.axelor.apps.gdpr.db.GDPRProcessingRegisterLog"
       name="gdprProcessingRegisterLogList" mappedBy="gdprProcessingRegister"/>
+    <boolean name="isArchiveData" title="Archive data"/>
 
     <finder-method name="findByStatus" using="status" all="true"/>
 
@@ -25,7 +26,6 @@
     	public static final int PROCESSING_REGISTER_STATUS_DRAFT = 0;
     	public static final int PROCESSING_REGISTER_STATUS_ACTIVE = 1;
     	public static final int PROCESSING_REGISTER_STATUS_CANCELED = 2;
-
     ]]>
     </extra-code>
 

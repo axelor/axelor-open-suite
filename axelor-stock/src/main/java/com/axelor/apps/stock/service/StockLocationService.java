@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,16 +29,13 @@ import java.util.Set;
 
 public interface StockLocationService {
 
-  public BigDecimal getQty(Long productId, Long locationId, Long companyId, String qtyType)
-      throws AxelorException;
+  @CallMethod
+  BigDecimal getRealQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
   @CallMethod
-  public BigDecimal getRealQty(Long productId, Long locationId, Long companyId)
-      throws AxelorException;
-
-  @CallMethod
-  public BigDecimal getFutureQty(Long productId, Long locationId, Long companyId)
-      throws AxelorException;
+  BigDecimal getFutureQtyOfProductInStockLocations(
+      Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
   public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
       throws AxelorException;
@@ -61,4 +58,6 @@ public interface StockLocationService {
 
   void changeProductLocker(StockLocation stockLocation, Product product, String newLocker)
       throws AxelorException;
+
+  String computeStockLocationChildren(StockLocation stockLocation);
 }

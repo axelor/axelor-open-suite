@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="move-line-mass-entry-move-grid"
+    model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
+    edit-icon="false" onNew="action-move-line-mass-entry-method-onnew">
+    <field name="temporaryMoveNumber" width="50"
+      onChange="action-move-line-mass-entry-method-temporary-move-number-onchange"/>
+    <field name="inputAction" selection="iaccount.move.line.mass.entry.input.action.select"
+      onChange="action-move-line-mass-entry-method-input-action-onchange" readonly="true"
+      required="true" width="50" selection-in="[1,2,3]"/>
+    <field name="date" onChange="action-move-line-mass-entry-group-on-change-date">
+      <hilite if="$contains(fieldsErrorList,'date:'+date.toString())" background="danger"/>
+    </field>
+    <field name="originDate"
+      onChange="action-move-line-mass-entry-group-on-change-origin-date">
+      <hilite if="$contains(fieldsErrorList,'originDate:'+originDate.toString())"
+        background="danger"/>
+    </field>
+    <field name="origin" onChange="action-move-line-mass-entry-record-set-is-edited">
+      <hilite if="$contains(fieldsErrorList,'origin:'+origin)" background="danger"/>
+    </field>
+    <field name="moveDescription"
+      onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
+      readonly="false" required="true"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"
+      onSelect="action-move-line-method-partner-onselect"
+      onChange="action-move-line-mass-entry-group-on-change-partner" width="120" canEdit="false"
+      readonly="false">
+      <hilite if="$contains(fieldsErrorList,'partner:'+partner.name)" background="danger"/>
+    </field>
+    <field name="movePaymentCondition" form-view="payment-condition-form"
+      grid-view="payment-condition-grid" onChange="action-move-line-mass-entry-record-set-is-edited"/>
+    <field name="movePaymentMode" readonly="false" form-view="payment-mode-form"
+      grid-view="payment-mode-grid"
+      onChange="action-move-line-mass-entry-group-on-change-payment-mode">
+      <hilite if="$contains(fieldsErrorList,'paymentMode:')" background="danger"/>
+    </field>
+    <field name="account" form-view="account-form" grid-view="account-grid"
+      onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
+      onChange="action-move-line-mass-entry-method-account-onchange"/>
+    <field name="taxLine" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
+      requiredIf="account.isTaxRequiredOnMoveLine"
+      domain="self.endDate > :date OR self.endDate IS NULL"
+      onChange="account-move-line-update-tax-equiv"/>
+    <field name="currencyRate"
+      onChange="action-move-line-method-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
+      readonlyIf="!isOtherCurrency">
+      <hilite if="$contains(fieldsErrorList,'currencyRate:'+currencyRate.toString())"
+        background="danger"/>
+    </field>
+    <field name="currencyAmount"
+      onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency">
+      <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
+    </field>
+    <field name="debit" onChange="action-move-line-mass-entry-method-debit-onchange"
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
+      <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
+    </field>
+    <field name="credit" onChange="action-move-line-mass-entry-method-credit-onchange"
+      width="90" readonlyIf="isOtherCurrency || inputAction == 2">
+      <hilite if="$contains(fieldsErrorList,'balance:')" background="danger"/>
+    </field>
+    <field name="description"
+      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
+    <field name="cutOffStartDate" requiredIf="account.manageCutOffPeriod"
+      validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"
+      onChange="action-move-line-method-set-is-cut-off-generated-false"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <field name="cutOffEndDate" requiredIf="account.manageCutOffPeriod"
+      validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"
+      onChange="action-move-line-method-set-is-cut-off-generated-false"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <field name="movePartnerBankDetails"
+      onSelect="action-move-line-mass-entry-attrs-bank-details-from-partner-domain"
+      form-view="bank-details-form" grid-view="bank-details-grid"
+      onChange="action-move-line-mass-entry-record-set-is-edited"/>
+    <field name="movePfpValidatorUser" title="PFP Validator"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
+      readonlyIf="!account.useForPartnerBalance"
+      onSelect="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select"
+      canEdit="false"
+      onChange="action-move-line-mass-entry-attrs-set-required-move-pfp-validator-user"/>
+    <field name="deliveryDate" title="Delivery date"/>
+    <field name="analyticDistributionTemplate"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      grid-view="analytic-distribution-template-grid"
+      form-view="analytic-distribution-template-form"
+      onChange="action-move-line-mass-entry-method-analytic-distribution-template-onchange"
+      onSelect="action-move-line-method-analytic-distribution-template-onselect"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      requiredIf="(!analyticMoveLineList || !analyticMoveLineList.length) &amp;&amp; account.analyticDistributionAuthorized &amp;&amp; account.analyticDistributionRequiredOnMoveLines &amp;&amp; (axis1AnalyticAccount == null &amp;&amp; axis2AnalyticAccount == null &amp;&amp; axis3AnalyticAccount == null &amp;&amp; axis4AnalyticAccount == null &amp;&amp; axis5AnalyticAccount == null)">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="axis2AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="axis3AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="axis4AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="axis5AnalyticAccount" grid-view="analytic-account-grid"
+      form-view="analytic-account-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      readonlyIf="!account || !account.analyticDistributionAuthorized"
+      onSelect="action-move-line-attrs-set-domain-axis"
+      onChange="action-move-line-mass-entry-method-analytic-axis-onchange">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="analyticMoveLineMassEntryList" grid-view="analytic-move-line-move-line-grid"
+      form-view="analytic-move-line-move-line-form"
+      if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+      onChange="action-move-line-mass-entry-method-analytic-distribution-template-onchange-light,action-move-line-method-set-required-analytic-accounts"
+      readonlyIf="!account || !account.analyticDistributionAuthorized">
+      <hilite if="$contains(fieldsErrorList,'analytic:')" background="danger"/>
+    </field>
+    <field name="vatSystemSelect"
+      onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"/>
+    <field name="moveStatusSelect"/>
+    <field name="isOtherCurrency" hidden="true"/>
+    <field name="fieldsErrorList" hidden="true"/>
+    <field name="account.useForPartnerBalance" hidden="true"/>
+    <field name="account.isTaxRequiredOnMoveLine" hidden="true"/>
+    <field name="account.isTaxAuthorizedOnMoveLine" hidden="true"/>
+    <field name="account.analyticDistributionAuthorized" hidden="true"/>
+  </grid>
+
+  <!-- Action group -->
+  <action-group name="action-move-line-mass-entry-group-on-change-partner">
+    <action name="action-move-line-mass-entry-method-on-change-partner"/>
+    <action name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly"/>
+    <action name="action-move-line-mass-entry-attrs-set-required-move-pfp-validator-user"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-payment-mode">
+    <action name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly"/>
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-origin-date">
+    <action name="action-move-line-mass-entry-method-origin-date-onchange"/>
+    <action name="action-move-line-mass-entry-attrs-set-cut-off-dates"/>
+  </action-group>
+
+  <action-group name="action-move-line-mass-entry-group-on-change-date">
+    <action name="account-move-line-method-date-onchange"/>
+    <action name="action-move-line-mass-entry-record-set-is-edited"/>
+  </action-group>
+
+  <!-- Action record -->
+  <action-record name="action-move-line-mass-entry-record-set-is-edited"
+    model="com.axelor.apps.account.db.MoveLineMassEntry">
+    <field name="isEdited" expr="1" if="isEdited != 2"/>
+  </action-record>
+
+  <action-record name="action-move-line-mass-entry-record-set-is-edited-vat-system"
+    model="com.axelor.apps.account.db.MoveLineMassEntry">
+    <field name="isEdited" expr="2"/>
+  </action-record>
+
+  <!-- Action attrs -->
+  <action-attrs
+    name="action-move-line-mass-entry-attrs-bank-details-from-partner-domain">
+    <attribute name="domain" for="movePartnerBankDetails"
+      expr="eval: &quot; self = null &quot;"/>
+    <attribute name="domain" for="movePartnerBankDetails"
+      expr="eval: &quot; self.id IN (${partner.bankDetailsList.collect{it.id}.join(',')}) AND self.active IS TRUE &quot;"
+      if="partner?.bankDetailsList &amp;&amp; !partner.bankDetailsList.isEmpty()"/>
+  </action-attrs>
+
+  <action-attrs name="action-account-move-line-mass-entry-attrs-set-description"
+    model="com.axelor.apps.account.db.MoveLineMassEntry">
+    <attribute for="description" name="value" expr="eval: moveDescription"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-mass-entry-attrs-set-cut-off-dates">
+    <attribute for="cutOffStartDate" name="value" expr="eval: originDate"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+    <attribute for="cutOffEndDate" name="value" expr="eval: originDate"
+      if="__config__.app.getApp('account').manageCutOffPeriod"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-move-line-mass-entry-attrs-set-partner-bank-details-readonly">
+    <attribute for="movePartnerBankDetails" name="readonly"
+      expr="eval: ![2,3,9,10].contains(movePaymentMode?.typeSelect)"/>
+  </action-attrs>
+
+  <action-attrs
+    name="action-move-line-mass-entry-attrs-set-required-move-pfp-validator-user">
+    <attribute for="movePfpValidatorUser" name="required" expr="eval : true"
+      if="__config__.app.getApp('account')?.getActivatePassedForPayment() &amp;&amp; account?.useForPartnerBalance"/>
+  </action-attrs>
+
+  <!-- Action method -->
+  <action-method
+    name="action-move-line-mass-entry-method-temporary-move-number-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="temporaryMoveNumberOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-on-change-partner">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="partnerOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-origin-date-onchange"
+    model="com.axelor.apps.account.db.MoveLine">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="originDateOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-input-action-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="inputActionOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-onnew">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController" method="onNew"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-debit-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="debitOnChange"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-credit-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="creditOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-domain-pfp-validator-user-on-select">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="pfpValidatorUserOnSelect"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-analytic-distribution-template-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticDistributionTemplateOnChange"/>
+  </action-method>
+
+  <action-method
+    name="action-move-line-mass-entry-method-analytic-distribution-template-onchange-light">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticDistributionTemplateOnChangeLight"/>
+  </action-method>
+
+  <action-method name="action-move-line-mass-entry-method-analytic-axis-onchange">
+    <call class="com.axelor.apps.account.web.MoveLineMassEntryController"
+      method="analyticAxisOnChange"/>
+  </action-method>
+
+</object-views>

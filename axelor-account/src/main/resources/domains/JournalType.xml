@@ -13,11 +13,12 @@
     <many-to-many name="accountTypeSet" ref="com.axelor.apps.account.db.AccountType"
       title="Balance computations on the following accounts"/>
     <integer name="technicalTypeSelect" title="Technical type"
-      selection="account.journal.type.technical.type.select"/>
+      selection="account.journal.type.technical.type.select" min="1" required="true"/>
 
     <extra-code><![CDATA[
 
 		// TECHNICAL TYPE SELECT
+		public static final int TECHNICAL_TYPE_SELECT_EMPTY = 0;
 		public static final int TECHNICAL_TYPE_SELECT_EXPENSE = 1;
 		public static final int TECHNICAL_TYPE_SELECT_SALE = 2;
 		public static final int TECHNICAL_TYPE_SELECT_CREDIT_NOTE = 3;

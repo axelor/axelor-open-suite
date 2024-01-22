@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,7 +70,7 @@ public class ProductStockController {
                 .add("form", "stock-move-line-all-form")
                 .param("search-filters", "stock-move-line-filters")
                 .domain(
-                    "self.product.id = :id AND (self.stockMove.fromStockLocation.id = :locationId OR self.stockMove.toStockLocation.id = :locationId) AND self.stockMove.statusSelect != :status AND (self.stockMove.estimatedDate <= :stockDate OR self.stockMove.realDate <= :stockDate)")
+                    "self.product.id = :id AND (self.fromStockLocation.id = :locationId OR self.toStockLocation.id = :locationId) AND self.stockMove.statusSelect != :status AND (self.stockMove.estimatedDate <= :stockDate OR self.stockMove.realDate <= :stockDate)")
                 .context("id", request.getContext().getParent().get("id"))
                 .context("locationId", locationId)
                 .context("status", StockMoveRepository.STATUS_CANCELED)

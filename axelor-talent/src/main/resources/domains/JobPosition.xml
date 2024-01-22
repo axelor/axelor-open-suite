@@ -11,7 +11,7 @@
     <many-to-one name="companyDepartment"
       ref="com.axelor.apps.base.db.CompanyDepartment" title="Department"/>
     <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee"
-      title="Responsible"/>
+      title="Hiring manager"/>
     <many-to-one name="contractType" ref="com.axelor.apps.hr.db.EmploymentContractType"
       title="Contract type"/>
     <integer name="experienceSelect" title="Experience"

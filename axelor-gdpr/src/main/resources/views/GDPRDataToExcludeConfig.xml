@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid title="Datas to exclude configuration" name="gdpr-data-to-exclude-config-grid"
+    model="com.axelor.apps.gdpr.db.GDPRDataToExcludeConfig">
+    <field name="metaModel"/>
+    <field name="metaFields"/>
+  </grid>
+
+  <form title="Datas to exclude configuration" name="gdpr-data-to-exclude-config-form"
+    model="com.axelor.apps.gdpr.db.GDPRDataToExcludeConfig">
+    <panel name="mainPanel">
+      <field name="metaModel"/>
+      <field name="metaFields"
+        help="Select fields to exclude from the access request response. Leave empty if all fields should be excluded."
+        colSpan="12" canNew="false" canSelect="true" canEdit="false"
+        domain="self.metaModel = :metaModel"/>
+    </panel>
+  </form>
+</object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,6 +32,8 @@ import com.google.inject.Singleton;
 @Singleton
 public class StockBatchController {
 
+  /* WARNING: The use of Recomputation stock location history batch should be avoided for now as this
+  feature is not working properly */
   public void runBatch(ActionRequest request, ActionResponse response) {
     try {
       StockBatch stockBatch = request.getContext().asType(StockBatch.class);

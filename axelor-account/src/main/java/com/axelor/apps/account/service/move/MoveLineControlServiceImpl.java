@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -113,7 +113,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
       Invoice invoiceAttached = invoiceTermList.get(0).getInvoice();
-      BigDecimal total = moveLine.getCurrencyAmount();
+      BigDecimal total = moveLine.getCurrencyAmount().abs();
 
       if (invoiceAttached != null) {
         invoiceTermList = invoiceAttached.getInvoiceTermList();
@@ -192,7 +192,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
             I18n.get(
                 isCompanyAmount
                     ? AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_COMPANY_AMOUNT
-                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT));
+                    : AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_SUM_AMOUNT),
+            moveLine.getName());
       }
     }
   }
@@ -298,7 +299,7 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
   public boolean canReconcile(MoveLine moveLine) {
     return (moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_ACCOUNTED
             || moveLine.getMove().getStatusSelect() == MoveRepository.STATUS_DAYBOOK)
-        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) > 0
+        && moveLine.getAmountRemaining().compareTo(BigDecimal.ZERO) != 0
         && (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())
             || moveLine.getInvoiceTermList().stream()
                 .allMatch(invoiceTermService::isNotAwaitingPayment));
@@ -318,6 +319,33 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
           I18n.get(AccountExceptionMessage.MOVE_LINE_INCONSISTENCY_DETECTED_PARTNER),
           optMoveLinePartner.get().getName(),
           optMovePartner.get().getName());
+    }
+  }
+
+  @Override
+  public void checkAccountAnalytic(Move move, MoveLine moveLine, Account account)
+      throws AxelorException {
+    if (moveLine.getAnalyticDistributionTemplate() == null
+        && ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+        && account.getAnalyticDistributionAuthorized()
+        && account.getAnalyticDistributionRequiredOnMoveLines()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(AccountExceptionMessage.MOVE_10),
+          account.getName(),
+          moveLine.getName());
+    }
+
+    if (account != null
+        && !account.getAnalyticDistributionAuthorized()
+        && (moveLine.getAnalyticDistributionTemplate() != null
+            || (moveLine.getAnalyticMoveLineList() != null
+                && !moveLine.getAnalyticMoveLineList().isEmpty()))) {
+      throw new AxelorException(
+          move,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MOVE_11),
+          moveLine.getName());
     }
   }
 }

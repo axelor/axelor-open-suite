@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module package="com.axelor.apps.budget.db" name="budget"/>
+
+  <entity name="VersionExpectedAmountsLine">
+    <many-to-one name="budgetVersion" ref="com.axelor.apps.budget.db.BudgetVersion"
+      title="Budget Version" readonly="true"/>
+    <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"
+      readonly="true"/>
+    <decimal name="expectedAmount" title="Total amount expected"/>
+
+  </entity>
+
+</domain-models>

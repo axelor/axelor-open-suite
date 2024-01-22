@@ -14,7 +14,7 @@
     onLoad="action-mps-charge-attrs-show-second-year-chart">
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
-        onClick="save,action-mps-charge-method-print" showIf="id"/>
+        onClick="save,action-method-print-birt" showIf="id"/>
     </toolbar>
     <panel name="mainPanel">
       <field name="startMonthDate" onChange="action-mps-charge-group-date-on-change"/>
@@ -87,10 +87,6 @@
     <error message="Start and End Month should not be more than 12 months apart"
       if="(startMonthDate &amp;&amp; endMonthDate) &amp;&amp; java.time.Period.between(startMonthDate?.withDayOfMonth(1),endMonthDate?.withDayOfMonth(1)).getYears() &gt;= 1"/>
   </action-validate>
-
-  <action-method name="action-mps-charge-method-print">
-    <call class="com.axelor.apps.production.web.MpsChargeController" method="print"/>
-  </action-method>
 
 </object-views>
 

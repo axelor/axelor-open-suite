@@ -95,7 +95,7 @@
       <field name="unit" canEdit="false" form-view="unit-form" grid-view="unit-grid"/>
       <field name="trackingNumber" onChange="action-stock-move-line-record-product"
         form-view="tracking-number-form" grid-view="tracking-number-grid"
-        canNew="$get('stockMove.fromStockLocation.typeSelect') == 3 &amp;&amp; ($get('stockMove.toStockLocation.typeSelect') == 1 || $get('stockMove.toStockLocation.typeSelect') == 2)"
+        canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('product.trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('product.trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('product.trackingNumberConfiguration.isSaleTrackingManaged'))"
         onSelect="action-stock-move-line-attrs-tracking-number-domain"
         readonlyIf="$get('stockMove.statusSelect') > 2"
         requiredIf="realQty &gt; 0 &amp;&amp; ($get('product.trackingNumberConfiguration.isPurchaseTrackingManaged') || $get('product.trackingNumberConfiguration.isProductionTrackingManaged'))"/>
@@ -123,8 +123,8 @@
         hidden="true"/>
       <field name="product.trackingNumberConfiguration.isProductionTrackingManaged"
         hidden="true"/>
-      <field name="stockMove.fromStockLocation.typeSelect" hidden="true"/>
-      <field name="stockMove.toStockLocation.typeSelect" hidden="true"/>
+      <field name="product.trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
+      <field name="stockMove.typeSelect" hidden="true"/>
       <field name="stockMove" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
       <field name="realQty" hidden="true"/>

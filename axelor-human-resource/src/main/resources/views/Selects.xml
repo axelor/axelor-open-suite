@@ -117,6 +117,7 @@
   <selection name="hr.lunch.voucher.mgt.line.lunch.voucher.format.select">
     <option value="1">Paper format</option>
     <option value="2">Electronic card</option>
+    <option value="3">Both</option>
   </selection>
 
   <selection name="hr.employee.advance.type.select">
@@ -143,12 +144,14 @@
   <selection name="hr.lunch.voucher.line.status.select">
     <option value="1">Calculated</option>
     <option value="2">Anomaly</option>
+    <option value="3">To calculate</option>
   </selection>
 
   <selection name="hr.batch.payroll.preparation.export.type.select">
     <option value="1">Standard</option>
     <option value="2">Nibelis</option>
     <option value="3">Silae</option>
+    <option value="4">Sage</option>
   </selection>
 
   <selection name="hr.employee.marital.status">
@@ -224,6 +227,13 @@
 
   <selection name="batch.batch.type.select" id="hr.batch.batch.type.select">
     <option value="600">HR Batch</option>
+  </selection>
+
+  <selection name="hr.medical.leave.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Planned</option>
+    <option value="3">Realized</option>
+    <option value="4">Canceled</option>
   </selection>
 
 </object-views>

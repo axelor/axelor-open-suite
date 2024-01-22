@@ -31,6 +31,11 @@
       ref="com.axelor.apps.account.db.AnalyticDistributionTemplate"/>
     <many-to-one name="justificationMetaFile" ref="com.axelor.meta.db.MetaFile"
       title="Justification"/>
+    <boolean name="isJustificationFileDigitallySigned" default="false"
+      title="Proof file digitally signed"/>
+    <boolean name="isAloneMeal" title="Alone meal"/>
+    <many-to-many name="invitedCollaboratorSet" title="Invited collaborators"
+      ref="com.axelor.apps.hr.db.Employee"/>
 
     <!-- integration of KilometricAllowance -->
     <many-to-one name="kilometricAllowParam"
@@ -61,6 +66,9 @@
 	  		return fullName;
 	  	]]>
     </string>
+
+    <!-- Currency is only used for mobile application -->
+    <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <extra-code>
 		<![CDATA[

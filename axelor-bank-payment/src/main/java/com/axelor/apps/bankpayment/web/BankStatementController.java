@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,21 +57,6 @@ public class BankStatementController {
       TraceBackService.trace(
           response, e, ExceptionOriginRepository.BANK_STATEMENT, ResponseMessageType.ERROR);
     }
-    response.setReload(true);
-  }
-
-  public void print(ActionRequest request, ActionResponse response) {
-    try {
-      BankStatement bankStatement = request.getContext().asType(BankStatement.class);
-      bankStatement = Beans.get(BankStatementRepository.class).find(bankStatement.getId());
-      String name = bankStatement.getName();
-      String fileLink = Beans.get(BankStatementService.class).print(bankStatement);
-      response.setView(ActionView.define(name).add("html", fileLink).map());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ExceptionOriginRepository.BANK_STATEMENT);
-    }
-
     response.setReload(true);
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Event;
@@ -50,14 +51,16 @@ public class MessageServiceCrmImpl extends MessageServiceBaseImpl {
       SendMailQueueService sendMailQueueService,
       AppSettingsMessageService appSettingsMessageService,
       UserService userService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      BirtTemplateService birtTemplateService) {
     super(
         metaAttachmentRepository,
         messageRepository,
         sendMailQueueService,
         appSettingsMessageService,
         userService,
-        appBaseService);
+        appBaseService,
+        birtTemplateService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

@@ -5,7 +5,8 @@
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
-  <entity name="MoveLine" implements="com.axelor.apps.account.db.repo.AnalyticLine">
+  <entity name="MoveLine" implements="com.axelor.apps.account.db.repo.AnalyticLine"
+    strategy="CLASS">
 
     <many-to-one name="move" ref="Move" title="Move" initParam="true"/>
 
@@ -23,6 +24,7 @@
     <decimal name="credit" title="Credit" initParam="true"/>
     <string name="description" title="Description" initParam="true"/>
     <string name="origin" title="moveLine.origin" initParam="true"/>
+    <string name="externalOrigin" title="External origin"/>
 
     <one-to-many name="debitReconcileList" orphanRemoval="false" ref="Reconcile"
       title="Debit Reconcile list" mappedBy="debitMoveLine" readonly="false"/>
@@ -125,8 +127,15 @@
     <decimal name="amountRemaining" title="To pay / To use">
     	<![CDATA[
         if (account != null && account.getReconcileOk()) {
-          if (credit.signum() > 0) return credit.subtract(amountPaid);
-          else if (debit.signum() > 0) return debit.subtract(amountPaid);
+          if (credit.signum() > 0) {
+           return credit.subtract(amountPaid).negate();
+          }
+          else if (debit.signum() > 0) {
+           return debit.subtract(amountPaid);
+          }
+          else {
+           return BigDecimal.ZERO;
+          }
         }
         return BigDecimal.ZERO;
 	   ]]>
@@ -175,6 +184,14 @@
     <string name="fiscalYearCode"/>
     <date name="accountingDate"/>
     <boolean name="adjustingMove"/>
+
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
+    <!-- CUTOFF -->
+    <decimal name="cutOffProrataAmount" title="Prorata amount" scale="2" precision="20"/>
+    <decimal name="amountBeforeCutOffProrata" title="Original amount" scale="2"
+      precision="20"/>
+    <string name="durationCutOffProrata" title="Prorata duration"/>
 
     <finder-method name="findByReconcileGroup" all="true" using="reconcileGroup"/>
     <finder-method name="findByAccount" all="true" using="account"/>

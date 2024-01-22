@@ -945,6 +945,11 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                         <property name="name">is_display_purchase_order_line_number</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">60</property>
+                        <property name="name">tableFontSize</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1362,6 +1367,12 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">purchase_id</property>
+                    <property name="nativeName">purchase_id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select PurchaseOrder.purchase_order_seq as seq,
 PurchaseOrder.id as purchase_id,
@@ -1417,7 +1428,8 @@ StockAddress.addressl5 as "stockAddressl5",
 StockAddress.addressl6 as "stockAddressl6",
 StockCountry.name as "stockCountryName",
 PurchaseOrder.version_number as "versionNumber",
-AppPurchase.is_display_purchase_order_line_number
+AppPurchase.is_display_purchase_order_line_number,
+PrintingSettings.table_font_size as "tableFontSize"
 from purchase_purchase_order as PurchaseOrder
 left outer join base_company as Company on (PurchaseOrder.company = Company.id)
 left outer join base_address as CompanyAddress on (Company.address = CompanyAddress.id)
@@ -2882,6 +2894,12 @@ from studio_app_base]]></xml-property>
                     <expression name="expression" type="javascript">dataSetRow["estimated_receipt_date"]</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">tableFontSize</property>
+                    <text-property name="displayName">tableFontSize</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["tableFontSize"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <column id="4568"/>
@@ -5165,6 +5183,13 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                 <property name="dataType">string</property>
                                 <property name="allowExport">true</property>
                             </structure>
+                            <structure>
+                                <property name="name">tableFontSize</property>
+                                <text-property name="displayName">tableFontSize</text-property>
+                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <structure name="toc"/>
                         <list-property name="sort">
@@ -6398,6 +6423,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="valueExpr" type="javascript">row["isTitleLine"] == 1</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["sequence"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -6417,6 +6443,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                     <data id="4473">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">left</property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="resultSetColumn">supplier_product_code</property>
                                     </data>
                                     <data id="4472">
@@ -6429,6 +6456,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="valueExpr" type="javascript">!row._outer["display_product_detail_on_printing"]</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="resultSetColumn">product_code</property>
                                     </data>
                                 </cell>
@@ -6512,7 +6540,15 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["supplier_product_name"]}</VALUE-OF>]]></text-property>
                                     </text>
@@ -6550,13 +6586,22 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["product_name"]}</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="4476">
                                         <property name="fontSize">8pt</property>
                                         <property name="textAlign">left</property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<I><VALUE-OF format="HTML">if(row["description"] != null ) row["description"].replace(/\<p|\<P/g, '<p style="margin-top: 0; margin-bottom:0.1em;" ').replace(/<!--\w+-->/gi,"")</VALUE-OF></I>]]></text-property>
                                     </text>
@@ -6638,7 +6683,15 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>row._outer["product_standard"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -6706,6 +6759,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="valueExpr" type="javascript">row["isTitleLine"] == 1</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="###0.00' %'{RoundingMode=HALF_UP}">row["TaxValue"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -6808,7 +6862,15 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                             <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_qty"]</expression>
                                                             <property name="dataType">integer</property>
                                                         </structure>
+                                                        <structure>
+                                                            <property name="name">tableFontSize</property>
+                                                            <text-property name="displayName">tableFontSize</text-property>
+                                                            <expression name="expression" type="javascript">row._outer._outer["tableFontSize"]</expression>
+                                                            <property name="dataType">decimal</property>
+                                                            <property name="allowExport">true</property>
+                                                        </structure>
                                                     </list-property>
+                                                    <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                                     <property name="contentType">html</property>
                                                     <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer._outer["qty"],"#,##0."+Array(row["nb_decimal_digit_for_qty"]+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>if(row._outer["translation"] != null) {row._outer["translation"]} else {row._outer._outer["UnitCode"]}</VALUE-OF>]]></text-property>
                                                 </text>
@@ -6886,7 +6948,15 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["nb_decimal_digit_for_unit_price"]</expression>
                                                 <property name="dataType">integer</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">row._outer["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                                <property name="allowExport">true</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row._outer["UnitPrice"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))</VALUE-OF>
 ]]></text-property>
@@ -6954,6 +7024,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="valueExpr" type="javascript">row["totalDiscountAmount"] >= -0.1</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["totalDiscountAmount"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7022,6 +7093,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="valueExpr" type="javascript">row["isTitleLine"] == 't' || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["ex_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                     </text>
@@ -7182,7 +7254,14 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["notes"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                            <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7251,6 +7330,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="valueExpr" type="javascript">row["isTitleLine"] == 't' || (!row._outer["display_price_on_quotation_request"] &amp;&amp; row._outer["status_select"] &lt; 3)</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF format="#,##0.00">row["in_tax_total"]</VALUE-OF>&amp;nbsp;]]></text-property>
                                     </text>
@@ -7411,7 +7491,14 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                                 <expression name="expression" type="javascript">dataSetRow["notes"]</expression>
                                                 <property name="dataType">string</property>
                                             </structure>
+                                           <structure>
+                                                <property name="name">tableFontSize</property>
+                                                <text-property name="displayName">tableFontSize</text-property>
+                                                <expression name="expression" type="javascript">dataSetRow["tableFontSize"]</expression>
+                                                <property name="dataType">decimal</property>
+                                            </structure>
                                         </list-property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["CurrencyCode"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -7477,6 +7564,7 @@ else if (row["status_select"] == "5") { "PurchaseOrder.canceled" }</value>
                                             <property name="pattern">Short Date</property>
                                         </structure>
                                         <property name="textAlign">left</property>
+                                        <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="resultSetColumn">desired_receipt_date</property>
                                     </data>
                                 </cell>

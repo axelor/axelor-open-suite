@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,6 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.supplychain.service.BudgetSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -57,7 +56,6 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
       AppAccountService appAccountService,
       AppBaseService appBaseService,
       PurchaseOrderStockService purchaseOrderStockService,
-      BudgetSupplychainService budgetSupplychainService,
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       PurchaseOrderLineService purchaseOrderLineService,
       ManufOrderRepository manufOrderRepo,
@@ -70,7 +68,6 @@ public class PurchaseOrderServiceProductionImpl extends PurchaseOrderServiceSupp
         appAccountService,
         appBaseService,
         purchaseOrderStockService,
-        budgetSupplychainService,
         purchaseOrderLineRepository,
         purchaseOrderLineService,
         partnerStockSettingsService,
