@@ -22,8 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
@@ -31,7 +29,9 @@ import com.axelor.apps.quality.db.QITask;
 import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.QIActionDistributionRepository;
 import com.axelor.apps.quality.db.repo.QIAnalysisRepository;
+import com.axelor.apps.quality.service.app.QIActionDistributionService;
 import com.axelor.apps.quality.service.config.QualityConfigService;
+import com.axelor.db.Model;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
@@ -43,11 +43,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -59,8 +57,8 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
 
   protected QIActionDistributionRepository qiActionDistributionRepository;
   protected QualityConfigService qualityConfigService;
+  protected QIActionDistributionService qiActionDistributionService;
   protected QIAnalysisRepository qiAnalysisRepository;
-  protected SequenceService sequenceService;
   protected BirtTemplateService birtTemplateService;
   protected TemplateMessageService templateMessageService;
   protected MessageService messageService;
@@ -69,21 +67,21 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   @Inject
   public QIAnalysisServiceImpl(
       QIActionDistributionRepository qiActionDistributionRepository,
+      QualityConfigService qualityConfigService,
+      QIActionDistributionService qiActionDistributionService,
       QIAnalysisRepository qiAnalysisRepository,
-      SequenceService sequenceService,
       BirtTemplateService birtTemplateService,
-      MessageService messageService,
       TemplateMessageService templateMessageService,
-      MetaFiles metaFiles,
-      QualityConfigService qualityConfigService) {
+      MessageService messageService,
+      MetaFiles metaFiles) {
     this.qiActionDistributionRepository = qiActionDistributionRepository;
-    this.qiAnalysisRepository = qiAnalysisRepository;
-    this.sequenceService = sequenceService;
-    this.birtTemplateService = birtTemplateService;
-    this.messageService = messageService;
-    this.templateMessageService = templateMessageService;
-    this.metaFiles = metaFiles;
     this.qualityConfigService = qualityConfigService;
+    this.qiActionDistributionService = qiActionDistributionService;
+    this.qiAnalysisRepository = qiAnalysisRepository;
+    this.birtTemplateService = birtTemplateService;
+    this.templateMessageService = templateMessageService;
+    this.messageService = messageService;
+    this.metaFiles = metaFiles;
   }
 
   @Override
@@ -93,7 +91,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
       return 0;
     }
     int totalAdvancement =
-        qiTasksList.stream().map(QITask::getAdvancement).reduce((x, y) -> (x + y)).orElse(0);
+        qiTasksList.stream().map(QITask::getAdvancement).reduce(Integer::sum).orElse(0);
     return totalAdvancement / qiTasksList.size();
   }
 
@@ -102,14 +100,9 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
       throws AxelorException, IOException {
 
     Company company = qiAnalysis.getQi().getCompany();
-    QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
-    Sequence qiActionDistributionSequence =
-        qualityConfigService.getQiActionDistributionSequence(qualityConfig);
 
     List<QITask> qiTasksList =
-        qiAnalysis.getQiTasksList().stream()
-            .filter(line -> line.isSelected())
-            .collect(Collectors.toList());
+        qiAnalysis.getQiTasksList().stream().filter(Model::isSelected).collect(Collectors.toList());
 
     Map<Partner, List<QITask>> qiTasksGroupedByPartner =
         qiTasksList.stream().collect(Collectors.groupingBy(QITask::getResponsiblePartner));
@@ -120,12 +113,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
       Partner responsiblePartner = entry.getKey();
       List<QITask> qiTasks = entry.getValue();
       createQIActionDistribution(
-          qiAnalysis,
-          company,
-          qiActionDistributionSequence,
-          generatedQiActionDistributionList,
-          responsiblePartner,
-          qiTasks);
+          qiAnalysis, company, generatedQiActionDistributionList, responsiblePartner, qiTasks);
     }
     return generatedQiActionDistributionList;
   }
@@ -137,9 +125,6 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
 
     qiAnalysis = qiAnalysisRepository.find(qiAnalysis.getId());
     Company company = qiAnalysis.getQi().getCompany();
-    QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
-    Sequence qiActionDistributionSequence =
-        qualityConfigService.getQiActionDistributionSequence(qualityConfig);
 
     List<QIActionDistribution> generatedQiActionDistributionListForOthers = new ArrayList<>();
     createQIActionDistributionForOthers(
@@ -147,7 +132,6 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
         recepient,
         recepientPartner,
         company,
-        qiActionDistributionSequence,
         generatedQiActionDistributionListForOthers);
     return generatedQiActionDistributionListForOthers;
   }
@@ -156,22 +140,13 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   protected void createQIActionDistribution(
       QIAnalysis qiAnalysis,
       Company company,
-      Sequence qiActionDistributionSequence,
       List<QIActionDistribution> generatedQiActionDistributionList,
       Partner responsiblePartner,
       List<QITask> qiTasks)
-      throws AxelorException, FileNotFoundException, IOException {
-    QIActionDistribution qiActionDistribution = new QIActionDistribution();
-    qiActionDistribution.setSequence(
-        sequenceService.getSequenceNumber(
-            qiActionDistributionSequence,
-            QIActionDistribution.class,
-            "sequence",
-            qiActionDistribution));
-    qiActionDistribution.setRecipient(qiTasks.get(0).getResponsible());
-    qiActionDistribution.setRecipientPartner(responsiblePartner);
-    qiActionDistribution.setQiDecision(qiTasks.get(0).getQiDecision());
-    qiActionDistribution.setQiTaskSet(new HashSet<>(qiTasks));
+      throws AxelorException, IOException {
+    QIActionDistribution qiActionDistribution =
+        qiActionDistributionService.createQIActionDistribution(
+            qiAnalysis, company, responsiblePartner, qiTasks);
     qiActionDistributionRepository.save(qiActionDistribution);
     generatedQiActionDistributionList.add(qiActionDistribution);
     qiAnalysis.addQiActionDistributionListItem(qiActionDistribution);
@@ -181,21 +156,14 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   @Transactional(rollbackOn = Exception.class)
   protected void createQIActionDistributionForOthers(
       QIAnalysis qiAnalysis,
-      Integer recepient,
-      Partner recepientPartner,
+      Integer recipient,
+      Partner recipientPartner,
       Company company,
-      Sequence qiActionDistributionSequence,
       List<QIActionDistribution> generatedQiActionDistributionListForOthers)
-      throws AxelorException, FileNotFoundException, IOException {
-    QIActionDistribution qiActionDistribution = new QIActionDistribution();
-    qiActionDistribution.setSequence(
-        sequenceService.getSequenceNumber(
-            qiActionDistributionSequence,
-            QIActionDistribution.class,
-            "sequence",
-            qiActionDistribution));
-    qiActionDistribution.setRecipient(recepient);
-    qiActionDistribution.setRecipientPartner(recepientPartner);
+      throws AxelorException, IOException {
+    QIActionDistribution qiActionDistribution =
+        qiActionDistributionService.createQIActionDistribution(
+            company, recipient, recipientPartner);
     qiActionDistributionRepository.save(qiActionDistribution);
     generatedQiActionDistributionListForOthers.add(qiActionDistribution);
     qiAnalysis.addQiActionDistributionListItem(qiActionDistribution);
@@ -203,7 +171,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   }
 
   protected DMSFile getGeneratedFile(Company company, QIActionDistribution qiActionDistribution)
-      throws AxelorException, FileNotFoundException, IOException {
+      throws AxelorException, IOException {
     QualityConfig qualityConfig = qualityConfigService.getQualityConfig(company);
     BirtTemplate qiActionDistributionBirtTemplate =
         qualityConfig.getQiActionDistributionBirtTemplate();
@@ -232,8 +200,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   public void sendQIActionDistributions(
       List<QIActionDistribution> qiActionDistributionList,
       Template qiActionDistributionMessageTemplate)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException, MessagingException {
     for (QIActionDistribution qiActionDistribution : qiActionDistributionList) {
       qiActionDistribution = qiActionDistributionRepository.find(qiActionDistribution.getId());
       if (qiActionDistribution.getGeneratedFile() == null) {
@@ -246,8 +213,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
   }
 
   protected void sendEmail(Template template, QIActionDistribution qiActionDistribution)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException {
+      throws ClassNotFoundException, MessagingException {
     Message message = templateMessageService.generateMessage(qiActionDistribution, template);
     message.addToEmailAddressSetItem(qiActionDistribution.getRecipientPartner().getEmailAddress());
     messageService.attachMetaFiles(
