@@ -1095,6 +1095,7 @@
 "Untaxed amount","Montant HT",,
 "Update date","Date de mise en application",,
 "Update to invoice","Mettre à jour les factures",,
+"Updated currency and new parent currency are incompatible.","La devise mise à jour et la devise de la nouvelle note de frais sont incompatibles.",,
 "Use employee's Activity","Utiliser l'activité des employés",,
 "Use line's Activity","Utiliser l'activité des lignes",,
 "Use unique product for timesheet","Utiliser un seul produit pour les feuilles de temps",,

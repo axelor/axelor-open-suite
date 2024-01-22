@@ -45,7 +45,8 @@ public interface ExpenseLineUpdateService {
       String comments,
       Employee employee,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      Expense newExpense)
       throws AxelorException;
 
   void updateKilometricExpenseLine(
@@ -61,6 +62,7 @@ public interface ExpenseLineUpdateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      Product expenseProduct)
+      Product expenseProduct,
+      Expense newExpense)
       throws AxelorException;
 }

@@ -1095,6 +1095,7 @@
 "Untaxed amount",,,
 "Update date",,,
 "Update to invoice",,,
+"Updated currency and new parent currency are incompatible.",,,
 "Use employee's Activity",,,
 "Use line's Activity",,,
 "Use unique product for timesheet",,,

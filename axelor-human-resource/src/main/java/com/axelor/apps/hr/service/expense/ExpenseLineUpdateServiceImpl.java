@@ -77,7 +77,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           employee,
           currency,
           toInvoice,
-          expenseProduct);
+          expenseProduct,
+          newExpense);
     } else {
       updateGeneralExpenseLine(
           expenseLine,
@@ -90,7 +91,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           comments,
           employee,
           currency,
-          toInvoice);
+          toInvoice,
+          newExpense);
     }
 
     if (newExpense != null) {
@@ -119,12 +121,21 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       String comments,
       Employee employee,
       Currency currency,
-      Boolean toInvoice)
+      Boolean toInvoice,
+      Expense newExpense)
       throws AxelorException {
 
     checkParentStatus(expenseLine.getExpense());
     updateBasicExpenseLine(
-        expenseLine, project, employee, expenseDate, comments, currency, expenseProduct, toInvoice);
+        expenseLine,
+        project,
+        employee,
+        expenseDate,
+        comments,
+        currency,
+        expenseProduct,
+        toInvoice,
+        newExpense);
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
   }
@@ -144,11 +155,20 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       Employee employee,
       Currency currency,
       Boolean toInvoice,
-      Product expenseProduct)
+      Product expenseProduct,
+      Expense newExpense)
       throws AxelorException {
     checkParentStatus(expenseLine.getExpense());
     updateBasicExpenseLine(
-        expenseLine, project, employee, expenseDate, comments, currency, expenseProduct, toInvoice);
+        expenseLine,
+        project,
+        employee,
+        expenseDate,
+        comments,
+        currency,
+        expenseProduct,
+        toInvoice,
+        newExpense);
     updateKilometricExpenseLineInfo(
         expenseLine, kilometricAllowParam, kilometricType, fromCity, toCity, distance);
   }
@@ -201,7 +221,10 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       String comments,
       Currency currency,
       Product expenseProduct,
-      Boolean toInvoice) {
+      Boolean toInvoice,
+      Expense newExpense)
+      throws AxelorException {
+    updateLineCurrency(expenseLine, currency, newExpense);
     if (project != null) {
       expenseLine.setProject(project);
     }
@@ -222,6 +245,21 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
     if (toInvoice != null) {
       expenseLine.setToInvoice(toInvoice);
+    }
+  }
+
+  protected void updateLineCurrency(ExpenseLine expenseLine, Currency currency, Expense newExpense)
+      throws AxelorException {
+    if (currency != null) {
+      if (newExpense != null) {
+        Currency newExpenseCurrency = newExpense.getCurrency();
+        if (newExpenseCurrency != null && !currency.equals(newExpenseCurrency)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_UPDATED_CURRENCY_INCONSISTENCY));
+        }
+      }
+      expenseLine.setCurrency(currency);
     }
   }
 
