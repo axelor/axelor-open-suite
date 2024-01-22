@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -34,8 +35,9 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Inject
   public FixedAssetLineIfrsComputationServiceImpl(
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
-      AppBaseService appBaseService) {
-    super(fixedAssetFailOverControlService, appBaseService);
+      AppBaseService appBaseService,
+      FixedAssetLineToolService fixedAssetLineToolService) {
+    super(fixedAssetFailOverControlService, appBaseService, fixedAssetLineToolService);
   }
 
   @Override
@@ -50,15 +52,23 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
     if (!fixedAsset.getIsIfrsEqualToFiscalDepreciation()) {
-      return fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue());
+      return fixedAssetLineToolService.getCompanyScaledValue(
+          fixedAsset.getGrossValue(),
+          fixedAsset.getResidualValue(),
+          fixedAsset,
+          BigDecimal::subtract);
     }
 
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
         && getComputationMethodSelect(fixedAsset)
             .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
-      return fixedAsset.getGrossValue().subtract(getAlreadyDepreciatedAmount(fixedAsset));
+      return fixedAssetLineToolService.getCompanyScaledValue(
+          fixedAsset.getGrossValue(),
+          getAlreadyDepreciatedAmount(fixedAsset),
+          fixedAsset,
+          BigDecimal::subtract);
     }
-    return fixedAsset.getGrossValue();
+    return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getGrossValue(), fixedAsset);
   }
 
   @Override
@@ -109,7 +119,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDegressiveDepreciation(
-      FixedAsset fixedAsset, BigDecimal baseValue) {
+      FixedAsset fixedAsset, BigDecimal baseValue) throws AxelorException {
     if (fixedAssetFailOverControlService.isFailOver(fixedAsset) && !isProrataTemporis(fixedAsset)) {
       FixedAssetLine dummyPreviousLine = new FixedAssetLine();
       dummyPreviousLine.setAccountingValue(baseValue);
@@ -125,7 +135,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
-    return fixedAsset.getImportIfrsAlreadyDepreciatedAmount();
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        fixedAsset.getImportIfrsAlreadyDepreciatedAmount(), fixedAsset);
   }
 
   @Override
@@ -135,7 +146,8 @@ public class FixedAssetLineIfrsComputationServiceImpl
 
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
-    return fixedAsset.getIfrsDepreciatedAmountCurrentYear();
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        fixedAsset.getIfrsDepreciatedAmountCurrentYear(), fixedAsset);
   }
 
   @Override

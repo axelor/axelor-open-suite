@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -69,6 +70,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
   protected BatchRepository batchRepository;
   protected BankDetailsService bankDetailsService;
   protected FixedAssetDateService fixedAssetDateService;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
   private Batch batch;
 
   @Inject
@@ -81,7 +83,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
       MoveLineCreateService moveLineCreateService,
       BatchRepository batchRepository,
       BankDetailsService bankDetailsService,
-      FixedAssetDateService fixedAssetDateService) {
+      FixedAssetDateService fixedAssetDateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.fixedAssetDerogatoryLineRepository = fixedAssetDerogatoryLineRepository;
     this.moveCreateService = moveCreateService;
     this.moveRepo = moveRepo;
@@ -91,6 +94,7 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     this.batchRepository = batchRepository;
     this.bankDetailsService = bankDetailsService;
     this.fixedAssetDateService = fixedAssetDateService;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   @Override
@@ -188,7 +192,8 @@ public class FixedAssetDerogatoryLineMoveServiceImpl
     if (fixedAssetDerogatoryLine.getFixedAsset().getGrossValue().signum() < 0) {
       amount = amount.negate();
     }
-    return amount;
+    return currencyScaleServiceAccount.getCompanyScaledValue(
+        fixedAssetDerogatoryLine.getFixedAsset(), amount);
   }
 
   protected Account computeDebitAccount(FixedAssetDerogatoryLine fixedAssetDerogatoryLine) {
