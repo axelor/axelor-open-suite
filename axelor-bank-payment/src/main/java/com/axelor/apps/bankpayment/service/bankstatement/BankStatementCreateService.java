@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.StringJoiner;
 
 public class BankStatementCreateService {
 
@@ -54,36 +55,23 @@ public class BankStatementCreateService {
   }
 
   public String computeName(BankStatement bankStatement) {
-
-    String name = "";
+    StringJoiner joiner = new StringJoiner("-");
 
     if (bankStatement.getEbicsPartner() != null) {
-      name += bankStatement.getEbicsPartner().getPartnerId();
+      joiner.add(bankStatement.getEbicsPartner().getPartnerId());
     }
 
     if (bankStatement.getBankStatementFileFormat() != null) {
-      if (name != "") {
-        name += "-";
-      }
-      name += bankStatement.getBankStatementFileFormat().getName();
+      joiner.add(bankStatement.getBankStatementFileFormat().getName());
     }
 
-    try {
-      if (bankStatement.getFromDate() != null) {
-        if (name != "") {
-          name += "-";
-        }
-        name += bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-      }
-      if (bankStatement.getToDate() != null) {
-        if (name != "") {
-          name += "-";
-        }
-        name += bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-      }
-    } catch (Exception e) {
+    if (bankStatement.getFromDate() != null) {
+      joiner.add(bankStatement.getFromDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
     }
 
-    return name;
+    if (bankStatement.getToDate() != null) {
+      joiner.add(bankStatement.getToDate().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+    }
+    return joiner.toString();
   }
 }

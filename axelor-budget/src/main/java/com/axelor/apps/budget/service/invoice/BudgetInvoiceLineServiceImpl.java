@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,6 +44,7 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -125,7 +126,8 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
     if (invoiceLine.getBudgetDistributionList() != null
         && !invoiceLine.getBudgetDistributionList().isEmpty()) {
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-        if (budgetDistribution.getAmount().compareTo(invoiceLine.getCompanyExTaxTotal()) > 0) {
+        if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
+            > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
@@ -183,5 +185,19 @@ public class BudgetInvoiceLineServiceImpl extends InvoiceLineProjectServiceImpl
             .orElse(null);
 
     return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+  }
+
+  @Override
+  public void negateAmount(InvoiceLine invoiceLine, Invoice invoice) {
+    if (invoiceLine == null || ObjectUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
+      return;
+    }
+
+    for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
+      if (budgetDistribution.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+        budgetDistribution.setAmount(budgetDistribution.getAmount().negate());
+      }
+    }
+    computeBudgetDistributionSumAmount(invoiceLine, invoice);
   }
 }

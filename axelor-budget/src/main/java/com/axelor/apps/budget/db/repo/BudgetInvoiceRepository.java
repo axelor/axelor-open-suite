@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,8 +54,15 @@ public class BudgetInvoiceRepository extends InvoiceProjectRepository {
       if (!CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
         BudgetInvoiceLineService budgetInvoiceLineService =
             Beans.get(BudgetInvoiceLineService.class);
+        boolean negateAmount =
+            invoice.getOperationTypeSelect() == OPERATION_TYPE_SUPPLIER_REFUND
+                || invoice.getOperationTypeSelect() == OPERATION_TYPE_CLIENT_REFUND
+                || invoice.getOperationSubTypeSelect() == OPERATION_SUB_TYPE_ADVANCE;
         for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
           budgetInvoiceLineService.checkAmountForInvoiceLine(invoiceLine);
+          if (negateAmount) {
+            budgetInvoiceLineService.negateAmount(invoiceLine, invoice);
+          }
         }
       }
     } catch (AxelorException e) {

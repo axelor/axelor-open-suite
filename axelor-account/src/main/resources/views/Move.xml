@@ -900,39 +900,40 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig.isManagePFPInRefund" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <filter title="Current Period Entries">
+    <filter name="move-filters-current-period-entries" title="Current Period Entries">
       <domain>self.period IS NULL OR (CURRENT_DATE &gt;= self.period.fromDate and CURRENT_DATE &lt;=
         self.period.toDate)</domain>
     </filter>
-    <filter title="Exported moves">
+    <filter name="move-filters-exported-moves" title="Exported moves">
       <domain>self.accountingOk = true</domain>
     </filter>
-    <filter title="Moves to export">
+    <filter name="move-filters-moves-to-export" title="Moves to export">
       <domain>self.ignoreInAccountingOk = false AND self.journal.notExportOk = false AND
         self.accountingOk = false</domain>
     </filter>
-    <filter title="Moves from invoices/refunds">
+    <filter name="move-filters-moves-from-invoices-and-refunds"
+      title="Moves from invoices/refunds">
       <domain>self.invoice IS NOT NULL</domain>
     </filter>
-    <filter title="Moves from payment">
+    <filter name="move-filters-moves-from-payment" title="Moves from payment">
       <domain>self.paymentMode IS NOT NULL</domain>
     </filter>
-    <filter title="Misc. Moves">
+    <filter name="move-filters-misc-moves" title="Misc. Moves">
       <domain>self.date IS NOT NULL</domain>
     </filter>
-    <filter title="Draft Moves">
+    <filter name="move-filters-draft-moves" title="Draft Moves">
       <domain>self.statusSelect = 1</domain>
     </filter>
-    <filter title="Daybook Moves">
+    <filter name="move-filters-daybook-moves" title="Daybook Moves">
       <domain>self.statusSelect = 2</domain>
     </filter>
-    <filter title="Validated Moves">
+    <filter name="move-filters-validated-moves" title="Validated Moves">
       <domain>self.statusSelect = 3</domain>
     </filter>
-    <filter title="Canceled Moves">
+    <filter name="move-filters-canceled-moves" title="Canceled Moves">
       <domain>self.statusSelect = 4</domain>
     </filter>
-    <filter title="Simulated Moves">
+    <filter name="move-filters-simulated-moves" title="Simulated Moves">
       <domain>self.statusSelect = 5</domain>
     </filter>
   </search-filters>
