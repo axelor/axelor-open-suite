@@ -26,6 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -117,6 +118,22 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
   }
 
   @Override
+  public BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAsset fixedAsset) {
+    return amount1 == null
+        ? BigDecimal.ZERO
+        : currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount1);
+  }
+
+  @Override
+  public BigDecimal getCompanyDivideScaledValue(
+      BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset) {
+    return amount1 == null || amount2 == null || amount2.equals(BigDecimal.ZERO)
+        ? BigDecimal.ZERO
+        : amount1.divide(
+            amount2, currencyScaleServiceAccount.getCompanyScale(fixedAsset), RoundingMode.HALF_UP);
+  }
+
+  @Override
   public BigDecimal getCompanyScaledValue(
       BigDecimal amount1,
       BigDecimal amount2,
@@ -127,6 +144,14 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
         ? BigDecimal.ZERO
         : currencyScaleServiceAccount.getCompanyScaledValue(
             fixedAssetLine, arithmeticOperation.operate(amount1, amount2));
+  }
+
+  @Override
+  public BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAssetLine fixedAssetLine)
+      throws AxelorException {
+    return amount1 == null
+        ? BigDecimal.ZERO
+        : currencyScaleServiceAccount.getCompanyScaledValue(fixedAssetLine, amount1);
   }
 
   @Override
@@ -142,6 +167,6 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
     amount1 = currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount1);
     amount2 = currencyScaleServiceAccount.getCompanyScaledValue(fixedAsset, amount2);
 
-    return Objects.equals(amount1, amount2);
+    return amount1.compareTo(amount2) == 0;
   }
 }

@@ -142,20 +142,14 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
     if (economicFixedAssetLine != null) {
       depreciationAmount =
           fixedAssetLineToolService.getCompanyScaledValue(
-              economicFixedAssetLine.getDepreciation(),
-              BigDecimal.ONE,
-              fixedAsset,
-              BigDecimal::multiply);
+              economicFixedAssetLine.getDepreciation(), fixedAsset);
     }
 
     BigDecimal fiscalDepreciationAmount = BigDecimal.ZERO;
     if (fiscalFixedAssetLine != null) {
       fiscalDepreciationAmount =
           fixedAssetLineToolService.getCompanyScaledValue(
-              fiscalFixedAssetLine.getDepreciation(),
-              BigDecimal.ONE,
-              fixedAsset,
-              BigDecimal::multiply);
+              fiscalFixedAssetLine.getDepreciation(), fixedAsset);
     }
 
     BigDecimal derogatoryAmount = null;
@@ -219,8 +213,7 @@ public class FixedAssetDerogatoryLineServiceImpl implements FixedAssetDerogatory
       derogatoryBalanceAmount =
           derogatoryAmount.subtract(BigDecimal.ZERO).add(previousDerogatoryBalanceAmount);
     }
-    return fixedAssetLineToolService.getCompanyScaledValue(
-        derogatoryBalanceAmount, BigDecimal.ONE, fixedAsset, BigDecimal::multiply);
+    return fixedAssetLineToolService.getCompanyScaledValue(derogatoryBalanceAmount, fixedAsset);
   }
 
   @Override

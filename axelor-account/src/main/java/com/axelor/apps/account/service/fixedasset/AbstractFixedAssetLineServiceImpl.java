@@ -31,6 +31,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -145,7 +146,10 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
           fixedAsset
               .getGrossValue()
               .multiply(prorataTemporis)
-              .divide(BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()));
+              .divide(
+                  BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
+                  currencyScaleServiceAccount.getCompanyScale(fixedAsset),
+                  RoundingMode.HALF_UP);
     } else {
       deprecationValue = firstPlannedLine.getDepreciation().multiply(prorataTemporis);
     }

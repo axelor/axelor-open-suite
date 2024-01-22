@@ -47,12 +47,20 @@ public interface FixedAssetLineToolService {
       FixedAsset fixedAsset,
       ArithmeticOperation arithmeticOperation);
 
+  BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAsset fixedAsset);
+
   BigDecimal getCompanyScaledValue(
       BigDecimal amount1,
       BigDecimal amount2,
       FixedAssetLine fixedAssetLine,
       ArithmeticOperation arithmeticOperation)
       throws AxelorException;
+
+  BigDecimal getCompanyScaledValue(BigDecimal amount1, FixedAssetLine fixedAssetLine)
+      throws AxelorException;
+
+  BigDecimal getCompanyDivideScaledValue(
+      BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 
   boolean isGreaterThan(BigDecimal amount1, BigDecimal amount2, FixedAsset fixedAsset);
 

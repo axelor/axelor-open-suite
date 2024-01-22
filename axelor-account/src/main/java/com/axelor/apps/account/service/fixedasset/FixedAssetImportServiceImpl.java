@@ -144,18 +144,14 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
               fixedAsset,
               failOverDate,
               fixedAssetLineToolService.getCompanyScaledValue(
-                  fiscalDepreciatedAmountCurrentYear,
-                  BigDecimal.ONE,
-                  fixedAsset,
-                  BigDecimal::multiply),
+                  fiscalDepreciatedAmountCurrentYear, fixedAsset),
               fixedAssetLineToolService.getCompanyScaledValue(
                   fiscalAlreadyDepreciatedAmount,
                   fiscalDepreciatedAmountCurrentYear,
                   fixedAsset,
                   BigDecimal::add),
               BigDecimal.ZERO,
-              fixedAssetLineToolService.getCompanyScaledValue(
-                  depreciationBase, BigDecimal.ONE, fixedAsset, BigDecimal::multiply),
+              fixedAssetLineToolService.getCompanyScaledValue(depreciationBase, fixedAsset),
               FixedAssetLineRepository.TYPE_SELECT_FISCAL,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFiscalFixedAssetLineListItem(fixedAssetLine);
@@ -179,15 +175,14 @@ public class FixedAssetImportServiceImpl implements FixedAssetImportService {
               fixedAsset,
               failOverDate,
               fixedAssetLineToolService.getCompanyScaledValue(
-                  depreciatedAmountCurrentYear, BigDecimal.ONE, fixedAsset, BigDecimal::multiply),
+                  depreciatedAmountCurrentYear, fixedAsset),
               fixedAssetLineToolService.getCompanyScaledValue(
                   alreadyDepreciatedAmount,
                   depreciatedAmountCurrentYear,
                   fixedAsset,
                   BigDecimal::add),
               BigDecimal.ZERO,
-              fixedAssetLineToolService.getCompanyScaledValue(
-                  depreciationBase, BigDecimal.ONE, fixedAsset, BigDecimal::multiply),
+              fixedAssetLineToolService.getCompanyScaledValue(depreciationBase, fixedAsset),
               FixedAssetLineRepository.TYPE_SELECT_ECONOMIC,
               FixedAssetLineRepository.STATUS_PLANNED);
       fixedAsset.addFixedAssetLineListItem(fixedAssetLine);

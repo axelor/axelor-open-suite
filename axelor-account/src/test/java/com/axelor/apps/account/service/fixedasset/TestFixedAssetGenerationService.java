@@ -101,6 +101,23 @@ class TestFixedAssetGenerationService {
                             .operate(
                                 ((BigDecimal) invocation.getArguments()[0]),
                                 ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAsset.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAsset) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[0])));
+    when(fixedAssetLineToolService.getCompanyDivideScaledValue(any(), any(), any(FixedAsset.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    ((BigDecimal) invocation.getArguments()[0])
+                        .divide(
+                            ((BigDecimal) invocation.getArguments()[1]),
+                            currencyScaleServiceAccount.getCompanyScale(
+                                ((FixedAsset) invocation.getArguments()[2])),
+                            RoundingMode.HALF_UP));
     when(fixedAssetLineToolService.getCompanyScaledValue(
             any(),
             any(),
@@ -116,6 +133,13 @@ class TestFixedAssetGenerationService {
                             .operate(
                                 ((BigDecimal) invocation.getArguments()[0]),
                                 ((BigDecimal) invocation.getArguments()[1]))));
+    when(fixedAssetLineToolService.getCompanyScaledValue(any(), any(FixedAssetLine.class)))
+        .then(
+            (Answer<BigDecimal>)
+                invocation ->
+                    currencyScaleServiceAccount.getCompanyScaledValue(
+                        ((FixedAssetLine) invocation.getArguments()[1]),
+                        ((BigDecimal) invocation.getArguments()[0])));
     when(fixedAssetLineToolService.isGreaterThan(any(), any(), any(FixedAsset.class)))
         .then(
             (Answer<Boolean>)

@@ -68,8 +68,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
           fixedAsset,
           BigDecimal::subtract);
     }
-    return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getGrossValue(), BigDecimal.ONE, fixedAsset, BigDecimal::multiply);
+    return fixedAssetLineToolService.getCompanyScaledValue(fixedAsset.getGrossValue(), fixedAsset);
   }
 
   @Override
@@ -137,10 +136,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal getAlreadyDepreciatedAmount(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getImportIfrsAlreadyDepreciatedAmount(),
-        BigDecimal.ONE,
-        fixedAsset,
-        BigDecimal::multiply);
+        fixedAsset.getImportIfrsAlreadyDepreciatedAmount(), fixedAsset);
   }
 
   @Override
@@ -151,10 +147,7 @@ public class FixedAssetLineIfrsComputationServiceImpl
   @Override
   protected BigDecimal getDepreciatedAmountCurrentYear(FixedAsset fixedAsset) {
     return fixedAssetLineToolService.getCompanyScaledValue(
-        fixedAsset.getIfrsDepreciatedAmountCurrentYear(),
-        BigDecimal.ONE,
-        fixedAsset,
-        BigDecimal::multiply);
+        fixedAsset.getIfrsDepreciatedAmountCurrentYear(), fixedAsset);
   }
 
   @Override
