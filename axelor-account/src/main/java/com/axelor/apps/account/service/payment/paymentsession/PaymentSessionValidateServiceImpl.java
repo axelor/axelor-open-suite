@@ -451,17 +451,17 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         || !moveMap.containsKey(partner)
         || (isGlobal && !partner.getIsCompensation())) {
       BankDetails partnerBankDetails = null;
-      Partner subrogationPartner = null;
+      Partner thirdPartyPayerPartner = null;
 
       if (paymentSession.getAccountingMethodSelect()
           == PaymentSessionRepository.ACCOUNTING_METHOD_BY_INVOICE_TERM) {
-        subrogationPartner = invoiceTerm.getSubrogationPartner();
+        thirdPartyPayerPartner = invoiceTerm.getThirdPartyPayerPartner();
         partnerBankDetails = this.getBankDetails(invoiceTerm);
       }
 
       move =
           this.createMove(
-              paymentSession, partner, subrogationPartner, accountingDate, partnerBankDetails);
+              paymentSession, partner, thirdPartyPayerPartner, accountingDate, partnerBankDetails);
 
       if (!moveMap.containsKey(partner)) {
         moveMap.put(partner, new ArrayList<>());
@@ -480,7 +480,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   protected BankDetails getBankDetails(InvoiceTerm invoiceTerm) {
     return Optional.of(invoiceTerm)
-        .map(InvoiceTerm::getSubrogationPartner)
+        .map(InvoiceTerm::getThirdPartyPayerPartner)
         .map(partnerService::getDefaultBankDetails)
         .orElse(invoiceTerm.getBankDetails());
   }
@@ -488,7 +488,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Move createMove(
       PaymentSession paymentSession,
       Partner partner,
-      Partner subrogationPartner,
+      Partner thirdPartyPayerPartner,
       LocalDate accountingDate,
       BankDetails partnerBankDetails)
       throws AxelorException {
@@ -511,7 +511,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     move.setPartnerBankDetails(partnerBankDetails);
     move.setPaymentSession(paymentSession);
     move.setPaymentCondition(null);
-    move.setSubrogationPartner(subrogationPartner);
+    move.setThirdPartyPayerPartner(thirdPartyPayerPartner);
 
     return move;
   }
