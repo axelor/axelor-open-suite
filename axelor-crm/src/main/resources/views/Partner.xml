@@ -725,6 +725,7 @@
   </action-group>
 
   <action-group name="crm-action-partner-group-onsave">
+    <action name="action-partner-validate-default-status"/>
     <action name="action-partner-group-onsave"/>
     <action name="action-partner-validate-alert-convert-lead"
       if="!isAlreadyConvertFromLead &amp;&amp; _isInConversionFromLead"/>
