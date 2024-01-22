@@ -94,7 +94,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     }
 
     if (newExpense != null) {
-      return changeParent(expenseLine, newExpense);
+      changeLineParentExpense(expenseLine, newExpense);
+      return expenseLine;
     }
 
     Expense expense = expenseLine.getExpense();
@@ -102,7 +103,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       expenseComputationService.compute(expense);
     }
 
-    return expenseLineRepository.save(expenseLine);
+    return expenseLine;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -152,13 +153,33 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseLine, kilometricAllowParam, kilometricType, fromCity, toCity, distance);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  protected ExpenseLine changeParent(ExpenseLine expenseLine, Expense newExpense)
+  protected void changeLineParentExpense(ExpenseLine expenseLine, Expense newExpense)
       throws AxelorException {
     Expense oldExpense = expenseLine.getExpense();
     if (oldExpense == null) {
-      return expenseLine;
+      expenseToolService.addExpenseLineToExpenseAndCompute(newExpense, expenseLine);
+    } else {
+      Long oldExpenseId = oldExpense.getId();
+      changeParent(expenseLine, newExpense);
+      Expense oldExpenseToCompute = expenseRepository.find(oldExpenseId);
+      expenseComputationService.compute(oldExpenseToCompute);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void changeParent(ExpenseLine expenseLine, Expense newExpense) throws AxelorException {
+    Expense oldExpense = expenseLine.getExpense();
+    if (oldExpense == null) {
+      return;
+    }
+    checkParentStatus(newExpense, oldExpense);
+    expenseLine.setExpense(newExpense);
+    expenseToolService.addExpenseLineToExpense(newExpense, expenseLine);
+    expenseComputationService.compute(newExpense);
+    expenseLineRepository.save(expenseLine);
+  }
+
+  protected void checkParentStatus(Expense newExpense, Expense oldExpense) throws AxelorException {
     if (oldExpense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -170,19 +191,6 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_NEW_EXPENSE_NOT_DRAFT));
     }
-
-    ExpenseLine copyExpenseLine = expenseLineRepository.copy(expenseLine, true);
-    expenseLineRepository.save(copyExpenseLine);
-
-    if (expenseLineToolService.isKilometricExpenseLine(expenseLine)) {
-      oldExpense.removeKilometricExpenseLineListItem(expenseLine);
-    } else {
-      oldExpense.removeGeneralExpenseLineListItem(expenseLine);
-    }
-    expenseComputationService.compute(oldExpense);
-
-    expenseToolService.addExpenseLineToExpenseAndCompute(newExpense, copyExpenseLine);
-    return expenseLineRepository.save(copyExpenseLine);
   }
 
   protected void updateBasicExpenseLine(
