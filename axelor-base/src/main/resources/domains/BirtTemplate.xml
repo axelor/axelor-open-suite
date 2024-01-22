@@ -11,7 +11,8 @@
     <string name="templateLink" title="Template file name"/>
     <string name="format" title="Format"/>
     <one-to-many name="birtTemplateParameterList"
-      ref="com.axelor.apps.base.db.BirtTemplateParameter" mappedBy="birtTemplate" title="Parameters"/>
+      ref="com.axelor.apps.base.db.BirtTemplateParameter" mappedBy="birtTemplate" title="Parameters"
+      orderBy="name"/>
 
   </entity>
 
