@@ -202,11 +202,7 @@ public class PurchaseOrderLineController {
             Beans.get(PurchaseOrderLineBudgetService.class)
                 .getBudgetDomain(purchaseOrderLine, purchaseOrder);
       }
-      response.setAttr(
-          "budget",
-          "domain",
-          Beans.get(PurchaseOrderLineBudgetService.class)
-              .getBudgetDomain(purchaseOrderLine, purchaseOrder));
+      response.setAttr("budget", "domain", query);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
