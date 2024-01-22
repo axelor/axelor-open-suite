@@ -694,7 +694,7 @@ public class ExpenseController {
 
       if (expenseLine.getKilometricAllowParam() == null
           || expenseLine.getExpenseDate() == null
-          || expenseLine.getKilometricTypeSelect() == 0) {
+          || expenseLine.getKilometricTypeSelect() == null) {
         return;
       }
 
