@@ -1277,10 +1277,10 @@ public class InvoiceController {
   }
 
   @ErrorException
-  public void updateSubrogationPartner(ActionRequest request, ActionResponse response) {
+  public void updateThirdPartyPayerPartner(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
 
-    Beans.get(InvoiceService.class).updateSubrogationPartner(invoice);
+    Beans.get(InvoiceService.class).updateThirdPartyPayerPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }

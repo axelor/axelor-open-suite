@@ -27,11 +27,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -53,6 +55,7 @@ import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.batch.BatchAccountingCutOffSupplyChain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
@@ -201,10 +204,8 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
-    if ((ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
-            && stockMoveLine.getSaleOrderLine() != null)
-        || (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
-            && stockMoveLine.getPurchaseOrderLine() != null)) {
+    if ((stockMove.getSaleOrder() != null && stockMoveLine.getSaleOrderLine() != null)
+        || (stockMove.getPurchaseOrder() != null && stockMoveLine.getPurchaseOrderLine() != null)) {
       // the stock move comes from a sale or purchase order, we take the price from the order.
       stockMoveLine = computeFromOrder(stockMoveLine, stockMove);
     } else {
@@ -218,16 +219,36 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal unitPriceUntaxed = stockMoveLine.getUnitPriceUntaxed();
     BigDecimal unitPriceTaxed = stockMoveLine.getUnitPriceTaxed();
     Unit orderUnit = null;
-    if (ObjectUtils.notEmpty(stockMove.getSaleOrderSet())) {
+    if (stockMove.getSaleOrder() != null) {
       SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-      unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
-      unitPriceTaxed = saleOrderLine.getInTaxPrice();
-      orderUnit = saleOrderLine.getUnit();
-    } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
+      if (saleOrderLine == null) {
+        // log the exception
+        TraceBackService.trace(
+            new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_SALE_ORDER,
+                stockMove.getSaleOrder(),
+                stockMove.getName()));
+      } else {
+        unitPriceUntaxed = saleOrderLine.getPriceDiscounted();
+        unitPriceTaxed = saleOrderLine.getInTaxPrice();
+        orderUnit = saleOrderLine.getUnit();
+      }
+    } else if (stockMove.getPurchaseOrder() != null) {
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
-      unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();
-      unitPriceTaxed = purchaseOrderLine.getInTaxPrice();
-      orderUnit = purchaseOrderLine.getUnit();
+      if (purchaseOrderLine == null) {
+        // log the exception
+        TraceBackService.trace(
+            new AxelorException(
+                TraceBackRepository.CATEGORY_MISSING_FIELD,
+                SupplychainExceptionMessage.STOCK_MOVE_MISSING_PURCHASE_ORDER,
+                stockMove.getPurchaseOrder(),
+                stockMove.getName()));
+      } else {
+        unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();
+        unitPriceTaxed = purchaseOrderLine.getInTaxPrice();
+        orderUnit = purchaseOrderLine.getUnit();
+      }
     }
 
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
