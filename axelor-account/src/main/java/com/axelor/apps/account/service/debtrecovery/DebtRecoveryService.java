@@ -47,6 +47,7 @@ import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.db.repo.MultiRelatedRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.ObjectUtils;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.db.repo.TraceBackRepository;
 import com.axelor.exception.service.TraceBackService;
@@ -452,6 +453,12 @@ public class DebtRecoveryService {
 
         remindedOk = true;
 
+        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
+
+        if (ObjectUtils.isEmpty(invoiceTermList)) {
+          debtRecoverySessionService.debtRecoveryInitialization(debtRecovery);
+        }
+
         if (debtRecovery == null) {
           AccountingSituationRepository accSituationRepo =
               Beans.get(AccountingSituationRepository.class);
@@ -469,7 +476,6 @@ public class DebtRecoveryService {
         debtRecovery.setCurrency(partner.getCurrency());
         debtRecovery.setBalanceDue(balanceDue);
 
-        List<InvoiceTerm> invoiceTermList = this.getInvoiceTerms(partner, company, tradingName);
         this.updateInvoiceTermDebtRecovery(debtRecovery, invoiceTermList);
         this.updateInvoiceDebtRecovery(
             debtRecovery, this.getInvoiceListFromInvoiceTerm(invoiceTermList));
