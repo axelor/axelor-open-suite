@@ -141,7 +141,11 @@ public class ContractVersionController {
               ? contractVersion.getContract()
               : contractVersion.getNextContract();
       Product product = contractLine.getProduct();
-
+      if (product == null) {
+        contractLine = contractLineService.resetProductInformation(contractLine);
+        response.setValues(contractLine);
+        return;
+      }
       contractLine = contractLineService.fillAndCompute(contractLine, contract, product);
       response.setValues(contractLine);
     } catch (Exception e) {
