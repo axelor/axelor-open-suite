@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -112,6 +112,13 @@ public final class SupplychainExceptionMessage {
       "Can't cancel a stock move that is partially or totally invoiced." /*)*/;
   public static final String STOCK_MOVE_CANCEL_WRONG_INVOICE_STATUS_ALERT = /*$$(*/
       "An invoice at status draft or validated is linked to the stock move %s. Please contact the invoicing/accounting department before any changes." /*)*/;
+
+  /** Stock move line service */
+  public static final String STOCK_MOVE_MISSING_SALE_ORDER = /*$$(*/
+      "Missing link to sale order line (from sale order id = %s) for stock move line %s" /*)*/;
+
+  public static final String STOCK_MOVE_MISSING_PURCHASE_ORDER = /*$$(*/
+      "Missing purchase order with id %s for stock move line %s" /*)*/;
 
   /** Batch Invoicing */
   public static final String BATCH_INVOICING_1 = /*$$(*/

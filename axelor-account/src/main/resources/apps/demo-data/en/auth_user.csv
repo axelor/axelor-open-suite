@@ -1,23 +1,23 @@
-"code";"name";"group.code";"language";"homeAction";"importId";"companySet.importId";"activeCompany.id";"partner.importId";"employee.importId";"activeTeam.importId";"picture_fileName"
-"admin";"Admin";"admins";"en";;1;1;1;90019;;4;"img/user/1033_128px.png"
-"demo";"Demo";"users";"en";;2;1;1;90020;;4;"img/user/1033_128px.png"
-"psdt";"Yoann MARQUES";"MNGT";"en";;3;1;1;90001;1;4;"img/user/1033_128px.png"
-"assist";"Lucy ROBERT";"MNGT";"en";;4;1;1;90002;2;4;"img/user/1033_128px.png"
-"projdir";"Lucas RICHARD";"MNGT";"en";;5;1;1;90003;3;4;"img/user/1033_128px.png"
-"projmg";"Daniel SILVA";"ERP";"en";;6;1;1;90004;4;4;"img/user/1033_128px.png"
-"consultant";"Charles MARTIN";"CST";"en";;7;1;1;90005;5;4;"img/user/1033_128px.png"
-"demoerp";"Kevin DEMOERP";"ERP";"en";"saleman.dashboard.view.sample";8;1;1;90006;6;4;"img/user/1033_128px.png"
-"democrm";"Charles DEMOCRM";"CRM";"en";"crm.opportunities.dashboard.2.view";9;1;1;90007;7;1;"img/user/1033_128px.png"
-"smn2";"Tony RAYMOND";"SALE";"en";;10;1;1;90008;8;1;"img/user/1033_128px.png"
-"sms1";"Thomas LAMY";"SALE";"en";;11;1;1;90009;9;2;"img/user/1033_128px.png"
-"sms2";"Anne GIRAULT";"SALE";"en";;12;1;1;90010;10;2;"img/user/1012_128px.png"
-"smi1";"Dimitri GEOFFROY";"SALE";"en";;13;1;1;90011;11;3;"img/user/1033_128px.png"
-"purch";"Alex DAVID";"PURCH";"en";;14;1;1;90012;12;4;"img/user/1033_128px.png"
-"prod";"William ANDRE";"OPTS";"en";;15;1;1;90013;13;4;"img/user/1033_128px.png"
-"suppmg";"David MAURIN";"OPTS";"en";;16;1;1;90014;14;4;"img/user/1033_128px.png"
-"supp1";"Cyril MARCHAL";"OPTS";"en";;17;1;1;90015;15;4;"img/user/1033_128px.png"
-"supp2";"Robin COSTA";"OPTS";"en";;18;1;1;90016;16;4;"img/user/1033_128px.png"
-"hrmg";"Romane COLIN";"HRSC";"en";;19;1;1;90017;17;4;"img/user/1012_128px.png"
-"account";"Victoria LOUIS";"ACCO";"en";;20;1;1;90018;18;4;"img/user/1012_128px.png"
-"client";"123 Service";"CLT";"en";"wizard-client-view";21;1;1;88;;;"img/user/88_120px.png"
-"supplier";"TOP Components";"SUP";"en";"wizard-supplier-view";22;1;1;148;;;"img/user/148_128px.png"
+"code";"name";"group.code";"language";"homeAction";"importId";"companySet.importId";"activeCompany.id";"partner.importId";"employee.importId";"activeTeam.importId";"picture_fileName","localization.importId"
+"admin";"Admin";"admins";"en";;1;1;1;90019;;4;"img/user/1033_128px.png";1
+"demo";"Demo";"users";"en";;2;1;1;90020;;4;"img/user/1033_128px.png";1
+"psdt";"Yoann MARQUES";"MNGT";"en";;3;1;1;90001;1;4;"img/user/1033_128px.png";1
+"assist";"Lucy ROBERT";"MNGT";"en";;4;1;1;90002;2;4;"img/user/1033_128px.png";1
+"projdir";"Lucas RICHARD";"MNGT";"en";;5;1;1;90003;3;4;"img/user/1033_128px.png";1
+"projmg";"Daniel SILVA";"ERP";"en";;6;1;1;90004;4;4;"img/user/1033_128px.png";1
+"consultant";"Charles MARTIN";"CST";"en";;7;1;1;90005;5;4;"img/user/1033_128px.png";1
+"demoerp";"Kevin DEMOERP";"ERP";"en";"saleman.dashboard.view.sample";8;1;1;90006;6;4;"img/user/1033_128px.png";1
+"democrm";"Charles DEMOCRM";"CRM";"en";"crm.opportunities.dashboard.2.view";9;1;1;90007;7;1;"img/user/1033_128px.png";1
+"smn2";"Tony RAYMOND";"SALE";"en";;10;1;1;90008;8;1;"img/user/1033_128px.png";1
+"sms1";"Thomas LAMY";"SALE";"en";;11;1;1;90009;9;2;"img/user/1033_128px.png";1
+"sms2";"Anne GIRAULT";"SALE";"en";;12;1;1;90010;10;2;"img/user/1012_128px.png";1
+"smi1";"Dimitri GEOFFROY";"SALE";"en";;13;1;1;90011;11;3;"img/user/1033_128px.png";1
+"purch";"Alex DAVID";"PURCH";"en";;14;1;1;90012;12;4;"img/user/1033_128px.png";1
+"prod";"William ANDRE";"OPTS";"en";;15;1;1;90013;13;4;"img/user/1033_128px.png";1
+"suppmg";"David MAURIN";"OPTS";"en";;16;1;1;90014;14;4;"img/user/1033_128px.png";1
+"supp1";"Cyril MARCHAL";"OPTS";"en";;17;1;1;90015;15;4;"img/user/1033_128px.png";1
+"supp2";"Robin COSTA";"OPTS";"en";;18;1;1;90016;16;4;"img/user/1033_128px.png";1
+"hrmg";"Romane COLIN";"HRSC";"en";;19;1;1;90017;17;4;"img/user/1012_128px.png";1
+"account";"Victoria LOUIS";"ACCO";"en";;20;1;1;90018;18;4;"img/user/1012_128px.png";1
+"client";"123 Service";"CLT";"en";"wizard-client-view";21;1;1;88;;;"img/user/88_120px.png";1
+"supplier";"TOP Components";"SUP";"en";"wizard-supplier-view";22;1;1;148;;;"img/user/148_128px.png";1

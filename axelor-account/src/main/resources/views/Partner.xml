@@ -82,8 +82,7 @@
           <field name="companySet" colSpan="3" widget="TagSelect"/>
           <field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
           <field name="blockingToDate" colSpan="2">
-            <hilite if="$moment(blockingToDate) &gt; $moment(__config__.date)" color="danger"
-              strong="true"/>
+            <hilite if="$moment(blockingToDate) &gt; $moment()" color="danger" strong="true"/>
           </field>
           <field name="blockingReason" colSpan="3" form-view="stop-reason-form"
             grid-view="stop-reason-grid"/>
@@ -119,7 +118,7 @@
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="//panel[@name='rightPanel']">
       <insert position="inside">
-        <field name="isSubrogation" widget="InlineCheckbox"
+        <field name="isThirdPartyPayer" widget="InlineCheckbox"
           showIf="(isCustomer || isSupplier) &amp;&amp; !isFactor"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       </insert>

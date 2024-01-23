@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -335,15 +335,15 @@ public class MoveRecordSetServiceImpl implements MoveRecordSetService {
   }
 
   @Override
-  public void setSubrogationPartner(Move move) {
+  public void setThirdPartyPayerPartner(Move move) {
     if (!appBaseService.getAppBase().getActivatePartnerRelations()) {
       return;
     }
 
-    if (journalService.isSubrogationOk(move.getJournal())) {
-      move.setSubrogationPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
+    if (journalService.isThirdPartyPayerOk(move.getJournal())) {
+      move.setThirdPartyPayerPartner(partnerAccountService.getPayedByPartner(move.getPartner()));
     } else {
-      move.setSubrogationPartner(null);
+      move.setThirdPartyPayerPartner(null);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -448,7 +448,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && defaultBillOfMaterial != null) {
-      maturityDate = updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty);
+      maturityDate =
+          updateMaturityDate(maturityDate, defaultBillOfMaterial, reorderQty)
+              .minusDays(mrpLineType.getSecurityDelay());
     }
 
     super.createProposalMrpLine(

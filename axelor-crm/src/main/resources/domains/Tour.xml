@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="crm" package="com.axelor.apps.crm.db"/>
+
+  <entity name="Tour">
+
+    <string name="name" title="Name" required="true"/>
+    <date name="date" column="date_val" title="Date" required="true"/>
+    <many-to-one name="salespersonUser" ref="com.axelor.auth.db.User"
+      title="Salesperson user"/>
+    <one-to-many name="tourLineList" title="Tour lines"
+      ref="com.axelor.apps.crm.db.TourLine" mappedBy="tour"/>
+
+  </entity>
+
+</domain-models>

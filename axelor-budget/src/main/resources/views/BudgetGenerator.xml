@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="budget-generator-grid" title="Budget Generator"
+    model="com.axelor.apps.budget.db.BudgetGenerator" orderBy="code">
+    <field name="budgetStructure"/>
+    <field name="code"/>
+    <field name="name"/>
+    <field name="company"/>
+    <field name="budgetScenario"/>
+  </grid>
+
+
+  <form model="com.axelor.apps.budget.db.BudgetGenerator" title="Budget Generator"
+    name="budget-generator-form" onLoad="action-budget-generator-method-visualize-amounts"
+    width="large">
+
+    <panel name="mainPanel" colSpan="12">
+      <field name="code" required="true"/>
+      <field name="name" required="true"/>
+      <field name="company" required="true"/>
+      <field name="budgetStructure"
+        domain="self.isScenario IS TRUE AND self.company = :company" showIf="company"/>
+      <field name="budgetScenario" domain="self.company = :company AND self.statusSelect = 1"
+        showIf="company"/>
+      <field name="yearSet" widget="TagSelect" hideIf="!budgetScenario" canNew="false"
+        canEdit="false" onSelect="action-budget-generator-attrs-set-year-domain"
+        domain="self.company = :budgetScenario.company AND self.typeSelect = 1"/>
+    </panel>
+
+    <panel name="linePanel" hidden="true">
+      <field name="$budgetScenarioLine" form-view="budget-scenario-line-form" colSpan="12"
+        grid-view="budget-scenario-line-generator-grid" title="Budgets" type="one-to-many"
+        height="550" canView="false" readonly="true"
+        target="com.axelor.apps.budget.db.BudgetScenarioLine"/>
+    </panel>
+
+    <panel name="actionPanel" sidebar="true"
+      showIf="budgetStructure &amp;&amp; budgetScenario">
+      <button name="visualizeAmountsBtn" title="Previsualize"
+        onClick="save,action-budget-generator-method-visualize-amounts"/>
+      <button name="generateGlobalBudgetBtn" title="Generate global budget"
+        onClick="save,action-budget-generator-method-popup-generate"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Generate Global Budget"
+    name="global-budget-generator-wizard-form" width="large">
+
+    <panel name="mainPanel" colSpan="12">
+      <field name="$year" canNew="false" type="many-to-one"
+        target="com.axelor.apps.base.db.Year" readonly="false"
+        onSelect="action-budget-generator-method-get-year-domain" title="Year"/>
+
+      <button name="generateGlobalBudgetBtn" title="Generate global budget"
+        onClick="action-budget-generator-method-generate-global-budget, close" showIf="$year"/>
+
+    </panel>
+  </form>
+
+  <action-attrs name="action-budget-generator-attrs-set-year-domain">
+    <attribute for="yearSet" name="domain"
+      expr="eval: &quot;self.company.id = ${budgetScenario?.company?.id} AND self.typeSelect = 1&quot;"
+      if="budgetScenario?.company"/>
+    <attribute for="yearSet" name="domain" expr="eval: self.id = 0"
+      if="!budgetScenario?.company"/>
+  </action-attrs>
+
+  <action-view name="action-budget-generator-view-popup-generate"
+    title="Generate Global Budget" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="global-budget-generator-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_budgetGenerator"
+      expr="eval: __parent__?._model == 'com.axelor.apps.budget.db.BudgetGenerator' ? __parent__ : null"/>
+    <context name="_budgetStructure"
+      expr="eval: __parent__?._model == 'com.axelor.apps.budget.db.BudgetStructure' ? __parent__ : null"/>
+  </action-view>
+
+  <action-method name="action-budget-generator-method-generate-global-budget">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
+      method="generateGlobalBudget"/>
+  </action-method>
+
+  <action-method name="action-budget-generator-method-visualize-amounts">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController"
+      method="visualizeAmounts"/>
+  </action-method>
+
+  <action-method name="action-budget-generator-method-popup-generate">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController" method="popupView"/>
+  </action-method>
+
+  <action-method name="action-budget-generator-method-get-year-domain">
+    <call class="com.axelor.apps.budget.web.BudgetGeneratorController" method="getYearDomain"/>
+  </action-method>
+
+</object-views>
+

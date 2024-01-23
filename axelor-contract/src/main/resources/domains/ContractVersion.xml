@@ -78,9 +78,9 @@
     </string>
 
     <decimal name="initialExTaxTotalPerYear" title="Initial ex tax total per year"
-      readonly="true" copy="false"/>
+      readonly="true" copy="false" precision="20" scale="3"/>
     <decimal name="yearlyExTaxTotalRevalued" title="Yearly ex tax total revalued "
-      readonly="true"/>
+      readonly="true" precision="20" scale="3"/>
 
     <extra-code><![CDATA[
             public static final int DRAFT_VERSION = 1;

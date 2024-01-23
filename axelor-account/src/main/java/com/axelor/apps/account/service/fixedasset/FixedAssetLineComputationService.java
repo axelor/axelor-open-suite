@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,7 +58,7 @@ public interface FixedAssetLineComputationService {
    * @param line
    * @param prorata
    */
-  void multiplyLineBy(FixedAssetLine line, BigDecimal prorata);
+  void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) throws AxelorException;
 
   /**
    * Multiply economic and fiscal lines by prorata
@@ -66,7 +66,8 @@ public interface FixedAssetLineComputationService {
    * @param line
    * @param prorata
    */
-  void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata);
+  void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata)
+      throws AxelorException;
 
   FixedAssetLine createFixedAssetLine(
       FixedAsset fixedAsset,

@@ -1055,7 +1055,7 @@ $func$ LANGUAGE plpgsql; ]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select message_key,message_value as "translation"
 from meta_translation
-WHERE message_key = ? AND language = ?]]></xml-property>
+WHERE message_key = ? AND language = substring(?, '^[a-zA-Z]+')]]></xml-property>
         </oda-data-set>
     </data-sets>
     <page-setup>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -1049,7 +1049,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       invoiceTerm.setPartner(invoice.getPartner());
       invoiceTerm.setCurrency(invoice.getCurrency());
 
-      this.setSubrogationPartner(invoiceTerm);
+      this.setThirdPartyPayerPartner(invoiceTerm);
 
       if (StringUtils.isEmpty(invoice.getSupplierInvoiceNb())) {
         invoiceTerm.setOrigin(invoice.getInvoiceId());
@@ -1075,8 +1075,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
           invoiceTerm.setPartner(move.getPartner());
         }
 
-        if (journalService.isSubrogationOk(move.getJournal())) {
-          this.setSubrogationPartner(invoiceTerm);
+        if (journalService.isThirdPartyPayerOk(move.getJournal())) {
+          this.setThirdPartyPayerPartner(invoiceTerm);
         }
       }
     }
@@ -1086,19 +1086,19 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     }
   }
 
-  protected void setSubrogationPartner(InvoiceTerm invoiceTerm) {
+  protected void setThirdPartyPayerPartner(InvoiceTerm invoiceTerm) {
     if (invoiceTerm.getAmount().compareTo(invoiceTerm.getAmountRemaining()) == 0) {
       if (invoiceTerm.getInvoice() != null) {
-        invoiceTerm.setSubrogationPartner(invoiceTerm.getInvoice().getSubrogationPartner());
+        invoiceTerm.setThirdPartyPayerPartner(invoiceTerm.getInvoice().getThirdPartyPayerPartner());
       } else {
-        Partner subrogationPartner =
+        Partner thirdPartyPayerPartner =
             Optional.of(invoiceTerm)
                 .map(InvoiceTerm::getMoveLine)
                 .map(MoveLine::getMove)
-                .map(Move::getSubrogationPartner)
+                .map(Move::getThirdPartyPayerPartner)
                 .orElse(null);
 
-        invoiceTerm.setSubrogationPartner(subrogationPartner);
+        invoiceTerm.setThirdPartyPayerPartner(thirdPartyPayerPartner);
       }
     }
   }
@@ -1643,9 +1643,12 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       BigDecimal companyAmountRemaining,
       BigDecimal amountToPayInCompanyCurrency,
       BigDecimal amountToPay,
-      BigDecimal currencyRate) {
+      BigDecimal currencyRate,
+      Company company) {
+    int companyScale = currencyScaleServiceAccount.getCompanyScale(company);
     BigDecimal moveLineAmountRemaining =
         companyAmountRemaining.abs().subtract(amountToPayInCompanyCurrency);
+
     BigDecimal invoiceTermAmountRemaining =
         invoiceTermList.stream()
             .map(InvoiceTerm::getAmountRemaining)
@@ -1653,12 +1656,11 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
             .orElse(BigDecimal.ZERO)
             .subtract(amountToPay)
             .multiply(currencyRate)
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+            .setScale(companyScale, RoundingMode.HALF_UP);
+
     BigDecimal diff = moveLineAmountRemaining.subtract(invoiceTermAmountRemaining);
 
-    return amountToPayInCompanyCurrency
-        .add(diff)
-        .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+    return amountToPayInCompanyCurrency.add(diff).setScale(companyScale, RoundingMode.HALF_UP);
   }
 
   @Override
