@@ -136,7 +136,8 @@
           domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
           canEdit="false" requiredIf="actionSelect == 21"/>
         <field name="allocatePerPartner" colSpan="3"/>
-        <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]" requiredIf="actionSelect == 21"/>
+        <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]"
+          requiredIf="actionSelect == 21"/>
         <field name="moveDescription" colSpan="12"/>
         <panel-related field="closureAccountSet" form-view="account-form"
           grid-view="account-grid" widget="TagSelect" canNew="false" canEdit="false"
