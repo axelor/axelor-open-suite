@@ -1793,22 +1793,22 @@
     <field name="simpleFullName" hidden="true"/>
     <field name="isCarrier" title="Is a carrier" hidden="true"
       if="!__config__.app.isApp('stock')"/>
-    <filter title="All Enterprises">
+    <filter name="partner-filters-all-enterprises" title="All Enterprises">
       <domain>self.partnerTypeSelect = 1 AND self.isContact = false</domain>
     </filter>
-    <filter title="All Individuals">
+    <filter name="partner-filters-all-individuals" title="All Individuals">
       <domain>self.partnerTypeSelect = 2 AND self.isContact = false</domain>
     </filter>
-    <filter title="All Prospects">
+    <filter name="partner-filters-all-prospects" title="All Prospects">
       <domain>self.isProspect = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Clients">
+    <filter name="partner-filters-all-clients" title="All Clients">
       <domain>self.isCustomer = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Suppliers">
+    <filter name="partner-filters-all-suppliers" title="All Suppliers">
       <domain>self.isSupplier = true AND self.isContact = false</domain>
     </filter>
-    <filter title="All Employees">
+    <filter name="partner-filters-all-employees" title="All Employees">
       <domain>self.isEmployee = true AND self.isContact = false</domain>
     </filter>
   </search-filters>
@@ -1868,16 +1868,16 @@
     <field name="simpleFullName" hidden="true"/>
     <field name="isCarrier" title="Is a carrier" hidden="true"
       if="!__config__.app.isApp('stock')"/>
-    <filter name="contact-filters-prospects-clients" title="All prospects and clients">
+    <filter name="contact-filters-all-prospects-clients" title="All prospects and clients">
       <domain>self.mainPartner.isProspect = true OR self.mainPartner.isCustomer = true</domain>
     </filter>
-    <filter name="contact-filters-prospects" title="All prospects">
+    <filter name="contact-filters-all-prospects" title="All prospects">
       <domain>self.mainPartner.isProspect = true</domain>
     </filter>
-    <filter name="contact-filters-clients" title="All clients">
+    <filter name="contact-filters-all-clients" title="All clients">
       <domain>self.mainPartner.isCustomer = true</domain>
     </filter>
-    <filter name="contact-filters-supplier" title="All suppliers">
+    <filter name="contact-filters-all-supplier" title="All suppliers">
       <domain>self.isSupplier = true</domain>
     </filter>
   </search-filters>

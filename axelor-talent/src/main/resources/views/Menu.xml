@@ -80,7 +80,7 @@
     model="com.axelor.apps.talent.db.TrainingRegister" title="All trainings">
     <view name="training-register-grid" type="grid"/>
     <view name="training-register-form" type="form"/>
-    <view-param name="search-filters" value="my-training-register-fitlers"/>
+    <view-param name="search-filters" value="my-training-register-filters"/>
     <context name="_employeeId" expr="eval:__user__.employee?.id"/>
     <context name="_employeeList"
       expr="eval:([0] + __user__.teamSet.members.employee.id).flatten()"/>
@@ -136,7 +136,7 @@
     model="com.axelor.apps.talent.db.Appraisal" title="Appraisals">
     <view name="appraisal-grid" type="grid"/>
     <view name="appraisal-form" type="form"/>
-    <view-param name="search-filters" value="appraisal-fitlers"/>
+    <view-param name="search-filters" value="appraisal-filters"/>
     <domain>self.isTemplate = false</domain>
     <context name="_userId" expr="eval:__user__.id"/>
     <context name="_teamUserIds" expr="eval:([0] + __user__.teamSet.members.id).flatten()"/>

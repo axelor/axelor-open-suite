@@ -599,13 +599,13 @@
   <search-filters name="lead-filters" model="com.axelor.apps.crm.db.Lead"
     title="Lead filters">
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
-    <filter title="My Leads" name="my-leads-filter">
+    <filter title="My Leads" name="lead-filters-my-leads">
       <domain>self.user = :__user__</domain>
     </filter>
-    <filter title="Unassigned Leads" name="unassigned-leads-filter">
+    <filter title="Unassigned Leads" name="lead-filters-unassigned-leads">
       <domain>self.user IS NULL</domain>
     </filter>
-    <filter title="My Team Leads" name="my-team-leads-filter">
+    <filter title="My Team Leads" name="lead-filters-my-team-leads">
       <domain>self.team = :_myActiveTeam</domain>
     </filter>
   </search-filters>

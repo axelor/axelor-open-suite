@@ -107,7 +107,7 @@
 
   <search-filters name="sc.root.sale.templates.filter"
     model="com.axelor.apps.sale.db.SaleOrder" title="My Templates">
-    <filter title="My templates">
+    <filter name="sc.root.sale.templates.filter-my-templates" title="My templates">
       <domain>self.template = true AND self.templateUser = :_user</domain>
       <context name="_user" value="__user__"/>
     </filter>
