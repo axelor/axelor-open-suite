@@ -269,8 +269,8 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
                   HumanResourceExceptionMessage
                       .EXPENSE_LINE_UPDATED_CURRENCY_CURRENT_EXPENSE_INCONSISTENCY));
         }
-        expenseLine.setCurrency(currency);
       }
+      expenseLine.setCurrency(currency);
     }
   }
 
