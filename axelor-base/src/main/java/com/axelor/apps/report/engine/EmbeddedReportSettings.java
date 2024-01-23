@@ -24,13 +24,14 @@ import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
 import java.io.IOException;
+import java.util.Locale;
 import org.eclipse.birt.core.exception.BirtException;
 
 public class EmbeddedReportSettings extends ReportSettings {
 
-  public EmbeddedReportSettings(String rptdesign, String outputName) {
+  public EmbeddedReportSettings(String rptdesign, String outputName, Locale locale) {
 
-    super(rptdesign, outputName);
+    super(rptdesign, outputName, locale);
   }
 
   @Override
@@ -42,7 +43,11 @@ public class EmbeddedReportSettings extends ReportSettings {
 
       final ReportGenerator generator = Beans.get(ReportGenerator.class);
 
-      this.output = generator.generate(rptdesign, format, params, ReportingTool.getCompanyLocale());
+      if (this.locale == null) {
+        this.locale = ReportingTool.getCompanyLocale();
+      }
+
+      this.output = generator.generate(rptdesign, format, params, this.locale);
 
       this.attach();
 

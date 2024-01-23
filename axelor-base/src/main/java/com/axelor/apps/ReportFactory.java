@@ -21,17 +21,18 @@ package com.axelor.apps;
 import com.axelor.apps.report.engine.EmbeddedReportSettings;
 import com.axelor.apps.report.engine.ExternalReportSettings;
 import com.axelor.apps.report.engine.ReportSettings;
+import java.util.Locale;
 
 public class ReportFactory {
 
-  public static ReportSettings createReport(String rptdesign, String outputName) {
+  public static ReportSettings createReport(String rptdesign, String outputName, Locale locale) {
 
     if (ReportSettings.useIntegratedEngine()) {
 
-      return new EmbeddedReportSettings(rptdesign, outputName);
+      return new EmbeddedReportSettings(rptdesign, outputName, locale);
     } else {
 
-      return new ExternalReportSettings(rptdesign, outputName);
+      return new ExternalReportSettings(rptdesign, outputName, locale);
     }
   }
 }

@@ -68,7 +68,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
 
     String outputName = getOutputFileName(template);
 
-    return birtTemplateService.generateBirtTemplateLink(template, model, outputName);
+    return birtTemplateService.generateBirtTemplateLink(template, model, outputName, null);
   }
 
   @Override
@@ -116,7 +116,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     String format = birtTemplate.getFormat();
     Path src =
         birtTemplateService
-            .generateBirtTemplateFile(birtTemplate, model, name, false, format)
+            .generateBirtTemplateFile(birtTemplate, model, name, false, format, null)
             .toPath();
     String outFileName = String.format("%s-%s.%s", name, model.getId(), format);
     Path dest =

@@ -87,7 +87,8 @@ public class InventoryController {
                   null,
                   outputName,
                   inventoryBirtTemplate.getAttach(),
-                  inventory.getFormatSelect());
+                  inventory.getFormatSelect(),
+                  null);
 
       logger.debug("Printing " + name);
 

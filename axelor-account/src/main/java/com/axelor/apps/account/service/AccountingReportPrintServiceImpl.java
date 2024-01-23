@@ -96,7 +96,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
               : typeSelect.toString();
       file = String.format(IReport.ACCOUNTING_REPORT_TYPE, typeSelectStr);
     }
-    return ReportFactory.createReport(file, name + "-${date}")
+    return ReportFactory.createReport(file, name + "-${date}", null)
         .addParam("AccountingReportId", accountingReport.getId())
         .addParam("Locale", ReportSettings.getPrintingLocale(null))
         .addParam(

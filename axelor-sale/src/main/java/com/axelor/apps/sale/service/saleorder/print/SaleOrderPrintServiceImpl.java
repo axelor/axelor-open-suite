@@ -123,7 +123,8 @@ public class SaleOrderPrintServiceImpl implements SaleOrderPrintService {
         Map.of("ProformaInvoice", proforma),
         title + " - ${date}",
         saleOrderBirtTemplate.getAttach(),
-        format);
+        format,
+        null);
   }
 
   /** Return the name for the printed sale orders. */

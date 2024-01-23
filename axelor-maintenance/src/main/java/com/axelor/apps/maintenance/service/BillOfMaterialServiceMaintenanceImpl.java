@@ -81,7 +81,7 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
           I18n.get(BaseExceptionMessage.BIRT_TEMPLATE_CONFIG_NOT_FOUND));
     }
     return birtTemplateService.generateBirtTemplateLink(
-        maintenanceBOMBirtTemplate, billOfMaterial, getFileName(billOfMaterial) + "-${date}");
+        maintenanceBOMBirtTemplate, billOfMaterial, getFileName(billOfMaterial) + "-${date}", null);
   }
 
   @Override

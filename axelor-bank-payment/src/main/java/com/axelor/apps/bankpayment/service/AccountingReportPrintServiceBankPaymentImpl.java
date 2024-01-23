@@ -71,7 +71,8 @@ public class AccountingReportPrintServiceBankPaymentImpl extends AccountingRepor
           null,
           name + "-${date}",
           bankReconciliationStatementBirtTemplate.getAttach(),
-          accountingReport.getExportTypeSelect());
+          accountingReport.getExportTypeSelect(),
+          null);
     } else {
       return super.getReportFileLink(accountingReport, name);
     }

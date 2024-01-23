@@ -31,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.net.URLEncoder;
 import java.nio.file.Path;
+import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +42,9 @@ public class ExternalReportSettings extends ReportSettings {
   protected String url = "";
   protected String birtViewerUrl = null;
 
-  public ExternalReportSettings(String rptdesign, String outputName) {
+  public ExternalReportSettings(String rptdesign, String outputName, Locale locale) {
 
-    super(rptdesign, outputName);
+    super(rptdesign, outputName, locale);
 
     this.addAxelorReportPath(rptdesign)
         .addParam("__locale", ReportingTool.getCompanyLocale().toString());

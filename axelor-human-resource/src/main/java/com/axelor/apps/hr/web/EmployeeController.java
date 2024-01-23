@@ -74,7 +74,8 @@ public class EmployeeController {
                 Map.of("YearId", Long.valueOf(yearId)),
                 name,
                 annualReportBirtTemplate.getAttach(),
-                annualReportBirtTemplate.getFormat());
+                annualReportBirtTemplate.getFormat(),
+                null);
 
     response.setView(ActionView.define(name).add("html", fileLink).map());
 

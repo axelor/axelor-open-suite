@@ -54,6 +54,7 @@ import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections4.map.HashedMap;
@@ -234,7 +235,8 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   @Override
   public ReportSettings prepareReportSettings(
-      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
+      Invoice invoice, Integer reportType, String format, String localeCode)
+      throws AxelorException {
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -258,7 +260,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
 
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
-    if (Strings.isNullOrEmpty(locale)) {
+    if (Strings.isNullOrEmpty(localeCode)) {
       String userLocalizationCode =
           Optional.ofNullable(AuthUtils.getUser())
               .map(User::getLocalization)
@@ -272,11 +274,17 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           invoice.getPartner().getLocalization() != null
               ? invoice.getPartner().getLocalization().getCode()
               : userLocalizationCode;
-      locale =
+      localeCode =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()
               ? companyLocalizationCode
               : partnerLocalizationCode;
     }
+
+    String[] parts = localeCode.split("_");
+    String languageCode = parts.length > 0 ? parts[0] : "";
+    String country = parts.length > 1 ? parts[1] : "";
+    Locale locale = new Locale(languageCode, country);
+
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
     if (invoiceWatermark != null) {
@@ -284,7 +292,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
     Map<String, Object> paramMap = new HashedMap<>();
     paramMap.put("ReportType", reportType == null ? 0 : reportType);
-    paramMap.put("locale", locale);
+    paramMap.put("locale", localeCode);
     paramMap.put("Watermark", watermark);
     return birtTemplateService.generate(
         invoiceBirtTemplate,
@@ -292,6 +300,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         paramMap,
         title + " - ${date}",
         false,
-        format);
+        format,
+        locale);
   }
 }

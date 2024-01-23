@@ -54,7 +54,8 @@ public class ProdProcessController {
       String title = prodProcess.getName();
       String fileLink =
           Beans.get(BirtTemplateService.class)
-              .generateBirtTemplateLink(maintenanceProdProcessBirtTemplate, prodProcess, title);
+              .generateBirtTemplateLink(
+                  maintenanceProdProcessBirtTemplate, prodProcess, title, null);
 
       response.setView(ActionView.define(title).add("html", fileLink).map());
     } catch (Exception e) {

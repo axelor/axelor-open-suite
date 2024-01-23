@@ -24,15 +24,16 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import java.io.File;
+import java.util.Locale;
 import java.util.Map;
 
 public class BirtTemplateServiceImpl implements BirtTemplateService {
 
   @Override
-  public String generateBirtTemplateLink(BirtTemplate template, Model model, String outputName)
-      throws AxelorException {
+  public String generateBirtTemplateLink(
+      BirtTemplate template, Model model, String outputName, Locale locale) throws AxelorException {
     return generateBirtTemplateLink(
-        template, model, null, outputName, template.getAttach(), template.getFormat());
+        template, model, null, outputName, template.getAttach(), template.getFormat(), locale);
   }
 
   @Override
@@ -42,27 +43,34 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,
-      String format)
+      String format,
+      Locale locale)
       throws AxelorException {
 
-    ReportSettings settings = generate(template, model, context, outputName, toAttach, format);
+    ReportSettings settings =
+        generate(template, model, context, outputName, toAttach, format, locale);
 
     return settings.getFileLink();
   }
 
   @Override
-  public File generateBirtTemplateFile(BirtTemplate template, Model model, String outputName)
-      throws AxelorException {
+  public File generateBirtTemplateFile(
+      BirtTemplate template, Model model, String outputName, Locale locale) throws AxelorException {
     return generateBirtTemplateFile(
-        template, model, outputName, template.getAttach(), template.getFormat());
+        template, model, outputName, template.getAttach(), template.getFormat(), locale);
   }
 
   @Override
   public File generateBirtTemplateFile(
-      BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
+      BirtTemplate template,
+      Model model,
+      String outputName,
+      Boolean toAttach,
+      String format,
+      Locale locale)
       throws AxelorException {
 
-    ReportSettings settings = generate(template, model, null, outputName, toAttach, format);
+    ReportSettings settings = generate(template, model, null, outputName, toAttach, format, locale);
 
     return settings.getFile();
   }
@@ -73,11 +81,12 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,
-      String format)
+      String format,
+      Locale locale)
       throws AxelorException {
 
     ReportSettings settings =
-        new BirtTemplateReportSettingsBuilder(template, outputName)
+        new BirtTemplateReportSettingsBuilder(template, outputName, locale)
             .addInContext(context)
             .toAttach(toAttach)
             .withFormat(format)
@@ -93,10 +102,11 @@ public class BirtTemplateServiceImpl implements BirtTemplateService {
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,
-      String format)
+      String format,
+      Locale locale)
       throws AxelorException {
     BirtTemplateReportSettingsBuilder builder =
-        new BirtTemplateReportSettingsBuilder(template, outputName);
+        new BirtTemplateReportSettingsBuilder(template, outputName, locale);
     if (ObjectUtils.notEmpty(model)) {
       builder.addInContext(model);
     }

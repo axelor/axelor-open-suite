@@ -160,6 +160,7 @@ public class DeclarationOfExchangesExporterServices extends DeclarationOfExchang
         null,
         getTitle(),
         true,
-        declarationOfExchanges.getFormatSelect());
+        declarationOfExchanges.getFormatSelect(),
+        null);
   }
 }
