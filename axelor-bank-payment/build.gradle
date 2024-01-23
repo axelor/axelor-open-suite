@@ -35,9 +35,7 @@ dependencies {
 	implementation libs.xalan
 	implementation libs.jdom
 
-	jaxb libs.jaxb_bind_api
 	implementation libs.jaxb_bind_api
-
 }
 
 license {
