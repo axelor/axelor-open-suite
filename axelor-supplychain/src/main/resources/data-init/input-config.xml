@@ -40,7 +40,6 @@
   <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
 
   <input file="base_birtTemplate.csv" separator=";"
-    call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
