@@ -70,6 +70,7 @@
     <option value="qualityControl">Quality control</option>
     <option value="qualityImprovement">Quality improvement</option>
     <option value="qiActionDistribution">QI Action distribution</option>
+    <option value="qiDecisionDistribution">QI Decision distribution</option>
   </selection>
 
   <selection name="team.type.select" id="quality.team.type.select">

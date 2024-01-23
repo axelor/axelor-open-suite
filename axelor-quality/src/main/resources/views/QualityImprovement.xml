@@ -147,6 +147,8 @@
             </panel>
             <panel name="decisionPanel" title="Decision making" hideIf="$get('qi.type') == 2"
               colSpan="12">
+              <field name="qiDecisionDistributionList" showTitle="false" colSpan="12"
+                form-view="qi-decision-distribution-form" grid-view="qi-decision-distribution-grid"/>
               <field name="decisionsWrittenBy"
                 onChange="action-quality-improvement-record-set-decisions-written-on"
                 form-view="user-form" grid-view="user-grid"/>

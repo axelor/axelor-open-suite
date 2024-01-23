@@ -13,6 +13,11 @@
     model="com.axelor.apps.quality.db.QualityConfig" width="large">
     <panel name="mainPanel">
       <field name="company" form-view="company-form" colSpan="4" grid-view="company-grid"/>
+      <field name="qiDecisionDistributionBirtTemplate"
+        domain="self.metaModel.name = 'QIDecisionDistribution'"/>
+      <field name="qiDecisionDistributionSequence" form-view="sequence-form"
+        grid-view="sequence-grid" canNew="true" canEdit="true"
+        domain="self.codeSelect = 'qiDecisionDistribution' AND self.company = :company"/>
     </panel>
     <panel name="distributionInfoPanel">
       <field name="qiActionDistributionBirtTemplate"
