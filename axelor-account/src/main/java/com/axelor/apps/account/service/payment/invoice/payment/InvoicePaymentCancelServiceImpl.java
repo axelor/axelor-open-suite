@@ -80,11 +80,11 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
 
   @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException {
-
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
 
-    invoicePaymentRepository.save(invoicePayment);
-
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
+    invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+
+    invoicePaymentRepository.save(invoicePayment);
   }
 }

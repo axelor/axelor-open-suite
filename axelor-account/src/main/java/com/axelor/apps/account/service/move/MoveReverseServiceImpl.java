@@ -162,9 +162,9 @@ public class MoveReverseServiceImpl implements MoveReverseService {
         for (Reconcile reconcile : reconcileList) {
           reconcileService.unreconcile(reconcile);
         }
+      } else {
+        cancelInvoicePayment(move);
       }
-
-      cancelInvoicePayment(move);
 
       if (validatedMove && isAutomaticReconcile) {
         if (isDebit) {

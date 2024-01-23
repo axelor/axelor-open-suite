@@ -867,6 +867,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
     }
+
+    invoiceTermPaymentRepo
+        .findByReconcileId(reconcile.getId())
+        .fetch()
+        .forEach(it -> it.setInvoiceTerm(null));
   }
 
   public void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException {
