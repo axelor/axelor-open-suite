@@ -185,4 +185,18 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setAnalyticMoveLineList(analyticMoveLineList);
     return contractLine;
   }
+
+  @Override
+  public ContractLine resetProductInformation(ContractLine contractLine) {
+    contractLine.setProductName(null);
+    contractLine.setQty(null);
+    contractLine.setPrice(null);
+    contractLine.setTaxLine(null);
+    contractLine.setUnit(null);
+    contractLine.setExTaxTotal(null);
+    contractLine.setInTaxTotal(null);
+    contractLine.setDescription(null);
+
+    return contractLine;
+  }
 }
