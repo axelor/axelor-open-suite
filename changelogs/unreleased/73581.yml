@@ -1,0 +1,2 @@
+title : "DebtRecovery : Fixed debt recovery batch error when no invoice term was found"
+type: fix
