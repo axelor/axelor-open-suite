@@ -303,6 +303,9 @@ public final class HumanResourceExceptionMessage {
   public static final String EXPENSE_LINE_NO_PROJECT = /*$$(*/
       "This expense cannot be created because no project has been filled in and it has been noted as to be billed." /*)*/;
 
+  public static final String EXPENSE_LINE_UPDATE_INCOMPATIBLE_PROJECT = /*$$(*/
+      "Line has been set as to be billed or not but it is not coherent with project." /*)*/;
+
   public static final String TIMESHEET_LINES_EXCEED_DAILY_LIMIT = /*$$(*/
       "You can't exceed the daily limit of %s hours on the %s." /*)*/;
 
@@ -326,4 +329,7 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_UPDATED_CURRENCY_INCONSISTENCY = /*$$(*/
       "Updated currency and new parent currency are incompatible." /*)*/;
+
+  public static final String EXPENSE_LINE_UPDATED_CURRENCY_CURRENT_EXPENSE_INCONSISTENCY = /*$$(*/
+      "Updated currency and current parent currency are incompatible." /*)*/;
 }

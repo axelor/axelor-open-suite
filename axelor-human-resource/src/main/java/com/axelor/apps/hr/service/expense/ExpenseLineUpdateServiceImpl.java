@@ -228,6 +228,9 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (project != null) {
       expenseLine.setProject(project);
     }
+    if (toInvoice != null) {
+      expenseLine.setToInvoice(toInvoice);
+    }
     if (comments != null) {
       expenseLine.setComments(comments);
     }
@@ -243,9 +246,6 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (expenseProduct != null) {
       expenseLine.setExpenseProduct(expenseProduct);
     }
-    if (toInvoice != null) {
-      expenseLine.setToInvoice(toInvoice);
-    }
   }
 
   protected void updateLineCurrency(ExpenseLine expenseLine, Currency currency, Expense newExpense)
@@ -259,7 +259,18 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
               I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_UPDATED_CURRENCY_INCONSISTENCY));
         }
       }
-      expenseLine.setCurrency(currency);
+      Expense oldExpense = expenseLine.getExpense();
+      if (oldExpense != null) {
+        Currency oldExpenseCurrency = oldExpense.getCurrency();
+        if (oldExpenseCurrency != null && !currency.equals(oldExpenseCurrency)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_INCONSISTENCY,
+              I18n.get(
+                  HumanResourceExceptionMessage
+                      .EXPENSE_LINE_UPDATED_CURRENCY_CURRENT_EXPENSE_INCONSISTENCY));
+        }
+        expenseLine.setCurrency(currency);
+      }
     }
   }
 
