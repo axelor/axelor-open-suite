@@ -98,6 +98,8 @@ public class InvoicingProjectService {
 
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
 
+  @Inject protected HoldBackLineService holdBackLineService;
+
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
   protected int sequence = 0;
@@ -178,8 +180,8 @@ public class InvoicingProjectService {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
     invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
-
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
+    invoice = holdBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     Beans.get(InvoiceRepository.class).save(invoice);
 
     invoicingProject.setInvoice(invoice);

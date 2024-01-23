@@ -34,6 +34,8 @@ import com.axelor.apps.businessproject.service.ExpenseLineCreateServiceProjectIm
 import com.axelor.apps.businessproject.service.ExpenseLineProjectService;
 import com.axelor.apps.businessproject.service.ExpenseLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.ExpenseLineResponseComputeServiceProjectImpl;
+import com.axelor.apps.businessproject.service.HoldBackLineService;
+import com.axelor.apps.businessproject.service.HoldBackLineServiceImpl;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectService;
 import com.axelor.apps.businessproject.service.InvoiceLineProjectServiceImpl;
 import com.axelor.apps.businessproject.service.InvoicePaymentValidateProjectServiceImpl;
@@ -159,5 +161,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ExpenseLineResponseComputeServiceImpl.class)
         .to(ExpenseLineResponseComputeServiceProjectImpl.class);
     bind(AnalyticLineModelServiceImpl.class).to(AnalyticLineModelProjectServiceImpl.class);
+    bind(HoldBackLineService.class).to(HoldBackLineServiceImpl.class);
   }
 }
