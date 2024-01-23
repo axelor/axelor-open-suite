@@ -81,4 +81,6 @@ public interface ContractLineService {
    * @return ContractLine filled with analytic move lines
    */
   ContractLine createAnalyticDistributionWithTemplate(ContractLine contractLine, Contract contract);
+
+  ContractLine resetProductInformation(ContractLine contractLine);
 }
