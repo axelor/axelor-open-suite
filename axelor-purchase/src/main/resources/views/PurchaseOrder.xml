@@ -24,7 +24,9 @@
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
@@ -51,7 +53,9 @@
     <field name="externalReference"/>
     <field name="orderDate"/>
     <field name="buyerUser" form-view="user-form" grid-view="user-grid"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
@@ -65,7 +69,9 @@
     <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="externalReference"/>
     <field name="orderDate"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
@@ -262,7 +268,8 @@
         if="__config__.app.isApp('supplychain')">
         <field name="expectedRealisationDate" colSpan="12" width="50%"/>
         <label name="orLabel" title="OR"/>
-        <field name="amountToBeSpreadOverTheTimetable" colSpan="12"/>
+        <field name="amountToBeSpreadOverTheTimetable" colSpan="12"
+          x-scale="currency.numberOfDecimals"/>
         <panel-related name="timetableListPanel" field="timetableList" colSpan="12"
           grid-view="timetable-grid-purchase" form-view="timetable-form-purchase"
           onChange="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"
@@ -328,11 +335,17 @@
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
       <field name="currency.symbol" hidden="true"/>
-      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"/>
-      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"/>
-      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="taxTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="amountInvoiced" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals">
         <viewer depends="exTaxTotal,taxTotal,amountInvoiced,advanceTotal">
                     <![CDATA[
 	                  <>
@@ -424,12 +437,13 @@
     <field name="externalReference"/>
     <field name="supplierPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal" x-currency="currency.symbol"/>
-    <field name="inTaxTotal" x-currency="currency.symbol"/>
+    <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="receiptState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="company"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <template><![CDATA[
@@ -489,12 +503,13 @@
     <field name="externalReference"/>
     <field name="supplierPartner.fullName"/>
     <field name="orderDate"/>
-    <field name="exTaxTotal" x-currency="currency.symbol"/>
-    <field name="inTaxTotal" x-currency="currency.symbol"/>
+    <field name="exTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" x-currency="currency.symbol" x-scale="currency.numberOfDecimals"/>
     <field name="currency.symbol"/>
+    <field name="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
     <field name="receiptState"/>
-    <field name="amountInvoiced"/>
+    <field name="amountInvoiced" x-scale="currency.numberOfDecimals"/>
     <field name="company"/>
     <field name="stockLocation" if="__config__.app.isApp('supplychain')"/>
     <template><![CDATA[
@@ -827,7 +842,7 @@
     model="com.axelor.apps.stock.db.StockMove" title="Stock move">
     <view name="stock-move-grid" type="grid"/>
     <view name="stock-move-form" type="form"/>
-    <domain>:purchaseOrder MEMBER OF self.purchaseOrderSet</domain>
+    <domain>self.purchaseOrder.id = :purchaseOrder</domain>
     <context name="purchaseOrder" expr="eval: __this__.id"/>
   </action-view>
 
@@ -944,11 +959,11 @@
     <field name="timetableList" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="paymentMode" hidden="true" if="!__config__.app.isApp('supplychain')"/>
     <field name="paymentCondition" hidden="true" if="!__config__.app.isApp('supplychain')"/>
-    <filter title="My RFQs">
+    <filter name="purchase-order-filters-my-rfqs" title="My RFQs">
       <domain>(self.statusSelect = 1 or self.statusSelect = 2) and self.buyerUser.id =
         :_internalUser</domain>
     </filter>
-    <filter title="My Sales">
+    <filter name="purchase-order-filters-my-sales" title="My Sales">
       <domain>(self.statusSelect = 3 or self.statusSelect = 4) and self.buyerUser.id =
         :_internalUser</domain>
     </filter>

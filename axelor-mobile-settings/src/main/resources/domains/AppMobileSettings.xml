@@ -66,6 +66,8 @@
     <boolean name="isEditionOfDateAllowed" title="Allow edition of date" default="false"/>
     <boolean name="isTimesheetProjectInvoicingEnabled" title="Enable project invoicing"
       default="false"/>
+    <boolean name="isStockLocationManagementEnabled"
+      title="Enable default stock location management"/>
 
     <many-to-many name="inventoryValidationRoleSet" ref="com.axelor.auth.db.Role"
       title="Authorized roles"

@@ -90,7 +90,9 @@
       <panel name="leaveManagementResetPanel" title="Leave counter reset" hidden="true"
         showIf="actionSelect == 5">
         <field name="leaveReasonSet" colSpan="3"
-          onChange="action-hr-batch-record-reset-leave-reason-type-select" widget="TagSelect"/>
+          onChange="action-hr-batch-record-reset-leave-reason-type-select" widget="TagSelect"
+          domain="self.leaveReasonTypeSelect != 2 AND self.isToBeResetYearly = true"
+          placeholder="All"/>
         <field name="comments" colSpan="9"/>
         <field name="startDate" colSpan="3"/>
         <field name="endDate" colSpan="3"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -125,12 +125,8 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
           .getGenerateMoveForInvoicePayment()) {
         this.createMoveForExpensePayment(expense);
       }
-      if (paymentMode.getAutomaticTransmission()) {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
-      } else {
-        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
-      }
+      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+      expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
     }
     expense.setPaymentAmount(
         expense
@@ -253,8 +249,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
     BankOrder bankOrder = expense.getBankOrder();
 
     if (bankOrder != null) {
-      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT
-          || bankOrder.getStatusSelect() == BankOrderRepository.STATUS_REJECTED) {
+      if (bankOrder.getStatusSelect() == BankOrderRepository.STATUS_CARRIED_OUT) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.EXPENSE_PAYMENT_CANCEL));

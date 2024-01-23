@@ -171,7 +171,6 @@
     <action name="action-bank-details-record-set-company"
       if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
     <action name="action-set-default-partner"/>
-    <action name="action-set-default-bank"/>
     <action name="action-bank-details-attrs-code"/>
     <action name="action-bank-details-record-set-partner-and-currency"
       if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
@@ -215,12 +214,6 @@
     <field name="company" expr="eval: __parent__"/>
   </action-record>
 
-  <action-record name="action-set-default-bank"
-    model="com.axelor.apps.base.db.BankDetails">
-    <field expr="eval: __parent__.ebicsBank?.bank" name="bank"
-      if="__parent__?._model == 'com.axelor.apps.bankpayment.db.EbicsPartner'"/>
-  </action-record>
-
   <action-validate name="action-validate-bank-details-bbanKey">
     <error message="Incorrect BBAN Key"
       if="(bank?.country?.alpha2Code == 'FR') &amp;&amp; (bankCode == null || sortCode == null  || accountNbr == null || bbanKey == null || ( bank.bankDetailsTypeSelect == 1 &amp;&amp; ( 97 - ( ( 89 * Long.parseLong( bankCode ) + 15 * Long.parseLong( sortCode ) + 3 * Long.parseLong( accountNbr.replaceAll('[ajAJ]','1').replaceAll('[bksBKS]','2').replaceAll('[cltCLT]','3').replaceAll('[dmuDMU]','4').replaceAll('[envENV]','5').replaceAll('[fowFOW]','6').replaceAll('[gpxGPX]','7').replaceAll('[hqyHQY]','8').replaceAll('[irzIRZ]','9') ) ) % 97 )  != Long.parseLong( bbanKey ))))"/>
@@ -239,7 +232,7 @@
 
   <action-attrs name="action-bank-details-attrs-code">
     <attribute name="hidden" for="code"
-      expr="eval: ![Company, EbicsPartner].contains(__parent__.getContextClass())" if="__parent__"/>
+      expr="eval: __parent__.getContextClass() != Company" if="__parent__"/>
   </action-attrs>
 
   <action-attrs name="action-bank-details-attrs-specific-notes">

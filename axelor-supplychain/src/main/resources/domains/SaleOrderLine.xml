@@ -10,7 +10,8 @@
     <integer name="saleSupplySelect" title="Supply method"
       selection="product.sale.supply.select"/>
 
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
+      precision="20" scale="3"/>
 
 
     <!-- Bon de livraison -->

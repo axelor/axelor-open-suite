@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,6 @@ package com.axelor.apps.bankpayment.service.bankorder;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
-import com.axelor.apps.bankpayment.db.EbicsUser;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -65,8 +64,6 @@ public interface BankOrderService {
 
   public void cancelBankOrder(BankOrder bankOrder) throws AxelorException;
 
-  public EbicsUser getDefaultEbicsUserFromBankDetails(BankDetails bankDetails);
-
   public String createDomainForBankDetails(BankOrder bankOrder);
 
   public BankDetails getDefaultBankDetails(BankOrder bankOrder);
@@ -84,6 +81,4 @@ public interface BankOrderService {
       String gridViewName, String formViewName, String viewDomain);
 
   public void setStatusToDraft(BankOrder bankOrder);
-
-  public void setStatusToRejected(BankOrder bankOrder);
 }

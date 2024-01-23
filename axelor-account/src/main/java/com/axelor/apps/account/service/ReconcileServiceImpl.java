@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -580,7 +580,7 @@ public class ReconcileServiceImpl implements ReconcileService {
 
     // Recompute currency rate to avoid rounding issue
     total = amount.divide(rate, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-    if (total.stripTrailingZeros().scale() > AppBaseService.DEFAULT_NB_DECIMAL_DIGITS) {
+    if (total.stripTrailingZeros().scale() > currencyScaleServiceAccount.getScale(otherMoveLine)) {
       total =
           computePaidRatio(moveLineAmount, amount, invoiceAmount, computedAmount, isInvoicePayment)
               .multiply(moveLine.getCurrencyAmount().abs());
@@ -603,8 +603,9 @@ public class ReconcileServiceImpl implements ReconcileService {
       BigDecimal computedAmount,
       boolean isInvoicePayment) {
     BigDecimal ratioPaid = BigDecimal.ONE;
-    int scale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
-    BigDecimal percentage = amountToPay.divide(computedAmount, scale, RoundingMode.HALF_UP);
+    int percentageScale = AppBaseService.DEFAULT_NB_DECIMAL_DIGITS;
+    BigDecimal percentage =
+        amountToPay.divide(computedAmount, percentageScale, RoundingMode.HALF_UP);
 
     if (isInvoicePayment) {
       // ReCompute percentage paid when it's partial payment with invoice payment
@@ -613,12 +614,12 @@ public class ReconcileServiceImpl implements ReconcileService {
               invoiceAmount, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
     } else if (moveLineAmount
             .multiply(percentage)
-            .setScale(scale, RoundingMode.HALF_UP)
+            .setScale(percentageScale, RoundingMode.HALF_UP)
             .compareTo(amountToPay)
         != 0) {
       // Compute ratio paid when it's invoice term partial payment
       if (amountToPay.compareTo(invoiceAmount) != 0) {
-        percentage = invoiceAmount.divide(computedAmount, scale, RoundingMode.HALF_UP);
+        percentage = invoiceAmount.divide(computedAmount, percentageScale, RoundingMode.HALF_UP);
       } else {
         percentage =
             invoiceAmount.divide(
@@ -948,6 +949,11 @@ public class ReconcileServiceImpl implements ReconcileService {
     for (InvoicePayment invoicePayment : invoicePaymentRepo.findByReconcile(reconcile).fetch()) {
       invoicePaymentCancelService.updateCancelStatus(invoicePayment);
     }
+
+    invoiceTermPaymentRepo
+        .findByReconcileId(reconcile.getId())
+        .fetch()
+        .forEach(it -> it.setInvoiceTerm(null));
   }
 
   public void updateInvoiceTermsAmountRemaining(Reconcile reconcile) throws AxelorException {

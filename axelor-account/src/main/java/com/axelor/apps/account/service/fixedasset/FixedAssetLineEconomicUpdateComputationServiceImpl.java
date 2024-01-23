@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,8 +57,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
       FixedAssetFailOverControlService fixedAssetFailOverControlService,
       FixedAssetLineService fixedAssetLineService,
       FixedAssetDateService fixedAssetDateService,
-      AppBaseService appBaseService) {
-    super(fixedAssetFailOverControlService, appBaseService);
+      AppBaseService appBaseService,
+      FixedAssetLineToolService fixedAssetLineToolService) {
+    super(fixedAssetFailOverControlService, appBaseService, fixedAssetLineToolService);
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetDateService = fixedAssetDateService;
   }
@@ -93,7 +94,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
     firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
     BigDecimal depreciation = computeInitialDepreciation(fixedAsset, depreciationBase);
-    BigDecimal accountingValue = depreciationBase.subtract(depreciation);
+    BigDecimal accountingValue =
+        fixedAssetLineToolService.getCompanyScaledValue(
+            depreciationBase, depreciation, fixedAsset, BigDecimal::subtract);
 
     return Optional.ofNullable(
         createFixedAssetLine(
@@ -117,7 +120,8 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
 
   @Override
   protected BigDecimal computeInitialDepreciationBase(FixedAsset fixedAsset) {
-    return fixedAsset.getCorrectedAccountingValue();
+    return fixedAssetLineToolService.getCompanyScaledValue(
+        fixedAsset.getCorrectedAccountingValue(), fixedAsset);
   }
 
   @Override
@@ -181,7 +185,9 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
   }
 
   protected void prepareRecomputation(FixedAsset fixedAsset) throws AxelorException {
-    BigDecimal correctedAccountingValue = fixedAsset.getCorrectedAccountingValue();
+    BigDecimal correctedAccountingValue =
+        fixedAssetLineToolService.getCompanyScaledValue(
+            fixedAsset.getCorrectedAccountingValue(), fixedAsset);
     if (fixedAsset.getCorrectedAccountingValue() == null
         || fixedAsset.getCorrectedAccountingValue().signum() == 0) {
       throw new AxelorException(
@@ -233,24 +239,29 @@ public class FixedAssetLineEconomicUpdateComputationServiceImpl
       BigDecimal correctedAccountingValue) {
     firstPlannedFixedAssetLine.setCorrectedAccountingValue(correctedAccountingValue);
     BigDecimal impairmentValue =
-        firstPlannedFixedAssetLine
-            .getAccountingValue()
-            .subtract(firstPlannedFixedAssetLine.getCorrectedAccountingValue());
+        fixedAssetLineToolService.getCompanyScaledValue(
+            firstPlannedFixedAssetLine.getAccountingValue(),
+            firstPlannedFixedAssetLine.getCorrectedAccountingValue(),
+            fixedAsset,
+            BigDecimal::subtract);
     firstPlannedFixedAssetLine.setImpairmentValue(impairmentValue);
-    BigDecimal depreciation = firstPlannedFixedAssetLine.getDepreciation();
+    BigDecimal depreciation =
+        fixedAssetLineToolService.getCompanyScaledValue(
+            firstPlannedFixedAssetLine.getDepreciation(), fixedAsset);
     Optional<FixedAssetLine> previousLastRealizedFAL =
         fixedAssetLineService.findNewestFixedAssetLine(
             fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
     if (previousLastRealizedFAL.isPresent()) {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
-          previousLastRealizedFAL
-              .get()
-              .getCumulativeDepreciation()
-              .add(depreciation)
-              .add(impairmentValue));
+          fixedAssetLineToolService.getCompanyScaledValue(
+              previousLastRealizedFAL.get().getCumulativeDepreciation(),
+              depreciation.add(impairmentValue),
+              fixedAsset,
+              BigDecimal::add));
     } else {
       firstPlannedFixedAssetLine.setCumulativeDepreciation(
-          BigDecimal.ZERO.add(depreciation).add(impairmentValue));
+          fixedAssetLineToolService.getCompanyScaledValue(
+              BigDecimal.ZERO, depreciation.add(impairmentValue), fixedAsset, BigDecimal::add));
     }
   }
 
