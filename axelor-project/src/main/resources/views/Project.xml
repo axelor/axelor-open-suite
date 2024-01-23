@@ -198,9 +198,9 @@
           action="action-project-dashlet-project-planning-time" colSpan="12" canSearch="true"/>
       </panel>
       <panel title="HoldBacks" name="holdBacksPanel">
-        <panel-related name="holdBackLineListPanel" field="holdBackLineList" title="HoldBacks lines"
-          colSpan="12" form-view="hold-back-line-form" grid-view="hold-back-line-grid"
-          editable="true"/>
+        <panel-related name="holdBackLineListPanel" field="holdBackLineList"
+          title="HoldBacks lines" colSpan="12" form-view="hold-back-line-form"
+          grid-view="hold-back-line-grid" editable="true"/>
       </panel>
       <panel title="Log Times" name="logTimesPanel" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource" showIf="isShowTimeSpent">

@@ -7,7 +7,8 @@
 
   <entity name="HoldBack">
     <string name="name" required="true" unique="true" namecolumn="true"/>
-    <decimal name="defaultPercentage" min="0" max="100" title="Default percentage" default="0"/>
+    <decimal name="defaultPercentage" min="0" max="100" title="Default percentage"
+      default="0"/>
     <one-to-one name="holdBackProduct" ref="com.axelor.apps.base.db.Product"
       title="HoldBack product" required="true"/>
     <many-to-many name="productsHeldBackSet" ref="com.axelor.apps.base.db.Product"
