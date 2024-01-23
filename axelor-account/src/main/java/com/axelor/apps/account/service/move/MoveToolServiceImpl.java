@@ -734,4 +734,28 @@ public class MoveToolServiceImpl implements MoveToolService {
 
     return statusList;
   }
+
+  @Override
+  public List<Integer> getMoveStatusSelection(Company company, Journal journal)
+      throws AxelorException {
+    List<Integer> statusSelectionList = new ArrayList<>();
+    statusSelectionList.add(MoveRepository.STATUS_ACCOUNTED);
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+
+    if (journal == null) {
+      if (accountConfig != null) {
+        journal = accountConfigService.getReportedBalanceJournal(accountConfig);
+      }
+    }
+
+    if (journal != null && accountConfig != null) {
+      if (journal.getAllowAccountingDaybook() && accountConfig.getAccountingDaybook()) {
+        statusSelectionList.add(MoveRepository.STATUS_DAYBOOK);
+      }
+      if (journal.getAuthorizeSimulatedMove() && accountConfig.getIsActivateSimulatedMove()) {
+        statusSelectionList.add(MoveRepository.STATUS_SIMULATED);
+      }
+    }
+    return statusSelectionList;
+  }
 }
