@@ -228,9 +228,6 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (project != null) {
       expenseLine.setProject(project);
     }
-    if (toInvoice != null) {
-      expenseLine.setToInvoice(toInvoice);
-    }
     if (comments != null) {
       expenseLine.setComments(comments);
     }
