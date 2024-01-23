@@ -55,7 +55,7 @@
 "%s : Invoicing address missing",,,
 "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s).",,,
 "%s : MoveLine amount is not equals with bank statement line %s",,,
-"%s : No match for debt recovery method between the method lines in accounting config for company %s and the category of the partner %s %s",,,
+"%s : No match for debt recovery method between the method lines in accounting config for company %s and the category of the partner %s (%s) %s",,,
 "%s : No payment mode found for the code %s and the company %s",,,
 "%s : No timetable nor invoice found for the direct debit number : %s",,,
 "%s : One or several detail records are missing in the file %s",,,

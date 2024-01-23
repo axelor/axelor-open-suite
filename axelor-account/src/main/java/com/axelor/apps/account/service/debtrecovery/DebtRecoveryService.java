@@ -574,6 +574,7 @@ public class DebtRecoveryService {
           I18n.get(AccountExceptionMessage.DEBT_RECOVERY_3),
           I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
+          partner.getPartnerCategory().getName(),
           partner.getName(),
           tradingName != null
               ? " "
