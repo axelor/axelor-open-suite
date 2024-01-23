@@ -90,6 +90,7 @@
 "Durations",,,
 "End date",,,
 "End of next invoicing period",,,
+"End of next invoicing period should be after Start of next invoicing period.",,,
 "End of period",,,
 "End of period plus",,,
 "Engagement",,,
