@@ -4,7 +4,9 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="qi-decision-distribution-grid" title="Distribution"
-    model="com.axelor.apps.quality.db.QIDecisionDistribution" orderBy="sequence" canNew="false">
+    model="com.axelor.apps.quality.db.QIDecisionDistribution" orderBy="sequence" canNew="false"
+    canDelete="false">
+    <hilite color="green" if="distributionSent"/>
     <field name="sequence"/>
     <field name="qiDecision"/>
     <field name="recipient"/>
@@ -23,7 +25,7 @@
     model="com.axelor.apps.quality.db.QIDecisionDistribution">
     <panel name="mainPanel">
       <field name="sequence"/>
-      <field name="qiDecision"/>
+      <field name="qiDecision" grid-view="qi-decision-grid" form-view="qi-decision-form"/>
       <panel name="firstChildPanel" colSpan="12" itemSpan="6">
         <panel name="createdByPanel" itemSpan="12">
           <field name="createdBy"/>
@@ -32,7 +34,7 @@
           <field name="createdOn"/>
         </panel>
       </panel>
-      <field name="answeredBy"/>
+      <field name="answeredBy" grid-view="partner-grid" form-view="partner-form"/>
       <field name="answeredOn"/>
       <panel name="secondChildPanel" colSpan="12" itemSpan="6">
         <panel name="documentReferencePanel" itemSpan="12">
@@ -43,20 +45,22 @@
         </panel>
       </panel>
       <panel-related field="qiResolutionDecisionSet" colSpan="12"
-        form-view="qi-resolution-decision-form"/>
-      <field name="generatedFile" readonly="true"/>
+        grid-view="qi-resolution-decision-grid" form-view="qi-resolution-decision-form"/>
+      <field name="generatedFile" grid-view="dms-file-grid" form-view="dms-file-form"
+        readonly="true"/>
       <field name="distributionSent" readonly="true"/>
     </panel>
   </form>
 
   <form name="qi-decision-distribution-form" title="QI Decision Distribution"
-    model="com.axelor.apps.quality.db.QIDecisionDistribution">
+    model="com.axelor.apps.quality.db.QIDecisionDistribution" canDelete="!distributionSent">
     <panel name="mainPanel">
       <field name="sequence"/>
-      <field name="qiDecision"/>
+      <field name="qiDecision" grid-view="qi-decision-grid" form-view="qi-decision-form"/>
       <field name="recipient"/>
       <field name="recipientPartner"
-        onSelect="action-qi-resolution-distribution-attrs-set-recipient-partner-domain"/>
+        onSelect="action-qi-resolution-distribution-attrs-set-recipient-partner-domain"
+        grid-view="partner-grid" form-view="partner-form"/>
       <panel name="firstChildPanel" colSpan="12" itemSpan="6">
         <field name="description" widget="html"/>
         <panel name="documentReferencePanel" itemSpan="12">
@@ -69,10 +73,12 @@
         </panel>
         <field name="answerComment" widget="html"/>
       </panel>
-      <field name="answeredBy"/>
+      <field name="answeredBy" grid-view="partner-grid" form-view="partner-form"/>
       <field name="answeredOn"/>
-      <panel-related field="qiResolutionDecisionSet" colSpan="12"/>
-      <field name="generatedFile" readonly="true"/>
+      <panel-related field="qiResolutionDecisionSet"
+        grid-view="qi-resolution-decision-grid" form-view="qi-resolution-decision-form" colSpan="12"/>
+      <field name="generatedFile" grid-view="dms-file-grid" form-view="dms-file-form"
+        readonly="true"/>
       <field name="distributionSent"/>
     </panel>
   </form>

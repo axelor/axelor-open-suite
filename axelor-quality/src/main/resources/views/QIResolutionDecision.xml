@@ -28,7 +28,8 @@
       <field name="quantity" onChange="action-qi-resolution-decision-group-quantity-on-change"/>
       <field name="description" widget="html" colSpan="12"/>
       <field name="qiDecisionDistributionSet" colSpan="12"
-        grid-view="qi-decision-distribution-grid" form-view="qi-decision-distribution-form"/>
+        grid-view="qi-decision-distribution-grid" form-view="qi-decision-distribution-form"
+        canNew="false" canRemove="false"/>
       <field name="qiResolutionDefault" grid-view="qi-resolution-default-grid"
         form-view="qi-resolution-default-form"
         onSelect="action-qi-resolution-decision-attrs-set-qi-resolution-default-domain"
