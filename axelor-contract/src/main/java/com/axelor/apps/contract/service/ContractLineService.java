@@ -89,4 +89,6 @@ public interface ContractLineService {
 
   ContractLine computePricesPerYear(ContractLine contractLine, ContractVersion contractVersion)
       throws AxelorException;
+
+  ContractLine resetProductInformation(ContractLine contractLine);
 }
