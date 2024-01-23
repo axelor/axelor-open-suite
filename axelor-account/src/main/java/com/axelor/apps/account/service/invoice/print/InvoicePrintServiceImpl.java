@@ -30,6 +30,7 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.LocaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -280,10 +281,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               : partnerLocalizationCode;
     }
 
-    String[] parts = localeCode.split("_");
-    String languageCode = parts.length > 0 ? parts[0] : "";
-    String country = parts.length > 1 ? parts[1] : "";
-    Locale locale = new Locale(languageCode, country);
+    Locale locale = LocaleService.computeLocaleByLocaleCode(localeCode);
 
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();

@@ -35,13 +35,7 @@ public class ReportingTool {
         .map(User::getActiveCompany)
         .map(Company::getLocalization)
         .map(Localization::getCode)
-        .map(
-            code -> {
-              String[] parts = code.split("_");
-              String language = parts.length > 0 ? parts[0] : "";
-              String country = parts.length > 1 ? parts[1] : "";
-              return new Locale(language, country);
-            })
+        .map(LocaleService::computeLocaleByLocaleCode)
         .orElseGet(AppFilter::getLocale);
   }
 }
