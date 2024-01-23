@@ -1393,11 +1393,11 @@ this.height=row["logo_height"];]]></method>
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>
-if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'en_US'){
+if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value.substring(0, 2) == 'en'){
 	'No';
-} else if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'fr_FR'){
+} else if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value.substring(0, 2) == 'fr'){
 	'Non';
-} else if(row._outer["outsourcing"] != 0 &amp;&amp; params["Locale"].value == 'en_US'){
+} else if(row._outer["outsourcing"] != 0 &amp;&amp; params["Locale"].value.substring(0, 2) == 'en'){
  	'Yes';
 } else {
 	'Oui';
@@ -1473,11 +1473,11 @@ if(row._outer["outsourcing"] == 0 &amp;&amp; params["Locale"].value == 'en_US'){
                                         </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<B><VALUE-OF>row["translation"]</VALUE-OF></B> : <VALUE-OF>
-if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'en_US'){
+if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value.substring(0, 2) == 'en'){
 	'No';
-} else if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value == 'fr_FR'){
+} else if(row._outer["isconsproonoperation"] == 0 &amp;&amp; params["Locale"].value.substring(0, 2) == 'fr'){
 	'Non';
-} else if(row._outer["isconsproonoperation"] != 0 &amp;&amp; params["Locale"].value == 'en_US'){
+} else if(row._outer["isconsproonoperation"] != 0 &amp;&amp; params["Locale"].value.substring(0, 2) == 'en'){
  	'Yes';
 } else {
 	'Oui';
