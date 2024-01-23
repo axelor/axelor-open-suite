@@ -2320,7 +2320,7 @@ else if(row["title_select"] == "4"){'Prof.'}</value>
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
-			if(params["Locale"].value != 'en') {
+			if(params["Locale"].value != 'en_US') {
 				row["translation"]
 			} else {
 				row["message_key"]
