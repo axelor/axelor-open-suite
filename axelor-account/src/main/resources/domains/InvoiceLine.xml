@@ -97,6 +97,9 @@
 	    ]]>
     </decimal>
 
+    <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
+      min="0" max="1" nullable="true"/>
+
     <extra-code>
 		<![CDATA[
 			// TYPE SELECT
