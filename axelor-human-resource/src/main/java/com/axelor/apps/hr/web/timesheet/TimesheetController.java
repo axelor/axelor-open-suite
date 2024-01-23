@@ -635,4 +635,27 @@ public class TimesheetController {
     }
     response.setValues(timesheet);
   }
+
+  public void updateDurationAndTimeLoggingPreference(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Timesheet timesheet = request.getContext().asType(Timesheet.class);
+    response.setAttr("$periodTotalConvert", "hidden", false);
+    response.setAttr(
+        "$periodTotalConvert",
+        "value",
+        Beans.get(TimesheetLineService.class)
+            .computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false));
+    response.setAttr(
+        "$periodTotalConvert",
+        "title",
+        Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
+    response.setAttr(
+        "timesheetLineList.duration",
+        "title",
+        Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet));
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      Beans.get(TimesheetService.class).updateDurationAndTimeLoggingPreference(timesheet);
+      response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
+    }
+  }
 }

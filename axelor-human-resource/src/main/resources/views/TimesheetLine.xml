@@ -5,7 +5,7 @@
 
   <grid name="timesheet-line-project-grid" title="Log Times"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-    onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project"
+    onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-to-invoice-parent,action-timesheet-line-default-project,action-timesheet-line-record-set-time-logging-preference-select"
     orderBy="-date">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"/>
@@ -56,7 +56,8 @@
 
   <grid name="timesheet-line-timesheet-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-    onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
+    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-record-set-time-logging-preference-select"
+    orderBy="date">
     <hilite color="danger" if="$moment(date).diff($get('timesheet.toDate'), 'days') &gt; 0"/>
     <field name="timesheet.toDate" hidden="true"/>
     <field name="sequence" if="__config__.app.getApp('timesheet')?.displayTimesheetLineNumber"
@@ -111,7 +112,8 @@
 
   <grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines"
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
-    onNew="action-hr-default-timesheet-line-timesheet" orderBy="date">
+    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-record-set-time-logging-preference-select"
+    orderBy="date">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="project" onChange="action-timesheet-line-group-project-onchange"
       requiredIf="toInvoice" onSelect="action-timesheet-line-attrs-domain-project"
@@ -164,8 +166,8 @@
 
   <form name="timesheet-line-project-form" title="Log Time"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-hr-default-timesheet-line-project,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-record-to-invoice-parent"
-    onLoad="action-timesheet-line-attrs-set-duration-label" width="large">
+    onNew="action-hr-default-timesheet-line-project,action-timesheet-line-record-set-time-logging-preference-select,action-timesheet-line-record-to-invoice-parent"
+    width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
@@ -177,11 +179,11 @@
         form-view="product-activity-form" grid-view="product-activity-grid"/>
       <field name="duration" width="62%" colSpan="3"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
-      <label name="durationLabel" colSpan="3"/>
+      <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="1" showTitle="false"/>
       <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
-      <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="1" showTitle="false"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="hoursDuration" hidden="true"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
@@ -195,9 +197,8 @@
 
   <form name="timesheet-line-timesheet-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
-    width="large">
+    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-record-set-time-logging-preference-select,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-title-project" width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
@@ -212,11 +213,11 @@
         form-view="product-activity-form" grid-view="product-activity-grid"/>
       <field name="duration" width="62%" colSpan="3"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
-      <label name="durationLabel" colSpan="3"/>
+      <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="1" showTitle="false"/>
       <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
-      <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="1" showTitle="false"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="hoursDuration" hidden="true"/>
       <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
@@ -232,7 +233,7 @@
 
   <form name="timesheet-line-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine" canNew="false"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-title-project"
     onSave="action-timesheet-line-method-update-operation-order">
     <panel name="mainPanel">
       <field name="timesheet.company"/>
@@ -250,7 +251,7 @@
 
   <form name="timesheet-line-timesheet-project-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
+    onNew="action-hr-default-timesheet-line-timesheet,action-timesheet-line-record-set-time-logging-preference-select,action-timesheet-line-attrs-title-project"
     onLoad="action-timesheet-line-group-onload" width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
@@ -263,11 +264,11 @@
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
       <field name="duration" width="62%" colSpan="2" min="0.01"/>
-      <label name="durationLabel" colSpan="4"/>
+      <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="1" showTitle="false"/>
       <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
-      <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="timeLoggingPreferenceSelect" readonly="true" colSpan="1" showTitle="false"
+        if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
       <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
@@ -289,7 +290,6 @@
   </action-group>
 
   <action-group name="action-timesheet-line-group-onload">
-    <action name="action-timesheet-line-attrs-set-duration-label"/>
     <action name="action-timesheet-line-attrs-title-project"/>
     <action name="action-timesheet-line-atts-overview-readonly"/>
   </action-group>
@@ -339,12 +339,14 @@
       if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
   </action-attrs>
 
-  <action-attrs name="action-timesheet-line-attrs-set-duration-label">
-    <attribute name="title" for="durationLabel" if="__parent__"
-      expr="eval: __parent__?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : __parent__?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-    <attribute name="title" for="durationLabel" if="!__parent__"
-      expr="eval: timesheet?.timeLoggingPreferenceSelect == 'days' ? com.axelor.i18n.I18n.get('Days') : timesheet?.timeLoggingPreferenceSelect == 'minutes' ? com.axelor.i18n.I18n.get('Minutes') : com.axelor.i18n.I18n.get('Hours')"/>
-  </action-attrs>
+  <action-record
+    name="action-timesheet-line-record-set-time-logging-preference-select"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="timeLoggingPreferenceSelect" if="__parent__"
+      expr="eval: __parent__?.timeLoggingPreferenceSelect"/>
+    <field name="timeLoggingPreferenceSelect" if="!__parent__"
+      expr="eval: timesheet?.timeLoggingPreferenceSelect"/>
+  </action-record>
 
   <action-record name="action-hr-default-timesheet-line-project"
     model="com.axelor.apps.hr.db.TimesheetLine">

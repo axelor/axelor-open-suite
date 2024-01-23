@@ -28,8 +28,8 @@
 
   <form name="timesheet-line-timesheet-project-task-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onNew="action-project-task-attrs-default-timesheet-line,action-timesheet-line-method-set-timesheet,action-timesheet-line-attrs-set-duration-label"
-    onSave="action-project-task-validate-check-timesheet-line-date,action-timesheet-line-attrs-set-duration-label"
+    onNew="action-project-task-attrs-default-timesheet-line,action-timesheet-line-method-set-timesheet,action-timesheet-line-record-set-time-logging-preference-select"
+    onSave="action-project-task-validate-check-timesheet-line-date"
     onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task">
     <panel name="overviewPanel" title="Overview">
       <field name="project" readonly="true" form-view="project-form" grid-view="project-grid"/>

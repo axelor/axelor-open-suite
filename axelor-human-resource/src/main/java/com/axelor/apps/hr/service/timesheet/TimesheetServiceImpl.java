@@ -1072,13 +1072,7 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
     }
     timesheet.setTimeLoggingPreferenceSelect(timeLoggingPref);
 
-    if (timesheet.getTimesheetLineList() != null) {
-      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
-        timesheetLine.setDuration(
-            timesheetLineService.computeHoursDuration(
-                timesheet, timesheetLine.getHoursDuration(), false));
-      }
-    }
+    updateDurationAndTimeLoggingPreference(timesheet);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -1325,5 +1319,17 @@ public class TimesheetServiceImpl extends JpaSupport implements TimesheetService
       projectService.getChildProjectIds(projectIdsSet, contextProject);
     }
     return projectIdsSet;
+  }
+
+  @Override
+  public void updateDurationAndTimeLoggingPreference(Timesheet timesheet) throws AxelorException {
+    if (ObjectUtils.notEmpty(timesheet.getTimesheetLineList())) {
+      for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
+        timesheetLine.setDuration(
+            timesheetLineService.computeHoursDuration(
+                timesheet, timesheetLine.getHoursDuration(), false));
+        timesheetLine.setTimeLoggingPreferenceSelect(timesheet.getTimeLoggingPreferenceSelect());
+      }
+    }
   }
 }
