@@ -116,32 +116,6 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
     return budgetStr;
   }
 
-  @Transactional
-  @Override
-  public List<BudgetDistribution> addBudgetDistribution(SaleOrderLine saleOrderLine) {
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (appBudgetService.getAppBudget() != null
-        && !appBudgetService.getAppBudget().getManageMultiBudget()
-        && saleOrderLine.getBudget() != null) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(saleOrderLine.getBudget());
-      LocalDate date = null;
-      if (saleOrderLine.getSaleOrder() != null) {
-        date =
-            saleOrderLine.getSaleOrder().getOrderDate() != null
-                ? saleOrderLine.getSaleOrder().getOrderDate()
-                : saleOrderLine.getSaleOrder().getCreationDate();
-      }
-
-      budgetDistribution.setBudgetAmountAvailable(
-          budgetToolsService.getAvailableAmountOnBudget(saleOrderLine.getBudget(), date));
-      budgetDistribution.setAmount(saleOrderLine.getExTaxTotal());
-      budgetDistributionList.add(budgetDistribution);
-      saleOrderLine.setBudgetDistributionList(budgetDistributionList);
-    }
-    return budgetDistributionList;
-  }
-
   @Override
   public String getBudgetDomain(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Company company = null;

@@ -126,29 +126,6 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
     return budgetStr;
   }
 
-  @Transactional
-  @Override
-  public List<BudgetDistribution> addBudgetDistribution(PurchaseOrderLine purchaseOrderLine) {
-    List<BudgetDistribution> budgetDistributionList = new ArrayList<>();
-    if (!appBudgetService.getAppBudget().getManageMultiBudget()
-        && purchaseOrderLine.getBudget() != null) {
-      BudgetDistribution budgetDistribution = new BudgetDistribution();
-      budgetDistribution.setBudget(purchaseOrderLine.getBudget());
-      budgetDistribution.setBudgetAmountAvailable(
-          budgetToolsService.getAvailableAmountOnBudget(
-              purchaseOrderLine.getBudget(),
-              purchaseOrderLine.getPurchaseOrder() != null
-                  ? purchaseOrderLine.getPurchaseOrder().getOrderDate()
-                  : null));
-      budgetDistribution.setAmount(
-          currencyScaleServiceBudget.getCompanyScaledValue(
-              budgetDistribution, purchaseOrderLine.getExTaxTotal()));
-      budgetDistributionList.add(budgetDistribution);
-      purchaseOrderLine.setBudgetDistributionList(budgetDistributionList);
-    }
-    return budgetDistributionList;
-  }
-
   @Override
   public String getBudgetDomain(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) {
     Company company = null;
