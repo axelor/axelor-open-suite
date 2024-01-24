@@ -249,7 +249,7 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || amountRemaining != amount || paymentSession">
+        readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" readonly="true"/>
         <field name="isHoldBack" readonly="true"/>
         <field name="estimatedPaymentDate"
@@ -408,13 +408,13 @@
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
         <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
-          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
-          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+          readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
+          grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="(isHoldBack &amp;&amp; invoice &amp;&amp; invoice.statusSelect == 3) || isPaid || amountRemaining != amount || paymentSession">
+        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" required="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>
@@ -580,13 +580,13 @@
           grid-view="partner-grid"/>
         <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
           showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
-          readonlyIf="amountRemaining != amount" form-view="partner-form" grid-view="partner-grid"
-          if="__config__.app.getApp('base')?.activatePartnerRelations"/>
+          readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
+          grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || paymentSession || amountRemaining != amount || !$popup()">
+        readonlyIf="isPaid || paymentSession || $number(amountRemaining) != $number(amount) || !$popup()">
         <field name="dueDate" required="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="$isPaymentConditionFree == false"/>
@@ -776,7 +776,7 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="isPaid || amountRemaining != amount || paymentSession">
+        readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" readonly="true"/>
         <field name="isHoldBack" readonly="true"/>
         <field name="amount" readonly="true" x-scale="currency.numberOfDecimals"/>

@@ -125,6 +125,7 @@ public class InvoiceTermController {
   @ErrorException
   public void amountOnChange(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    this.setParentContext(request, invoiceTerm);
 
     InvoiceTermGroupService invoiceTermGroupService = Beans.get(InvoiceTermGroupService.class);
 
@@ -134,6 +135,7 @@ public class InvoiceTermController {
   @ErrorException
   public void percentageOnChange(ActionRequest request, ActionResponse response) {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    this.setParentContext(request, invoiceTerm);
 
     InvoiceTermGroupService invoiceTermGroupService = Beans.get(InvoiceTermGroupService.class);
 
@@ -397,23 +399,18 @@ public class InvoiceTermController {
   }
 
   protected void setInvoice(ActionRequest request, InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getInvoice() == null) {
-      invoiceTerm.setInvoice(
-          ContextHelper.getContextParent(request.getContext(), Invoice.class, 1));
-    }
+    invoiceTerm.setInvoice(ContextHelper.getContextParent(request.getContext(), Invoice.class, 1));
   }
 
   protected void setMove(ActionRequest request, MoveLine moveLine) {
-    if (moveLine != null && (moveLine.getMove() == null || moveLine.getId() == null)) {
+    if (moveLine != null) {
       moveLine.setMove(ContextHelper.getContextParent(request.getContext(), Move.class, 2));
     }
   }
 
   protected void setMoveLine(ActionRequest request, InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getMoveLine() == null) {
-      invoiceTerm.setMoveLine(
-          ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1));
-    }
+    invoiceTerm.setMoveLine(
+        ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1));
   }
 
   public void addLinkedFiles(ActionRequest request, ActionResponse response) {

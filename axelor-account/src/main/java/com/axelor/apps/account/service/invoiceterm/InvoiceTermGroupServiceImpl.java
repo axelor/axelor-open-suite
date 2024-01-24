@@ -57,6 +57,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     valuesMap.put("currency", invoiceTerm.getCurrency());
     valuesMap.put("origin", invoiceTerm.getOrigin());
     valuesMap.put("originDate", invoiceTerm.getOriginDate());
+
     putFinancialDiscountFields(invoiceTerm, valuesMap);
     valuesMap.put("pfpValidateStatusSelect", invoiceTerm.getPfpValidateStatusSelect());
     valuesMap.put(
@@ -79,8 +80,6 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
 
     valuesMap.put(
         "$showFinancialDiscount", invoiceTermService.setShowFinancialDiscount(invoiceTerm));
-    valuesMap.put(
-        "$isPaymentConditionFree", invoiceTermService.isPaymentConditionFree(invoiceTerm));
     valuesMap.put("$invoiceTermMoveFile", invoiceTermService.getLinkedDmsFile(invoiceTerm));
 
     return valuesMap;
