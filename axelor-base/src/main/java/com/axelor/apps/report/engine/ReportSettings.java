@@ -70,6 +70,7 @@ public class ReportSettings {
   private boolean FLAG_ATTACH = false;
 
   public ReportSettings(String rptdesign, String outputName) {
+
     this.rptdesign = rptdesign;
     this.computeOutputName(outputName);
     addDataBaseConnection();

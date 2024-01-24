@@ -30,7 +30,6 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
-import com.axelor.apps.base.service.LocaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -55,7 +54,6 @@ import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections4.map.HashedMap;
@@ -236,8 +234,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
 
   @Override
   public ReportSettings prepareReportSettings(
-      Invoice invoice, Integer reportType, String format, String localeCode)
-      throws AxelorException {
+      Invoice invoice, Integer reportType, String format, String locale) throws AxelorException {
     if (invoice.getPrintingSettings() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -261,7 +258,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
 
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
-    if (Strings.isNullOrEmpty(localeCode)) {
+    if (Strings.isNullOrEmpty(locale)) {
       String userLocalizationCode =
           Optional.ofNullable(AuthUtils.getUser())
               .map(User::getLocalization)
@@ -275,14 +272,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           invoice.getPartner().getLocalization() != null
               ? invoice.getPartner().getLocalization().getCode()
               : userLocalizationCode;
-      localeCode =
+      locale =
           accountConfig.getIsPrintInvoicesInCompanyLanguage()
               ? companyLocalizationCode
               : partnerLocalizationCode;
     }
-
-    Locale locale = LocaleService.computeLocaleByLocaleCode(localeCode);
-
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
     if (invoiceWatermark != null) {
@@ -290,7 +284,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     }
     Map<String, Object> paramMap = new HashedMap<>();
     paramMap.put("ReportType", reportType == null ? 0 : reportType);
-    paramMap.put("locale", localeCode);
+    paramMap.put("locale", locale);
     paramMap.put("Watermark", watermark);
     return birtTemplateService.generate(
         invoiceBirtTemplate,
