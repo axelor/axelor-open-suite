@@ -898,6 +898,7 @@ public class BudgetServiceImpl implements BudgetService {
       if (budget.getPeriodDurationSelect() == null) {
         budget.setPeriodDurationSelect(0);
       }
+      budget.setAmountForGeneration(budget.getTotalAmountExpected());
       generatePeriods(budget);
     }
   }

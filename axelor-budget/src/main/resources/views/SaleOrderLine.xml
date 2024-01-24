@@ -54,7 +54,7 @@
             </viewer>
           </field>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
-            onChange="action-budget-sale-order-line-method-fill-budget-str"
+            onChange="action-budget-sale-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
           <panel name="accountPanel" colSpan="12">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"

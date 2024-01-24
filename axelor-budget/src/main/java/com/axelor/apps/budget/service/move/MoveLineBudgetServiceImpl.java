@@ -174,7 +174,6 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
                 move.getDate());
         budgetDistributionService.linkBudgetDistributionWithParent(budgetDistribution, moveLine);
         moveLine.setBudgetDistributionSumAmount(moveLine.getCredit().add(moveLine.getDebit()));
-        moveLine.setIsBudgetImputed(true);
       }
     }
   }

@@ -421,6 +421,11 @@
     <call class="com.axelor.apps.budget.web.BudgetDistributionController" method="invoiceOnNew"/>
   </action-method>
 
+  <action-method name="action-reset-budget-distribution-list-method">
+    <call class="com.axelor.apps.budget.web.BudgetDistributionController"
+      method="resetBudgetDistributionList"/>
+  </action-method>
+
   <action-attrs name="action-purchase-order-line-attrs-dashlet-onload">
     <attribute name="value" for="$fromGroup" expr="eval:_fromGroup"/>
     <attribute name="value" for="$fromSection" expr="eval:_fromSection"/>

@@ -30,7 +30,7 @@
               ]]>
             </viewer>
           </field>
-          <field name="budget"
+          <field name="budget" onChange="action-reset-budget-distribution-list-method"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-invoice-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel"
