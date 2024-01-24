@@ -391,12 +391,10 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
       return;
     }
 
-    boolean isDefaultTemplate = false;
     messageTemplate = this.getTemplateByModel(entity);
 
     if (messageTemplate == null) {
       messageTemplate = appBaseService.getAppBase().getDefaultMailMessageTemplate();
-      isDefaultTemplate = true;
     }
     if (messageTemplate == null) {
       return;
@@ -432,11 +430,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     } catch (ClassNotFoundException | IOException e) {
       TraceBackService.trace(e);
     }
-    if (isDefaultTemplate) {
-      templatesContext.put("entity", entity);
-    } else {
-      templatesContext.put(klass.getSimpleName(), entity);
-    }
+    templatesContext.put(klass.getSimpleName(), entity);
     templates = createTemplates(messageTemplate);
   }
 
