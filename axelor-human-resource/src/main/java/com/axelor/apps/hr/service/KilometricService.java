@@ -32,6 +32,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowanceRate;
 import com.axelor.apps.hr.db.KilometricAllowanceRule;
 import com.axelor.apps.hr.db.KilometricLog;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.db.repo.KilometricLogRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
@@ -211,6 +212,8 @@ public class KilometricService {
       }
     }
 
+    if (expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)
+      return price.multiply(BigDecimal.valueOf(2)).setScale(2, RoundingMode.HALF_UP);
     return price.setScale(2, RoundingMode.HALF_UP);
   }
 
