@@ -221,9 +221,11 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderWorkflowService
     if (!CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
       for (PurchaseOrderLine poLine : purchaseOrder.getPurchaseOrderLineList()) {
         Product product = poLine.getProduct();
-        if (product != null) {
+        if (product != null || poLine.getProductName() != null) {
           budgetService.validateBudgetDistributionAmounts(
-              poLine.getBudgetDistributionList(), poLine.getCompanyExTaxTotal(), product.getCode());
+              poLine.getBudgetDistributionList(),
+              poLine.getCompanyExTaxTotal(),
+              product != null ? product.getCode() : poLine.getProductName());
         }
       }
     }
