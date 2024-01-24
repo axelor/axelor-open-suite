@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,6 +60,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
   protected AppBudgetService appBudgetService;
   protected BudgetLevelRepository budgetLevelRepository;
   protected BudgetToolsService budgetToolsService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public BudgetLevelServiceImpl(
@@ -73,7 +74,8 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
       BudgetManagementRepository budgetRepository,
       AppBudgetService appBudgetService,
       BudgetLevelRepository budgetLevelRepository,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.budgetLevelManagementRepository = budgetLevelManagementRepository;
     this.advancedImportRepo = advancedImportRepo;
     this.advancedImportService = advancedImportService;
@@ -85,6 +87,7 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     this.appBudgetService = appBudgetService;
     this.budgetLevelRepository = budgetLevelRepository;
     this.budgetToolsService = budgetToolsService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
@@ -99,18 +102,22 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithNoPo(amountByField.get("realizedWithNoPo"));
     budgetLevel.setRealizedWithPo(amountByField.get("realizedWithPo"));
     budgetLevel.setTotalAmountAvailable(
-        amountByField
-            .get("totalAmountExpected")
-            .subtract(amountByField.get("realizedWithPo"))
-            .subtract(amountByField.get("realizedWithNoPo"))
-            .max(BigDecimal.ZERO));
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel,
+            amountByField
+                .get("totalAmountExpected")
+                .subtract(amountByField.get("realizedWithPo"))
+                .subtract(amountByField.get("realizedWithNoPo"))
+                .max(BigDecimal.ZERO)));
     budgetLevel.setTotalFirmGap(amountByField.get("totalFirmGap"));
     budgetLevel.setSimulatedAmount(amountByField.get("simulatedAmount"));
     budgetLevel.setAvailableAmountWithSimulated(
-        budgetLevel
-            .getTotalAmountAvailable()
-            .subtract(amountByField.get("simulatedAmount"))
-            .max(BigDecimal.ZERO));
+        currencyScaleServiceBudget.getCompanyScaledValue(
+            budgetLevel,
+            budgetLevel
+                .getTotalAmountAvailable()
+                .subtract(amountByField.get("simulatedAmount"))
+                .max(BigDecimal.ZERO)));
   }
 
   @Override

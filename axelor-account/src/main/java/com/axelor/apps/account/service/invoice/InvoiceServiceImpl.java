@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -1227,11 +1227,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void updateSubrogationPartner(Invoice invoice) {
+  public void updateThirdPartyPayerPartner(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
       invoice.getInvoiceTermList().stream()
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
-          .forEach(it -> it.setSubrogationPartner(invoice.getSubrogationPartner()));
+          .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
   }
 }

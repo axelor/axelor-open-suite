@@ -8,12 +8,13 @@
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
     <field name="name"/>
     <field name="budgetLevel"/>
-    <field name="totalAmountExpected"/>
-    <field name="totalAmountCommitted"/>
-    <field name="totalAmountRealized"/>
-    <field name="availableAmount"/>
+    <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountCommitted" x-scale="company.currency.numberOfDecimals"/>
+    <field name="totalAmountRealized" x-scale="company.currency.numberOfDecimals"/>
+    <field name="availableAmount" x-scale="company.currency.numberOfDecimals"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <field name="company.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="budget-lines-template-grid" title="Budgets"
@@ -26,13 +27,17 @@
   <tree name="budget-tree" title="Budget Levels">
     <column name="name" type="string"/>
     <column name="code" type="string"/>
-    <column name="totalAmountExpected"/>
-    <column name="totalAmountCommitted"/>
-    <column name="totalFirmGap"/>
-    <column name="realizedWithNoPo"/>
-    <column name="realizedWithPo"/>
-    <column name="simulatedAmount"/>
-    <column name="availableAmountWithSimulated"/>
+    <column name="totalAmountExpected"
+      x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="totalAmountCommitted"
+      x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="totalFirmGap" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="realizedWithNoPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="realizedWithPo" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="simulatedAmount" x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="availableAmountWithSimulated"
+      x-scale="globalBudget.company.currency.numberOfDecimals"/>
+    <column name="globalBudget.company.currency.numberOfDecimals" hidden="true"/>
 
     <node model="com.axelor.apps.budget.db.BudgetLevel"
       domain="self.parentBudgetLevel is null AND self.globalBudget.id = :_globalId "
@@ -66,8 +71,7 @@
     onLoad="budget-action-budget-group-onload"
     onSave="budget-action-method-create-check-budget-key,budget-action-method-create-check-dates-on-budget"
     canNew="!_isReadOnly" canEdit="!_isReadOnly">
-    <panel name="overViewPanel" title="Overview" canCollapse="true" colSpan="12"
-      collapseIf="!$popup()">
+    <panel name="overViewPanel" title="Overview" canCollapse="true" colSpan="12">
       <panel name="mainPanel" readonlyIf="statusSelect != 1" colSpan="9">
         <field name="typeSelect" colSpan="12" hidden="true"/>
         <field name="code" required="true" colSpan="2"
@@ -108,29 +112,34 @@
       </panel>
 
       <static name="$periodNotAvailable" colSpan="12" hidden="true">
-        <![CDATA[<span class='label label-warning'>You need to save the budget before manage budget lines on periods</span>]]></static>
+        <![CDATA[<><Badge bg="warning">You need to save the budget before manage budget lines on periods</Badge></>]]></static>
       <panel name="periodsGenerationAssistantPanel" title="Periods generation assistant"
-        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1">
+        colSpan="12" readonlyIf="statusSelect != 1" hideIf="statusSelect != 1 || !id">
         <field name="periodDurationSelect" colSpan="4"/>
-        <field name="amountForGeneration" colSpan="4"/>
+        <field name="amountForGeneration" colSpan="4"
+          x-scale="company.currency.numberOfDecimals"/>
         <button name="generatePeriodsBtn" title="Generate periods"
           onClick="action-group-budget-generateperiod-click" colSpan="4" readonlyIf="!id"/>
+        <field name="company" hidden="true"/>
+        <field name="company.currency" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
         <separator colSpan="12"/>
       </panel>
 
       <panel name="totalAmountExpectedPanel" readonly="true" colSpan="12" itemSpan="3"
-        title="Total amounts">
-        <field name="totalAmountExpected"/>
-        <field name="availableAmount"/>
-        <field name="availableAmountWithSimulated"/>
-        <field name="simulatedAmount"/>
+        title="Total amounts" showIf="id">
+        <field name="totalAmountExpected" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmount" x-scale="company.currency.numberOfDecimals"/>
+        <field name="availableAmountWithSimulated" x-scale="company.currency.numberOfDecimals"/>
+        <field name="simulatedAmount" x-scale="company.currency.numberOfDecimals"/>
         <field name="totalAmountCommitted" if-module="axelor-supplychain"
-          if="__config__.app.isApp('supplychain')"/>
-        <field name="realizedWithNoPo"/>
-        <field name="realizedWithPo"/>
-        <field name="totalAmountPaid"/>
-        <field name="totalFirmGap"/>
-        <field name="totalAmountRealized" hidden="true"/>
+          if="__config__.app.isApp('supplychain')" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithNoPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="realizedWithPo" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountPaid" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalFirmGap" x-scale="company.currency.numberOfDecimals"/>
+        <field name="totalAmountRealized" hidden="true"
+          x-scale="company.currency.numberOfDecimals"/>
         <separator colSpan="12"/>
       </panel>
 
@@ -138,19 +147,18 @@
     <panel-related name="budgetLineListPanel" field="budgetLineList"
       onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect != 1"
       colSpan="12"/>
-    <panel colSpan="12" readonlyIf="statusSelect != 1">
+    <panel name="budgetKeyPanel" colSpan="12" readonlyIf="statusSelect != 1">
       <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
-        canEdit="false" readonlyIf="statusSelect != 1" colSpan="12"
-        onSelect="action-budget-method-set-account-set-domain"/>
+        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-axis-change-remove-account"
-        onSelect="action-method-budget-analytic-axis-set-domain" readonlyIf="statusSelect != 1"/>
+        onSelect="action-method-budget-analytic-axis-set-domain"/>
       <field name="analyticAccount" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onChange="action-analytic-distribution-account-on-change"
-        onSelect="action-method-budget-analytic-account-set-domain" readonlyIf="statusSelect != 1"/>
+        onSelect="action-method-budget-analytic-account-set-domain"/>
       <panel-related name="accountModelSetPanel" field="accountModelSet"
         form-view="account-model-form" grid-view="account-model-grid" colSpan="12" hidden="true"
-        readonlyIf="statusSelect != 1" canNew="false" canEdit="false"/>
+        canNew="false" canEdit="false"/>
     </panel>
 
     <panel name="followUpPanel" title="Follow-up" canCollapse="true" collapseIf="true"

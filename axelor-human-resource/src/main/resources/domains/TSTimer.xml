@@ -22,7 +22,6 @@
       title="Timesheet Line" readonly="true"/>
     <integer name="statusSelect" title="Status Timer" default="1"
       selection="hr.timer.status.select" readonly="true"/>
-    <datetime name="lastStartDateT" title="Last start date time" readonly="true"/>
     <long name="updatedDuration" title="Updated duration" nullable="true"/>
 
     <extra-code><![CDATA[

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -56,7 +56,8 @@ public interface MoveLineService {
 
   MoveLine computeCutOffProrataAmount(MoveLine moveLine, LocalDate moveDate);
 
-  Batch validateCutOffBatch(List<Long> recordIdList, Long batchId);
+  Batch validatePreviewBatch(List<Long> recordIdList, Long batchId, int actionSelect)
+      throws AxelorException;
 
   void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner);
 

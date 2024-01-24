@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.StringUtils;
@@ -44,17 +45,20 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
   protected FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService;
 
   protected FixedAssetRepository fixedAssetRepo;
+  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
 
   @Inject
   public FixedAssetValidateServiceImpl(
       FixedAssetLineService fixedAssetLineService,
       FixedAssetGenerationService fixedAssetGenerationService,
       FixedAssetDerogatoryLineService fixedAssetDerogatoryLineService,
-      FixedAssetRepository fixedAssetRepo) {
+      FixedAssetRepository fixedAssetRepo,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     this.fixedAssetLineService = fixedAssetLineService;
     this.fixedAssetGenerationService = fixedAssetGenerationService;
     this.fixedAssetDerogatoryLineService = fixedAssetDerogatoryLineService;
     this.fixedAssetRepo = fixedAssetRepo;
+    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
   }
 
   /**
@@ -102,9 +106,13 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
           fixedAssetLineService.findNewestFixedAssetLine(
               fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
       if (lastRealizedLine.isPresent()) {
-        fixedAsset.setAccountingValue(lastRealizedLine.get().getAccountingValue());
+        fixedAsset.setAccountingValue(
+            currencyScaleServiceAccount.getCompanyScaledValue(
+                fixedAsset, lastRealizedLine.get().getAccountingValue()));
       } else if (fixedAsset.getIsEqualToFiscalDepreciation()) {
-        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
+        fixedAsset.setAccountingValue(
+            currencyScaleServiceAccount.getCompanyScaledValue(
+                fixedAsset, fixedAsset.getGrossValue()));
       } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
           || fixedAsset
               .getDepreciationPlanSelect()
@@ -112,7 +120,8 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
         fixedAsset.setAccountingValue(BigDecimal.ZERO);
       } else {
         fixedAsset.setAccountingValue(
-            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
+            currencyScaleServiceAccount.getCompanyScaledValue(
+                fixedAsset, fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue())));
       }
     }
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {

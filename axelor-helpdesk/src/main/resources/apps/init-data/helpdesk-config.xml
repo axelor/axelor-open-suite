@@ -13,4 +13,11 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="helpdesk_ticketStatus.csv" separator=";"
+    type="com.axelor.apps.helpdesk.db.TicketStatus" search="self.importId = :importId"/>
+
+  <input file="studio_appHelpdesk.csv" separator=";" type="com.axelor.studio.db.AppHelpdesk"
+    search="self.app.code = :code">
+    <bind to="app" column="code" search="self.code = :code"/>
+  </input>
 </csv-inputs>
