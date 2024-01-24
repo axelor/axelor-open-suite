@@ -126,8 +126,9 @@
             onChange="action-account-move-method-partner-onchange"
             onSelect="action-move-partner-onselect" form-view="partner-form"
             grid-view="partner-grid"/>
-          <field name="subrogationPartner" colSpan="2" domain="self.isSubrogation IS TRUE"
-            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || subrogationPartner"
+          <field name="thirdPartyPayerPartner" colSpan="2"
+            domain="self.isThirdPartyPayer IS TRUE"
+            showIf="[1,2,5].includes(journal.journalType.technicalTypeSelect) || thirdPartyPayerPartner"
             form-view="partner-form" grid-view="partner-grid"
             if="__config__.app.getApp('base')?.activatePartnerRelations"
             onSelect="action-move-method-subrogation-partner-onselect"/>
@@ -743,7 +744,7 @@
 
   <action-method name="action-move-method-subrogation-partner-onselect">
     <call class="com.axelor.apps.account.web.MoveController"
-      method="onSelectSubrogationPartner"/>
+      method="onSelectThirdPartyPayerPartner"/>
   </action-method>
 
   <action-method name="action-move-method-partner-bank-details-onchange">

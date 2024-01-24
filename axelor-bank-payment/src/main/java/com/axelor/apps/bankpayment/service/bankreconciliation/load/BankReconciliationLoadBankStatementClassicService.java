@@ -23,8 +23,8 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationComputeService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
-import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -42,10 +42,10 @@ public class BankReconciliationLoadBankStatementClassicService
   @Inject
   public BankReconciliationLoadBankStatementClassicService(
       BankReconciliationRepository bankReconciliationRepository,
-      BankReconciliationService bankReconciliationService,
+      BankReconciliationComputeService bankReconciliationComputeService,
       BankReconciliationLineService bankReconciliationLineService,
       BankStatementLineFilterService bankStatementLineFilterService) {
-    super(bankReconciliationRepository, bankReconciliationService);
+    super(bankReconciliationRepository, bankReconciliationComputeService);
     this.bankReconciliationLineService = bankReconciliationLineService;
     this.bankStatementLineFilterService = bankStatementLineFilterService;
   }

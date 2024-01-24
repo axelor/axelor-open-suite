@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
+import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -58,6 +59,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       MoveToolService moveToolService,
       BankReconciliationService bankReconciliationService,
       BankReconciliationLineRepository bankReconciliationLineRepository,
+      BankReconciliationLineService bankReconciliationLineService,
       ExpensePaymentService expensePaymentService,
       AppService appService,
       BudgetDistributionService budgetDistributionService) {
@@ -73,6 +75,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         moveToolService,
         bankReconciliationService,
         bankReconciliationLineRepository,
+        bankReconciliationLineService,
         expensePaymentService,
         appService);
     this.budgetDistributionService = budgetDistributionService;

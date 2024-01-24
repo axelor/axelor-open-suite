@@ -180,7 +180,7 @@
     <boolean name="fixedAssetCatReqOnInvoice"
       title="Fixed asset category required on invoices"/>
     <boolean name="isPrintInvoicesInCompanyLanguage"
-      title="Print invoices in company language" default="true"/>
+      title="Print invoices in company localization" default="true"/>
 
     <!-- Accounting config template -->
     <many-to-one name="accountingConfigTemplate"
