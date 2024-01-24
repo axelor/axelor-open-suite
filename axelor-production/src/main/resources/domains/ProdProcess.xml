@@ -72,6 +72,7 @@
                 pp.id
     ]]>
     </long>
+    <boolean name="isPersonalized" title="Personalized"/>
 
     <extra-code><![CDATA[
 

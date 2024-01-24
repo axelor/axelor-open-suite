@@ -609,7 +609,7 @@
     <action name="action-sale-order-line-attrs-scale-and-precision"/>
     <action name="action-sale-order-line-record-new"/>
     <action name="action-sale-order-line-record-project"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
     <action name="action-sale-order-line-attrs-set-currency"/>
     <action name="action-sale-order-attrs-hide-ati"/>
@@ -632,7 +632,7 @@
     <action name="action-sale-order-line-attrs-title-project"/>
     <action name="action-sale-order-line-attrs-show-priceDiscounted"/>
     <action name="action-sale-order-line-attrs-scale-and-precision"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"/>
     <action name="action-sale-order-line-attrs-reserved-qty-visibility"/>
     <action name="action-method-sale-order-line-available-and-allocated-stock"/>
     <action name="action-sale-order-line-attrs-set-company-currency"/>
@@ -652,7 +652,7 @@
   <action-group name="action-group-sale-saleorderline-product-onchange">
     <action name="action-sale-order-line-method-get-product-information"/>
     <action name="action-sale-order-line-method-compute"/>
-    <action name="action-sale-order-line-attrs-hide-bill-of-material"/>
+    <action name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"/>
     <action name="action-sale-order-line-get-production-information"/>
     <action name="action-sale-order-line-method-supplier-partner-default"
       if="__config__.app.isApp('supplychain')"/>
@@ -859,7 +859,8 @@
 
   <!-- ACTION ATTRS -->
 
-  <action-attrs name="action-sale-order-line-attrs-hide-bill-of-material"
+  <action-attrs
+    name="action-sale-order-line-attrs-hide-bill-of-material-and-prod-process"
     if-module="axelor-production">
     <attribute name="hidden" for="billOfMaterial"
       expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
@@ -867,11 +868,22 @@
     <attribute name="hidden" for="customizeBOMBtn"
       expr="eval: (saleSupplySelect != 3 &amp;&amp; saleSupplySelect != 4) || product?.productTypeSelect == 'service' "
       if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="prodProcess"
+      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
+    <attribute name="hidden" for="customizeProdProcessBtn"
+      expr="eval: saleSupplySelect != 3 || product?.productTypeSelect == 'service' "
+      if="__config__.app.isApp('production')"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-bill-of-material-domain">
     <attribute name="domain" for="billOfMaterial"
       expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) AND self.defineSubBillOfMaterial = true &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-sale-order-line-attrs-prod-process-domain">
+    <attribute name="domain" for="prodProcess"
+      expr="eval: &quot;(self.product.id = ${product?.parentProduct?.id} OR self.product.id = ${product?.id}) &quot;"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-line-attrs-discountamount-title">
