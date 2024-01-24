@@ -28,7 +28,7 @@
       <field name="qiDecision" grid-view="qi-decision-grid" form-view="qi-decision-form"/>
       <panel name="firstChildPanel" colSpan="12" itemSpan="6">
         <panel name="createdByPanel" itemSpan="12">
-          <field name="createdBy"/>
+          <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         </panel>
         <panel itemSpan="12">
           <field name="createdOn"/>
