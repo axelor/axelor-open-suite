@@ -63,7 +63,7 @@ public interface BankReconciliationService {
 
   String getAccountDomain(BankReconciliation bankReconciliation);
 
-  String getRequestMoveLines(BankReconciliation bankReconciliation);
+  String getRequestMoveLines();
 
   Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
       throws AxelorException;
