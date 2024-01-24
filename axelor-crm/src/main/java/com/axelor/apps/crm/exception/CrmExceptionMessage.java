@@ -150,7 +150,4 @@ public final class CrmExceptionMessage {
 
   public static final String CRM_DEFAULT_OPPORTUNITY_STATUS_MISSING = /*$$(*/
       "Please fill default opportunity status in App CRM configuration." /*)*/;
-
-  public static final String CRM_DEFAULT_PARTNER_STATUS_MISSING = /*$$(*/
-      "Please fill default partner status in App CRM configuration." /*)*/;
 }
