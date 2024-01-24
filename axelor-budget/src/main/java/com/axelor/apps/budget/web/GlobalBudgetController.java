@@ -25,6 +25,7 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
@@ -179,5 +180,13 @@ public class GlobalBudgetController {
 
   public void showAmounts(ActionRequest request, ActionResponse response) {
     response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(false));
+  }
+
+  @ErrorException
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
+    response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
 }

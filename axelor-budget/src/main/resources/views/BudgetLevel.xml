@@ -56,11 +56,11 @@
       </panel>
       <panel name="datesPanel" colSpan="12" showIf="$popup()">
         <field name="fromDate" colSpan="4" required="true"
-          onChange="action-budget-level-validate-from-to-dates"/>
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
         <field name="toDate" colSpan="4" required="true"
-          onChange="action-budget-level-validate-from-to-dates"/>
-        <button name="updateDatesBtn" colSpan="4" title="Update dates"
-          onClick="save,action-budget-budget-level-method-set-dates"
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
+        <button name="updateDatesBtn" colSpan="4" title="Update dates" hidden="true"
+          onClick="save,action-budget-budget-level-method-set-dates" css="btn-danger"
           readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
@@ -221,6 +221,11 @@
     <action name="action-budget-level-group-onnew"/>
   </action-group>
 
+  <action-group name="action-budget-level-group-from-to-dates-onchange">
+    <action name="action-budget-level-validate-from-to-dates"/>
+    <action name="action-budget-level-method-show-update-dates-btn"/>
+  </action-group>
+
   <action-validate name="action-budget-level-validate-from-to-dates">
     <error message="Invalid dates"
       if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"
@@ -234,6 +239,10 @@
 
   <action-method name="action-budget-budget-level-method-set-dates">
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="setDates"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-show-update-dates-btn">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="showUpdateDatesBtn"/>
   </action-method>
 
   <action-method name="action-budget-level-method-validate">
