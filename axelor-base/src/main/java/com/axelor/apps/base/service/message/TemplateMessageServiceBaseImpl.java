@@ -95,7 +95,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
 
     File file =
         birtTemplateService.generateBirtTemplateFile(
-            birtTemplate, templatesContext, fileName, false, birtTemplate.getFormat(), null);
+            birtTemplate, templatesContext, fileName, false, birtTemplate.getFormat());
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class).upload(is, fileName + "." + birtTemplate.getFormat());

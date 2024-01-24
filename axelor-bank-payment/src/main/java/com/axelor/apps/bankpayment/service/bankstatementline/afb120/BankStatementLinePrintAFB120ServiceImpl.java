@@ -66,8 +66,7 @@ public class BankStatementLinePrintAFB120ServiceImpl
               Map.of("FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId()),
               "Bank statement lines - " + fromDate + " to " + toDate,
               bankStatementLinesBirtTemplate.getAttach(),
-              exportType,
-              null);
+              exportType);
     }
     return fileLink;
   }

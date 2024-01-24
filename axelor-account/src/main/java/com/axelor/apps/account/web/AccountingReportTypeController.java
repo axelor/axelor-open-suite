@@ -60,8 +60,7 @@ public class AccountingReportTypeController {
     String name = I18n.get("Accounting report and rules");
 
     String fileLink =
-        ReportFactory.createReport(
-                IReport.ACCOUNTING_REPORT_TYPE_AND_RULES, name + "-${date}", null)
+        ReportFactory.createReport(IReport.ACCOUNTING_REPORT_TYPE_AND_RULES, name + "-${date}")
             .addParam("AccountingReportTypeId", accountingReportType.getId())
             .addParam("Locale", ReportSettings.getPrintingLocale(null))
             .addParam("User", AuthUtils.getUser().getName())

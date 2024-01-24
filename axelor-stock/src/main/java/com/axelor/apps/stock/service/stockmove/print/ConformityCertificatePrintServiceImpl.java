@@ -92,7 +92,7 @@ public class ConformityCertificatePrintServiceImpl implements ConformityCertific
 
     String title = getFileName(stockMove);
     return birtTemplateService.generateBirtTemplateFile(
-        conformityCertificateBirtTemplate, stockMove, title + " - ${date}", null);
+        conformityCertificateBirtTemplate, stockMove, title + " - ${date}");
   }
 
   @Override

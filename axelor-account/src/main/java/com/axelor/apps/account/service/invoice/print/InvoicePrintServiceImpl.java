@@ -298,7 +298,6 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         paramMap,
         title + " - ${date}",
         false,
-        format,
-        locale);
+        format);
   }
 }

@@ -339,7 +339,6 @@ public class DeclarationOfExchangesExporterGoods extends DeclarationOfExchangesE
         null,
         getTitle(),
         true,
-        declarationOfExchanges.getFormatSelect(),
-        null);
+        declarationOfExchanges.getFormatSelect());
   }
 }

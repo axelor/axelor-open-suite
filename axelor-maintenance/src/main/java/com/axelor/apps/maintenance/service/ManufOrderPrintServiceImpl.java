@@ -126,8 +126,7 @@ public class ManufOrderPrintServiceImpl implements ManufOrderPrintService {
         null,
         title,
         maintenanceManufOrderBirtTemplate.getAttach(),
-        ReportSettings.FORMAT_PDF,
-        null);
+        ReportSettings.FORMAT_PDF);
   }
 
   @Override

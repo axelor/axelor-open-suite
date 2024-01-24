@@ -104,7 +104,7 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
     String title = getFileName(stockMove);
 
     return birtTemplateService.generateBirtTemplateFile(
-        pickingStockMoveBirtTemplate, stockMove, title + " - ${date}", null);
+        pickingStockMoveBirtTemplate, stockMove, title + " - ${date}");
   }
 
   @Override

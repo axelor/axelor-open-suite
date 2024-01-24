@@ -26,12 +26,12 @@ import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.net.UrlHelper;
+import com.google.common.base.Strings;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
 import java.net.URLEncoder;
 import java.nio.file.Path;
-import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,12 +42,16 @@ public class ExternalReportSettings extends ReportSettings {
   protected String url = "";
   protected String birtViewerUrl = null;
 
-  public ExternalReportSettings(String rptdesign, String outputName, Locale locale) {
+  public ExternalReportSettings(String rptdesign, String outputName) {
 
-    super(rptdesign, outputName, locale);
+    super(rptdesign, outputName);
 
-    this.addAxelorReportPath(rptdesign)
-        .addParam("__locale", ReportingTool.getCompanyLocale().toString());
+    String localeCode = (String) this.params.get("Locale");
+    if (Strings.isNullOrEmpty(localeCode)) {
+      localeCode = ReportingTool.getCompanyLocale().toString();
+    }
+
+    this.addAxelorReportPath(rptdesign).addParam("__locale", localeCode);
   }
 
   @Override

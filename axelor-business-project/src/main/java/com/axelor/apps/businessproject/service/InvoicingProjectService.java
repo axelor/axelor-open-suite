@@ -522,8 +522,7 @@ public class InvoicingProjectService {
                 null,
                 title,
                 false,
-                ReportSettings.FORMAT_PDF,
-                null);
+                ReportSettings.FORMAT_PDF);
 
     if (invoicingProject.getAttachAnnexToInvoice()) {
       List<File> fileList = new ArrayList<>();

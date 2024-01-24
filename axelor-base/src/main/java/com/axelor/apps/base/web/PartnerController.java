@@ -182,8 +182,7 @@ public class PartnerController {
                 getParamsMap(context),
                 name + "-${date}",
                 false,
-                clientSituationBirtTemplate.getFormat(),
-                null);
+                clientSituationBirtTemplate.getFormat());
 
     LOG.debug("Printing " + name);
 

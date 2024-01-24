@@ -362,7 +362,7 @@ public class ManufOrderController {
       String fileLink =
           Beans.get(BirtTemplateService.class)
               .generateBirtTemplateLink(
-                  prodProcessBirtTemplate, prodProcess, prodProcessLable + "-${date}", null);
+                  prodProcessBirtTemplate, prodProcess, prodProcessLable + "-${date}");
 
       response.setView(ActionView.define(prodProcessLable).add("html", fileLink).map());
     } catch (Exception e) {

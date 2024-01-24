@@ -23,13 +23,12 @@ import com.axelor.apps.base.db.BirtTemplate;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.db.Model;
 import java.io.File;
-import java.util.Locale;
 import java.util.Map;
 
 public interface BirtTemplateService {
 
-  String generateBirtTemplateLink(
-      BirtTemplate template, Model model, String outputName, Locale locale) throws AxelorException;
+  String generateBirtTemplateLink(BirtTemplate template, Model model, String outputName)
+      throws AxelorException;
 
   String generateBirtTemplateLink(
       BirtTemplate template,
@@ -37,20 +36,14 @@ public interface BirtTemplateService {
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,
-      String format,
-      Locale locale)
+      String format)
+      throws AxelorException;
+
+  File generateBirtTemplateFile(BirtTemplate template, Model model, String outputName)
       throws AxelorException;
 
   File generateBirtTemplateFile(
-      BirtTemplate template, Model model, String outputName, Locale locale) throws AxelorException;
-
-  File generateBirtTemplateFile(
-      BirtTemplate template,
-      Model model,
-      String outputName,
-      Boolean toAttach,
-      String format,
-      Locale locale)
+      BirtTemplate template, Model model, String outputName, Boolean toAttach, String format)
       throws AxelorException;
 
   File generateBirtTemplateFile(
@@ -58,8 +51,7 @@ public interface BirtTemplateService {
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,
-      String format,
-      Locale locale)
+      String format)
       throws AxelorException;
 
   ReportSettings generate(
@@ -68,7 +60,6 @@ public interface BirtTemplateService {
       Map<String, Object> context,
       String outputName,
       Boolean toAttach,
-      String format,
-      Locale locale)
+      String format)
       throws AxelorException;
 }

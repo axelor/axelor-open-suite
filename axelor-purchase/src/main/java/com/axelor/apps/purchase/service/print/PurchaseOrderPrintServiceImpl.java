@@ -122,8 +122,7 @@ public class PurchaseOrderPrintServiceImpl implements PurchaseOrderPrintService 
         null,
         title + " - ${date}",
         poBirtTemplate.getAttach(),
-        formatPdf,
-        null);
+        formatPdf);
   }
 
   protected String getPurchaseOrderFilesName(Integer status) {

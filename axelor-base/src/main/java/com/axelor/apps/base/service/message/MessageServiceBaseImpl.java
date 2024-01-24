@@ -224,7 +224,7 @@ public class MessageServiceBaseImpl extends MessageServiceImpl implements Messag
               + message.getSubject()
               + "-"
               + appBaseService.getTodayDate(company).format(DateTimeFormatter.BASIC_ISO_DATE);
-      return birtTemplateService.generateBirtTemplateLink(birtTemplate, model, fileName, null);
+      return birtTemplateService.generateBirtTemplateLink(birtTemplate, model, fileName);
 
     } catch (AxelorException | ClassNotFoundException e) {
       TraceBackService.trace(e);

@@ -264,8 +264,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
         Map.of("ProformaInvoice", false),
         saleOrderService.getFileName(saleOrder) + " - ${date}",
         true,
-        ReportSettings.FORMAT_PDF,
-        null);
+        ReportSettings.FORMAT_PDF);
   }
 
   /**

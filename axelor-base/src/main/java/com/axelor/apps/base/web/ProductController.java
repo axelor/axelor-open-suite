@@ -125,8 +125,7 @@ public class ProductController {
                 Map.of("ProductIds", getSelectedOrAllRecordIds(request)),
                 name + "-${date}",
                 false,
-                productCatalogPGQLBirtTemplate.getFormat(),
-                null);
+                productCatalogPGQLBirtTemplate.getFormat());
 
     logger.debug("Printing " + name);
 

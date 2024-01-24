@@ -181,7 +181,7 @@ public class QIAnalysisServiceImpl implements QIAnalysisService {
     String fileName = getFileName(qiActionDistribution);
     File file =
         birtTemplateService.generateBirtTemplateFile(
-            qiActionDistributionBirtTemplate, qiActionDistribution, fileName, null);
+            qiActionDistributionBirtTemplate, qiActionDistribution, fileName);
     DMSFile generatedFile = null;
     if (file != null) {
       try (InputStream is = new FileInputStream(file)) {

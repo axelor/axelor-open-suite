@@ -40,7 +40,6 @@ import java.lang.invoke.MethodHandles;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
@@ -67,12 +66,10 @@ public class ReportSettings {
   protected Model model;
   protected String fileName;
   protected File output;
-  protected Locale locale;
 
   private boolean FLAG_ATTACH = false;
 
-  public ReportSettings(String rptdesign, String outputName, Locale locale) {
-    this.locale = locale;
+  public ReportSettings(String rptdesign, String outputName) {
     this.rptdesign = rptdesign;
     this.computeOutputName(outputName);
     addDataBaseConnection();

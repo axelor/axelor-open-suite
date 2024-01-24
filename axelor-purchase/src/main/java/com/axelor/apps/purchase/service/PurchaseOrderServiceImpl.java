@@ -307,8 +307,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         null,
         title + "-${date}",
         true,
-        ReportSettings.FORMAT_PDF,
-        null);
+        ReportSettings.FORMAT_PDF);
   }
 
   @Override

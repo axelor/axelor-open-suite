@@ -39,7 +39,6 @@ import com.axelor.text.Templates;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import org.eclipse.birt.core.data.DataTypeUtil;
 import org.eclipse.birt.core.exception.BirtException;
@@ -52,15 +51,12 @@ class BirtTemplateReportSettingsBuilder {
   private Model model;
   private Map<String, Object> context;
 
-  private Locale locale;
-
-  public BirtTemplateReportSettingsBuilder(BirtTemplate template, String outputName, Locale locale)
+  public BirtTemplateReportSettingsBuilder(BirtTemplate template, String outputName)
       throws AxelorException {
-    this.locale = locale;
     this.template = template;
     this.context = new HashMap<>();
     try {
-      this.settings = initReportSettings(outputName, locale);
+      this.settings = initReportSettings(outputName);
     } catch (AxelorException | IOException e) {
       TraceBackService.trace(e);
       throw new AxelorException(
@@ -69,8 +65,7 @@ class BirtTemplateReportSettingsBuilder {
     }
   }
 
-  private ReportSettings initReportSettings(String outputName, Locale locale)
-      throws AxelorException, IOException {
+  private ReportSettings initReportSettings(String outputName) throws AxelorException, IOException {
     String designPath = this.template.getTemplateLink();
     MetaFile templateMetaFile = this.template.getTemplateMetaFile();
     if (templateMetaFile == null) {
@@ -79,7 +74,7 @@ class BirtTemplateReportSettingsBuilder {
     if (templateMetaFile != null) {
       designPath = MetaFiles.getPath(templateMetaFile).toString();
     }
-    return ReportFactory.createReport(designPath, outputName, locale);
+    return ReportFactory.createReport(designPath, outputName);
   }
 
   public BirtTemplateReportSettingsBuilder addParam(String key, String value, String type)
