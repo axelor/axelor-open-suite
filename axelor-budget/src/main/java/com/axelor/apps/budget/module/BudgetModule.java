@@ -46,6 +46,8 @@ import com.axelor.apps.budget.service.BudgetAccountConfigService;
 import com.axelor.apps.budget.service.BudgetAccountConfigServiceImpl;
 import com.axelor.apps.budget.service.BudgetAccountService;
 import com.axelor.apps.budget.service.BudgetAccountServiceImpl;
+import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
+import com.axelor.apps.budget.service.BudgetComputeHiddenDateServiceImpl;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetDistributionServiceImpl;
 import com.axelor.apps.budget.service.BudgetGroupService;
@@ -189,5 +191,6 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetGroupService.class).to(BudgetGroupServiceImpl.class);
     bind(GlobalBudgetToolsService.class).to(GlobalBudgetToolsServiceImpl.class);
     bind(CurrencyScaleServiceBudget.class).to(CurrencyScaleServiceBudgetImpl.class);
+    bind(BudgetComputeHiddenDateService.class).to(BudgetComputeHiddenDateServiceImpl.class);
   }
 }
