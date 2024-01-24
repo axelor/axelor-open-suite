@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderManagementBudgetRepository extends SaleOrderProjectRepository {
+public class SaleOrderBudgetRepository extends SaleOrderProjectRepository {
 
   @Override
   public SaleOrder save(SaleOrder saleOrder) {

@@ -36,7 +36,7 @@ import com.axelor.apps.budget.db.repo.GlobalBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.db.repo.MoveBudgetManagementRepository;
 import com.axelor.apps.budget.db.repo.PurchaseOrderManagementBudgetRepository;
-import com.axelor.apps.budget.db.repo.SaleOrderManagementBudgetRepository;
+import com.axelor.apps.budget.db.repo.SaleOrderBudgetRepository;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelService;
 import com.axelor.apps.budget.export.ExportGlobalBudgetLevelServiceImpl;
 import com.axelor.apps.budget.service.AppBudgetService;
@@ -171,7 +171,7 @@ public class BudgetModule extends AxelorModule {
     bind(BudgetLevelResetToolService.class).to(BudgetLevelResetToolServiceImpl.class);
     bind(BudgetResetToolService.class).to(BudgetResetToolServiceImpl.class);
     bind(BudgetLineResetToolService.class).to(BudgetLineResetToolServiceImpl.class);
-    bind(SaleOrderProjectRepository.class).to(SaleOrderManagementBudgetRepository.class);
+    bind(SaleOrderProjectRepository.class).to(SaleOrderBudgetRepository.class);
     bind(ExpenseMoveReverseServiceImpl.class).to(MoveReverseServiceBudgetImpl.class);
     bind(ReconcileServiceImpl.class).to(ReconcileBudgetServiceImpl.class);
   }
