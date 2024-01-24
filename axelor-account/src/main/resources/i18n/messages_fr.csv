@@ -55,7 +55,7 @@
 "%s : Invoicing address missing","%s : Adresse de facturation absente",,
 "%s : Letter template missing for debt recovery matrix %s (Partner %s, Level %s).","%s : Modèle de courrier absent pour la matrice de recouvrement %s (Tiers %s, Niveau %s).",,
 "%s : MoveLine amount is not equals with bank statement line %s","%s : Le montant de l'écriture doit être égale au montant de la ligne de rapprochement %s.",,
-"%s : No match for debt recovery method between the method lines in accounting config for company %s and the category of the partner %s (%s) %s","%s : Pas de correspondance entre les lignes de méthodes de la config comptable de la société %s et la catégorie du tiers %s (%s) %s",,
+"%s : No debt recovery method has been found for the company %s and the category %s %s (Partner %s)","%s : Pas de correspondance entre les lignes de méthodes de recouvrement de la société %s et la catégorie %s %s (Tiers %s)",,
 "%s : No payment mode found for the code %s and the company %s","%s : Aucun mode de paiement trouvé pour le code %s et la société %s",,
 "%s : No timetable nor invoice found for the direct debit number : %s","%s : Aucun échéancier ou facture trouvé(e) pour le numéro de prélèvement : %s",,
 "%s : One or several detail records are missing in the file %s","%s : Il manque un ou plusieurs enregistrements détail dans le fichier %s",,

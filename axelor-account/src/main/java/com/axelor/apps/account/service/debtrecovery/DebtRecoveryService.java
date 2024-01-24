@@ -575,14 +575,14 @@ public class DebtRecoveryService {
           I18n.get(BaseExceptionMessage.EXCEPTION),
           company.getName(),
           partner.getPartnerCategory().getName(),
-          partner.getName(),
           tradingName != null
               ? " "
                   .concat(
                       String.format(
                           I18n.get(AccountExceptionMessage.DEBT_RECOVERY_TRADING_NAME),
                           tradingName.getName()))
-              : "");
+              : "",
+          partner.getName());
     }
   }
 

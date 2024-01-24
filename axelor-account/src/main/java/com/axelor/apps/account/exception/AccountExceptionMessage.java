@@ -823,7 +823,7 @@ public final class AccountExceptionMessage {
 
   public static final String DEBT_RECOVERY_2 = /*$$(*/ "Reference date undefined." /*)*/;
   public static final String DEBT_RECOVERY_3 = /*$$(*/
-      "%s : No match for debt recovery method between the method lines in accounting config for company %s and the category of the partner %s (%s) %s" /*)*/;
+      "%s : No debt recovery method has been found for the company %s and the category %s %s (Partner %s)" /*)*/;
   public static final String DEBT_RECOVERY_4 = /*$$(*/
       "Debt recovery level waiting for approval." /*)*/;
   public static final String DEBT_RECOVERY_MISSING_PARTNER_CATEGORY = /*$$(*/
