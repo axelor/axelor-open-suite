@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.AccountingReportValueRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
@@ -42,6 +43,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.google.common.collect.Sets;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -119,18 +121,28 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   @Override
   public void computeReportValues(AccountingReport accountingReport) throws AxelorException {
+    for (Company company : accountingReport.getCompanySet()) {
+      this.computeReportValues(accountingReport, Sets.newHashSet(company));
+    }
+
+    this.computeReportValues(accountingReport, accountingReport.getCompanySet());
+  }
+
+  protected void computeReportValues(AccountingReport accountingReport, Set<Company> companySet)
+      throws AxelorException {
     Set<AnalyticAccount> configAnalyticAccountSet =
         this.getConfigAnalyticAccountSet(
             accountingReport.getAccountingReportAnalyticConfigLineList());
 
     if (CollectionUtils.isEmpty(configAnalyticAccountSet)) {
-      this.computeReportValues(accountingReport, null, 0);
+      this.computeReportValues(accountingReport, companySet, null, 0);
     } else {
       int analyticCounter = 0;
 
       for (AnalyticAccount configAnalyticAccount :
           this.getSortedAnalyticAccountSet(configAnalyticAccountSet)) {
-        this.computeReportValues(accountingReport, configAnalyticAccount, analyticCounter++);
+        this.computeReportValues(
+            accountingReport, companySet, configAnalyticAccount, analyticCounter++);
       }
     }
   }
@@ -197,13 +209,16 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   }
 
   protected void computeReportValues(
-      AccountingReport accountingReport, AnalyticAccount configAnalyticAccount, int analyticCounter)
+      AccountingReport accountingReport,
+      Set<Company> companySet,
+      AnalyticAccount configAnalyticAccount,
+      int analyticCounter)
       throws AxelorException {
     LocalDate startDate = accountingReport.getDateFrom();
     LocalDate endDate = accountingReport.getDateTo();
 
     this.computeReportValues(
-        accountingReport, configAnalyticAccount, startDate, endDate, analyticCounter);
+        accountingReport, companySet, configAnalyticAccount, startDate, endDate, analyticCounter);
 
     AccountingReportType reportType = accountingReport.getReportType();
 
@@ -214,6 +229,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
           this.computeReportValues(
               accountingReport,
+              companySet,
               configAnalyticAccount,
               startDate.minusYears(i).with(TemporalAdjusters.firstDayOfYear()),
               endDate.minusYears(i).with(TemporalAdjusters.lastDayOfYear()),
@@ -226,6 +242,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
           this.computeReportValues(
               accountingReport,
+              companySet,
               configAnalyticAccount,
               startDate.minusYears(i),
               endDate.minusYears(i),
@@ -237,6 +254,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
         this.computeReportValues(
             accountingReport,
+            companySet,
             configAnalyticAccount,
             accountingReport.getOtherDateFrom(),
             accountingReport.getOtherDateTo(),
@@ -246,6 +264,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
 
   protected void computeReportValues(
       AccountingReport accountingReport,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -271,6 +290,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               accountingReport,
               valuesMapByColumn,
               valuesMapByLine,
+              companySet,
               configAnalyticAccount,
               startDate,
               endDate,
@@ -284,6 +304,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             accountingReport,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             startDate,
             endDate,
@@ -351,6 +372,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       AccountingReport accountingReport,
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       LocalDate startDate,
       LocalDate endDate,
@@ -398,6 +420,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             columnList,
             lineList,
             account,
+            companySet,
             configAnalyticAccount,
             account.getLabel(),
             startDate,
@@ -416,6 +439,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             columnList,
             lineList,
             null,
+            companySet,
             configAnalyticAccount,
             groupColumn.getLabel(),
             startDate,
@@ -431,6 +455,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
           columnList,
           lineList,
           null,
+          companySet,
           configAnalyticAccount,
           null,
           startDate,
@@ -462,6 +487,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       List<AccountingReportConfigLine> columnList,
       List<AccountingReportConfigLine> lineList,
       Account groupAccount,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
@@ -512,6 +538,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
               valuesMapByColumn,
               valuesMapByLine,
               groupAccount,
+              companySet,
               configAnalyticAccount,
               parentTitle,
               startDate,
@@ -531,6 +558,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       Map<String, Map<String, AccountingReportValue>> valuesMapByColumn,
       Map<String, Map<String, AccountingReportValue>> valuesMapByLine,
       Account groupAccount,
+      Set<Company> companySet,
       AnalyticAccount configAnalyticAccount,
       String parentTitle,
       LocalDate startDate,
@@ -558,6 +586,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             line,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             parentTitle,
             startDate,
@@ -576,6 +605,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             BigDecimal.ZERO,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             line.getCode(),
             analyticCounter);
@@ -588,6 +618,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             line,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             parentTitle,
             startDate,
@@ -602,6 +633,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             startDate,
             endDate,
@@ -616,6 +648,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             groupColumn,
             valuesMapByColumn,
             valuesMapByLine,
+            companySet,
             configAnalyticAccount,
             startDate,
             endDate,
@@ -630,6 +663,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             valuesMapByColumn,
             valuesMapByLine,
             groupAccount,
+            companySet,
             configAnalyticAccount,
             parentTitle,
             startDate,

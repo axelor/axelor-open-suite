@@ -637,6 +637,7 @@
 "AccountingReportType3.reportedBalance","Reported balance",,
 "AccountingReportType3.thirdPartyPayer","Payer Partner",,
 "AccountingReportType3.to","TO :",,
+"AccountingReportType3000.allCompanies","All companies",,
 "AccountingReportType4.120150days","> 120 days and < 150 days",,
 "AccountingReportType4.150180days","> 150 days and < 180 days",,
 "AccountingReportType4.180days","> 180 days",,
