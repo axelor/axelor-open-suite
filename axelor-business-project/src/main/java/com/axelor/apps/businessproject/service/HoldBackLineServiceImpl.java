@@ -19,7 +19,8 @@ public class HoldBackLineServiceImpl implements HoldBackLineService {
       return invoice;
     }
 
-    List<InvoiceLine> invoiceLineList = createInvoiceLines(invoice, holdBackLineList, invoice.getInvoiceLineList().size());
+    List<InvoiceLine> invoiceLineList =
+        createInvoiceLines(invoice, holdBackLineList, invoice.getInvoiceLineList().size());
     invoice.getInvoiceLineList().addAll(invoiceLineList);
     return invoice;
   }
