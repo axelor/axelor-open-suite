@@ -23,6 +23,7 @@
         <panel name="billOfMaterialPanel" title="Bill of materials">
           <field name="manageBillOfMaterialVersion" widget="boolean-switch"/>
           <field name="manageResidualProductOnBom" widget="boolean-switch"/>
+          <field name="allowPersonalizedBOM" widget="boolean-switch"/>
           <field name="nbDecimalDigitForBomQty"/>
         </panel>
         <panel name="prodProcessPanel" title="Production process">
@@ -38,6 +39,7 @@
           <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
             widget="boolean-switch"
             showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
+          <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
         </panel>
 

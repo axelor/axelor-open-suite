@@ -8,4 +8,9 @@
       method="customizeBillOfMaterial"/>
   </action-method>
 
+  <action-method name="action-production-method-customize-prod-process">
+    <call class="com.axelor.apps.production.web.SaleOrderLineController"
+      method="createCustomizedProdProcess"/>
+  </action-method>
+
 </object-views>

@@ -49,6 +49,7 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
     <boolean name="generatePurchaseOrderOnMoPlanning"
       title="Generate a purchase order on MO planning"/>
+    <boolean name="isPersonalized" title="Personalized"/>
 
     <extra-code><![CDATA[
 

@@ -65,6 +65,10 @@
     <boolean name="isCostPerProcessLine" title="Cost per process line"/>
     <boolean name="employeeScheduling" title="Employee scheduling" default="false"/>
 
+    <boolean name="allowPersonalizedBOM" title="Allow to personalize bill of material"/>
+    <boolean name="allowPersonalizedProdProcess"
+      title="Allow to personalize production process"/>
+
     <extra-code><![CDATA[
 		// OPERATION_CONTINUITY_SELECT
         public static final int OPERATION_CONTINUITY_SELECT_NO_CONTINUITY =0;
@@ -104,6 +108,8 @@
       <field name="manageWorkCenterGroup" on="UPDATE"/>
       <field name="isInputInHundredthHours" on="UPDATE"/>
 
+      <field name="allowPersonalizedBOM" on="UPDATE"/>
+      <field name="allowPersonalizedProdProcess" on="UPDATE"/>
     </track>
   </entity>
 
