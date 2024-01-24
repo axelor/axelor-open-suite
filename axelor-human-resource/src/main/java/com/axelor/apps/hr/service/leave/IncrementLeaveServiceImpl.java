@@ -2,6 +2,7 @@ package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.CompanyDateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
@@ -24,7 +25,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class IncrementLeaveServiceImpl implements IncrementLeaveService {
@@ -37,8 +37,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   protected PublicHolidayHrService publicHolidayHrService;
   protected LeaveLineService leaveLineService;
   protected LeaveValueProrataService leaveValueProrataService;
-
-  public static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm";
+  protected CompanyDateService companyDateService;
 
   @Inject
   public IncrementLeaveServiceImpl(
@@ -50,7 +49,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
       LeaveManagementService leaveManagementService,
       PublicHolidayHrService publicHolidayHrService,
       LeaveLineService leaveLineService,
-      LeaveValueProrataService leaveValueProrataService) {
+      LeaveValueProrataService leaveValueProrataService,
+      CompanyDateService companyDateService) {
     this.leaveReasonRepository = leaveReasonRepository;
     this.employeeRepository = employeeRepository;
     this.appBaseService = appBaseService;
@@ -60,6 +60,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     this.publicHolidayHrService = publicHolidayHrService;
     this.leaveLineService = leaveLineService;
     this.leaveValueProrataService = leaveValueProrataService;
+    this.companyDateService = companyDateService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -110,7 +111,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
       List<LeaveLine> leaveLineList,
       LocalDate fromDate,
       LocalDate toDate,
-      BigDecimal value) {
+      BigDecimal value)
+      throws AxelorException {
     LeaveLine leaveLine =
         leaveLineList.stream()
             .filter(leaveLine1 -> leaveLine1.getLeaveReason().equals(leaveReason))
@@ -136,13 +138,15 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   }
 
   protected LeaveManagement createLeaveManagement(
-      LocalDate fromDate, LocalDate toDate, BigDecimal value) {
+      LocalDate fromDate, LocalDate toDate, BigDecimal value) throws AxelorException {
 
     LocalDateTime localDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
     String comment =
         I18n.get("Created automatically by increment leave batch on")
             + " "
-            + DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).format(localDateTime);
+            + companyDateService
+                .getDateTimeFormat(AuthUtils.getUser().getActiveCompany())
+                .format(localDateTime);
 
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
