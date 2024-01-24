@@ -142,7 +142,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
         || fixedAssetLine.getStatusSelect() != FixedAssetLineRepository.STATUS_PLANNED) {
       return;
     }
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = currencyScaleServiceAccount.getFixedAsset(fixedAssetLine);
     if (fixedAsset == null) {
       return;
     }
@@ -282,7 +282,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   @Transactional(rollbackOn = {Exception.class})
   protected Move generateImpairementAccountMove(FixedAssetLine fixedAssetLine, boolean isSimulated)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = currencyScaleServiceAccount.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -436,7 +436,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   @Override
   public Move generateMove(FixedAssetLine fixedAssetLine, boolean isSimulated, boolean isDisposal)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = currencyScaleServiceAccount.getFixedAsset(fixedAssetLine);
 
     Journal journal = fixedAsset.getJournal();
     Company company = fixedAsset.getCompany();
@@ -914,7 +914,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
 
     fixedAssetLine.setIsSimulated(true);
     fixedAssetLineRepo.save(fixedAssetLine);
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = currencyScaleServiceAccount.getFixedAsset(fixedAssetLine);
     if (fixedAsset != null) {
       simulateOthersLine(fixedAsset, fixedAssetLine.getDepreciationDate());
     }
@@ -975,7 +975,7 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
   public boolean canSimulate(FixedAssetLine fixedAssetLine) throws AxelorException {
     Objects.requireNonNull(fixedAssetLine);
 
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = currencyScaleServiceAccount.getFixedAsset(fixedAssetLine);
     if (fixedAsset != null && fixedAsset.getJournal() != null) {
       return fixedAsset.getJournal().getAuthorizeSimulatedMove();
     }

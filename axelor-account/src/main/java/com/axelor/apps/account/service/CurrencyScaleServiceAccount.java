@@ -92,4 +92,12 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
   int getScale(Currency currency);
 
   int getCompanyScale(Company company);
+
+  /**
+   * Get Fixed asset of fixedAssetLine.
+   *
+   * @param fixedAssetLine
+   * @return fixedAsset : {@link FixedAsset}
+   */
+  FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
 }

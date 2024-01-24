@@ -10,23 +10,17 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
+import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleServiceImpl;
-import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     implements CurrencyScaleServiceAccount {
-
-  protected FixedAssetLineService fixedAssetLineService;
-
-  @Inject
-  public CurrencyScaleServiceAccountImpl(FixedAssetLineService fixedAssetLineService) {
-    this.fixedAssetLineService = fixedAssetLineService;
-  }
 
   @Override
   public BigDecimal getScaledValue(Move move, BigDecimal amount) {
@@ -128,7 +122,7 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   @Override
   public BigDecimal getCompanyScaledValue(FixedAssetLine fixedAssetLine, BigDecimal amount)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = getFixedAsset(fixedAssetLine);
     return this.getScaledValue(amount, this.getCompanyScale(fixedAsset));
   }
 
@@ -220,7 +214,7 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = getFixedAsset(fixedAssetLine);
     return this.getCompanyScale(fixedAsset);
   }
 
@@ -242,5 +236,28 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
 
   protected int getCurrencyScale(Currency currency) {
     return currency != null ? currency.getNumberOfDecimals() : this.getScale();
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws AxelorException
+   * @throws NullPointerException if fixedAssetLine is null.
+   */
+  @Override
+  public FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException {
+    Objects.requireNonNull(fixedAssetLine);
+    switch (fixedAssetLine.getTypeSelect()) {
+      case FixedAssetLineRepository.TYPE_SELECT_ECONOMIC:
+        return fixedAssetLine.getFixedAsset();
+      case FixedAssetLineRepository.TYPE_SELECT_FISCAL:
+        return fixedAssetLine.getFiscalFixedAsset();
+      case FixedAssetLineRepository.TYPE_SELECT_IFRS:
+        return fixedAssetLine.getIfrsFixedAsset();
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            "Fixed asset line type is not recognized to get fixed asset");
+    }
   }
 }
