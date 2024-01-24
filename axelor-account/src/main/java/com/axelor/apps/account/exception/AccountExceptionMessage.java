@@ -441,6 +441,9 @@ public final class AccountExceptionMessage {
   public static final String RECONCILE_WRONG_CURRENCY = /*$$(*/
       "Reconcile involves two different currencies and neither of them is the company currency" /*)*/;
 
+  public static final String RECONCILE_MISSING_TAX = /*$$(*/
+      "Move %s has a move line with a tax account but no tax assigned. Please fix this in order to proceed with this reconcile." /*)*/;
+
   public static final String ALREADY_HAVE_PROPOSAL_RECONCILE = /*$$(*/
       "Some selected MoveLines already have a proposal ReconcileGroup" /*)*/;
 

@@ -1,0 +1,2 @@
+title : "Move/MassEntry : Fixed critical error when we create a move or mass entry move without company currency"
+type: fix
