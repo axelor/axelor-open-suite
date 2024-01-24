@@ -7,7 +7,6 @@
     model="com.axelor.apps.project.db.HoldBackLine">
     <field name="holdBack" onChange="action-hold-back-line-record-set-percentage"/>
     <field name="percentage"/>
-    <field name="holdBack.holdBackProduct"/>
     <field name="holdBack.defaultPercentage" hidden="true"/>
   </grid>
 

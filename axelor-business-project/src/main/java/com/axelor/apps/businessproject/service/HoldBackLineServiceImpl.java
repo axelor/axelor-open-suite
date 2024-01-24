@@ -84,14 +84,14 @@ public class HoldBackLineServiceImpl implements HoldBackLineService {
     if (products == null || products.isEmpty()) {
       price =
           invoiceLineList.stream()
-              .map(InvoiceLine::getPrice)
+              .map(InvoiceLine::getExTaxTotal)
               .reduce(BigDecimal.ZERO, BigDecimal::add)
               .multiply(percentage.divide(BigDecimal.valueOf(100)));
     } else {
       price =
           invoiceLineList.stream()
               .filter(invLine -> products.contains(invLine.getProduct()))
-              .map(InvoiceLine::getPrice)
+              .map(InvoiceLine::getExTaxTotal)
               .reduce(BigDecimal.ZERO, BigDecimal::add)
               .multiply(percentage.divide(BigDecimal.valueOf(100)));
     }

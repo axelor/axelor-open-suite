@@ -196,7 +196,7 @@
 
   <!-- HOLDBACK -->
   <menuitem name="project-hold-back" parent="project-configurations" title="HoldBacks"
-    action="project.root.hold.back.all" order="1100"/>
+    action="project.root.hold.back.all" order="1300"/>
 
   <action-view name="project.root.hold.back.all" title="HoldBacks"
     model="com.axelor.apps.project.db.HoldBack">

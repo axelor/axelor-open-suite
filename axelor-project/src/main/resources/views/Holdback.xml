@@ -12,7 +12,15 @@
   <form name="hold-back-form" title="HoldBack" model="com.axelor.apps.project.db.HoldBack">
     <panel name="mainPanel">
       <field name="name" onChange="action-hold-back-record-update-result-product-name"/>
-      <field name="defaultPercentage"/>
+      <field name="defaultPercentage">
+        <viewer>
+          <![CDATA[{{record.defaultPercentage}}%]]>
+        </viewer>
+        <editor>
+          <field name="defaultPercentage" showTitle="false" colSpan="3"/>
+          <label title="%" colSpan="3"/>
+        </editor>
+      </field>
       <field name="holdBackProduct"/>
       <panel-related field="productsHeldBackSet" form-view="product-form" colSpan="12"
         grid-view="product-hold-back-grid"/>
