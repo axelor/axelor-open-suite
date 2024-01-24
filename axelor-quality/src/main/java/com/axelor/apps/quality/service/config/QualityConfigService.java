@@ -51,4 +51,16 @@ public class QualityConfigService {
     }
     return qiDecisionDistributionSequence;
   }
+
+  public Sequence getQiDecisionDistributionSequence(QualityConfig qualityConfig)
+      throws AxelorException {
+    Sequence qiDecisionDistributionSequence = qualityConfig.getQiDecisionDistributionSequence();
+
+    if (qiDecisionDistributionSequence == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(QualityExceptionMessage.QI_DECISION_DISTRIBUTION_SEQUENCE_NOT_FOUND));
+    }
+    return qiDecisionDistributionSequence;
+  }
 }
