@@ -44,7 +44,6 @@
           <field name="company" canNew="false" colSpan="3"
             readonlyIf="statusSelect != 0 || budgetLevelList.length &gt; 0" required="true"/>
           <field name="company.currency" colSpan="3" readonly="true" hideIf="!company"/>
-          <field name="company.currency.numberOfDecimals" hidden="true"/>
           <field name="fromDate" colSpan="4" requiredIf="statusSelect == 0"
             onChange="action-global-budget-validate-from-to-dates"/>
           <field name="toDate" colSpan="4" requiredIf="statusSelect == 0"
@@ -57,11 +56,12 @@
             domain="self.company = :company OR self.company IS NULL"/>
           <field name="budgetManager" colSpan="4" showIf="company"
             domain="(self.activeCompany IS NULL AND (:company member of self.companySet OR self.companySet IS EMPTY)) OR self.activeCompany = :company"/>
-          <field name="checkAvailableSelect" readonlyIf="statusSelect == 'valid'"
+          <field name="checkAvailableSelect" readonlyIf="statusSelect == 2"
             hideIf="budgetTypeSelect == 2"
             if="__config__.app.getApp('budget').getCheckAvailableBudget()" colSpan="2"/>
           <field name="sourceSelect" colSpan="4" hidden="true"/>
           <field name="fullName" colSpan="4" hidden="true"/>
+          <field name="company.currency.numberOfDecimals" hidden="true"/>
         </panel>
 
         <panel name="versionPanel" colSpan="12" hideIf="statusSelect == 0">
@@ -90,7 +90,7 @@
           onClick="action-global-budget-method-archived-btn-onClick, save"/>
 
         <panel name="showBudgetDistributionPanel">
-          <button name="showGlobalOrderLineBtn" hidden="true"
+          <button name="showGlobalOrderLineBtn"
             onClick="action-global-budget-group-view-global-order-line" colSpan="12"
             title="Global budget committed lines"
             showIf="statusSelect == 2 &amp;&amp; (totalAmountCommitted != 0 || realizedWithNoPo != 0 || realizedWithPo != 0)"/>
@@ -98,11 +98,11 @@
             onClick="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-without-po"
             title="Display realized with no po" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; realizedWithNoPo != 0"/>
-          <button name="seeRealizedWithPo" hidden="true"
+          <button name="seeRealizedWithPo"
             onClick="action-budget-line-distribution-method-view-show-global-budget-distribution-lines-realized-with-po"
             title="Display realized with po" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; realizedWithPo != 0"/>
-          <button name="seeSimulatedMoves" hidden="true"
+          <button name="seeSimulatedMoves"
             onClick="action-global-budget-line-distribution-method-view-show-simulated-moves-lines"
             title="Display simulated moves" colSpan="12"
             showIf="statusSelect == 2 &amp;&amp; simulatedAmount != 0"/>
