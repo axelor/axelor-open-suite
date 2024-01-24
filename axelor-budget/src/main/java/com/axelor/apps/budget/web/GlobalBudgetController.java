@@ -25,6 +25,7 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
@@ -38,7 +39,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
 
 public class GlobalBudgetController {
 
@@ -186,20 +186,7 @@ public class GlobalBudgetController {
   public void showUpdateDatesBtn(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    boolean isHidden = true;
-    if (globalBudget.getId() == null) {
-      isHidden = false;
-    } else if (globalBudget.getFromDate() != null && globalBudget.getToDate() != null) {
-      GlobalBudget savedGlobalBudget =
-          Beans.get(GlobalBudgetRepository.class).find(globalBudget.getId());
-      boolean datesMatch =
-          Objects.equals(savedGlobalBudget.getFromDate(), globalBudget.getFromDate())
-              && Objects.equals(savedGlobalBudget.getToDate(), globalBudget.getToDate());
-      if (!datesMatch) {
-        isHidden = false;
-      }
-    }
-
+    boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
     response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
 }
