@@ -96,7 +96,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="3676">
+        <scalar-parameter name="__locale" id="3676">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -273,7 +273,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_5</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -306,7 +306,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -339,7 +339,7 @@
                 </structure>
                 <structure>
                     <property name="name">param_9</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -702,7 +702,7 @@ GROUP BY Assistant.from_date, Assistant.to_date, Currency.symbol,
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">-1</property>
@@ -798,7 +798,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -831,7 +831,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -991,7 +991,7 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                 </structure>
                 <structure>
                     <property name="name">param_3</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -1021,7 +1021,7 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                 </structure>
                 <structure>
                     <property name="name">param_6</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -1053,7 +1053,7 @@ Group by date_trunc('month',COALESCE(SaleOrder.order_date,SaleOrder.confirmation
                 </structure>
                 <structure>
                     <property name="name">param_9</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>

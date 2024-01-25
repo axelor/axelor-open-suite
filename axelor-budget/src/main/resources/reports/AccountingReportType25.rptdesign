@@ -47,7 +47,7 @@
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
     <property name="imageDPI">96</property>
-    <property name="locale">fr_FR</property>
+    <property name="__locale">fr_FR</property>
     <parameters>
         <scalar-parameter name="AccountingReportId" id="4412">
             <property name="hidden">true</property>
@@ -102,7 +102,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="4050">
+        <scalar-parameter name="__locale" id="4050">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
@@ -466,7 +466,7 @@ where AccountingReport.id = ? ]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="nativeName"></property>
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
@@ -946,7 +946,7 @@ GlobalBudget.status_select IN (1,2) AND
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>locale</design:name>
+              <design:name>__locale</design:name>
               <design:position>15</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
@@ -954,11 +954,11 @@ GlobalBudget.status_select IN (1,2) AND
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>locale</design:displayName>
+              <design:displayName>__locale</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>locale</design:label>
+            <design:label>__locale</design:label>
             <design:formattingHints>
               <design:displaySize>255</design:displaySize>
             </design:formattingHints>
@@ -1780,7 +1780,7 @@ GlobalBudget.status_select IN (1,2) AND
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>locale</design:name>
+              <design:name>__locale</design:name>
               <design:position>15</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
@@ -1788,11 +1788,11 @@ GlobalBudget.status_select IN (1,2) AND
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>locale</design:displayName>
+              <design:displayName>__locale</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>locale</design:label>
+            <design:label>__locale</design:label>
             <design:formattingHints>
               <design:displaySize>255</design:displaySize>
             </design:formattingHints>

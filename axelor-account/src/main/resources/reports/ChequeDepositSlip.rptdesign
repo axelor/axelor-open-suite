@@ -68,7 +68,7 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="3676">
+        <scalar-parameter name="__locale" id="3676">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">false</property>
@@ -1034,7 +1034,7 @@ WHERE Deposit.id = ?]]></xml-property>
                 </structure>
                 <structure>
                     <property name="name">param_2</property>
-                    <property name="paramName">Locale</property>
+                    <property name="paramName">__locale</property>
                     <property name="dataType">string</property>
                     <property name="position">2</property>
                     <property name="isInput">true</property>
@@ -2092,7 +2092,7 @@ this.height=row["logo_height"];]]></method>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">#,##0.00</property>
-                                            <property name="locale">fr_FR</property>
+                                            <property name="__locale">fr_FR</property>
                                         </structure>
                                         <property name="display">inline</property>
                                         <property name="resultSetColumn">Amount</property>

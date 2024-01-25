@@ -72,7 +72,7 @@ if(width > 10){
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="Locale" id="3740">
+        <scalar-parameter name="__locale" id="3740">
             <property name="hidden">true</property>
             <property name="valueType">static</property>
             <property name="isRequired">true</property>
