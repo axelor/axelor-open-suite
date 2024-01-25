@@ -19,7 +19,7 @@
     <field name="productCode"/>
     <field name="purchaseOrder.currency" hidden="true"/>
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -30,6 +30,7 @@
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-line-invoicing-project-grid" title="PO lines"
@@ -39,7 +40,7 @@
       grid-view="purchase-order-grid"/>
     <field name="supplierPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="productName"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."/>
     <field name="inTaxPrice" x-scale="2"/>
@@ -49,6 +50,7 @@
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="toInvoice"/>
     <field name="invoiced"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid model="com.axelor.apps.purchase.db.PurchaseOrderLine" title="PO lines"
@@ -59,7 +61,7 @@
     <field name="productCode"/>
     <field name="product.code" title="Code" width="120"/>
     <field name="productName"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T." x-scale="2"/>
     <field name="inTaxPrice" x-scale="2"/>
@@ -67,6 +69,7 @@
     <field name="purchaseOrder.buyerUser"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-line-menu-grid" title="PO lines"
@@ -78,13 +81,14 @@
     <field name="purchaseOrder.clientPartner"/>
     <field name="product.code"/>
     <field name="productName"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="receivedQty" aggregate="sum" x-scale="2"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="price" x-scale="2"/>
     <field name="inTaxPrice" x-scale="2"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="purchase-order-line-history-grid" title="Order history"
@@ -95,7 +99,7 @@
     <field name="purchaseOrder.orderDate"/>
     <field name="purchaseOrder.buyerUser"/>
     <field name="purchaseOrder.supplierPartner"/>
-    <field name="qty" x-scale="2"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit"/>
     <field name="price" x-scale="2"/>
     <field name="discountAmount" x-scale="2"/>
@@ -103,6 +107,7 @@
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="estimatedReceiptDate"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="purchase-order-line-project-form" title="PO line"
