@@ -1362,13 +1362,18 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
 
-    if (stockMoveLine.getProduct() != null) {
-      if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+    Product product = stockMoveLine.getProduct();
+    Product productModel = stockMoveLine.getProductModel();
+    if (product == null && productModel != null) {
+      product = productModel;
+    }
+    if (product != null) {
+      if (product.getTrackingNumberConfiguration() != null) {
 
         if (stockMoveLine.getTrackingNumber() != null) {
           StockLocationLine stockLocationLine =
               stockLocationLineService.getDetailLocationLine(
-                  stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
+                  stockLocation, product, stockMoveLine.getTrackingNumber());
 
           if (stockLocationLine != null) {
             availableQty = stockLocationLine.getCurrentQty();
@@ -1377,8 +1382,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
         if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
           StockLocationLine stockLocationLineForProduct =
-              stockLocationLineService.getStockLocationLine(
-                  stockLocation, stockMoveLine.getProduct());
+              stockLocationLineService.getStockLocationLine(stockLocation, product);
 
           if (stockLocationLineForProduct != null) {
             availableQtyForProduct = stockLocationLineForProduct.getCurrentQty();
@@ -1386,8 +1390,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         }
       } else {
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(
-                stockLocation, stockMoveLine.getProduct());
+            stockLocationLineService.getStockLocationLine(stockLocation, product);
 
         if (stockLocationLine != null) {
           availableQty = stockLocationLine.getCurrentQty();
@@ -1437,15 +1440,17 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getStockMove() != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     }
-    if (stockMoveLine.getProduct() != null
-        && !stockMoveLine
-            .getProduct()
-            .getProductTypeSelect()
-            .equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
+    Product product = stockMoveLine.getProduct();
+    Product productModel = stockMoveLine.getProductModel();
+    if (product == null && productModel != null) {
+      product = productModel;
+    }
+    if (product != null
+        && !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_SERVICE)) {
       BigDecimal availableQty = stockMoveLine.getAvailableQty();
       BigDecimal availableQtyForProduct = stockMoveLine.getAvailableQtyForProduct();
       BigDecimal realQty = stockMoveLine.getRealQty();
-      if (availableQty.compareTo(realQty) >= 0 || !stockMoveLine.getProduct().getStockManaged()) {
+      if (availableQty.compareTo(realQty) >= 0 || !product.getStockManaged()) {
         stockMoveLine.setAvailableStatus(I18n.get("Available"));
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_AVAILABLE);
       } else if (availableQtyForProduct.compareTo(realQty) >= 0) {
@@ -1455,7 +1460,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       } else if (availableQty.compareTo(realQty) < 0
           && availableQtyForProduct.compareTo(realQty) < 0) {
         BigDecimal missingQty = BigDecimal.ZERO;
-        if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+        if (product.getTrackingNumberConfiguration() != null) {
           missingQty = availableQtyForProduct.subtract(realQty);
         } else {
           missingQty = availableQty.subtract(realQty);
@@ -1641,5 +1646,147 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     clearedStockMoveLineMap.put("totalNetMass", BigDecimal.ZERO);
     clearedStockMoveLineMap.put("trackingNumber", null);
     return clearedStockMoveLineMap;
+  }
+
+  @Override
+  public void setProductModelInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException {
+    Preconditions.checkNotNull(stockMoveLine);
+    Preconditions.checkNotNull(company);
+    Product productModel = stockMoveLine.getProductModel();
+
+    if (productModel == null) {
+      return;
+    }
+
+    stockMoveLine.setUnit(productModel.getUnit());
+    stockMoveLine.setProductName(productModel.getName());
+    stockMoveLine.setProductTypeSelect(productModel.getProductTypeSelect());
+
+    if (appStockService.getAppStock().getIsEnabledProductDescriptionCopy()) {
+      stockMoveLine.setDescription(productModel.getDescription());
+    }
+
+    stockMoveLine.setCountryOfOrigin(productModel.getCountryOfOrigin());
+
+    BigDecimal netMass = BigDecimal.ZERO;
+    Unit endUnit;
+
+    if (productModel.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
+      Unit startUnit = productModel.getMassUnit();
+
+      if (startUnit == null) {
+        if (!checkProductModelMassesRequired(stockMove, stockMoveLine)) {
+          netMass = productModel.getNetMass();
+        }
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(StockExceptionMessage.MISSING_PRODUCT_MASS_UNIT),
+            productModel.getName());
+      }
+      if (company != null
+          && company.getStockConfig() != null
+          && company.getStockConfig().getCustomsMassUnit() != null) {
+        endUnit = company.getStockConfig().getCustomsMassUnit();
+      } else {
+        endUnit = startUnit;
+      }
+      netMass =
+          unitConversionService.convert(
+              startUnit, endUnit, productModel.getNetMass(), 10, productModel);
+    }
+    stockMoveLine.setNetMass(netMass);
+  }
+
+  protected boolean checkProductModelMassesRequired(
+      StockMove stockMove, StockMoveLine stockMoveLine) {
+    Address fromAddress = stockMoveToolService.getFromAddress(stockMove, stockMoveLine);
+    Address toAddress = stockMoveToolService.getToAddress(stockMove, stockMoveLine);
+
+    Country fromCountry = fromAddress != null ? fromAddress.getAddressL7Country() : null;
+    Country toCountry = toAddress != null ? toAddress.getAddressL7Country() : null;
+
+    return fromCountry != null
+        && toCountry != null
+        && !fromCountry.equals(toCountry)
+        && stockMoveLine.getProductModel() != null
+        && fromCountry.getEconomicArea() != null
+        && fromCountry.getEconomicArea().equals(toCountry.getEconomicArea())
+        && stockMoveLine.getProductModel().getUsedInDEB();
+  }
+
+  @Override
+  public void computeFromProductModel(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException {
+    BigDecimal unitPriceUntaxed = BigDecimal.ZERO;
+    BigDecimal companyPurchasePrice = BigDecimal.ZERO;
+    Product productModel = stockMoveLine.getProductModel();
+    if (productModel != null && stockMove != null) {
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && !stockMove.getIsReversion())) {
+        // customer delivery or customer return
+        unitPriceUntaxed =
+            (BigDecimal)
+                productCompanyService.get(productModel, "salePrice", stockMove.getCompany());
+        BigDecimal wapPrice =
+            computePriceFromStockLocation(stockMoveLine, stockMoveLine.getToStockLocation());
+        stockMoveLine.setWapPrice(wapPrice);
+      } else if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && !stockMove.getIsReversion())) {
+        // supplier return or supplier delivery
+        BigDecimal shippingCoef =
+            shippingCoefService.getShippingCoef(
+                productModel,
+                stockMove.getPartner(),
+                stockMove.getCompany(),
+                stockMoveLine.getRealQty());
+        companyPurchasePrice =
+            (BigDecimal)
+                productCompanyService.get(productModel, "purchasePrice", stockMove.getCompany());
+        unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
+      } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
+          && stockMoveLine.getFromStockLocation() != null
+          && stockMoveLine.getFromStockLocation().getTypeSelect()
+              != StockLocationRepository.TYPE_VIRTUAL) {
+        unitPriceUntaxed =
+            computePriceFromStockLocation(stockMoveLine, stockMoveLine.getFromStockLocation());
+      } else {
+        unitPriceUntaxed =
+            (BigDecimal)
+                productCompanyService.get(productModel, "costPrice", stockMove.getCompany());
+      }
+    }
+    stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
+    stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
+    stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
+    stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
+  }
+
+  protected BigDecimal computePriceFromStockLocation(
+      StockMoveLine stockMoveLine, StockLocation stockLocation) throws AxelorException {
+    BigDecimal priceFromLocation = BigDecimal.ZERO;
+    Product productModel = stockMoveLine.getProductModel();
+    Unit stockUnit = stockMoveLine.getUnit();
+    if (stockUnit == null && productModel != null) {
+      stockUnit = productModel.getUnit();
+    }
+    Optional<StockLocationLine> stockLocationLine =
+        Optional.ofNullable(
+            stockLocationLineService.getStockLocationLine(stockLocation, productModel));
+    if (stockLocationLine.isPresent()) {
+      priceFromLocation = stockLocationLine.get().getAvgPrice();
+      priceFromLocation =
+          unitConversionService.convert(
+              stockMoveLine.getUnit(),
+              stockUnit,
+              priceFromLocation,
+              priceFromLocation.scale(),
+              null);
+    }
+    return priceFromLocation;
   }
 }

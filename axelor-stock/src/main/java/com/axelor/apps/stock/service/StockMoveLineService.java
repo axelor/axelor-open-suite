@@ -336,4 +336,10 @@ public interface StockMoveLineService {
   public StockMoveLine resetStockMoveLine(StockMoveLine stockMoveLine);
 
   Map<String, Object> getClearedStockMoveLineMap();
+
+  void setProductModelInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
+      throws AxelorException;
+
+  public void computeFromProductModel(StockMove stockMove, StockMoveLine stockMoveLine)
+      throws AxelorException;
 }

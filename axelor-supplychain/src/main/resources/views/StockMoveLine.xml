@@ -217,22 +217,22 @@
 
   <action-attrs name="action-supplychain-stock-move-line-attrs-hide-button">
     <attribute for="updateAllocatedQtyBtn" name="hidden"
-      expr="eval: id == null || __parent__.statusSelect != 2 || product?.productTypeSelect == 'service'"
+      expr="eval: id == null || __parent__.statusSelect != 2 || product?.productTypeSelect == 'service' || productModel?.productTypeSelect == 'service'"
       if="__parent__"/>
     <attribute for="updateAllocatedQtyBtn" name="hidden"
-      expr="eval: id == null || stockMove.statusSelect != 2 || product?.productTypeSelect == 'service'"
+      expr="eval: id == null || stockMove.statusSelect != 2 || product?.productTypeSelect == 'service' || productModel?.productTypeSelect == 'service'"
       if="stockMove"/>
     <attribute for="requestQty" name="hidden"
-      expr="eval: isQtyRequested || __parent__.statusSelect != 2 || product?.productTypeSelect == 'service'"
+      expr="eval: isQtyRequested || __parent__.statusSelect != 2 || product?.productTypeSelect == 'service' || productModel?.productTypeSelect == 'service'"
       if="__parent__"/>
     <attribute for="requestQty" name="hidden"
-      expr="eval: isQtyRequested || stockMove.statusSelect != 2 || product?.productTypeSelect == 'service'"
+      expr="eval: isQtyRequested || stockMove.statusSelect != 2 || product?.productTypeSelect == 'service' || productModel?.productTypeSelect == 'service'"
       if="stockMove"/>
     <attribute for="cancelReservation" name="hidden"
-      expr="eval: !isQtyRequested || __parent__.statusSelect != 2 || product?.productTypeSelect == 'service'"
+      expr="eval: !isQtyRequested || __parent__.statusSelect != 2 || product?.productTypeSelect == 'service' || productModel?.productTypeSelect == 'service'"
       if="__parent__"/>
     <attribute for="cancelReservation" name="hidden"
-      expr="eval: !isQtyRequested || stockMove.statusSelect != 2 || product?.productTypeSelect == 'service'"
+      expr="eval: !isQtyRequested || stockMove.statusSelect != 2 || product?.productTypeSelect == 'service' || productModel?.productTypeSelect == 'service'"
       if="stockMove"/>
   </action-attrs>
 

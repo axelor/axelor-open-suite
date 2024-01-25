@@ -37,6 +37,7 @@ import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -305,6 +306,10 @@ public class StockMoveLineController {
         Partner partner = stockMove.getPartner();
         String userLanguage = AuthUtils.getUser().getLanguage();
         Product product = stockMoveLine.getProduct();
+        Product productModel = stockMoveLine.getProductModel();
+        if (product == null && productModel != null) {
+          product = productModel;
+        }
 
         if (product != null) {
           Map<String, String> translation =
@@ -314,10 +319,7 @@ public class StockMoveLineController {
           String description = translation.get("description");
           String productName = translation.get("productName");
 
-          if (description != null
-              && !description.isEmpty()
-              && productName != null
-              && !productName.isEmpty()) {
+          if (ObjectUtils.notEmpty(description) && ObjectUtils.notEmpty(productName)) {
             response.setValue("description", description);
             response.setValue("productName", productName);
           }
@@ -362,5 +364,28 @@ public class StockMoveLineController {
       }
     }
     return stockMove;
+  }
+
+  public void setProductModelInfo(ActionRequest request, ActionResponse response) {
+    StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    try {
+
+      if (stockMoveLine.getProductModel() == null) {
+        stockMoveLineService.resetStockMoveLine(stockMoveLine);
+        response.setValues(Mapper.toMap(stockMoveLine));
+        return;
+      }
+
+      stockMoveLineService.setProductModelInfo(stockMove, stockMoveLine, stockMove.getCompany());
+      stockMoveLineService.computeFromProductModel(stockMove, stockMoveLine);
+      response.setValues(stockMoveLine);
+    } catch (Exception e) {
+      stockMoveLineService.resetStockMoveLine(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
+      response.setValues(Mapper.toMap(stockMoveLine));
+      TraceBackService.trace(response, e, ResponseMessageType.INFORMATION);
+    }
   }
 }

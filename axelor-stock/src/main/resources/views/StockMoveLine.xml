@@ -21,7 +21,8 @@
     <field name="stockMove.typeSelect" hidden="true"/>
     <field name="productModel" domain="self.isModel = true " form-view="product-form"
       grid-view="product-grid" if="__config__.app.getApp('base')?.getManageProductVariants()"
-      readonlyIf="lineTypeSelect == 1 || product"/>
+      readonlyIf="lineTypeSelect == 1 || product"
+      onChange="action-stock-move-line-group-product-model-onchange"/>
     <field name="productName" required="true" width="200px"
       readonlyIf="($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3"/>
     <field name="qty" aggregate="sum" onChange="action-stock-move-line-group-qty-onchange"
@@ -164,7 +165,8 @@
       <field name="productModel" canEdit="false" domain="self.isModel = true"
         form-view="product-form" grid-view="product-grid"
         if="__config__.app.getApp('base')?.getManageProductVariants()"
-        readonlyIf="product || $get('stockMove.statusSelect') > 1"/>
+        readonlyIf="product || $get('stockMove.statusSelect') > 1"
+        onChange="action-stock-move-line-group-product-model-onchange"/>
       <field name="productName"/>
       <field name="qty" onChange="action-stock-move-line-group-qty-onchange" colSpan="3"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
@@ -629,6 +631,16 @@
     <action name="action-stock-move-line-record-new"/>
   </action-group>
 
+  <action-group name="action-stock-move-line-group-product-model-onchange">
+    <action name="action-stock-move-line-method-set-product-model-info"/>
+    <action name="action-stock-move-line-method-compute-available-qty"
+      if="__parent__?.statusSelect &lt; 3"/>
+    <action name="action-stock-move-line-method-set-available-status"/>
+    <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
+    <action name="action-stock-move-line-method-translate-product-description-and-name"/>
+    <action name="action-stock-move-line-attrs-reset-qty" if="eval: productModel == null"/>
+  </action-group>
+
   <action-attrs name="action-stock-move-line-attrs">
     <attribute name="hidden" for="countryOfOrigin"
       expr="eval: __parent__?.typeSelect != com.axelor.apps.stock.db.repo.StockMoveRepository.TYPE_INCOMING"
@@ -965,6 +977,11 @@
 
   <action-method name="action-stock-move-line-method-clear-line">
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="clearLine"/>
+  </action-method>
+
+  <action-method name="action-stock-move-line-method-set-product-model-info">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController"
+      method="setProductModelInfo"/>
   </action-method>
 
   <search-filters name="stock-move-line-filters"

@@ -305,13 +305,18 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
 
-    if (stockMoveLine.getProduct() != null) {
-      if (stockMoveLine.getProduct().getTrackingNumberConfiguration() != null) {
+    Product product = stockMoveLine.getProduct();
+    Product productModel = stockMoveLine.getProductModel();
+    if (product == null && productModel != null) {
+      product = productModel;
+    }
+    if (product != null) {
+      if (product.getTrackingNumberConfiguration() != null) {
 
         if (stockMoveLine.getTrackingNumber() != null) {
           StockLocationLine stockLocationLine =
               stockLocationLineService.getDetailLocationLine(
-                  stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
+                  stockLocation, product, stockMoveLine.getTrackingNumber());
 
           if (stockLocationLine != null) {
             availableQty =
@@ -324,8 +329,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
 
         if (availableQty.compareTo(stockMoveLine.getRealQty()) < 0) {
           StockLocationLine stockLocationLineForProduct =
-              stockLocationLineService.getStockLocationLine(
-                  stockLocation, stockMoveLine.getProduct());
+              stockLocationLineService.getStockLocationLine(stockLocation, product);
 
           if (stockLocationLineForProduct != null) {
             availableQtyForProduct =
@@ -337,8 +341,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
         }
       } else {
         StockLocationLine stockLocationLine =
-            stockLocationLineService.getStockLocationLine(
-                stockLocation, stockMoveLine.getProduct());
+            stockLocationLineService.getStockLocationLine(stockLocation, product);
 
         if (stockLocationLine != null) {
           availableQty =
