@@ -34,7 +34,8 @@
     <integer name="numberOfDepreciation" title="Number of depreciation" default="1" min="0"/>
     <integer name="durationInMonth" title="Duration in month"/>
     <integer name="importNbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="importAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <decimal name="importAlreadyDepreciatedAmount" title="Already Depreciated Amount"
+      precision="20" scale="3"/>
     <integer name="firstDepreciationDateInitSelect" massUpdate="true"
       title="Reference Date for first depreciation"
       selection="account.fixed.asset.first.depreciation.date.ref.select" default="1"/>
@@ -43,12 +44,12 @@
     <date name="acquisitionDate" title="Date of acquisition"/>
 
 
-    <decimal name="grossValue" title="Gross value"/>
-    <decimal name="residualValue" title="Residual value"/>
+    <decimal name="grossValue" title="Gross value" precision="20" scale="3"/>
+    <decimal name="residualValue" title="Residual value" precision="20" scale="3"/>
 
     <date name="disposalDate" title="Fixed asset Disposal date"/>
 
-    <decimal name="disposalValue" title="Disposal value"/>
+    <decimal name="disposalValue" title="Disposal value" precision="20" scale="3"/>
 
     <one-to-many name="fixedAssetLineList"
       ref="com.axelor.apps.account.db.FixedAssetLine" title="Depreciation board"
@@ -74,8 +75,9 @@
 
     <date name="firstServiceDate" title="First Service Date"/>
     <date name="importDepreciationDate" title="Depreciation Import Date"/>
-    <decimal name="accountingValue" title="Accounting value"/>
-    <decimal name="correctedAccountingValue" title="Corrected Accounting Value"/>
+    <decimal name="accountingValue" title="Accounting value" precision="20" scale="3"/>
+    <decimal name="correctedAccountingValue" title="Corrected Accounting Value"
+      precision="20" scale="3"/>
 
     <boolean name="isEqualToFiscalDepreciation" title="Is Equal To Fiscal Depreciation"/>
     <integer name="periodicityTypeSelect" title="Periodicity Type"
@@ -90,7 +92,8 @@
       default="12"/>
     <integer name="fiscalDurationInMonth" title="Fiscal Duration In Month"/>
     <integer name="importFiscalNbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="importFiscalAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <decimal name="importFiscalAlreadyDepreciatedAmount" title="Already Depreciated Amount"
+      precision="20" scale="3"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="fiscalFixedAssetLineList" title="Fiscal Fixed Asset Line List"
       mappedBy="fiscalFixedAsset"/>
@@ -110,7 +113,8 @@
     <integer name="ifrsPeriodicityInMonth" title="IFRS Periodicity In Month" default="12"/>
     <integer name="ifrsDurationInMonth" title="IFRS Duration In Month"/>
     <integer name="importIfrsNbrOfPastDepreciations" title="Nbr of past depreciations"/>
-    <decimal name="importIfrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"/>
+    <decimal name="importIfrsAlreadyDepreciatedAmount" title="Already Depreciated Amount"
+      precision="20" scale="3"/>
     <one-to-many ref="com.axelor.apps.account.db.FixedAssetLine"
       name="ifrsFixedAssetLineList" title="IFRS Fixed Asset Line List" mappedBy="ifrsFixedAsset"/>
     <integer name="ifrsFirstDepreciationDateInitSelect" massUpdate="true"
@@ -134,10 +138,12 @@
       title="FailOver Fiscal depreciation end date"/>
     <date name="ifrsFailOverDepreciationEndDate" title="FailOver Ifrs depreciation end date"/>
 
-    <decimal name="depreciatedAmountCurrentYear" title="Depreciated amount current Year"/>
+    <decimal name="depreciatedAmountCurrentYear" title="Depreciated amount current Year"
+      precision="20" scale="3"/>
     <decimal name="fiscalDepreciatedAmountCurrentYear"
-      title="Depreciated amount current Year"/>
-    <decimal name="ifrsDepreciatedAmountCurrentYear" title="Depreciated amount current Year"/>
+      title="Depreciated amount current Year" precision="20" scale="3"/>
+    <decimal name="ifrsDepreciatedAmountCurrentYear" title="Depreciated amount current Year"
+      precision="20" scale="3"/>
 
 
     <string name="serialNumber" title="Serial Nbr"/>

@@ -20,9 +20,11 @@ package com.axelor.apps.report.engine;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.LocaleService;
 import com.axelor.apps.base.service.ReportingTool;
 import com.axelor.inject.Beans;
 import com.axelor.report.ReportGenerator;
+import com.google.common.base.Strings;
 import java.io.IOException;
 import org.eclipse.birt.core.exception.BirtException;
 
@@ -42,7 +44,14 @@ public class EmbeddedReportSettings extends ReportSettings {
 
       final ReportGenerator generator = Beans.get(ReportGenerator.class);
 
-      this.output = generator.generate(rptdesign, format, params, ReportingTool.getCompanyLocale());
+      String localeCode = (String) this.params.get("Locale");
+      if (Strings.isNullOrEmpty(localeCode)) {
+        localeCode = ReportingTool.getCompanyLocale().toString();
+      }
+
+      this.output =
+          generator.generate(
+              rptdesign, format, params, LocaleService.computeLocaleByLocaleCode(localeCode));
 
       this.attach();
 

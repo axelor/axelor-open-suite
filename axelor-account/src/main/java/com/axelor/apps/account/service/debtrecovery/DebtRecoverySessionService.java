@@ -67,7 +67,8 @@ public class DebtRecoverySessionService {
    * @param debtRecovery Une relance
    * @return
    */
-  public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery) {
+  public DebtRecoveryMethod getDebtRecoveryMethod(DebtRecovery debtRecovery)
+      throws AxelorException {
 
     AccountingSituation accountingSituation =
         debtRecovery.getTradingName() == null
@@ -77,6 +78,15 @@ public class DebtRecoverySessionService {
     Partner partner = accountingSituation.getPartner();
     List<DebtRecoveryConfigLine> debtRecoveryConfigLines =
         company.getAccountConfig().getDebtRecoveryConfigLineList();
+
+    if (partner.getPartnerCategory() == null) {
+      throw new AxelorException(
+          debtRecovery,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          String.format(
+              I18n.get(AccountExceptionMessage.DEBT_RECOVERY_MISSING_PARTNER_CATEGORY),
+              partner.getName()));
+    }
 
     for (DebtRecoveryConfigLine debtRecoveryConfigLine : debtRecoveryConfigLines) {
       if (debtRecoveryConfigLine.getPartnerCategory().equals(partner.getPartnerCategory())) {

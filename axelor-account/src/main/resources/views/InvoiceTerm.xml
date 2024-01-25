@@ -5,7 +5,7 @@
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveLine.origin"/>
     <field name="moveLine.originDate"/>
@@ -48,7 +48,7 @@
     </toolbar>
     <hilite color="danger"
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="invoice.invoiceId"/>
     <field name="moveLine"/>
@@ -80,7 +80,7 @@
       if="isPaid == false &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
     <field name="name"/>
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="invoice"/>
     <field name="dueDate"/>
@@ -120,7 +120,7 @@
       if="!isPaid &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt; 0"/>
     <field name="sequence"/>
     <field name="name"/>
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="dueDate"/>
     <field name="amount" x-scale="currency.numberOfDecimals"/>
@@ -153,7 +153,7 @@
     canNew="false">
     <field name="sequence"/>
     <field name="name"/>
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="dueDate"/>
     <field name="amount" x-scale="currency.numberOfDecimals"/>
@@ -197,7 +197,7 @@
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
     <field name="moveLine.partner"/>
-    <field name="subrogationPartner"
+    <field name="thirdPartyPayerPartner"
       if="__config__.app.getApp('base')?.activatePartnerRelations"/>
     <field name="moveLine.move.reference"/>
     <field name="invoice"/>
@@ -241,7 +241,7 @@
         <field name="isPaid"/>
         <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
         <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
-        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+        <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
           showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
           form-view="partner-form" grid-view="partner-grid"
           if="__config__.app.getApp('base')?.activatePartnerRelations"/>
@@ -407,7 +407,7 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
-        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+        <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
           readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
           grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>
         <field name="moveLine.move.journal.journalType.technicalTypeSelect" hidden="true"/>
@@ -578,7 +578,7 @@
           grid-view="move-line-grid"/>
         <field name="partner" readonly="true" form-view="partner-form"
           grid-view="partner-grid"/>
-        <field name="subrogationPartner" domain="self.isSubrogation IS TRUE"
+        <field name="thirdPartyPayerPartner" domain="self.isThirdPartyPayer IS TRUE"
           showIf="[1,2,5].includes(moveLine.move.journal.journalType.technicalTypeSelect)"
           readonlyIf="$number(amountRemaining) != $number(amount)" form-view="partner-form"
           grid-view="partner-grid" if="__config__.app.getApp('base')?.activatePartnerRelations"/>

@@ -22,6 +22,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.google.inject.Inject;
@@ -50,6 +51,7 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
+      CompanyConfigService companyConfigService,
       CurrencyScaleServiceAccount currencyScaleServiceAccount,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
@@ -73,6 +75,7 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
         moveControlService,
         moveCutOffService,
         moveLineCheckService,
+        companyConfigService,
         currencyScaleServiceAccount,
         moveLineFinancialDiscountService,
         expenseRepository);
