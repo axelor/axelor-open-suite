@@ -67,9 +67,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     LocalDateTime todayDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
     timer.setStatusSelect(TSTimerRepository.STATUS_START);
     timer.setTimerStartDateT(todayDateTime);
-    timer.setLastStartDateT(todayDateTime);
-    if (timer.getStartDateTime() == null
-        || timer.getStatusSelect() != TSTimerRepository.STATUS_PAUSE) {
+    if (timer.getStartDateTime() == null) {
       timer.setStartDateTime(todayDateTime);
     }
   }

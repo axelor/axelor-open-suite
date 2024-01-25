@@ -58,13 +58,16 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
         return createTSTimer(
             employee, project, projectTask, product, duration, comment, startDateTime);
       }
-      if (timer.getStatusSelect() == TSTimerRepository.STATUS_START) {
+      int statusSelect = timer.getStatusSelect();
+      if (statusSelect == TSTimerRepository.STATUS_START
+          || statusSelect == TSTimerRepository.STATUS_PAUSE) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
-            "A timer is already started, stop it before starting a new one.");
+            I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_ALREADY_STARTED));
       }
       resetTimer(timer);
       updateTimer(timer, employee, project, projectTask, product, duration, comment, startDateTime);
+      updateDurationOnCreation(duration, timer);
     }
 
     return timer;
@@ -100,7 +103,6 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     timer.setStartDateTime(null);
     timer.setDuration(0L);
     timer.setComments(null);
-    timer.setLastStartDateT(null);
     timer.setUpdatedDuration(null);
   }
 
@@ -119,7 +121,16 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     TSTimer timer = new TSTimer();
     timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
     updateTimer(timer, employee, project, projectTask, product, duration, comment, startDateTime);
+    updateDurationOnCreation(duration, timer);
     return tsTimerRepository.save(timer);
+  }
+
+  @Transactional
+  protected void updateDurationOnCreation(Long duration, TSTimer timer) {
+    if (duration != null) {
+      timer.setStatusSelect(TSTimerRepository.STATUS_PAUSE);
+      timer.setDuration(duration);
+    }
   }
 
   @Transactional
@@ -135,13 +146,6 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
       LocalDateTime startDateTime)
       throws AxelorException {
     AppTimesheet appTimesheet = appHumanResourceService.getAppTimesheet();
-
-    if (timer.getStatusSelect() != TSTimerRepository.STATUS_DRAFT
-        && (employee != null || project != null || projectTask != null || product != null)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_UPDATE_STATUS_ISSUE));
-    }
 
     if (duration != null && !appTimesheet.getEditModeTSTimer()) {
       throw new AxelorException(
