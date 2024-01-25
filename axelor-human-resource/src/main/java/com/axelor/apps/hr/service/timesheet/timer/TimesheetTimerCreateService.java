@@ -49,6 +49,4 @@ public interface TimesheetTimerCreateService {
       String comment,
       LocalDateTime startDateTime)
       throws AxelorException;
-
-  void resetTimer(TSTimer timer);
 }

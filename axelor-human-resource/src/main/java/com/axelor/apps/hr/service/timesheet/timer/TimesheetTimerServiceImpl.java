@@ -95,6 +95,17 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional
+  public void resetTimer(TSTimer timer) {
+    timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
+    timer.setTimesheetLine(null);
+    timer.setStartDateTime(null);
+    timer.setDuration(0L);
+    timer.setComments(null);
+    timer.setUpdatedDuration(null);
+    timer.setTimerStartDateT(null);
+  }
+
+  @Transactional
   public void calculateDuration(TSTimer timer) {
     long currentDuration = timer.getDuration();
     Duration duration =

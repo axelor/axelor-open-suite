@@ -36,6 +36,8 @@ public interface TimesheetTimerService {
 
   public void stop(TSTimer timer) throws AxelorException;
 
+  void resetTimer(TSTimer timer);
+
   public void calculateDuration(TSTimer timer);
 
   public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException;

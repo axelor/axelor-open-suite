@@ -105,7 +105,7 @@ public class TimesheetTimerRestController {
         timesheetTimerService.stop(timer);
         break;
       case TimesheetTimerService.TS_TIMER_UPDATE_RESET:
-        Beans.get(TimesheetTimerCreateService.class).resetTimer(timer);
+        timesheetTimerService.resetTimer(timer);
         break;
       default:
         break;

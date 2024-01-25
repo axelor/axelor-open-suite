@@ -65,7 +65,7 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(HumanResourceExceptionMessage.TIMESHEET_TIMER_ALREADY_STARTED));
       }
-      resetTimer(timer);
+      timesheetTimerService.resetTimer(timer);
       updateTimer(timer, employee, project, projectTask, product, duration, comment, startDateTime);
       updateDurationOnCreation(duration, timer);
     }
@@ -94,16 +94,6 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     }
     return createOrUpdateTimer(
         employee, project, projectTask, product, duration, comment, startDateTime);
-  }
-
-  @Transactional
-  public void resetTimer(TSTimer timer) {
-    timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
-    timer.setTimesheetLine(null);
-    timer.setStartDateTime(null);
-    timer.setDuration(0L);
-    timer.setComments(null);
-    timer.setUpdatedDuration(null);
   }
 
   @Transactional(rollbackOn = {Exception.class})
