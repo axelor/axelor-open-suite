@@ -112,7 +112,9 @@ public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateServ
     timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
     updateTimer(timer, employee, project, projectTask, product, duration, comment, startDateTime);
     updateDurationOnCreation(duration, timer);
-    return tsTimerRepository.save(timer);
+    tsTimerRepository.save(timer);
+    timer.setName("Timer " + timer.getId());
+    return timer;
   }
 
   @Transactional

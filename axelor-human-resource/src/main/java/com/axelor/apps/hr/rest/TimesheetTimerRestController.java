@@ -49,8 +49,7 @@ public class TimesheetTimerRestController {
                 requestBody.getDuration(),
                 requestBody.getComments(),
                 requestBody.getStartDateTime());
-    return ResponseConstructor.build(
-        Response.Status.OK, "Timer successfully created.", new TSTimerResponse(timer));
+    return ResponseConstructor.buildCreateResponse(timer, new TSTimerResponse(timer));
   }
 
   @Operation(
