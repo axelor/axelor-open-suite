@@ -1,10 +1,12 @@
 package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.CompanyDateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveReason;
@@ -25,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class IncrementLeaveServiceImpl implements IncrementLeaveService {
@@ -118,7 +121,9 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
             .filter(leaveLine1 -> leaveLine1.getLeaveReason().equals(leaveReason))
             .findFirst()
             .orElse(null);
-    LeaveManagement leaveManagement = createLeaveManagement(fromDate, toDate, value);
+    EmploymentContract employmentContract = employee.getMainEmploymentContract();
+    Company company = employmentContract == null ? null : employmentContract.getPayCompany();
+    LeaveManagement leaveManagement = createLeaveManagement(fromDate, toDate, value, company);
     updateLeaveLines(leaveReason, employee, leaveLine, leaveManagement);
   }
 
@@ -138,15 +143,16 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   }
 
   protected LeaveManagement createLeaveManagement(
-      LocalDate fromDate, LocalDate toDate, BigDecimal value) throws AxelorException {
+      LocalDate fromDate, LocalDate toDate, BigDecimal value, Company company)
+      throws AxelorException {
 
     LocalDateTime localDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
+    DateTimeFormatter dateTimeFormatter = getDateTimeFormatter(company);
+
     String comment =
         I18n.get("Created automatically by increment leave batch on")
             + " "
-            + companyDateService
-                .getDateTimeFormat(AuthUtils.getUser().getActiveCompany())
-                .format(localDateTime);
+            + dateTimeFormatter.format(localDateTime);
 
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
@@ -158,6 +164,12 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
             value);
 
     return leaveManagementRepository.save(leaveManagement);
+  }
+
+  protected DateTimeFormatter getDateTimeFormatter(Company company) throws AxelorException {
+    return company == null
+        ? DateTimeFormatter.ISO_DATE_TIME
+        : companyDateService.getDateTimeFormat(company);
   }
 
   protected BigDecimal getLeaveManagementValue(
