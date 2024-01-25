@@ -1145,7 +1145,7 @@ FROM
             AND FixedAsset.disposal_date <= AccountingReport.date_to
 		) AS AccountingReportFixedAssetLine,
 	account_accounting_report AS AccountingReport
-WHERE
+WHERE 
 	AccountingReport.id = ?
 GROUP BY fixed_asset_type]]></xml-property>
         </oda-data-set>
