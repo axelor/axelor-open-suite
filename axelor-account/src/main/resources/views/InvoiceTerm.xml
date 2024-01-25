@@ -414,7 +414,7 @@
       </panel>
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
-        readonlyIf="(isHoldBack &amp;&amp; invoice.statusSelect == 3) || isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
+        readonlyIf="(isHoldBack &amp;&amp; invoice &amp;&amp; invoice.statusSelect == 3) || isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
         <field name="dueDate" required="true"
           onChange="action-invoice-term-record-update-customized-true"
           readonlyIf="isPaid || pfpValidateStatusSelect > 1 || $isPaymentConditionFree == false"/>

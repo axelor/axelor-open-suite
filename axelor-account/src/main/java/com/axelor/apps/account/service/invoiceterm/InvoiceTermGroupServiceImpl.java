@@ -39,6 +39,7 @@ public class InvoiceTermGroupServiceImpl implements InvoiceTermGroupService {
     Map<String, Object> valuesMap = new HashMap<>();
     invoiceTerm = invoiceTermService.initInvoiceTermWithParents(invoiceTerm);
     invoiceTermService.setPfpStatus(invoiceTerm, null);
+    invoiceTermFinancialDiscountService.computeFinancialDiscount(invoiceTerm);
 
     valuesMap.put("paymentMode", invoiceTerm.getPaymentMode());
     valuesMap.put("bankDetails", invoiceTerm.getBankDetails());
