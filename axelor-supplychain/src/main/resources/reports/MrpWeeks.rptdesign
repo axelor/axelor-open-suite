@@ -117,22 +117,6 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="__locale" id="10">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">true</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
         <scalar-parameter name="AttachmentPath" id="3864">
             <property name="hidden">true</property>
             <property name="valueType">static</property>

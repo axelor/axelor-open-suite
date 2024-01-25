@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -63,23 +63,6 @@
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="__locale" id="3676">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="concealValue">false</property>
             <property name="controlType">text-box</property>
             <structure name="format">
                 <property name="category">Unformatted</property>
@@ -1238,7 +1221,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 <cell id="4010">
                     <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
-                    <image id="4513">
+                    <image id="4514">
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
@@ -2092,7 +2075,6 @@ this.height=row["logo_height"];]]></method>
                                         <structure name="numberFormat">
                                             <property name="category">Custom</property>
                                             <property name="pattern">#,##0.00</property>
-                                            <property name="__locale">fr_FR</property>
                                         </structure>
                                         <property name="display">inline</property>
                                         <property name="resultSetColumn">Amount</property>

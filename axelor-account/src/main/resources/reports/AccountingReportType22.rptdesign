@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -83,21 +83,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="__locale" id="4050">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">fr</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -655,106 +640,106 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
             </list-property>
             <list-property name="parameters">
-            <structure>
-                <property name="name">param_1</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">1</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_2</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">2</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_3</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">3</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_4</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">4</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_5</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">5</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_6</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">6</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_7</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">7</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_8</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">8</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_9</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">9</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
-            <structure>
-                <property name="name">param_10</property>
-                <property name="paramName">AccountingReportId</property>
-                <property name="nativeName"></property>
-                <property name="dataType">decimal</property>
-                <property name="nativeDataType">-5</property>
-                <property name="position">10</property>
-                <property name="isInput">true</property>
-                <property name="isOutput">false</property>
-            </structure>
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_3</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">3</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_4</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">4</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_5</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">5</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_6</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">6</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_7</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">7</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_8</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">8</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_9</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">9</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+                <structure>
+                    <property name="name">param_10</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">10</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
