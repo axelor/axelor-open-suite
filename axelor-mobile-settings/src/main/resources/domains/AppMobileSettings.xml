@@ -68,7 +68,6 @@
       default="false"/>
     <integer name="timesheetImputationSelect" title="Timesheet imputed on"
       selection="mobilesettings.employee.timesheet.imputation.select"/>
-
     <boolean name="isStockLocationManagementEnabled"
       title="Enable default stock location management"/>
 

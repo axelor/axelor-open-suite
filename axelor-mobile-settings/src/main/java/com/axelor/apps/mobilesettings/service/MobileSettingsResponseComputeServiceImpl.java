@@ -70,7 +70,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
-        getFliedsToShowOnTimesheet(appMobileSettings.getTimesheetImputationSelect()));
+        getFieldsToShowOnTimesheet(appMobileSettings.getTimesheetImputationSelect()));
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {
@@ -144,7 +144,7 @@ public class MobileSettingsResponseComputeServiceImpl
     return List.of();
   }
 
-  protected List<String> getFliedsToShowOnTimesheet(Integer timesheetImputationSelect) {
+  protected List<String> getFieldsToShowOnTimesheet(Integer timesheetImputationSelect) {
     switch (timesheetImputationSelect) {
       case AppMobileSettingsRepository.TIMESHEET_PROJECT:
         return List.of("project", "projectTask", "product");

@@ -26,8 +26,8 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isLineCreationOfTimesheetDetailsAllowed;
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
-  protected final List<String> fieldsToShowOnTimesheet;
   protected final Boolean isStockLocationManagementEnabled;
+  protected final List<String> fieldsToShowOnTimesheet;
 
   public MobileSettingsResponse(
       Integer version,
