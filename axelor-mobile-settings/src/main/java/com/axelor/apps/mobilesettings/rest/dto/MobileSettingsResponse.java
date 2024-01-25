@@ -26,6 +26,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isLineCreationOfTimesheetDetailsAllowed;
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
+  protected final List<String> fieldsToShowOnTimesheet;
   protected final Boolean isStockLocationManagementEnabled;
 
   public MobileSettingsResponse(
@@ -50,7 +51,8 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isLineCreationOfTimesheetDetailsAllowed,
       Boolean isEditionOfDateAllowed,
       Boolean isTimesheetProjectInvoicingEnabled,
-      Boolean isStockLocationManagementEnabled) {
+      Boolean isStockLocationManagementEnabled,
+      List<String> fieldsToShowOnTimesheet) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -73,6 +75,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
+    this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -177,5 +180,10 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isStockLocationManagementEnabled")
   public Boolean getStockLocationManagementEnabled() {
     return isStockLocationManagementEnabled;
+  }
+
+  @JsonProperty(value = "fieldsToShowOnTimesheet")
+  public List<String> getFieldsToShowOnTimesheet() {
+    return fieldsToShowOnTimesheet;
   }
 }

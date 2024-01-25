@@ -8,6 +8,7 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.studio.db.AppMobileSettings;
+import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +69,8 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsLineCreationOfTimesheetDetailsAllowed(),
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
-        appMobileSettings.getIsStockLocationManagementEnabled());
+        appMobileSettings.getIsStockLocationManagementEnabled(),
+        getFliedsToShowOnTimesheet(appMobileSettings.getTimesheetImputationSelect()));
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {
@@ -140,5 +142,16 @@ public class MobileSettingsResponseComputeServiceImpl
           .collect(Collectors.toList());
     }
     return List.of();
+  }
+
+  protected List<String> getFliedsToShowOnTimesheet(Integer timesheetImputationSelect) {
+    switch (timesheetImputationSelect) {
+      case AppMobileSettingsRepository.TIMESHEET_PROJECT:
+        return List.of("project", "projectTask", "product");
+      case AppMobileSettingsRepository.TIMESHEET_MANUF_ORDER:
+        return List.of("manufOrder", "operationOrder", "product");
+      default:
+        return List.of();
+    }
   }
 }
