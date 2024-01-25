@@ -25,8 +25,11 @@
   </selection>
 
   <selection name="mobilesettings.employee.timesheet.imputation.select">
-    <option value="0">Timesheet imputed on project</option>
-    <option value="1">Timesheet imputed on manufacturing order</option>
+    <option value="project">Project</option>
+    <option value="projectTask">Project task</option>
+    <option value="manufOrder">Manuf order</option>
+    <option value="operationOrder">Operation order</option>
+    <option value="product">Activity</option>
   </selection>
 
 </object-views>

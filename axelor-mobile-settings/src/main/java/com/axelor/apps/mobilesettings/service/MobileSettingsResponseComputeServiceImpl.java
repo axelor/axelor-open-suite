@@ -8,7 +8,6 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileSettingsResponse;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.Role;
 import com.axelor.studio.db.AppMobileSettings;
-import com.axelor.studio.db.repo.AppMobileSettingsRepository;
 import com.google.inject.Inject;
 import java.util.List;
 import java.util.Set;
@@ -144,14 +143,7 @@ public class MobileSettingsResponseComputeServiceImpl
     return List.of();
   }
 
-  protected List<String> getFieldsToShowOnTimesheet(Integer timesheetImputationSelect) {
-    switch (timesheetImputationSelect) {
-      case AppMobileSettingsRepository.TIMESHEET_PROJECT:
-        return List.of("project", "projectTask", "product");
-      case AppMobileSettingsRepository.TIMESHEET_MANUF_ORDER:
-        return List.of("manufOrder", "operationOrder", "product");
-      default:
-        return List.of();
-    }
+  protected List<String> getFieldsToShowOnTimesheet(String timesheetImputationSelect) {
+    return List.of(timesheetImputationSelect.split(","));
   }
 }
