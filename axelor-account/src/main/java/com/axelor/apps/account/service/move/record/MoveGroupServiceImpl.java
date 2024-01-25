@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -115,6 +115,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
   }
 
+  protected void addValidatePeriod(Move move, Map<String, Object> valuesMap)
+      throws AxelorException {
+    valuesMap.put(
+        "$validatePeriod",
+        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+  }
+
   public void checkBeforeSave(Move move) throws AxelorException {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
@@ -140,7 +147,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordUpdateService.updateInvoiceTerms(
         move, paymentConditionChange || dateChange, headerChange);
     moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
-    moveRecordUpdateService.updateSubrogationPartner(move);
+    moveRecordUpdateService.updateThirdPartyPayerPartner(move);
 
     moveRepository.save(move);
 
@@ -182,10 +189,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
       valuesMap.put("massEntryStatusSelect", move.getMassEntryStatusSelect());
     } else {
-      valuesMap.put(
-          "$validatePeriod",
-          !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-
+      this.addValidatePeriod(move, valuesMap);
       this.addPeriodDummyFields(move, valuesMap);
     }
 
@@ -222,9 +226,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException {
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
-    valuesMap.put(
-        "$validatePeriod",
-        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+    this.addValidatePeriod(move, valuesMap);
     valuesMap.put("$isThereRelatedCutOffMoves", moveCheckService.isRelatedCutoffMoves(move));
 
     this.addPeriodDummyFields(move, valuesMap);
@@ -238,14 +240,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = this.getOnNewAttrsMap(move, user);
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
-    moveAttrsService.addSubrogationPartnerReadonly(move, attrsMap);
+    moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
 
     return attrsMap;
   }
 
   @Override
-  public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
-      throws AxelorException {
+  public Map<String, Object> getDateOnChangeValuesMap(Move move) throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveRecordSetService.setPeriod(move);
     }
@@ -256,7 +257,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
-    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+    moveRecordUpdateService.updateDueDate(move, true, true);
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
 
     this.addPeriodDummyFields(move, valuesMap);
 
@@ -265,10 +267,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("moveLineList", move.getMoveLineList());
     valuesMap.put("originDate", move.getOriginDate());
 
-    valuesMap.put(
-        "$validatePeriod",
-        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      this.addValidatePeriod(move, valuesMap);
+    }
     return valuesMap;
   }
 
@@ -293,7 +294,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setOriginDate(move);
-    moveRecordSetService.setSubrogationPartner(move);
+    moveRecordSetService.setThirdPartyPayerPartner(move);
 
     if (move.getJournal() != null
         && move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
@@ -312,7 +313,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("paymentCondition", move.getPaymentCondition());
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
     valuesMap.put("originDate", move.getOriginDate());
-    valuesMap.put("subrogationPartner", move.getSubrogationPartner());
+    valuesMap.put("thirdPartyPayerPartner", move.getThirdPartyPayerPartner());
 
     return valuesMap;
   }
@@ -344,7 +345,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveRecordSetService.setPaymentMode(move);
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
-    moveRecordSetService.setSubrogationPartner(move);
+    moveRecordSetService.setThirdPartyPayerPartner(move);
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
 
     if (pfpService.isManagePassedForPayment(move.getCompany())
@@ -361,7 +362,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("partnerBankDetails", move.getPartnerBankDetails());
     valuesMap.put("dueDate", move.getDueDate());
     valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
-    valuesMap.put("subrogationPartner", move.getSubrogationPartner());
+    valuesMap.put("thirdPartyPayerPartner", move.getThirdPartyPayerPartner());
 
     return valuesMap;
   }
@@ -514,9 +515,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getCompanyOnChangeValuesMap(Move move, boolean paymentConditionChange)
-      throws AxelorException {
-    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move, paymentConditionChange);
+  public Map<String, Object> getCompanyOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move);
 
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setCompanyBankDetails(move);
@@ -709,10 +709,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getSubrogationPartnerOnSelectAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getThirdPartyPayerPartnerOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveAttrsService.addSubrogationPartnerReadonly(move, attrsMap);
+    moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
 
     return attrsMap;
   }

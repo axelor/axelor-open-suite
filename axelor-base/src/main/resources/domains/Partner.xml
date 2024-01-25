@@ -29,9 +29,8 @@
     <boolean name="isEmployee" title="Employee"/>
     <boolean name="isContact" title="Contact" default="false"/>
 
-
-    <many-to-one name="language" ref="com.axelor.apps.base.db.Language" title="Language"
-      massUpdate="true"/>
+    <many-to-one name="localization" ref="com.axelor.apps.base.db.Localization"
+      title="Localization" massUpdate="true"/>
 
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner"
       title="Mother company" massUpdate="true" index="false"/>

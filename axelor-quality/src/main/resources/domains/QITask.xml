@@ -21,6 +21,12 @@
       ref="com.axelor.apps.quality.db.QIResolutionDefault" required="true"/>
     <many-to-one name="qiAnalysis" ref="com.axelor.apps.quality.db.QIAnalysis"
       title="Analysis"/>
+    <many-to-many name="qiActionDistributionSet" title="Distributions"
+      ref="com.axelor.apps.quality.db.QIActionDistribution"/>
+    <integer name="responsible" title="Responsible" required="true"
+      selection="quality.qi.resolution.decision.responsible.select" default="1"/>
+    <many-to-one name="responsiblePartner" title="Responsible name"
+      ref="com.axelor.apps.base.db.Partner" required="true"/>
 
     <track>
       <field name="qiDecision"/>
@@ -32,6 +38,8 @@
       <field name="directCost"/>
       <field name="totalCost"/>
       <field name="qiAnalysis"/>
+      <field name="responsible"/>
+      <field name="responsiblePartner"/>
     </track>
   </entity>
 

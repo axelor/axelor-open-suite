@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -607,8 +607,18 @@ public class StockMoveController {
   public void getToStockLocation(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     try {
-      StockLocation toStockLocation =
-          Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+
+      boolean fromOutsource =
+          Optional.ofNullable(request.getContext().get("_fromOutsource"))
+              .map(o -> (boolean) o)
+              .orElse(false);
+      StockLocation toStockLocation;
+      if (fromOutsource) {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocationOutsource(stockMove);
+      } else {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      }
+
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

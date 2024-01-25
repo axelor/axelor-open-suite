@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -94,7 +94,7 @@ public class JournalService {
     return journal;
   }
 
-  public boolean isSubrogationOk(Journal journal) {
+  public boolean isThirdPartyPayerOk(Journal journal) {
     List<Integer> journalTypeList =
         Arrays.asList(
             JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE,

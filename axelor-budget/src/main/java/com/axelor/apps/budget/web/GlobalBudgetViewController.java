@@ -24,11 +24,12 @@ public class GlobalBudgetViewController {
   public void viewGlobalPurchaseOrderLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+    List<Long> budgetIdList =
+        Beans.get(GlobalBudgetToolsService.class).getAllBudgetIds(globalBudget);
 
     String domain =
         String.format(
-            "self.purchaseOrderLine.purchaseOrder.statusSelect in (%d,%d,%d) and self.budget IN (:budgetList)",
+            "self.purchaseOrderLine.purchaseOrder.statusSelect in (%d,%d,%d) and self.budget.id IN (:budgetIdList)",
             PurchaseOrderRepository.STATUS_REQUESTED,
             PurchaseOrderRepository.STATUS_VALIDATED,
             PurchaseOrderRepository.STATUS_FINISHED);
@@ -40,7 +41,7 @@ public class GlobalBudgetViewController {
             .add("form", "budget-budget-distribution-purchase-order-line-dashlet-form")
             .domain(domain)
             .context("_globalId", globalBudget.getId())
-            .context("budgetList", budgetList)
+            .context("budgetIdList", budgetIdList)
             .map());
   }
 
@@ -48,11 +49,12 @@ public class GlobalBudgetViewController {
   public void viewGlobalSaleOrderLine(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+    List<Long> budgetIdList =
+        Beans.get(GlobalBudgetToolsService.class).getAllBudgetIds(globalBudget);
 
     String domain =
         String.format(
-            "self.saleOrderLine.saleOrder.statusSelect in (%d,%d) and self.budget IN (:budgetList)",
+            "self.saleOrderLine.saleOrder.statusSelect in (%d,%d) and self.budget.id IN (:budgetIdList)",
             SaleOrderRepository.STATUS_ORDER_CONFIRMED, SaleOrderRepository.STATUS_ORDER_COMPLETED);
 
     response.setView(
@@ -62,7 +64,7 @@ public class GlobalBudgetViewController {
             .add("form", "sale-order-budget-distribution-form")
             .domain(domain)
             .context("_globalId", globalBudget.getId())
-            .context("budgetList", budgetList)
+            .context("budgetIdList", budgetIdList)
             .map());
   }
 
@@ -70,9 +72,10 @@ public class GlobalBudgetViewController {
   public void viewBudgetLines(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+    List<Long> budgetIdList =
+        Beans.get(GlobalBudgetToolsService.class).getAllBudgetIds(globalBudget);
 
-    String domain = "self IN (:budgetList)";
+    String domain = "self.id IN (:budgetIdList)";
 
     response.setView(
         ActionView.define(I18n.get("Lines"))
@@ -88,7 +91,7 @@ public class GlobalBudgetViewController {
                 globalBudget.getStatusSelect()
                     != GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT)
             .context("_typeSelect", "budget")
-            .context("budgetList", budgetList)
+            .context("budgetIdList", budgetIdList)
             .map());
   }
 
@@ -96,11 +99,12 @@ public class GlobalBudgetViewController {
   public void viewSimulatedMove(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+    List<Long> budgetIdList =
+        Beans.get(GlobalBudgetToolsService.class).getAllBudgetIds(globalBudget);
 
     String domain =
         String.format(
-            "self.moveLine.move.statusSelect = %d AND self.budget IN (:budgetList)",
+            "self.moveLine.move.statusSelect = %d AND self.budget.id IN (:budgetIdList)",
             MoveRepository.STATUS_SIMULATED);
 
     response.setView(
@@ -112,7 +116,7 @@ public class GlobalBudgetViewController {
             .param("show-confirm", "true")
             .domain(domain)
             .context("_globalBudgetId", globalBudget.getId())
-            .context("budgetList", budgetList)
+            .context("budgetIdList", budgetIdList)
             .map());
   }
 
@@ -120,12 +124,13 @@ public class GlobalBudgetViewController {
   public void viewRealizedWithPo(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+    List<Long> budgetIdList =
+        Beans.get(GlobalBudgetToolsService.class).getAllBudgetIds(globalBudget);
 
     String domain =
         String.format(
             "(self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is not null) "
-                + "AND self.invoiceLine.invoice.statusSelect = %d AND self.budget IN (:budgetList)",
+                + "AND self.invoiceLine.invoice.statusSelect = %d AND self.budget.id IN (:budgetList)",
             InvoiceRepository.STATUS_VENTILATED);
 
     response.setView(
@@ -137,7 +142,7 @@ public class GlobalBudgetViewController {
             .param("show-confirm", "true")
             .domain(domain)
             .context("_globalBudgetId", globalBudget.getId())
-            .context("budgetList", budgetList)
+            .context("budgetIdList", budgetIdList)
             .map());
   }
 
@@ -145,13 +150,14 @@ public class GlobalBudgetViewController {
   public void viewRealizedWithoutPo(ActionRequest request, ActionResponse response)
       throws AxelorException {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    List<Budget> budgetList = Beans.get(GlobalBudgetToolsService.class).getAllBudgets(globalBudget);
+    List<Long> budgetIdList =
+        Beans.get(GlobalBudgetToolsService.class).getAllBudgetIds(globalBudget);
 
     String domain =
         String.format(
             "((self.invoiceLine.invoice.purchaseOrder is null AND self.invoiceLine.invoice.saleOrder is null AND self.invoiceLine.invoice.statusSelect = %d) "
                 + "OR (self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND self.moveLine.move.invoice IS NULL)) "
-                + "AND self.budget IN (:budgetList)",
+                + "AND self.budget.id IN (:budgetIdList)",
             InvoiceRepository.STATUS_VENTILATED,
             MoveRepository.STATUS_DAYBOOK,
             MoveRepository.STATUS_ACCOUNTED);
@@ -165,7 +171,7 @@ public class GlobalBudgetViewController {
             .param("show-confirm", "true")
             .domain(domain)
             .context("_globalBudgetId", globalBudget.getId())
-            .context("budgetList", budgetList)
+            .context("budgetIdList", budgetIdList)
             .map());
   }
 }

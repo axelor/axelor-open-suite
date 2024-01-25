@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -207,5 +207,20 @@ public class PurchaseOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null && request.getContext().getParent() != null) {
+      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    }
+
+    Beans.get(PurchaseOrderLineBudgetService.class)
+        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
+
+    response.setValue(
+        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
   }
 }

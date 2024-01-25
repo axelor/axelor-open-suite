@@ -29,6 +29,8 @@
     <datetime name="efficiencyCheckedOn" title="Efficiency checked on"/>
     <one-to-many name="qiTasksList" title="Tasks"
       ref="com.axelor.apps.quality.db.QITask" mappedBy="qiAnalysis"/>
+    <one-to-many name="qiActionDistributionList" title="Distributions"
+      ref="com.axelor.apps.quality.db.QIActionDistribution" mappedBy="qiAnalysis"/>
 
     <extra-code><![CDATA[
 	    public static final int EFFICIENCY_NO_CHECKED = 1;

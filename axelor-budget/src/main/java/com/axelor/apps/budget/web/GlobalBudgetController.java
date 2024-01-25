@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,11 @@ import com.axelor.apps.budget.db.BudgetVersion;
 import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
+import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetWorkflowService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -170,5 +172,21 @@ public class GlobalBudgetController {
       Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
       response.setValues(globalBudget);
     }
+  }
+
+  public void hideAmounts(ActionRequest request, ActionResponse response) {
+    response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(true));
+  }
+
+  public void showAmounts(ActionRequest request, ActionResponse response) {
+    response.setAttrs(Beans.get(GlobalBudgetToolsService.class).manageHiddenAmounts(false));
+  }
+
+  @ErrorException
+  public void showUpdateDatesBtn(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
+    response.setAttr("updateDatesBtn", "hidden", isHidden);
   }
 }

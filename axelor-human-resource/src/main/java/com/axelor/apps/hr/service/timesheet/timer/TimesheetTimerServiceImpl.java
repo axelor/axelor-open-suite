@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,8 @@ import com.axelor.apps.hr.db.repo.TSTimerRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
@@ -88,7 +88,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     Long duration = getDuration(timer);
 
     BigDecimal durationHours = this.convertSecondDurationInHours(duration);
-    Timesheet timesheet = Beans.get(TimesheetService.class).getCurrentOrCreateTimesheet();
+    Timesheet timesheet = Beans.get(TimesheetFetchService.class).getCurrentOrCreateTimesheet();
     LocalDate startDateTime =
         (timer.getStartDateTime() == null)
             ? Beans.get(AppBaseService.class).getTodayDateTime().toLocalDate()
@@ -147,6 +147,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     return Beans.get(TSTimerRepository.class)
         .all()
         .filter("self.employee.user.id = ?1", AuthUtils.getUser().getId())
+        .order("-createdOn")
         .fetchOne();
   }
 

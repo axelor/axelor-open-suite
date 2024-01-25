@@ -1,9 +1,12 @@
 package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.CompanyDateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.LeaveLine;
 import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveReason;
@@ -14,14 +17,17 @@ import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class IncrementLeaveServiceImpl implements IncrementLeaveService {
@@ -34,6 +40,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   protected PublicHolidayHrService publicHolidayHrService;
   protected LeaveLineService leaveLineService;
   protected LeaveValueProrataService leaveValueProrataService;
+  protected CompanyDateService companyDateService;
 
   @Inject
   public IncrementLeaveServiceImpl(
@@ -45,7 +52,8 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
       LeaveManagementService leaveManagementService,
       PublicHolidayHrService publicHolidayHrService,
       LeaveLineService leaveLineService,
-      LeaveValueProrataService leaveValueProrataService) {
+      LeaveValueProrataService leaveValueProrataService,
+      CompanyDateService companyDateService) {
     this.leaveReasonRepository = leaveReasonRepository;
     this.employeeRepository = employeeRepository;
     this.appBaseService = appBaseService;
@@ -55,6 +63,7 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     this.publicHolidayHrService = publicHolidayHrService;
     this.leaveLineService = leaveLineService;
     this.leaveValueProrataService = leaveValueProrataService;
+    this.companyDateService = companyDateService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -66,11 +75,17 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     AppLeave appLeave = appHumanResourceService.getAppLeave();
     int typeSelect = leaveReason.getLeaveReasonTypeSelect();
     int todayMonth = todayDate.getMonthValue();
+    int todayYear = todayDate.getYear();
     int firstLeaveDayPeriod = appLeave.getFirstLeaveDayPeriod();
     int firstLeaveMonthPeriod = appLeave.getFirstLeaveMonthPeriod();
+    LocalDate hireDate = employee.getHireDate();
     LocalDate fromDate = null;
     LocalDate toDate = null;
     BigDecimal value = null;
+
+    if (skipIncrement(hireDate, todayDate, typeSelect, todayYear, todayMonth)) {
+      return;
+    }
 
     if (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
       fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
@@ -99,19 +114,32 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     updateEmployeeLeaveLine(leaveReason, employee, leaveLineList, fromDate, toDate, value);
   }
 
+  protected boolean skipIncrement(
+      LocalDate hireDate, LocalDate todayDate, int typeSelect, int todayYear, int todayMonth) {
+
+    return (hireDate != null && hireDate.isAfter(todayDate))
+        && ((typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR
+                && hireDate.getYear() > todayYear)
+            || (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH
+                && hireDate.getMonthValue() > todayMonth));
+  }
+
   protected void updateEmployeeLeaveLine(
       LeaveReason leaveReason,
       Employee employee,
       List<LeaveLine> leaveLineList,
       LocalDate fromDate,
       LocalDate toDate,
-      BigDecimal value) {
+      BigDecimal value)
+      throws AxelorException {
     LeaveLine leaveLine =
         leaveLineList.stream()
             .filter(leaveLine1 -> leaveLine1.getLeaveReason().equals(leaveReason))
             .findFirst()
             .orElse(null);
-    LeaveManagement leaveManagement = createLeaveManagement(fromDate, toDate, value);
+    EmploymentContract employmentContract = employee.getMainEmploymentContract();
+    Company company = employmentContract == null ? null : employmentContract.getPayCompany();
+    LeaveManagement leaveManagement = createLeaveManagement(fromDate, toDate, value, company);
     updateLeaveLines(leaveReason, employee, leaveLine, leaveManagement);
   }
 
@@ -131,12 +159,33 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
   }
 
   protected LeaveManagement createLeaveManagement(
-      LocalDate fromDate, LocalDate toDate, BigDecimal value) {
+      LocalDate fromDate, LocalDate toDate, BigDecimal value, Company company)
+      throws AxelorException {
+
+    LocalDateTime localDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
+    DateTimeFormatter dateTimeFormatter = getDateTimeFormatter(company);
+
+    String comment =
+        I18n.get("Created automatically by increment leave batch on")
+            + " "
+            + dateTimeFormatter.format(localDateTime);
+
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
-            AuthUtils.getUser(), "", appBaseService.getTodayDate(null), fromDate, toDate, value);
+            AuthUtils.getUser(),
+            comment,
+            appBaseService.getTodayDate(null),
+            fromDate,
+            toDate,
+            value);
 
     return leaveManagementRepository.save(leaveManagement);
+  }
+
+  protected DateTimeFormatter getDateTimeFormatter(Company company) throws AxelorException {
+    return company == null
+        ? DateTimeFormatter.ISO_DATE_TIME
+        : companyDateService.getDateTimeFormat(company);
   }
 
   protected BigDecimal getLeaveManagementValue(

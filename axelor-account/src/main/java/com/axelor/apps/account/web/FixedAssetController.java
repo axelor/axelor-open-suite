@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,10 +32,12 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetFailOverControlService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
+import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -440,12 +442,13 @@ public class FixedAssetController {
               (String)
                   ((LinkedHashMap<String, Object>) request.getContext().get("_fixedAsset"))
                       .get("qty"));
+      Company company =
+          Beans.get(FixedAssetRepository.class)
+              .find(Long.parseLong(request.getContext().get("_id").toString()))
+              .getCompany();
 
-      response.setAttr(
-          "splitTypeSelect",
-          "value",
-          qty.compareTo(BigDecimal.ONE) == 0 ? FixedAssetRepository.SPLIT_TYPE_AMOUNT : 0);
-      response.setAttr("splitTypeSelect", "readonly", qty.compareTo(BigDecimal.ONE) == 0);
+      response.setAttrs(
+          Beans.get(FixedAssetGroupService.class).getInitSplitWizardAttrsMap(qty, company));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -483,6 +486,23 @@ public class FixedAssetController {
       if (showDepreciationMessage) {
         response.setInfo(I18n.get(AccountExceptionMessage.FIXED_ASSET_DEPRECIATION_PLAN_MESSAGE));
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void computeDisposalWizardDisposalAmount(ActionRequest request, ActionResponse response) {
+    try {
+      int disposalTypeSelect = (int) request.getContext().get("disposalTypeSelect");
+      FixedAsset fixedAsset =
+          Beans.get(FixedAssetRepository.class)
+              .find(Long.valueOf(request.getContext().get("_id").toString()));
+      FixedAssetGroupService fixedAssetGroupService = Beans.get(FixedAssetGroupService.class);
+
+      response.setValues(
+          fixedAssetGroupService.getDisposalWizardValuesMap(fixedAsset, disposalTypeSelect));
+      response.setAttrs(
+          fixedAssetGroupService.getDisposalWizardAttrsMap(disposalTypeSelect, fixedAsset));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

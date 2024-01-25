@@ -37,6 +37,7 @@
     <panel name="mainPanel">
       <panel name="statusPanel" showIf="project.isShowStatus" stacked="true" colSpan="12">
         <field name="status" widget="NavSelect" showTitle="false" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
       <field name="$viewerTags" showTitle="false" readonly="true"
         showIf="typeSelect == 'ticket' &amp;&amp; $readonly()" colSpan="4" hidden="true">

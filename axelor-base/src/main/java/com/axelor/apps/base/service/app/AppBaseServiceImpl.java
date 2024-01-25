@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,13 +21,10 @@ package com.axelor.apps.base.service.app;
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.apps.base.db.Language;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
-import com.axelor.meta.CallMethod;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
@@ -35,7 +32,6 @@ import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
@@ -52,7 +48,7 @@ import javax.inject.Singleton;
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
 
-  protected static String DEFAULT_LOCALE = "en";
+  protected static String DEFAULT_LOCALE = "en_GB";
 
   @Inject
   public AppBaseServiceImpl(
@@ -147,14 +143,14 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public String getDefaultPartnerLanguageCode() {
+  public String getDefaultPartnerLocale() {
 
     AppBase appBase = getAppBase();
 
     if (appBase != null) {
-      Language language = appBase.getDefaultPartnerLanguage();
-      if (language != null && !Strings.isNullOrEmpty(language.getCode())) {
-        return language.getCode();
+      Localization localization = appBase.getDefaultPartnerLocalization();
+      if (localization != null && !Strings.isNullOrEmpty(localization.getCode())) {
+        return localization.getCode();
       }
     }
     return DEFAULT_LOCALE;
@@ -230,22 +226,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   @Transactional
   public void setManageMultiBanks(boolean manageMultiBanks) {
     getAppBase().setManageMultiBanks(manageMultiBanks);
-  }
-
-  @CallMethod
-  @Override
-  public String getCustomStyle() {
-
-    AppBase appBase = Beans.get(AppBaseRepository.class).all().fetchOne();
-    if (appBase == null) {
-      return null;
-    }
-    String style = appBase.getCustomAppStyle();
-    if (StringUtils.isBlank(style)) {
-      return null;
-    }
-
-    return style;
   }
 
   @Override

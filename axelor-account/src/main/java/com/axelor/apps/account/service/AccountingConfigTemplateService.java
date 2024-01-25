@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,6 +107,12 @@ public class AccountingConfigTemplateService {
 
       Map<String, Object> importContext = new HashMap<String, Object>();
       importContext.put("_companyId", company.getId());
+      importContext.put("_companyName", company.getName());
+      importContext.put("_companyCode", company.getCode());
+      importContext.put(
+          "_defaultBankDetailsId",
+          company.getDefaultBankDetails() != null ? company.getDefaultBankDetails().getId() : 0);
+      importContext.put("_dataFileName", act.getMetaFile().getFileName());
 
       importAccountChartData(act, configFile, importContext);
 
