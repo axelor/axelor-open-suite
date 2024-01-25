@@ -35,6 +35,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
@@ -43,7 +44,10 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
 
@@ -96,6 +100,10 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
       processSaleOrderLine(project, saleOrder, startDate, tasks, saleOrderLine);
     }
 
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      updateParentTask(project, saleOrderLine);
+    }
+
     if (tasks.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
@@ -108,6 +116,27 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
         .add("form", "project-task-form")
         .param("search-filters", "project-task-filters")
         .domain(String.format("self.id in (%s)", StringHelper.getIdListString(tasks)));
+  }
+
+  protected void updateParentTask(Project project, SaleOrderLine saleOrderLine) {
+
+    List<SaleOrderLine> subSoLineList = saleOrderLine.getSubSoLineList();
+    if (ObjectUtils.isEmpty(subSoLineList)) {
+      return;
+    }
+
+    ProjectTask parentTask =
+        projectTaskRepo
+            .all()
+            .filter("self.saleOrderLine = :saleOrderLine AND self.project = :project")
+            .bind("saleOrderLine", saleOrderLine)
+            .bind("project", project)
+            .fetchOne();
+
+    if (parentTask == null) {
+      return;
+    }
+    findRelatedTasks(project, subSoLineList).forEach(parentTask::addProjectTaskListItem);
   }
 
   protected void processSaleOrderLine(
@@ -187,7 +216,7 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
    */
   protected List<SaleOrderLine> filterSaleOrderLinesForTasks(SaleOrder saleOrder)
       throws AxelorException {
-    List<SaleOrderLine> saleOrderLineList = new ArrayList<>();
+    Set<SaleOrderLine> saleOrderLineSet = new HashSet<>();
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
       Product product = saleOrderLine.getProduct();
       if (product != null
@@ -195,9 +224,30 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
               productCompanyService.get(product, "productTypeSelect", saleOrder.getCompany()))
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE
           && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
-        saleOrderLineList.add(saleOrderLine);
+        saleOrderLineSet.add(saleOrderLine);
+        saleOrderLineSet.addAll(getParentSaleOrderLine(saleOrderLine));
       }
     }
-    return saleOrderLineList;
+    return saleOrderLineSet.stream().collect(Collectors.toList());
+  }
+
+  protected Set<SaleOrderLine> getParentSaleOrderLine(SaleOrderLine saleOrderLine) {
+    Set<SaleOrderLine> saleOrderLines = new HashSet<>();
+    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+    if (parentSaleOrderLine == null) {
+      return saleOrderLines;
+    }
+    saleOrderLines.add(parentSaleOrderLine);
+    saleOrderLines.addAll(getParentSaleOrderLine(parentSaleOrderLine));
+    return saleOrderLines;
+  }
+
+  protected List<ProjectTask> findRelatedTasks(Project project, List<SaleOrderLine> subSoLineList) {
+    return projectTaskRepo
+        .all()
+        .filter("self.saleOrderLine IN :soLineList AND self.project = :project")
+        .bind("soLineList", subSoLineList)
+        .bind("project", project)
+        .fetch();
   }
 }

@@ -115,15 +115,21 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       throws AxelorException {
     ProjectTask task = create(saleOrderLine.getFullName() + "_task", project, assignedTo);
     Product product = saleOrderLine.getProduct();
+
     task.setProduct(product);
-    task.setUnitCost(product.getCostPrice());
+    task.setUnitCost(product == null ? saleOrderLine.getPrice() : product.getCostPrice());
     task.setTotalCosts(
-        product.getCostPrice().multiply(saleOrderLine.getQty()).setScale(2, RoundingMode.HALF_UP));
+        product == null
+            ? saleOrderLine.getExTaxTotal()
+            : product
+                .getCostPrice()
+                .multiply(saleOrderLine.getQty())
+                .setScale(2, RoundingMode.HALF_UP));
     Unit orderLineUnit = saleOrderLine.getUnit();
     task.setInvoicingUnit(orderLineUnit);
 
     task.setCurrency(project.getClientPartner().getCurrency());
-    if (project.getPriceList() != null) {
+    if (product != null && project.getPriceList() != null) {
       PriceListLine line =
           priceListLineRepo.findByPriceListAndProduct(project.getPriceList(), product);
       if (line != null) {
