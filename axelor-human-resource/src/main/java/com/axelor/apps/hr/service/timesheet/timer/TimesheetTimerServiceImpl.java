@@ -79,11 +79,10 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public void stop(TSTimer timer) throws AxelorException {
-    timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
+  public void stopAndGenerateTimesheetLine(TSTimer timer) throws AxelorException {
+    stop(timer);
     calculateDuration(timer);
     Long duration = getDuration(timer);
-
     if (duration > 59) {
       generateTimesheetLine(timer);
     } else {
@@ -92,6 +91,11 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
           I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_CREATED),
           timer);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void stop(TSTimer timer) throws AxelorException {
+    timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
   }
 
   @Transactional

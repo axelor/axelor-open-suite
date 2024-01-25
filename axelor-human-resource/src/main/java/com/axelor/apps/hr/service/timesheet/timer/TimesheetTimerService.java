@@ -34,7 +34,9 @@ public interface TimesheetTimerService {
 
   public void pause(TSTimer timer);
 
-  public void stop(TSTimer timer) throws AxelorException;
+  void stopAndGenerateTimesheetLine(TSTimer timer) throws AxelorException;
+
+  void stop(TSTimer timer) throws AxelorException;
 
   void resetTimer(TSTimer timer);
 
