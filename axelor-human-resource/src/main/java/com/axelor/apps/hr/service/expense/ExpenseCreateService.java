@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.auth.db.User;
 import java.util.List;
 
 public interface ExpenseCreateService {
@@ -38,4 +39,6 @@ public interface ExpenseCreateService {
       Integer companyCbSelect,
       List<ExpenseLine> expenseLineList)
       throws AxelorException;
+
+  Expense createExpense(User user);
 }

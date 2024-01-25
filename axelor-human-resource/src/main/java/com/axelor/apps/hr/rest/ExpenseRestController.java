@@ -30,6 +30,7 @@ import com.axelor.apps.hr.service.expense.ExpenseCreateService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -76,6 +77,20 @@ public class ExpenseRestController {
                 requestBody.fetchPeriod(),
                 requestBody.getCompanyCbSelect(),
                 requestBody.fetchExpenseLines());
+
+    return ResponseConstructor.buildCreateResponse(expense, new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Quickly create an expense",
+      tags = {"Expense"})
+  @Path("/quick-create")
+  @POST
+  @HttpExceptionHandler
+  public Response quickCreateExpense(ExpensePostRequest requestBody) {
+    new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
+
+    Expense expense = Beans.get(ExpenseCreateService.class).createExpense(AuthUtils.getUser());
 
     return ResponseConstructor.buildCreateResponse(expense, new ExpenseResponse(expense));
   }
