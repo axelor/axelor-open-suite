@@ -358,31 +358,31 @@
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[SELECT 
+            <xml-property name="queryText"><![CDATA[SELECT
 	Company.name 							AS company_name,
 	Company.height 							AS logo_height,
-	Company.width 							AS logo_width, 
-	AccountingReport.date_from, 
-	AccountingReport.date_to, 
+	Company.width 							AS logo_width,
+	AccountingReport.date_from,
+	AccountingReport.date_to,
 	AccountingReport.date_val 				AS report_date,
-	AccountingReport.publication_date_time 	AS report_date_edition, 
+	AccountingReport.publication_date_time 	AS report_date_edition,
 	MetaFile.file_path 						AS logo_path,
 	Currency.code 							AS currency,
 	ReportType.type_select 					AS report_type,
 	AccountingReport.ref
-	
+
 FROM public.account_accounting_report AS AccountingReport
 
-INNER JOIN public.base_company AS Company 
+INNER JOIN public.base_company AS Company
 ON AccountingReport.company = Company.id
 
-LEFT JOIN account_accounting_report_type AS ReportType 
+LEFT JOIN account_accounting_report_type AS ReportType
 ON AccountingReport.report_type = ReportType.id
 
-LEFT JOIN meta_file AS MetaFile 
+LEFT JOIN meta_file AS MetaFile
 ON MetaFile.id = Company.logo
 
-LEFT JOIN base_currency AS Currency 
+LEFT JOIN base_currency AS Currency
 ON AccountingReport.currency = Currency.id
 
 WHERE AccountingReport.id = ? ]]></xml-property>
@@ -454,8 +454,8 @@ WHERE AccountingReport.id = ? ]]></xml-property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
-from meta_translation as LangTranslate 
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation"
+from meta_translation as LangTranslate
 where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -890,7 +890,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
 	SUM(impairment_value_a) AS impairment_value_a,
 	SUM(impairment_value_b) AS impairment_value_b,
 	SUM(impairment_value_c) AS impairment_value_c
-FROM 
+FROM
 	(SELECT FixedAssetType.technical_type_select AS fixed_asset_type,
         FixedAssetLine.depreciation AS depreciation_a,
         0 AS depreciation_b,
@@ -1145,7 +1145,7 @@ FROM
             AND FixedAsset.disposal_date <= AccountingReport.date_to
 		) AS AccountingReportFixedAssetLine,
 	account_accounting_report AS AccountingReport
-WHERE 
+WHERE
 	AccountingReport.id = ?
 GROUP BY fixed_asset_type]]></xml-property>
         </oda-data-set>

@@ -735,7 +735,7 @@ where ForecastRecap.id = ?
                     <property name="nativeDataType">91</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[WITH forecastRecapLine
+<xml-property name="queryText"><![CDATA[WITH forecastRecapLine
 AS
 (
 	SELECT ForecastRecapLine.estimated_date, SUM(ForecastRecapLine.amount) as amount
