@@ -30,6 +30,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.user.UserHrService;
@@ -53,6 +54,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   protected ProjectRepository projectRepo;
   protected ProjectTaskRepository projectTaskRepo;
   protected TimesheetLineRepository timesheetLineRepo;
+  protected TimesheetCreateService timesheetCreateService;
 
   @Inject
   public TimesheetLineProjectServiceImpl(
@@ -64,7 +66,8 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
-      DateService dateService) {
+      DateService dateService,
+      TimesheetCreateService timesheetCreateService) {
     super(
         timesheetService,
         employeeRepository,
@@ -77,6 +80,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     this.projectTaskRepo = projectTaskaRepo;
     this.timesheetLineRepo = timesheetLineRepo;
     this.timesheetRepo = timesheetRepo;
+    this.timesheetCreateService = timesheetCreateService;
   }
 
   @Override
@@ -152,7 +156,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
               .order("-toDate")
               .fetchOne();
       timesheet =
-          timesheetService.createTimesheet(
+          timesheetCreateService.createTimesheet(
               timesheetLine.getEmployee(),
               lastTimesheet != null && lastTimesheet.getToDate() != null
                   ? lastTimesheet.getToDate().plusDays(1)

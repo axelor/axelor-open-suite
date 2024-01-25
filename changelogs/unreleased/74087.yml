@@ -1,0 +1,3 @@
+---
+title: "Stock: Adding quality control default stock location to stock config demo data to avoid exception case"
+type: fix
