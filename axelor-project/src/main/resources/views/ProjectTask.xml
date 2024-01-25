@@ -49,6 +49,7 @@
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
           showIf="project.isShowStatus" x-order="sequence"/>
+        <field name="typeSelect" hidden="true"/>
       </panel>
       <panel name="viewerTagsPanel" colSpan="4">
         <field name="$viewerTags" showTitle="false" readonly="true"
@@ -169,8 +170,6 @@
         <field name="project.isShowPriority" hidden="true"/>
         <field name="project.isShowTaskCategory" hidden="true"/>
       </panel>
-
-      <field name="typeSelect" hidden="true"/>
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel name="internalDescriptionPanel" title="Internal Description"

@@ -484,17 +484,6 @@
   </action-attrs>
 
   <action-attrs name="action-bank-order-attrs-bank-order-file-format-change">
-    <attribute name="value" for="bankOrderLineList.bankOrderEconomicReason"
-      expr="eval: bankOrderFileFormat?.bankOrderEconomicReason"/>
-    <attribute name="value" for="bankOrderLineList.receiverCountry"
-      expr="eval: bankOrderFileFormat?.receiverCountry"/>
-    <attribute name="value" for="bankOrderLineList.paymentModeSelect"
-      expr="eval: bankOrderFileFormat?.paymentModeSelect"/>
-    <attribute name="value" for="bankOrderLineList.feesImputationModeSelect"
-      expr="eval: bankOrderFileFormat?.feesImputationModeSelect"/>
-    <attribute name="value" for="bankOrderLineList.bankOrder.companyCurrency"
-      expr="companyCurrency" if="eval: !bankOrderFileFormat?.isMultiCurrency"/>
-
     <attribute name="hidden" for="bankOrderLineList.additionnalInformationPanel"
       expr="eval: !bankOrderFileFormat?.displayAdditionnalInformations"/>
     <attribute name="hidden" for="bankOrderLineList.bankOrderEconomicReason"

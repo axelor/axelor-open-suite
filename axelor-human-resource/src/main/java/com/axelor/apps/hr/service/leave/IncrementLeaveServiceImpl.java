@@ -66,11 +66,17 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     AppLeave appLeave = appHumanResourceService.getAppLeave();
     int typeSelect = leaveReason.getLeaveReasonTypeSelect();
     int todayMonth = todayDate.getMonthValue();
+    int todayYear = todayDate.getYear();
     int firstLeaveDayPeriod = appLeave.getFirstLeaveDayPeriod();
     int firstLeaveMonthPeriod = appLeave.getFirstLeaveMonthPeriod();
+    LocalDate hireDate = employee.getHireDate();
     LocalDate fromDate = null;
     LocalDate toDate = null;
     BigDecimal value = null;
+
+    if (skipIncrement(hireDate, todayDate, typeSelect, todayYear, todayMonth)) {
+      return;
+    }
 
     if (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH) {
       fromDate = LocalDate.of(todayDate.getYear(), todayMonth, firstLeaveDayPeriod);
@@ -97,6 +103,16 @@ public class IncrementLeaveServiceImpl implements IncrementLeaveService {
     }
 
     updateEmployeeLeaveLine(leaveReason, employee, leaveLineList, fromDate, toDate, value);
+  }
+
+  protected boolean skipIncrement(
+      LocalDate hireDate, LocalDate todayDate, int typeSelect, int todayYear, int todayMonth) {
+
+    return (hireDate != null && hireDate.isAfter(todayDate))
+        && ((typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_YEAR
+                && hireDate.getYear() > todayYear)
+            || (typeSelect == LeaveReasonRepository.TYPE_SELECT_EVERY_MONTH
+                && hireDate.getMonthValue() > todayMonth));
   }
 
   protected void updateEmployeeLeaveLine(

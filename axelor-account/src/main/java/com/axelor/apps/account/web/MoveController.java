@@ -411,7 +411,7 @@ public class MoveController {
       boolean paymentConditionChange =
           this.getChangeDummyBoolean(context, "paymentConditionChange");
 
-      response.setValues(moveGroupService.getDateOnChangeValuesMap(move, paymentConditionChange));
+      response.setValues(moveGroupService.getDateOnChangeValuesMap(move));
       response.setAttrs(moveGroupService.getDateOnChangeAttrsMap(move, paymentConditionChange));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
@@ -567,11 +567,8 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
       MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
-      boolean paymentConditionChange =
-          this.getChangeDummyBoolean(request.getContext(), "paymentConditionChange");
 
-      response.setValues(
-          moveGroupService.getCompanyOnChangeValuesMap(move, paymentConditionChange));
+      response.setValues(moveGroupService.getCompanyOnChangeValuesMap(move));
       response.setAttrs(moveGroupService.getCompanyOnChangeAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);

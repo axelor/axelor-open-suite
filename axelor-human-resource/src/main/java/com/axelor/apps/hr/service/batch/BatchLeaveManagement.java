@@ -173,7 +173,7 @@ public class BatchLeaveManagement extends BatchStrategy {
       leaveReasonList.addAll(
           leaveReasonRepository
               .all()
-              .filter("self.leaveReasonTypeSelect = :typeSelect AND self.isActive = true")
+              .filter("self.leaveReasonTypeSelect = :typeSelect AND self.isAutoIncrement = true")
               .bind("typeSelect", hrBatch.getLeaveReasonTypeSelect())
               .fetch());
     }

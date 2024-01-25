@@ -17,8 +17,6 @@
 
   <input file="stock_inventory.csv" separator=";" type="com.axelor.apps.stock.db.Inventory"
     call="com.axelor.csv.script.ImportInventory:importInventory">
-    <bind to="inventorySeq"
-      eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.INVENTORY,com.axelor.apps.stock.db.Inventory, 'inventorySeq')"/>
     <bind column="plannedStartDateT" to="plannedStartDateT"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(plannedStartDateT)"/>
     <bind column="plannedEndDateT" to="plannedEndDateT"
@@ -65,8 +63,6 @@
 
   <input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportPartner:importPartner">
-    <bind to="partnerSeq"
-      eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER,com.axelor.apps.base.db.Partner,'partnerSeq')"/>
     <bind to="isCarrier" eval="true"/>
   </input>
 
