@@ -64,6 +64,10 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -74,6 +78,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,6 +86,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InvoicingProjectService {
 
@@ -117,7 +124,8 @@ public class InvoicingProjectService {
         && invoicingProject.getPurchaseOrderLineSet().isEmpty()
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
-        && invoicingProject.getProjectTaskSet().isEmpty()) {
+        && invoicingProject.getProjectTaskSet().isEmpty()
+        && invoicingProject.getDeliverySet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -199,6 +207,7 @@ public class InvoicingProjectService {
     List<ProjectTask> projectTaskList = new ArrayList<ProjectTask>(folder.getProjectTaskSet());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
+    invoiceLineList.addAll(this.createStockMovesInvoiceLines(invoice, folder.getDeliverySet()));
     invoiceLineList.addAll(
         this.createSaleOrderInvoiceLines(
             invoice, saleOrderLineList, folder.getSaleOrderLineSetPrioritySelect()));
@@ -418,14 +427,19 @@ public class InvoicingProjectService {
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderLineRepository.class)
+            .all()
+            .filter(solQueryBuilder.toString())
+            .bind(solQueryMap)
+            .fetch();
+
     invoicingProject
         .getSaleOrderLineSet()
         .addAll(
-            Beans.get(SaleOrderLineRepository.class)
-                .all()
-                .filter(solQueryBuilder.toString())
-                .bind(solQueryMap)
-                .fetch());
+            saleOrderLineList.stream()
+                .filter(sol -> sol.getInvoicingModeSelect() == 1)
+                .collect(Collectors.toList()));
 
     invoicingProject
         .getPurchaseOrderLineSet()
@@ -453,6 +467,33 @@ public class InvoicingProjectService {
                 .filter(taskQueryBuilder.toString())
                 .bind(taskQueryMap)
                 .fetch());
+
+    Set<StockMoveLine> deliverySet = new HashSet<>();
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      if (saleOrderLine.getInvoicingModeSelect() == 2) {
+        if (saleOrderLine.getDeliveryState() == 3) {
+          List<StockMoveLine> stockMoveLineList =
+              Beans.get(StockMoveLineRepository.class)
+                  .all()
+                  .filter(
+                      "self.saleOrderLine = :saleOrderLine AND self.stockMove IS NOT NULL AND self.stockMove.statusSelect >= 3")
+                  .bind("saleOrderLine", saleOrderLine)
+                  .fetch();
+
+          for (StockMoveLine stockMoveLine : stockMoveLineList) {
+            if (stockMoveLine
+                    .getRealQty()
+                    .subtract(stockMoveLine.getQtyInvoiced())
+                    .compareTo(BigDecimal.ZERO)
+                > 0) {
+
+              deliverySet.add(stockMoveLine);
+            }
+          }
+        }
+      }
+    }
+    invoicingProject.getDeliverySet().addAll(deliverySet);
   }
 
   public void clearLines(InvoicingProject invoicingProject) {
@@ -462,6 +503,7 @@ public class InvoicingProjectService {
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
+    invoicingProject.setDeliverySet(new HashSet<StockMoveLine>());
   }
 
   public Company getRootCompany(Project project) {
@@ -584,5 +626,43 @@ public class InvoicingProjectService {
       return invoicingProject;
     }
     return invoicingProjectRepo.save(invoicingProject);
+  }
+
+  public List<InvoiceLine> createStockMovesInvoiceLines(
+      Invoice invoice, Set<StockMoveLine> deliverySet) throws AxelorException {
+    List<InvoiceLine> invoiceLineList = new ArrayList<>();
+    Map<StockMove, Set<StockMoveLine>> stockMoveMap = new HashMap<>();
+    for (StockMoveLine stockMoveLine : deliverySet) {
+      StockMove stockMove = stockMoveLine.getStockMove();
+      stockMoveMap.computeIfAbsent(stockMove, k -> new HashSet<>()).add(stockMoveLine);
+    }
+
+    // Iterate over the grouped StockMoveLines and call the method
+    for (Map.Entry<StockMove, Set<StockMoveLine>> entry : stockMoveMap.entrySet()) {
+      StockMove stockMove = entry.getKey();
+      List<StockMoveLine> stockMoveLines = new ArrayList<>(entry.getValue());
+
+      // Prepare qtyToInvoiceMap for the group of StockMoveLines
+      Map<Long, BigDecimal> qtyToInvoiceMap = new HashMap<>();
+      for (StockMoveLine stockMoveLine : stockMoveLines) {
+        BigDecimal qtyToInvoice =
+            stockMoveLine.getRealQty().subtract(stockMoveLine.getQtyInvoiced());
+        qtyToInvoiceMap.put(stockMoveLine.getId(), qtyToInvoice);
+      }
+
+      // Call the method with the prepared arguments
+      invoiceLineList.addAll(
+          Beans.get(StockMoveInvoiceService.class)
+              .createInvoiceLines(invoice, stockMove, stockMoveLines, qtyToInvoiceMap));
+
+      Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
+      if (stockMoveSet == null) {
+        stockMoveSet = new HashSet<>();
+        invoice.setStockMoveSet(stockMoveSet);
+      }
+      stockMoveSet.add(stockMove);
+    }
+
+    return invoiceLineList;
   }
 }

@@ -109,6 +109,9 @@
     <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
       ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
 
+    <integer name="invoicingModeSelect" selection="line.invoicing.mode.select"
+      title="Invoicing mode"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>
