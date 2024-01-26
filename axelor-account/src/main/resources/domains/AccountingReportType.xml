@@ -38,6 +38,10 @@
 		public static final int COMPARISON_SAME_PERIOD_ON_PREVIOUS_YEAR = 3;
 		public static final int COMPARISON_OTHER_PERIOD = 4;
 
+		// Report export type
+		public static final int REPORT = 1;
+		public static final int EXPORT = 2;
+
 	]]></extra-code>
 
   </entity>

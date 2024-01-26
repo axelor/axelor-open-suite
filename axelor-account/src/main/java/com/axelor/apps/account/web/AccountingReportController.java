@@ -307,4 +307,19 @@ public class AccountingReportController {
 
     response.setView(actionViewBuilder.map());
   }
+
+  public void setAccountingReportTypeDomain(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    boolean isCustom = (boolean) request.getContext().get("_isCustom");
+    String accountingReportTypeIds = "0";
+
+    if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {
+      accountingReportTypeIds =
+          Beans.get(AccountingReportToolService.class)
+              .getAccountingReportTypeIds(accountingReport, isCustom);
+    }
+
+    response.setAttr(
+        "reportType", "domain", String.format("self.id IN (%s)", accountingReportTypeIds));
+  }
 }

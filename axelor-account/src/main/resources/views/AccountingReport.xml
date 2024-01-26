@@ -50,7 +50,7 @@
         onChange="action-accounting-report-date-change-validate"/>
       <field name="reportType"
         onChange="action-group-account-accounting-report-reporttype-onchange"
-        onSelect="action-accounting-report-attrs-report-type-onselect"
+        onSelect="action-accounting-report-method-set-report-type-domain"
         domain="self.reportExportTypeSelect = 1"/>
       <field name="exportTypeSelect" selection-in="['pdf','xlsx','ods']"/>
     </panel>
@@ -365,10 +365,14 @@
   <!-- ACTION ATTRS -->
 
   <action-attrs name="action-attrs-accounting-report-attrs-move-status-domain">
-    <attribute name="selection-in" for="moveStatusSelect" if="_isCustom"
+    <attribute name="selection-in" for="moveStatusSelect"
+      if="_isCustom &amp;&amp; companySet"
       expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, companySet)"/>
-    <attribute name="selection-in" for="moveStatusSelect" if="!_isCustom"
+    <attribute name="selection-in" for="moveStatusSelect"
+      if="!_isCustom &amp;&amp; company"
       expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, company)"/>
+    <attribute name="hidden" for="moveStatusSelect" expr="eval: true"
+      if="!company || !companySet"/>
   </action-attrs>
 
   <action-attrs name="action-accounting-report-attrs-period-domain">
@@ -406,13 +410,6 @@
   <action-attrs name="action-accounting-report-attrs-display-anomalies">
     <attribute name="hidden" for="tracebackPanel"
       expr="eval: reportType?.typeSelect != 3000 || __repo__(TraceBack).all().filter(&quot; self.ref = 'com.axelor.apps.account.db.AccountingReport' AND self.refId = ? &quot;, id).count() == 0"/>
-  </action-attrs>
-
-  <action-attrs name="action-accounting-report-attrs-report-type-onselect">
-    <attribute name="domain" for="reportType" if="!_isCustom"
-      expr="eval: &quot; self.reportExportTypeSelect = 1 AND self.typeSelect &lt;&gt; 3000 &quot;"/>
-    <attribute name="domain" for="reportType" if="_isCustom"
-      expr="eval: &quot; self.reportExportTypeSelect = 1 AND self.typeSelect = 3000 &quot;"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -587,6 +584,11 @@
   <action-method name="action-accounting-report-method-create-export-from-report">
     <call class="com.axelor.apps.account.web.AccountingReportController"
       method="createExportFromReport"/>
+  </action-method>
+
+  <action-method name="action-accounting-report-method-set-report-type-domain">
+    <call class="com.axelor.apps.account.web.AccountingReportController"
+      method="setAccountingReportTypeDomain"/>
   </action-method>
 
   <action-validate name="action-accounting-report-date-change-validate">
