@@ -6,7 +6,8 @@
   <form name="app-expense-config-form" title="App Expense"
     model="com.axelor.studio.db.AppExpense" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
-      <field name="computeDistanceWithWebService"/>
+      <field name="computeDistanceWithWebService" widget="boolean-switch"/>
+      <field name="isOrphanExpenseLineManaged" widget="boolean-switch"/>
     </panel>
 
     <panel-mail name="mailPanel">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.CurrencyScaleServiceSale;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -86,6 +87,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
+      CurrencyScaleServiceSale currencyScaleServiceSale,
       BudgetService budgetService,
       BudgetToolsService budgetToolsService) {
     super(
@@ -102,6 +104,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         commonInvoiceService,
         invoiceLineOrderService,
         saleInvoicingStateService,
+        currencyScaleServiceSale,
         appBusinessProjectService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
@@ -308,8 +311,11 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
 
   @Override
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
+    LocalDate date =
+        saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
-        saleOrder.getCompany(), saleOrder.getSaleOrderLineList())) {
+            saleOrder.getCompany(), saleOrder.getSaleOrderLineList())
+        || date == null) {
       return;
     }
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
@@ -317,7 +323,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           saleOrderLine.getAnalyticMoveLineList(),
           saleOrderLine.getAccount(),
           saleOrder.getCompany(),
-          saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate(),
+          date,
           saleOrderLine.getCompanyExTaxTotal(),
           saleOrderLine);
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);

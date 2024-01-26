@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -156,6 +156,24 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  public boolean areLinesOutsourced(ManufOrder manufOrder) {
+
+    if (manufOrder.getOutsourcing()) {
+      return false;
+    }
+    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+  }
+
+  @Override
+  public void setOperationOrdersOutsourcing(ManufOrder manufOrder) {
+    if (manufOrder != null && manufOrder.getOperationOrderList() != null) {
+      manufOrder
+          .getOperationOrderList()
+          .forEach(oo -> oo.setOutsourcing(manufOrder.getOutsourcing()));
+    }
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public ManufOrder generateManufOrder(
       Product product,
@@ -221,9 +239,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_MRP)
         || manufOrderOrigin.equals(ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER)) {
       manufOrder = manufOrderWorkflowService.plan(manufOrder);
-      if (Boolean.TRUE.equals(manufOrder.getProdProcess().getGeneratePurchaseOrderOnMoPlanning())) {
-        manufOrderWorkflowService.createPurchaseOrder(manufOrder);
-      }
+      manufOrderWorkflowService.createPurchaseOrders(manufOrder);
     }
 
     return manufOrderRepo.save(manufOrder);
@@ -683,23 +699,19 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         Beans.get(ManufOrderStockMoveService.class);
     Optional<StockMove> stockMoveOpt =
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
-    Company company = manufOrder.getCompany();
 
-    StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
-    StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
-      stockMove = stockMoveOpt.get();
+      return stockMoveOpt.get();
     } else {
-      stockMove =
-          manufOrderStockMoveService._createToConsumeStockMove(
-              manufOrder, company, fromStockLocation, virtualStockLocation);
-      manufOrder.addInStockMoveListItem(stockMove);
-      Beans.get(StockMoveService.class).plan(stockMove);
+      return manufOrderStockMoveService
+          .createAndPlanToConsumeStockMove(manufOrder)
+          .map(
+              sm -> {
+                manufOrder.addInStockMoveListItem(sm);
+                return sm;
+              })
+          .orElse(null);
     }
-    return stockMove;
   }
 
   @Override
@@ -721,25 +733,20 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         manufOrderStockMoveService.getPlannedStockMove(manufOrder.getOutStockMoveList());
 
     Company company = manufOrder.getCompany();
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForProducedStockMove(manufOrder, company);
-    StockLocation producedProductStockLocation =
-        manufOrderStockMoveService.getProducedProductStockLocation(manufOrder, company);
 
     StockMove stockMove;
     if (stockMoveOpt.isPresent()) {
-      stockMove = stockMoveOpt.get();
+      return stockMoveOpt.get();
     } else {
-      stockMove =
-          manufOrderStockMoveService._createToProduceStockMove(
-              manufOrder,
-              manufOrder.getCompany(),
-              virtualStockLocation,
-              producedProductStockLocation);
-      manufOrder.addOutStockMoveListItem(stockMove);
-      Beans.get(StockMoveService.class).plan(stockMove);
+      return manufOrderStockMoveService
+          .createAndPlanToProduceStockMove(manufOrder)
+          .map(
+              sm -> {
+                manufOrder.addOutStockMoveListItem(sm);
+                return sm;
+              })
+          .orElse(null);
     }
-    return stockMove;
   }
 
   @Override

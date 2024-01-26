@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -225,8 +225,7 @@ public class StockMoveLineController {
 
       if (!context.containsKey("_ids")) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       }
 
       List<Long> ids =
@@ -240,8 +239,7 @@ public class StockMoveLineController {
 
       if (CollectionUtils.isEmpty(ids)) {
         throw new AxelorException(
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(AccountExceptionMessage.CUT_OFF_BATCH_NO_LINE));
+            TraceBackRepository.CATEGORY_NO_VALUE, I18n.get(AccountExceptionMessage.BATCH_NO_LINE));
       } else {
         Batch batch = Beans.get(StockMoveLineServiceSupplychain.class).validateCutOffBatch(ids, id);
         response.setInfo(batch.getComments());

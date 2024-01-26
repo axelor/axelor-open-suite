@@ -36,7 +36,7 @@
       form-view="analytic-account-form"/>
     <field name="accountType"/>
     <field name="percentage"/>
-    <field name="originalPieceAmount" aggregate="sum" x-sclae="currency.numberOfDecimals"/>
+    <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="amount" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
@@ -150,7 +150,7 @@
       <field name="project" grid-view="project-grid" form-view="project-form"
         if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
-      <field name="currency" hidden="true"/>
+      <field name="currency" hidden="true" grid-view="currency-grid" form-view="currency-form"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
     </panel>
   </form>

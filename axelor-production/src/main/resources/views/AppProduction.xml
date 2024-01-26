@@ -50,6 +50,9 @@
           <field name="enableToolManagement" widget="boolean-switch"/>
           <field name="manageOutsourcing" widget="boolean-switch"
             onChange="action-app-production-validate-manage-outsourcing-onchange"/>
+          <field name="generatePurchaseOrderOnMoPlanning" widget="boolean-switch"
+            showIf="manageOutsourcing"
+            help="When enabled, new prod process and prod process line will have their option to generate purchase order set to true."/>
           <field name="manageMpsCharge" widget="boolean-switch"/>
           <panel name="manageWorkshopPanel" colSpan="6" itemSpan="12">
             <field name="manageWorkshop" widget="boolean-switch"/>

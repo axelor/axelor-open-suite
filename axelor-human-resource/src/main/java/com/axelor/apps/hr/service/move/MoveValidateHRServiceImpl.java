@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
@@ -72,6 +73,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
       MoveControlService moveControlService,
       MoveCutOffService moveCutOffService,
       MoveLineCheckService moveLineCheckService,
+      CompanyConfigService companyConfigService,
       CurrencyScaleServiceAccount currencyScaleServiceAccount,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository) {
@@ -94,6 +96,7 @@ public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl
         moveControlService,
         moveCutOffService,
         moveLineCheckService,
+        companyConfigService,
         currencyScaleServiceAccount,
         moveLineFinancialDiscountService);
     this.expenseRepository = expenseRepository;

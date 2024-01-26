@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.StringUtils;
 
 public class ResearchRequestServiceImpl implements ResearchRequestService {
 
@@ -256,7 +255,7 @@ public class ResearchRequestServiceImpl implements ResearchRequestService {
 
     if (fields.length == 1 || !value.isPresent()) {
       // simple case
-      return value.map(Object::toString).orElse(StringUtils.EMPTY);
+      return value.map(Object::toString).orElse("");
     } else {
       // handle subobject case
       MetaField metaField =

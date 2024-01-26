@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationServiceImpl;
@@ -54,7 +55,8 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
       SequenceService sequenceService,
       AccountConfigService accountConfigService,
       AppBaseService appBaseService,
-      FixedAssetValidateService fixedAssetValidateService) {
+      FixedAssetValidateService fixedAssetValidateService,
+      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
     super(
         fixedAssetLineGenerationService,
         fixedAssetImportService,
@@ -64,7 +66,8 @@ public class FixedAssetServiceSupplyChainImpl extends FixedAssetGenerationServic
         sequenceService,
         accountConfigService,
         appBaseService,
-        fixedAssetValidateService);
+        fixedAssetValidateService,
+        currencyScaleServiceAccount);
   }
 
   @Transactional(rollbackOn = {Exception.class})

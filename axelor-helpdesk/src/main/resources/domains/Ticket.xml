@@ -27,7 +27,6 @@
     <many-to-one name="assignedToUser" ref="com.axelor.auth.db.User" title="Assigned to"/>
     <many-to-one name="responsibleUser" ref="com.axelor.auth.db.User"
       title="User in charge of the issue"/>
-    <integer name="statusSelect" selection="helpdesk.status.select" title="Status"/>
     <many-to-one name="ticketType" ref="com.axelor.apps.helpdesk.db.TicketType"
       title="Ticket type"/>
     <datetime name="startDateT" title="Start date"/>
@@ -44,6 +43,9 @@
     <decimal name="realTotalDuration" title="Real total duration (Hours)" min="0"
       default="0"/>
     <boolean name="timerState" readonly="true"/>
+
+    <many-to-one name="ticketStatus" ref="com.axelor.apps.helpdesk.db.TicketStatus"
+      title="Status"/>
 
     <extra-code>
 			<![CDATA[
