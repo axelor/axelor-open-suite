@@ -1208,10 +1208,10 @@ public class InvoiceController {
 
       Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
 
-      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
-      }
+      // if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
+      Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+      // }
 
       response.setValue("financialDiscount", invoice.getFinancialDiscount());
       response.setValue("legalNotice", invoice.getLegalNotice());
