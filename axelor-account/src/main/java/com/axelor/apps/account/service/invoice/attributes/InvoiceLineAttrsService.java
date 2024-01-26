@@ -19,4 +19,7 @@ public interface InvoiceLineAttrsService {
 
   void addCompanyInTaxTotalScale(
       Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
+
+  void addCoefficientScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix);
 }

@@ -236,6 +236,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     }
     invoiceLineTax.setVatSystemSelect(vatSystem);
     invoiceLineTax.setTaxLine(taxLine);
+    invoiceLineTax.setCoefficient(invoiceLine.getCoefficient());
     return invoiceLineTax;
   }
 
@@ -256,7 +257,8 @@ public class TaxInvoiceLine extends TaxGenerator {
           computeAmount(
               exTaxBase,
               taxValue,
-              currencyScaleServiceAccount.getScale(invoiceLineTax.getInvoice()));
+              currencyScaleServiceAccount.getScale(invoiceLineTax.getInvoice()),
+              null);
 
       invoiceLineTax.setTaxTotal(taxTotal);
       invoiceLineTax.setInTaxTotal(invoiceLineTax.getExTaxBase().add(taxTotal));
@@ -270,7 +272,8 @@ public class TaxInvoiceLine extends TaxGenerator {
           computeAmount(
               companyExTaxBase,
               taxValue,
-              currencyScaleServiceAccount.getCompanyScale(invoiceLineTax.getInvoice()));
+              currencyScaleServiceAccount.getCompanyScale(invoiceLineTax.getInvoice()),
+              null);
 
       invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
       invoiceLineTax.setCompanyInTaxTotal(
@@ -284,7 +287,8 @@ public class TaxInvoiceLine extends TaxGenerator {
           computeAmount(
               subTotalExcludingFixedAssets,
               taxValue,
-              currencyScaleServiceAccount.getScale(invoiceLineTax.getInvoice())));
+              currencyScaleServiceAccount.getScale(invoiceLineTax.getInvoice()),
+              null));
 
       invoiceLineTax.setSubTotalOfFixedAssets(
           currencyScaleServiceAccount.getScaledValue(
@@ -299,7 +303,8 @@ public class TaxInvoiceLine extends TaxGenerator {
           computeAmount(
               companySubTotalExcludingFixedAssets,
               taxValue,
-              currencyScaleServiceAccount.getCompanyScale(invoiceLineTax.getInvoice())));
+              currencyScaleServiceAccount.getCompanyScale(invoiceLineTax.getInvoice()),
+              null));
       invoiceLineTax.setCompanySubTotalOfFixedAssets(
           currencyScaleServiceAccount.getCompanyScaledValue(
               invoiceLineTax.getInvoice(),

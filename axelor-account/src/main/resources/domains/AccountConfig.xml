@@ -181,6 +181,7 @@
       title="Fixed asset category required on invoices"/>
     <boolean name="isPrintInvoicesInCompanyLanguage"
       title="Print invoices in company localization" default="true"/>
+    <boolean name="isInvoiceCoefficientEnabled" title="Enable coefficient in invoice line"/>
 
     <!-- Accounting config template -->
     <many-to-one name="accountingConfigTemplate"

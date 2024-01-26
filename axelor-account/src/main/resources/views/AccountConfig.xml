@@ -272,6 +272,7 @@
         <field name="generateMoveForInvoicePayment" widget="boolean-switch"/>
         <field name="invoiceInAtiSelect"/>
         <field name="fixedAssetCatReqOnInvoice" widget="boolean-switch"/>
+        <field name="isInvoiceCoefficientEnabled" widget="boolean-switch"/>
         <field name="invoiceAutomaticMail" widget="boolean-switch"/>
         <field name="invoiceMessageTemplate" requiredIf="invoiceAutomaticMail"
           showIf="invoiceAutomaticMail" domain="self.metaModel.name = 'Invoice'"/>
