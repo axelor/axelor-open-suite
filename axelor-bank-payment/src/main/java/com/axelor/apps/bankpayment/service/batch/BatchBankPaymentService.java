@@ -21,8 +21,8 @@ package com.axelor.apps.bankpayment.service.batch;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
-import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public interface BatchBankPaymentService {

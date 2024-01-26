@@ -8,7 +8,6 @@
     <field name="code"/>
     <field name="name"/>
     <field name="dayNb"/>
-    <field name="dayNbBetweenPurchaseAndProposal"/>
   </grid>
 
   <form name="mrp-family-form" title="MRP family"
@@ -17,7 +16,6 @@
       <field name="code"/>
       <field name="name" required="true"/>
       <field name="dayNb"/>
-      <field name="dayNbBetweenPurchaseAndProposal"/>
     </panel>
   </form>
 

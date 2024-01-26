@@ -19,4 +19,6 @@ dependencies {
 	api project(":modules:axelor-contract")
 
 	implementation libs.commons_lang3
+	implementation libs.jaxb_bind_api
+
 }

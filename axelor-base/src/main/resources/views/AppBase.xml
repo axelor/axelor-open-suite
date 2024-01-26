@@ -86,9 +86,6 @@
         </panel>
         <field name="emailLinkList" colSpan="12"
           onChange="action-base-method-model-email-link-onsave"/>
-        <panel name="stylePanel" title="Style" colSpan="12">
-          <field name="customAppStyle" colSpan="12" widget="CodeEditor" x-code-syntax="css"/>
-        </panel>
       </panel>
       <panel name="interfacesPanel" title="Interfaces" colSpan="12">
         <panel name="mapPanel" title="Mapping" colSpan="12">
