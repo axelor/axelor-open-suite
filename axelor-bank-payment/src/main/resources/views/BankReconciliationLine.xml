@@ -27,7 +27,8 @@
     <field name="credit" aggregate="sum" x-scale="$currencyNumberOfDecimals">
       <hilite if="credit > 0" color="red"/>
     </field>
-    <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum" x-scale=""/>
+    <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"
+      x-scale="$currencyNumberOfDecimals"/>
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
     <field name="account" canEdit="false"
       onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"

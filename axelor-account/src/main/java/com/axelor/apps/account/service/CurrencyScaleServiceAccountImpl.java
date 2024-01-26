@@ -243,4 +243,34 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   protected int getCurrencyScale(Currency currency) {
     return currency != null ? currency.getNumberOfDecimals() : this.getScale();
   }
+
+  @Override
+  public boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue) {
+    amount1 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount1)
+            : this.getScaledValue(moveLine, amount1);
+    amount2 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount2)
+            : this.getScaledValue(moveLine, amount2);
+
+    return amount1 != null && (amount1.compareTo(amount2) > 0);
+  }
+
+  @Override
+  public boolean equals(
+      BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue) {
+    amount1 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount1)
+            : this.getScaledValue(moveLine, amount1);
+    amount2 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount2)
+            : this.getScaledValue(moveLine, amount2);
+
+    return amount1.compareTo(amount2) == 0;
+  }
 }
