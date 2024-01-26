@@ -976,11 +976,14 @@
   <action-group name="action-invoice-term-group-amount-onchange">
     <action name="action-invoice-term-method-compute-customized-percentage"/>
     <action name="action-invoice-term-record-update-customized-true"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-move-line-amount-onchange">
     <action name="action-invoice-term-group-amount-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-percentage-onchange">
@@ -990,12 +993,15 @@
 
   <action-group name="action-invoice-term-group-move-line-percentage-onchange">
     <action name="action-invoice-term-group-percentage-onchange"/>
-    <action name="action-invoice-term-method-compute-financial-discount"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-invoice-percentage-onchange">
     <action name="action-invoice-term-record-update-customized"/>
     <action name="action-invoice-term-group-percentage-onchange"/>
+    <action name="action-invoice-term-method-compute-financial-discount"
+      if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">
