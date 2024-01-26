@@ -491,7 +491,7 @@ public class InvoiceController {
                         .collect(Collectors.toList()));
         fileLink = Beans.get(InvoicePrintService.class).printInvoices(ids);
         title = I18n.get("Invoices");
-      } else if (context.get("id") != null
+      } else if (context.get("_invoiceId") != null
           && (Wizard.class.equals(context.getContextClass())
               || Invoice.class.equals(context.getContextClass()))) {
         String format = context.get("format") != null ? context.get("format").toString() : "pdf";
@@ -517,7 +517,7 @@ public class InvoiceController {
             Beans.get(InvoicePrintService.class)
                 .printInvoice(
                     Beans.get(InvoiceRepository.class)
-                        .find(Long.parseLong(context.get("id").toString())),
+                        .find(Long.parseLong(context.get("_invoiceId").toString())),
                     false,
                     format,
                     reportType,
@@ -537,7 +537,8 @@ public class InvoiceController {
   public void regenerateAndShowInvoice(ActionRequest request, ActionResponse response) {
     Context context = request.getContext();
     Invoice invoice =
-        Beans.get(InvoiceRepository.class).find(Long.parseLong(context.get("id").toString()));
+        Beans.get(InvoiceRepository.class)
+            .find(Long.parseLong(context.get("_invoiceId").toString()));
     Integer reportType =
         context.get("reportType") != null
             ? Integer.parseInt(context.get("reportType").toString())
