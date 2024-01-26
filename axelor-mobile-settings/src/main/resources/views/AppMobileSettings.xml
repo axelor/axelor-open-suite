@@ -117,7 +117,7 @@
           <field name="isLineCreationOfTimesheetDetailsAllowed" widget="boolean-switch"/>
           <field name="isEditionOfDateAllowed" widget="boolean-switch"/>
           <field name="isTimesheetProjectInvoicingEnabled" widget="boolean-switch"/>
-          <field name="timesheetImputationSelect" widget="MultiSelect"/>
+          <field name="fieldsToShowOnTimesheet" widget="MultiSelect"/>
         </panel>
       </panel>
     </panel-tabs>

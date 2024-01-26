@@ -69,7 +69,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
-        getFieldsToShowOnTimesheet(appMobileSettings.getTimesheetImputationSelect()));
+        getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()));
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {
