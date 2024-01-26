@@ -71,8 +71,4 @@ public interface MoveLineAttrsService {
 
   void addCutOffDatesRequired(
       Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
-
-  void addVatSystemSelectReadonly(MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
-
-  boolean isVatSystemSelectReadonly(MoveLine moveLine);
 }

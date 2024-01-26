@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.PeriodServiceAccount;
@@ -36,7 +35,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.inject.Inject;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -320,26 +318,5 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
     this.addAttr("cutOffStartDate", "required", cutOffDatesRequired, attrsMap);
     this.addAttr("cutOffEndDate", "required", cutOffDatesRequired, attrsMap);
-  }
-
-  @Override
-  public void addVatSystemSelectReadonly(
-      MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
-    this.addAttr("vatSystemSelect", "readonly", this.isVatSystemSelectReadonly(moveLine), attrsMap);
-  }
-
-  @Override
-  public boolean isVatSystemSelectReadonly(MoveLine moveLine) {
-    String[] technicalTypeSelects = {
-      AccountTypeRepository.TYPE_CHARGE,
-      AccountTypeRepository.TYPE_INCOME,
-      AccountTypeRepository.TYPE_DEBT,
-      AccountTypeRepository.TYPE_IMMOBILISATION
-    };
-
-    return moveLine.getAccount() != null
-        && (moveLine.getAccount().getAccountType() == null
-            || !Arrays.asList(technicalTypeSelects)
-                .contains(moveLine.getAccount().getAccountType().getTechnicalTypeSelect()));
   }
 }
