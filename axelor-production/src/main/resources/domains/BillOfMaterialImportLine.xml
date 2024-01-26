@@ -22,6 +22,7 @@
     <many-to-one name="product" title="Product" ref="com.axelor.apps.base.db.Product"/>
     <many-to-one name="description" title="Description"
       ref="com.axelor.meta.db.MetaFile"/>
+    <boolean name="isCreatedProduct" title="Created product"/>
 
   </entity>
 </domain-models>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,13 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.service.bomimport;
+package com.axelor.apps.production.web;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.BillOfMaterialImportLine;
+import com.axelor.apps.production.service.bomimport.BillOfMaterialImportLineService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
+import com.google.inject.Singleton;
 
-public interface BillOfMaterialImportLineService {
-  Integer computeBoMLevel(BillOfMaterialImportLine billOfMaterialImportLine) throws AxelorException;
+@Singleton
+public class BillOfMaterialImportLineController {
+  public void computeIsCreatedProduct(ActionRequest request, ActionResponse response) {
+    BillOfMaterialImportLine billOfMaterialImportLine =
+        request.getContext().asType(BillOfMaterialImportLine.class);
 
-  boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine);
+    response.setValue(
+        "isCreatedProduct",
+        Beans.get(BillOfMaterialImportLineService.class)
+            .computeIsCreatedProduct(billOfMaterialImportLine));
+  }
 }
