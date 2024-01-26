@@ -22,6 +22,7 @@ public class InvoiceLineGroupServiceImpl implements InvoiceLineGroupService {
       invoiceLineAttrsService.addInTaxPriceScale(invoice, attrsMap, prefix);
       invoiceLineAttrsService.addExTaxTotalScale(invoice, attrsMap, prefix);
       invoiceLineAttrsService.addInTaxTotalScale(invoice, attrsMap, prefix);
+      invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, prefix);
     }
   }
 }
