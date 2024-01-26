@@ -1,0 +1,2 @@
+title : "INVOICE : change context variables _id to _invoiceId in Invoice view and InvoiceController"
+type: fix
