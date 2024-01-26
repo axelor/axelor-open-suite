@@ -53,7 +53,7 @@ public class BillOfMaterialImportLineServiceImpl implements BillOfMaterialImport
   }
 
   @Override
-  public Boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine) {
+  public boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine) {
     Product product = billOfMaterialImportLine.getProduct();
     return product != null
         && product.getCreatedFromBOMImportId() != null

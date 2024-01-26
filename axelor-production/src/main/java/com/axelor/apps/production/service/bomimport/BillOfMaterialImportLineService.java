@@ -24,5 +24,5 @@ import com.axelor.apps.production.db.BillOfMaterialImportLine;
 public interface BillOfMaterialImportLineService {
   Integer computeBoMLevel(BillOfMaterialImportLine billOfMaterialImportLine) throws AxelorException;
 
-  Boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine);
+  boolean computeIsCreatedProduct(BillOfMaterialImportLine billOfMaterialImportLine);
 }
