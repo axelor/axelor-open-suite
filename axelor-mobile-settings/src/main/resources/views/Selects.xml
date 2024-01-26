@@ -24,4 +24,12 @@
     <option value="donut">Donut</option>
   </selection>
 
+  <selection name="mobilesettings.employee.timesheet.imputation.select">
+    <option value="project">Project</option>
+    <option value="projectTask">Project task</option>
+    <option value="manufOrder">Manuf order</option>
+    <option value="operationOrder">Operation order</option>
+    <option value="product">Activity</option>
+  </selection>
+
 </object-views>

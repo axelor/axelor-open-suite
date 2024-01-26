@@ -66,6 +66,8 @@
     <boolean name="isEditionOfDateAllowed" title="Allow edition of date" default="false"/>
     <boolean name="isTimesheetProjectInvoicingEnabled" title="Enable project invoicing"
       default="false"/>
+    <string name="fieldsToShowOnTimesheet" title="Fields to show on timesheet"
+      selection="mobilesettings.employee.timesheet.imputation.select"/>
     <boolean name="isStockLocationManagementEnabled"
       title="Enable default stock location management"/>
 

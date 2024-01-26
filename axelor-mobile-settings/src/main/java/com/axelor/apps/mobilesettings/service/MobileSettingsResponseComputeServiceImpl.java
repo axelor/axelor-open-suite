@@ -68,7 +68,8 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsLineCreationOfTimesheetDetailsAllowed(),
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
-        appMobileSettings.getIsStockLocationManagementEnabled());
+        appMobileSettings.getIsStockLocationManagementEnabled(),
+        getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()));
   }
 
   protected Boolean checkConfigWithRoles(Boolean config, Set<Role> authorizedRoles) {
@@ -140,5 +141,9 @@ public class MobileSettingsResponseComputeServiceImpl
           .collect(Collectors.toList());
     }
     return List.of();
+  }
+
+  protected List<String> getFieldsToShowOnTimesheet(String timesheetImputationSelect) {
+    return List.of(timesheetImputationSelect.split(","));
   }
 }
