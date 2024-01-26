@@ -2494,7 +2494,7 @@ InvoiceSet.length > 0))"
     <context name="_statusSelect" expr="eval: statusSelect"/>
     <context name="_operationSubTypeSelect" expr="eval: operationSubTypeSelect"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
-    <context name="id" expr="eval: id"/>
+    <context name="_invoiceId" expr="eval: id"/>
     <context name="_localization" expr="eval: localization"/>
   </action-view>
 
