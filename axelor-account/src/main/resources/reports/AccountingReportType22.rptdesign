@@ -363,7 +363,7 @@
 	Company.height 							AS logo_height,
 	Company.width 							AS logo_width,
 	AccountingReport.date_from,
-	AccountingReport.date_to, 
+	AccountingReport.date_to,  
 	AccountingReport.date_val 				AS report_date,
 	AccountingReport.publication_date_time 	AS report_date_edition,
 	MetaFile.file_path 						AS logo_path,
