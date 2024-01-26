@@ -87,7 +87,7 @@ public class ExpenseRestController {
   @Path("/quick-create")
   @POST
   @HttpExceptionHandler
-  public Response quickCreateExpense(ExpensePostRequest requestBody) {
+  public Response quickCreateExpense() {
     new SecurityCheck().writeAccess(Expense.class).createAccess(Expense.class).check();
 
     Expense expense = Beans.get(ExpenseCreateService.class).createExpense(AuthUtils.getUser());
