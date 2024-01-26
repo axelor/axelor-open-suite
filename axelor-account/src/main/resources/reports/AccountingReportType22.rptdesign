@@ -370,7 +370,7 @@
 	Currency.code 							AS currency,
 	ReportType.type_select 					AS report_type,
 	AccountingReport.ref
-            
+    
 FROM public.account_accounting_report AS AccountingReport
 
 INNER JOIN public.base_company AS Company 
