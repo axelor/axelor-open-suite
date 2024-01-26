@@ -40,7 +40,7 @@
     <field name="saleOrder.currency"/>
     <field name="toInvoice"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
-      readonlyIf="amountInvoiced >= exTaxTotal" icon="fa-check-circle"
+      readonlyIf="$number(amountInvoiced) >= $number(exTaxTotal)" icon="fa-check-circle"
       onClick="action-sale-order-line-method-update-to-invoice"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="invoiced" hidden="true"/>
