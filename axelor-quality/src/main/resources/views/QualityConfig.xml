@@ -21,6 +21,12 @@
       <field name="qiActionDistributionSequence"
         domain="self.codeSelect = 'qiActionDistribution' AND self.company = :company"
         grid-view="sequence-grid" form-view="sequence-form" canNew="true" canEdit="true"/>
+      <field name="qiDecisionDistributionBirtTemplate"
+        domain="self.metaModel.name = 'QIDecisionDistribution'" grid-view="birt-template-grid"
+        form-view="birt-template-form"/>
+      <field name="qiDecisionDistributionSequence" form-view="sequence-form"
+        grid-view="sequence-grid" canNew="true" canEdit="true"
+        domain="self.codeSelect = 'qiDecisionDistribution' AND self.company = :company"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>

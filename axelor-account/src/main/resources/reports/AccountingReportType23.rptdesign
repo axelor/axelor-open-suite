@@ -3000,7 +3000,7 @@ WHERE Invoice.status_select = 3 AND
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF>
-if(params["Locale"].value == 'fr') {
+if(params["Locale"].value.substring(0, 2) == 'fr') {
 java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
@@ -3065,7 +3065,7 @@ java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-if(params["Locale"].value == 'fr') {
+if(params["Locale"].value.substring(0, 2) == 'fr') {
 java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{
@@ -3110,7 +3110,7 @@ java.lang.String.format(row["translation"],row._outer._outer["dateTo"])
                                     </list-property>
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF format="HTML">
-if(params["Locale"].value == 'fr') {
+if(params["Locale"].value.substring(0, 2) == 'fr') {
 java.lang.String.format(row["translation"],Formatter.format(row._outer._outer["dateTo"], "dd-MM-yyyy"))
 }
 else{

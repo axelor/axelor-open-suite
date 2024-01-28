@@ -372,6 +372,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal companyInTaxTotal;
     BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
     int currencyScale = currencyScaleServiceAccount.getScale(invoice);
+    BigDecimal coefficient = invoiceLine.getCoefficient();
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
 
@@ -384,14 +385,16 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
 
     if (!invoice.getInAti()) {
       exTaxTotal =
-          InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted, currencyScale);
+          InvoiceLineManagement.computeAmount(
+              invoiceLine.getQty(), priceDiscounted, currencyScale, coefficient);
       inTaxTotal =
           exTaxTotal
               .add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))))
               .setScale(currencyScale, RoundingMode.HALF_UP);
     } else {
       inTaxTotal =
-          InvoiceLineManagement.computeAmount(invoiceLine.getQty(), priceDiscounted, currencyScale);
+          InvoiceLineManagement.computeAmount(
+              invoiceLine.getQty(), priceDiscounted, currencyScale, coefficient);
       exTaxTotal =
           inTaxTotal.divide(
               taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
@@ -530,6 +533,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     TaxLine taxLine = invoiceLine.getTaxLine();
     BigDecimal priceDiscounted = this.computeDiscount(invoiceLine, invoice.getInAti());
     int currencyScale = currencyScaleServiceAccount.getScale(invoice);
+    BigDecimal coefficient = invoiceLine.getCoefficient();
 
     if (taxLine != null) {
       taxRate = taxLine.getValue();
@@ -537,13 +541,15 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
       invoiceLine.setTaxCode(taxLine.getTax().getCode());
     }
     if (Boolean.FALSE.equals(invoice.getInAti())) {
-      exTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale);
+      exTaxTotal =
+          InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale, coefficient);
       inTaxTotal =
           exTaxTotal
               .add(exTaxTotal.multiply(taxRate.divide(new BigDecimal(100))))
               .setScale(currencyScale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale);
+      inTaxTotal =
+          InvoiceLineManagement.computeAmount(qty, priceDiscounted, currencyScale, coefficient);
       exTaxTotal =
           inTaxTotal.divide(
               taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
@@ -734,6 +740,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     invoiceLineAttrsService.addInTaxTotalScale(invoice, attrsMap, "");
     invoiceLineAttrsService.addCompanyExTaxTotalScale(invoice, attrsMap, "");
     invoiceLineAttrsService.addCompanyInTaxTotalScale(invoice, attrsMap, "");
+    invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, "");
 
     return attrsMap;
   }

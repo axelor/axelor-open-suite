@@ -42,4 +42,7 @@ public final class QualityExceptionMessage {
 
   public static final String QI_ACTION_DISTRIBUTION_SEQUENCE_NOT_SET = /*$$(*/
       "Please configure a sequence for action distribution." /*)*/;
+
+  public static final String QI_DECISION_DISTRIBUTION_SEQUENCE_NOT_FOUND = /*$$(*/
+      "Please configure a sequence for decision distribution." /*)*/;
 }

@@ -91,6 +91,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
   protected Integer typeSelect = 0;
   protected int currencyScale;
   protected int companyCurrencyScale;
+  protected BigDecimal coefficient;
 
   public static final int DEFAULT_SEQUENCE = 0;
 
@@ -210,6 +211,12 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setQty(qty);
     invoiceLine.setUnit(unit);
 
+    if (coefficient == null) {
+      invoiceLine.setCoefficient(BigDecimal.ONE);
+    } else {
+      invoiceLine.setCoefficient(coefficient);
+    }
+
     invoiceLine.setTypeSelect(typeSelect);
 
     if (taxLine == null) {
@@ -274,13 +281,15 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
 
     if (!invoice.getInAti()) {
-      exTaxTotal = computeAmount(this.qty, this.priceDiscounted, this.currencyScale);
+      exTaxTotal =
+          computeAmount(this.qty, this.priceDiscounted, this.currencyScale, this.coefficient);
       inTaxTotal =
           exTaxTotal
               .add(exTaxTotal.multiply(taxRate))
               .setScale(this.currencyScale, RoundingMode.HALF_UP);
     } else {
-      inTaxTotal = computeAmount(this.qty, this.priceDiscounted, this.currencyScale);
+      inTaxTotal =
+          computeAmount(this.qty, this.priceDiscounted, this.currencyScale, this.coefficient);
       exTaxTotal =
           inTaxTotal.divide(
               taxRate.add(BigDecimal.ONE), this.currencyScale, BigDecimal.ROUND_HALF_UP);
@@ -340,7 +349,10 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     refundInvoiceLine.setExTaxTotal(
         computeAmount(
-            refundInvoiceLine.getQty(), refundInvoiceLine.getPrice(), this.currencyScale));
+            refundInvoiceLine.getQty(),
+            refundInvoiceLine.getPrice(),
+            this.currencyScale,
+            this.coefficient));
 
     LOG.debug(
         "Reimbursement of the invoice line {} => amount W.T : {}",
@@ -355,7 +367,8 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
 
     substract.setQty(invoiceLine1.getQty().add(invoiceLine2.getQty()));
     substract.setExTaxTotal(
-        computeAmount(substract.getQty(), substract.getPrice(), this.currencyScale));
+        computeAmount(
+            substract.getQty(), substract.getPrice(), this.currencyScale, this.coefficient));
 
     LOG.debug("Subtraction of two invoice lines: {}", substract);
 

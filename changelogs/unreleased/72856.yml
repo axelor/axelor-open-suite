@@ -1,0 +1,3 @@
+---
+title: "DebtRecovery : fix exception throwed when no debt recovery method found"
+type: fix
