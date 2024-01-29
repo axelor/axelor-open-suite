@@ -48,8 +48,7 @@ public class TimesheetRestController {
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet =
-        Beans.get(TimesheetCreateService.class)
-            .createTimesheet(requestBody.getFromDate(), null, requestBody.fetchTimesheetLines());
+        Beans.get(TimesheetCreateService.class).createTimesheet(requestBody.getFromDate(), null);
     Beans.get(TimerTimesheetGenerationService.class)
         .addTimersToTimesheet(requestBody.fetchTSTimers(), timesheet);
     Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
@@ -61,7 +60,7 @@ public class TimesheetRestController {
       summary = "Add timers to timesheet",
       tags = {"Timesheet"})
   @Path("/add-timer/{timesheetId}")
-  @POST
+  @PUT
   @HttpExceptionHandler
   public Response addTimersToTimesheet(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)

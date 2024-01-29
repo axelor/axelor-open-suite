@@ -1,7 +1,6 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.hr.db.TSTimer;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.time.LocalDate;
@@ -15,8 +14,6 @@ public class TimesheetPostRequest extends RequestPostStructure {
   @NotNull private LocalDate fromDate;
 
   private LocalDate toDate;
-
-  private List<Long> timesheetLineIdList;
 
   private List<Long> timerIdList;
 
@@ -36,32 +33,12 @@ public class TimesheetPostRequest extends RequestPostStructure {
     this.toDate = toDate;
   }
 
-  public List<Long> getTimesheetLineIdList() {
-    return timesheetLineIdList;
-  }
-
-  public void setTimesheetLineIdList(List<Long> timesheetLineIdList) {
-    this.timesheetLineIdList = timesheetLineIdList;
-  }
-
   public List<Long> getTimerIdList() {
     return timerIdList;
   }
 
   public void setTimerIdList(List<Long> timerIdList) {
     this.timerIdList = timerIdList;
-  }
-
-  public List<TimesheetLine> fetchTimesheetLines() {
-    if (CollectionUtils.isEmpty(timesheetLineIdList)) {
-      return Collections.emptyList();
-    }
-
-    List<TimesheetLine> timesheetLineList = new ArrayList<>();
-    for (Long id : timesheetLineIdList) {
-      timesheetLineList.add(ObjectFinder.find(TimesheetLine.class, id, ObjectFinder.NO_VERSION));
-    }
-    return timesheetLineList;
   }
 
   public List<TSTimer> fetchTSTimers() {

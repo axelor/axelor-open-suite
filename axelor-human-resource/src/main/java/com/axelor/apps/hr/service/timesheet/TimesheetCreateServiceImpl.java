@@ -17,13 +17,11 @@ import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetCreateServiceImpl implements TimesheetCreateService {
 
@@ -69,30 +67,15 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     return timesheet;
   }
 
-  @Transactional
   @Override
-  public Timesheet createTimesheet(
-      Employee employee,
-      LocalDate fromDate,
-      LocalDate toDate,
-      List<TimesheetLine> timesheetLineList)
-      throws AxelorException {
-    Timesheet timesheet = createTimesheet(employee, fromDate, null);
-    addLines(timesheet, timesheetLineList);
-    return timesheetRepository.save(timesheet);
-  }
-
-  @Override
-  public Timesheet createTimesheet(
-      LocalDate fromDate, LocalDate toDate, List<TimesheetLine> timesheetLineList)
-      throws AxelorException {
+  public Timesheet createTimesheet(LocalDate fromDate, LocalDate toDate) throws AxelorException {
     Employee employee = AuthUtils.getUser().getEmployee();
     if (employee == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE));
     }
-    return createTimesheet(employee, fromDate, toDate, timesheetLineList);
+    return createTimesheet(employee, fromDate, toDate);
   }
 
   @Override
@@ -135,17 +118,5 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     }
 
     return lines;
-  }
-
-  @Transactional
-  @Override
-  public void addLines(Timesheet timesheet, List<TimesheetLine> timesheetLineList) {
-    if (CollectionUtils.isEmpty(timesheetLineList)) {
-      return;
-    }
-
-    for (TimesheetLine timesheetLine : timesheetLineList) {
-      timesheet.addTimesheetLineListItem(timesheetLine);
-    }
   }
 }

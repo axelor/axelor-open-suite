@@ -46,7 +46,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
-    if (appHumanResourceService.getAppTimesheet().getNeedValidation()) {
+    if (!appHumanResourceService.getAppTimesheet().getNeedValidation()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_CONFIRM_NOT_NEEDED));

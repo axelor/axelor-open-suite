@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -18,10 +19,13 @@ import java.time.LocalDate;
 
 public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateService {
   protected TimesheetLineService timesheetLineService;
+  protected TimesheetLineRepository timesheetLineRepository;
 
   @Inject
-  public TimesheetLineCreateServiceImpl(TimesheetLineService timesheetLineService) {
+  public TimesheetLineCreateServiceImpl(
+      TimesheetLineService timesheetLineService, TimesheetLineRepository timesheetLineRepository) {
     this.timesheetLineService = timesheetLineService;
+    this.timesheetLineRepository = timesheetLineRepository;
   }
 
   @Transactional
@@ -46,7 +50,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
         timesheetLineService.createTimesheetLine(
             project, product, employee, date, timesheet, duration, comments);
     timesheetLine.setProjectTask(projectTask);
-    return timesheetLine;
+    return timesheetLineRepository.save(timesheetLine);
   }
 
   protected void checkDate(LocalDate date, Timesheet timesheet) throws AxelorException {

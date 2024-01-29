@@ -26,8 +26,6 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
   @Min(0)
   private BigDecimal duration;
 
-  private boolean isToInvoiced;
-
   public Long getTimesheetId() {
     return timesheetId;
   }
@@ -66,14 +64,6 @@ public class TimesheetLinePostRequest extends RequestPostStructure {
 
   public void setDuration(BigDecimal duration) {
     this.duration = duration;
-  }
-
-  public boolean isToInvoiced() {
-    return isToInvoiced;
-  }
-
-  public void setToInvoiced(boolean toInvoiced) {
-    isToInvoiced = toInvoiced;
   }
 
   public String getComments() {

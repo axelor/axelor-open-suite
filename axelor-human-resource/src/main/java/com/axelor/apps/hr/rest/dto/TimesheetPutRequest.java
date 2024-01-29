@@ -1,7 +1,6 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.hr.db.TSTimer;
-import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.util.ArrayList;
@@ -15,8 +14,6 @@ public class TimesheetPutRequest extends RequestStructure {
   public static final String TIMESHEET_UPDATE_VALIDATE = "validate";
   public static final String TIMESHEET_UPDATE_REFUSE = "refuse";
   public static final String TIMESHEET_UPDATE_CANCEL = "cancel";
-
-  private List<Long> timesheetLineIdList;
   private List<Long> timerIdList;
   private String groundForRefusal;
 
@@ -31,14 +28,6 @@ public class TimesheetPutRequest extends RequestStructure {
               + TIMESHEET_UPDATE_CANCEL,
       flags = Pattern.Flag.CASE_INSENSITIVE)
   private String toStatus;
-
-  public List<Long> getTimesheetLineIdList() {
-    return timesheetLineIdList;
-  }
-
-  public void setTimesheetLineIdList(List<Long> timesheetLineIdList) {
-    this.timesheetLineIdList = timesheetLineIdList;
-  }
 
   public List<Long> getTimerIdList() {
     return timerIdList;
@@ -62,18 +51,6 @@ public class TimesheetPutRequest extends RequestStructure {
 
   public void setToStatus(String toStatus) {
     this.toStatus = toStatus;
-  }
-
-  public List<TimesheetLine> fetchTimesheetLines() {
-    if (CollectionUtils.isEmpty(timesheetLineIdList)) {
-      return Collections.emptyList();
-    }
-
-    List<TimesheetLine> timesheetLineList = new ArrayList<>();
-    for (Long id : timesheetLineIdList) {
-      timesheetLineList.add(ObjectFinder.find(TimesheetLine.class, id, ObjectFinder.NO_VERSION));
-    }
-    return timesheetLineList;
   }
 
   public List<TSTimer> fetchTSTimers() {

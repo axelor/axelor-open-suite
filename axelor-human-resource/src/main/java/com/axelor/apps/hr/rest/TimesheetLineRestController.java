@@ -2,8 +2,9 @@ package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
-import com.axelor.apps.hr.rest.dto.TimesheetResponse;
+import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
@@ -37,17 +38,19 @@ public class TimesheetLineRestController {
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = requestBody.fetchTimesheet();
-    Beans.get(TimesheetLineCreateService.class)
-        .createTimesheetLine(
-            requestBody.fetchProject(),
-            requestBody.fetchProjectTask(),
-            null,
-            requestBody.getDate(),
-            requestBody.fetchTimesheet(),
-            requestBody.getDuration(),
-            requestBody.getComments());
+    TimesheetLine timesheetLine =
+        Beans.get(TimesheetLineCreateService.class)
+            .createTimesheetLine(
+                requestBody.fetchProject(),
+                requestBody.fetchProjectTask(),
+                null,
+                requestBody.getDate(),
+                requestBody.fetchTimesheet(),
+                requestBody.getDuration(),
+                requestBody.getComments());
     Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
 
-    return ResponseConstructor.buildCreateResponse(timesheet, new TimesheetResponse(timesheet));
+    return ResponseConstructor.buildCreateResponse(
+        timesheetLine, new TimesheetLineResponse(timesheetLine));
   }
 }
