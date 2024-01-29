@@ -14,6 +14,7 @@
 "Allows the user to define the position of the menu in the list. By default, the new menu entry is positioned at the end, but it can also be inserted between two existing menus. The order value for standard menus is its index in the list multiplied by 10. So to position a new menu between the first and second menu entries, you need to give it an order between 10 and 20.",,,
 "Allows users to fill in the username field on the login page with the qr code present on the user's form view.",,,
 "Allows you to customize the active menus for this application. If the menus are not configured then all the menus of the application are available.",,,
+"Allows you to define which fields are visible on timers and timesheet lines form views. By default, if nothing is selected, all fields are visible. This configuration extends the employee's configuration for time allocation.",,,
 "Allows you to enable this package on the mobile application.",,,
 "App",,,
 "App configuration",,,
