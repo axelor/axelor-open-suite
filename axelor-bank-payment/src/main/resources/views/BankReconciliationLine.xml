@@ -4,8 +4,74 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
-    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" canDelete="false" editable="false"
-    canNew="false">
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine" editable="false"
+    orderBy="effectDate,bankStatementLine.sequence" groupBy="bankReconciliation" canNew="false"
+    canDelete="false" edit-icon="true">
+    <field name="bankReconciliation"/>
+    <field name="bankStatementLine.bankStatement"/>
+    <field name="bankStatementLine.sequence" title="Seq." width="40"/>
+    <field name="bankStatementLine.debit" title="Stm. Debit" aggregate="sum">
+      <hilite color="red" if="bankStatementLine.debit"/>
+    </field>
+    <field name="bankStatementLine.credit" title="Stm. Credit" aggregate="sum">
+      <hilite color="green" if="bankStatementLine.credit"/>
+    </field>
+    <field name="bankStatementLine.amountRemainToReconcile" aggregate="sum"/>
+    <field name="effectDate"/>
+    <field name="name" title="Description" width="250"/>
+    <field name="reference" width="175"/>
+    <field name="debit" aggregate="sum">
+      <hilite color="green" if="debit > 0"/>
+    </field>
+    <field name="credit" aggregate="sum">
+      <hilite color="red" if="credit > 0"/>
+    </field>
+    <field name="postedNbr"/>
+    <field name="confidenceIndex" readonly="true">
+      <hilite color="green" if="confidenceIndex == 1"/>
+      <hilite color="orange" if="confidenceIndex == 2"/>
+      <hilite color="red" if="confidenceIndex == 3"/>
+    </field>
+    <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
+    <field name="account" canEdit="false" form-view="account-form" grid-view="account-grid"/>
+    <field name="partner" canEdit="false" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="isPosted" readonly="true"/>
+    <field name="moveLine" width="135" canEdit="false" form-view="move-line-form"
+      grid-view="move-line-grid"/>
+    <field name="moveLine.partner" canEdit="false" form-view="partner-form"
+      grid-view="partner-grid"/>
+    <field name="moveLine.currencyAmount" hidden="true" aggregate="sum"/>
+    <field name="moveLine.move.currency.code" title="Ent. Currency" hidden="true" width="50"/>
+    <field name="moveLine.credit" title="Ent. Credit" aggregate="sum">
+      <hilite color="red" if="moveLine.credit > 0"/>
+    </field>
+    <field name="moveLine.debit" title="Ent. Debit" aggregate="sum">
+      <hilite color="red" if="moveLine.debit > 0"/>
+    </field>
+    <field name="moveLine.postedNbr"/>
+    <field name="moveLine.bankReconciledAmount" aggregate="sum"/>
+    <field name="moveLine.originDate"/>
+    <field name="moveLine.origin"/>
+    <field name="moveLine.description"/>
+    <field name="moveLine.move.paymentMode" hidden="true"/>
+    <field name="moveLine.move.originDate" hidden="true"/>
+    <field name="moveLine.account" hidden="true"/>
+    <field name="moveLine.move.payerPartner" hidden="true"/>
+    <field name="moveLine.move.partnerBankDetails" hidden="true"/>
+    <field name="moveLine.move.companyBankDetails" hidden="true"/>
+    <field name="moveLine.move.tradingName" hidden="true"/>
+    <field name="moveLine.move.rejectOk" hidden="true"/>
+    <field name="bankStatementQuery" hidden="true"/>
+    <field name="isSelectedBankReconciliation" hidden="true"/>
+    <field name="bankStatementLine.origin" hidden="true"/>
+    <field name="bankStatementLine.operationInterbankCodeLine" hidden="true"/>
+    <field name="bankStatementLine.rejectInterbankCodeLine" hidden="true"/>
+    <field name="bankStatementLine.operationDate" hidden="true"/>
+  </grid>
+
+  <grid name="bank-reconciliation-line-bank-reconciliation-grid"
+    title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine"
+    canDelete="false" editable="false" canNew="false">
     <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
       title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
     <button onClick="save,action-bank-reconciliation-line-method-set-selected"

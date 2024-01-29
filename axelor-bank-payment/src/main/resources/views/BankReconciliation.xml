@@ -96,7 +96,7 @@
         showIf="statusSelect == 3" colSpan="12"/>
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
         field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
-        grid-view="bank-reconciliation-line-grid" editable="true"
+        grid-view="bank-reconciliation-line-bank-reconciliation-grid" editable="true"
         onChange="action-group-bankreconciliation-compute-click" x-can-copy="true"
         orderBy="effectDate" height="12"/>
       <button name="autoReconcileBtn" title="Auto reconcile"
