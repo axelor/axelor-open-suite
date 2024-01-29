@@ -315,6 +315,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
+    moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);

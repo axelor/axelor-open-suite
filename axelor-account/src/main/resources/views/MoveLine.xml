@@ -158,8 +158,10 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80"/>
     <field name="vatSystemSelect"
-      readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"
+      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect))"
       width="80"/>
+    <field name="account.useForPartnerBalance" hidden="true"/>
+    <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -195,17 +197,14 @@
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="origin" width="120" hidden="true"/>
-    <field name="description"
-      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
+    <field name="description" requiredIf="$isDescriptionRequired"/>
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
       onChange="action-move-line-method-analytic-distribution-template-onchange-light"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
-    <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
-    <field name="move.statusSelect" hidden="true"/>
     <field name="account.accountType" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
@@ -406,10 +405,10 @@
         grid-view="account-grid" onSelect="action-move-line-method-account-onselect" canEdit="false"
         onChange="action-move-line-group-account-onchange"/>
       <field name="debit"
-        readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
+        readonlyIf="credit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
       <field name="credit"
-        readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
+        readonlyIf="debit &gt; 0 || amountPaid &gt; 0 || reconcileGroup != null"
         css="label-bold bold" onChange="action-move-line-method-debit-credit-onchange" colSpan="3"/>
       <field name="amountRemaining" colSpan="3"
         showIf="move.statusSelect == 3 || move.statusSelect == 4"/>
@@ -519,7 +518,7 @@
           readonlyIf="['charge', 'income', 'immobilisation', 'tax'].includes(account.accountType.technicalTypeSelect) || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
           onChange="account-move-line-update-tax-equiv"/>
         <field name="vatSystemSelect"
-          readonlyIf="account.accountType.technicalTypeSelect != 'tax' || ![1,5].includes(move.statusSelect)"/>
+          readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="reimbursementStatusSelect"
           showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
@@ -762,7 +761,7 @@
           onChange="account-move-line-update-tax-equiv"/>
         <field name="account.accountType.technicalTypeSelect" hidden="true"/>
         <field name="vatSystemSelect"
-          readonlyIf="![1,5].includes(move.statusSelect) || account.accountType.technicalTypeSelect != 'tax'"
+          readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"
           requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         <field name="reimbursementStatusSelect"
           showIf="id &amp;&amp; move.statusSelect > 1 &amp;&amp; reimbursementStatusSelect != 0"
