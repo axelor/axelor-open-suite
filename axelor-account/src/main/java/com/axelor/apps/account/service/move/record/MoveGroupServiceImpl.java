@@ -239,6 +239,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Map<String, Object>> getJournalOnChangeAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
+    moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
 
     return attrsMap;
