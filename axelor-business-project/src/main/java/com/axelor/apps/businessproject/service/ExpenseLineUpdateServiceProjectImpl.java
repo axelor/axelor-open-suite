@@ -92,11 +92,10 @@ public class ExpenseLineUpdateServiceProjectImpl extends ExpenseLineUpdateServic
   }
 
   void checkProjectCoherence(Boolean toInvoice, Project project) throws AxelorException {
-    if ((!toInvoice && project.getIsInvoicingExpenses())
-        || (toInvoice && !project.getIsInvoicingExpenses())) {
+    if (Boolean.TRUE.equals(toInvoice) && !project.getIsInvoicingExpenses()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_UPDATE_INCOMPATIBLE_PROJECT));
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_UPDATE_BILLING_INCOMPATIBLE_PROJECT));
     }
   }
 }
