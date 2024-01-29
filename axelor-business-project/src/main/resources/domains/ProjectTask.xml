@@ -75,6 +75,10 @@
       <field name="invoicingType"/>
       <field name="customerReferral"/>
     </track>
+
+    <entity-listener
+      class="com.axelor.apps.businessproject.listener.ProjectTaskListener"/>
+
   </entity>
 
 </domain-models>

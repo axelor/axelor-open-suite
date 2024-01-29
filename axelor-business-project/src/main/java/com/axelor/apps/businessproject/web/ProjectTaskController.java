@@ -27,6 +27,7 @@ import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
@@ -188,6 +189,18 @@ public class ProjectTaskController {
       Beans.get(PurchaseOrderProjectService.class)
           .setProjectAndProjectTask(purchaseOrderId, projectTask.getProject(), projectTask);
       response.setCanClose(true);
+    }
+  }
+
+  public void updateChildrenProgress(ActionRequest request, ActionResponse response) {
+    try {
+      ProjectTask task = request.getContext().asType(ProjectTask.class);
+      int progress = task.getProgressSelect();
+      task = Beans.get(ProjectTaskRepository.class).find(task.getId());
+      Beans.get(ProjectTaskService.class).updateChildrenProgress(task, progress);
+      response.setValue("projectTaskList", task.getProjectTaskList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

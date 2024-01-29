@@ -50,6 +50,8 @@
     <extend target="/">
       <attribute name="onNew" value="action-business-project-project-task-group-on-new"/>
       <attribute name="onLoad" value="action-business-project-project-task-group-on-load"/>
+      <attribute name="onSave"
+        value="save,action-business-project-project-calculate-children-progress"/>
     </extend>
     <extend target="//field[@name='parentTask']">
       <attribute name="onChange" value="action-project-task-record-get-parent-timeunit"/>
@@ -319,5 +321,10 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
   </action-record>
+
+  <action-method name="action-business-project-project-calculate-children-progress">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="updateChildrenProgress"/>
+  </action-method>
 
 </object-views>
