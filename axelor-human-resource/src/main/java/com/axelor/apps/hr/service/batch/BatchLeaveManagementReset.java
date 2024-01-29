@@ -89,7 +89,7 @@ public class BatchLeaveManagementReset extends BatchLeaveManagement {
       if (leaveReason.equals(leaveLine.getLeaveReason())) {
         leaveManagementService.reset(
             leaveLine,
-            employeeService.getUser(employee),
+            employee.getUser(),
             batch.getHrBatch().getComments(),
             null,
             batch.getHrBatch().getStartDate(),
