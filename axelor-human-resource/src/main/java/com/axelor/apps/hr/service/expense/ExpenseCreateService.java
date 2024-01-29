@@ -40,5 +40,5 @@ public interface ExpenseCreateService {
       List<ExpenseLine> expenseLineList)
       throws AxelorException;
 
-  Expense createExpense(User user);
+  Expense createExpense(User user) throws AxelorException;
 }

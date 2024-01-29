@@ -79,9 +79,7 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public Expense createExpense(User user) {
-    Expense expense = new Expense();
+  public Expense createExpense(User user) throws AxelorException {
     Employee employee = user.getEmployee();
     Company company =
         Optional.ofNullable(employee)
@@ -94,10 +92,8 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
     Integer companyCbSelect =
         Optional.ofNullable(employee).map(Employee::getCompanyCbSelect).orElse(null);
 
-    setExpenseInfo(company, employee, currency, bankDetails, null, companyCbSelect, expense);
-    expenseComputationService.compute(expense);
-
-    return expenseRepository.save(expense);
+    return createExpense(
+        company, employee, currency, bankDetails, null, companyCbSelect, List.of());
   }
 
   protected void setExpenseInfo(
