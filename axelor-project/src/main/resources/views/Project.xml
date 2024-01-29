@@ -1049,10 +1049,10 @@
 
   <search-filters name="project-topic-filters"
     model="com.axelor.apps.project.db.Topic" title="Topics">
-    <filter title="My topics">
+    <filter name="project-topic-filters-my-topics" title="My topics">
       <domain>self.createdBy.id = :userId</domain>
     </filter>
-    <filter title="New topics">
+    <filter name="project-topic-filters-new-topics" title="New topics">
       <domain>self.createdOn &gt; date(now())</domain>
     </filter>
   </search-filters>

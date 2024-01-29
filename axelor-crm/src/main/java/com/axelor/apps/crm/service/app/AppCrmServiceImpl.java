@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -192,18 +192,5 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
     }
 
     return opportunityDefaultStatus;
-  }
-
-  @Override
-  public PartnerStatus getPartnerDefaultStatus() throws AxelorException {
-    PartnerStatus partnerDefaultStatus = getAppCrm().getPartnerDefaultStatus();
-
-    if (partnerDefaultStatus == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(CrmExceptionMessage.CRM_DEFAULT_PARTNER_STATUS_MISSING));
-    }
-
-    return partnerDefaultStatus;
   }
 }

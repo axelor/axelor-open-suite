@@ -102,10 +102,10 @@
 
   <search-filters name="quality-alert-filters"
     model="com.axelor.apps.quality.db.QualityAlert" title="Quality alert filters">
-    <filter title="My alerts">
+    <filter name="quality-alert-filters-my-alerts" title="My alerts">
       <domain>self.responsible.user.id = :_userId</domain>
     </filter>
-    <filter title="My team alerts">
+    <filter name="quality-alert-filters-my-team-alerts" title="My team alerts">
       <domain>self.team.id = :_myActiveTeamId</domain>
     </filter>
   </search-filters>

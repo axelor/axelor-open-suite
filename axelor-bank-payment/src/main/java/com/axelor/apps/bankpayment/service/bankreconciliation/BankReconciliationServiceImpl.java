@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -928,27 +928,16 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   }
 
   @Override
-  public String getRequestMoveLines(BankReconciliation bankReconciliation) {
+  public String getRequestMoveLines() {
     String query =
         "(self.move.statusSelect = :statusDaybook OR self.move.statusSelect = :statusAccounted)"
             + " AND self.move.company = :company"
             + " AND self.move.currency = :bankReconciliationCurrency"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
-            + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)";
-
-    if (!bankReconciliation.getIncludeOtherBankStatements()) {
-      query =
-          query
-              + " AND (self.date >= :fromDate OR self.dueDate >= :fromDate)"
-              + " AND (self.date <= :toDate OR self.dueDate <= :toDate)";
-    }
-
-    if (bankReconciliation.getJournal() != null) {
-      query = query + " AND self.move.journal = :journal";
-    }
-    if (bankReconciliation.getCashAccount() != null) {
-      query = query + " AND self.account = :cashAccount";
-    }
+            + " AND abs(self.currencyAmount) > 0 AND self.bankReconciledAmount < abs(self.currencyAmount)"
+            + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
+            + " AND (:journal IS NULL OR self.move.journal = :journal)"
+            + " AND (:cashAccount IS NULL OR self.account = :cashAccount)";
 
     return query;
   }
@@ -965,17 +954,23 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     params.put("company", bankReconciliation.getCompany());
     params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
-    if (!bankReconciliation.getIncludeOtherBankStatements()) {
-      int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
-      params.put("fromDate", bankReconciliation.getFromDate().minusDays(dateMargin));
-      params.put("toDate", bankReconciliation.getToDate().plusDays(dateMargin));
-    }
-    if (bankReconciliation.getJournal() != null) {
-      params.put("journal", bankReconciliation.getJournal());
-    }
-    if (bankReconciliation.getCashAccount() != null) {
-      params.put("cashAccount", bankReconciliation.getCashAccount());
-    }
+    params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
+
+    int dateMargin = bankPaymentConfig.getBnkStmtAutoReconcileDateMargin();
+    params.put(
+        "fromDate",
+        bankReconciliation.getFromDate() != null
+            ? bankReconciliation.getFromDate().minusDays(dateMargin)
+            : null);
+    params.put(
+        "toDate",
+        bankReconciliation.getToDate() != null
+            ? bankReconciliation.getToDate().plusDays(dateMargin)
+            : null);
+
+    params.put("journal", bankReconciliation.getJournal());
+
+    params.put("cashAccount", bankReconciliation.getCashAccount());
 
     return params;
   }
@@ -991,7 +986,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     List<MoveLine> moveLines =
         moveLineRepository
             .all()
-            .filter(getRequestMoveLines(bankReconciliation))
+            .filter(getRequestMoveLines())
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
@@ -1236,7 +1231,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     List<MoveLine> authorizedMoveLines =
         moveLineRepository
             .all()
-            .filter(getRequestMoveLines(bankReconciliation))
+            .filter(getRequestMoveLines())
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
 
@@ -1359,7 +1354,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   public BankReconciliation reconcileSelected(BankReconciliation bankReconciliation)
       throws AxelorException {
     BankReconciliationLine bankReconciliationLine;
-    String filter = getRequestMoveLines(bankReconciliation);
+    String filter = getRequestMoveLines();
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> moveLines =
         moveLineRepository
@@ -1467,7 +1462,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     List<MoveLine> authorizedMoveLinesOnClosedPeriod =
         moveLineRepository
             .all()
-            .filter(getRequestMoveLines(bankReconciliation) + onClosedPeriodClause)
+            .filter(getRequestMoveLines() + onClosedPeriodClause)
             .bind(getBindRequestMoveLine(bankReconciliation))
             .fetch();
     boolean haveMoveLineOnClosedPeriod = !authorizedMoveLinesOnClosedPeriod.isEmpty();
@@ -1511,7 +1506,7 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
   @Override
   public BigDecimal computeUnreconciledMoveLinesSelection(BankReconciliation bankReconciliation)
       throws AxelorException {
-    String filter = getRequestMoveLines(bankReconciliation);
+    String filter = getRequestMoveLines();
     filter = filter.concat(" AND self.isSelectedBankReconciliation = true");
     List<MoveLine> unreconciledMoveLines =
         moveLineRepository

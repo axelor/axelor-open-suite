@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -877,13 +877,16 @@ public class BudgetServiceImpl implements BudgetService {
       List<BudgetDistribution> budgetDistributionList, BigDecimal amount, String code)
       throws AxelorException {
     if (!CollectionUtils.isEmpty(budgetDistributionList)) {
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        if (budgetDistribution.getAmount().compareTo(amount) > 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
-              code);
-        }
+      BigDecimal totalAmount =
+          budgetDistributionList.stream()
+              .map(BudgetDistribution::getAmount)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (totalAmount.compareTo(amount) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
+            code);
       }
     }
   }

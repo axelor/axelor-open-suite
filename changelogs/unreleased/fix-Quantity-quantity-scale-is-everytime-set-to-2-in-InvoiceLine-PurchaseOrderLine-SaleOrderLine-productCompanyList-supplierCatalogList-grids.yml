@@ -1,0 +1,3 @@
+---
+title: "Quantity : fix Quantity scale is everytime set to 2 in InvoiceLine/PurchaseOrderLine/SaleOrderLine/productCompanyList/supplierCatalogList grids"
+type: fix

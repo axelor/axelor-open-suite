@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -69,7 +69,6 @@ import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
 import com.axelor.apps.stock.service.StockLocationServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
-import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockRulesService;
 import com.axelor.apps.stock.service.StockRulesServiceImpl;
@@ -220,7 +219,6 @@ public class SupplychainModule extends AxelorModule {
   protected void configure() {
     bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(StockRulesServiceImpl.class).to(StockRulesServiceSupplychainImpl.class);
-    bind(StockMoveService.class).to(StockMoveServiceImpl.class);
     bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
     bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(SaleOrderCreateServiceImpl.class).to(SaleOrderCreateServiceSupplychainImpl.class);

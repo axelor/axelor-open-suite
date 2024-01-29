@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2023 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -408,7 +408,7 @@ public class BankReconciliationController {
       }
 
       actionViewBuilder.add("form", "move-line-form");
-      actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines(bankReconciliation));
+      actionViewBuilder.domain(bankReconciliationService.getRequestMoveLines());
       if (bankReconciliation.getCompany() == null) {
         return;
       }
