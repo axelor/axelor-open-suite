@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
-import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -326,25 +325,6 @@ public class InvoiceController {
         }
       }
       response.setValue("invoiceTermList", invoice.getInvoiceTermList());
-
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void updateInvoiceTermsFinancialDiscount(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
-      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
-
-      if (CollectionUtils.isEmpty(invoice.getInvoiceTermList())
-          || Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        return;
-      }
-
-      List<InvoiceTerm> invoiceTermList =
-          Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-      response.setValue("invoiceTermList", invoiceTermList);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -1205,14 +1185,13 @@ public class InvoiceController {
   public void updateFinancialDiscount(ActionRequest request, ActionResponse response) {
     try {
       Invoice invoice = request.getContext().asType(Invoice.class);
+      InvoiceFinancialDiscountService invoiceFinancialDiscountService =
+          Beans.get(InvoiceFinancialDiscountService.class);
 
-      Beans.get(InvoiceFinancialDiscountService.class).setFinancialDiscountInformations(invoice);
+      invoiceFinancialDiscountService.setFinancialDiscountInformations(invoice);
+      invoiceFinancialDiscountService.updateFinancialDiscount(invoice);
 
-      if (!Beans.get(InvoiceTermService.class).checkIfCustomizedInvoiceTerms(invoice)) {
-        Beans.get(InvoiceFinancialDiscountService.class).updateFinancialDiscount(invoice);
-        response.setValue("invoiceTermList", invoice.getInvoiceTermList());
-      }
-
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
       response.setValue("financialDiscount", invoice.getFinancialDiscount());
       response.setValue("legalNotice", invoice.getLegalNotice());
       response.setValue("financialDiscountRate", invoice.getFinancialDiscountRate());

@@ -36,6 +36,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.date.DurationHelper;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -50,6 +51,27 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  protected AppBaseService appBaseService;
+  protected TSTimerRepository tsTimerRepository;
+
+  @Inject
+  public TimesheetTimerServiceImpl(
+      AppBaseService appBaseService, TSTimerRepository tsTimerRepository) {
+    this.appBaseService = appBaseService;
+    this.tsTimerRepository = tsTimerRepository;
+  }
+
+  @Transactional
+  @Override
+  public void start(TSTimer timer) {
+    LocalDateTime todayDateTime = appBaseService.getTodayDateTime().toLocalDateTime();
+    timer.setStatusSelect(TSTimerRepository.STATUS_START);
+    timer.setTimerStartDateT(todayDateTime);
+    if (timer.getStartDateTime() == null) {
+      timer.setStartDateTime(todayDateTime);
+    }
+  }
+
   @Transactional
   public void pause(TSTimer timer) {
     timer.setStatusSelect(TSTimerRepository.STATUS_PAUSE);
@@ -57,11 +79,10 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public void stop(TSTimer timer) throws AxelorException {
-    timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
+  public void stopAndGenerateTimesheetLine(TSTimer timer) throws AxelorException {
+    stop(timer);
     calculateDuration(timer);
     Long duration = getDuration(timer);
-
     if (duration > 59) {
       generateTimesheetLine(timer);
     } else {
@@ -70,6 +91,22 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
           I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_CREATED),
           timer);
     }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  public void stop(TSTimer timer) throws AxelorException {
+    timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
+  }
+
+  @Transactional
+  public void resetTimer(TSTimer timer) {
+    timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
+    timer.setTimesheetLine(null);
+    timer.setStartDateTime(null);
+    timer.setDuration(0L);
+    timer.setComments(null);
+    timer.setUpdatedDuration(null);
+    timer.setTimerStartDateT(null);
   }
 
   @Transactional
@@ -141,6 +178,13 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     logger.debug("Duration in hours : {}", durationHours);
 
     return durationHours;
+  }
+
+  @Transactional
+  @Override
+  public void setUpdatedDuration(TSTimer timer, Long duration) {
+    timer.setUpdatedDuration(duration);
+    tsTimerRepository.save(timer);
   }
 
   public TSTimer getCurrentTSTimer() {
