@@ -192,7 +192,7 @@ public class BatchLeaveManagement extends BatchStrategy {
     LeaveManagement leaveManagement =
         leaveManagementService.createLeaveManagement(
             leaveLine,
-            employeeService.getUser(employee),
+            employee.getUser(),
             batch.getHrBatch().getComments(),
             null,
             batch.getHrBatch().getStartDate(),
