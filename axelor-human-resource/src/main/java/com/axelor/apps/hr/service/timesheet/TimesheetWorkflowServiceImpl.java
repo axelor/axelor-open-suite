@@ -8,6 +8,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.app.AppTimesheetService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
@@ -28,6 +29,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected TimesheetRepository timesheetRepository;
+  protected AppTimesheetService appTimesheetService;
 
   @Inject
   public TimesheetWorkflowServiceImpl(
@@ -44,6 +46,11 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
+    if (appHumanResourceService.getAppTimesheet().getNeedValidation()) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_CONFIRM_NOT_NEEDED));
+    }
     this.fillToDate(timesheet);
     this.validateDates(timesheet);
 
@@ -77,7 +84,14 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
 
   @Override
   @Transactional
-  public void validate(Timesheet timesheet) {
+  public void validate(Timesheet timesheet) throws AxelorException {
+    int statusSelect = timesheet.getStatusSelect();
+    if (appHumanResourceService.getAppTimesheet().getNeedValidation()
+        && statusSelect != TimesheetRepository.STATUS_CONFIRMED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.TIMESHEET_CONFIRM_NEEDED));
+    }
     timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
@@ -117,6 +131,13 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
     timesheet.setRefusedBy(AuthUtils.getUser());
     timesheet.setRefusalDateTime(
         appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
+  }
+
+  @Transactional
+  @Override
+  public void refuse(Timesheet timesheet, String groundForRefusal) throws AxelorException {
+    refuse(timesheet);
+    timesheet.setGroundForRefusal(groundForRefusal);
   }
 
   @Override

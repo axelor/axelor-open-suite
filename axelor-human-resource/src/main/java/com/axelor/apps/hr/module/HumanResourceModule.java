@@ -168,6 +168,8 @@ import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeComputeNameServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeService;
 import com.axelor.apps.hr.service.project.ProjectPlanningTimeServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
+import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetContextProjectService;
@@ -180,6 +182,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineGenerationServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
@@ -198,6 +202,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetTimeComputationServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
+import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationService;
+import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerCreateService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
@@ -313,5 +319,8 @@ public class HumanResourceModule extends AxelorModule {
     bind(TimesheetTimeComputationService.class).to(TimesheetTimeComputationServiceImpl.class);
     bind(TimesheetWorkflowService.class).to(TimesheetWorkflowServiceImpl.class);
     bind(TimesheetTimerCreateService.class).to(TimesheetTimerCreateServiceImpl.class);
+    bind(TimerTimesheetGenerationService.class).to(TimerTimesheetGenerationServiceImpl.class);
+    bind(TimesheetLineCreateService.class).to(TimesheetLineCreateServiceImpl.class);
+    bind(TimesheetCheckResponseService.class).to(TimesheetCheckResponseServiceImpl.class);
   }
 }

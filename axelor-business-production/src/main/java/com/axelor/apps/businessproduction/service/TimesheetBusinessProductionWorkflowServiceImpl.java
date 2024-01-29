@@ -56,7 +56,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
   @Override
   @Transactional
-  public void validate(Timesheet timesheet) {
+  public void validate(Timesheet timesheet) throws AxelorException {
     super.validate(timesheet);
     AppProductionService appProductionService = Beans.get(AppProductionService.class);
 

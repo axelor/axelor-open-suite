@@ -347,4 +347,16 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_TIMER_ALREADY_STARTED = /*$$(*/
       "Timer is already ongoing, stop it before starting a new one." /*)*/;
+
+  public static final String TIMESHEET_ADD_TIMER_WRONG_STATUS = /*$$(*/
+      "You can only add a timer to a drafted or a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATE = /*$$(*/
+      "This date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String TIMESHEET_CONFIRM_NOT_NEEDED = /*$$(*/
+      "Confirmation is not needed." /*)*/;
+
+  public static final String TIMESHEET_CONFIRM_NEEDED = /*$$(*/
+      "Confirmation is needed before validating the timesheet." /*)*/;
 }

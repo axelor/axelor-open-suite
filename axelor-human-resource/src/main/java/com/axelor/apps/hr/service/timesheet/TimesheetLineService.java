@@ -137,4 +137,11 @@ public interface TimesheetLineService {
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
       throws AxelorException;
+
+  Integer getDailyLimitFromApp();
+
+  BigDecimal calculateTotalHoursDuration(Timesheet timesheet, TimesheetLine currentTimesheetLine);
+
+  boolean isExceedingDailyLimit(
+      BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit);
 }

@@ -305,11 +305,13 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
   }
 
-  protected Integer getDailyLimitFromApp() {
+  @Override
+  public Integer getDailyLimitFromApp() {
     return appHumanResourceService.getAppTimesheet().getDailyLimit();
   }
 
-  protected BigDecimal calculateTotalHoursDuration(
+  @Override
+  public BigDecimal calculateTotalHoursDuration(
       Timesheet timesheet, TimesheetLine currentTimesheetLine) {
     return timesheet.getTimesheetLineList().stream()
         .filter(
@@ -320,7 +322,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  protected boolean isExceedingDailyLimit(
+  @Override
+  public boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit) {
     return totalHoursDuration.add(hoursDuration).compareTo(new BigDecimal(dailyLimit)) > 0;
   }
