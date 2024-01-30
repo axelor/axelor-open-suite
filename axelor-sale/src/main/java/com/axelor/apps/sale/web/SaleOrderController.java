@@ -167,6 +167,15 @@ public class SaleOrderController {
         fileLink = saleOrderPrintService.printSaleOrders(ids);
         title = I18n.get("Sale orders");
 
+      } else if (context.get("id") != null) {
+
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class).find(Long.parseLong(context.get("id").toString()));
+        title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
+        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
+
+        logger.debug("Printing " + title);
       } else if (context.get("_saleOrderId") != null) {
 
         SaleOrder saleOrder =
