@@ -267,7 +267,7 @@ public class PaymentServiceImpl implements PaymentService {
               debitMoveLine.getAccount(),
               amountToPay,
               false,
-              appAccountService.getTodayDate(company),
+              paymentDate,
               moveLineNo2,
               invoiceName,
               null);
@@ -315,7 +315,7 @@ public class PaymentServiceImpl implements PaymentService {
               account,
               remainingPaidAmount2,
               false,
-              appAccountService.getTodayDate(company),
+              paymentDate,
               moveLineNo2,
               null,
               null);

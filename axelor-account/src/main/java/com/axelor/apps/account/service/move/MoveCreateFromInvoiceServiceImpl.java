@@ -332,15 +332,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           // credit move line creation
           MoveLine creditMoveLine =
               moveLineCreateService.createMoveLine(
-                  move,
-                  partner,
-                  account,
-                  amount,
-                  false,
-                  appAccountService.getTodayDate(company),
-                  1,
-                  origin,
-                  null);
+                  move, partner, account, amount, false, invoice.getInvoiceDate(), 1, origin, null);
           move.getMoveLineList().add(creditMoveLine);
 
           // Use of excess payment
@@ -415,15 +407,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
       // debit move line creation
       MoveLine debitMoveLine =
           moveLineCreateService.createMoveLine(
-              oDmove,
-              partner,
-              account,
-              amount,
-              true,
-              appAccountService.getTodayDate(company),
-              1,
-              origin,
-              null);
+              oDmove, partner, account, amount, true, invoice.getInvoiceDate(), 1, origin, null);
       oDmove.getMoveLineList().add(debitMoveLine);
 
       // Use of excess payment
@@ -436,7 +420,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 
