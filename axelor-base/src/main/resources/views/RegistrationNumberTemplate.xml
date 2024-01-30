@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
+
+  <grid name="registration-number-template-grid" title="Registration number templates"
+    model="com.axelor.apps.base.db.RegistrationNumberTemplate">
+    <field name="name"/>
+    <field name="validationMethodSelect"/>
+  </grid>
+
+  <form name="registration-number-template-form" title="Registration number templates"
+    model="com.axelor.apps.base.db.RegistrationNumberTemplate">
+    <panel name="mainPanel" title="Main Template">
+      <panel showTitle="false" colSpan="12">
+        <field name="name"/>
+        <field name="isRequiredForCompanies"/>
+        <field name="titleToDisplay"/>
+        <field name="requiredSize"/>
+        <field name="validationMethodSelect"/>
+      </panel>
+      <panel title="Short registration number" colSpan="12">
+        <field name="useSiren" colSpan="12"/>
+        <field name="sirenPos" showIf="useSiren"/>
+        <field name="sirenLength" showIf="useSiren"/>
+      </panel>
+      <panel title="Internal classification number" colSpan="12">
+        <field name="useNic" colSpan="12"/>
+        <field name="nicPos" showIf="useNic"/>
+        <field name="nicLength" showIf="useNic"/>
+      </panel>
+    </panel>
+  </form>
+</object-views>

@@ -21,14 +21,17 @@ package com.axelor.apps.base.service;
 import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PartnerPriceList;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.RegistrationNumberTemplate;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -36,6 +39,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
@@ -60,9 +64,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import javax.inject.Singleton;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,6 +201,12 @@ public class PartnerServiceImpl implements PartnerService {
 
     this.setPartnerFullName(partner);
     this.setCompanyStr(partner);
+
+    if (!isRegistrationCodeValid(partner)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    }
   }
 
   /**
@@ -670,37 +678,6 @@ public class PartnerServiceImpl implements PartnerService {
     return null;
   }
 
-  @Override
-  public String getTaxNbrFromRegistrationCode(Partner partner) {
-    String taxNbr = "";
-
-    if (partner.getMainAddress() != null
-        && partner.getMainAddress().getAddressL7Country() != null) {
-      String countryCode = partner.getMainAddress().getAddressL7Country().getAlpha2Code();
-      String regCode = partner.getRegistrationCode();
-
-      if (regCode != null) {
-        regCode = regCode.replaceAll(" ", "");
-
-        if (regCode.length() == 14) {
-          String siren = regCode.substring(0, 9);
-          String taxKey = getTaxKeyFromSIREN(siren);
-
-          taxNbr = String.format("%s%s%s", countryCode, taxKey, siren);
-        }
-      }
-    }
-
-    return taxNbr;
-  }
-
-  protected String getTaxKeyFromSIREN(String sirenStr) {
-    int siren = Integer.parseInt(sirenStr);
-    int taxKey = Math.floorMod(siren, 97);
-    taxKey = Math.floorMod(12 + 3 * taxKey, 97);
-    return String.format("%02d", taxKey);
-  }
-
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
@@ -736,86 +713,124 @@ public class PartnerServiceImpl implements PartnerService {
   }
 
   @Override
-  public String getNicFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String nic = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        nic = regCode.substring(9, 14);
-      }
-    }
-
-    return nic;
-  }
-
-  @Override
-  public String getSirenFromRegistrationCode(Partner partner) {
-    String regCode = partner.getRegistrationCode();
-    String siren = "";
-
-    if (regCode != null) {
-      regCode = regCode.replaceAll(" ", "");
-
-      if (regCode.length() == 14) {
-        siren = regCode.substring(0, 9);
-      }
-    }
-
-    return siren;
-  }
-
-  @Override
   public boolean isRegistrationCodeValid(Partner partner) {
-    List<PartnerAddress> addresses = partner.getPartnerAddressList();
     String registrationCode = partner.getRegistrationCode();
     if (partner.getPartnerTypeSelect() != PartnerRepository.PARTNER_TYPE_COMPANY
-        || Strings.isNullOrEmpty(registrationCode)
-        || CollectionUtils.isEmpty(addresses)
-        || addresses.stream()
-                .filter(
-                    address ->
-                        address.getAddress() != null
-                            && address.getAddress().getAddressL7Country() != null
-                            && "FR"
-                                .equals(address.getAddress().getAddressL7Country().getAlpha2Code()))
-                .collect(Collectors.toList())
-                .size()
-            == 0) {
+        || Strings.isNullOrEmpty(registrationCode)) {
       return true;
     }
 
-    return computeRegistrationCodeValidity(registrationCode);
+    registrationCode = registrationCode.replace(" ", "");
+    return validateRegistrationCode(registrationCode, partner);
   }
 
-  protected boolean computeRegistrationCodeValidity(String registrationCode) {
-    int sum = 0;
-    boolean isOddNumber = true;
-    registrationCode = registrationCode.replace(" ", "");
-    if (registrationCode.length() != 14) {
+  private boolean validateRegistrationCode(String registrationCode, Partner partner) {
+    try {
+      Class<? extends RegistrationNumberValidation> klass =
+          getRegistrationNumberValidationClass(partner);
+      if (klass == null) {
+        return true;
+      }
+      RegistrationNumberTemplate registrationNumberTemplate =
+          partner.getMainAddress().getAddressL7Country().getRegistrationNumberTemplate();
+      if (registrationNumberTemplate.getIsRequiredForCompanies()
+          && StringUtils.isBlank(registrationCode)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.REGISTRATION_CODE_EMPTY_FOR_COMPANIES));
+      }
+
+      if (registrationCode.length() != registrationNumberTemplate.getRequiredSize()) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      }
+      boolean isValidRegistrationCode =
+          Beans.get(klass).computeRegistrationCodeValidity(registrationCode);
+      if (!isValidRegistrationCode) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_MISSING_FIELD,
+            I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+      }
+    } catch (AxelorException e) {
+      TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
       return false;
     }
-    int i = registrationCode.length() - 1;
-    while (i > -1) {
-      int number = Character.getNumericValue(registrationCode.charAt(i));
-      if (number < 0) {
-        i--;
-        continue;
-      }
-      if (!isOddNumber) {
-        number *= 2;
-      }
-      if (number < 10) {
-        sum += number;
-      } else {
-        number -= 10;
-        sum += number + 1;
-      }
-      i--;
-      isOddNumber = !isOddNumber;
+
+    return true;
+  }
+
+  @Override
+  public Class<? extends RegistrationNumberValidation> getRegistrationNumberValidationClass(
+      Partner partner) {
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress == null || mainAddress.getAddressL7Country() == null) {
+      return null;
     }
-    return sum % 10 == 0;
+    Country businessCountry = partner.getMainAddress().getAddressL7Country();
+    RegistrationNumberTemplate registrationNumberTemplate =
+        businessCountry.getRegistrationNumberTemplate();
+
+    if (registrationNumberTemplate != null) {
+      Class<? extends RegistrationNumberValidation> klass = null;
+      try {
+        String origin = registrationNumberTemplate.getValidationMethodSelect();
+        if (!Strings.isNullOrEmpty(origin)) {
+          klass = (Class<? extends RegistrationNumberValidation>) Class.forName(origin);
+        }
+      } catch (ClassNotFoundException e) {
+        TraceBackService.trace(e, String.valueOf(ResponseMessageType.ERROR));
+      } finally {
+        if (klass == null) {
+          return RegistrationNumberValidationDefault.class;
+        }
+        return klass;
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public String getRegistrationCodeTitleFromTemplate(Partner partner) {
+    if (partner.getMainAddress() != null
+        && partner.getMainAddress().getAddressL7Country() != null) {
+      Country businessCountry = partner.getMainAddress().getAddressL7Country();
+      RegistrationNumberTemplate registrationNumberTemplate =
+          businessCountry.getRegistrationNumberTemplate();
+      if (registrationNumberTemplate != null
+          && !StringUtils.isBlank(registrationNumberTemplate.getTitleToDisplay())) {
+        return registrationNumberTemplate.getTitleToDisplay();
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getPartnerTypeSelectAttrs(Partner partner) {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    attrsMap.put("siren", new HashMap<>());
+    attrsMap.put("nic", new HashMap<>());
+    attrsMap.put("registrationCode", new HashMap<>());
+    boolean isIndividual =
+        partner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_INDIVIDUAL;
+    boolean hideNic = true, hideSiren = true;
+    Address mainAddress = partner.getMainAddress();
+    if (mainAddress != null && mainAddress.getAddressL7Country() != null) {
+      RegistrationNumberTemplate registrationNumberTemplate =
+          mainAddress.getAddressL7Country().getRegistrationNumberTemplate();
+      hideNic = isIndividual || !registrationNumberTemplate.getUseNic();
+      hideSiren = isIndividual || !registrationNumberTemplate.getUseSiren();
+    }
+    attrsMap.get("siren").put("hidden", hideSiren);
+    attrsMap.get("nic").put("hidden", hideNic);
+    String registrationCodeTitle = getRegistrationCodeTitleFromTemplate(partner);
+    attrsMap
+        .get("registrationCode")
+        .put(
+            "title",
+            !Strings.isNullOrEmpty(registrationCodeTitle)
+                ? registrationCodeTitle
+                : I18n.get("Registration number"));
+    return attrsMap;
   }
 }
