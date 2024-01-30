@@ -131,7 +131,14 @@ public class MobileSettingsResponseComputeServiceImpl
                 appMobileSettings.getIsHRAppEnabled(),
                 getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_HR)
                     .getAuthorizedRoles()),
-            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)));
+            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_HR)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_QUALITY,
+            checkConfigWithRoles(
+                appMobileSettings.getIsQualityAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_QUALITY)
+                    .getAuthorizedRoles()),
+            getRestrictedMenusFromApp(MobileConfigRepository.APP_SEQUENCE_QUALITY)));
   }
 
   protected List<String> getRestrictedMenusFromApp(String appSequence) {
