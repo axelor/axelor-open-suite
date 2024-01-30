@@ -25,7 +25,7 @@ import com.axelor.apps.account.db.repo.FixedAssetDerogatoryLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.account.service.FindFixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDerogatoryLineMoveService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetLineMoveService;
 import com.axelor.apps.base.db.repo.BatchRepository;
@@ -53,7 +53,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
   protected FixedAssetLineRepository fixedAssetLineRepo;
   protected FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepo;
   protected FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService;
-  protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected FindFixedAssetService findFixedAssetService;
   protected static final int DEROGATORY_TYPE_SELECT = 99;
 
   protected final Set<FixedAsset> fixedAssetSet = new HashSet<>();
@@ -66,13 +66,13 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
       FixedAssetLineRepository fixedAssetLineRepo,
       FixedAssetDerogatoryLineRepository fixedAssetDerogatoryLineRepo,
       FixedAssetDerogatoryLineMoveService fixedAssetDerogatoryLineMoveService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      FindFixedAssetService findFixedAssetService) {
     this.fixedAssetLineMoveService = fixedAssetLineMoveService;
     this.appBaseService = appBaseService;
     this.fixedAssetLineRepo = fixedAssetLineRepo;
     this.fixedAssetDerogatoryLineRepo = fixedAssetDerogatoryLineRepo;
     this.fixedAssetDerogatoryLineMoveService = fixedAssetDerogatoryLineMoveService;
-    this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.findFixedAssetService = findFixedAssetService;
   }
 
   @Override
@@ -119,7 +119,7 @@ public class BatchRealizeFixedAssetLine extends AbstractBatch {
     for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
       try {
         fixedAssetLine = fixedAssetLineRepo.find(fixedAssetLine.getId());
-        FixedAsset fixedAsset = currencyScaleServiceAccount.getFixedAsset(fixedAssetLine);
+        FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
         if (fixedAsset != null
             && fixedAsset.getStatusSelect() > FixedAssetRepository.STATUS_DRAFT) {
           fixedAssetSet.add(fixedAsset);
