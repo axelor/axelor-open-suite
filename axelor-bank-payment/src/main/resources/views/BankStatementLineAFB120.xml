@@ -13,9 +13,9 @@
     <hilite color="info" if="lineTypeSelect == 1"/>
     <hilite color="primary" if="lineTypeSelect == 3"/>
     <hilite color="danger"
-      if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &gt;= debit &amp;&amp; amountRemainToReconcile &gt;= credit"/>
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(debit) &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(credit)"/>
     <hilite color="warning"
-      if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &lt; debit &amp;&amp; amountRemainToReconcile &lt; credit"/>
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &lt; $number(debit) &amp;&amp; $number(amountRemainToReconcile) &lt; $number(credit)"/>
     <hilite color="success" if="amountRemainToReconcile == 0"/>
     <field name="sequence" width="50"/>
     <field name="lineTypeSelect" width="90"/>
@@ -40,9 +40,9 @@
     <hilite color="info" if="lineTypeSelect == 1"/>
     <hilite color="primary" if="lineTypeSelect == 3"/>
     <hilite color="danger"
-      if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &gt;= debit &amp;&amp; amountRemainToReconcile &gt;= credit"/>
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(debit) &amp;&amp; $number(amountRemainToReconcile) &gt;= $number(credit)"/>
     <hilite color="warning"
-      if="amountRemainToReconcile > 0 &amp;&amp; amountRemainToReconcile &lt; debit &amp;&amp; amountRemainToReconcile &lt; credit"/>
+      if="amountRemainToReconcile > 0 &amp;&amp; $number(amountRemainToReconcile) &lt; $number(debit) &amp;&amp; $number(amountRemainToReconcile) &lt; $number(credit)"/>
     <hilite color="success" if="amountRemainToReconcile == 0"/>
     <field name="sequence" width="50"/>
     <field name="lineTypeSelect" width="90"/>

@@ -293,4 +293,6 @@ public interface ManufOrderService {
    * @param manufOrder
    */
   public void updatePlannedDates(ManufOrder manufOrder);
+
+  void checkApplicableManufOrder(ManufOrder manufOrder) throws AxelorException;
 }

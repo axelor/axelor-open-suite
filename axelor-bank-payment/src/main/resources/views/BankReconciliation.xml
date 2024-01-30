@@ -167,7 +167,8 @@
           x-scale="currency.numberOfDecimals"/>
         <label name="balanceEqualLabel"
           title="Computed balance in accounting and Ending Balance of the statement should be equal to validate the Statement"
-          showIf="computedBalance != movesTheoreticalBalance" colSpan="12" css="label-danger"/>
+          showIf="$number(computedBalance) != $number(movesTheoreticalBalance)" colSpan="12"
+          css="label-danger"/>
       </panel>
     </panel>
   </form>

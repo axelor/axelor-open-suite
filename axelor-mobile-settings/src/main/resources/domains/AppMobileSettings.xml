@@ -66,6 +66,9 @@
     <boolean name="isEditionOfDateAllowed" title="Allow edition of date" default="false"/>
     <boolean name="isTimesheetProjectInvoicingEnabled" title="Enable project invoicing"
       default="false"/>
+    <string name="fieldsToShowOnTimesheet" title="Fields to show on timesheet"
+      help="Allows you to define which fields are visible on timers and timesheet lines form views. By default, if nothing is selected, all fields are visible. This configuration extends the employee's configuration for time allocation."
+      selection="mobilesettings.employee.timesheet.imputation.select"/>
     <boolean name="isStockLocationManagementEnabled"
       title="Enable default stock location management"/>
 
@@ -98,6 +101,18 @@
 
     <one-to-many name="mobileDashboardList" title="Mobile dashboard list"
       ref="com.axelor.apps.mobilesettings.db.MobileDashboard" mappedBy="appMobileSettings"/>
+
+    <extra-code>
+      <![CDATA[
+		// EMPLOYEE TIMESHEET IMPUTATION SELECT
+		public static final String IMPUTATION_ON_PROJECT = "project";
+		public static final String IMPUTATION_ON_PROJECT_TASK = "projectTask";
+		public static final String IMPUTATION_ON_MANUF_ORDER = "manufOrder";
+		public static final String IMPUTATION_ON_OPERATION_ORDER = "operationOrder";
+		public static final String IMPUTATION_ON_ACTIVITY = "product";
+	  ]]>
+    </extra-code>
+
 
     <track>
       <field name="isStockAppEnabled" on="UPDATE"/>
