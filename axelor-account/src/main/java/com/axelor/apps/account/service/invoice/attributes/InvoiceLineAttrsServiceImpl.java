@@ -2,6 +2,7 @@ package com.axelor.apps.account.service.invoice.attributes;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.CurrencyScaleServiceAccount;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,10 +10,13 @@ import java.util.Map;
 public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
 
   protected CurrencyScaleServiceAccount currencyScaleServiceAccount;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public InvoiceLineAttrsServiceImpl(CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+  public InvoiceLineAttrsServiceImpl(
+      CurrencyScaleServiceAccount currencyScaleServiceAccount, AppBaseService appBaseService) {
     this.currencyScaleServiceAccount = currencyScaleServiceAccount;
+    this.appBaseService = appBaseService;
   }
 
   protected void addAttr(
@@ -75,6 +79,16 @@ public class InvoiceLineAttrsServiceImpl implements InvoiceLineAttrsService {
         this.computeField("companyInTaxTotal", prefix),
         "scale",
         currencyScaleServiceAccount.getCompanyScale(invoice),
+        attrsMap);
+  }
+
+  @Override
+  public void addCoefficientScale(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("coefficient", prefix),
+        "scale",
+        appBaseService.getNbDecimalDigitForUnitPrice() + 2,
         attrsMap);
   }
 }

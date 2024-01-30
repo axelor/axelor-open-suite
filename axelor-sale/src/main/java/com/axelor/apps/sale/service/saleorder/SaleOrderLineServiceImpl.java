@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.ProductMultipleQty;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
@@ -668,11 +669,17 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
       return;
     }
 
-    productMultipleQtyService.checkMultipleQty(
-        saleOrderLine.getQty(),
-        product.getSaleProductMultipleQtyList(),
-        product.getAllowToForceSaleQty(),
-        response);
+    BigDecimal qty = saleOrderLine.getQty();
+    List<ProductMultipleQty> productMultipleQtyList = product.getSaleProductMultipleQtyList();
+    boolean allowToForce = product.getAllowToForceSaleQty();
+
+    productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList, allowToForce, response);
+
+    if (appSaleService.getAppSale().getIsEditableGridEnabled()
+        && !productMultipleQtyService.checkMultipleQty(qty, productMultipleQtyList)) {
+      response.setNotify(
+          productMultipleQtyService.getMultipleQuantityErrorMessage(productMultipleQtyList));
+    }
   }
 
   @Override
@@ -1002,7 +1009,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     // But here, we have to do this because overriding a sale service in hr module will prevent the
     // override in supplychain, business-project, and business production module.
     if (ModuleManager.isInstalled("axelor-human-resource")) {
-      domain += " AND self.expense = false ";
+      domain += " AND self.expense = false OR self.expense IS NULL";
     }
 
     return domain;

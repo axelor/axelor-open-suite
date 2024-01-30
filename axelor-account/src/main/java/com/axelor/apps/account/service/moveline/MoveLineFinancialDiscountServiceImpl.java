@@ -142,6 +142,11 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   @Override
   public boolean isFinancialDiscountLine(MoveLine moveLine, Company company)
       throws AxelorException {
+    if (appAccountService.getAppAccount() == null
+        || !appAccountService.getAppAccount().getManageFinancialDiscount()) {
+      return false;
+    }
+
     Account financialDiscountAccount =
         financialDiscountService.getFinancialDiscountAccount(
             company, moveLine.getCredit().signum() > 0);

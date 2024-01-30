@@ -602,7 +602,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         InvoiceLineManagement.computeAmount(
             productMoveLine.getCurrencyAmount(),
             taxLine.getValue().divide(new BigDecimal(100)),
-            currencyScaleServiceAccount.getScale(move));
+            currencyScaleServiceAccount.getScale(move),
+            null);
     boolean isDebit = productMoveLine.getDebit().signum() > 0;
 
     currencyTaxAmount = moveToolService.computeCurrencyAmountSign(currencyTaxAmount, isDebit);

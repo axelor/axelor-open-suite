@@ -107,6 +107,12 @@ public class AccountingConfigTemplateService {
 
       Map<String, Object> importContext = new HashMap<String, Object>();
       importContext.put("_companyId", company.getId());
+      importContext.put("_companyName", company.getName());
+      importContext.put("_companyCode", company.getCode());
+      importContext.put(
+          "_defaultBankDetailsId",
+          company.getDefaultBankDetails() != null ? company.getDefaultBankDetails().getId() : 0);
+      importContext.put("_dataFileName", act.getMetaFile().getFileName());
 
       importAccountChartData(act, configFile, importContext);
 

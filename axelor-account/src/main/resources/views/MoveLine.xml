@@ -162,8 +162,10 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80"/>
     <field name="vatSystemSelect"
-      readonlyIf="(move.statusSelect != 1 &amp;&amp; move.statusSelect != 5) || account.accountType.technicalTypeSelect != 'tax'"
+      readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect))"
       width="80"/>
+    <field name="account.useForPartnerBalance" hidden="true"/>
+    <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -199,17 +201,14 @@
       onSelect="action-move-line-attrs-set-domain-axis"
       onChange="action-move-line-method-analytic-axis-onchange"/>
     <field name="origin" width="120" hidden="true"/>
-    <field name="description"
-      requiredIf="$isDescriptionRequired || move.company.accountConfig.isDescriptionRequired"/>
+    <field name="description" requiredIf="$isDescriptionRequired"/>
     <field name="analyticMoveLineList" grid-view="analytic-move-line-move-line-grid"
       form-view="analytic-move-line-move-line-form"
       readonlyIf="account.company.accountConfig.analyticDistributionTypeSelect != 1"
       onChange="action-move-line-method-analytic-distribution-template-onchange-light"/>
     <field name="reconcileGroup" hidden="true"/>
     <field name="$isDescriptionRequired" type="boolean" hidden="true"/>
-    <field name="move.company.accountConfig.isDescriptionRequired" hidden="true"/>
     <field name="isOtherCurrency" hidden="true"/>
-    <field name="move.statusSelect" hidden="true"/>
     <field name="account.accountType" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
@@ -604,7 +603,7 @@
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv"/>
           <field name="vatSystemSelect"
-            readonlyIf="![1,5].includes(move.statusSelect) || account.accountType.technicalTypeSelect != 'tax'"
+            readonlyIf="!account || account.useForPartnerBalance || !(['charge', 'income', 'immobilisation', 'debt'].includes(account.accountType.technicalTypeSelect)) || ![1,5].includes(move.statusSelect)"
             showIf="account.accountType.technicalTypeSelect == 'tax'"
             requiredIf="account.accountType.technicalTypeSelect == 'tax'"/>
         </panel>

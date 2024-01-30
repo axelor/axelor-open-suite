@@ -1564,7 +1564,7 @@
     <field name="isCustomer" expr="eval: false"/>
     <field name="isSupplier" expr="eval: false"/>
     <field name="isCarrier" expr="eval: false"/>
-    <field name="isSubrogation" expr="eval: false" if="__config__.app.isApp('account')"/>
+    <field name="isThirdPartyPayer" expr="eval: false" if="__config__.app.isApp('account')"/>
   </action-record>
 
   <action-validate name="action-partner-validate-partner-stock-settings-list">
