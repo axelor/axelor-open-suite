@@ -51,7 +51,6 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
@@ -689,6 +688,7 @@ public class ExpenseController {
       KilometricService kilometricService = Beans.get(KilometricService.class);
       BigDecimal distance = kilometricService.computeDistance(expenseLine);
       expenseLine.setDistance(distance);
+
       response.setValue("distance", distance);
 
       // Compute kilometric expense.
@@ -716,13 +716,6 @@ public class ExpenseController {
       }
 
       BigDecimal amount = kilometricService.computeKilometricExpense(expenseLine, employee);
-
-      if (expenseLine.getKilometricTypeSelect()
-          == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP) {
-        distance = distance.multiply(BigDecimal.valueOf(2));
-        response.setValue("distance", distance);
-      }
-
       response.setValue("totalAmount", amount);
       response.setValue("untaxedAmount", amount);
 

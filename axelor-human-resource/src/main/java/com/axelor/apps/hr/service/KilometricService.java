@@ -211,10 +211,8 @@ public class KilometricService {
         price = price.add(max.subtract(min).multiply(rule.getRate()));
       }
     }
-
-    if (expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP)
-      return price.multiply(BigDecimal.valueOf(2)).setScale(2, RoundingMode.HALF_UP);
-    return price.setScale(2, RoundingMode.HALF_UP);
+    return price.setScale(
+        appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -229,6 +227,10 @@ public class KilometricService {
   }
 
   public BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException {
+    if (expenseLine.getKilometricTypeSelect() == ExpenseLineRepository.KILOMETRIC_TYPE_ROUND_TRIP) {
+      return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity())
+          .multiply(BigDecimal.valueOf(2));
+    }
     return computeDistance(expenseLine.getFromCity(), expenseLine.getToCity());
   }
 
