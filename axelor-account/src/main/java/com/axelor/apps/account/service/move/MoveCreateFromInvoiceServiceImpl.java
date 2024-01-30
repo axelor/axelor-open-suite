@@ -354,7 +354,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
               moveToolService
                   .getTotalCurrencyAmount(creditMoveLineList)
                   .min(invoiceCustomerMoveLine.getCurrencyAmount());
-          LocalDate date = appAccountService.getTodayDate(company);
+          LocalDate date = invoice.getInvoiceDate();
 
           // credit move line creation
           MoveLine creditMoveLine =
@@ -449,7 +449,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           moveToolService
               .getTotalCurrencyAmount(debitMoveLines)
               .min(invoiceCustomerMoveLine.getCurrencyAmount().abs());
-      LocalDate date = appAccountService.getTodayDate(company);
+      LocalDate date = invoice.getInvoiceDate();
 
       // debit move line creation
       MoveLine debitMoveLine =
@@ -480,7 +480,7 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
           company,
           null,
           account,
-          appAccountService.getTodayDate(company));
+          invoice.getInvoiceDate());
 
       moveValidateService.accounting(oDmove);
 
