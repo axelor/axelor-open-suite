@@ -310,8 +310,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return appHumanResourceService.getAppTimesheet().getDailyLimit();
   }
 
-  @Override
-  public BigDecimal calculateTotalHoursDuration(
+  protected BigDecimal calculateTotalHoursDuration(
       Timesheet timesheet, TimesheetLine currentTimesheetLine) {
     return timesheet.getTimesheetLineList().stream()
         .filter(

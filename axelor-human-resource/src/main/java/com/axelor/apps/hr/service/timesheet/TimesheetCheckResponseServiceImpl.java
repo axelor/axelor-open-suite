@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetCheckResponseServiceImpl implements TimesheetCheckResponseService {
   protected TimesheetLineService timesheetLineService;
@@ -41,30 +42,41 @@ public class TimesheetCheckResponseServiceImpl implements TimesheetCheckResponse
 
   protected void checkDailyLimit(Timesheet timesheet, List<CheckResponseLine> checkResponseLineList)
       throws AxelorException {
-    for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
-      checkDailyLimit(timesheet, timesheetLine, checkResponseLineList);
+    Integer dailyLimit = timesheetLineService.getDailyLimitFromApp();
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+
+    if (dailyLimit == 0 || CollectionUtils.isEmpty(timesheetLineList)) {
+      return;
+    }
+
+    List<LocalDate> localDateList =
+        timesheet.getTimesheetLineList().stream()
+            .map(TimesheetLine::getDate)
+            .distinct()
+            .collect(Collectors.toList());
+
+    for (LocalDate date : localDateList) {
+      checkDailyLimit(timesheet, checkResponseLineList, date, dailyLimit);
     }
   }
 
   protected void checkDailyLimit(
       Timesheet timesheet,
-      TimesheetLine currentTimesheetLine,
-      List<CheckResponseLine> checkResponseLineList)
+      List<CheckResponseLine> checkResponseLineList,
+      LocalDate date,
+      Integer dailyLimit)
       throws AxelorException {
-    Integer dailyLimit = timesheetLineService.getDailyLimitFromApp();
-
-    if (dailyLimit == 0) {
-      return;
+    BigDecimal totalDuration = getTotalDuration(timesheet, date);
+    if (timesheetLineService.isExceedingDailyLimit(totalDuration, BigDecimal.ZERO, dailyLimit)) {
+      checkResponseLineList.add(handleExceedingDailyLimit(dailyLimit, date, timesheet));
     }
+  }
 
-    BigDecimal totalHoursDuration =
-        timesheetLineService.calculateTotalHoursDuration(timesheet, currentTimesheetLine);
-
-    if (timesheetLineService.isExceedingDailyLimit(
-        totalHoursDuration, BigDecimal.ZERO, dailyLimit)) {
-      checkResponseLineList.add(
-          handleExceedingDailyLimit(dailyLimit, currentTimesheetLine.getDate(), timesheet));
-    }
+  protected BigDecimal getTotalDuration(Timesheet timesheet, LocalDate date) {
+    return timesheet.getTimesheetLineList().stream()
+        .filter(line -> line.getDate().isEqual(date))
+        .map(TimesheetLine::getHoursDuration)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
   protected CheckResponseLine handleExceedingDailyLimit(

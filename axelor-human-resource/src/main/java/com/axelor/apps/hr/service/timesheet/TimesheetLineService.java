@@ -140,8 +140,6 @@ public interface TimesheetLineService {
 
   Integer getDailyLimitFromApp();
 
-  BigDecimal calculateTotalHoursDuration(Timesheet timesheet, TimesheetLine currentTimesheetLine);
-
   boolean isExceedingDailyLimit(
       BigDecimal totalHoursDuration, BigDecimal hoursDuration, int dailyLimit);
 }
