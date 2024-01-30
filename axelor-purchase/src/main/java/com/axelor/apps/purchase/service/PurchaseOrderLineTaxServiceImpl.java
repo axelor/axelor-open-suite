@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
@@ -32,7 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,20 +92,34 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
       Map<TaxLine, PurchaseOrderLineTax> map,
       boolean customerSpecificNote,
       Set<String> specificNotes) {
-    TaxLine taxLine = purchaseOrderLine.getTaxLine();
-    TaxEquiv taxEquiv = purchaseOrderLine.getTaxEquiv();
-    TaxLine taxLineRC =
-        (taxEquiv != null && taxEquiv.getReverseCharge() && taxEquiv.getReverseChargeTax() != null)
-            ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
-            : null;
+    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      for (TaxLine taxLine : taxLineSet) {
+        getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, false);
+      }
+    }
+    Set<TaxEquiv> taxEquivSet = purchaseOrderLine.getTaxEquivSet();
+    if (CollectionUtils.isNotEmpty(taxEquivSet)) {
+      for (TaxEquiv taxEquiv : taxEquivSet) {
+        TaxLine taxLineRC =
+            (taxEquiv != null
+                    && taxEquiv.getReverseCharge()
+                    && taxEquiv.getReverseChargeTax() != null)
+                ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
+                : null;
 
-    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLine, map, false);
+        // Reverse charged process
+        getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, true);
+      }
+    }
 
-    // Reverse charged process
-    getOrCreateLine(purchaseOrder, purchaseOrderLine, taxLineRC, map, true);
-
-    orderLineTaxService.addTaxEquivSpecificNote(
-        purchaseOrderLine, customerSpecificNote, specificNotes);
+    if (!customerSpecificNote && CollectionUtils.isNotEmpty(taxEquivSet)) {
+      specificNotes.addAll(
+          taxEquivSet.stream()
+              .map(TaxEquiv::getSpecificNote)
+              .filter(Objects::nonNull)
+              .collect(Collectors.toList()));
+    }
   }
 
   protected void getOrCreateLine(
@@ -136,6 +154,8 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     purchaseOrderLineTax.setReverseCharged(reverseCharged);
     purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
     purchaseOrderLineTax.setTaxLine(taxLine);
+    purchaseOrderLineTax.setTaxType(
+        Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
     return purchaseOrderLineTax;
   }
 

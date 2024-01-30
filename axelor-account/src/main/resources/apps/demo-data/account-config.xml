@@ -13,7 +13,10 @@
     type="com.axelor.apps.account.db.ServiceType" search="self.importId = :importId"/>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="defaultTaxSet" to="defaultTaxSet" search="self.code in :defaultTaxSet"
+      eval="defaultTaxSet.split('\\|') as List"/>
+  </input>
 
   <input file="account_accountEquiv.csv" separator=";"
     type="com.axelor.apps.account.db.AccountEquiv"/>
@@ -194,6 +197,10 @@
     <bind
       search="self.code = :purchaseTaxVatSystem1Account_code and self.company.importId = :company_id"
       to="purchaseTaxVatSystem1Account" update="true" if="purchaseTaxVatSystem1Account_code"/>
+    <bind search="self.code in :saleTaxSet" to="saleTaxSet" column="saleTaxSet"
+      eval="saleTaxSet.split('\\|') as List"/>
+    <bind search="self.code in :purchaseTaxSet" to="purchaseTaxSet" column="purchaseTaxSet"
+      eval="purchaseTaxSet.split('\\|') as List"/>
   </input>
 
   <input file="account_cfonbConfig.csv" separator=";"
@@ -228,6 +235,8 @@
     </bind>
     <bind column="compatibleAccounts" to="compatibleAccountSet"
       search="self.code in :compatibleAccounts" eval="compatibleAccounts.split('\\|') as List"/>
+    <bind column="defaultTaxSet" to="defaultTaxSet" search="self.code in :defaultTaxSet"
+      eval="defaultTaxSet.split('\\|') as List"/>
   </input>
 
   <input file="account_debtRecoveryConfigLine.csv" separator=";"

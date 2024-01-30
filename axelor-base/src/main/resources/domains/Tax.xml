@@ -14,6 +14,8 @@
 
     <one-to-many name="taxLineList" ref="com.axelor.apps.account.db.TaxLine"
       mappedBy="tax" title="Tax versions history"/>
+    <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
+      title="Tax type" required="true"/>
 
     <unique-constraint columns="code,name"/>
 

@@ -6,6 +6,7 @@
   <grid name="purchase-order-line-tax-grid" title="PO Tax lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLineTax">
     <field name="taxLine" width="400%" form-view="tax-line-form" grid-view="tax-line-grid"/>
+    <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
     <field name="purchaseOrder" hidden="true"/>
     <field name="purchaseOrder.currency" hidden="true"/>
     <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
@@ -19,6 +20,7 @@
     <panel name="mainPanel">
       <field name="taxLine" canEdit="false" grid-view="tax-line-grid"
         form-view="tax-line-form"/>
+      <field name="taxType" grid-view="tax-type-grid" form-view="tax-type-form"/>
       <field name="taxLine.tax.name"/>
       <field name="taxLine.value"/>
       <field name="exTaxBase" x-scale="purchaseOrder.currency.numberOfDecimals"/>

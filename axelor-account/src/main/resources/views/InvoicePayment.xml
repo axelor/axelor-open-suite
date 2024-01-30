@@ -294,13 +294,6 @@
       method="setIsMultiCurrency"/>
   </action-method>
 
-  <action-record name="action-record-on-change-invoice-payment-financial-discount"
-    model="com.axelor.apps.account.db.InvoicePayment">
-    <field name="amount"
-      expr="call:com.axelor.apps.account.service.invoice.InvoiceService:calculateAmountRemainingInPayment(invoice,applyFinancialDiscount,amount)"
-      if="invoice"/>
-  </action-record>
-
   <action-record name="action-invoice-payment-record-manual-change"
     model="com.axelor.apps.account.db.InvoicePayment">
     <field name="manualChange" expr="eval: true"/>

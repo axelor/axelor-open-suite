@@ -22,7 +22,8 @@
     <field name="moveLine.debit" aggregate="sum" width="100"/>
     <field name="moveLine.credit" aggregate="sum" width="100"/>
     <field name="moveLine.amountRemaining" aggregate="sum" width="100"/>
-    <field name="moveLine.taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
+    <field name="moveLine.taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
+      widget="TagSelect"/>
     <field name="moveLine.analyticDistributionTemplate"
       if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
       grid-view="analytic-distribution-template-grid"
@@ -50,7 +51,8 @@
       <field name="moveLine.debit" aggregate="sum"/>
       <field name="moveLine.credit" aggregate="sum"/>
       <field name="moveLine.amountRemaining" aggregate="sum"/>
-      <field name="moveLine.taxLine" domain="self.endDate > :date OR self.endDate IS NULL"/>
+      <field name="moveLine.taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
+        widget="TagSelect"/>
       <field name="moveLine.analyticDistributionTemplate"
         if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"

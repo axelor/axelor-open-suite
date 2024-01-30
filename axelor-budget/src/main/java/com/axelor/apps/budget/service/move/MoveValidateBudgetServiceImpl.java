@@ -41,6 +41,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
 import com.google.inject.Inject;
@@ -73,7 +74,8 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
       CurrencyScaleServiceAccount currencyScaleServiceAccount,
       MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       ExpenseRepository expenseRepository,
-      MoveBudgetService moveBudgetService) {
+      MoveBudgetService moveBudgetService,
+      TaxService taxService) {
     super(
         moveLineControlService,
         moveLineToolService,
@@ -96,7 +98,8 @@ public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
         companyConfigService,
         currencyScaleServiceAccount,
         moveLineFinancialDiscountService,
-        expenseRepository);
+        expenseRepository,
+        taxService);
     this.moveBudgetService = moveBudgetService;
   }
 

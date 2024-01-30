@@ -23,8 +23,9 @@
     <decimal name="oldQty" hidden="true" precision="20" scale="10"/>
     <decimal name="exTaxTotal" title="Total W.T." scale="3" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="3" precision="20"/>
-    <many-to-one name="taxLine" ref="com.axelor.apps.account.db.TaxLine" title="Tax"/>
-    <many-to-one name="taxEquiv" ref="com.axelor.apps.account.db.TaxEquiv"
+    <many-to-many name="taxLineSet" ref="com.axelor.apps.account.db.TaxLine"
+      title="Taxes"/>
+    <many-to-many name="taxEquivSet" ref="com.axelor.apps.account.db.TaxEquiv"
       title="Tax Equiv"/>
     <date name="cutOffStartDate" title="From date"/>
     <date name="cutOffEndDate" title="To date"/>
@@ -114,7 +115,6 @@
       <field name="unit"/>
       <field name="qty"/>
       <field name="price"/>
-      <field name="taxLine"/>
       <field name="account"/>
       <field name="analyticDistributionTemplate"/>
     </track>

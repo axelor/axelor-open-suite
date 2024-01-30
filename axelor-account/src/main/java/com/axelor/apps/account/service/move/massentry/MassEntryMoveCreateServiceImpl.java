@@ -152,8 +152,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         newMoveLine.setCutOffEndDate(moveLine.getCutOffEndDate());
         newMove.getMoveLineList().add(newMoveLine);
 
-        newMoveLine.setTaxLine(moveLine.getTaxLine());
-        newMoveLine.setSourceTaxLine(moveLine.getSourceTaxLine());
+        newMoveLine.setTaxLineSet(moveLine.getTaxLineSet());
 
         moveLineComputeAnalyticService.generateAnalyticMoveLines(newMoveLine);
         moveLineMassEntryRecordService.setAnalytics(newMoveLine, moveLine);
@@ -262,7 +261,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         }
         massEntryLine.setFieldsErrorList(null);
         MoveLineMassEntry copy = moveLineMassEntryRepository.copy(massEntryLine, false);
-        copy.setSourceTaxLine(massEntryLine.getSourceTaxLine());
+        copy.setSourceTaxLineSet(massEntryLine.getSourceTaxLineSet());
         moveLineToolService.setDecimals(copy, move);
         moveLineMassEntryRecordService.fillAnalyticMoveLineList(massEntryLine, copy);
 

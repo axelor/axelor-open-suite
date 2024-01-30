@@ -5,6 +5,7 @@
 
   <grid name="tax-grid" title="Tax" model="com.axelor.apps.account.db.Tax" orderBy="code">
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+    <field name="taxType"/>
     <field name="name"/>
   </grid>
 
@@ -12,6 +13,7 @@
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
       <field name="name"/>
+      <field name="taxType"/>
     </panel>
     <panel-tabs>
       <panel name="taxRateListPanel" title="Tax rate list">
