@@ -81,6 +81,9 @@
         <panel-dashlet name="viewMoveLineReconcileGroupPanel" colSpan="12"
           title="General" hideIf="$popup() || !reconcileOk" height="450"
           action="action-account-view-show-move-lines" canSearch="true"/>
+        <panel-dashlet name="relatedMoveTemplatePanel" title="Move templates"
+          colSpan="12" height="450" hideIf="!id || accountType.technicalTypeSelect == 'view'"
+          action="action-account-view-move-templates" canSearch="true"/>
       </panel>
       <panel name="settingsPanel" title="Account.settings">
         <field name="accountType" required="true" form-view="account-type-form"
@@ -514,6 +517,10 @@
 
   <action-method name="action-account-method-set-parent-account-domain">
     <call class="com.axelor.apps.account.web.AccountController" method="setParentAccountDomain"/>
+  </action-method>
+
+  <action-method name="action-account-view-move-templates">
+    <call class="com.axelor.apps.account.web.AccountController" method="viewMoveTemplates"/>
   </action-method>
 
   <action-attrs name="action-attrs-account-account-readonly-if-account-in-move-line">

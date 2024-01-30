@@ -1750,6 +1750,7 @@
 "Generate move for advance payment",,,
 "Generate move for payment on invoice",,,
 "Generate move from template",,,
+"Generate move from using this template",,,
 "Generate periods",,,
 "Generate reimbursements",,,
 "Generate result move",,,

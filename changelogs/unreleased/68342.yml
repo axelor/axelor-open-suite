@@ -1,0 +1,4 @@
+---
+title: "Account : Add a dashlet to see move templates related to this account"
+type: feature
+description: "Add of a button in the move template grid view to facilitate the move generation via move templates"
