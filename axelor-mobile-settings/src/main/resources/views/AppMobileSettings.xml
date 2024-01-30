@@ -196,7 +196,7 @@
       expr="eval: __repo__(MobileConfig).all().filter('self.sequence = ?', 'app-hr').fetchOne()?.id"/>
   </action-view>
 
-  <action-view name="action.quality.config.view" title="HR config"
+  <action-view name="action.quality.config.view" title="Quality config"
     model="com.axelor.apps.mobilesettings.db.MobileConfig">
     <view type="form" name="mobile-config-form"/>
     <view-param name="popup" value="true"/>
