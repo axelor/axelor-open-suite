@@ -23,7 +23,7 @@
       </field>
       <field name="holdBackProduct"/>
       <panel-related field="productsHeldBackSet" form-view="product-form" colSpan="12"
-        grid-view="product-hold-back-grid"/>
+        grid-view="product-hold-back-grid" canNew="false"/>
     </panel>
   </form>
 
