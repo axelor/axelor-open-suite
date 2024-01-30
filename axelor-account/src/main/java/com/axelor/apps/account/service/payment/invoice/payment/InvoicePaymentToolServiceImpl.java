@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.payment.invoice.payment;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
@@ -362,7 +363,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
       if (!invoicePayment.getManualChange()
           || invoicePayment.getAmount().compareTo(payableAmount) > 0) {
         invoicePayment.setAmount(payableAmount);
-        amountError = true;
+        amountError = !invoicePayment.getApplyFinancialDiscount();
       }
 
       invoiceTermIdList =
@@ -381,6 +382,21 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment, invoiceTerms, amount, amount);
+        } else if (invoicePayment.getApplyFinancialDiscount() && invoicePayment.getManualChange()) {
+          BigDecimal financialDiscountAmount =
+              invoicePayment.getInvoiceTermPaymentList().stream()
+                  .map(InvoiceTermPayment::getInvoiceTerm)
+                  .map(InvoiceTerm::getFinancialDiscountAmount)
+                  .reduce(BigDecimal::add)
+                  .orElse(BigDecimal.ZERO);
+          BigDecimal amountWithFinancialDiscount = amount.add(financialDiscountAmount);
+
+          invoicePayment.clearInvoiceTermPaymentList();
+          invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
+              invoicePayment,
+              invoiceTerms,
+              amountWithFinancialDiscount,
+              amountWithFinancialDiscount);
         }
 
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
