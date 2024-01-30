@@ -354,9 +354,18 @@ public final class HumanResourceExceptionMessage {
   public static final String TIMESHEET_LINE_INVALID_DATE = /*$$(*/
       "This date is invalid. It must be included in the timesheet's period." /*)*/;
 
-  public static final String TIMESHEET_CONFIRM_NOT_NEEDED = /*$$(*/
-      "Confirmation is not needed." /*)*/;
+  public static final String TIMESHEET_CONFIRM_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only confirm/complete from draft status." /*)*/;
 
-  public static final String TIMESHEET_CONFIRM_NEEDED = /*$$(*/
-      "Confirmation is needed before validating the timesheet." /*)*/;
+  public static final String TIMESHEET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can not cancel an already cancelled timesheet." /*)*/;
+
+  public static final String TIMESHEET_VALIDATION_NEEDED_NOT_ENABLED = /*$$(*/
+      "Validation needed configuration is not enabled." /*)*/;
 }

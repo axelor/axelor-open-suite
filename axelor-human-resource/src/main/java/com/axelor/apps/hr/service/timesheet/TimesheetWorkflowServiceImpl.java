@@ -8,11 +8,11 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.axelor.apps.hr.service.app.AppTimesheetService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
@@ -29,28 +29,26 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected TimesheetRepository timesheetRepository;
-  protected AppTimesheetService appTimesheetService;
+  protected TimesheetWorkflowCheckService timesheetWorkflowCheckService;
 
   @Inject
   public TimesheetWorkflowServiceImpl(
       AppHumanResourceService appHumanResourceService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      TimesheetRepository timesheetRepository) {
+      TimesheetRepository timesheetRepository,
+      TimesheetWorkflowCheckService timesheetWorkflowCheckService) {
     this.appHumanResourceService = appHumanResourceService;
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.timesheetRepository = timesheetRepository;
+    this.timesheetWorkflowCheckService = timesheetWorkflowCheckService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(Timesheet timesheet) throws AxelorException {
-    if (!appHumanResourceService.getAppTimesheet().getNeedValidation()) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_CONFIRM_NOT_NEEDED));
-    }
+    timesheetWorkflowCheckService.confirmCheck(timesheet);
     this.fillToDate(timesheet);
     this.validateDates(timesheet);
 
@@ -85,13 +83,12 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional
   public void validate(Timesheet timesheet) throws AxelorException {
-    int statusSelect = timesheet.getStatusSelect();
-    if (appHumanResourceService.getAppTimesheet().getNeedValidation()
-        && statusSelect != TimesheetRepository.STATUS_CONFIRMED) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(HumanResourceExceptionMessage.TIMESHEET_CONFIRM_NEEDED));
+    timesheetWorkflowCheckService.validateCheck(timesheet);
+
+    if (timesheet.getTimesheetLineList() != null && !timesheet.getTimesheetLineList().isEmpty()) {
+      Beans.get(TimesheetTimeComputationService.class).computeTimeSpent(timesheet);
     }
+
     timesheet.setIsCompleted(true);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_VALIDATED);
     timesheet.setValidatedBy(AuthUtils.getUser());
@@ -125,8 +122,8 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
 
   @Override
   @Transactional
-  public void refuse(Timesheet timesheet) {
-
+  public void refuse(Timesheet timesheet) throws AxelorException {
+    timesheetWorkflowCheckService.refuseCheck(timesheet);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
     timesheet.setRefusedBy(AuthUtils.getUser());
     timesheet.setRefusalDateTime(
@@ -135,9 +132,10 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
 
   @Transactional
   @Override
-  public void refuse(Timesheet timesheet, String groundForRefusal) throws AxelorException {
-    refuse(timesheet);
+  public void refuseAndSendRefusalEmail(Timesheet timesheet, String groundForRefusal)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
     timesheet.setGroundForRefusal(groundForRefusal);
+    refuseAndSendRefusalEmail(timesheet);
   }
 
   @Override
@@ -166,7 +164,8 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
 
   @Override
   @Transactional
-  public void cancel(Timesheet timesheet) {
+  public void cancel(Timesheet timesheet) throws AxelorException {
+    timesheetWorkflowCheckService.cancelCheck(timesheet);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
   }
 
@@ -291,6 +290,23 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
       }
 
       timesheet.setToDate(timesheetLineLastDate);
+    }
+  }
+
+  @Override
+  public Message complete(Timesheet timesheet)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+    confirm(timesheet);
+    return validateAndSendValidationEmail(timesheet);
+  }
+
+  @Override
+  public void completeOrConfirm(Timesheet timesheet)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+    if (appHumanResourceService.getAppTimesheet().getNeedValidation()) {
+      confirmAndSendConfirmationEmail(timesheet);
+    } else {
+      complete(timesheet);
     }
   }
 }

@@ -22,6 +22,7 @@ import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
+import java.io.IOException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -31,6 +32,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import wslite.json.JSONException;
 
 @OpenAPIDefinition(servers = {@Server(url = "../")})
 @Path("/aos/timesheet")
@@ -86,7 +88,7 @@ public class TimesheetRestController {
   @HttpExceptionHandler
   public Response updateTimesheetStatus(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
-      throws AxelorException {
+      throws AxelorException, JSONException, IOException, ClassNotFoundException {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
@@ -95,16 +97,17 @@ public class TimesheetRestController {
 
     switch (requestBody.getToStatus()) {
       case TimesheetPutRequest.TIMESHEET_UPDATE_CONFIRM:
-        timesheetWorkflowService.confirm(timesheet);
+        timesheetWorkflowService.completeOrConfirm(timesheet);
         break;
       case TimesheetPutRequest.TIMESHEET_UPDATE_VALIDATE:
-        timesheetWorkflowService.validate(timesheet);
+        timesheetWorkflowService.validateAndSendValidationEmail(timesheet);
         break;
       case TimesheetPutRequest.TIMESHEET_UPDATE_REFUSE:
-        timesheetWorkflowService.refuse(timesheet, requestBody.getGroundForRefusal());
+        timesheetWorkflowService.refuseAndSendRefusalEmail(
+            timesheet, requestBody.getGroundForRefusal());
         break;
       case TimesheetPutRequest.TIMESHEET_UPDATE_CANCEL:
-        timesheetWorkflowService.cancel(timesheet);
+        timesheetWorkflowService.cancelAndSendCancellationEmail(timesheet);
         break;
       default:
         break;
