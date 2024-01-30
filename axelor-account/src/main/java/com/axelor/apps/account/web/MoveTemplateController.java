@@ -26,11 +26,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.move.MoveTemplateService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.service.move.template.MoveTemplateGroupService;
+import com.axelor.apps.account.service.move.template.MoveTemplateService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,6 +49,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -191,6 +195,23 @@ public class MoveTemplateController {
     }
   }
 
+  @ErrorException
+  public void selectDefaultFields(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    try {
+      Long companyId = getIdUsingContext(request, "_company");
+      Long moveTemplateTypeId = getIdUsingContext(request, "_moveTemplateType");
+      Long moveTemplateOriginId = getIdUsingContext(request, "_moveTemplateId");
+
+      response.setValues(
+          Beans.get(MoveTemplateGroupService.class)
+              .getOnNewValuesMap(companyId, moveTemplateTypeId, moveTemplateOriginId));
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void onLoad(ActionRequest request, ActionResponse response) {
     try {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
@@ -204,5 +225,14 @@ public class MoveTemplateController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected Long getIdUsingContext(ActionRequest request, String fieldName) {
+    return Optional.of(request)
+        .map(ActionRequest::getContext)
+        .map(c -> c.get(fieldName))
+        .map(Object::toString)
+        .map(Long::valueOf)
+        .orElse(0L);
   }
 }

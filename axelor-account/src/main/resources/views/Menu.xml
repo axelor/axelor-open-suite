@@ -972,6 +972,9 @@
     <view-param name="width" value="800"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>
+    <context name="_company" expr="eval: company?.id"/>
+    <context name="_moveTemplateType" expr="eval: moveTemplateType?.id"/>
+    <context name="_moveTemplateId" expr="eval: id"/>
   </action-view>
 
   <menuitem name="move-template-root" title="Move Templates" parent="account-conf"
