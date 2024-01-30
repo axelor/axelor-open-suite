@@ -113,14 +113,6 @@ public interface FixedAssetLineService {
   void filterListByDate(List<FixedAssetLine> fixedAssetLineList, LocalDate date);
 
   /**
-   * Get Fixed asset of fixedAssetLine.
-   *
-   * @param fixedAssetLine
-   * @return fixedAsset : {@link FixedAsset}
-   */
-  FixedAsset getFixedAsset(FixedAssetLine fixedAssetLine) throws AxelorException;
-
-  /**
    * Set Fixed asset of fixedAssetLine.
    *
    * @param fixedAsset
