@@ -35,8 +35,9 @@ import com.axelor.utils.ModelTool;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.inject.Singleton;
-import java.util.Map;
+
 import javax.validation.ValidationException;
+import java.util.Map;
 
 @Singleton
 public class UserController {
@@ -118,6 +119,19 @@ public class UserController {
     try {
       AppSettings appSettings = AppSettings.get();
       response.setValue("language", appSettings.get("application.locale"));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void sendTemporaryPasswordToUser(ActionRequest request, ActionResponse response) {
+    try {
+      User user = request.getContext().asType(User.class);
+      UserService userService = Beans.get(UserService.class);
+      User updatedUser = userService.setTemporaryPasswordForUser(user.getId());
+      if (updatedUser != null) {
+        response.setValue("message", "successful");
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

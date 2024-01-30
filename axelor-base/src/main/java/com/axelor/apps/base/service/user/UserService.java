@@ -28,11 +28,12 @@ import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
+import wslite.json.JSONException;
+
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
-import javax.mail.MessagingException;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 public interface UserService {
@@ -185,4 +186,7 @@ public interface UserService {
   public Partner setUserPartner(Partner partner, User user);
 
   public void generateRandomPasswordForUser(User user);
+
+  @Transactional
+  public User setTemporaryPasswordForUser(Long userId);
 }

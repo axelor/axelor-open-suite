@@ -46,6 +46,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.exception.TooManyIterationsException;
+import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import wslite.json.JSONException;
+
+import javax.mail.MessagingException;
+import javax.validation.ValidationException;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
@@ -53,14 +62,6 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import javax.mail.MessagingException;
-import javax.validation.ValidationException;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.math3.exception.TooManyIterationsException;
-import org.apache.shiro.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
@@ -423,5 +424,23 @@ public class UserServiceImpl implements UserService {
     }
 
     return user.getTradingName();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {AxelorException.class, Exception.class})
+  public User setTemporaryPasswordForUser(Long userId) {
+    AuthService authService = Beans.get(AuthService.class);
+    LocalDateTime todayDateTime =
+            Beans.get(AppBaseService.class).getTodayDateTime().toLocalDateTime();
+
+    User user = userRepo.find(userId);
+    String password = this.generateRandomPassword().toString();
+    user.setTransientPassword(password);
+    password = authService.encrypt(password);
+    user.setSendEmailUponPasswordChange(true);
+    user.setForcePasswordChange(true);
+    user.setPassword(password);
+    user.setPasswordUpdatedOn(todayDateTime);
+    return userRepo.save(user);
   }
 }
