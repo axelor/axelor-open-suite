@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -24,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsourceService {
 
@@ -74,10 +76,10 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
     Objects.requireNonNull(purchaseOrder);
 
     // Get products for purchaseOrder from prodProcessLine
-    if (operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductList() != null) {
+    if (operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductSet() != null) {
       List<PurchaseOrderLine> list = new ArrayList<>();
       for (Product product :
-          operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductList()) {
+          operationOrder.getProdProcessLine().getGeneratedPurchaseOrderProductSet()) {
         PurchaseOrderLine purchaseOrderLine =
             this.createPurchaseOrderLine(operationOrder, purchaseOrder, product).orElse(null);
         if (purchaseOrderLine != null) {
@@ -98,21 +100,14 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
 
     BigDecimal quantity = BigDecimal.ONE;
 
-    Unit productUnit =
-        Optional.ofNullable(product.getPurchasesUnit())
-            .or(() -> Optional.ofNullable(product.getUnit()))
-            .orElseThrow(
-                () ->
-                    new AxelorException(
-                        TraceBackRepository.CATEGORY_NO_VALUE,
-                        I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT)));
+    Unit productUnit = getProductUnit(product);
 
     // If product unit is appBase.unithours or unitDay or unitMinutes
     AppBase appBase = appBaseService.getAppBase();
     if (List.of(appBase.getUnitDays(), appBase.getUnitHours(), appBase.getUnitMinutes())
         .contains(productUnit)) {
-      // Quantity must be computed based on hrDurationPerCycle
-      quantity = recomputeQty(operationOrder.getWorkCenter().getHrDurationPerCycle(), productUnit);
+      // Quantity must be computed based on plannedHumanDuration
+      quantity = recomputeQty(operationOrder.getPlannedHumanDuration(), productUnit);
     }
 
     return Optional.ofNullable(
@@ -120,24 +115,81 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
             purchaseOrder, product, null, null, quantity, productUnit));
   }
 
-  protected BigDecimal recomputeQty(Long hrDurationPerCycle, Unit productUnit) {
+  private Unit getProductUnit(Product product) throws AxelorException {
+    return Optional.ofNullable(product.getPurchasesUnit())
+        .or(() -> Optional.ofNullable(product.getUnit()))
+        .orElseThrow(
+            () ->
+                new AxelorException(
+                    TraceBackRepository.CATEGORY_NO_VALUE,
+                    I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT)));
+  }
+
+  @Override
+  public Optional<PurchaseOrderLine> createPurchaseOrderLine(
+      ManufOrder manufOrder, PurchaseOrder purchaseOrder, Product product) throws AxelorException {
+
+    BigDecimal quantity = BigDecimal.ONE;
+
+    Unit productUnit = getProductUnit(product);
+
+    // If product unit is appBase.unithours or unitDay or unitMinutes
+    AppBase appBase = appBaseService.getAppBase();
+    if (List.of(appBase.getUnitDays(), appBase.getUnitHours(), appBase.getUnitMinutes())
+        .contains(productUnit)) {
+
+      // Quantity must be computed based on hrDurationPerCycle sums of operationOrders
+      quantity =
+          recomputeQty(
+              manufOrder.getOperationOrderList().stream()
+                  .map(OperationOrder::getPlannedHumanDuration)
+                  .reduce(Long::sum)
+                  .orElse(0L),
+              productUnit);
+    }
+
+    return Optional.ofNullable(
+        purchaseOrderLineService.createPurchaseOrderLine(
+            purchaseOrder, product, null, null, quantity, productUnit));
+  }
+
+  @Override
+  public List<PurchaseOrderLine> createPurchaseOrderLines(
+      ManufOrder manufOrder, Set<Product> productSet, PurchaseOrder purchaseOrder)
+      throws AxelorException {
+    Objects.requireNonNull(manufOrder);
+    Objects.requireNonNull(purchaseOrder);
+
+    List<PurchaseOrderLine> list = new ArrayList<>();
+    for (Product product : manufOrder.getProdProcess().getGeneratedPurchaseOrderProductSet()) {
+      PurchaseOrderLine purchaseOrderLine =
+          this.createPurchaseOrderLine(manufOrder, purchaseOrder, product).orElse(null);
+      if (purchaseOrderLine != null) {
+        list.add(purchaseOrderLine);
+        purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+      }
+    }
+    return list;
+  }
+
+  protected BigDecimal recomputeQty(Long duration, Unit productUnit) {
     AppBase appBase = appBaseService.getAppBase();
 
     // Product is in unit day
     if (productUnit.equals(appBase.getUnitDays())) {
-      return new BigDecimal(hrDurationPerCycle)
+      return new BigDecimal(duration)
           .divide(
               BigDecimal.valueOf(86400),
               appBaseService.getNbDecimalDigitForQty(),
               RoundingMode.HALF_UP);
     } else if (productUnit.equals(appBase.getUnitHours())) {
-      return new BigDecimal(hrDurationPerCycle)
+      return new BigDecimal(duration)
           .divide(
               BigDecimal.valueOf(3600),
               appBaseService.getNbDecimalDigitForQty(),
               RoundingMode.HALF_UP);
     } else if (productUnit.equals(appBase.getUnitMinutes())) {
-      return new BigDecimal(hrDurationPerCycle)
+      return new BigDecimal(duration)
           .divide(
               BigDecimal.valueOf(60),
               appBaseService.getNbDecimalDigitForQty(),

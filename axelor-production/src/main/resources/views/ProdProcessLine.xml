@@ -44,11 +44,9 @@
           requiredIf="(outsourcing &amp;&amp; !prodProcess.outsourcing) || outsourcable"/>
         <field name="generatePurchaseOrderOnMoPlanning"
           showIf="(outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing" colSpan="4"/>
-        <field name="useLineInGeneratedPurchaseOrder"
-          showIf="prodProcess.outsourcing || prodProcess.outsourcable || (prodProcess.prodProcessLinesOutsourcable &amp;&amp; (outsourcing || outsourcable))"/>
         <panel-related name="generatedPurchaseOrderProductPanel"
-          field="generatedPurchaseOrderProductList"
-          showIf="prodProcess.outsourcing || prodProcess.outsourcable || (prodProcess.prodProcessLinesOutsourcable &amp;&amp; (outsourcing || outsourcable)) &amp;&amp; useLineInGeneratedPurchaseOrder"
+          field="generatedPurchaseOrderProductSet"
+          showIf="((outsourcing || outsourcable) &amp;&amp; !prodProcess.outsourcing) &amp;&amp; generatePurchaseOrderOnMoPlanning"
           colSpan="12" canEdit="false" canNew="false" canSelect="true"/>
       </panel>
 
@@ -185,9 +183,6 @@
       expr="eval: __parent__ != null ? !__parent__.isConsProOnOperation : !prodProcess.isConsProOnOperation"/>
     <attribute name="hidden" for="stockLocation"
       expr="eval: !__parent__?.isConsProOnOperation"/>
-    <attribute name="hidden" for="useLineInGeneratedPurchaseOrder"
-      expr="eval: !((__parent__.outsourcing || outsourcing) &amp;&amp; __parent__.generatePurchaseOrderOnMoPlanning)"
-      if="__parent__ != null"/>
     <attribute name="required" for="workCenter"
       expr="eval: !__config__.app.getApp('production')?.getManageWorkCenterGroup()"/>
     <attribute name="hidden" for="workCenterGroupPanel"

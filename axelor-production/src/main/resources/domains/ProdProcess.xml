@@ -49,6 +49,8 @@
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing stock location"/>
     <boolean name="generatePurchaseOrderOnMoPlanning"
       title="Generate a purchase order on MO planning"/>
+    <many-to-many name="generatedPurchaseOrderProductSet"
+      ref="com.axelor.apps.base.db.Product" title="Products for generated purchase order"/>
 
     <extra-code><![CDATA[
 

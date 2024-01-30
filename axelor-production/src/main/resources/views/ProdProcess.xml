@@ -104,6 +104,10 @@
           <field name="generatePurchaseOrderOnMoPlanning" colSpan="4"
             if="__config__.app.getApp('production')?.getManageOutsourcing()"
             showIf="outsourcing || outsourcable"/>
+          <panel-related name="generatedPurchaseOrderProductPanel"
+            field="generatedPurchaseOrderProductSet"
+            showIf="(outsourcing || outsourcable) &amp;&amp; generatePurchaseOrderOnMoPlanning"
+            colSpan="12" canEdit="false" canNew="false" canSelect="true"/>
         </panel>
 
         <field name="isEnabledForAllProducts" colSpan="4" readonlyIf="isConsProOnOperation"/>

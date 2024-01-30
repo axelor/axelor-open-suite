@@ -2,37 +2,24 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PartnerPriceListService;
-import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdProcessLine;
-import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.common.ObjectUtils;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -107,26 +94,40 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     }
 
     for (PurchaseOrder purchaseOrder : generatedPurchaseOrders) {
-      List<OperationOrder> operationOrderGeneratePurchaseOrderList =
-          manufOrder.getOperationOrderList().stream()
-              .filter(
-                  oo ->
-                      oo.getProdProcessLine().getUseLineInGeneratedPurchaseOrder()
-                          && purchaseOrder
-                              .getSupplierPartner()
-                              .equals(
-                                  operationOrderOutsourceService
-                                      .getOutsourcePartner(oo)
-                                      .orElse(null)))
-              .collect(Collectors.toList());
 
-      for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
-        operationOrderOutsourceService.createPurchaseOrderLines(operationOrder, purchaseOrder);
+      // When manufOrder is fully outsourced
+      if (manufOrder.getOutsourcing()) {
+        operationOrderOutsourceService.createPurchaseOrderLines(
+            manufOrder,
+            manufOrder.getProdProcess().getGeneratedPurchaseOrderProductSet(),
+            purchaseOrder);
+      } else {
+        List<OperationOrder> operationOrderGeneratePurchaseOrderList =
+            getOperationOrdersForGeneratedPOs(manufOrder, purchaseOrder);
+
+        for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
+          operationOrderOutsourceService.createPurchaseOrderLines(operationOrder, purchaseOrder);
+        }
       }
+
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
     }
 
     manufOrderRepository.save(manufOrder);
+  }
+
+  protected List<OperationOrder> getOperationOrdersForGeneratedPOs(
+      ManufOrder manufOrder, PurchaseOrder purchaseOrder) {
+
+    return manufOrder.getOperationOrderList().stream()
+        .filter(
+            oo ->
+                oo.getProdProcessLine().getGeneratePurchaseOrderOnMoPlanning()
+                    && purchaseOrder
+                        .getSupplierPartner()
+                        .equals(
+                            operationOrderOutsourceService.getOutsourcePartner(oo).orElse(null)))
+        .collect(Collectors.toList());
   }
 
   protected PurchaseOrder setPurchaseOrderSupplierDetails(PurchaseOrder purchaseOrder)
