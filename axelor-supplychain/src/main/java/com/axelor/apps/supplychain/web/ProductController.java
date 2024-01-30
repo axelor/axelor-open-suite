@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -66,7 +67,7 @@ public class ProductController {
               .computeIndicators(productId, companyId, stockLocationId);
       response.setValues(map);
     } catch (Exception e) {
-      TraceBackService.trace(response, e);
+      TraceBackService.trace(response, e, ResponseMessageType.WARNING);
     }
   }
 
