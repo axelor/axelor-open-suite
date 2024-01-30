@@ -96,6 +96,7 @@
     <many-to-one name="mainActivity" title="Main Activity"
       ref="com.axelor.apps.base.db.MainActivity"/>
     <string name="taxNbr" title="Tax N°"/>
+    <integer name="nbrEmployees" title="Employees (Nbr)" min="0"/>
     <string name="siren" title="N° Siren"/>
     <string name="nic" title="Internal Classification Number"/>
     <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
@@ -139,6 +140,7 @@
 
     <finder-method name="findByPartnerSeq" using="partnerSeq"/>
 
+    <finder-method name="findByRegistrationCode" using="registrationCode"/>
     <extra-code>
 	<![CDATA[
 		public static final int PARTNER_TYPE_COMPANY = 1;

@@ -19,6 +19,8 @@
     <many-to-one name="citizenship" title="Citizenship"
       ref="com.axelor.apps.base.db.Citizenship"/>
 
+    <finder-method name="findByCode" using="alpha3Code" cacheable="true" />
+
   </entity>
 
 </domain-models>

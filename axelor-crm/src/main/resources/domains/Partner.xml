@@ -65,6 +65,7 @@
         <![CDATA[SELECT COUNT(*) FROM crm_opportunity WHERE crm_opportunity.partner = id AND crm_opportunity.opportunity_status = (SELECT studio_app_crm.closed_win_opportunity_status FROM studio_app_crm LIMIT 1)]]>
     </integer>
 
+
     <extra-code>
     <![CDATA[
 		//partner size select
