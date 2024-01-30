@@ -12,6 +12,7 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class TimerTimesheetGenerationServiceImpl implements TimerTimesheetGenerationService {
@@ -46,6 +47,10 @@ public class TimerTimesheetGenerationServiceImpl implements TimerTimesheetGenera
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_ADD_TIMER_WRONG_STATUS));
     }
 
+    timerList =
+        timerList.stream()
+            .filter(timer -> timer.getTimesheetLine() == null)
+            .collect(Collectors.toList());
     for (TSTimer timer : timerList) {
       timesheetTimerService.generateTimesheetLine(timer, timesheet);
     }

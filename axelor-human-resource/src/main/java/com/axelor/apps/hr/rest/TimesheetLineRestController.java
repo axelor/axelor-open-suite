@@ -48,7 +48,7 @@ public class TimesheetLineRestController {
                 requestBody.fetchTimesheet(),
                 requestBody.getDuration(),
                 requestBody.getComments());
-    Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
+    Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.buildCreateResponse(
         timesheetLine, new TimesheetLineResponse(timesheetLine));

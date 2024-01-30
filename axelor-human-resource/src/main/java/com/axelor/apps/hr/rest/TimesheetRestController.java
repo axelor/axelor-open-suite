@@ -48,10 +48,11 @@ public class TimesheetRestController {
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet =
-        Beans.get(TimesheetCreateService.class).createTimesheet(requestBody.getFromDate(), null);
+        Beans.get(TimesheetCreateService.class)
+            .createTimesheet(requestBody.getFromDate(), requestBody.getToDate());
     Beans.get(TimerTimesheetGenerationService.class)
         .addTimersToTimesheet(requestBody.fetchTSTimers(), timesheet);
-    Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
+    Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.buildCreateResponse(timesheet, new TimesheetResponse(timesheet));
   }
@@ -71,7 +72,7 @@ public class TimesheetRestController {
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
     Beans.get(TimerTimesheetGenerationService.class)
         .addTimersToTimesheet(requestBody.fetchTSTimers(), timesheet);
-    Beans.get(TimesheetPeriodComputationService.class).computePeriodTotal(timesheet);
+    Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.build(
         Response.Status.OK, "Timesheet successfully updated.", new TimesheetResponse(timesheet));
