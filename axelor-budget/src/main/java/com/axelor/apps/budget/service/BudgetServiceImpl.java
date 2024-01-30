@@ -921,19 +921,27 @@ public class BudgetServiceImpl implements BudgetService {
       List<BudgetDistribution> budgetDistributionList, BigDecimal amount, String code)
       throws AxelorException {
     if (!CollectionUtils.isEmpty(budgetDistributionList)) {
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        if (currencyScaleServiceBudget
-                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount())
-                .compareTo(
-                    currencyScaleServiceBudget.getCompanyScaledValue(budgetDistribution, amount))
-            > 0) {
-          throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
-              code);
-        }
+      BigDecimal totalAmount =
+          budgetDistributionList.stream()
+              .map(BudgetDistribution::getAmount)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      if (this.isGreaterThan(
+          totalAmount, amount, budgetDistributionList.stream().findFirst().get())) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(BudgetExceptionMessage.BUDGET_EXCEED_ORDER_LINE_AMOUNT),
+            code);
       }
     }
+  }
+
+  protected boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, BudgetDistribution budgetDistribution) {
+    amount1 = currencyScaleServiceBudget.getCompanyScaledValue(budgetDistribution, amount1);
+    amount2 = currencyScaleServiceBudget.getCompanyScaledValue(budgetDistribution, amount2);
+
+    return amount1.compareTo(amount2) > 0;
   }
 
   @Override

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -5334,7 +5334,7 @@ else if(row["title_select"] == "4"){'Prof.'}</value>
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
-			if(params["Locale"].value != 'en') {
+			if(params["Locale"].value.substring(0, 2) != 'en') {
 				row["translation"]
 			} else {
 				row["message_key"]
@@ -5374,7 +5374,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value.substring(0, 2) != 'en') {
 row["translation"]
 } else {
 row["message_key"]
@@ -5583,7 +5583,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value.substring(0, 2) != 'en') {
 row["translation"]
 } else {
 row["message_key"]

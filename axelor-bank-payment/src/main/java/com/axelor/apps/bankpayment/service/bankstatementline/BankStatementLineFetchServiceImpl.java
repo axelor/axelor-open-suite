@@ -6,6 +6,7 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.base.db.BankDetails;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BankStatementLineFetchServiceImpl implements BankStatementLineFetchService {
@@ -28,6 +29,7 @@ public class BankStatementLineFetchServiceImpl implements BankStatementLineFetch
     return bankStatementLineRepository.findByBankStatement(bankStatement).fetch().stream()
         .map(BankStatementLine::getBankDetails)
         .distinct()
+        .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 }

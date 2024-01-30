@@ -29,7 +29,7 @@ public interface FixedAssetLineGenerationService {
    *
    * @param fixedAsset
    */
-  void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset);
+  void generateAndComputeFixedAssetDerogatoryLines(FixedAsset fixedAsset) throws AxelorException;
 
   /**
    * Generate and computes fiscalFixedAssetLines for fixedAsset

@@ -453,8 +453,7 @@ public class SaleOrderController {
     StockMove stockMove =
         stockMoveRepo
             .all()
-            .filter(
-                ":saleOrderId MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect")
+            .filter("self.saleOrder.id = :saleOrderId AND self.statusSelect = :statusSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();

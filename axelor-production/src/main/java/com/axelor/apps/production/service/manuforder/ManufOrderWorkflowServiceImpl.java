@@ -423,6 +423,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       }
     }
 
+    manufOrderStockMoveService.finish(manufOrder);
+
     // create cost sheet
     Beans.get(CostSheetService.class)
         .computeCostPrice(
@@ -464,7 +466,6 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       }
     }
 
-    manufOrderStockMoveService.finish(manufOrder);
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
@@ -507,12 +508,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
+    manufOrderStockMoveService.partialFinish(manufOrder);
     Beans.get(CostSheetService.class)
         .computeCostPrice(
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
-    manufOrderStockMoveService.partialFinish(manufOrder);
     return sendPartialFinishMail(manufOrder);
   }
 

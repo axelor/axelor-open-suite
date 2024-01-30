@@ -154,6 +154,8 @@ public class BillOfMaterialImporter extends Importer {
       if (billOfMaterialImportLine != null) {
         billOfMaterialImport = billOfMaterialImportRepository.find(billOfMaterialImport.getId());
         billOfMaterialImport.addBillOfMaterialImportLineListItem(billOfMaterialImportLine);
+        billOfMaterialImportLine.setImportId(
+            billOfMaterialImport.getId() + "-" + billOfMaterialImportLine.getImportId());
         billOfMaterialImportLine.setDescription(billOfMaterialImport.getDocumentMetaFile());
         billOfMaterialImportLine.setBillOfMaterialImport(billOfMaterialImport);
       }

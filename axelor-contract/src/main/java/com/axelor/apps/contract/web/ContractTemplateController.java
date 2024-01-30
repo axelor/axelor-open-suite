@@ -37,6 +37,11 @@ public class ContractTemplateController {
     try {
       contractLine = request.getContext().asType(ContractLine.class);
       Product product = contractLine.getProduct();
+      if (product == null) {
+        contractLine = contractLineService.resetProductInformation(contractLine);
+        response.setValues(contractLine);
+        return;
+      }
       contractLine = contractLineService.fill(contractLine, product);
 
       response.setValues(contractLine);

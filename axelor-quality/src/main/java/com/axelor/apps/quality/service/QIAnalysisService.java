@@ -18,9 +18,29 @@
  */
 package com.axelor.apps.quality.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
+import com.axelor.message.db.Template;
+import java.io.IOException;
+import java.util.List;
+import javax.mail.MessagingException;
 
 public interface QIAnalysisService {
 
   int setAdvancement(QIAnalysis qiAnalysis);
+
+  List<QIActionDistribution> generateQIActionDistribution(QIAnalysis qiAnalysis)
+      throws AxelorException, IOException;
+
+  List<QIActionDistribution> generateQIActionDistributionForOthers(
+      QIAnalysis qiAnalysis, Integer recepient, Partner recepientPartner)
+      throws AxelorException, IOException;
+
+  void sendQIActionDistributions(
+      List<QIActionDistribution> qiActionDistributionList,
+      Template qiActionDistributionMessageTemplate)
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException;
 }

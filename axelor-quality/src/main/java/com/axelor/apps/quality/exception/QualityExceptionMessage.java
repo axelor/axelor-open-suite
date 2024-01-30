@@ -36,4 +36,13 @@ public final class QualityExceptionMessage {
 
   public static final String CAN_NOT_FETCH_FORMULA = /*$$(*/
       "Conformity formula can not be fetched" /*)*/;
+
+  public static final String QUALITY_CONFIG = /*$$(*/
+      "Please configure information for quality for the company %s" /*)*/;
+
+  public static final String QI_ACTION_DISTRIBUTION_SEQUENCE_NOT_SET = /*$$(*/
+      "Please configure a sequence for action distribution." /*)*/;
+
+  public static final String QI_DECISION_DISTRIBUTION_SEQUENCE_NOT_FOUND = /*$$(*/
+      "Please configure a sequence for decision distribution." /*)*/;
 }
