@@ -4,7 +4,6 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.bankpayment.db.BankPaymentConfig;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
-import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.bankpayment.service.config.BankPaymentConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
@@ -46,14 +45,6 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
     params.put("statusAccounted", MoveRepository.STATUS_ACCOUNTED);
     params.put("company", bankReconciliation.getCompany());
     params.put("bankReconciliationCurrency", bankReconciliation.getCurrency());
-    params.put("$currencyNumberOfDecimals", bankReconciliation.getCurrency().getNumberOfDecimals());
-
-    if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
-      params.put(
-          "$companyCurrencyNumberOfDecimals",
-          bankReconciliation.getCompany().getCurrency().getNumberOfDecimals());
-    }
-
     params.put("accountType", AccountTypeRepository.TYPE_CASH);
 
     params.put("includeOtherBankStatements", bankReconciliation.getIncludeOtherBankStatements());
