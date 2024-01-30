@@ -14,6 +14,9 @@
       eval="call:com.axelor.apps.base.service.app.AppBaseService:getTodayDate(null)"/>
   </input>
 
+  <input file="quality_qualityConfig.csv" separator=";"
+    type="com.axelor.apps.quality.db.QualityConfig" search="self.importId = :importId"/>
+
   <input file="quality_qiAction.csv" separator=";" type="com.axelor.apps.quality.db.QIAction"
     search="self.importId = :importId"/>
 

@@ -39,6 +39,9 @@
     <one-to-many name="bomChildTreeList" ref="TempBomTree" mappedBy="parentBom"/>
     <one-to-many name="bomTreeList" ref="TempBomTree" mappedBy="bom"/>
 
+    <many-to-one name="billOfMaterialsImport"
+      ref="com.axelor.apps.production.db.BillOfMaterialImport"/>
+
     <string name="mark" title="Mark"/>
 
     <string name="note" large="true"/>
