@@ -43,6 +43,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -895,7 +896,9 @@ public class MoveController {
     }
   }
 
-  public void showRelatedFixedAsset(ActionRequest request, ActionResponse response) {
+  @ErrorException
+  public void showRelatedFixedAsset(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     Move move = request.getContext().asType(Move.class);
 
     if (move == null
