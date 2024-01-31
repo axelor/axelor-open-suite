@@ -28,7 +28,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
     this.timesheetLineRepository = timesheetLineRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   @Override
   public TimesheetLine createTimesheetLine(
       Project project,
@@ -37,7 +37,8 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
-      String comments)
+      String comments,
+      boolean toInvoice)
       throws AxelorException {
     checkDate(date, timesheet);
     Employee employee = AuthUtils.getUser().getEmployee();
@@ -50,6 +51,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
         timesheetLineService.createTimesheetLine(
             project, product, employee, date, timesheet, duration, comments);
     timesheetLine.setProjectTask(projectTask);
+    timesheetLine.setToInvoice(toInvoice);
     return timesheetLineRepository.save(timesheetLine);
   }
 

@@ -1,13 +1,13 @@
-package com.axelor.apps.hr.rest;
+package com.axelor.apps.businessproduction.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.businessproduction.rest.dto.TimesheetLineBusinessPostRequest;
+import com.axelor.apps.businessproduction.rest.dto.TimesheetLineBusinessPutRequest;
+import com.axelor.apps.businessproduction.service.TimesheetLineCreateBusinessService;
+import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
-import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
-import com.axelor.apps.hr.rest.dto.TimesheetLinePutRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetLineResponse;
-import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
-import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -28,23 +28,25 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @OpenAPIDefinition(servers = {@Server(url = "../")})
-@Path("/aos/timesheet-line")
+@Path("/aos/business/timesheet-line")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class TimesheetLineRestController {
+public class TimesheetLineBusinessRestController {
+
   @Operation(
       summary = "Create a timesheet line",
       tags = {"Timesheet line"})
   @Path("/")
   @POST
   @HttpExceptionHandler
-  public Response createTimesheetLine(TimesheetLinePostRequest requestBody) throws AxelorException {
+  public Response createTimesheetLine(TimesheetLineBusinessPostRequest requestBody)
+      throws AxelorException {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = requestBody.fetchTimesheet();
     TimesheetLine timesheetLine =
-        Beans.get(TimesheetLineCreateService.class)
+        Beans.get(TimesheetLineCreateBusinessService.class)
             .createTimesheetLine(
                 requestBody.fetchProject(),
                 requestBody.fetchProjectTask(),
@@ -53,7 +55,9 @@ public class TimesheetLineRestController {
                 requestBody.fetchTimesheet(),
                 requestBody.getDuration(),
                 requestBody.getComments(),
-                requestBody.isToInvoice());
+                requestBody.isToInvoice(),
+                requestBody.fetchManufOrder(),
+                requestBody.fetchOperationOrder());
     Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.buildCreateResponse(
@@ -67,14 +71,15 @@ public class TimesheetLineRestController {
   @PUT
   @HttpExceptionHandler
   public Response updateTimesheetLine(
-      @PathParam("timesheetLineId") Long timesheetLineId, TimesheetLinePutRequest requestBody)
+      @PathParam("timesheetLineId") Long timesheetLineId,
+      TimesheetLineBusinessPutRequest requestBody)
       throws AxelorException {
     new SecurityCheck().writeAccess(Timesheet.class).createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
     TimesheetLine timesheetLine =
         ObjectFinder.find(TimesheetLine.class, timesheetLineId, requestBody.getVersion());
-    Beans.get(TimesheetLineUpdateService.class)
+    Beans.get(TimesheetLineUpdateBusinessService.class)
         .updateTimesheetLine(
             timesheetLine,
             requestBody.fetchProject(),
@@ -82,7 +87,9 @@ public class TimesheetLineRestController {
             requestBody.getDuration(),
             requestBody.getDate(),
             requestBody.getComments(),
-            requestBody.isToInvoice());
+            requestBody.isToInvoice(),
+            requestBody.fetchManufOrder(),
+            requestBody.fetchOperationOrder());
     Beans.get(TimesheetPeriodComputationService.class)
         .setComputedPeriodTotal(timesheetLine.getTimesheet());
     return ResponseConstructor.build(
