@@ -204,7 +204,7 @@ public class AccountingReportController {
         return;
       }
 
-      if (accountingReportService.isThereTooManyLines(accountingReport)) {
+      if (accountingReportService.areThereTooManyLines(accountingReport)) {
         response.setAlert(
             I18n.get(
                 "A large number of recording has been fetched in this period. Edition can take a while. Do you want to proceed ?"));
