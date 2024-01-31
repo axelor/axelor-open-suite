@@ -46,8 +46,8 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
       throws AxelorException {
     boolean timesheetEnabledOnManufOrder =
         appProductionService.getAppProduction().getEnableTimesheetOnManufOrder();
-    if ((manufOrder != null && timesheetEnabledOnManufOrder)
-        || (operationOrder != null && timesheetEnabledOnManufOrder)) {
+    if ((manufOrder != null && !timesheetEnabledOnManufOrder)
+        || (operationOrder != null && !timesheetEnabledOnManufOrder)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BusinessProductionExceptionMessage.TIMESHEET_MANUF_ORDER_NOT_ENABLED));
