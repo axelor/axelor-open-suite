@@ -65,7 +65,8 @@
           domain="self.typeSelect = 2 AND self.concernedModel = :concernedModel AND (self.company = :company OR self.company IS NULL)"
           onChange="action-pricing-attrs-clear-result-fields,action-pricing-group-attrs-pricing-line-list"/>
       </panel>
-      <panel name="otherPanel" colSpan="12">
+      <panel name="filterPanel" title="Filters" canCollapse="true" collapseIf="id"
+        colSpan="12" showIf="!$readonly()">
         <field name="product" onSelect="action-pricing-attrs-set-product-domain"
           onChange="action-pricing-method-set-formula-field" readonlyIf="productCategory"
           requiredIf="!productCategory &amp;&amp; !formula"/>
@@ -84,7 +85,7 @@
         orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
       <panel-dashlet name="historizedPricingPanel" colSpan="12"
         title="Historized pricings" action="action-pricing-view-historized-pricing"
-        hideIf="$popup()"/>
+        hideIf="$popup() || $readonly()" canCollapse="true" collapseIf="id"/>
     </panel>
   </form>
 
