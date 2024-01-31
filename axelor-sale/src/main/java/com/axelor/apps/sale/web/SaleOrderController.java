@@ -176,6 +176,16 @@ public class SaleOrderController {
         response.setCanClose(true);
 
         logger.debug("Printing " + title);
+      } else if (context.get("_saleOrderId") != null) {
+
+        SaleOrder saleOrder =
+            Beans.get(SaleOrderRepository.class)
+                .find(Long.parseLong(context.get("_saleOrderId").toString()));
+        title = Beans.get(SaleOrderService.class).getFileName(saleOrder);
+        fileLink = saleOrderPrintService.printSaleOrder(saleOrder, proforma, format);
+        response.setCanClose(true);
+
+        logger.debug("Printing " + title);
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,

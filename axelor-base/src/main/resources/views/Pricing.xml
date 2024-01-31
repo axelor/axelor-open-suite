@@ -263,7 +263,6 @@
     <view-param name="popup" value="reload"/>
     <view-param name="showArchived" value="true"/>
     <domain>self.currentPricing = :id </domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-method name="action-pricing-method-check-dates">

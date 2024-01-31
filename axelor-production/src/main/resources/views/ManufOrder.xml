@@ -897,7 +897,6 @@
     <view type="grid" name="stock-move-line-consumed-production-grid"/>
     <view type="form" name="stock-move-line-production-form"/>
     <domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-attrs name="action-manuf-order-reset">
