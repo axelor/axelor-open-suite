@@ -384,6 +384,8 @@
           <field name="$mainPanelTabHidden" hidden="true"/>
           <field name="company.accountConfig.isDescriptionRequired" hidden="true"/>
         </panel>
+        <panel-dashlet action="action-move-method-show-related-fixed-asset"
+          name="fixedAssetPanel" title="Related fixed assets" colSpan="12" height="300"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
@@ -806,6 +808,10 @@
 
   <action-method name="action-move-method-company-onselect">
     <call class="com.axelor.apps.account.web.MoveController" method="onSelectCompany"/>
+  </action-method>
+
+  <action-method name="action-move-method-show-related-fixed-asset">
+    <call class="com.axelor.apps.account.web.MoveController" method="showRelatedFixedAsset"/>
   </action-method>
 
   <!-- ACTION VIEW -->
