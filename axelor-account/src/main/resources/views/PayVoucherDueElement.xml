@@ -8,10 +8,11 @@
     <field name="moveLine" width="135" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="moveLine.origin" width="120"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="applyFinancialDiscount"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="dueAmount" aggregate="sum"/>
-    <field name="amountRemaining" aggregate="sum"/>
+    <field name="dueAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="amountRemaining" aggregate="sum" x-scale="currency.numberOfDecimals"/>
   </grid>
 
   <form name="pay-voucher-due-element-form" title="Invoices to pay"
@@ -25,8 +26,9 @@
       <field name="invoiceTerm.dueDate"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="dueAmount"/>
-      <field name="amountRemaining"/>
+      <field name="currency.numberOfDecimals" hidden="true"/>
+      <field name="dueAmount" x-scale="currency.numberOfDecimals"/>
+      <field name="amountRemaining" x-scale="currency.numberOfDecimals"/>
     </panel>
     <panel if="__config__.app.getApp('account').getManageFinancialDiscount()"
       name="discountPanel" title="Financial discount">
@@ -35,9 +37,12 @@
       <panel readonly="true" showIf="applyFinancialDiscount" colSpan="12">
         <field name="financialDiscount"/>
         <field name="financialDiscountDeadlineDate"/>
-        <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"/>
-        <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"/>
-        <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"/>
+        <field name="financialDiscountAmount" showIf="financialDiscountTaxAmount > 0"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="financialDiscountTaxAmount" showIf="financialDiscountTaxAmount > 0"
+          x-scale="currency.numberOfDecimals"/>
+        <field name="financialDiscountTotalAmount" showIf="financialDiscountTaxAmount == 0"
+          x-scale="currency.numberOfDecimals"/>
       </panel>
     </panel>
   </form>

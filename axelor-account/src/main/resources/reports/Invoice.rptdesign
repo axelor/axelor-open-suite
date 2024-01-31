@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -1949,7 +1949,7 @@ where Invoice.id = ?]]></xml-property>
             </list-property>
             <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
 from meta_translation as LangTranslate 
-where LangTranslate.message_key = ? and LangTranslate.language = ?]]></xml-property>
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
@@ -4160,7 +4160,7 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
@@ -4818,7 +4818,7 @@ this.height=row["logo_height"];]]></method>
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
@@ -5334,7 +5334,7 @@ else if(row["title_select"] == "4"){'Prof.'}</value>
                         </list-property>
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>if(row._outer["partner_type_select"] != "1"){
-			if(params["Locale"].value != 'en') {
+			if(params["Locale"].value.substring(0, 2) != 'en') {
 				row["translation"]
 			} else {
 				row["message_key"]
@@ -5374,7 +5374,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value.substring(0, 2) != 'en') {
 row["translation"]
 } else {
 row["message_key"]
@@ -5506,7 +5506,7 @@ row["message_key"]
 			'Invoice.purchaseInvoiceNo'
 		}
 	} else if (row["operation_type_select"] == "2") {
-		'Invoice.purchaseRefundNo'
+		'Invoice.purchaseCreditNoteNo'
 	} else if (row["operation_type_select"] == "3") {
 		if (row["operation_sub_type_select"] == "3") {
 			'Invoice.invoiceBalanceNo'
@@ -5583,7 +5583,7 @@ else if(row["contactPartnerTitleSelect"] == "4"){'Prof.'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value != 'en') {
+                        <text-property name="content"><![CDATA[<VALUE-OF>if(params["Locale"].value.substring(0, 2) != 'en') {
 row["translation"]
 } else {
 row["message_key"]

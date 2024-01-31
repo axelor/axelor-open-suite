@@ -23,7 +23,8 @@
     <many-to-one name="toStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="To stock location"/>
     <date name="shipmentDate" title="Date of shipment"/>
-    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"/>
+    <decimal name="amountInvoiced" title="Amount invoiced W.T." readonly="true"
+      precision="20" scale="3"/>
     <integer name="saleOrderTypeSelect" title="Type" required="true" default="1"
       selection="supplychain.sale.order.type.select"/>
     <!-- Onglet échéancier -->

@@ -31,13 +31,14 @@ import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.CurrencyScaleServiceBudget;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
 
 @RequestScoped
@@ -46,19 +47,21 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   protected MoveLineRepository moveLineRepository;
   protected BudgetService budgetService;
   protected BudgetDistributionService budgetDistributionService;
+  protected CurrencyScaleServiceBudget currencyScaleServiceBudget;
 
   @Inject
   public MoveLineBudgetServiceImpl(
       MoveLineRepository moveLineRepository,
       BudgetService budgetService,
-      BudgetDistributionService budgetDistributionService) {
+      BudgetDistributionService budgetDistributionService,
+      CurrencyScaleServiceBudget currencyScaleServiceBudget) {
     this.moveLineRepository = moveLineRepository;
     this.budgetService = budgetService;
     this.budgetDistributionService = budgetDistributionService;
+    this.currencyScaleServiceBudget = currencyScaleServiceBudget;
   }
 
   @Override
-  @Transactional
   public String computeBudgetDistribution(Move move, MoveLine moveLine) throws AxelorException {
     if (move == null || moveLine == null) {
       return "";
@@ -82,10 +85,11 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
         && !moveLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
-        if (budgetDistribution
-                .getAmount()
-                .abs()
-                .compareTo(moveLine.getCredit().add(moveLine.getDebit()))
+        if (currencyScaleServiceBudget
+                .getCompanyScaledValue(budgetDistribution, budgetDistribution.getAmount().abs())
+                .compareTo(
+                    currencyScaleServiceBudget.getCompanyScaledValue(
+                        budgetDistribution, moveLine.getCredit().add(moveLine.getDebit())))
             > 0) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -123,7 +127,8 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
             .map(AccountType::getTechnicalTypeSelect)
             .orElse(null);
 
-    return budgetDistributionService.getBudgetDomain(company, date, technicalTypeSelect);
+    return budgetDistributionService.getBudgetDomain(
+        company, date, technicalTypeSelect, new HashSet<>());
   }
 
   @Override

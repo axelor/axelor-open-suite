@@ -48,4 +48,8 @@ public interface ExpenseToolService {
 
   void addExpenseLineToExpenseAndCompute(Expense expense, ExpenseLine expenseLine)
       throws AxelorException;
+
+  boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList);
+
+  boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList);
 }

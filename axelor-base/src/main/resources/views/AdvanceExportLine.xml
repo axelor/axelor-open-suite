@@ -27,11 +27,9 @@
         readonly="true" colSpan="2"/>
       <field name="currentDomain" hidden="true"/>
       <field name="$viewerMessage" showTitle="false" readonly="true" hidden="true">
-        <viewer><![CDATA[
-	              <h4>
-	                  <span class="label label-success" x-translate>Your selection is valid</span>
-	              </h4>
-				]]></viewer>
+        <viewer>
+          <![CDATA[<><Badge bg="success">{_t('Your selection is valid')}</Badge></>]]>
+        </viewer>
       </field>
       <panel name="actionsPanel" colSpan="12">
         <button name="validateFieldSelectionBtn" title="Validate" colSpan="4"

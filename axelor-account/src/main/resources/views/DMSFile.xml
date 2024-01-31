@@ -12,14 +12,18 @@
     <panel showIf="fileType == 'application/pdf'" itemSpan="12">
       <field name="$pdf" showTitle="false" readonly="true">
         <viewer depends="inlineUrl"><![CDATA[
-      <iframe ng-src="{{record.inlineUrl}}" frameborder="0" scrolling="auto" height="700px"/>
+	      <>
+		      <Box as="iframe" height="700" border="0" src={inlineUrl}></Box>
+	      </>
     ]]></viewer>
       </field>
     </panel>
     <panel showIf="fileType.indexOf('image') == 0" itemSpan="12">
       <field name="$img" showTitle="false" readonly="true">
         <viewer depends="inlineUrl,fileName"><![CDATA[
-      <img ng-src="{{record.inlineUrl}}" alt="{{record.fileName}}"/>
+	        <>
+	           <Image src={inlineUrl} alt={fileName}></Image>
+	        </>
     ]]></viewer>
       </field>
     </panel>

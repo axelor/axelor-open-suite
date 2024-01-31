@@ -25,6 +25,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.PdfHelper;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -32,9 +33,8 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionExport;
-import com.axelor.utils.ModelTool;
 import com.axelor.utils.ThrowConsumer;
-import com.axelor.utils.file.PdfTool;
+import com.axelor.utils.helpers.ModelHelper;
 import com.google.inject.Inject;
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     List<File> printedRecords = new ArrayList<>();
 
     int errorCount =
-        ModelTool.apply(
+        ModelHelper.apply(
             contextClass,
             idList,
             new ThrowConsumer<T, Exception>() {
@@ -102,7 +102,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     String fileLink = "";
     if (ReportSettings.FORMAT_PDF.equals(birtTemplate.getFormat())) {
       fileLink =
-          PdfTool.mergePdfToFileLink(printedRecords, fileName + "." + birtTemplate.getFormat());
+          PdfHelper.mergePdfToFileLink(printedRecords, fileName + "." + birtTemplate.getFormat());
     } else {
       fileLink = getZipFileLink(fileName, printedRecords);
     }

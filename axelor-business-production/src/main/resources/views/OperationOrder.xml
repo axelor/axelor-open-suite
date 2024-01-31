@@ -9,14 +9,15 @@
       <insert position="after">
         <field name="employeeSet" canSelect="true" canNew="false" canEdit="false"
           widget="TagSelect" colSpan="12"
-          onSelect="action-operation-order-attrs-employee-domain-filter"/>
+          onSelect="action-operation-order-attrs-employee-domain-filter"
+          if="__config__.app.getApp('production')?.getEmployeeScheduling()"/>
       </insert>
     </extend>
   </form>
 
   <action-attrs name="action-operation-order-attrs-employee-domain-filter">
     <attribute name="domain" for="employeeSet"
-      expr="eval: &quot; self.mainEmploymentContract.payCompany.id = ${manufOrder?.company?.id} &quot;"/>
+      expr="eval: (workCenter?.hrSkillSet != null &amp;&amp; !workCenter?.hrSkillSet.empty) ? &quot; ${__user__.activeCompany.id} = ${manufOrder?.company?.id} AND self.trainingSkillList.skill.id IN (${workCenter?.hrSkillSet?.collect{it.id}.join(',')})&quot; : &quot; ${__user__.activeCompany.id} = ${manufOrder?.company?.id}&quot;"/>
   </action-attrs>
 
   <action-group name="action-operation-order-group-finish"
@@ -54,5 +55,35 @@
     <action name="action-business-production-operation-order-group-checks"/>
     <action name="action-operation-order-method-cancel"/>
   </action-group>
+
+  <calendar name="operation-order-employee-planned-calendar"
+    model="com.axelor.apps.production.db.OperationOrder" eventStart="plannedStartDateT"
+    eventStop="plannedEndDateT" title="Employee planned operations" colorBy="employeeSet.name"
+    mode="week" onChange="action-operation-order-group-set-planned-dates">
+    <field name="name"/>
+  </calendar>
+
+  <calendar name="operation-order-employee-real-calendar"
+    model="com.axelor.apps.production.db.OperationOrder" eventStart="realStartDateT"
+    eventStop="realEndDateT" title="Employee real operations" colorBy="employeeSet.name" mode="week"
+    onChange="action-operation-order-method-set-real-dates">
+    <field name="name"/>
+  </calendar>
+
+  <calendar name="employee-planning-machine-calendar"
+    model="com.axelor.apps.production.db.OperationOrder" title="Employee planning"
+    eventStart="plannedStartDateT" eventStop="plannedEndDateT" colorBy="statusSelect">
+    <field name="operationName"/>
+  </calendar>
+
+  <action-view name="action-employee-view-employee-planning" title="Employee planning"
+    model="com.axelor.apps.production.db.OperationOrder">
+    <view type="calendar" name="employee-planning-machine-calendar"/>
+    <domain>self.statusSelect IN (3,4,5,6) AND self.id in (SELECT oo.id FROM Employee emp
+      JOIN
+      OperationOrder oo ON (emp MEMBER OF oo.employeeSet AND emp.id =
+      :_employeeId))</domain>
+    <context name="_employeeId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

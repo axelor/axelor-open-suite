@@ -42,7 +42,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.i18n.L10n;
 import com.axelor.inject.Beans;
-import com.axelor.utils.exception.ToolExceptionMessage;
+import com.axelor.utils.exception.UtilsExceptionMessage;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 import java.lang.invoke.MethodHandles;
@@ -261,7 +261,7 @@ public class MoveCreateServiceImpl implements MoveCreateService {
       if (move.getPeriod() == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ToolExceptionMessage.PERIOD_1),
+            I18n.get(UtilsExceptionMessage.PERIOD_1),
             company.getName(),
             L10n.getInstance().format(date));
       }

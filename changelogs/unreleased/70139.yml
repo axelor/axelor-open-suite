@@ -1,0 +1,3 @@
+---
+title: "Rename supplierUser field to supplierPartner in the purchaseRequest model."
+type: fix

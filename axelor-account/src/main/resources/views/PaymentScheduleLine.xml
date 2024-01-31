@@ -127,9 +127,9 @@
       <field name="fromReject" if-module="axelor-bank-payment"
         if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment" readonly="true"
         showTitle="false">
-        <viewer><![CDATA[
-                <span class="label label-warning" x-translate ng-show="record.fromReject">From rejection</span>
-              ]]></viewer>
+        <viewer>
+          <![CDATA[<>{fromReject && <Badge bg="warning">{_t('From rejection')}</Badge>}</>]]>
+        </viewer>
       </field>
       <field name="statusSelect" readonly="true"/>
     </panel>

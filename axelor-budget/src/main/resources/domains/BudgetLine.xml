@@ -14,23 +14,24 @@
 
     <decimal name="amountCommitted" title="Committed amount"
       help="Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice."
-      precision="20" scale="2"/>
+      precision="20" scale="3"/>
 
     <decimal name="amountExpected" title="Expected amount"
       help="Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels."
-      precision="20" scale="2"/>
-    <decimal name="amountRealized" title="Realized amount" precision="20" scale="2"/>
+      precision="20" scale="3"/>
+    <decimal name="amountRealized" title="Realized amount" precision="20" scale="3"/>
 
-    <decimal name="amountPaid" title="Paid amount" precision="20" scale="2"/>
+    <decimal name="amountPaid" title="Paid amount" precision="20" scale="3"/>
     <decimal name="availableAmount" title="Available Amount"
-      help="Represents the expected amount minus the sum of realized amounts."/>
-    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="2"
+      help="Represents the expected amount minus the sum of realized amounts." precision="20"
+      scale="3"/>
+    <decimal name="realizedWithNoPo" title="Realized with no po" precision="20" scale="3"
       help="Represents the sum of ventilated invoices with no purchase order and daybook and accounted moves with no invoice."/>
-    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="2"
+    <decimal name="realizedWithPo" title="Realized with po" precision="20" scale="3"
       help="Represents the sum of ventilated invoices with an order."/>
     <decimal name="toBeCommittedAmount" title="To be committed amount" precision="20"
-      scale="2"/>
-    <decimal name="firmGap" title="Firm gap" precision="20" scale="2"
+      scale="3"/>
+    <decimal name="firmGap" title="Firm gap" precision="20" scale="3"
       help="Represents the sum of amounts realized with or without commitment that exceed the initial"/>
   </entity>
 

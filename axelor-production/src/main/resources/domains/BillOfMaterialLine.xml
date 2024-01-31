@@ -17,6 +17,7 @@
       name="billOfMaterial" title="Bill of material"/>
     <boolean name="hasNoManageStock" title="Not manage stock"/>
     <many-to-one name="unit" ref="com.axelor.apps.base.db.Unit" title="Unit"/>
+    <decimal name="wasteRate" title="Waste rate (%)"/>
 
     <track>
       <field name="priority"/>
@@ -24,6 +25,7 @@
       <field name="product"/>
       <field name="hasNoManageStock"/>
       <field name="billOfMaterial"/>
+      <field name="wasteRate"/>
     </track>
   </entity>
 

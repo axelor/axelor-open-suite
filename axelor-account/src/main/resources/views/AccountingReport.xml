@@ -34,9 +34,9 @@
       <field name="ref" showTitle="false"
         showIf="id &amp;&amp; ![23,24].includes(reportType.typeSelect)" colSpan="12"
         css="label-bold bold large" readonly="true">
-        <viewer><![CDATA[
-          <span>{{record.ref}}</span>
-            ]]></viewer>
+        <viewer>
+          <![CDATA[<><span>{ref}</span></>]]>
+        </viewer>
       </field>
       <field name="company" canEdit="false" readonlyIf="ref != null" widget="SuggestBox"
         onChange="action-group-account-accounting-report-company-onchange" form-view="company-form"

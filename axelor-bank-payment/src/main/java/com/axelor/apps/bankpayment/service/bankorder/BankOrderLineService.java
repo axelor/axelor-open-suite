@@ -21,10 +21,8 @@ package com.axelor.apps.bankpayment.service.bankorder;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
-import com.axelor.apps.bankpayment.db.EbicsPartner;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.axelor.apps.bankpayment.db.repo.EbicsPartnerRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
@@ -42,7 +40,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.CallMethod;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -267,7 +265,7 @@ public class BankOrderLineService {
       if (bankOrderLine.getReceiverCompany() != null) {
 
         bankDetailsIds =
-            StringTool.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
+            StringHelper.getIdListString(bankOrderLine.getReceiverCompany().getBankDetailsList());
 
         if (bankOrderLine.getReceiverCompany().getDefaultBankDetails() != null) {
           bankDetailsIds += bankDetailsIds.equals("") ? "" : ",";
@@ -279,7 +277,8 @@ public class BankOrderLineService {
 
     // case where the bank order is for a partner
     else if (bankOrderLine.getPartner() != null) {
-      bankDetailsIds = StringTool.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
+      bankDetailsIds =
+          StringHelper.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
     }
 
     if (bankDetailsIds.equals("")) {
@@ -290,20 +289,6 @@ public class BankOrderLineService {
 
     // filter the result on active bank details
     domain += " AND self.active = true";
-
-    // filter on the result from bankPartner if the option is active.
-    EbicsPartner ebicsPartner =
-        Beans.get(EbicsPartnerRepository.class)
-            .all()
-            .filter("? MEMBER OF self.bankDetailsSet", bankOrder.getSenderBankDetails())
-            .fetchOne();
-
-    if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
-      domain +=
-          " AND self.id IN ("
-              + StringTool.getIdListString(ebicsPartner.getReceiverBankDetailsSet())
-              + ")";
-    }
 
     // filter on the bank details identifier type from the bank order file format
     if (bankOrder.getBankOrderFileFormat() != null) {
@@ -387,22 +372,6 @@ public class BankOrderLineService {
           bankOrderLine.getSequence());
     }
 
-    // filter on the result from bankPartner if the option is active.
-    EbicsPartner ebicsPartner =
-        Beans.get(EbicsPartnerRepository.class)
-            .all()
-            .filter("? MEMBER OF self.bankDetailsSet", bankOrder.getSenderBankDetails())
-            .fetchOne();
-
-    if (ebicsPartnerIsFiltering(ebicsPartner, bankOrder.getOrderTypeSelect())) {
-
-      if (!ebicsPartner.getReceiverBankDetailsSet().contains(bankDetails)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_FORBIDDEN));
-      }
-    }
-
     // filter on the bank details identifier type from the bank order file format
     if (bankOrder.getBankOrderFileFormat() != null) {
       if (!Beans.get(BankOrderService.class)
@@ -426,14 +395,6 @@ public class BankOrderLineService {
                 BankPaymentExceptionMessage.BANK_ORDER_LINE_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
       }
     }
-  }
-
-  protected boolean ebicsPartnerIsFiltering(EbicsPartner ebicsPartner, int orderType) {
-    return (ebicsPartner != null)
-        && (ebicsPartner.getFilterReceiverBD())
-        && (ebicsPartner.getReceiverBankDetailsSet() != null)
-        && (!ebicsPartner.getReceiverBankDetailsSet().isEmpty())
-        && (ebicsPartner.getOrderTypeSelect() == orderType);
   }
 
   public BigDecimal computeCompanyCurrencyAmount(BankOrder bankOrder, BankOrderLine bankOrderLine)

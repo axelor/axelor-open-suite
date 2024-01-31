@@ -42,23 +42,21 @@
     <action name="action-method-budget-move-compute-budget-distribution"/>
   </action-group>
 
-  <action-group name="action-budget-move-accounting-validate-group">
-    <action name="action-method-validate-budget-no-compute-budget-distribution"/>
-    <action name="action-method-budget-move-validate-budget-balance"/>
-  </action-group>
-
   <action-group name="action-budget-move-accounting-click">
-    <action name="action-budget-move-accounting-validate-group"
+    <action name="action-move-method-budget-auto-compute-budget-distribution"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-move-method-budget-validate-accounting"
       if="__config__.app.isApp('budget')"/>
     <action name="action-account-move-group-accounting-click"/>
   </action-group>
 
-  <action-method name="action-method-budget-move-validate-budget-balance">
-    <call class="com.axelor.apps.budget.web.MoveController" method="validateBudgetBalance"/>
+  <action-method name="action-move-method-budget-auto-compute-budget-distribution">
+    <call class="com.axelor.apps.budget.web.MoveController"
+      method="autoComputeBudgetDistribution"/>
   </action-method>
 
-  <action-method name="action-method-validate-budget-no-compute-budget-distribution">
-    <call class="com.axelor.apps.budget.web.MoveController" method="checkBudgetDistribution"/>
+  <action-method name="action-move-method-budget-validate-accounting">
+    <call class="com.axelor.apps.budget.web.MoveController" method="validateAccounting"/>
   </action-method>
 
 </object-views>

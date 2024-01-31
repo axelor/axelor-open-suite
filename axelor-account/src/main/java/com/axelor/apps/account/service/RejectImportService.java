@@ -24,7 +24,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.bankorder.file.cfonb.CfonbImportService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.utils.file.FileTool;
+import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
 import java.io.File;
@@ -84,7 +84,7 @@ public class RejectImportService {
     this.createFilePath(dest);
 
     // copie du fichier d'import dans un repetoire temporaire
-    FileTool.copy(src, dest);
+    FileHelper.copy(src, dest);
 
     return dest;
   }

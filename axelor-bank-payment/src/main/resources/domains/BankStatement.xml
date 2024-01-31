@@ -12,8 +12,7 @@
     <date name="toDate" title="To Date"/>
     <integer name="statusSelect" title="Status"
       selection="bankpayment.bank.statement.status.select" readonly="true" default="1"/>
-    <many-to-one name="ebicsPartner" ref="com.axelor.apps.bankpayment.db.EbicsPartner"
-      title="Ebics Partner"/>
+
     <many-to-one name="bankStatementFileFormat"
       ref="com.axelor.apps.bankpayment.db.BankStatementFileFormat" title="File format"/>
     <many-to-one name="bankStatementFile" ref="com.axelor.meta.db.MetaFile" title="File"/>

@@ -449,7 +449,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
             .bind("accountSet", groupColumn.getAccountSet())
             .bind("accountTypeSet", groupColumn.getAccountTypeSet());
 
-    this.bindAccountFilters(accountQuery, groupColumn.getAccountCode(), "groupColumn");
+    accountQuery = this.bindAccountFilters(accountQuery, groupColumn.getAccountCode());
 
     return new HashSet<>(accountQuery.fetch());
   }
@@ -677,9 +677,6 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
         this.getAccountFilters(
             configLine.getAccountTypeSet(),
             configLine.getAccountCode(),
-            null,
-            null,
-            false,
             CollectionUtils.isEmpty(configLine.getAccountSet())));
   }
 }

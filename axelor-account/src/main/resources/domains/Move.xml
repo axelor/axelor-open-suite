@@ -16,7 +16,7 @@
     <one-to-many name="moveLineMassEntryList" ref="MoveLineMassEntry"
       title="Move lines mass entry" mappedBy="moveMassEntry"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
-    <many-to-one name="subrogationPartner" ref="com.axelor.apps.base.db.Partner"
+    <many-to-one name="thirdPartyPayerPartner" ref="com.axelor.apps.base.db.Partner"
       title="Third-party payer"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
       required="true"/>

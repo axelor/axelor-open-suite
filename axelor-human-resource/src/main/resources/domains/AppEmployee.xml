@@ -9,7 +9,6 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <decimal name="dailyWorkHours" title="Daily work hours" hidden="true" readonly="true"/>
     <boolean name="advanceManagement" default="true"/>
     <boolean name="payrollPreparation" title="Payroll preparation"/>
     <boolean name="lunchVoucher" title="Lunch Voucher"/>

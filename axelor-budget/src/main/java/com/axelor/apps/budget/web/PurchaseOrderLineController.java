@@ -23,7 +23,6 @@ import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -35,7 +34,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.utils.StringTool;
+import com.axelor.utils.helpers.StringHelper;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -59,7 +58,7 @@ public class PurchaseOrderLineController {
             ? purchaseOrderLine.getBudget().getAccountSet()
             : null;
     if (!CollectionUtils.isEmpty(accountsSet)) {
-      domain = domain.replace("(0)", "(" + StringTool.getIdListString(accountsSet) + ")");
+      domain = domain.replace("(0)", "(" + StringHelper.getIdListString(accountsSet) + ")");
     }
     response.setAttr("account", "domain", domain);
   }
@@ -192,74 +191,16 @@ public class PurchaseOrderLineController {
     }
   }
 
-  public void setGroupBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
-      String query = "self.id = 0";
-
-      if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
-        query =
-            Beans.get(PurchaseOrderLineBudgetService.class)
-                .getGroupBudgetDomain(purchaseOrderLine, purchaseOrder, global);
-      }
-
-      response.setAttr("groupBudget", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setSectionBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
-      String query = "self.id = 0";
-
-      if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
-        query =
-            Beans.get(PurchaseOrderLineBudgetService.class)
-                .getSectionBudgetDomain(purchaseOrderLine, purchaseOrder, global);
-      }
-
-      response.setAttr("section", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setLineBudgetDomain(ActionRequest request, ActionResponse response) {
-    try {
-      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-      PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
-      String query = "self.id = 0";
-
-      if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
-        query =
-            Beans.get(PurchaseOrderLineBudgetService.class)
-                .getLineBudgetDomain(purchaseOrderLine, purchaseOrder, global, false);
-      }
-
-      response.setAttr("line", "domain", query);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void setBudgetDomain(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
-      GlobalBudget global = (GlobalBudget) request.getContext().get("$global");
       String query = "self.id = 0";
 
       if (purchaseOrder != null && purchaseOrder.getCompany() != null) {
         query =
             Beans.get(PurchaseOrderLineBudgetService.class)
-                .getLineBudgetDomain(purchaseOrderLine, purchaseOrder, global, true);
+                .getBudgetDomain(purchaseOrderLine, purchaseOrder);
       }
 
       response.setAttr("budget", "domain", query);

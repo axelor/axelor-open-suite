@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -65,7 +66,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      PfpService pfpService) {
+      PfpService pfpService,
+      ProductCompanyService productCompanyService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -86,7 +88,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         partnerSupplychainService,
         fixedAssetRepository,
         stockMoveLineServiceSupplychain,
-        pfpService);
+        pfpService,
+        productCompanyService);
   }
 
   @Override

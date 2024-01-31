@@ -17,13 +17,15 @@
     <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
     <field name="productName"/>
     <field name="productCode"/>
+    <field name="purchaseOrder.currency" hidden="true"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."
       x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="inTaxPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="isTitleLine" hidden="true"/>
     <field name="desiredReceiptDate"/>
     <field name="estimatedReceiptDate"/>
@@ -42,9 +44,10 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="priceDiscounted" title="Unit price W.T."/>
     <field name="inTaxPrice" x-scale="2"/>
-    <field name="exTaxTotal" aggregate="sum"/>
-    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="purchaseOrder.currency"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
     <field name="toInvoice"/>
     <field name="invoiced"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
@@ -101,7 +104,8 @@
     <field name="price" x-scale="2"/>
     <field name="discountAmount" x-scale="2"/>
     <field name="purchaseOrder.currency"/>
-    <field name="exTaxTotal" x-scale="2"/>
+    <field name="purchaseOrder.currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxTotal" x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="estimatedReceiptDate"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
@@ -129,21 +133,19 @@
         <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
           showTitle="false">
           <viewer depends="$partnerLanguage">
-            <![CDATA[
-                  <div style="width:fit-content;height:fit-content;" style="position:absolute" class="label label-warning"><span x-translate>The partner's language is different from the current language. Description and product name are in :</span> {{record.$partnerLanguage}}</div>
-              ]]>
+            <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t('The partner\'s language is different from the current language. Description and product name are in :')} {$partnerLanguage}</Badge>}</>]]>
           </viewer>
         </field>
         <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
         <field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0"
           if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
           <viewer><![CDATA[
-	                    <h4>
-	                        <span class="label label-important" ng-show="record.receiptState == 1" x-translate>Not received</span>
-	                        <span class="label label-warning" ng-show="record.receiptState == 2" x-translate>Partially received</span>
-	                        <span class="label label-success" ng-show="record.receiptState == 3" x-translate>Received</span>
-	                    </h4>
-					]]></viewer>
+			          <>
+			             {receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
+			             {receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
+			             {receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
+			          </>
+	          ]]></viewer>
         </field>
         <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
         <field name="product" canEdit="false"
@@ -174,7 +176,7 @@
             </field>
           </panel>
           <field name="maxPurchasePrice" colSpan="3" readonly="true"/>
-          <label name="minQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+          <label name="qtyLimitNotRespectedLabel" hidden="true" colSpan="12"/>
           <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
           <field name="$qtyValid" hidden="true" colSpan="12"/>
         </panel>
@@ -190,8 +192,13 @@
           onChange="action-group-purchase-purchase-orderline-taxline-onchange"
           domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
           form-view="tax-line-form"/>
-        <field name="exTaxTotal" colSpan="3" readonly="true"/>
-        <field name="inTaxTotal" colSpan="3" readonly="true"/>
+        <field name="exTaxTotal" colSpan="3" readonly="true"
+          x-scale="$currency.numberOfDecimals"/>
+        <field name="inTaxTotal" colSpan="3" readonly="true"
+          x-scale="$currency.numberOfDecimals"/>
+        <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
+          hidden="true"/>
+        <field name="$currency.numberOfDecimals" hidden="true"/>
         <field name="fixedAssets" widget="boolean-switch"/>
         <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
           form-view="tax-equiv-form"/>
@@ -242,12 +249,9 @@
           colSpan="3" if-module="axelor-business-project"/>
         <field name="invoiced" showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()"
           colSpan="3" showTitle="false">
-          <viewer><![CDATA[
-					<h4>
-                        <span class="label label-success" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.invoiced" x-translate>Invoiced</span>
-                    	<span class="label label-important" style="margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="!record.invoiced" x-translate>Not invoiced</span>
-                    </h4>
-				]]></viewer>
+          <viewer>
+            <![CDATA[<>Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>]]>
+          </viewer>
         </field>
         <field name="projectTask" title="Project Task" domain="self.project = :project"
           form-view="project-task-form" grid-view="project-task-grid" canEdit="false"/>
@@ -323,6 +327,7 @@
     <action name="action-purchase-order-line-attrs-scale-and-precision"/>
     <action name="action-purchase-order-line-record-new"/>
     <action name="action-purchase-order-line-record-project"/>
+    <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-attrs-hide-ati"/>
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
     <action name="action-purchase-order-line-attrs-hide-qty-warning-label"/>
@@ -339,6 +344,7 @@
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
     <action name="action-purchase-order-line-attrs-delivery-panel"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
+    <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
   </action-group>
 
@@ -425,7 +431,7 @@
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-hide-qty-warning-label">
-    <attribute name="hidden" for="minQtyNotRespectedLabel" expr="true"/>
+    <attribute name="hidden" for="qtyLimitNotRespectedLabel" expr="true"/>
     <attribute name="hidden" for="multipleQtyNotRespectedLabel" expr="true"/>
     <attribute name="hidden" for="qtyValid" expr="true"/>
   </action-attrs>
@@ -486,27 +492,36 @@
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: __parent__?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: __parent__?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="__parent__"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: __parent__?.supplierPartner?.language?.code?.toUpperCase()" if="__parent__"/>
+      expr="eval: __parent__?.supplierPartner?.localization?.language?.code?.toUpperCase()"
+      if="__parent__"/>
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"
       if="purchaseOrder"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()" if="purchaseOrder"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.toUpperCase()"
+      if="purchaseOrder"/>
   </action-attrs>
 
   <action-attrs
     name="action-purchase-order-line-attrs-display-different-language-message-edit-window-blank">
     <attribute for="$differentLanguageMessage" name="hidden"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.equals(__user__.getLanguage())"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.equals(__user__.getLanguage())"/>
     <attribute for="$partnerLanguage" name="value"
-      expr="eval: purchaseOrder?.supplierPartner?.language?.code?.toUpperCase()"/>
+      expr="eval: purchaseOrder?.supplierPartner?.localization?.language?.code?.toUpperCase()"/>
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-refresh-order-history-dashlet">
     <attribute for="orderHistoryPanel" name="refresh" expr="true"/>
+  </action-attrs>
+
+  <action-attrs name="action-purchase-order-line-attrs-set-currency">
+    <attribute name="value" for="$currency" expr="eval:__parent__?.currency"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
+    <attribute name="value" for="$currency" expr="eval:purchaseOrder?.currency"
+      if="purchaseOrder != null"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->

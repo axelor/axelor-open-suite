@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_6.1.xsd">
+
+  <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
+
+  <entity name="MobileChart">
+    <string name="name" title="Name" namecolumn="true"/>
+    <string name="query" title="Query" large="true"/>
+    <string name="chartTypeSelect" title="Chart type"
+      selection="mobilesettings.mobile.chart.type.select" required="true"/>
+  </entity>
+
+</domain-models>

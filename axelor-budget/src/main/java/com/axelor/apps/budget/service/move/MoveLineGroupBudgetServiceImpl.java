@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineDefaultService;
+import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -61,6 +62,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       MoveAttrsService moveAttrsService,
       AnalyticAttrsService analyticAttrsService,
       MoveCutOffService moveCutOffService,
+      MoveLineFinancialDiscountService moveLineFinancialDiscountService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
       BudgetToolsService budgetToolsService) {
@@ -78,6 +80,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveAttrsService,
         analyticAttrsService,
         moveCutOffService,
+        moveLineFinancialDiscountService,
         moveLineCheckBankPaymentService,
         moveLineRecordBankPaymentService);
     this.budgetToolsService = budgetToolsService;

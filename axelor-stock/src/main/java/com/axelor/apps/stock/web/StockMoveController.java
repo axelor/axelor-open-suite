@@ -607,8 +607,18 @@ public class StockMoveController {
   public void getToStockLocation(ActionRequest request, ActionResponse response) {
     StockMove stockMove = request.getContext().asType(StockMove.class);
     try {
-      StockLocation toStockLocation =
-          Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+
+      boolean fromOutsource =
+          Optional.ofNullable(request.getContext().get("_fromOutsource"))
+              .map(o -> (boolean) o)
+              .orElse(false);
+      StockLocation toStockLocation;
+      if (fromOutsource) {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocationOutsource(stockMove);
+      } else {
+        toStockLocation = Beans.get(StockMoveService.class).getToStockLocation(stockMove);
+      }
+
       response.setValue("toStockLocation", toStockLocation);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -661,5 +671,37 @@ public class StockMoveController {
     StockLocation toStockLocation = stockMove.getToStockLocation();
     Beans.get(StockMoveService.class).changeLinesToStockLocation(stockMove, toStockLocation);
     response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
+  }
+
+  public void generateNewStockMove(ActionRequest request, ActionResponse response) {
+
+    try {
+      StockMove stockMove = request.getContext().asType(StockMove.class);
+      stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
+      Optional<StockMove> newStockMove =
+          Beans.get(StockMoveService.class).generateNewStockMove(stockMove);
+      if (newStockMove.isPresent()) {
+        response.setView(
+            ActionView.define(I18n.get("Stock move"))
+                .model(StockMove.class.getName())
+                .add("grid", getGridViewName(newStockMove.get()))
+                .add("form", "stock-move-form")
+                .param("forceEdit", "true")
+                .context("_showRecord", String.valueOf(newStockMove.get().getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected String getGridViewName(StockMove stockMove) {
+    String gridViewName = "";
+    if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING) {
+      gridViewName = "stock-move-out-grid";
+    } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      gridViewName = "stock-move-in-grid";
+    }
+    return gridViewName;
   }
 }

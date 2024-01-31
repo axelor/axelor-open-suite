@@ -17,8 +17,13 @@
     <enum name="sequenceLettersTypeSelect" default="UPPERCASE" ref="SequenceLettersTypeSelect"
       title="Uppercase / lowercase"/>
     <string name="prefixe" title="Prefix"/>
+    <boolean name="prefixGroovyOk" title="Define prefix with a script"/>
+    <boolean name="suffixGroovyOk" title="Define suffix with a script"/>
     <string name="suffixe" title="Suffix"/>
+    <string name="prefixGroovy" title="Prefix"/>
+    <string name="suffixGroovy" title="Suffix"/>
     <integer name="padding" title="Padding" required="true"/>
+    <string name="pattern" title="Pattern"/>
     <integer name="toBeAdded" title="Increment" required="true" min="1"/>
 
     <boolean name="yearlyResetOk" title="Yearly reset"/>
@@ -59,6 +64,7 @@
   <enum name="SequenceTypeSelect">
     <item name="NUMBERS" title="Use numbers"/>
     <item name="LETTERS" title="Use letters"/>
+    <item name="ALPHANUMERIC" title="Use alphanumeric"/>
   </enum>
 
   <enum name="SequenceLettersTypeSelect">
