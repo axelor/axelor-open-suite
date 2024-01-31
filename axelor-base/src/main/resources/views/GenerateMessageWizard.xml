@@ -5,19 +5,18 @@
 
   <form name="generate-message-wizard-form" model="com.axelor.utils.db.Wizard"
     id="base-generate-message-wizard-form" title="Generate message"
-    onNew="action-generate-message-group-on-new">
-    <panel name="mainPanel">
-      <field name="localization" title="Localization" widget="SuggestBox" type="MANY_TO_ONE"
-        target="com.axelor.apps.base.db.Localization" target-name="name"
-        form-view="localization-form" grid-view="localization-grid"
-        onChange="action-on-change-localization-template"/>
-      <field name="_xTemplate" title="Template" widget="SuggestBox" type="MANY_TO_ONE"
-        target="com.axelor.message.db.Template" target-name="name" form-view="template-form"
-        grid-view="template-grid" onSelect="action-method-template-domain"/>
-      <spacer name="localizationSpacer"/>
-      <button name="validateBtn" title="Validate"
-        onClick="save, action-generate-message-method-generate-message"/>
-    </panel>
+    onNew="action-generate-message-group-on-new" extension="true">
+
+    <extend target="//panel[@name='mainPanel']/field[@name='language']">
+      <attribute name="name" value="localization"/>
+      <attribute name="title" value="Localization"/>
+      <attribute name="target" value="com.axelor.apps.base.db.Localization"/>
+      <attribute name="onChange" value="action-on-change-localization-template"/>
+    </extend>
+    <extend target="//panel[@name='mainPanel']/spacer[@name='languageSpacer']">
+      <attribute name="name" value="localizationSpacer"/>
+    </extend>
+
   </form>
 
   <action-attrs name="action-on-change-localization-template">
