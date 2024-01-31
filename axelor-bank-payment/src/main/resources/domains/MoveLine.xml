@@ -7,7 +7,8 @@
 
   <entity name="MoveLine">
 
-    <decimal name="bankReconciledAmount" title="Bank reconciled amount"/>
+    <decimal name="bankReconciledAmount" title="Bank reconciled amount" precision="20"
+      scale="3"/>
 
   </entity>
 
