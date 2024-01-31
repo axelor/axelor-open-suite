@@ -125,7 +125,9 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
       this.computeReportValues(accountingReport, Sets.newHashSet(company));
     }
 
-    this.computeReportValues(accountingReport, accountingReport.getCompanySet());
+    if (accountingReport.getCompanySet().size() > 1) {
+      this.computeReportValues(accountingReport, accountingReport.getCompanySet());
+    }
   }
 
   protected void computeReportValues(AccountingReport accountingReport, Set<Company> companySet)

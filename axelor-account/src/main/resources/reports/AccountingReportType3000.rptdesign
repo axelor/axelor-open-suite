@@ -1282,13 +1282,13 @@ WHERE ReportValue.accounting_report = ?;]]></xml-property>
                     <property name="name">company</property>
                     <property name="nativeName">company</property>
                     <property name="dataType">string</property>
-                    <property name="nativeDataType">-5</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	AccountingReport.company
+	DISTINCT AccountingReportValue.company
 	
-FROM account_accounting_report AccountingReport;]]></xml-property>
+FROM account_accounting_report_value AccountingReportValue;]]></xml-property>
         </oda-data-set>
     </data-sets>
     <cubes>
