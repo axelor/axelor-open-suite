@@ -136,6 +136,9 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
         expenseProduct,
         toInvoice,
         newExpense);
+    expenseProduct = expenseProduct != null ? expenseProduct : expenseLine.getExpenseProduct();
+    totalAmount = totalAmount != null ? totalAmount : expenseLine.getTotalAmount();
+    totalTax = totalTax != null ? totalTax : expenseLine.getTotalTax();
     expenseLineToolService.setGeneralExpenseLineInfo(
         expenseProduct, totalAmount, totalTax, justificationMetaFile, expenseLine);
   }
@@ -291,7 +294,7 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
     if (StringUtils.notEmpty(toCity)) {
       expenseLine.setToCity(toCity);
     }
-
+    distance = distance != null ? distance : expenseLine.getDistance();
     expenseLineToolService.computeDistance(distance, expenseLine);
     expenseLineToolService.computeAmount(expenseLine.getEmployee(), expenseLine);
 
