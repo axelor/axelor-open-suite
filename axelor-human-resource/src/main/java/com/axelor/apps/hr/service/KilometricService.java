@@ -211,8 +211,7 @@ public class KilometricService {
         price = price.add(max.subtract(min).multiply(rule.getRate()));
       }
     }
-    return price.setScale(
-        appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    return price.setScale(2, RoundingMode.HALF_UP);
   }
 
   @Transactional(rollbackOn = {Exception.class})

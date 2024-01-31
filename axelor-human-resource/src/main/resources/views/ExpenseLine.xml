@@ -158,7 +158,8 @@
       <field name="kilometricAllowParam" required="true"
         onSelect="action-kilometric-allowance-method-domain-on-select-on-kap"
         onChange="action-kilometric-allowance-method-compute"/>
-      <field name="kilometricTypeSelect" required="true"/>
+      <field name="kilometricTypeSelect" required="true"
+        onChange="action-kilometric-allowance-method-compute-distance"/>
       <field name="distance" onChange="action-kilometric-allowance-method-compute"
         required="true"/>
       <panel name="cityDetailsPanel" colSpan="12">
