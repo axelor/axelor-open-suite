@@ -57,6 +57,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.tuple.Pair;
@@ -148,10 +149,15 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     } else {
       BillOfMaterial defaultBillOfMaterial = billOfMaterialService.getDefaultBOM(product, company);
 
+      // The +2 adds 2 minutes to the plannedEndDateT to avoid the overflowing of the calculated
+      // plannedStartDateT on the current date time.
+      LocalDateTime maturityDateTime =
+          maturityDate.isEqual(LocalDate.now())
+              ? maturityDate.atTime(LocalTime.now().plusMinutes(2))
+              : maturityDate.atStartOfDay();
       plannedEndDateT =
-          maturityDate
-              .plusDays(getTotalDurationInDays(defaultBillOfMaterial.getProdProcess(), qty) + 1)
-              .atStartOfDay();
+          maturityDateTime.plusMinutes(
+              getTotalDurationInMinutes(defaultBillOfMaterial.getProdProcess(), qty));
     }
 
     ManufOrder manufOrder =
@@ -170,13 +176,13 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     linkToOrder(mrpLine, manufOrder);
   }
 
-  protected long getTotalDurationInDays(ProdProcess prodProcess, BigDecimal qty)
+  protected long getTotalDurationInMinutes(ProdProcess prodProcess, BigDecimal qty)
       throws AxelorException {
     long totalDuration = 0;
     if (prodProcess != null) {
-      totalDuration = prodProcessLineService.computeEntireDuration(prodProcess, qty);
+      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, qty);
     }
-    return TimeUnit.SECONDS.toDays(totalDuration);
+    return TimeUnit.SECONDS.toMinutes(totalDuration);
   }
 
   @Override

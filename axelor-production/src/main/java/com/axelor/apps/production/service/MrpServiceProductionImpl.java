@@ -32,7 +32,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.ProdProcessLine;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
@@ -514,12 +514,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       throws AxelorException {
 
     long totalDuration = 0;
-    if (defaultBillOfMaterial.getProdProcess() != null) {
-      for (ProdProcessLine prodProcessLine :
-          defaultBillOfMaterial.getProdProcess().getProdProcessLineList()) {
-        totalDuration +=
-            prodProcessLineService.computeEntireCycleDuration(null, prodProcessLine, reorderQty);
-      }
+    ProdProcess prodProcess = defaultBillOfMaterial.getProdProcess();
+    if (prodProcess != null) {
+      totalDuration = prodProcessLineService.computeLeadTimeDuration(prodProcess, reorderQty);
     }
     // If days should be rounded to a upper value
     if (totalDuration != 0 && totalDuration % TimeUnit.DAYS.toSeconds(1) != 0) {
