@@ -14,11 +14,12 @@
       ref="com.axelor.auth.db.Group"/>
     <boolean name="displayCustomerDescriptionInOpportunity"
       title="Display customer description in opportunity"/>
-    <boolean name="isManageRecurrent" title="Manage recurrent on opportunities"/>
+    <boolean name="isManageRecurrent" title="Manage recurring opportunities"/>
     <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
     <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
     <boolean name="agenciesManagement" title="Agencies management"/>
-    <boolean name="crmProcessOnPartner" title="Manage status on prospect" default="false"/>
+    <boolean name="crmProcessOnPartner" title="Manage statuses on prospect partner"
+      default="false"/>
     <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
       default="false"/>
     <boolean name="isCorporatePartnerEnabled" title="Enable corporate partner"
