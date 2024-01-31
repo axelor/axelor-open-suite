@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.DebtRecoveryRepository;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
@@ -239,10 +240,12 @@ public class DebtRecoveryService {
             .setParameter("daybookStatus", MoveRepository.STATUS_DAYBOOK)
             .setParameter("accountedStatus", MoveRepository.STATUS_ACCOUNTED)
             .setParameter("paymentSessionStatus", PaymentSessionRepository.STATUS_ONGOING)
-            .setParameter("functionalOriginSelect", MoveRepository.FUNCTIONAL_ORIGIN_SALE);
+            .setParameter("functionalOriginSelect", MoveRepository.FUNCTIONAL_ORIGIN_SALE)
+            .setParameter(
+                "statusSupplierPurchase", InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE)
+            .setParameter("statusCustomerSale", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE);
 
     invoiceTermQuery = addTradingNameBinding(tradingName, invoiceTermQuery);
-
     idList.addAll(invoiceTermQuery.getResultList());
   }
 
@@ -279,6 +282,8 @@ public class DebtRecoveryService {
     query.append("AND invoiceterm.dueDate <= :todayDate ");
     query.append("AND move.functionalOriginSelect = :functionalOriginSelect ");
     query.append("AND move.statusSelect IN (:daybookStatus, :accountedStatus) ");
+    query.append(
+        "AND invoice.operationTypeSelect IN (:statusSupplierPurchase, :statusCustomerSale)");
 
     if (tradingName != null) {
       query.append("AND move.tradingName = :tradingName ");
@@ -292,6 +297,7 @@ public class DebtRecoveryService {
         "LEFT JOIN PaymentSession paymentsession ON paymentsession.id = invoiceterm.paymentSession ");
     query.append("LEFT JOIN MoveLine moveline ON moveline.id = invoiceterm.moveLine ");
     query.append("LEFT JOIN Move move ON move.id = moveline.move ");
+    query.append("LEFT JOIN Invoice invoice ON invoice.id = invoiceterm.invoice ");
   }
 
   /**
