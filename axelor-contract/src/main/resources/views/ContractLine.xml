@@ -76,9 +76,10 @@
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-method-contract-line-compute-total"/>
           <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
-            onChange="action-method-contract-line-compute-total"/>
+            onChange="action-method-contract-line-compute-total"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="priceDiscounted" hideIf="discountTypeSelect == 0" readonly="true"
-            colSpan="3" showIf="priceDiscounted != 0"/>
+            colSpan="3" showIf="priceDiscounted != 0" x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
