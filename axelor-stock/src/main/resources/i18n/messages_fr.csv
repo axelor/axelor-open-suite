@@ -814,6 +814,7 @@
 "The total net mass is higher than the total gross mass.","La masse nette totale est supérieure à la masse brute totale.",,
 "The tracking number configuration quantity is equal to zero, it must be at least one.","La quantité de la configuration du numéro de suivi est égale à zéro, elle doit être d'au moins un.",,
 "The type of cancel reason doesn't match with stock move","Le type de motif d’annulation ne correspond pas avec le mouvement de stock.",,
+"The unit is missing on a stock location line","L'unité est manquante sur une ligne d'emplacement de stock",,
 "There is currently no such file in the specified folder or the folder may not exists.","Il n'y a actuellement aucun fichier dans le dossier spécifique ou le dossier n'existe peut-être pas",,
 "There is more than one line for same product with same tracking number.","Il existe plusieurs lignes d'inventaires pour le même produit et même numéro de suivi",,
 "There's already an existing storage, you must deactivate it first","Il existe déjà un entrepôt par défaut, veuillez d'abord désactiver l'entrepôt",,

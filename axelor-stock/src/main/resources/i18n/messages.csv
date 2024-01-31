@@ -814,6 +814,7 @@
 "The total net mass is higher than the total gross mass.",,,
 "The tracking number configuration quantity is equal to zero, it must be at least one.",,,
 "The type of cancel reason doesn't match with stock move",,,
+"The unit is missing on a stock location line",,,
 "There is currently no such file in the specified folder or the folder may not exists.",,,
 "There is more than one line for same product with same tracking number.",,,
 "There's already an existing storage, you must deactivate it first",,,

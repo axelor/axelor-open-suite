@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -32,8 +33,10 @@ import com.axelor.apps.stock.db.StockRules;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
+import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
@@ -139,7 +142,11 @@ public class StockLocationServiceImpl implements StockLocationService {
     for (Tuple qtyPerUnit : sumOfQtyPerUnitQuery.getResultList()) {
       Long stockLocationLineUnitId = (Long) qtyPerUnit.get(0);
       BigDecimal sumOfQtyOfStockLocationLineUnit = (BigDecimal) qtyPerUnit.get(1);
-
+      if (stockLocationLineUnitId == null) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(StockExceptionMessage.STOCK_LOCATION_UNIT_NULL));
+      }
       if (productUnit != null && !productUnit.getId().equals(stockLocationLineUnitId)) {
         Unit stockLocationLineUnit = unitRepository.find(stockLocationLineUnitId);
 
