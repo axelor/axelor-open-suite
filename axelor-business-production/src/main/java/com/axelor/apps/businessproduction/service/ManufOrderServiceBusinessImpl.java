@@ -39,6 +39,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
@@ -72,7 +73,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       UnitConversionService unitConversionService,
       MetaFiles metaFiles,
       PartnerRepository partnerRepository,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      StockMoveService stockMoveService) {
     super(
         sequenceService,
         operationOrderService,
@@ -88,7 +90,8 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         unitConversionService,
         metaFiles,
         partnerRepository,
-        billOfMaterialService);
+        billOfMaterialService,
+        stockMoveService);
     this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
   }
 
