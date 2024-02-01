@@ -12,4 +12,6 @@ public interface TimesheetCreateService {
       throws AxelorException;
 
   List<Map<String, Object>> createDefaultLines(Timesheet timesheet);
+
+  Timesheet createTimesheet(LocalDate fromDate, LocalDate toDate) throws AxelorException;
 }

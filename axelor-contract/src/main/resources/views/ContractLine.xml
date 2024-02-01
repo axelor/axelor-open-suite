@@ -76,9 +76,10 @@
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-method-contract-line-compute-total"/>
           <field name="discountAmount" hideIf="discountTypeSelect == 0" colSpan="3"
-            onChange="action-method-contract-line-compute-total"/>
+            onChange="action-method-contract-line-compute-total"
+            x-scale="$nbDecimalDigitForUnitPrice"/>
           <field name="priceDiscounted" hideIf="discountTypeSelect == 0" readonly="true"
-            colSpan="3" showIf="priceDiscounted != 0"/>
+            colSpan="3" showIf="priceDiscounted != 0" x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
@@ -137,7 +138,7 @@
 
   <form name="additional-contract-line-form" title="Additional benefit"
     model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
-    onNew="action-contract-line-group-additional-onnew"
+    onNew="action-contract-line-group-additional-onnew-onload"
     onLoad="action-contract-line-group-additional-onnew-onload">
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -230,7 +231,6 @@
   <action-group name="action-contract-line-group-onnew">
     <action name="action-method-contract-line-fill-default"/>
     <action name="action-contract-line-group-edit-view"/>
-    <action name="action-contract-line-attrs-scale-and-precision"/>
   </action-group>
 
   <action-group name="action-contract-line-group-edit-view">
@@ -246,11 +246,6 @@
     <action name="action-contract-line-method-scale-and-precision"/>
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
-  </action-group>
-
-  <action-group name="action-contract-line-group-additional-onnew">
-    <action name="action-contract-line-group-additional-onnew-onload"/>
-    <action name="action-contract-line-attrs-scale-and-precision"/>
   </action-group>
 
   <action-group

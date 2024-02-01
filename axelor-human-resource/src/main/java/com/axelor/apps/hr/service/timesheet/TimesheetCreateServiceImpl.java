@@ -3,16 +3,21 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,20 +29,23 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected UserHrService userHrService;
   protected ProjectRepository projectRepository;
   protected TimesheetLineService timesheetLineService;
+  protected TimesheetRepository timesheetRepository;
 
   @Inject
   public TimesheetCreateServiceImpl(
       UserHrService userHrService,
       ProjectRepository projectRepository,
-      TimesheetLineService timesheetLineService) {
+      TimesheetLineService timesheetLineService,
+      TimesheetRepository timesheetRepository) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
+    this.timesheetRepository = timesheetRepository;
   }
 
+  @Transactional
   @Override
-  public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate)
-      throws AxelorException {
+  public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
     Timesheet timesheet = new Timesheet();
     timesheet.setEmployee(employee);
 
@@ -55,9 +63,21 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     timesheet.setTimeLoggingPreferenceSelect(timeLoggingPreferenceSelect);
     timesheet.setCompany(company);
     timesheet.setFromDate(fromDate);
+    timesheet.setToDate(toDate);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
 
-    return timesheet;
+    return timesheetRepository.save(timesheet);
+  }
+
+  @Override
+  public Timesheet createTimesheet(LocalDate fromDate, LocalDate toDate) throws AxelorException {
+    Employee employee = AuthUtils.getUser().getEmployee();
+    if (employee == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE));
+    }
+    return createTimesheet(employee, fromDate, toDate);
   }
 
   @Override

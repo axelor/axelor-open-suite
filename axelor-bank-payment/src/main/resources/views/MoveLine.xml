@@ -16,15 +16,17 @@
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="description"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
-    <field name="debit" aggregate="sum">
+    <field name="debit" aggregate="sum" x-scale="move.currency.numberOfDecimals">
       <hilite if="debit > 0" color="green"/>
     </field>
-    <field name="credit" aggregate="sum">
+    <field name="credit" aggregate="sum" x-scale="move.currency.numberOfDecimals">
       <hilite if="credit > 0" color="red"/>
     </field>
-    <field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
+    <field name="bankReconciledAmount" if-module="axelor-bank-payment"
+      x-scale="move.currency.numberOfDecimals"/>
     <field name="move.statusSelect"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
+    <field name="move.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <grid name="move-line-bank-reconciliation-grid-currency-amount" orderBy="date"
@@ -41,16 +43,19 @@
     <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="description"/>
     <field name="account" form-view="account-form" grid-view="account-grid"/>
-    <field name="debit" aggregate="sum">
+    <field name="debit" aggregate="sum" x-scale="move.company.currency.numberOfDecimals">
       <hilite if="debit > 0" color="green"/>
     </field>
-    <field name="credit" aggregate="sum">
+    <field name="credit" aggregate="sum" x-scale="move.company.currency.numberOfDecimals">
       <hilite if="credit > 0" color="red"/>
     </field>
-    <field name="currencyAmount"/>
-    <field name="bankReconciledAmount" if-module="axelor-bank-payment"/>
+    <field name="currencyAmount" x-scale="move.currency.numberOfDecimals"/>
+    <field name="bankReconciledAmount" if-module="axelor-bank-payment"
+      x-scale="move.currency.numberOfDecimals"/>
     <field name="move.statusSelect"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
+    <field name="move.company.currency.numberOfDecimals" hidden="true"/>
+    <field name="move.currency.numberOfDecimals" hidden="true"/>
   </grid>
 
   <form name="move-line-move-form" title="Move line"

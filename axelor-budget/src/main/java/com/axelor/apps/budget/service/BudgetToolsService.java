@@ -75,6 +75,9 @@ public interface BudgetToolsService {
    */
   public Integer getBudgetControlLevel(Budget budget);
 
+  void fillAmountPerBudgetMap(
+      Budget budget, BigDecimal amount, Map<Budget, BigDecimal> amountPerBudgetMap);
+
   Map<String, BigDecimal> buildMapWithAmounts(
       List<Budget> budgetList, List<BudgetLevel> budgetLevelList);
 }

@@ -861,4 +861,30 @@ public class ManufOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void setProducedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderService.class).setProducedStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("producedStockMoveLineList", manufOrder.getProducedStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setConsumedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+      Beans.get(ManufOrderService.class).setConsumedStockMoveLineStockLocation(manufOrder);
+
+      response.setValue("consumedStockMoveLineList", manufOrder.getConsumedStockMoveLineList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 }

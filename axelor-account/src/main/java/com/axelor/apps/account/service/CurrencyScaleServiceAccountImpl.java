@@ -10,7 +10,6 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentVoucher;
-import com.axelor.apps.account.service.fixedasset.FixedAssetLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -21,11 +20,11 @@ import java.math.BigDecimal;
 public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
     implements CurrencyScaleServiceAccount {
 
-  protected FixedAssetLineService fixedAssetLineService;
+  protected final FindFixedAssetService findFixedAssetService;
 
   @Inject
-  public CurrencyScaleServiceAccountImpl(FixedAssetLineService fixedAssetLineService) {
-    this.fixedAssetLineService = fixedAssetLineService;
+  public CurrencyScaleServiceAccountImpl(FindFixedAssetService findFixedAssetService) {
+    this.findFixedAssetService = findFixedAssetService;
   }
 
   @Override
@@ -128,7 +127,7 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
   @Override
   public BigDecimal getCompanyScaledValue(FixedAssetLine fixedAssetLine, BigDecimal amount)
       throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
     return this.getScaledValue(amount, this.getCompanyScale(fixedAsset));
   }
 
@@ -220,7 +219,7 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getCompanyScale(FixedAssetLine fixedAssetLine) throws AxelorException {
-    FixedAsset fixedAsset = fixedAssetLineService.getFixedAsset(fixedAssetLine);
+    FixedAsset fixedAsset = findFixedAssetService.getFixedAsset(fixedAssetLine);
     return this.getCompanyScale(fixedAsset);
   }
 
@@ -242,5 +241,35 @@ public class CurrencyScaleServiceAccountImpl extends CurrencyScaleServiceImpl
 
   protected int getCurrencyScale(Currency currency) {
     return currency != null ? currency.getNumberOfDecimals() : this.getScale();
+  }
+
+  @Override
+  public boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue) {
+    amount1 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount1)
+            : this.getScaledValue(moveLine, amount1);
+    amount2 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount2)
+            : this.getScaledValue(moveLine, amount2);
+
+    return amount1 != null && (amount1.compareTo(amount2) > 0);
+  }
+
+  @Override
+  public boolean equals(
+      BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue) {
+    amount1 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount1)
+            : this.getScaledValue(moveLine, amount1);
+    amount2 =
+        isCompanyValue
+            ? this.getCompanyScaledValue(moveLine, amount2)
+            : this.getScaledValue(moveLine, amount2);
+
+    return amount1.compareTo(amount2) == 0;
   }
 }
