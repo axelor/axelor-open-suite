@@ -886,7 +886,6 @@
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
   </grid>
 
@@ -1229,7 +1228,7 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="false"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
-    <context name="id" expr="eval: id"/>
+    <context name="_saleOrderId" expr="eval: id"/>
   </action-view>
 
   <action-attrs name="action-sale-order-reports-wizard-attrs">

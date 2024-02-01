@@ -56,15 +56,15 @@
       </panel>
       <panel name="datesPanel" colSpan="12" showIf="$popup()">
         <field name="fromDate" colSpan="4" required="true"
-          onChange="action-budget-level-validate-from-to-dates"/>
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
         <field name="toDate" colSpan="4" required="true"
-          onChange="action-budget-level-validate-from-to-dates"/>
-        <button name="updateDatesBtn" colSpan="4" title="Update dates"
-          onClick="save,action-budget-budget-level-method-set-dates"
+          onChange="action-budget-level-group-from-to-dates-onchange"/>
+        <button name="updateDatesBtn" colSpan="4" title="Update dates" hidden="true"
+          onClick="save,action-budget-budget-level-method-set-dates" css="btn-danger"
           readonlyIf="code == null || name == null || statusSelect != 'draft'"/>
       </panel>
       <panel name="totalAmountPanel" itemSpan="3" colSpan="12" readonly="true"
-        title="Total amounts">
+        title="Total amounts" showIf="id">
         <field name="totalAmountExpected" x-scale="$currencyNumberOfDecimals"/>
         <field name="totalAmountAvailable" x-scale="$currencyNumberOfDecimals"/>
         <field name="availableAmountWithSimulated" x-scale="$currencyNumberOfDecimals"/>
@@ -135,6 +135,7 @@
   <action-group name="action-budget-level-group-onnew">
     <action name="action-budget-level-record-set-defaults"/>
     <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-global-budget-method-hide-amounts"/>
   </action-group>
 
   <action-group name="action-budget-level-template-group-onnew">
@@ -145,6 +146,7 @@
 
   <action-group name="action-budget-level-group-onload">
     <action name="action-budget-level-attrs-set-attrs"/>
+    <action name="action-global-budget-method-hide-amounts" if="!id"/>
     <action name="action-budget-level-method-show-validate-fields"/>
   </action-group>
 
@@ -219,6 +221,11 @@
     <action name="action-budget-level-group-onnew"/>
   </action-group>
 
+  <action-group name="action-budget-level-group-from-to-dates-onchange">
+    <action name="action-budget-level-validate-from-to-dates"/>
+    <action name="action-budget-level-method-show-update-dates-btn"/>
+  </action-group>
+
   <action-validate name="action-budget-level-validate-from-to-dates">
     <error message="Invalid dates"
       if="toDate != null &amp;&amp; fromDate != null &amp;&amp; toDate &lt; fromDate"
@@ -232,6 +239,10 @@
 
   <action-method name="action-budget-budget-level-method-set-dates">
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="setDates"/>
+  </action-method>
+
+  <action-method name="action-budget-level-method-show-update-dates-btn">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="showUpdateDatesBtn"/>
   </action-method>
 
   <action-method name="action-budget-level-method-validate">

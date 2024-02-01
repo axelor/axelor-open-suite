@@ -64,7 +64,26 @@ public class ImportAccountingConfigTemplate {
           "account_tax.csv",
           "account_accountManagement.csv",
           "account_taxEquiv.csv",
-          "account_taxLine.csv"
+          "account_taxLine.csv",
+          "account_accountingBatch.csv",
+          "account_accountingReportConfigLine.csv",
+          "account_accountingReportType.csv",
+          "account_cfonbConfig.csv",
+          "account_das2Activity.csv",
+          "account_fixedAssetCategory.csv",
+          "account_fixedAssetType.csv",
+          "account_journal.csv",
+          "account_journalType.csv",
+          "account_paymentMode.csv",
+          "account_serviceType.csv",
+          "base_sequence.csv",
+          "base_template.csv",
+          "account_accountConfig_accounts.csv",
+          "account_accountConfig_invoicing.csv",
+          "account_accountConfig_journal.csv",
+          "account_accountConfig_misc.csv",
+          "account_accountConfig_payments.csv",
+          "account_invoiceProductStatement.csv"
         };
 
     for (String fileName : Arrays.asList(files)) {

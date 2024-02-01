@@ -52,8 +52,8 @@ import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.auth.AuthUtils;
@@ -407,7 +407,7 @@ public class HumanResourceMobileController {
       LocalDate date =
           LocalDate.parse(request.getData().get("date").toString(), DateTimeFormatter.ISO_DATE);
       TimesheetRepository timesheetRepository = Beans.get(TimesheetRepository.class);
-      TimesheetService timesheetService = Beans.get(TimesheetService.class);
+      TimesheetCreateService timesheetCreateService = Beans.get(TimesheetCreateService.class);
       TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
 
       if (user != null) {
@@ -419,7 +419,7 @@ public class HumanResourceMobileController {
                 .order("-id")
                 .fetchOne();
         if (timesheet == null) {
-          timesheet = timesheetService.createTimesheet(employee, date, date);
+          timesheet = timesheetCreateService.createTimesheet(employee, date, date);
         }
         BigDecimal hours = new BigDecimal(request.getData().get("duration").toString());
 

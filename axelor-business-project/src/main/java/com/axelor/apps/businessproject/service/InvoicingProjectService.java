@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
@@ -51,7 +52,7 @@ import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineService;
-import com.axelor.apps.hr.service.timesheet.TimesheetService;
+import com.axelor.apps.hr.service.timesheet.TimesheetInvoiceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -84,7 +85,7 @@ import java.util.Map;
 
 public class InvoicingProjectService {
 
-  @Inject protected TimesheetService timesheetService;
+  @Inject protected TimesheetInvoiceService timesheetInvoiceService;
 
   @Inject protected ExpenseInvoiceLineService expenseInvoiceLineService;
 
@@ -97,6 +98,8 @@ public class InvoicingProjectService {
   @Inject protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
+
+  @Inject protected InvoiceLineService invoiceLineService;
 
   protected int MAX_LEVEL_OF_PROJECT = 10;
 
@@ -206,7 +209,7 @@ public class InvoicingProjectService {
         this.createPurchaseOrderInvoiceLines(
             invoice, purchaseOrderLineList, folder.getPurchaseOrderLineSetPrioritySelect()));
     invoiceLineList.addAll(
-        timesheetService.createInvoiceLines(
+        timesheetInvoiceService.createInvoiceLines(
             invoice, timesheetLineList, folder.getLogTimesSetPrioritySelect()));
     invoiceLineList.addAll(
         expenseInvoiceLineService.createInvoiceLines(
@@ -220,6 +223,8 @@ public class InvoicingProjectService {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLine.setSequence(sequence);
       sequence++;
+
+      invoiceLineService.compute(invoice, invoiceLine);
     }
 
     return invoiceLineList;

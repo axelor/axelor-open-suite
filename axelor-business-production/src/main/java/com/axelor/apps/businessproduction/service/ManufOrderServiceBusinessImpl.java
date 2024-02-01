@@ -36,8 +36,9 @@ import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
-import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.meta.MetaFiles;
@@ -59,24 +60,26 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
   public ManufOrderServiceBusinessImpl(
       SequenceService sequenceService,
       OperationOrderService operationOrderService,
-      ManufOrderWorkflowService manufOrderWorkflowService,
+      ManufOrderPlanService manufOrderPlanService,
+      ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ProductVariantService productVariantService,
       AppBaseService appBaseService,
       AppProductionService appProductionService,
       ManufOrderRepository manufOrderRepo,
       ProdProductRepository prodProductRepo,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl,
       ProductCompanyService productCompanyService,
       BarcodeGeneratorService barcodeGeneratorService,
       ProductStockLocationService productStockLocationService,
       UnitConversionService unitConversionService,
       MetaFiles metaFiles,
       PartnerRepository partnerRepository,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
     super(
         sequenceService,
         operationOrderService,
-        manufOrderWorkflowService,
+        manufOrderPlanService,
+        manufOrderCreatePurchaseOrderService,
         productVariantService,
         appBaseService,
         appProductionService,

@@ -171,4 +171,19 @@ public class SaleOrderLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null && request.getContext().getParent() != null) {
+      saleOrder = request.getContext().getParent().asType(SaleOrder.class);
+    }
+
+    Beans.get(SaleOrderLineBudgetService.class)
+        .computeBudgetDistributionSumAmount(saleOrderLine, saleOrder);
+
+    response.setValue(
+        "budgetDistributionSumAmount", saleOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", saleOrderLine.getBudgetDistributionList());
+  }
 }

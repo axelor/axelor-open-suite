@@ -1009,7 +1009,7 @@ public class SaleOrderLineServiceImpl implements SaleOrderLineService {
     // But here, we have to do this because overriding a sale service in hr module will prevent the
     // override in supplychain, business-project, and business production module.
     if (ModuleManager.isInstalled("axelor-human-resource")) {
-      domain += " AND self.expense = false ";
+      domain += " AND self.expense = false OR self.expense IS NULL";
     }
 
     return domain;

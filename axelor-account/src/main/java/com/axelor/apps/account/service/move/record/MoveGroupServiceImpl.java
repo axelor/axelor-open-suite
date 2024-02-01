@@ -115,6 +115,13 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("$periodClosed", periodService.isClosedPeriod(move.getPeriod()));
   }
 
+  protected void addValidatePeriod(Move move, Map<String, Object> valuesMap)
+      throws AxelorException {
+    valuesMap.put(
+        "$validatePeriod",
+        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+  }
+
   public void checkBeforeSave(Move move) throws AxelorException {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
@@ -182,10 +189,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       move.setMassEntryStatusSelect(MoveRepository.MASS_ENTRY_STATUS_ON_GOING);
       valuesMap.put("massEntryStatusSelect", move.getMassEntryStatusSelect());
     } else {
-      valuesMap.put(
-          "$validatePeriod",
-          !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-
+      this.addValidatePeriod(move, valuesMap);
       this.addPeriodDummyFields(move, valuesMap);
     }
 
@@ -222,9 +226,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   public Map<String, Object> getOnLoadValuesMap(Move move) throws AxelorException {
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
-    valuesMap.put(
-        "$validatePeriod",
-        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
+    this.addValidatePeriod(move, valuesMap);
     valuesMap.put("$isThereRelatedCutOffMoves", moveCheckService.isRelatedCutoffMoves(move));
 
     this.addPeriodDummyFields(move, valuesMap);
@@ -244,8 +246,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getDateOnChangeValuesMap(Move move, boolean paymentConditionChange)
-      throws AxelorException {
+  public Map<String, Object> getDateOnChangeValuesMap(Move move) throws AxelorException {
     if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
       moveRecordSetService.setPeriod(move);
     }
@@ -256,7 +257,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
-    moveRecordUpdateService.updateDueDate(move, paymentConditionChange, true);
+    moveRecordUpdateService.updateDueDate(move, true, true);
+    moveRecordUpdateService.updateInvoiceTermDueDate(move, move.getDueDate());
 
     this.addPeriodDummyFields(move, valuesMap);
 
@@ -265,10 +267,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("moveLineList", move.getMoveLineList());
     valuesMap.put("originDate", move.getOriginDate());
 
-    valuesMap.put(
-        "$validatePeriod",
-        !periodAccountService.isAuthorizedToAccountOnPeriod(move, AuthUtils.getUser()));
-
+    if (move.getMassEntryStatusSelect() == MoveRepository.MASS_ENTRY_STATUS_NULL) {
+      this.addValidatePeriod(move, valuesMap);
+    }
     return valuesMap;
   }
 
@@ -322,6 +323,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
+    moveAttrsService.addHidden(move, attrsMap);
     moveAttrsService.addFunctionalOriginSelectDomain(move, attrsMap);
     moveAttrsService.addPartnerRequired(move, attrsMap);
     moveAttrsService.addMainPanelTabHiddenValue(move, attrsMap);
@@ -514,9 +516,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getCompanyOnChangeValuesMap(Move move, boolean paymentConditionChange)
-      throws AxelorException {
-    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move, paymentConditionChange);
+  public Map<String, Object> getCompanyOnChangeValuesMap(Move move) throws AxelorException {
+    Map<String, Object> valuesMap = this.getDateOnChangeValuesMap(move);
 
     moveRecordSetService.setJournal(move);
     moveRecordSetService.setCompanyBankDetails(move);
