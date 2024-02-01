@@ -72,20 +72,27 @@
         <field name="productCategory" readonlyIf="product"
           requiredIf="!product &amp;&amp; !formula"
           onChange="action-pricing-method-set-formula-field"/>
+        <panel name="formulaPanel" title="Formula" colSpan="12" canCollapse="true"
+          collapseIf="$readonly()">
+          <field name="formula" showTitle="false" readonlyIf="product || productCategory"
+            height="150" colSpan="12" widget="CodeEditor"
+            onChange="action-pricing-method-clear-fields-related-to-formula"
+            requiredIf="!product &amp;&amp; !productCategory" x-code-syntax="groovy"/>
+        </panel>
         <field name="linkedPricing"
           domain="self.company = :company AND self.concernedModel = :concernedModel AND self.id != :id"/>
-        <field name="formula" readonlyIf="product || productCategory"
-          requiredIf="!product &amp;&amp; !productCategory" widget="CodeEditor" colSpan="12"
-          x-code-syntax="groovy" onChange="action-pricing-method-clear-fields-related-to-formula"/>
+        <panel-related field="pricingLineList" name="pricingLineListPanel"
+          colSpan="12" grid-view="pricing-line-grid" form-view="pricing-line-form"
+          showIf="class1PricingRule || result1PricingRule"
+          orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
+        <panel name="historizedPanel" title="History" colSpan="12" canCollapse="true"
+          collapseIf="true" hideIf="$popup()">
+          <panel-dashlet name="historizedPricingPanel" title="Historized pricings"
+            colSpan="12" action="action-pricing-view-historized-pricing"/>
+        </panel>
       </panel>
-      <panel-related field="pricingLineList" name="pricingLineListPanel" colSpan="12"
-        grid-view="pricing-line-grid" form-view="pricing-line-form"
-        showIf="class1PricingRule || result1PricingRule"
-        orderBy="classificationParam1,classificationParam2,classificationParam3,classificationParam4,resultParam1,resultParam2,resultParam3,resultParam4"/>
-      <panel-dashlet name="historizedPricingPanel" colSpan="12"
-        title="Historized pricings" action="action-pricing-view-historized-pricing"
-        hideIf="$popup()"/>
     </panel>
+
   </form>
 
   <form name="pricing-history-form" title="Pricing" model="com.axelor.apps.base.db.Pricing"
