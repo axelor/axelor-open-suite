@@ -8,13 +8,11 @@
     onNew="action-generate-message-group-on-new" extension="true">
 
     <extend target="//panel[@name='mainPanel']/field[@name='language']">
-      <attribute name="name" value="localization"/>
-      <attribute name="title" value="Localization"/>
-      <attribute name="target" value="com.axelor.apps.base.db.Localization"/>
-      <attribute name="onChange" value="action-on-change-localization-template"/>
-    </extend>
-    <extend target="//panel[@name='mainPanel']/spacer[@name='languageSpacer']">
-      <attribute name="name" value="localizationSpacer"/>
+      <replace>
+        <field name="localization" title="Localization" target="com.axelor.apps.base.db.Localization"
+               target-name="name" form-view="localization-form" grid-view="localization-grid"
+               onChange="action-on-change-localization-template" widget="SuggestBox" type="MANY_TO_ONE"/>
+      </replace>
     </extend>
 
   </form>
