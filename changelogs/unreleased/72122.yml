@@ -1,0 +1,2 @@
+title : "MOVE / BANKORDER : Add the bank order reference in the origin when accounting move are generated from it"
+type: fix

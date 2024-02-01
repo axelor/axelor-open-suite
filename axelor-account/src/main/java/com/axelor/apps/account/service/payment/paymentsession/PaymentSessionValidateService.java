@@ -69,5 +69,8 @@ public interface PaymentSessionValidateService {
   public boolean containsCompensativeInvoiceTerm(
       List<InvoiceTerm> invoiceTermList, PaymentSession paymentSession);
 
+  // Will be override in bank payment module
+  String getMoveOrigin(PaymentSession paymentSession);
+
   public LocalDate getAccountingDate(PaymentSession paymentSession, InvoiceTerm invoiceTerm);
 }
