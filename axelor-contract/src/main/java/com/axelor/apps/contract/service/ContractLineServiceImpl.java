@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Duration;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DurationService;
 import com.axelor.apps.base.service.PriceListService;
@@ -257,5 +258,21 @@ public class ContractLineServiceImpl implements ContractLineService {
           new AnalyticLineContractModel(contractLine, null, contract);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
     }
+  }
+
+  @Override
+  public ContractLine resetProductInformation(ContractLine contractLine) {
+    contractLine.setProductName(null);
+    contractLine.setQty(null);
+    contractLine.setPrice(null);
+    contractLine.setDiscountTypeSelect(PriceListLineRepository.AMOUNT_TYPE_NONE);
+    contractLine.setDiscountAmount(null);
+    contractLine.setTaxLine(null);
+    contractLine.setUnit(null);
+    contractLine.setExTaxTotal(null);
+    contractLine.setInTaxTotal(null);
+    contractLine.setDescription(null);
+
+    return contractLine;
   }
 }

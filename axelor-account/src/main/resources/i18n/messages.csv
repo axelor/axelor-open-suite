@@ -2157,6 +2157,7 @@
 "Monthly direct debit(s) treated",,,
 "Monthly payments",,,
 "Move",,,
+"Move %s has a move line with a tax account but no tax assigned. Please fix this in order to proceed with this reconcile.",,,
 "Move Consistency Control",,,
 "Move Description",,,
 "Move From Template",,,

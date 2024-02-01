@@ -8,22 +8,24 @@
     model="com.axelor.apps.contract.db.ContractLine" canMove="true" orderBy="sequence">
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
-    <field name="qty"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
     <field name="isConsumptionLine"/>
-    <field name="price"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isToRevaluate"/>
     <field name="initialPricePerYear" readonly="true"/>
     <field name="yearlyPriceRevalued" readonly="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="additional-contract-line-grid" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isInvoiced" background="success"/>
     <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="exTaxTotal"/>
     <field name="inTaxTotal"/>
     <field name="isInvoiced" hidden="true"/>
@@ -31,22 +33,28 @@
     <field name="subscriptionFromDate" type="date" title="From"/>
     <field name="subscriptionToDate" type="date" title="To"/>
     <field name="statusSelect" type="string" title="Status"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="contract-line-grid-for-template" title="Contract Lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <hilite if="isConsumptionLine" background="primary"/>
     <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="isConsumptionLine" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <grid name="additional-contract-line-grid-for-template" title="Additional benefit lines"
     model="com.axelor.apps.contract.db.ContractLine">
     <field name="productName"/>
-    <field name="qty"/>
-    <field name="price"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="contract-line-form" title="Contract line"
@@ -57,10 +65,11 @@
         <field name="product" canEdit="false"
           onChange="action-contract-line-group-product-onchange" domain="self.dtype = 'Product'"/>
         <field name="productName"/>
-        <field name="qty" readonlyIf="isConsumptionLine"
+        <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"
           onChange="action-method-contract-line-compute-total"/>
         <field name="initialUnitPrice" readonly="true" showIf="initialUnitPrice"/>
-        <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
+          onChange="action-method-contract-line-compute-total"/>
         <panel name="discountPanel" colSpan="12">
           <field name="discountTypeSelect" colSpan="3"
             onChange="action-method-contract-line-compute-total"/>
@@ -126,7 +135,7 @@
 
   <form name="additional-contract-line-form" title="Additional benefit"
     model="com.axelor.apps.contract.db.ContractLine" readonlyIf="isInvoiced"
-    onNew="action-contract-line-group-additional-onnew-onload"
+    onNew="action-contract-line-group-additional-onnew"
     onLoad="action-contract-line-group-additional-onnew-onload">
     <panel-tabs name="mainPanelTab">
       <panel name="informationsPanel" title="Information">
@@ -134,9 +143,10 @@
           onChange="action-contract-line-additional-group-product-onchange"
           domain="self.dtype = 'Product'"/>
         <field name="productName"/>
-        <field name="qty" readonlyIf="isConsumptionLine"
+        <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"
           onChange="action-method-contract-line-compute-total"/>
-        <field name="price" onChange="action-method-contract-line-compute-total"/>
+        <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
+          onChange="action-method-contract-line-compute-total"/>
         <field name="taxLine" canEdit="false"
           onChange="action-method-contract-line-compute-total"/>
         <field name="unit" canEdit="false"/>
@@ -181,14 +191,13 @@
 
   <form name="contract-line-form-for-template" title="Contract Line"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
+    onNew="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
       <field name="productName"/>
-      <field name="qty" readonlyIf="isConsumptionLine"/>
-      <field name="price"/>
+      <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
+      <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="taxLine" canEdit="false"/>
       <field name="unit" canEdit="false"/>
       <field name="isConsumptionLine"
@@ -199,14 +208,13 @@
 
   <form name="additional-contract-line-form-for-template" title="Additional benefit"
     model="com.axelor.apps.contract.db.ContractLine"
-    onNew="action-contract-line-attrs-scale-and-precision"
-    onLoad="action-contract-line-attrs-scale-and-precision">
+    onNew="action-contract-line-attrs-scale-and-precision">
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-contract-template-method-change-product" domain="self.dtype = 'Product'"/>
       <field name="productName"/>
-      <field name="qty"/>
-      <field name="price"/>
+      <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="taxLine" canEdit="false"/>
       <field name="unit" canEdit="false"/>
       <field name="description" colSpan="12" widget="html"/>
@@ -218,21 +226,25 @@
   <action-group name="action-contract-line-group-onnew">
     <action name="action-method-contract-line-fill-default"/>
     <action name="action-contract-line-group-edit-view"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
   </action-group>
 
   <action-group name="action-contract-line-group-edit-view">
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
-    <action name="action-contract-line-attrs-scale-and-precision"/>
     <action name="action-contract-line-method-hide-date-panel"/>
     <action name="action-contract-line-method-hide-is-to-revaluate"/>
     <action name="action-contract-line-group-manage-analytic"/>
   </action-group>
 
   <action-group name="action-contract-line-group-additional-onnew-onload">
-    <action name="action-contract-line-attrs-scale-and-precision"/>
     <action name="action-contract-line-attrs-hide-consumption-line"/>
     <action name="action-contract-line-group-manage-analytic"/>
+  </action-group>
+
+  <action-group name="action-contract-line-group-additional-onnew">
+    <action name="action-contract-line-group-additional-onnew-onload"/>
+    <action name="action-contract-line-attrs-scale-and-precision"/>
   </action-group>
 
   <action-group

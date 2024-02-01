@@ -80,6 +80,7 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
   public void checkAmountForMoveLine(MoveLine moveLine) throws AxelorException {
     if (moveLine.getBudgetDistributionList() != null
         && !moveLine.getBudgetDistributionList().isEmpty()) {
+      BigDecimal totalAmount = BigDecimal.ZERO;
       for (BudgetDistribution budgetDistribution : moveLine.getBudgetDistributionList()) {
         if (budgetDistribution
                 .getAmount()
@@ -92,6 +93,13 @@ public class MoveLineBudgetServiceImpl implements MoveLineBudgetService {
               budgetDistribution.getBudget().getCode(),
               moveLine.getAccount().getCode());
         }
+        totalAmount = totalAmount.add(budgetDistribution.getAmount());
+      }
+      if (totalAmount.compareTo(moveLine.getCredit().add(moveLine.getDebit())) > 0) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_MOVE),
+            moveLine.getAccount().getCode());
       }
     }
   }

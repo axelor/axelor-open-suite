@@ -92,6 +92,9 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void plan(List<OperationOrder> operationOrders) throws AxelorException {
+    if (CollectionUtils.isEmpty(operationOrders)) {
+      return;
+    }
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();
@@ -153,6 +156,9 @@ public class OperationOrderPlanningServiceImpl implements OperationOrderPlanning
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void replan(List<OperationOrder> operationOrders) throws AxelorException {
+    if (CollectionUtils.isEmpty(operationOrders)) {
+      return;
+    }
 
     ManufOrder manufOrder = operationOrders.get(0).getManufOrder();
     Company company = manufOrder.getCompany();

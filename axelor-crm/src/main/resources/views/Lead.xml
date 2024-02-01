@@ -385,7 +385,6 @@
 
   <action-group name="action-group-crm-lead-onnew">
     <action name="action-lead-validate-default-status"/>
-    <action name="action-account-record-new"/>
     <action name="action-lead-default-record-new"/>
   </action-group>
 
@@ -439,6 +438,10 @@
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
     <field name="leadStatus" expr="eval: __config__.app.getApp('crm')?.leadDefaultStatus"/>
     <field name="agency" expr="eval:__user__.activeAgency"/>
+    <field name="company" expr="eval:__user__.activeCompany"
+      if="__user__.activeCompany != null"/>
+    <field name="company" expr="eval:__repo__(Company).all().fetchOne()"
+      if="__user__.activeCompany == null &amp;&amp; __repo__(Company).all().count() == 1"/>
   </action-record>
 
   <action-record name="action-lead-record-init-same-domain-lead"
