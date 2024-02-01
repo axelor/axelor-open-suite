@@ -549,7 +549,7 @@
     <action name="action-manuf-order-method-check-consumed-stock-move"/>
     <action name="action-manuf-order-method-set-stock-location-consumed-sml"/>
     <action name="save"/>
-    <action name="action-manuf-order-method-update-consumed-stock-mov"/>
+    <action name="action-manuf-order-method-update-consumed-stock-move"/>
   </action-group>
 
   <action-method name="action-manuf-order-method-is-to-invoice">
