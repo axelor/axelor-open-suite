@@ -1941,6 +1941,7 @@
 "Invoice.cancelInvoiceNo",,,
 "Invoice.cheque",,,
 "Invoice.clientRef",,,
+"Invoice.coefficient",,,
 "Invoice.customerPartnerSeq",,,
 "Invoice.customerTaxNumber",,,
 "Invoice.date",,,
