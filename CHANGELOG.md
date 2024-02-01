@@ -1,3 +1,33 @@
+## [6.5.27] (2024-02-01)
+
+#### Fixed
+
+* Stock: added quality control default stock location to stock config demo data to avoid exception case.
+* Accounting batch: fixed anomaly generated when running the closing/opening accounts batch with option simulate generated moves option ticked.
+* Project task: fixed the ticket task form views.
+* Expense line: fixed an UI issue where some fields were not required in the form view of kilometric expense line.
+* Accounting batch: added financial account with a technical type 'asset' when we open/close the year accounts.
+* Expense line: fixed a bug where 'Type' was not properly required in kilometric expense line.
+* Sale order: adjusted price and quantity precision according to the user-configured precision settings.
+* Purchase order: fixed an issue where duplicated order did not get their order date updated.
+* Contract: added control on invoice period start date and invoice period end date.
+* Bank reconciliation: hid reverse move with the 'Hide move lines in bank reconciliation'.
+* Debt recovery: fixed debt recovery batch error when no invoice term was found.
+* Leave request: user in not required in an employee anymore to increase leave from batch.
+* Product Details: fixed 'id to load is required for loading' error when stockLocationLine has no unit.
+* Sale order line: fixed an issue where some products were not selectable in a line.
+* Production process line: fixed 'NullPointerException' popup error while opening a line.
+* Expense line: hid analytic panel when the expense is not validated.
+* Invoicing project: invoice lines generated have now a correct unit price.
+* Move: fixed canceled payments preventing moves from being updated.
+* Bank reconciliation: fixed dates management in moveline query.
+* Contract: emptied the contract line when emptying the product.
+* Reconcile: prevent reconciliation if an involved move has a line with a tax account but no tax.
+* Control point: fixed creation from the menu entry.
+* Birt template parameter: fixed a small UI issue by ordering of the list of parameters.
+* Move: batch control move consistency exception management.
+* Expense line: compute total amount and distance depending on kilometric type.
+
 ## [6.5.26] (2024-01-12)
 
 #### Fixed
@@ -1082,6 +1112,7 @@ Opportunity Status: add label-help on some opportunities status in form
 * Opportunity : Remove lead field
 * CRM : remove Target and TargetConfiguration from CRM
 
+[6.5.27]: https://github.com/axelor/axelor-open-suite/compare/v6.5.26...v6.5.27
 [6.5.26]: https://github.com/axelor/axelor-open-suite/compare/v6.5.25...v6.5.26
 [6.5.25]: https://github.com/axelor/axelor-open-suite/compare/v6.5.24...v6.5.25
 [6.5.24]: https://github.com/axelor/axelor-open-suite/compare/v6.5.23...v6.5.24
