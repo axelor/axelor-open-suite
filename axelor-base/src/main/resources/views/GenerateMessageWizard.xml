@@ -9,9 +9,10 @@
 
     <extend target="//panel[@name='mainPanel']/field[@name='language']">
       <replace>
-        <field name="localization" title="Localization" target="com.axelor.apps.base.db.Localization"
-               target-name="name" form-view="localization-form" grid-view="localization-grid"
-               onChange="action-on-change-localization-template" widget="SuggestBox" type="MANY_TO_ONE"/>
+        <field name="localization" title="Localization"
+          target="com.axelor.apps.base.db.Localization" target-name="name"
+          form-view="localization-form" grid-view="localization-grid"
+          onChange="action-on-change-localization-template" widget="SuggestBox" type="MANY_TO_ONE"/>
       </replace>
     </extend>
 
