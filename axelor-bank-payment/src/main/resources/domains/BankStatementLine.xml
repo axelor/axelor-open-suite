@@ -10,8 +10,8 @@
     <date name="operationDate" title="Operation date"/>
     <date name="valueDate" title="Value date"/>
 
-    <decimal name="debit" title="Debit"/>
-    <decimal name="credit" title="Credit"/>
+    <decimal name="debit" title="Debit" precision="20" scale="3"/>
+    <decimal name="credit" title="Credit" precision="20" scale="3"/>
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       index="false"/>
@@ -39,7 +39,8 @@
     <integer name="sequence" title="Sequence"/>
 
     <!-- Used for Bank reconcile process -->
-    <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"/>
+    <decimal name="amountRemainToReconcile" title="Amount remaining to reconcile"
+      precision="20" scale="3"/>
 
     <finder-method name="findByBankStatement" using="bankStatement" all="true"/>
   </entity>

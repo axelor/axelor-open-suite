@@ -6,6 +6,7 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentBankStatementLineAFB120Rep
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.CurrencyScaleServiceBankPayment;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportAbstractService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
@@ -27,6 +28,7 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
   protected BankStatementLineDeleteService bankStatementLineDeleteService;
   protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service;
+  protected CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment;
 
   @Inject
   public BankStatementImportAFB120Service(
@@ -34,13 +36,15 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
       BankPaymentBankStatementLineAFB120Repository bankPaymentBankStatementLineAFB120Repository,
       BankStatementLineDeleteService bankStatementLineDeleteService,
       BankStatementLineFetchService bankStatementLineFetchService,
-      BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service) {
+      BankStatementLineCreateAFB120Service bankStatementLineCreateAFB120Service,
+      CurrencyScaleServiceBankPayment currencyScaleServiceBankPayment) {
     super(bankStatementRepository);
     this.bankPaymentBankStatementLineAFB120Repository =
         bankPaymentBankStatementLineAFB120Repository;
     this.bankStatementLineDeleteService = bankStatementLineDeleteService;
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankStatementLineCreateAFB120Service = bankStatementLineCreateAFB120Service;
+    this.currencyScaleServiceBankPayment = currencyScaleServiceBankPayment;
   }
 
   @Override
@@ -145,13 +149,22 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
               .order("-sequence")
               .fetchOne();
       if (ObjectUtils.notEmpty(finalBankStatementLineAFB120)
-          && (initialBankStatementLineAFB120
-                      .getDebit()
-                      .compareTo(finalBankStatementLineAFB120.getDebit())
+          && (currencyScaleServiceBankPayment
+                      .getScaledValue(
+                          initialBankStatementLineAFB120, initialBankStatementLineAFB120.getDebit())
+                      .compareTo(
+                          currencyScaleServiceBankPayment.getScaledValue(
+                              finalBankStatementLineAFB120,
+                              finalBankStatementLineAFB120.getDebit()))
                   != 0
-              || initialBankStatementLineAFB120
-                      .getCredit()
-                      .compareTo(finalBankStatementLineAFB120.getCredit())
+              || currencyScaleServiceBankPayment
+                      .getScaledValue(
+                          initialBankStatementLineAFB120,
+                          initialBankStatementLineAFB120.getCredit())
+                      .compareTo(
+                          currencyScaleServiceBankPayment.getScaledValue(
+                              finalBankStatementLineAFB120,
+                              finalBankStatementLineAFB120.getCredit()))
                   != 0)) {
         deleteLines = true;
       }
@@ -191,15 +204,23 @@ public class BankStatementImportAFB120Service extends BankStatementImportAbstrac
         for (int i = 0; i < initialBankStatementLineAFB120.size(); i++) {
           deleteLines =
               deleteLines
-                  || (initialBankStatementLineAFB120
-                              .get(i)
-                              .getDebit()
-                              .compareTo(finalBankStatementLineAFB120.get(i).getDebit())
+                  || (currencyScaleServiceBankPayment
+                              .getScaledValue(
+                                  initialBankStatementLineAFB120.get(i),
+                                  initialBankStatementLineAFB120.get(i).getDebit())
+                              .compareTo(
+                                  currencyScaleServiceBankPayment.getScaledValue(
+                                      finalBankStatementLineAFB120.get(i),
+                                      finalBankStatementLineAFB120.get(i).getDebit()))
                           != 0
-                      || initialBankStatementLineAFB120
-                              .get(i)
-                              .getCredit()
-                              .compareTo(finalBankStatementLineAFB120.get(i).getCredit())
+                      || currencyScaleServiceBankPayment
+                              .getScaledValue(
+                                  initialBankStatementLineAFB120.get(i),
+                                  initialBankStatementLineAFB120.get(i).getCredit())
+                              .compareTo(
+                                  currencyScaleServiceBankPayment.getScaledValue(
+                                      finalBankStatementLineAFB120.get(i),
+                                      finalBankStatementLineAFB120.get(i).getCredit()))
                           != 0);
           if (deleteLines) {
             break;
