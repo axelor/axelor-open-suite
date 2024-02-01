@@ -1,3 +1,0 @@
----
-title: "ACCOUNTINGBATCH : Correct anomaly generated when running the closing/opening accounts batch with option simulate generated moves option ticked"
-type: fix

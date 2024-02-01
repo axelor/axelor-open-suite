@@ -1,3 +1,0 @@
----
-title: "Reconcile : Prevent reconcile if an involved move has a line with a tax account but no tax"
-type: fix

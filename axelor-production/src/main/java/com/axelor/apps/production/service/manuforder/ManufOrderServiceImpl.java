@@ -122,6 +122,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   protected MetaFiles metaFiles;
   protected PartnerRepository partnerRepository;
   protected BillOfMaterialService billOfMaterialService;
+  protected StockMoveService stockMoveService;
 
   @Inject
   public ManufOrderServiceImpl(
@@ -140,7 +141,8 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       UnitConversionService unitConversionService,
       MetaFiles metaFiles,
       PartnerRepository partnerRepository,
-      BillOfMaterialService billOfMaterialService) {
+      BillOfMaterialService billOfMaterialService,
+      StockMoveService stockMoveService) {
     this.sequenceService = sequenceService;
     this.operationOrderService = operationOrderService;
     this.manufOrderPlanService = manufOrderPlanService;
@@ -157,6 +159,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.metaFiles = metaFiles;
     this.partnerRepository = partnerRepository;
     this.billOfMaterialService = billOfMaterialService;
+    this.stockMoveService = stockMoveService;
   }
 
   @Override
@@ -817,7 +820,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           .getStockMoveLineList()
           .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));
     }
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     // update stock location by cancelling then planning stock move.
     stockMoveService.cancel(stockMove);
     stockMoveService.goBackToDraft(stockMove);
@@ -1442,6 +1444,40 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           manufOrder,
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(ProductionExceptionMessage.CHECK_BOM_AND_PROD_PROCESS));
+    }
+  }
+
+  @Override
+  public void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getProducedStockMoveLineList() != null) {
+      StockMove stockMove = getProducedStockMoveFromManufOrder(manufOrder);
+
+      for (StockMoveLine stockMoveLine : manufOrder.getProducedStockMoveLineList()) {
+        if (stockMoveLine.getFromStockLocation() == null) {
+          stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+        }
+        if (stockMoveLine.getToStockLocation() == null) {
+          stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+        }
+      }
+    }
+  }
+
+  @Override
+  public void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getConsumedStockMoveLineList() != null) {
+      StockMove stockMove = getConsumedStockMoveFromManufOrder(manufOrder);
+
+      for (StockMoveLine stockMoveLine : manufOrder.getConsumedStockMoveLineList()) {
+        if (stockMoveLine.getFromStockLocation() == null) {
+          stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+        }
+        if (stockMoveLine.getToStockLocation() == null) {
+          stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+        }
+      }
     }
   }
 }
