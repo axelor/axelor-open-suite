@@ -1,0 +1,11 @@
+---
+title: "PARTNER : improve registration number management"
+type: feature
+description: |
+  On a partner entity, a designated attribute named "registrationCode" is employed to encapsulate a company's registration identifier. 
+  Specifically, in the context of France, this identifier corresponds to the SIRET, and the validation procedure for this identifier
+  is statically coded to accommodate the unique validation requirements in France.
+  
+  On a Partner based on the business country for company registration number template has been introduced to accommodate registration numbers. 
+  This template incorporates a validation selection, facilitating the designation of the appropriate validation class for a given country. 
+  For instance, the selection of the class responsible for validating French registration numbers is denoted by "RegistrationNumberValidationFRA."

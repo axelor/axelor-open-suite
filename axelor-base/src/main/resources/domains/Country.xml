@@ -18,6 +18,8 @@
 
     <many-to-one name="addressTemplate" ref="com.axelor.apps.base.db.AddressTemplate"
       massUpdate="true" required="true"/>
+    <many-to-one name="registrationNumberTemplate"
+      ref="com.axelor.apps.base.db.RegistrationNumberTemplate" title="Registration number template"/>
 
     <many-to-one name="citizenship" title="Citizenship"
       ref="com.axelor.apps.base.db.Citizenship"/>
