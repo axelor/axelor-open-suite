@@ -19,7 +19,7 @@ public class TimesheetLineUpdateServiceImpl implements TimesheetLineUpdateServic
     this.timesheetLineService = timesheetLineService;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   @Override
   public void updateTimesheetLine(
       TimesheetLine timesheetLine,

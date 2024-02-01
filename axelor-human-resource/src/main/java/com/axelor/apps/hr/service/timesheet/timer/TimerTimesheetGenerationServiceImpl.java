@@ -30,7 +30,7 @@ public class TimerTimesheetGenerationServiceImpl implements TimerTimesheetGenera
     this.timesheetRepository = timesheetRepository;
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   @Override
   public Timesheet addTimersToTimesheet(List<TSTimer> timerList, Timesheet timesheet)
       throws AxelorException {

@@ -81,7 +81,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void validate(Timesheet timesheet) throws AxelorException {
     timesheetWorkflowCheckService.validateCheck(timesheet);
 
@@ -121,7 +121,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void refuse(Timesheet timesheet) throws AxelorException {
     timesheetWorkflowCheckService.refuseCheck(timesheet);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_REFUSED);
@@ -130,7 +130,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
         appHumanResourceService.getTodayDateTime(timesheet.getCompany()).toLocalDateTime());
   }
 
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   @Override
   public void refuseAndSendRefusalEmail(Timesheet timesheet, String groundForRefusal)
       throws AxelorException, JSONException, IOException, ClassNotFoundException {
@@ -163,7 +163,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = Exception.class)
   public void cancel(Timesheet timesheet) throws AxelorException {
     timesheetWorkflowCheckService.cancelCheck(timesheet);
     timesheet.setStatusSelect(TimesheetRepository.STATUS_CANCELED);
