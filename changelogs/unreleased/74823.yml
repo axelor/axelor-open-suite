@@ -1,3 +1,3 @@
 ---
-title: "ManufOrder: Fixed a error that occured when adding manually a produced stock move line related to stock locations"
+title: "ManufOrder: Fixed a error that occured when adding manually a produced/consumed stock move line related to stock locations"
 type: fix

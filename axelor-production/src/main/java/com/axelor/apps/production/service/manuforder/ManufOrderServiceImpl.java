@@ -1438,4 +1438,21 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
   }
+
+  @Override
+  public void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException {
+
+    if (manufOrder.getConsumedStockMoveLineList() != null) {
+      StockMove stockMove = getConsumedStockMoveFromManufOrder(manufOrder);
+
+      for (StockMoveLine stockMoveLine : manufOrder.getConsumedStockMoveLineList()) {
+        if (stockMoveLine.getFromStockLocation() == null) {
+          stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+        }
+        if (stockMoveLine.getToStockLocation() == null) {
+          stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+        }
+      }
+    }
+  }
 }

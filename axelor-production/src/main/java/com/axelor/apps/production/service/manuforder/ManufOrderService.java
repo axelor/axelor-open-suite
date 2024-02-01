@@ -41,6 +41,8 @@ public interface ManufOrderService {
 
   void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
 
+  void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
+
   public interface ManufOrderOriginType {}
 
   public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
