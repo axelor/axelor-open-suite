@@ -1,3 +1,43 @@
+## [7.1.15] (2024-02-01)
+
+#### Fixed
+
+* Stock: added quality control default stock location to stock config demo data to avoid exception case.
+* Accounting batch: fixed anomaly generated when running the closing/opening accounts batch with option simulate generated moves option ticked.
+* Project task: fixed the ticket task form views.
+* Expense line: fixed an UI issue where some fields were not required in the form view of kilometric expense line.
+* Move/MassEntry: fixed critical error when we create a move or mass entry move without company currency.
+* Accounting batch: added financial account with a technical type 'asset' when we open/close the year accounts.
+* Quantity: fixed quantity fields in Invoice line/Purchase order line/Sale order line/Product company/Supplier catalog grid view so they display the configured number of decimals instead of 2.
+* Expense line: fixed a bug where 'Type' was not properly required in kilometric expense line.
+* Sale order: adjusted price and quantity precision according to the user-configured precision settings.
+* Manufacturing order: fixed a error that occured when adding manually a produced/consumed stock move line.
+* Purchase order: fixed an issue where duplicated order did not get their order date updated.
+* Contract: added control on invoice period start date and invoice period end date.
+* Move line: hid VAT System when journal is not purchases or sales and set it not editable when account is not charge or income.
+* Bank reconciliation: hid reverse move with the 'Hide move lines in bank reconciliation'.
+* Debt recovery: fixed debt recovery batch error when no invoice term was found.
+* Partner: make the 'Default partner status' field required only when the 'Manage status on prospect' option is checked.
+* Leave request: user in not required in an employee anymore to increase leave from batch.
+* Product Details: fixed 'id to load is required for loading' error when stockLocationLine has no unit.
+* Sale order line: fixed an issue where some products were not selectable in a line.
+* Production process line: fixed 'NullPointerException' popup error while opening a line.
+* Expense line: hid analytic panel when the expense is not validated.
+* Budget Invoice/Move/Order: fixed the error message when the budget amount exceed the line amount.
+* Move: fixed due dates not computed when we change the move date.
+* Invoicing project: invoice lines generated have now a correct unit price.
+* Bank reconciliation: fixed dates management in moveline query.
+* Accounting move mass entry: fixed an issue where the journal was readonly after changing the company.
+* Move: fixed canceled payments preventing moves from being updated.
+* Contract: emptied the contract line when emptying the product.
+* Reconcile: prevent reconciliation if an involved move has a line with a tax account but no tax.
+* Invoice term: set PFP validator user to invoice one at invoice PFP validation.
+* Move template: fixed demo data.
+* Control point: fixed creation from the menu entry.
+* Birt template parameter: fixed a small UI issue by ordering of the list of parameters.
+* Move: batch control move consistency exception management.
+* Expense line: compute total amount and distance depending on kilometric type.
+
 ## [7.1.14] (2024-01-12)
 
 #### Fixed
@@ -801,6 +841,7 @@ it will use the OSRM API by default.
 * Simplified moves: removed in favor of mass entry.
 
 
+[7.1.15]: https://github.com/axelor/axelor-open-suite/compare/v7.1.14...v7.1.15
 [7.1.14]: https://github.com/axelor/axelor-open-suite/compare/v7.1.13...v7.1.14
 [7.1.13]: https://github.com/axelor/axelor-open-suite/compare/v7.1.12...v7.1.13
 [7.1.12]: https://github.com/axelor/axelor-open-suite/compare/v7.1.11...v7.1.12
