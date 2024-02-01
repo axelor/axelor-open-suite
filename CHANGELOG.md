@@ -1,3 +1,23 @@
+## [6.3.38] (2024-02-01)
+
+#### Fixed
+
+* Project task: fixed the ticket task form views.
+* Expense line: fixed an UI issue where some fields were not required in the form view of kilometric expense line.
+* Expense line: fixed a bug where 'Type' was not properly required in kilometric expense line.
+* Sale order: adjusted price and quantity precision according to the user-configured precision settings.
+* Purchase order: fixed an issue where duplicated order did not get their order date updated.
+* Leave request: user in not required in an employee anymore to increase leave from batch.
+* Product Details: fixed 'id to load is required for loading' error when stockLocationLine has no unit.
+* Sale order line: fixed an issue where some products were not selectable in a line.
+* Production process line: fixed 'NullPointerException' popup error while opening a line.
+* Expense line: hid analytic panel when the expense is not validated.
+* Invoicing project: invoice lines generated have now a correct unit price.
+* Bank reconciliation: fixed dates management in moveline query.
+* Contract: Empty the contract line when emptying the product.
+* Control point: fixed creation from the menu entry.
+* Birt template parameter: fixed a small UI issue by ordering of the list of parameters.
+
 ## [6.3.37] (2024-01-12)
 
 #### Fixed
@@ -1008,6 +1028,7 @@ If you had modules calling these methods, you will need to update them so they c
 * Account Config: Remove Invoices button and associate action from account config
 * Stock correction: Removed unused future and reserved quantity from database.
 
+[6.3.38]: https://github.com/axelor/axelor-open-suite/compare/v6.3.37...v6.3.38
 [6.3.37]: https://github.com/axelor/axelor-open-suite/compare/v6.3.36...v6.3.37
 [6.3.36]: https://github.com/axelor/axelor-open-suite/compare/v6.3.35...v6.3.36
 [6.3.35]: https://github.com/axelor/axelor-open-suite/compare/v6.3.34...v6.3.35
