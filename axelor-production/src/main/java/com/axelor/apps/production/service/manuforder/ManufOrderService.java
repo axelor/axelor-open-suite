@@ -39,6 +39,10 @@ public interface ManufOrderService {
   public static int DEFAULT_PRIORITY_INTERVAL = 10;
   public static boolean IS_TO_INVOICE = false;
 
+  void setProducedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
+
+  void setConsumedStockMoveLineStockLocation(ManufOrder manufOrder) throws AxelorException;
+
   public interface ManufOrderOriginType {}
 
   public enum ManufOrderOriginTypeProduction implements ManufOrderOriginType {
