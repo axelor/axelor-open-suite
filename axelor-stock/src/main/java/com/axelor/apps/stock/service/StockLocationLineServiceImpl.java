@@ -795,13 +795,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   }
 
   @Override
-  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap) {
+  public void updateWap(StockLocationLine stockLocationLine, BigDecimal wap)
+      throws AxelorException {
     updateWap(stockLocationLine, wap, null);
   }
 
   @Override
   public void updateWap(
-      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine) {
+      StockLocationLine stockLocationLine, BigDecimal wap, StockMoveLine stockMoveLine)
+      throws AxelorException {
 
     LocalDateTime dateT =
         appBaseService
@@ -828,7 +830,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       BigDecimal wap,
       StockMoveLine stockMoveLine,
       LocalDate date,
-      String origin) {
+      String origin)
+      throws AxelorException {
     if (origin == null) {
       origin =
           Optional.ofNullable(stockMoveLine)
@@ -862,7 +865,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       StockMoveLine stockMoveLine,
       LocalDateTime dateT,
       String origin,
-      String typeSelect) {
+      String typeSelect)
+      throws AxelorException {
 
     if (origin == null) {
       origin =
