@@ -21,7 +21,7 @@
     <field name="product.code" width="120"/>
     <field name="productName"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
     <button name="allocateAll"
@@ -51,6 +51,7 @@
     <field name="product.productTypeSelect" hidden="true"/>
     <field name="hasTree" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-editable-grid" title="SO lines"
@@ -58,6 +59,7 @@
 
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
+    <field name="typeSelect" onChange="action-sale-order-line-method-empty-line"/>
     <field name="product" canEdit="false"
       onChange="action-group-sale-saleorderline-product-onchange"
       onSelect="action-sale-order-line-method-domain-product" form-view="product-form"
@@ -71,10 +73,16 @@
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
       validIf="$qtyValid != false"/>
     <field name="price" colSpan="3"
-      readonlyIf="deliveryState == 3 || $get(saleOrder.priceList.nonNegotiable)"
+      readonlyIf="deliveryState == 3 || saleOrder.priceList.nonNegotiable"
       onChange="action-sale-order-line-method-onchange-price,action-sale-order-line-method-compute,action-sale-order-line-method-compute-analytic-distribution"
       hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="discountTypeSelect" colSpan="3" readonlyIf="$nonNegotiable"
+      onChange="action-sale-order-line-group-discount-type-select-onchange"/>
+    <field name="discountAmount" colSpan="3"
+      readonlyIf="$nonNegotiable || discountTypeSelect == 0"
+      validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
+      onChange="action-sale-order-line-group-discount-amount-onchange"/>
     <field name="taxLine" canEdit="false" colSpan="6"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
       onChange="action-group-sale-saleorderline-tax-line-onchange"
@@ -88,6 +96,8 @@
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite color="danger" strong="true" if="availableStatusSelect == 2"/>
     </field>
+    <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
+    <field name="$nonNegotiable" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-menu-grid" title="SO lines"
@@ -100,7 +110,7 @@
     <field name="productName"/>
     <field name="saleOrder.currency" hidden="true"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
-    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="qty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="deliveredQty" aggregate="sum" x-scale="2"/>
     <field name="reservedQty"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" aggregate="sum" x-scale="2"/>
@@ -110,6 +120,7 @@
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
     <field name="saleOrder.confirmationDateTime"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="sale-order-line-invoice-grid" title="SO lines"
@@ -560,7 +571,6 @@
     <view type="grid" name="stock-move-line-sale-order-line-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.saleOrderLine.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-view name="action-sale-order-line-view-project-tasks" title="Related tasks"
@@ -1024,6 +1034,15 @@
     <attribute name="domain" for="project"
       expr="eval: &quot; self.clientPartner.id = ${saleOrder.clientPartner?.id} AND self.isBusinessProject = true &quot;"
       if="saleOrder != null &amp;&amp; __parent__?._model != 'com.axelor.apps.sale.db.SaleOrder'"/>
+  </action-attrs>
+
+  <action-group name="action-sale-order-line-group-editable-onnew">
+    <action name="action-sale-order-line-attrs-onnew-focus"/>
+    <action name="action-sale-order-line-record-non-negotiable"/>
+  </action-group>
+
+  <action-attrs name="action-sale-order-line-attrs-onnew-focus">
+    <attribute for="product" name="focus" expr="true"/>
   </action-attrs>
 
 </object-views>

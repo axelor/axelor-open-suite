@@ -40,6 +40,13 @@
     </panel>
   </form>
 
+  <form id="production-product-form" name="product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="/">
+      <attribute name="onNew" value="action-product-group-production-onnew"/>
+    </extend>
+  </form>
+
   <action-view name="action-product-view-production-process"
     title="Production processes" model="com.axelor.apps.production.db.ProdProcess">
     <view type="grid" name="prod-process-grid"/>
@@ -110,5 +117,15 @@
   <action-method name="action-method-production-open-product-tree">
     <call class="com.axelor.apps.production.web.ProductController" method="openProductTree"/>
   </action-method>
+
+  <action-method name="action-product-method-bom-import-line-product-onnew">
+    <call class="com.axelor.apps.production.web.ProductController"
+      method="bomImportLineProductOnNew"/>
+  </action-method>
+
+  <action-group name="action-product-group-production-onnew">
+    <action name="action-group-base-product-onnew"/>
+    <action name="action-product-method-bom-import-line-product-onnew"/>
+  </action-group>
 
 </object-views>

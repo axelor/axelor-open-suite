@@ -55,10 +55,10 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   @Override
   protected void checkErrors(List<StockMove> stockMoveList, StringJoiner errors) {
     super.checkErrors(stockMoveList, errors);
-    if (!checkAllSame(stockMoveList, StockMove::getSaleOrderSet)) {
+    if (!checkAllSame(stockMoveList, StockMove::getSaleOrder)) {
       errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_SALE_ORDER));
     }
-    if (!checkAllSame(stockMoveList, StockMove::getPurchaseOrderSet)) {
+    if (!checkAllSame(stockMoveList, StockMove::getPurchaseOrder)) {
       errors.add(I18n.get(StockExceptionMessage.STOCK_MOVE_MERGE_ERROR_PURCHASE_ORDER));
     }
   }
@@ -75,7 +75,7 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
     mergedStockMove.setDeliveryCondition(stockMove.getDeliveryCondition());
-    mergedStockMove.setSaleOrderSet(stockMove.getSaleOrderSet());
-    mergedStockMove.setPurchaseOrderSet(stockMove.getPurchaseOrderSet());
+    mergedStockMove.setSaleOrder(stockMove.getSaleOrder());
+    mergedStockMove.setPurchaseOrder(stockMove.getPurchaseOrder());
   }
 }

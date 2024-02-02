@@ -20,7 +20,6 @@
     <domain>self.isContact = false AND self.isSupplier = true</domain>
     <context name="_isSupplier" expr="true"/>
     <context name="_domain" expr="self.isContact = false AND self.isSupplier = true"/>
-    <context name="json-enhance" expr="eval:true"/>
   </action-view>
 
   <menuitem name="sc-root-purchase-contacts" parent="sc-root-purchase" order="200"

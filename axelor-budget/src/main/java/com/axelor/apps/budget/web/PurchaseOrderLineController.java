@@ -63,26 +63,6 @@ public class PurchaseOrderLineController {
     response.setAttr("account", "domain", domain);
   }
 
-  public void setAccount(ActionRequest request, ActionResponse response) {
-    Context context = request.getContext();
-    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-    if (context.getParent() != null) {
-      Set<Account> accountsSet =
-          purchaseOrderLine.getBudget() != null
-              ? purchaseOrderLine.getBudget().getAccountSet()
-              : null;
-      response.setValue(
-          "account", !CollectionUtils.isEmpty(accountsSet) ? accountsSet.iterator().next() : null);
-    }
-    if (!Beans.get(PurchaseOrderLineBudgetService.class)
-        .addBudgetDistribution(purchaseOrderLine)
-        .isEmpty()) {
-      response.setValue(
-          "budgetDistibutionList",
-          Beans.get(PurchaseOrderLineBudgetService.class).addBudgetDistribution(purchaseOrderLine));
-    }
-  }
-
   public void validateBudgetLinesAmount(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
@@ -202,10 +182,24 @@ public class PurchaseOrderLineController {
             Beans.get(PurchaseOrderLineBudgetService.class)
                 .getBudgetDomain(purchaseOrderLine, purchaseOrder);
       }
-
       response.setAttr("budget", "domain", query);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeBudgetDistributionSumAmount(ActionRequest request, ActionResponse response) {
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
+    if (purchaseOrder == null && request.getContext().getParent() != null) {
+      purchaseOrder = request.getContext().getParent().asType(PurchaseOrder.class);
+    }
+
+    Beans.get(PurchaseOrderLineBudgetService.class)
+        .computeBudgetDistributionSumAmount(purchaseOrderLine, purchaseOrder);
+
+    response.setValue(
+        "budgetDistributionSumAmount", purchaseOrderLine.getBudgetDistributionSumAmount());
+    response.setValue("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
   }
 }

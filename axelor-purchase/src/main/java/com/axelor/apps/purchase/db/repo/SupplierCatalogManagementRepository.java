@@ -28,6 +28,7 @@ public class SupplierCatalogManagementRepository extends SupplierCatalogReposito
     json.put(
         "$nbDecimalDigitForUnitPrice",
         Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
 
     return super.populate(json, context);
   }

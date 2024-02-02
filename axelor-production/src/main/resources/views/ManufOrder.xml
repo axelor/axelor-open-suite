@@ -107,12 +107,38 @@
           if="__config__.app.getApp('production')?.getManageWorkshop()"
           domain="self.company = :company and self.typeSelect = 1 and self.isWorkshop = true"/>
         <field name="$viewerIsOutsourcing" showTitle="false" readonly="true"
-          showIf="$readonly()" colSpan="2" depends="prodProcess.outsourcing">
+          showIf="$readonly()" colSpan="2" depends="outsourcing">
           <viewer>
 					<![CDATA[
 						<>
 							<Box d="flex" justifyContent="flex-end">
-								{prodProcess.outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+							</Box>
+						</>
+					]]>
+          </viewer>
+        </field>
+        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
+        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
+          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
+          <viewer>
+            <![CDATA[
+						<>
+							<Box d="flex" justifyContent="flex-end">
+								{outsourcing && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Outsourced')}</Badge>}
+							</Box>
+						</>
+					]]>
+          </viewer>
+        </field>
+        <field name="$areLinesOutsourced" hidden="true" type="boolean"/>
+        <field name="$viewerAreLinesOutsourced" showTitle="false" readonly="true"
+          showIf="$readonly()" colSpan="2" depends="$areLinesOutsourced">
+          <viewer>
+            <![CDATA[
+						<>
+							<Box d="flex" justifyContent="flex-end">
+								{$areLinesOutsourced && <Badge style={{ backgroundColor: "#E0A83C" }}>{_t('Subcontracting service')}</Badge>}
 							</Box>
 						</>
 					]]>
@@ -136,7 +162,12 @@
           grid-view="prod-process-grid" form-view="prod-process-form" colSpan="3" canEdit="false"
           edit-window="blank"/>
         <field name="outsourcing" colSpan="3"
-          onChange="action-production-attrs-hide-purchaseOrder"/>
+          hideIf="prodProcess.prodProcessLinesOutsourcable
+           || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
+          readonlyIf="prodProcess.outsourcing"
+          onChange="action-manuf-order-method-set-operation-orders-outsourcing"/>
+        <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
+          domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
           readonly="true" hideIf="statusSelect != 1"/>
         <field name="product" canEdit="false" required="true"
@@ -157,8 +188,6 @@
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult"
           form-view="manuf-order-form" grid-view="manuf-order-grid" canNew="false" canEdit="false"
           canView="true"/>
-        <field name="purchaseOrder" form-view="purchase-order-form"
-          grid-view="purchase-order-grid" canEdit="false" canSelect="false" showIf="false"/>
         <field name="isConsProOnOperation" hidden="true"/>
         <field name="isToInvoice" onChange="save,action-manuf-order-method-is-to-invoice"
           if-module="axelor-business-production"
@@ -167,14 +196,18 @@
           if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
           hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0"
-          onClick="save,action-manuf-order-method-pre-fill-operations"/>
+          onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
         <field name="product.isModel" hidden="true"/>
         <field name="typeSelect" hidden="true"/>
+        <field name="prodProcess.outsourcing" hidden="true"/>
+        <field name="prodProcess.outsourcable" hidden="true"/>
+        <field name="prodProcess.prodProcessLinesOutsourcable" hidden="true"/>
       </panel>
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" icon="fa-calendar" title="Plan" colSpan="12"
           showIf="statusSelect == 1 || statusSelect == 2"
-          onClick="save,action-manuf-order-method-plan" hidden="true"/>
+          onClick="save,action-manuf-order-method-plan,action-manuf-order-method-update-lines-outsourced"
+          hidden="true"/>
         <button name="startBtn" icon="fa-play" title="Start" colSpan="12"
           showIf="statusSelect == 3" onClick="save,action-manuf-order-method-start" hidden="true"/>
         <button name="pauseBtn" icon="fa-pause" title="Pause" colSpan="12"
@@ -191,6 +224,9 @@
           hidden="true"/>
         <button name="cancelBtn" icon="fa-times-circle" title="Cancel" colSpan="12"
           showIf="statusSelect != 2" onClick="save,action-manuf-order-view-cancel" hidden="true"/>
+        <button name="declareOutsourcedDelieveryBtn" title="Outsource declaration"
+          hidden="true" showIf="(outsourcing || $areLinesOutsourced) &amp;&amp; statusSelect >= 2"
+          colSpan="12" onClick="action-manuf-order-view-declare-delivery"/>
         <button name="draftBtn" icon="fa-eraser " title="Return to draft status" colSpan="12"
           showIf="statusSelect == 2" onClick="action-manuf-order-record-set-status-to-draft,save"
           hidden="true"/>
@@ -199,7 +235,8 @@
     <panel-tabs name="mainPanelTab" colSpan="4">
       <panel-related name="operationOrderListPanel" field="operationOrderList"
         readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
-        grid-view="operation-order-grid" canNew="false"/>
+        grid-view="operation-order-grid" canNew="false"
+        onChange="action-manuf-order-method-update-lines-outsourced"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -266,7 +303,7 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-related name="consumedStockMoveLineListPanel"
           field="consumedStockMoveLineList"
-          onChange="action-manuf-order-method-check-consumed-stock-move,save,action-manuf-order-method-update-consumed-stock-move"
+          onChange="action-manuf-order-group-on-change-consumed-stock-move-line"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid"/>
         <panel name="allocationToolsPanel" colSpan="12"
@@ -327,7 +364,7 @@
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
         <panel-related name="producedStockMoveLineListPanel"
           field="producedStockMoveLineList"
-          onChange="action-manuf-order-method-check-produced-stock-move,save,action-manuf-order-method-update-produced-stock-move"
+          onChange="action-manuf-order-group-on-change-produced-stock-move-line"
           readonlyIf="statusSelect == 6" colSpan="12" form-view="stock-move-line-production-form"
           grid-view="stock-move-line-produced-production-grid"/>
         <panel-related name="wasteProdProductListPanel" field="wasteProdProductList"
@@ -365,6 +402,12 @@
         if="__config__.app.getApp('production')?.getManageResidualProductOnBom()">
         <field name="billOfMaterial.prodResidualProductList" title="Residual products"
           colSpan="12" grid-view="prod-residual-product-grid" form-view="prod-residual-product-form"/>
+      </panel>
+      <panel name="outsourcingPanel" title="Outsourcing"
+        showIf="outsourcing || $areLinesOutsourced">
+        <panel-related field="purchaseOrderSet" colSpan="12"/>
+        <panel-related field="outsourcingStockMoveList" colSpan="12"
+          title="Outgoing outsource stock move"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
@@ -458,7 +501,7 @@
     name="multi-level-generated-draft-manuf-order-wizard-form"
     onNew="action-manuf-order-attrs-multi-level-wizard-onnew">
     <panel name="mainPanel">
-      <field name="$draftManufOrderList" type="one-to-many"
+      <field name="$draftManufOrderList" type="one-to-many" title="Manufacturing orders"
         target="com.axelor.apps.production.db.ManufOrder" canNew="false" canEdit="false"
         canRemove="false" colSpan="12" grid-view="generated-manuf-order-grid"/>
 
@@ -467,6 +510,7 @@
         onClick="action-manuf-order-validate-order-selection,com.axelor.apps.production.web.ManufOrderController:removeUnselectedMOs,close"/>
     </panel>
   </form>
+
 
   <grid name="generated-manuf-order-grid" title="Manufacturing orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq" canNew="false"
@@ -478,6 +522,35 @@
     <button name="openManufOrderBtn" title="Manufacturing Order" icon="fa-file-text-o"
       onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
+
+
+  <form model="com.axelor.apps.production.db.ManufOrder" title="Outsource declaration"
+    name="manuf-order-outsource-declaration-form"
+    onNew="action-manuf-order-method-outsource-declaration-form-on-new">
+    <panel name="mainPanel">
+      <panel-related field="$prodProductsList" type="one-to-many"
+        target="com.axelor.apps.production.db.ProdProduct"
+        grid-view="prod-product-consume-manuf-order-grid" form-view="prod-product-form"
+        orderBy="product.code" x-selector="checkbox" colSpan="12" canNew="false" canEdit="false"
+        canRemove="false" title="Products"/>
+      <field name="$partnerToDeclare" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" title="Partner" required="true" colSpan="4"/>
+
+      <button name="declareDeliveryBtn" title="Declare delivery to outsource partner"
+        onClick="action-manuf-order-method-declare-delivery,close" colOffset="5" colSpan="4"/>
+    </panel>
+  </form>
+
+
+  <action-method name="action-manuf-order-method-outsource-declaration-form-on-new">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="outsourceDeclarationOnNew"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-declare-delivery">
+    <call class="com.axelor.apps.production.web.ManufOrderController" method="declareDelivery"/>
+  </action-method>
+
 
   <action-attrs name="action-manuf-order-attrs-multi-level-wizard-onnew">
     <attribute name="value" for="$draftManufOrderList" expr="eval:_moList"/>
@@ -518,6 +591,17 @@
     <context name="_xApplicationType" expr="eval: _model"/>
   </action-view>
 
+  <action-view name="action-manuf-order-view-declare-delivery"
+    title="Outsource declaration" model="com.axelor.apps.production.db.ManufOrder">
+    <view type="form" name="manuf-order-outsource-declaration-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_manufOrderId" expr="eval: __self__?.id"/>
+  </action-view>
+
   <action-record name="action-manuf-order-record-set-status-to-draft"
     model="com.axelor.apps.production.db.ManufOrder">
     <field name="statusSelect" expr="eval: __repo__(ManufOrder).STATUS_DRAFT"/>
@@ -538,6 +622,21 @@
   <action-method name="action-manuf-order-method-compute-cost-price">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="computeCostPrice"/>
   </action-method>
+
+
+  <action-group name="action-manuf-order-group-on-change-produced-stock-move-line">
+    <action name="action-manuf-order-method-check-produced-stock-move"/>
+    <action name="action-manuf-order-method-set-stock-location-produced-sml"/>
+    <action name="save"/>
+    <action name="action-manuf-order-method-update-produced-stock-move"/>
+  </action-group>
+
+  <action-group name="action-manuf-order-group-on-change-consumed-stock-move-line">
+    <action name="action-manuf-order-method-check-consumed-stock-move"/>
+    <action name="action-manuf-order-method-set-stock-location-consumed-sml"/>
+    <action name="save"/>
+    <action name="action-manuf-order-method-update-consumed-stock-move"/>
+  </action-group>
 
   <action-method name="action-manuf-order-method-is-to-invoice">
     <call class="com.axelor.apps.businessproduction.web.ManufOrderBusinessController"
@@ -660,6 +759,7 @@
     <action name="action-manuf-order-attrs-scale-and-precision"/>
     <action name="action-production-attrs-hide-purchaseOrder"/>
     <action name="action-manuf-order-method-compute-producible-qty" if="statusSelect == 1"/>
+    <action name="action-manuf-order-method-update-lines-outsourced"/>
   </action-group>
 
   <action-attrs name="action-production-attrs-hide-purchaseOrder">
@@ -669,6 +769,8 @@
 
   <action-attrs name="action-production-attrs-set-outsourcing-value">
     <attribute name="value" for="outsourcing" expr="eval: prodProcess?.outsourcing"/>
+    <attribute name="value" for="outsourcingPartner"
+      expr="eval: prodProcess?.subcontractor" if="prodProcess?.outsourcing"/>
   </action-attrs>
 
   <action-group name="action-manuf-order-group-finish">
@@ -706,6 +808,16 @@
     <call class="com.axelor.apps.production.web.ManufOrderController" method="start"/>
   </action-method>
 
+  <action-method name="action-manuf-order-method-set-stock-location-produced-sml">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setProducedStockMoveLineStockLocation"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-set-stock-location-consumed-sml">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setConsumedStockMoveLineStockLocation"/>
+  </action-method>
+
   <action-method name="action-manuf-order-method-pause">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="pause"/>
   </action-method>
@@ -728,6 +840,11 @@
 
   <action-method name="action-manuf-order-method-part-finish">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="partialFinish"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-update-lines-outsourced">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="updateLinesOutsourced"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-pre-fill-operations">
@@ -805,7 +922,6 @@
     <view type="grid" name="stock-move-line-consumed-production-grid"/>
     <view type="form" name="stock-move-line-production-form"/>
     <domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
-    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-attrs name="action-manuf-order-reset">
@@ -880,6 +996,12 @@
   <action-method name="action-manuf-order-method-check-merge-values"
     model="com.axelor.apps.production.db.ManufOrder">
     <call class="com.axelor.apps.production.web.ManufOrderController" method="checkMergeValues"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"
+    model="com.axelor.apps.production.db.ManufOrder">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="setOperationOrdersOutsourcing"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-generate-merge-manuf-order"
