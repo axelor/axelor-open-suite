@@ -105,9 +105,4 @@
     <option value="2">Product</option>
   </selection>
 
-  <selection name="line.invoicing.mode.select">
-    <option value="1">Directly</option>
-    <option value="2">After delivery</option>
-  </selection>
-
 </object-views>
