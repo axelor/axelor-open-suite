@@ -760,13 +760,16 @@ public class ManufOrderStockMoveService {
       ManufOrder manufOrder, Company company) throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
+    Boolean outsourcing = manufOrder.getOutsourcing();
+    StockLocation outsourcingStockLocation =
+        manufOrder.getProdProcess().getOutsourcingStockLocation();
     StockLocation virtualStockLocation =
-        manufOrder.getOutsourcing()
-            ? manufOrder.getProdProcess().getProducedProductStockLocation()
+        outsourcing && outsourcingStockLocation != null
+            ? outsourcingStockLocation
             : stockConfigProductionService.getProductionVirtualStockLocation(
                 stockConfig, manufOrder.getProdProcess().getOutsourcing());
 
-    if (virtualStockLocation == null && manufOrder.getOutsourcing()) {
+    if (virtualStockLocation == null && outsourcing) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(
@@ -794,7 +797,11 @@ public class ManufOrderStockMoveService {
       ManufOrder manufOrder, Company company) throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
-    return stockConfigProductionService.getProductionVirtualStockLocation(
-        stockConfig, manufOrder.getProdProcess().getOutsourcing());
+    StockLocation outsourcingStockLocation =
+        manufOrder.getProdProcess().getOutsourcingStockLocation();
+    return manufOrder.getOutsourcing() && outsourcingStockLocation != null
+        ? outsourcingStockLocation
+        : stockConfigProductionService.getProductionVirtualStockLocation(
+            stockConfig, manufOrder.getProdProcess().getOutsourcing());
   }
 }
