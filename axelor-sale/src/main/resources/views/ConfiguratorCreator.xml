@@ -22,13 +22,9 @@
       showIf="!isActive &amp;&amp; attributes.length &gt; 0 &amp;&amp; (configuratorProductFormulaList.length + configuratorSOLineFormulaList.length) &gt; 0">
       <!--it does not matter which field is used here, as long as it is not a boolean -->
       <field name="name" readonly="true" showTitle="false">
-        <viewer><![CDATA[
-
-			 			<h4>
-			             <span class="label label-important" x-translate>Changes were made to the configurator creator. Please activate the configurator creator to use it.</span>
-			           </h4>
-
-					]]></viewer>
+        <viewer>
+          <![CDATA[<><Badge bg="danger">{_t('Changes were made to the configurator creator. Please activate the configurator creator to use it.')}</Badge></>]]>
+        </viewer>
       </field>
     </panel>
 

@@ -15,11 +15,7 @@
       <field name="product" readonly="true" showTitle="false" showIf="product" colSpan="12"
         domain="self.dtype = 'Product'">
         <viewer>
-                    <![CDATA[
-			 			<h3>
-			             <span class="label label-important" x-translate>Product generated</span>
-			           </h3>
-					]]>
+          <![CDATA[<><Badge bg="danger">{_t('Product generated')}</Badge></>]]>
         </viewer>
       </field>
       <field name="configuratorCreator" form-view="configurator-creator-form"

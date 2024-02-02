@@ -25,7 +25,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -35,7 +35,7 @@ public class AccountEquivController {
     try {
       AccountEquiv accountEquiv = request.getContext().asType(AccountEquiv.class);
       FiscalPosition fiscalPosition =
-          ContextTool.getContextParent(request.getContext(), FiscalPosition.class, 1);
+          ContextHelper.getContextParent(request.getContext(), FiscalPosition.class, 1);
       if (fiscalPosition != null) {
         String domain =
             Beans.get(AccountEquivService.class).getFromAccountDomain(accountEquiv, fiscalPosition);

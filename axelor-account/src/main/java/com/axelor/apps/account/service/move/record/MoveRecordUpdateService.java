@@ -42,5 +42,5 @@ public interface MoveRecordUpdateService {
 
   void resetDueDate(Move move);
 
-  void updateSubrogationPartner(Move move);
+  void updateThirdPartyPayerPartner(Move move);
 }

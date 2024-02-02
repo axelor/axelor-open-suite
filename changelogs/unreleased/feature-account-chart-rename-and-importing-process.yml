@@ -1,0 +1,2 @@
+title: "ACCOUNTCONFIG / ACCOUNTCHART : Rename accountChart object into accountingConfigTemplate and importing process refactoring (Chart OR FY/Period OR (Full Config AND/OR FY/Period)"
+type: feature

@@ -49,7 +49,7 @@
 
   <form name="bill-of-material-form" title="Bill of materials"
     model="com.axelor.apps.production.db.BillOfMaterial" width="large" canNew="!_isPersonalized"
-    onSave="save,action-bill-of-material-method-name,action-bill-of-material-method-validate-prod-process"
+    onSave="save,action-bill-of-material-method-validate-prod-process"
     onNew="action-bill-of-material-group-on-new" onLoad="action-bill-of-material-group-on-load">
 
     <menubar>
@@ -71,18 +71,20 @@
         colSpan="4">
         <viewer depends="$defaultBillOfMaterial">
                     <![CDATA[
-                        <h4 class="text-right">
-                            <span class="label label-default" style="background-color: #009900; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$defaultBillOfMaterial.id == record.id" x-translate>Default Bill of materials</span>
-                            <span class="label label-default" style="background-color: #B6473F; margin: 5px 0 !important; display: inline-table; line-height: initial;" ng-show="record.$defaultBillOfMaterial.id != record.id" x-translate>Alternative Bill of materials</span>
-                        </h4>
+	                    <>
+	                    	<Box d="flex" justifyContent="flex-end">
+	                    		{$defaultBillOfMaterial.id == id && <Badge style={{ backgroundColor: "#009900" }}>{_t('Default Bill of materials')}</Badge>}
+	                    		{$defaultBillOfMaterial.id != id && <Badge style={{ backgroundColor: "#B6473F" }}>{_t('Alternative Bill of materials')}</Badge>}
+	                    	</Box>
+	                    </>
                 ]]></viewer>
       </field>
       <field name="fullName" showTitle="false" colSpan="12">
         <viewer depends="name">
 					<![CDATA[
-						<h3>
-							<span  style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.fullName}}</span>
-						</h3>
+						<>
+							<h3><span>{fullName}</span></h3>
+						</>
 					]]>
         </viewer>
         <editor>
@@ -104,6 +106,7 @@
       <field name="qty" colSpan="3"/>
       <field name="unit" colSpan="3" form-view="unit-form" grid-view="unit-grid"
         canEdit="false" required="true"/>
+      <field name="mark"/>
     </panel>
 
     <panel-tabs name="mainPanelTab">
@@ -115,9 +118,13 @@
           colSpan="9" showIf="$numberOfComponents > 0">
           <viewer depends="$numberOfComponents">
                         <![CDATA[
-                            <h4 class="text-right">
-                                <span class="label label-default" style="background-color: #2185D0; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-right-radius: 0; border-bottom-right-radius: 0; padding-right: 0.4em;" x-translate>Number of components</span><span class="label label-default" style="background-color: #23C6C8; margin: 5px 0 !important; display: inline-table; line-height: initial; border-top-left-radius: 0; border-bottom-left-radius: 0;">{{$fmt('$numberOfComponents')}}</span>
-                            </h4>
+							<>
+		                    	<Box d="flex" justifyContent="flex-end">
+		                    		<Badge style={{ backgroundColor: "#2185D0" }}>
+		                    			{_t('Number of components')} <Badge style={{ backgroundColor: "#23C6C8", fontSize: "12px" }}>{$fmt('$numberOfComponents')}</Badge>
+		                    		</Badge>
+		                    	</Box>
+							</>
 					    ]]>
           </viewer>
         </field>
@@ -245,10 +252,6 @@
     model="com.axelor.apps.production.db.BillOfMaterial">
     <field name="unit" expr="eval: product?.unit"/>
   </action-record>
-
-  <action-method name="action-bill-of-material-method-name">
-    <call class="com.axelor.apps.production.web.BillOfMaterialController" method="computeName"/>
-  </action-method>
 
   <action-record name="action-bill-of-material-record-count-number-of-components"
     model="com.axelor.apps.production.db.BillOfMaterial">

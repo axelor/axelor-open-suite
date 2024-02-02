@@ -85,6 +85,11 @@
     <boolean name="manageAdvancePaymentsFromPaymentConditions"
       title="Manage advance payments from payment conditions" default="false"/>
 
+    <boolean name="autoFillDeliveryRealQty" title="Auto fill delivery real quantity"
+      default="true"/>
+    <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
+      default="true"/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>

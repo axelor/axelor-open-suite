@@ -38,17 +38,61 @@
       <label name="FMLabel" title="%FM : Full Month (01, 02, 03, ...)"/>
       <label name="DLabel" title="%D : Day"/>
       <label name="WYLabel" title="%WY : Week number"/>
+
+      <label name="PatternLabel" title="The tags below can be used to specify the pattern"
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="NumberLabel" title="N : For numbers"
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="LettreLabel" title="L : For Letters"
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+      <label name="ExampleLabel" title="Example of pattern NLL : 0AA, 0AB,0AC...0ZZ,1AA."
+        showIf="sequenceTypeSelect == 'ALPHANUMERIC'"/>
+
+
     </panel>
     <panel name="sequenceDefinitionPanel" title="Sequence Definition" colSpan="12">
-      <field name="sequenceTypeSelect"/>
-      <field name="sequenceLettersTypeSelect" showIf="sequenceTypeSelect == 'LETTERS'"
-        requiredIf="sequenceTypeSelect == 'LETTERS'"/>
-      <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
-      <field name="toBeAdded" showIf="sequenceTypeSelect == 'NUMBERS'"/>
-      <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname"/>
-      <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
-        onChange="action-sequence-method-compute-fullname"/>
+      <panel name="type" colSpan="12">
+        <field name="sequenceTypeSelect"/>
+      </panel>
+      <panel name="letters" showIf="sequenceTypeSelect == 'LETTERS'" colSpan="12">
+        <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
+        <field name="sequenceLettersTypeSelect" requiredIf="sequenceTypeSelect == 'LETTERS'"/>
+      </panel>
+
+      <panel name="numbers" showIf="sequenceTypeSelect == 'NUMBERS'" colSpan="12">
+        <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
+        <field name="toBeAdded"/>
+      </panel>
+
+      <panel name="alphanumeric" showIf="sequenceTypeSelect == 'ALPHANUMERIC'" colSpan="12">
+        <field name="padding" onChange=" action-sequence-method-compute-fullname,save"/>
+        <field name="pattern" pattern="^[NL]*$"
+          requiredIf="sequenceTypeSelect == 'ALPHANUMERIC'"
+          onChange="action-sequence-method-verify-pattern"/>
+      </panel>
+
+      <panel colSpan="12">
+        <panel stacked="true">
+          <field name="prefixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            onChange="action-sequence-method-compute-fullname" showIf="!prefixGroovyOk"/>
+          <field name="prefixGroovy" showIf="prefixGroovyOk" widget="CodeEditor"
+            x-code-syntax="groovy" height="100"/>
+        </panel>
+
+        <panel stacked="true">
+          <field name="suffixe" pattern="^[^\/\\?*:\|&quot;&lt;>]*$"
+            onChange="action-sequence-method-compute-fullname" showIf="!suffixGroovyOk"/>
+          <field name="suffixGroovy" widget="CodeEditor" x-code-syntax="groovy"
+            showIf="suffixGroovyOk" height="100"/>
+        </panel>
+      </panel>
+
+      <field name="prefixGroovyOk"
+        hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
+        onChange="action-sequence-group-onChange-groovyOk"/>
+      <field name="suffixGroovyOk"
+        hideIf="codeSelect == 'invoice' || codeSelect == 'expense' || codeSelect =='fixedAsset'  || codeSelect == 'move' || codeSelect =='bankOrder'"
+        onChange="action-sequence-group-onChange-groovyOk"/>
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
       <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
@@ -91,6 +135,7 @@
     <action name="action-sequence-method-is-length-valid"/>
     <action name="action-sequence-validate"/>
     <action name="action-method-sequence-validate-before-save"/>
+    <action name="action-sequence-method-verify-pattern"/>
   </action-group>
 
   <action-group name="action-sequence-version-form-on-change-date-group">
@@ -145,6 +190,9 @@
     <call class="com.axelor.apps.base.web.SequenceController" method="computeFullName"/>
   </action-method>
 
+  <action-method name="action-sequence-method-verify-pattern">
+    <call class="com.axelor.apps.base.web.SequenceController" method="verifyPattern"/>
+  </action-method>
   <action-method name="action-sequence-method-is-length-valid">
     <call class="com.axelor.apps.base.web.SequenceController" method="isLengthValid"/>
   </action-method>
@@ -183,6 +231,17 @@
     <error if="(startDate &amp;&amp; endDate) &amp;&amp; (endDate &lt; startDate)"
       message="End date must be greater than start date"/>
   </action-validate>
+
+  <action-group name="action-sequence-group-onChange-groovyOk">
+    <action name="action-sequence-record-empty-suffix-prefix"/>
+    <action name="action-sequence-method-compute-fullname"/>
+  </action-group>
+
+  <action-record name="action-sequence-record-empty-suffix-prefix"
+    model="com.axelor.apps.base.db.Sequence">
+    <field name="prefixe" expr="eval:' '" if="prefixGroovyOk"/>
+    <field name="suffixe" expr="eval:' '" if="suffixGroovyOk"/>
+  </action-record>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
     title="Sequence filters">

@@ -10,7 +10,7 @@
     <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
       title="Sale order"/>
     <string name="sequence" title="Seq."/>
-    <decimal name="amountToBeInvoiced" title="Amount to invoice"/>
+    <decimal name="amountToBeInvoiced" title="Amount to invoice" scale="3" precision="20"/>
     <decimal name="invoicingPercentage" title="%"/>
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Task"/>

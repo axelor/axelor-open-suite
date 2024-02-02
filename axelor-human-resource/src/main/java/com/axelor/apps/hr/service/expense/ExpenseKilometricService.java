@@ -20,9 +20,11 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseKilometricService {
@@ -33,4 +35,6 @@ public interface ExpenseKilometricService {
 
   public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(
       ExpenseLine expenseLine, Expense expense) throws AxelorException;
+
+  List<KilometricAllowParam> getKilometricAllowParams(Employee employee, LocalDate expenseDate);
 }

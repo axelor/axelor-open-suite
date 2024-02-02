@@ -52,8 +52,6 @@ public interface BillOfMaterialService {
   BillOfMaterial customizeBillOfMaterial(BillOfMaterial billOfMaterial, int depth)
       throws AxelorException;
 
-  String computeName(BillOfMaterial bom);
-
   void addRawMaterials(long billOfMaterialId, ArrayList<LinkedHashMap<String, Object>> rawMaterials)
       throws AxelorException;
 

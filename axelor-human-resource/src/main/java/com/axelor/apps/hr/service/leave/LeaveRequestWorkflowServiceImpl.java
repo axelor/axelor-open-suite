@@ -24,10 +24,12 @@ import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -41,6 +43,7 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
   protected LeaveLineService leaveLineService;
   protected LeaveRequestEventService leaveRequestEventService;
   protected ICalendarEventRepository iCalendarEventRepository;
+  protected LeaveReasonService leaveReasonService;
 
   @Inject
   public LeaveRequestWorkflowServiceImpl(
@@ -49,13 +52,15 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
       LeaveRequestEventService leaveRequestEventService,
       ICalendarEventRepository iCalendarEventRepository,
       LeaveRequestRepository leaveRequestRepository,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      LeaveReasonService leaveReasonService) {
     this.leaveRequestManagementService = leaveRequestManagementService;
     this.leaveLineService = leaveLineService;
     this.leaveRequestEventService = leaveRequestEventService;
     this.iCalendarEventRepository = iCalendarEventRepository;
     this.leaveRequestRepository = leaveRequestRepository;
     this.appBaseService = appBaseService;
+    this.leaveReasonService = leaveReasonService;
   }
 
   protected LeaveRequestRepository leaveRequestRepository;
@@ -64,9 +69,10 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void confirm(LeaveRequest leaveRequest) throws AxelorException {
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
 
     checkCompany(leaveRequest);
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveRequestManagementService.manageSentLeaves(leaveRequest);
     }
 
@@ -75,7 +81,7 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
 
     leaveRequestRepository.save(leaveRequest);
 
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveLineService.updateDaysToValidate(leaveLineService.getLeaveLine(leaveRequest));
     }
   }
@@ -83,9 +89,10 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void refuse(LeaveRequest leaveRequest) throws AxelorException {
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
 
     checkCompany(leaveRequest);
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveRequestManagementService.manageRefuseLeaves(leaveRequest);
     }
 
@@ -95,7 +102,7 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
         appBaseService.getTodayDateTime(leaveRequest.getCompany()).toLocalDateTime());
 
     leaveRequestRepository.save(leaveRequest);
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveLineService.updateDaysToValidate(leaveLineService.getLeaveLine(leaveRequest));
     }
   }
@@ -103,12 +110,13 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void validate(LeaveRequest leaveRequest) throws AxelorException {
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
 
     checkCompany(leaveRequest);
     if (leaveRequest.getLeaveReason().getUnitSelect() == LeaveReasonRepository.UNIT_SELECT_DAYS) {
       isOverlapped(leaveRequest);
     }
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveRequestManagementService.manageValidateLeaves(leaveRequest);
     }
 
@@ -123,7 +131,7 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
     }
     leaveRequestRepository.save(leaveRequest);
 
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveLineService.updateDaysToValidate(leaveLine);
     }
     leaveRequestEventService.createEvents(leaveRequest);
@@ -132,9 +140,10 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(LeaveRequest leaveRequest) throws AxelorException {
+    LeaveReason leaveReason = leaveRequest.getLeaveReason();
 
     checkCompany(leaveRequest);
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveRequestManagementService.manageCancelLeaves(leaveRequest);
     }
 
@@ -146,7 +155,7 @@ public class LeaveRequestWorkflowServiceImpl implements LeaveRequestWorkflowServ
     leaveRequest.setStatusSelect(LeaveRequestRepository.STATUS_CANCELED);
     leaveRequestRepository.save(leaveRequest);
 
-    if (leaveRequest.getLeaveReason().getManageAccumulation()) {
+    if (!leaveReasonService.isExceptionalDaysReason(leaveReason)) {
       leaveLineService.updateDaysToValidate(leaveLineService.getLeaveLine(leaveRequest));
     }
   }

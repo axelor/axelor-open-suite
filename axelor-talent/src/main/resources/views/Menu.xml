@@ -5,7 +5,7 @@
 
   <!-- Recruitment menus -->
   <menuitem name="recruitment-root" parent="hr-root"
-    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="fa-handshake-o"
+    if="__config__.app.isApp('recruitment')" title="Recruitment" icon="handshake"
     icon-background="#84429f" order="200"/>
 
   <menuitem name="recruitment-job-position-open" parent="recruitment-root"

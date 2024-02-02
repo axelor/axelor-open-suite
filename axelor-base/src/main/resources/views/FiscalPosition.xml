@@ -25,7 +25,8 @@
         form-view="tax-equiv-form" grid-view="tax-equiv-grid" colSpan="12"/>
       <panel-related name="taxNumberPanel" colSpan="12" field="taxNumberSet"
         form-view="tax-number-form" grid-view="tax-number-grid" canNew="false" canEdit="false"
-        canSelect="true" if="__config__.app.isApp('account')"/>
+        canSelect="true"
+        if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"/>
     </panel>
   </form>
 

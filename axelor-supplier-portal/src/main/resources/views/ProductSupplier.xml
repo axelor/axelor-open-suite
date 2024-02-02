@@ -21,8 +21,10 @@
         <field name="imgProduct" showTitle="false" colSpan="12" widget="Image">
           <viewer>
 					<![CDATA[
-			    		<img ng-show="record.imgProduct" ng-src="{{$image('picture', 'content')}}" />
-          				<img ng-show="!record.imgProduct" src="img/product-default.png" />
+          				<>
+          					{id && <Image src={$image('id', 'content')}></Image>}
+          					{!id && <Image src="img/product-default.png"></Image>}
+          				</>
 					]]>
           </viewer>
         </field>

@@ -46,6 +46,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetLineService;
 import com.axelor.apps.budget.service.BudgetService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.businessproject.service.InvoiceServiceProjectImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -76,6 +77,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
   protected BudgetService budgetService;
   protected BudgetLineService budgetLineService;
   protected AppBudgetService appBudgetService;
+  protected BudgetToolsService budgetToolsService;
 
   @Inject
   public BudgetInvoiceServiceImpl(
@@ -103,7 +105,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       BudgetDistributionService budgetDistributionService,
       BudgetService budgetService,
       BudgetLineService budgetLineService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetToolsService budgetToolsService) {
     super(
         validateFactory,
         ventilateFactory,
@@ -130,6 +133,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     this.budgetService = budgetService;
     this.budgetLineService = budgetLineService;
     this.appBudgetService = appBudgetService;
+    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
@@ -157,11 +161,16 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     String budgetExceedAlert = "";
 
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
 
     if (appBudgetService.getAppBudget() != null
         && appBudgetService.getAppBudget().getCheckAvailableBudget()
         && invoice.getId() != null
-        && CollectionUtils.isNotEmpty(invoiceLineList)) {
+        && CollectionUtils.isNotEmpty(invoiceLineList)
+        && date != null) {
 
       Map<Budget, BigDecimal> amountPerBudgetMap = new HashMap<>();
 
@@ -172,43 +181,23 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
             Budget budget = budgetDistribution.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, budgetDistribution.getAmount());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(budgetDistribution.getAmount()));
-            }
-          }
-          for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(),
-                    budgetEntry.getValue(),
-                    invoice.getInvoiceDate() != null
-                        ? invoice.getInvoiceDate()
-                        : invoice.getCreatedOn().toLocalDate());
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, budgetDistribution.getAmount(), amountPerBudgetMap);
           }
         } else {
           Budget budget = invoiceLine.getBudget();
           if (budget != null) {
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, invoiceLine.getExTaxTotal());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(invoiceLine.getExTaxTotal()));
-            }
 
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budget,
-                    amountPerBudgetMap.get(budget),
-                    invoice.getInvoiceDate() != null
-                        ? invoice.getInvoiceDate()
-                        : invoice.getCreatedOn().toLocalDate());
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
           }
         }
+      }
+
+      for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
+        budgetExceedAlert +=
+            budgetDistributionService.getBudgetExceedAlert(
+                budgetEntry.getKey(), budgetEntry.getValue(), date);
       }
     }
     return budgetExceedAlert;
@@ -272,7 +261,8 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
       LocalDate date =
           invoice.getInvoiceDate() != null
               ? invoice.getInvoiceDate()
-              : invoice.getCreatedOn().toLocalDate();
+              : appBaseService.getTodayDate(invoice.getCompany());
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
@@ -312,6 +302,7 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
                 ? invoiceLine.getInvoice().getSaleOrder().getOrderDate()
                 : invoiceLine.getInvoice().getSaleOrder().getCreationDate();
       }
+      budgetDistribution.setImputationDate(date);
       Budget budget = budgetDistribution.getBudget();
       Optional<BudgetLine> optBudgetLine =
           budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date);
@@ -349,8 +340,10 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(invoiceLine.getBudget());
           budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
-          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+          budgetDistributionService.linkBudgetDistributionWithParent(
+              budgetDistribution, invoiceLine);
         }
+        invoiceLine.setBudgetDistributionSumAmount(invoiceLine.getCompanyExTaxTotal());
       }
     }
   }
@@ -403,5 +396,28 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
     }
     return budgetDistributionList.stream()
         .anyMatch(budgetDistribution -> budget.equals(budgetDistribution.getBudget()));
+  }
+
+  @Override
+  public void autoComputeBudgetDistribution(Invoice invoice) throws AxelorException {
+    LocalDate date =
+        invoice.getInvoiceDate() != null
+            ? invoice.getInvoiceDate()
+            : appBaseService.getTodayDate(invoice.getCompany());
+    if (!budgetToolsService.canAutoComputeBudgetDistribution(
+            invoice.getCompany(), invoice.getInvoiceLineList())
+        || date == null) {
+      return;
+    }
+
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      budgetDistributionService.autoComputeBudgetDistribution(
+          invoiceLine.getAnalyticMoveLineList(),
+          invoiceLine.getAccount(),
+          invoice.getCompany(),
+          date,
+          invoiceLine.getCompanyExTaxTotal(),
+          invoiceLine);
+    }
   }
 }

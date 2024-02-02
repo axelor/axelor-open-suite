@@ -31,7 +31,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServ
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.utils.ContextTool;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
         AnalyticLineModel analyticLineModel =
@@ -65,7 +65,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
 
       Beans.get(AnalyticLineModelService.class)
@@ -81,7 +81,7 @@ public class PurchaseOrderLineController {
     try {
       PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null) {
         return;
@@ -99,7 +99,7 @@ public class PurchaseOrderLineController {
   public void createAnalyticAccountLines(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null) {
         return;
@@ -120,7 +120,7 @@ public class PurchaseOrderLineController {
   public void manageAxis(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
         return;
@@ -139,7 +139,7 @@ public class PurchaseOrderLineController {
   public void printAnalyticAccounts(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
         return;
@@ -159,7 +159,7 @@ public class PurchaseOrderLineController {
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          ContextTool.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
 
       if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
         return;

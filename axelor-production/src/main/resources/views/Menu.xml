@@ -51,6 +51,16 @@
     <context name="_isPersonalized" expr="eval: true"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-import-bill-of-material"
+    parent="manufacturing-root-bill-of-material-root" title="Bill of materials import"
+    action="manufacturing.root.import.bill.of.material" order="300"/>
+
+  <action-view name="manufacturing.root.import.bill.of.material"
+    title="Bill of materials imports" model="com.axelor.apps.production.db.BillOfMaterialImport">
+    <view type="grid" name="bill-of-material-import-grid"/>
+    <view type="form" name="bill-of-material-import-form"/>
+  </action-view>
+
   <menuitem name="manufacturing-root-prod-process" parent="manufacturing-root"
     title="Production processes" action="manufacturing.root.prod.process" order="200"/>
 
@@ -94,9 +104,12 @@
     <context name="_todayDateTime" expr="eval:__config__.app.getTodayDateTime()"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-calendars" parent="manufacturing-root"
+    title="Calendars" order="1450" icon="fa-calendar"/>
+
   <menuitem name="manufacturing-root-operation-order-planned-calendar"
-    parent="manufacturing-root" title="Planned operations"
-    action="manufacturing.root.operation.order.planned.calendar" order="700"/>
+    parent="manufacturing-root-calendars" title="Planned operations"
+    action="manufacturing.root.operation.order.planned.calendar" order="100"/>
 
   <action-view name="manufacturing.root.operation.order.planned.calendar"
     title="Planned operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -108,8 +121,8 @@
   </action-view>
 
   <menuitem name="manufacturing-root-operation-order-real-calendar"
-    parent="manufacturing-root" title="Real operations"
-    action="manufacturing.root.operation.order.real.calendar" order="800"/>
+    parent="manufacturing-root-calendars" title="Real operations"
+    action="manufacturing.root.operation.order.real.calendar" order="200"/>
 
   <action-view name="manufacturing.root.operation.order.real.calendar"
     title="Real operations" model="com.axelor.apps.production.db.OperationOrder">
@@ -146,11 +159,15 @@
     <view type="form" name="stock-move-form"/>
     <domain>self.typeSelect = :_typeSelect AND
       self.isReversion = FALSE AND
-      self.stockMoveLineList.toStockLocation.typeSelect=:_stockLocTypeSelect AND
-      self.stockMoveLineList.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc</domain>
+      ((self.stockMoveLineList.toStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.stockMoveLineList.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc)
+      OR
+      (self.toStockLocation.typeSelect=:_stockLocTypeSelect AND
+      self.toStockLocation.isOutsourcingLocation=:_isOutsourcingLoc))</domain>
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
     <context name="_stockLocTypeSelect" expr="eval: __repo__(StockLocation).TYPE_VIRTUAL"/>
     <context name="_isOutsourcingLoc" expr="eval:true"/>
+    <context name="_fromOutsource" expr="eval:true"/>
   </action-view>
 
   <menuitem name="manufacturing-root-outsourcing-subcontractors-arrivals"
@@ -170,15 +187,15 @@
     <context name="_isOutsourcingLoc" expr="eval:true"/>
   </action-view>
 
+  <menuitem name="manufacturing-root-outsourcing-purchase-orders"
+    title="Outsourcing purchase orders" parent="manufacturing-root-outsourcing"
+    action="manufacturing.root.outsourcing.purchase.orders" order="400"/>
 
-  <menuitem name="manufacturing-root-charge-by-machine-dashboard"
-    parent="manufacturing-root" title="Charge by machine"
-    action="manufacturing.root.charge.by.machine.dashboard" order="1000"/>
-
-  <action-view name="manufacturing.root.charge.by.machine.dashboard"
-    title="Charge by machine">
-    <view type="dashboard" name="charge.by.machine.dashboard"/>
-    <context name="today" expr="eval:__config__.date"/>
+  <action-view name="manufacturing.root.outsourcing.purchase.orders"
+    title="Outsourcing purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.outsourcingOrder = true</domain>
   </action-view>
 
   <menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"
@@ -285,6 +302,15 @@
   <action-view name="manufacturing.user.dashboard.view" title="User Dashboard"
     model="com.axelor.auth.db.User">
     <view type="form" name="manufacturing-dashboard-user"/>
+  </action-view>
+
+  <menuitem name="manufacturing-root-machine-charge-dashboard"
+    parent="manufacturing-root-report" title="Machine charge"
+    action="manufacturing.root.machine.charge.dashboard" order="1000"/>
+
+  <action-view name="manufacturing.root.machine.charge.dashboard" title="Machine charge">
+    <view type="dashboard" name="machine.charge.dashboard"/>
+    <context name="today" expr="eval:__config__.date"/>
   </action-view>
 
   <menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration"
@@ -466,6 +492,17 @@
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
+  <menuitem name="manufacturing-conf-bill-of-material-import-source"
+    parent="manufacturing-conf" title="Bill of materials import sources"
+    action="manufacturing.conf.bill.of.material.import.source" order="1100"/>
+
+  <action-view name="manufacturing.conf.bill.of.material.import.source"
+    title="Bill of materials import sources"
+    model="com.axelor.apps.production.db.BillOfMaterialImportSource">
+    <view type="grid" name="bill-of-material-import-source-grid"/>
+    <view type="form" name="bill-of-material-import-source-form"/>
+  </action-view>
+
   <menuitem title="Workshop" name="manufacturing-conf-workshop" parent="manufacturing-conf"
     action="manufacturing.conf.workshop" if="__config__.app.getApp('production')?.manageWorkshop"
     order="1100"/>
@@ -542,15 +579,13 @@
   </action-view>
 
 
-  <menuitem name="manufacturing-conf-work-center-group-model" parent="manufacturing-conf"
-    title="Models of work center group" action="manufacturing.conf.work.center.group.model"
+  <menuitem name="manufacturing-conf-work-center-groups" parent="manufacturing-conf"
+    title="Work center groups" action="manufacturing.conf.work.center.group"
     if="__config__.app.getApp('production')?.getManageWorkCenterGroup()" order="1300"/>
 
-  <action-view name="manufacturing.conf.work.center.group.model"
-    title="Models of work center group" model="com.axelor.apps.production.db.WorkCenterGroup">
-    <view type="grid" name="work-center-group-model-grid"/>
-    <view type="form" name="work-center-group-model-form"/>
-    <domain>self.template IS TRUE</domain>
-    <context name="_template" expr="eval: true"/>
+  <action-view name="manufacturing.conf.work.center.group" title="Work center groups"
+    model="com.axelor.apps.production.db.WorkCenterGroup">
+    <view type="grid" name="work-center-group-grid"/>
+    <view type="form" name="work-center-group-form"/>
   </action-view>
 </object-views>

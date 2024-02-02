@@ -374,4 +374,14 @@ public final class SupplychainExceptionMessage {
       "Please select a forecasted invoice supplier account in the accounting batch" /*)*/;
   public static final String STOCK_MOVE_LINES_ASSOCIATED_WITH_INVOICE_LINES_CANNOT_SPLIT = /*$$(*/
       "The following stock move lines are already associated with invoice lines and can not be splitted: %s" /*)*/;
+
+  public static final String SALE_SHIPMENT_THRESHOLD_EXCEEDED = /*$$(*/
+      "Carriage paid threshold is exceeded, all shipment cost lines are removed" /*)*/;
+
+  public static final String COULD_NOT_FIND_ELIGIBLE_EMAIL_TEMPLATE_FOR_STOCK_RULES = /*$$(*/
+      "Could not find eligible email template for stock rules: %s" /*)*/;
+
+  public static final String
+      COULD_NOT_FIND_RECIPIENTS_FOR_MESSAGE_GENERATED_FROM_STOCK_RULES = /*$$(*/
+          "Could not find recipients for message generated from stock rules: %s" /*)*/;
 }

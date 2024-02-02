@@ -72,13 +72,12 @@
     <field name="jobTitle"/>
     <field name="jobReference"/>
     <template><![CDATA[
-			<div>
-			  <div class="span12">
-				<span><strong>{{jobTitle}}</strong></span>
-		  		<br/>
-		  		<span><strong>{{jobReference}}</strong></span>
-		  	  </div>
-			</div>
+			<>
+				<Box>
+					<span><strong>{jobTitle}</strong></span> <Box/>
+					<span><strong>{jobReference}</strong></span>
+				</Box>
+			</>
 		]]>
     </template>
   </cards>

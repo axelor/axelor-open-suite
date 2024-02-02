@@ -37,7 +37,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.utils.file.CsvTool;
+import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.io.File;
@@ -168,7 +168,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    CsvTool.csvWriter(
+    CsvHelper.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
@@ -197,7 +197,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    CsvTool.csvWriter(
+    CsvHelper.csvWriter(
         file.getParent(),
         file.getName(),
         ';',
@@ -238,7 +238,7 @@ public class BatchPayrollPreparationExport extends BatchStrategy {
     String fileName = payrollPreparationService.getPayrollPreparationExportName();
     File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
 
-    CsvTool.csvWriter(
+    CsvHelper.csvWriter(
         file.getParent(),
         file.getName(),
         ';',

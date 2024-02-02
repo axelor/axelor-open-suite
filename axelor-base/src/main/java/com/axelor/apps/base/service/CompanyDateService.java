@@ -22,6 +22,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
@@ -48,7 +49,11 @@ public class CompanyDateService {
 
   protected Locale checkLocale(Company company) throws AxelorException {
     Locale locale = null;
-    String localeStr = Optional.ofNullable(company).map(Company::getLocale).orElse(null);
+    String localeStr =
+        Optional.ofNullable(company)
+            .map(Company::getLocalization)
+            .map(Localization::getCode)
+            .orElse(null);
 
     if (StringUtils.isEmpty(localeStr)) {
       localeStr = AppSettings.get().get(AvailableAppSettings.APPLICATION_LOCALE, null);

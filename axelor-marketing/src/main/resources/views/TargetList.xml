@@ -13,9 +13,11 @@
     <panel name="mainPanel">
       <field name="name" showTitle="false" colSpan="12">
         <viewer depends="name"><![CDATA[
-					<h3>
-						<span style="margin: 5px 0 !important; display: inline-table; line-height: initial;">{{record.name}}</span>
-					</h3>
+					<>
+						<h3>
+							<span>{name}</span>
+						</h3>
+					</>
 				]]></viewer>
         <editor>
           <field name="name" showTitle="true"/>

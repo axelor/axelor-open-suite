@@ -11,11 +11,13 @@
       title="Payment"/>
     <many-to-one name="invoiceTerm" ref="com.axelor.apps.account.db.InvoiceTerm"
       title="Invoice term"/>
-    <decimal name="paidAmount" title="Paid amount"/>
-    <decimal name="companyPaidAmount" title="Paid amount (company currency)"/>
+    <decimal name="paidAmount" title="Paid amount" scale="3" precision="20"/>
+    <decimal name="companyPaidAmount" title="Paid amount (company currency)" scale="3"
+      precision="20"/>
     <many-to-one name="financialDiscount"
       ref="com.axelor.apps.account.db.FinancialDiscount" title="Financial discount"/>
-    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount"/>
+    <decimal name="financialDiscountAmount" title="Fin. Discount Total Amount" scale="3"
+      precision="20"/>
     <many-to-many name="reconcileList" ref="com.axelor.apps.account.db.Reconcile"
       readonly="true" title="Reconciliations"/>
 

@@ -72,7 +72,6 @@ public class InvoicePaymentBankPayController extends InvoicePaymentController {
                   .model(BankOrder.class.getName())
                   .add("form", "bank-order-form")
                   .add("grid", "bank-order-grid")
-                  .param("search-filters", "bank-order-filters")
                   .param("forceEdit", "true")
                   .context(
                       "_showRecord",

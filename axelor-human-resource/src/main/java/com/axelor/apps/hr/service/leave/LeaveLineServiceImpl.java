@@ -20,6 +20,7 @@ package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveLine;
+import com.axelor.apps.hr.db.LeaveManagement;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveLineRepository;
@@ -111,5 +112,13 @@ public class LeaveLineServiceImpl implements LeaveLineService {
     }
 
     leaveLine.setDaysToValidate(daysToValidate);
+  }
+
+  @Override
+  public LeaveLine createNewLeaveLine(LeaveReason leaveReason, LeaveManagement leaveManagement) {
+    LeaveLine newLeaveLine = new LeaveLine();
+    newLeaveLine.addLeaveManagementListItem(leaveManagement);
+    newLeaveLine.setLeaveReason(leaveReason);
+    return newLeaveLine;
   }
 }

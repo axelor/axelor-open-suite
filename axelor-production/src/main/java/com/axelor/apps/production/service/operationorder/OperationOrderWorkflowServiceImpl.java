@@ -37,7 +37,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
-import com.axelor.utils.date.DurationTool;
+import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
@@ -406,7 +406,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   protected void computeFinishDuration(OperationOrder operationOrder) {
     if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED) {
       long durationLong =
-          DurationTool.getSecondsDuration(
+          DurationHelper.getSecondsDuration(
               operationOrderService.computeRealDuration(operationOrder));
       operationOrder.setRealDuration(durationLong);
       Machine machine = operationOrder.getMachine();

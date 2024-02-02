@@ -17,6 +17,7 @@
 
     <!-- Timesheet Timer configuration -->
     <boolean name="enableTimer" title="Start&amp;Stop" default="true"/>
+    <boolean name="isMultipleTimerEnabled" title="Enable multiple timer" default="false"/>
     <boolean name="editModeTSTimer" title="Edit Start&amp;Stop Timer On Stop" default="true"/>
     <boolean name="keepProject" title="Keep Project for Start&amp;Stop Timer" default="true"/>
 
@@ -60,6 +61,7 @@
       <field name="timesheetReminderTemplate" on="UPDATE"/>
       <field name="displayTaskColumnInPrinting" on="UPDATE"/>
       <field name="displayActivityColumnInPrinting" on="UPDATE"/>
+      <field name="isMultipleTimerEnabled" on="UPDATE"/>
     </track>
   </entity>
 

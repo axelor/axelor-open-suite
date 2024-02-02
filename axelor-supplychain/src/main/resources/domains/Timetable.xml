@@ -8,7 +8,7 @@
   <entity name="Timetable">
 
     <string name="title" namecolumn="true"/>
-    <decimal name="amount" title="Amount" min="0"/>
+    <decimal name="amount" title="Amount" min="0" precision="20" scale="3"/>
     <decimal name="percentage" scale="2" precision="5" max="100" min="0"/>
     <boolean name="invoiced"/>
     <date name="estimatedDate" title="Date"/>

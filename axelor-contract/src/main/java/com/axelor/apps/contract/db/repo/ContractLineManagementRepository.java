@@ -22,6 +22,8 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.contract.db.ContractVersion;
+import com.axelor.apps.contract.service.CurrencyScaleServiceContract;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaStore;
@@ -61,6 +63,20 @@ public class ContractLineManagementRepository extends ContractLineRepository {
                     .getTitle());
         json.put("statusSelect", statusSelect);
       }
+    }
+
+    if (context.containsKey("_field")
+        && context.get("_field").equals("contractLineList")
+        && context.get("_parent") != null) {
+      Map<String, Object> _parent = (Map<String, Object>) context.get("_parent");
+
+      ContractVersion contractVersion =
+          Beans.get(ContractVersionRepository.class)
+              .find(Long.parseLong(_parent.get("id").toString()));
+
+      json.put(
+          "$currencyNumberOfDecimals",
+          Beans.get(CurrencyScaleServiceContract.class).getScale(contractVersion.getContract()));
     }
 
     AppBase appBase = Beans.get(AppBaseService.class).getAppBase();

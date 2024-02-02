@@ -121,4 +121,6 @@ public interface SaleOrderMergingService {
 
   SaleOrderMergingResult mergeSaleOrdersWithContext(
       List<SaleOrder> saleOrdersToMerge, Context context) throws AxelorException;
+
+  List<SaleOrder> convertSelectedLinesToMergeLines(List<Integer> idList);
 }
