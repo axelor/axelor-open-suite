@@ -6,7 +6,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
-import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
 import com.axelor.apps.base.service.AddressService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -76,7 +76,7 @@ public class BatchCountryAddressRecompute extends BatchStrategy {
           recomputeAddress(address);
           incrementDone();
         } catch (Exception e) {
-          TraceBackService.trace(e, BaseExceptionMessage.ADDRESS_TEMPLATE_ERROR, address.getId());
+          TraceBackService.trace(e, ExceptionOriginRepository.ADDRESS_RECOMPUTE, batch.getId());
           incrementAnomaly();
         }
       }
