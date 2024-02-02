@@ -1,6 +1,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -12,6 +13,7 @@ public interface TimesheetLineUpdateService {
       TimesheetLine timesheetLine,
       Project project,
       ProjectTask projectTask,
+      Product product,
       BigDecimal duration,
       LocalDate date,
       String comments,

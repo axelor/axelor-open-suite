@@ -8,6 +8,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
@@ -20,12 +21,19 @@ import java.time.LocalDate;
 public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateService {
   protected TimesheetLineService timesheetLineService;
   protected TimesheetLineRepository timesheetLineRepository;
+  protected UserHrService userHrService;
+  protected TimesheetLineCheckService timesheetLineCheckService;
 
   @Inject
   public TimesheetLineCreateServiceImpl(
-      TimesheetLineService timesheetLineService, TimesheetLineRepository timesheetLineRepository) {
+      TimesheetLineService timesheetLineService,
+      TimesheetLineRepository timesheetLineRepository,
+      UserHrService userHrService,
+      TimesheetLineCheckService timesheetLineCheckService) {
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineRepository = timesheetLineRepository;
+    this.userHrService = userHrService;
+    this.timesheetLineCheckService = timesheetLineCheckService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -47,6 +55,10 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE);
     }
+    if (product == null) {
+      product = userHrService.getTimesheetProduct(employee);
+    }
+    timesheetLineCheckService.checkActivity(project, product);
     TimesheetLine timesheetLine =
         timesheetLineService.createTimesheetLine(
             project, product, employee, date, timesheet, duration, comments);
