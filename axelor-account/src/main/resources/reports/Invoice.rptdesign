@@ -8744,7 +8744,7 @@ row["partnerFirstName"]
                                                 <property name="name">number_of_decimals</property>
                                                 <text-property name="displayName">number_of_decimals</text-property>
                                                 <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
-                                                <property name="dataType">string</property>
+                                                <property name="dataType">integer</property>
                                                 <property name="allowExport">true</property>
                                             </structure>
                                         </list-property>
@@ -9053,15 +9053,6 @@ row["partnerFirstName"]
                                                     <text id="5539">
                                                         <property name="textAlign">right</property>
                                                         <property name="display">inline</property>
-                                                        <list-property name="boundDataColumns">
-                                                            <structure>
-                                                                <property name="name">number_of_decimals_1</property>
-                                                                <text-property name="displayName">number_of_decimals</text-property>
-                                                                <expression name="expression" type="javascript">row["number_of_decimals"]</expression>
-                                                                <property name="dataType">integer</property>
-                                                                <property name="allowExport">true</property>
-                                                            </structure>
-                                                        </list-property>
                                                         <property name="contentType">html</property>
                                                         <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["amount"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                                     </text>
