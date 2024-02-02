@@ -59,11 +59,7 @@
     <track>
       <field name="ticketSeq"/>
       <field name="subject"/>
-      <field name="statusSelect" on="UPDATE"/>
       <message if="true" on="CREATE">Ticket created</message>
-      <message if="statusSelect == 1" tag="info">Ticket In Progress</message>
-      <message if="statusSelect == 2" tag="success">Ticket In Resolved</message>
-      <message if="statusSelect == 3" tag="info">Ticket Closed</message>
     </track>
 
   </entity>
