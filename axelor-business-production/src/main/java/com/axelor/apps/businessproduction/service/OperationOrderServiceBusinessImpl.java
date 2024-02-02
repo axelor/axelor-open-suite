@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
@@ -48,14 +49,16 @@ public class OperationOrderServiceBusinessImpl extends OperationOrderServiceImpl
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
       OperationOrderRepository operationOrderRepository,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ProdProductRepository prodProductRepository) {
     super(
         barcodeGeneratorService,
         appProductionService,
         manufOrderStockMoveService,
         prodProcessLineService,
         operationOrderRepository,
-        operationOrderOutsourceService);
+        operationOrderOutsourceService,
+        prodProductRepository);
   }
 
   @Override

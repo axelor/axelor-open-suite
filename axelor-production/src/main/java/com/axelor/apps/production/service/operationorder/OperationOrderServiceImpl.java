@@ -32,6 +32,7 @@ import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -67,6 +68,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   protected ProdProcessLineService prodProcessLineService;
   protected OperationOrderRepository operationOrderRepository;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
+  protected ProdProductRepository prodProductRepository;
 
   @Inject
   public OperationOrderServiceImpl(
@@ -75,13 +77,15 @@ public class OperationOrderServiceImpl implements OperationOrderService {
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProdProcessLineService prodProcessLineService,
       OperationOrderRepository operationOrderRepository,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
+      OperationOrderOutsourceService operationOrderOutsourceService,
+      ProdProductRepository prodProductRepository) {
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.appProductionService = appProductionService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.prodProcessLineService = prodProcessLineService;
     this.operationOrderRepository = operationOrderRepository;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
+    this.prodProductRepository = prodProductRepository;
   }
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -107,6 +111,16 @@ public class OperationOrderServiceImpl implements OperationOrderService {
             prodProcessLine.getWorkCenter().getMachine(),
             prodProcessLine.getMachineTool(),
             prodProcessLine);
+
+    BigDecimal qty = manufOrder.getQty();
+
+    for (ProdProduct prodProduct : prodProcessLine.getToConsumeProdProductList()) {
+      ProdProduct prodProductCopy = prodProductRepository.copy(prodProduct, false);
+      prodProductCopy.setToConsumeProdProcessLine(null);
+      BigDecimal qtyNeededForOne = prodProductCopy.getQty();
+      prodProductCopy.setQty(qty.multiply(qtyNeededForOne).setScale(10, RoundingMode.HALF_UP));
+      operationOrder.addToConsumeProdProductListItem(prodProductCopy);
+    }
 
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
