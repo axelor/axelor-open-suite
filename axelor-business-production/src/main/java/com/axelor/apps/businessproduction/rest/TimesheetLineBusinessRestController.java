@@ -50,7 +50,7 @@ public class TimesheetLineBusinessRestController {
             .createTimesheetLine(
                 requestBody.fetchProject(),
                 requestBody.fetchProjectTask(),
-                null,
+                requestBody.fetchProduct(),
                 requestBody.getDate(),
                 requestBody.fetchTimesheet(),
                 requestBody.getDuration(),
@@ -84,6 +84,7 @@ public class TimesheetLineBusinessRestController {
             timesheetLine,
             requestBody.fetchProject(),
             requestBody.fetchProjectTask(),
+            requestBody.fetchProduct(),
             requestBody.getDuration(),
             requestBody.getDate(),
             requestBody.getComments(),

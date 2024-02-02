@@ -1,5 +1,6 @@
 package com.axelor.apps.hr.rest.dto;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
@@ -15,6 +16,9 @@ public class TimesheetLinePutRequest extends RequestStructure {
 
   @Min(0)
   private Long projectTaskId;
+
+  @Min(0)
+  private Long productId;
 
   @Min(0)
   private BigDecimal duration;
@@ -39,6 +43,14 @@ public class TimesheetLinePutRequest extends RequestStructure {
 
   public void setProjectTaskId(Long projectTaskId) {
     this.projectTaskId = projectTaskId;
+  }
+
+  public Long getProductId() {
+    return productId;
+  }
+
+  public void setProductId(Long productId) {
+    this.productId = productId;
   }
 
   public BigDecimal getDuration() {
@@ -85,5 +97,12 @@ public class TimesheetLinePutRequest extends RequestStructure {
       return null;
     }
     return ObjectFinder.find(ProjectTask.class, projectTaskId, ObjectFinder.NO_VERSION);
+  }
+
+  public Product fetchProduct() {
+    if (productId == null || productId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Product.class, productId, ObjectFinder.NO_VERSION);
   }
 }
