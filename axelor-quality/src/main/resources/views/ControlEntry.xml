@@ -27,7 +27,7 @@
     <panel-related name="controlEntrySamplesPanel" field="controlEntrySamplesList"
       colSpan="12" grid-view="control-entry-sample-grid" form-view="control-entry-sample-form"
       showIf="controlEntrySamplesList != null &amp;&amp; controlEntrySamplesList.length > 0"
-      readonlyIf="statusSelect > 2"/>
+      readonlyIf="statusSelect > 2" onChange="save"/>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="createSamplesBtn"
         onClick="save,action-method-quality-control-entry-create-samples"

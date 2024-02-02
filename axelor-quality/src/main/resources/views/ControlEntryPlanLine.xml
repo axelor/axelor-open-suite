@@ -11,8 +11,6 @@
     <field name="characteristic"/>
     <field name="machineType"/>
     <field name="isCustomFrequency"/>
-    <button name="editBtn" title="Edit" onClick="action-view-control-plan-line-edit"
-      icon="fa-pen"/>
   </grid>
 
   <form name="control-plan-line-form" title="Control plan line"
@@ -34,13 +32,10 @@
     </panel>
   </form>
 
-
   <grid name="control-entry-sample-line-grid" title="Control entry sample lines"
-    model="com.axelor.apps.quality.db.ControlEntryPlanLine" canEdit="false">
+    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
     <field name="controlPlanLine"/>
     <field name="resultSelect"/>
-    <button name="editBtn" title="Edit" onClick="action-view-control-entry-sample-line-edit"
-      icon="fa-pen"/>
   </grid>
 
   <form name="control-entry-sample-line-form" title="Control entry sample line"
@@ -105,21 +100,5 @@
       method="controlConformity"/>
   </action-method>
 
-  <!-- This is a HOTFIX since AOP is bugged with attrs -->
-  <action-view name="action-view-control-entry-sample-line-edit" title="Edit entry line"
-    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
-    <view type="form" name="control-entry-sample-line-form"/>
-    <view-param name="popup-save" value="false"/>
-    <view-param name="popup" value="reload"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-view-control-plan-line-edit" title="Edit plan line"
-    model="com.axelor.apps.quality.db.ControlEntryPlanLine">
-    <view type="form" name="control-plan-line-form"/>
-    <view-param name="popup-save" value="false"/>
-    <view-param name="popup" value="reload"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
 
 </object-views>
