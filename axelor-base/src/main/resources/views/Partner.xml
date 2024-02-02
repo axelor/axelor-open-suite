@@ -498,8 +498,8 @@
       </panel>
       <panel-include if-module="axelor-account" view="incl-blocking-partner-form"
         if="__config__.app.isApp('account')"/>
-      <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
         <button name="callBtn" title="Create a call" link="" icon="fa-phone"
@@ -518,8 +518,8 @@
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
         <panel-include view="incl-opportunities-partner-form"/>
       </panel>
-      <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
-        hideIf="isEmployee" if="__config__.app.isApp('crm')">
+      <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
+        if-module="axelor-crm" if="__config__.app.isApp('crm')">
         <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
