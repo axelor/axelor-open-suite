@@ -2539,12 +2539,12 @@ if(row._outer["technical_origin"] == 1) {
                 <cell id="4792">
                     <text id="4820">
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["total_credit"]>=row["total_debit"])
-{
-	Formatter.format(row["total_credit"]-row["total_debit"], row["company_currency_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["company_currency_number_of_decimals"] || 2)+1).join("0"))
-}else{
-	Formatter.format(row["total_debit"]-row["total_credit"], row["company_currency_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["company_currency_number_of_decimals"] || 2)+1).join("0"))
-}</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>
+                        if(row["total_credit"]>=row["total_debit"]) {
+                            Formatter.format(row["total_credit"]-row["total_debit"], row["company_currency_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["company_currency_number_of_decimals"] || 2)+1).join("0"))
+                        }else{
+                            Formatter.format(row["total_debit"]-row["total_credit"], row["company_currency_number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["company_currency_number_of_decimals"] || 2)+1).join("0"))
+                        }</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>

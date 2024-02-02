@@ -4284,36 +4284,37 @@ where Invoice.id = ? AND InvoicePayment.status_select=1;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">if (row["status_select"] == "1") {
-                                                'Invoice.draftInvoiceNo'
+                                            <value type="javascript">
+                                                if (row["status_select"] == "1") {
+                                                    'Invoice.draftInvoiceNo'
                                                 } else if(row["status_select"] == "2") {
-                                                if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-                                                'Invoice.purchaseInvoiceAdvPaymentNo'
-                                                } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-                                                'Invoice.invoiceAdvPaymentNo'
-                                                } else {
-                                                'Invoice.draftInvoiceNo'
-                                                }
+                                                    if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                        'Invoice.purchaseInvoiceAdvPaymentNo'
+                                                    } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                        'Invoice.invoiceAdvPaymentNo'
+                                                    } else {
+                                                        'Invoice.draftInvoiceNo'
+                                                    }
                                                 } else if(row["status_select"] == "3") {
-                                                if (row["operation_type_select"] == "1") {
-                                                if (row["operation_sub_type_select"] == "3") {
-                                                'Invoice.purchaseInvoiceBalanceNo'
-                                                } else {
-                                                'Invoice.purchaseInvoiceNo'
-                                                }
-                                                } else if (row["operation_type_select"] == "2") {
-                                                'Invoice.purchaseCreditNoteNo'
-                                                } else if (row["operation_type_select"] == "3") {
-                                                if (row["operation_sub_type_select"] == "3") {
-                                                'Invoice.invoiceBalanceNo'
-                                                } else {
-                                                'Invoice.invoiceNo'
-                                                }
-                                                } else if (row["operation_type_select"] == "4") {
-                                                'Invoice.refundNo'
-                                                }
+                                                    if (row["operation_type_select"] == "1") {
+                                                        if (row["operation_sub_type_select"] == "3") {
+                                                            'Invoice.purchaseInvoiceBalanceNo'
+                                                        } else {
+                                                            'Invoice.purchaseInvoiceNo'
+                                                        }
+                                                    } else if (row["operation_type_select"] == "2") {
+                                                        'Invoice.purchaseCreditNoteNo'
+                                                    } else if (row["operation_type_select"] == "3") {
+                                                        if (row["operation_sub_type_select"] == "3") {
+                                                            'Invoice.invoiceBalanceNo'
+                                                        } else {
+                                                            'Invoice.invoiceNo'
+                                                        }
+                                                    } else if (row["operation_type_select"] == "4") {
+                                                        'Invoice.refundNo'
+                                                    }
                                                 } else if(row["status_select"] == "4") {
-                                                'Invoice.cancelInvoiceNo'
+                                                    'Invoice.cancelInvoiceNo'
                                                 }</value>
                                         </simple-property-list>
                                     </structure>
@@ -4942,36 +4943,37 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if (row["status_select"] == "1") {
-                                        'Invoice.draftInvoiceNo'
+                                    <value type="javascript">
+                                        if (row["status_select"] == "1") {
+                                            'Invoice.draftInvoiceNo'
                                         } else if(row["status_select"] == "2") {
-                                        if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-                                        'Invoice.purchaseInvoiceAdvPaymentNo'
-                                        } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-                                        'Invoice.invoiceAdvPaymentNo'
-                                        } else {
-                                        'Invoice.draftInvoiceNo'
-                                        }
+                                            if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.purchaseInvoiceAdvPaymentNo'
+                                            } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceAdvPaymentNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
                                         } else if(row["status_select"] == "3") {
-                                        if (row["operation_type_select"] == "1") {
-                                        if (row["operation_sub_type_select"] == "3") {
-                                        'Invoice.purchaseInvoiceBalanceNo'
-                                        } else {
-                                        'Invoice.purchaseInvoiceNo'
-                                        }
-                                        } else if (row["operation_type_select"] == "2") {
-                                        'Invoice.purchaseCreditNoteNo'
-                                        } else if (row["operation_type_select"] == "3") {
-                                        if (row["operation_sub_type_select"] == "3") {
-                                        'Invoice.invoiceBalanceNo'
-                                        } else {
-                                        'Invoice.invoiceNo'
-                                        }
-                                        } else if (row["operation_type_select"] == "4") {
-                                        'Invoice.refundNo'
-                                        }
+                                            if (row["operation_type_select"] == "1") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.purchaseInvoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.purchaseInvoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "2") {
+                                                'Invoice.purchaseCreditNoteNo'
+                                            } else if (row["operation_type_select"] == "3") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.invoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.invoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "4") {
+                                                'Invoice.refundNo'
+                                            }
                                         } else if(row["status_select"] == "4") {
-                                        'Invoice.cancelInvoiceNo'
+                                            'Invoice.cancelInvoiceNo'
                                         }</value>
                                 </simple-property-list>
                             </structure>
@@ -5285,11 +5287,11 @@ this.height=row["logo_height"];]]></method>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
-                                                    'Invoice.supplierPartnerSeq'
-                                                    }
-                                                    else {
-                                                    'Invoice.customerPartnerSeq'
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
+                                                        'Invoice.supplierPartnerSeq'
+                                                    } else {
+                                                        'Invoice.customerPartnerSeq'
                                                     }</value>
                                             </simple-property-list>
                                         </structure>
@@ -5366,10 +5368,11 @@ this.height=row["logo_height"];]]></method>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
-                                                    'Invoice.supplyRef'
-                                                    }else{
-                                                    'Invoice.clientRef'
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2") {
+                                                        'Invoice.supplyRef'
+                                                    } else {
+                                                        'Invoice.clientRef'
                                                     }</value>
                                             </simple-property-list>
                                         </structure>
@@ -5453,7 +5456,8 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if(row["title_select"] == "1"){'M.'}
+                                    <value type="javascript">
+                                        if(row["title_select"] == "1"){'M.'}
                                         else if(row["title_select"] == "2"){'Ms.'}
                                         else if(row["title_select"] == "3"){'Dr'}
                                         else if(row["title_select"] == "4"){'Prof.'}</value>
@@ -5630,36 +5634,37 @@ row["message_key"]
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">if (row["status_select"] == "1") {
-                                        'Invoice.draftInvoiceNo'
+                                    <value type="javascript">
+                                        if (row["status_select"] == "1") {
+                                            'Invoice.draftInvoiceNo'
                                         } else if(row["status_select"] == "2") {
-                                        if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
-                                        'Invoice.purchaseInvoiceAdvPaymentNo'
-                                        } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
-                                        'Invoice.invoiceAdvPaymentNo'
-                                        } else {
-                                        'Invoice.draftInvoiceNo'
-                                        }
+                                            if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.purchaseInvoiceAdvPaymentNo'
+                                            } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceAdvPaymentNo'
+                                            } else {
+                                                'Invoice.draftInvoiceNo'
+                                            }
                                         } else if(row["status_select"] == "3") {
-                                        if (row["operation_type_select"] == "1") {
-                                        if (row["operation_sub_type_select"] == "3") {
-                                        'Invoice.purchaseInvoiceBalanceNo'
-                                        } else {
-                                        'Invoice.purchaseInvoiceNo'
-                                        }
-                                        } else if (row["operation_type_select"] == "2") {
-                                        'Invoice.purchaseCreditNoteNo'
-                                        } else if (row["operation_type_select"] == "3") {
-                                        if (row["operation_sub_type_select"] == "3") {
-                                        'Invoice.invoiceBalanceNo'
-                                        } else {
-                                        'Invoice.invoiceNo'
-                                        }
-                                        } else if (row["operation_type_select"] == "4") {
-                                        'Invoice.refundNo'
-                                        }
+                                            if (row["operation_type_select"] == "1") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.purchaseInvoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.purchaseInvoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "2") {
+                                                'Invoice.purchaseCreditNoteNo'
+                                            } else if (row["operation_type_select"] == "3") {
+                                                if (row["operation_sub_type_select"] == "3") {
+                                                    'Invoice.invoiceBalanceNo'
+                                                } else {
+                                                    'Invoice.invoiceNo'
+                                                }
+                                            } else if (row["operation_type_select"] == "4") {
+                                                'Invoice.refundNo'
+                                            }
                                         } else if(row["status_select"] == "4") {
-                                        'Invoice.cancelInvoiceNo'
+                                            'Invoice.cancelInvoiceNo'
                                         }</value>
                                 </simple-property-list>
                             </structure>
@@ -6015,11 +6020,11 @@ row["partnerFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
-                                                    'Invoice.supplierPartnerSeq'
-                                                    }
-                                                    else {
-                                                    'Invoice.customerPartnerSeq'
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"] == 1 || row["operation_type_select"] == 2)  {
+                                                        'Invoice.supplierPartnerSeq'
+                                                    } else {
+                                                        'Invoice.customerPartnerSeq'
                                                     }</value>
                                             </simple-property-list>
                                         </structure>
@@ -6058,10 +6063,11 @@ row["partnerFirstName"]
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
-                                                    'Invoice.supplyRef'
-                                                    }else{
-                                                    'Invoice.clientRef'
+                                                <value type="javascript">
+                                                    if(row["operation_type_select"]== "1" || row["operation_type_select"] == "2"){
+                                                        'Invoice.supplyRef'
+                                                    } else {
+                                                        'Invoice.clientRef'
                                                     }</value>
                                             </simple-property-list>
                                         </structure>
@@ -7171,10 +7177,11 @@ row["partnerFirstName"]
                                             <structure>
                                                 <property name="paramName">param_1</property>
                                                 <simple-property-list name="expression">
-                                                    <value type="javascript">if (row["typeselect"] == 3) {
-                                                        row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
+                                                    <value type="javascript">
+                                                        if (row["typeselect"] == 3) {
+                                                            row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                                         } else {
-                                                        'value:'+ row["product_name"]
+                                                            'value:'+ row["product_name"]
                                                         }</value>
                                                 </simple-property-list>
                                             </structure>
