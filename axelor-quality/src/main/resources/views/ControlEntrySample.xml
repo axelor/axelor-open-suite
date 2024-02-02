@@ -21,7 +21,7 @@
     <panel-related name="controlEntrySampleLinesPanel"
       field="controlEntryPlanLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
       form-view="control-entry-sample-line-form"
-      onChange="save,action-method-quality-entry-sample-update-result" canEdit="false"/>
+      onChange="save,action-method-quality-entry-sample-update-result"/>
   </form>
 
   <action-method name="action-method-quality-entry-sample-update-result">
