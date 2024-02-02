@@ -105,6 +105,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected OperationOrderOutsourceService operationOrderOutsourceService;
   protected StockConfigProductionService stockConfigProductionService;
+  protected ProductService productService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
@@ -126,7 +127,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       ProductionOrderService productionOrderService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       OperationOrderOutsourceService operationOrderOutsourceService,
-      StockConfigProductionService stockConfigProductionService) {
+      StockConfigProductionService stockConfigProductionService,
+      ProductService productService) {
     this.operationOrderWorkflowService = operationOrderWorkflowService;
     this.operationOrderRepo = operationOrderRepo;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
@@ -146,6 +148,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.operationOrderOutsourceService = operationOrderOutsourceService;
     this.stockConfigProductionService = stockConfigProductionService;
+    this.productService = productService;
   }
 
   @Override
@@ -481,7 +484,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
       productCompanyService.set(product, "costPrice", manufOrder.getCostPrice(), company);
       if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
-        Beans.get(ProductService.class).updateSalePrice(product, company);
+        productService.updateSalePrice(product, company);
       }
     }
   }
