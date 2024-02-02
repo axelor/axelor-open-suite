@@ -579,7 +579,8 @@
 
   <action-record name="action-base-user-record-change-language"
     model="com.axelor.auth.db.User">
-    <field name="language" expr="eval:__this__.localization?.language?.code"/>
+    <field name="language"
+      expr="eval:__this__.localization?.code.replace('_','-').toLowerCase()"/>
   </action-record>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"
