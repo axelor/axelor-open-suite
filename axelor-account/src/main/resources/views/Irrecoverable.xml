@@ -88,6 +88,7 @@
     <view type="grid" name="trace-back-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id and self.origin = 'irrecoverable'</domain>
+    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-attrs

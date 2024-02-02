@@ -67,6 +67,7 @@
     <view type="grid" name="trace-back-account-consistency-grid"/>
     <view type="form" name="trace-back-form"/>
     <domain>self.batchId = :id</domain>
+    <context name="id" expr="eval: id"/>
   </action-view>
 
   <action-method name="action-batch-show-move-method-consistency">
