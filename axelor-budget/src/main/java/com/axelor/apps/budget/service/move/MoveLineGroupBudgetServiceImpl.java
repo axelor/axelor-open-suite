@@ -92,7 +92,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadMoveAttrsMap(moveLine, move);
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -104,7 +104,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadAttrsMap(moveLine, move);
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;
@@ -118,7 +118,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
     if (move != null) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
-      this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
+      this.addAttr("budgetPanel", "readonly", condition, attrsMap);
     }
 
     return attrsMap;

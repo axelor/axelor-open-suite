@@ -650,6 +650,7 @@ public class BudgetServiceImpl implements BudgetService {
     if (move.getStatusSelect() == MoveRepository.STATUS_NEW || move.getInvoice() != null) {
       return;
     }
+
     if (!CollectionUtils.isEmpty(move.getMoveLineList())) {
       move.getMoveLineList().stream()
           .filter(moveLine -> CollectionUtils.isNotEmpty(moveLine.getBudgetDistributionList()))
@@ -897,6 +898,7 @@ public class BudgetServiceImpl implements BudgetService {
       if (budget.getPeriodDurationSelect() == null) {
         budget.setPeriodDurationSelect(0);
       }
+      budget.setAmountForGeneration(budget.getTotalAmountExpected());
       generatePeriods(budget);
     }
   }

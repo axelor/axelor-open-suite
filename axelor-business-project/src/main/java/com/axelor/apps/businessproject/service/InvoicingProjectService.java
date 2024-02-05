@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
@@ -100,6 +101,8 @@ public class InvoicingProjectService {
   @Inject protected AppBusinessProjectService appBusinessProjectService;
 
   @Inject protected TimesheetLineBusinessService timesheetLineBusinessService;
+
+  @Inject protected InvoiceLineService invoiceLineService;
 
   @Inject protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
 
@@ -231,6 +234,8 @@ public class InvoicingProjectService {
     for (InvoiceLine invoiceLine : invoiceLineList) {
       invoiceLine.setSequence(sequence);
       sequence++;
+
+      invoiceLineService.compute(invoice, invoiceLine);
     }
 
     return invoiceLineList;

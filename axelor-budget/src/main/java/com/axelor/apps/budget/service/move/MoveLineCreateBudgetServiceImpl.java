@@ -72,6 +72,9 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
     moveLine = super.fillMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
 
+    moveLine.setBudget(invoiceLine.getBudget());
+    moveLine.setBudgetDistributionSumAmount(invoiceLine.getBudgetDistributionSumAmount());
+
     if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         moveLine.addBudgetDistributionListItem(budgetDistribution);

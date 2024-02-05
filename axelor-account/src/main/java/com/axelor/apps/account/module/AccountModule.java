@@ -780,5 +780,7 @@ public class AccountModule extends AxelorModule {
 
     bind(FixedAssetDerogatoryLineRepository.class)
         .to(FixedAssetDerogatoryLineManagementRepository.class);
+
+    bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
   }
 }

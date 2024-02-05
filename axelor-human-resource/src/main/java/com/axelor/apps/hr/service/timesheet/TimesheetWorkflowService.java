@@ -16,7 +16,7 @@ public interface TimesheetWorkflowService {
   Message confirmAndSendConfirmationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  void validate(Timesheet timesheet);
+  void validate(Timesheet timesheet) throws AxelorException;
 
   Message sendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
@@ -24,7 +24,10 @@ public interface TimesheetWorkflowService {
   Message validateAndSendValidationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  void refuse(Timesheet timesheet);
+  void refuse(Timesheet timesheet) throws AxelorException;
+
+  void refuseAndSendRefusalEmail(Timesheet timesheet, String groundForRefusal)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException;
 
   Message sendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
@@ -32,7 +35,7 @@ public interface TimesheetWorkflowService {
   Message refuseAndSendRefusalEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
 
-  void cancel(Timesheet timesheet);
+  void cancel(Timesheet timesheet) throws AxelorException;
 
   void draft(Timesheet timesheet);
 
@@ -41,4 +44,10 @@ public interface TimesheetWorkflowService {
 
   Message cancelAndSendCancellationEmail(Timesheet timesheet)
       throws AxelorException, ClassNotFoundException, IOException, JSONException;
+
+  Message complete(Timesheet timesheet)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException;
+
+  void completeOrConfirm(Timesheet timesheet)
+      throws AxelorException, JSONException, IOException, ClassNotFoundException;
 }
