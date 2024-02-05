@@ -27,6 +27,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.MailMessageService;
 import com.google.inject.persist.Transactional;
+import com.google.inject.servlet.RequestScoper;
+import com.google.inject.servlet.ServletScopes;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 public class ImportConfigurationCallableService implements Callable<ImportHistory> {
@@ -35,7 +38,9 @@ public class ImportConfigurationCallableService implements Callable<ImportHistor
 
   @Override
   public ImportHistory call() throws Exception {
-    try {
+
+    final RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+    try (RequestScoper.CloseableScope ignored = scope.open()) {
       ImportHistory importHistory = Beans.get(ImportService.class).run(importConfiguration);
       completeImportConfigurationAndSendMessage(importHistory);
       return importHistory;
