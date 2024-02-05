@@ -392,13 +392,14 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
               amountWithFinancialDiscount,
               amountWithFinancialDiscount);
         } else if (this.isPartialPayment(invoicePayment)) {
-          invoicePayment.setApplyFinancialDiscount(false);
-
           invoicePayment.clearInvoiceTermPaymentList();
           invoiceTermPaymentService.initInvoiceTermPaymentsWithAmount(
               invoicePayment, invoiceTerms, amount, amount);
         }
 
+        if (this.isPartialPayment(invoicePayment)) {
+          invoicePayment.setApplyFinancialDiscount(false);
+        }
         invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
       }
     }
