@@ -33,6 +33,7 @@ public class ImportExportTranslationController {
                         .find(importExportTranslation.getId()));
             if (path != null) {
               String[] filePath = path.split("/");
+              importExportTranslationService.copyFileFromUploadDirToExportDir(path);
               response.setExportFile(filePath[filePath.length - 1]);
               response.setInfo(I18n.get("File successfully exported."));
             }

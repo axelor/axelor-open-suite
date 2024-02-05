@@ -2,6 +2,8 @@ package com.axelor.apps.base.service;
 
 import static com.axelor.apps.base.service.administration.AbstractBatch.FETCH_LIMIT;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.ImportExportTranslationHistory;
@@ -22,7 +24,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -45,6 +50,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
 
   protected int errorNumber = 0;
   protected int countRecords = 0;
+
+  private static final String DEFAULT_EXPORT_PATH = "{java.io.tmpdir}/axelor/exports";
 
   @Inject
   public ImportExportTranslationServiceImpl(
@@ -92,6 +99,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           "File input error.");
     }
     saveHistory(importExportTranslationHistory);
+    String filePath = file.getPath();
+
     return file.getPath();
   }
 
@@ -418,5 +427,20 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     metaTranslation.setMessage(messageValue);
     metaTranslation.setLanguage(language);
     metaTranslationRepository.save(metaTranslation);
+  }
+
+  /**
+   * Copy the file from data.upload.dir to data.export.dir.
+   *
+   * @param uploadedFilePath
+   * @throws IOException
+   */
+  @Override
+  public void copyFileFromUploadDirToExportDir(String uploadedFilePath) throws IOException {
+    Path EXPORT_PATH =
+        Paths.get(AppSettings.get().get(AvailableAppSettings.DATA_EXPORT_DIR, DEFAULT_EXPORT_PATH));
+    Path sourcePath = Paths.get(uploadedFilePath);
+    Path targetPath = EXPORT_PATH.resolve(sourcePath.getFileName());
+    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
   }
 }
