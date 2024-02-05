@@ -481,8 +481,8 @@
           domain="self.parentTaskTemplate = null or self.parentTaskTemplate in :taskTemplateSet"/>
       </panel>
       <panel name="linksPanel" title="Links" if-module="axelor-stock"
-        if="__config__.app.isApp('stock')" hideIf="isShippingCostsProduct || !stockManaged"
-        showIf="id">
+        if="__config__.app.isApp('stock')" hidden="true"
+        showIf="id &amp;&amp; !isShippingCostsProduct &amp;&amp; stockManaged">
         <panel-dashlet name="StockMoveLineIncomingPLannedPanel" colSpan="12"
           action="action-product-view-stock-move-line-incoming-planned" showIf="id"/>
         <panel-dashlet name="StockMoveLineConsumptionPLannedPanel" colSpan="12"
