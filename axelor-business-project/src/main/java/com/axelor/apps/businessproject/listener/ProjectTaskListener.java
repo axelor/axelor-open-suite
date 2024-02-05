@@ -25,9 +25,7 @@ public class ProjectTaskListener {
 
       BigDecimal sumProgressTimesPlanifiedTime =
           childProjectTasks.stream()
-              .map(
-                  task ->
-                      BigDecimal.valueOf(task.getProgressSelect()).multiply(task.getPlannedTime()))
+              .map(task -> task.getProgress().multiply(task.getPlannedTime()))
               .reduce(BigDecimal.ZERO, BigDecimal::add);
 
       BigDecimal sumPlannedTime =
@@ -35,13 +33,11 @@ public class ProjectTaskListener {
               .map(ProjectTask::getPlannedTime)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
       int scale = 2;
-      int averageProgress =
+      BigDecimal averageProgress =
           sumPlannedTime.compareTo(BigDecimal.ZERO) != 0
-              ? sumProgressTimesPlanifiedTime
-                  .divide(sumPlannedTime, scale, RoundingMode.HALF_UP)
-                  .intValue()
-              : 0;
-      parentTask.setProgressSelect(averageProgress);
+              ? sumProgressTimesPlanifiedTime.divide(sumPlannedTime, scale, RoundingMode.HALF_UP)
+              : BigDecimal.ZERO;
+      parentTask.setProgress(averageProgress);
     }
   }
 }

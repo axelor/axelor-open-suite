@@ -284,20 +284,4 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     int newProgressSelect = progress.intValue() / 10;
     return newProgressSelect * 10;
   }
-
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateChildrenProgress(ProjectTask task, int progress) {
-    task = updateChildProgress(task, progress);
-    projectTaskRepo.save(task);
-  }
-
-  protected ProjectTask updateChildProgress(ProjectTask projectTask, int progress) {
-    if (projectTask.getProjectTaskList() != null && !projectTask.getProjectTaskList().isEmpty()) {
-      for (ProjectTask child : projectTask.getProjectTaskList()) {
-        child.setProgressSelect(progress);
-        updateChildProgress(child, progress);
-      }
-    }
-    return projectTask;
-  }
 }

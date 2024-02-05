@@ -27,7 +27,6 @@ import com.axelor.apps.businessproject.service.ProjectTaskBusinessProjectService
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
-import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
@@ -37,6 +36,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -195,9 +195,9 @@ public class ProjectTaskController {
   public void updateChildrenProgress(ActionRequest request, ActionResponse response) {
     try {
       ProjectTask task = request.getContext().asType(ProjectTask.class);
-      int progress = task.getProgressSelect();
+      BigDecimal progress = task.getProgress();
       task = Beans.get(ProjectTaskRepository.class).find(task.getId());
-      Beans.get(ProjectTaskService.class).updateChildrenProgress(task, progress);
+      Beans.get(ProjectTaskBusinessProjectService.class).updateChildrenProgress(task, progress);
       response.setValue("projectTaskList", task.getProjectTaskList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);

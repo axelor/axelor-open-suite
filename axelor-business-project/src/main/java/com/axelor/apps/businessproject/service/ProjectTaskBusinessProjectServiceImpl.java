@@ -676,4 +676,21 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     return Objects.equals(unit, appBusinessProject.getDaysUnit())
         || Objects.equals(unit, appBusinessProject.getHoursUnit());
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateChildrenProgress(ProjectTask task, BigDecimal progress) {
+    task = updateChildProgress(task, progress);
+    projectTaskRepo.save(task);
+  }
+
+  protected ProjectTask updateChildProgress(ProjectTask projectTask, BigDecimal progress) {
+    if (projectTask.getProjectTaskList() != null && !projectTask.getProjectTaskList().isEmpty()) {
+      for (ProjectTask child : projectTask.getProjectTaskList()) {
+        child.setProgress(progress);
+        updateChildProgress(child, progress);
+      }
+    }
+    return projectTask;
+  }
 }
