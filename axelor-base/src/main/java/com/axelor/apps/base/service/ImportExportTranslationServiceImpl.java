@@ -99,8 +99,6 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
           "File input error.");
     }
     saveHistory(importExportTranslationHistory);
-    String filePath = file.getPath();
-
     return file.getPath();
   }
 
