@@ -14,7 +14,7 @@
       onChange="action-inventory-line-method-update-current-qty"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2"/>
+      width="120" x-scale="2" min="0"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"
       readonly="true"/>
     <field name="description"/>
@@ -39,7 +39,7 @@
         onSelect="action-inventory-line-method-set-stock-location-domain"
         onChange="action-inventory-line-method-update-current-qty"/>
       <field name="currentQty" readonly="true"/>
-      <field name="realQty" onChange="action-inventory-line-method-compute"/>
+      <field name="realQty" onChange="action-inventory-line-method-compute" min="0"/>
       <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"
         readonly="true"/>
       <field name="description"/>
