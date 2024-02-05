@@ -234,9 +234,7 @@ public class BankOrderServiceImpl implements BankOrderService {
       bankOrder.setArithmeticTotal(this.computeBankOrderTotalAmount(bankOrder));
     }
 
-    if (Objects.equals(bankOrder.getBankOrderCurrency(), bankOrder.getCompanyCurrency())) {
-      bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
-    }
+    bankOrder.setBankOrderTotalAmount(bankOrder.getArithmeticTotal());
 
     bankOrder.setCompanyCurrencyTotalAmount(this.computeCompanyCurrencyTotalAmount(bankOrder));
   }
