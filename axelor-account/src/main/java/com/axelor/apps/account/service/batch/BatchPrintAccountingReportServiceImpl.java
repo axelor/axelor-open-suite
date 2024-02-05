@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -44,6 +45,7 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
   protected AccountingReportTypeRepository accountingReportTypeRepo;
   protected AccountConfigService accountConfigService;
   protected AccountRepository accountRepository;
+  protected MoveToolService moveToolService;
 
   @Inject
   public BatchPrintAccountingReportServiceImpl(
@@ -52,13 +54,15 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
       AccountingReportRepository accountingReportRepo,
       AccountingReportTypeRepository accountingReportTypeRepo,
       AccountConfigService accountConfigService,
-      AccountRepository accountRepository) {
+      AccountRepository accountRepository,
+      MoveToolService moveToolService) {
     this.appAccountService = appAccountService;
     this.accountingReportService = accountingReportService;
     this.accountingReportRepo = accountingReportRepo;
     this.accountingReportTypeRepo = accountingReportTypeRepo;
     this.accountConfigService = accountConfigService;
     this.accountRepository = accountRepository;
+    this.moveToolService = moveToolService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -89,11 +93,19 @@ public class BatchPrintAccountingReportServiceImpl implements BatchPrintAccounti
     accountingReport.setExportTypeSelect("pdf");
     accountingReport.setRef(accountingReportService.getSequence(accountingReport));
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_DRAFT);
-    accountingReport.setMoveStatusSelect(
+
+    String availableMoveStatusSelect =
         Joiner.on(',')
             .join(
                 Lists.newArrayList(
-                    MoveRepository.STATUS_ACCOUNTED, MoveRepository.STATUS_DAYBOOK)));
+                    MoveRepository.STATUS_ACCOUNTED,
+                    MoveRepository.STATUS_DAYBOOK,
+                    MoveRepository.STATUS_SIMULATED));
+    accountingReport.setMoveStatusSelect(
+        Joiner.on(',')
+            .join(
+                moveToolService.getMoveStatusSelect(
+                    availableMoveStatusSelect, accountingReport.getCompany())));
 
     accountingReport.setDisplayClosingAccountingMoves(accountingBatch.getCloseYear());
     accountingReport.setDisplayOpeningAccountingMoves(accountingBatch.getOpenYear());
