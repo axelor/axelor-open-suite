@@ -49,6 +49,19 @@ public class ContractLineAttrsServiceImpl implements ContractLineAttrsService {
         attrsMap);
   }
 
+  protected void addDiscountScales(Map<String, Map<String, Object>> attrsMap, String prefix) {
+    this.addAttr(
+        this.computeField("discountAmount", prefix),
+        "scale",
+        appAccountService.getNbDecimalDigitForUnitPrice(),
+        attrsMap);
+    this.addAttr(
+        this.computeField("priceDiscounted", prefix),
+        "scale",
+        appAccountService.getNbDecimalDigitForUnitPrice(),
+        attrsMap);
+  }
+
   @Override
   public Map<String, Map<String, Object>> setScaleAndPrecision(Contract contract, String prefix) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
@@ -67,6 +80,7 @@ public class ContractLineAttrsServiceImpl implements ContractLineAttrsService {
 
     this.addQtyScale(attrsMap, prefix);
     this.addPriceScale(attrsMap, prefix);
+    this.addDiscountScales(attrsMap, prefix);
 
     return attrsMap;
   }

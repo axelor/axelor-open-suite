@@ -92,4 +92,9 @@ public interface CurrencyScaleServiceAccount extends CurrencyScaleService {
   int getScale(Currency currency);
 
   int getCompanyScale(Company company);
+
+  boolean isGreaterThan(
+      BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue);
+
+  boolean equals(BigDecimal amount1, BigDecimal amount2, MoveLine moveLine, boolean isCompanyValue);
 }

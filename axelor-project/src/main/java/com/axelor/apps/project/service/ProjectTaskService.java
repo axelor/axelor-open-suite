@@ -57,5 +57,7 @@ public interface ProjectTaskService {
 
   public void fillSubtask(ProjectTask projectTask);
 
+  int computeProgressSelect(ProjectTask projectTask);
+
   void updateChildrenProgress(ProjectTask task, int progress);
 }

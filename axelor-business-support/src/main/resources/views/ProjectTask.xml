@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress"/>
+    <field name="progress" widget="SelectProgress"/>
     <field name="projInvTypeSelect"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.getApp('business-project').automaticInvoicing" readonlyIf="invoiced"
@@ -101,8 +101,8 @@
         <field name="customerReferral" hidden="true" showIf="typeSelect == 'ticket'"
           onSelect="action-project-task-attrs-customer-referral-domain"
           if="__config__.app.isApp('business-project')"/>
-        <field name="progressSelect" colSpan="6" widget="SelectProgress"
-          onChange="action-project-task-update-planned-progress" readonlyIf="id"/>
+        <field name="progress" colSpan="6"
+          onChange="action-project-task-group-progress-onchange" readonlyIf="id"/>
         <field name="assignment" hidden="true" readonlyIf="id" showIf="typeSelect == 'ticket'"/>
       </panel>
     </panel>

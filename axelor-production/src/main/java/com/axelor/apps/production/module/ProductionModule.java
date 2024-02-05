@@ -108,10 +108,14 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
+import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
@@ -228,5 +232,8 @@ public class ProductionModule extends AxelorModule {
     bind(ProdProcessLineOutsourceService.class).to(ProdProcessLineOutsourceServiceImpl.class);
     bind(OperationOrderOutsourceService.class).to(OperationOrderOutsourceServiceImpl.class);
     bind(ProdProcessOutsourceService.class).to(ProdProcessOutsourceServiceImpl.class);
+    bind(ManufOrderCreatePurchaseOrderService.class)
+        .to(ManufOrderCreatePurchaseOrderServiceImpl.class);
+    bind(ManufOrderPlanService.class).to(ManufOrderPlanServiceImpl.class);
   }
 }

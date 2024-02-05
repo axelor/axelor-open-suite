@@ -20,6 +20,8 @@ package com.axelor.apps.contract.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
+import com.axelor.apps.contract.db.repo.ConsumptionLineManagementRepository;
+import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchContractRepository;
 import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
@@ -69,6 +71,7 @@ public class ContractModule extends AxelorModule {
     bind(IndexRevaluationService.class).to(IndexRevaluationServiceImpl.class);
     bind(ContractRevaluationService.class).to(ContractRevaluationServiceImpl.class);
     bind(ContractLineViewService.class).to(ContractLineViewServiceImpl.class);
+    bind(ConsumptionLineRepository.class).to(ConsumptionLineManagementRepository.class);
     bind(ContractLineAttrsService.class).to(ContractLineAttrsServiceImpl.class);
     bind(CurrencyScaleServiceContract.class).to(CurrencyScaleServiceContractImpl.class);
   }

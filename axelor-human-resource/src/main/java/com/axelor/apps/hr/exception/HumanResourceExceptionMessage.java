@@ -323,4 +323,49 @@ public final class HumanResourceExceptionMessage {
 
   public static final String EXPENSE_LINE_SELECTED_EMPLOYEE_ERROR = /*$$(*/
       "All lines must have the same employee." /*)*/;
+
+  public static final String TIMESHEET_TIMER_EMPTY_EMPLOYEE = /*$$(*/
+      "Please choose an employee." /*)*/;
+
+  public static final String TIMESHEET_TIMER_EMPTY_ACTIVITY = /*$$(*/
+      "Please choose an activity." /*)*/;
+
+  public static final String TIMESHEET_TIMER_EMPTY_PROJECT_OR_TASK = /*$$(*/
+      "Project and project task must be chosen together." /*)*/;
+
+  public static final String TIMESHEET_TIMER_PROJECT_TASK_INCONSISTENCY = /*$$(*/
+      "Given project task and project are not related." /*)*/;
+
+  public static final String TIMESHEET_TIMER_ACTIVITY_INCONSISTENCY = /*$$(*/
+      "Given project task and activity are not related." /*)*/;
+
+  public static final String TIMESHEET_TIMER_TIMER_STOP_CONFIG_DISABLED = /*$$(*/
+      "Editing timer on stop need to be enabled to set a duration." /*)*/;
+
+  public static final String TIMESHEET_TIMER_USER_NO_EMPLOYEE = /*$$(*/
+      "Current user doesn't have an employee." /*)*/;
+
+  public static final String TIMESHEET_TIMER_ALREADY_STARTED = /*$$(*/
+      "Timer is already ongoing, stop it before starting a new one." /*)*/;
+
+  public static final String TIMESHEET_ADD_TIMER_WRONG_STATUS = /*$$(*/
+      "You can only add a timer to a drafted or a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_LINE_INVALID_DATE = /*$$(*/
+      "This date is invalid. It must be included in the timesheet's period." /*)*/;
+
+  public static final String TIMESHEET_CONFIRM_COMPLETE_WRONG_STATUS = /*$$(*/
+      "Can only confirm/complete from draft status." /*)*/;
+
+  public static final String TIMESHEET_VALIDATE_WRONG_STATUS = /*$$(*/
+      "Can only validate a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_REFUSE_WRONG_STATUS = /*$$(*/
+      "Can only refuse a waiting for validation timesheet." /*)*/;
+
+  public static final String TIMESHEET_CANCEL_WRONG_STATUS = /*$$(*/
+      "You can not cancel an already cancelled timesheet." /*)*/;
+
+  public static final String TIMESHEET_VALIDATION_NEEDED_NOT_ENABLED = /*$$(*/
+      "Validation needed configuration is not enabled." /*)*/;
 }

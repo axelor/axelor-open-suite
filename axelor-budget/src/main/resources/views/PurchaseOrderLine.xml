@@ -66,7 +66,7 @@
           <field name="budget" if="!__config__.app.getApp('budget')?.getManageMultiBudget()"
             showIf="product != null"
             onSelect="action-budget-purchase-order-line-method-budget-domain"
-            onChange="action-budget-purchase-order-line-method-set-account,action-budget-purchase-order-line-method-fill-budget-str"/>
+            onChange="action-budget-purchase-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"/>
           <panel-related name="budgetDistributionListPanel"
             field="budgetDistributionList" form-view="purchase-order-budget-distribution-form"
             grid-view="reduce-budget-distribution-grid" editable="true" colSpan="12"
@@ -129,10 +129,6 @@
     <context name="_project" expr="eval: _project"/>
     <context name="status" expr="eval: _status"/>
   </action-view>
-
-  <action-method name="action-budget-purchase-order-line-method-set-account">
-    <call class="com.axelor.apps.budget.web.PurchaseOrderLineController" method="setAccount"/>
-  </action-method>
 
   <action-method name="action-method-budget-purchase-orderline-set-product-account">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"

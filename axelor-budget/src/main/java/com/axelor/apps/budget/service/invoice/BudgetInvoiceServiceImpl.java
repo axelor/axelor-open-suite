@@ -181,35 +181,23 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
             Budget budget = budgetDistribution.getBudget();
 
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, budgetDistribution.getAmount());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-
-              amountPerBudgetMap.remove(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(budgetDistribution.getAmount()));
-            }
-          }
-          for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budgetEntry.getKey(), budgetEntry.getValue(), date);
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, budgetDistribution.getAmount(), amountPerBudgetMap);
           }
         } else {
           Budget budget = invoiceLine.getBudget();
           if (budget != null) {
-            if (!amountPerBudgetMap.containsKey(budget)) {
-              amountPerBudgetMap.put(budget, invoiceLine.getExTaxTotal());
-            } else {
-              BigDecimal oldAmount = amountPerBudgetMap.get(budget);
-              amountPerBudgetMap.put(budget, oldAmount.add(invoiceLine.getExTaxTotal()));
-            }
 
-            budgetExceedAlert +=
-                budgetDistributionService.getBudgetExceedAlert(
-                    budget, amountPerBudgetMap.get(budget), date);
+            budgetToolsService.fillAmountPerBudgetMap(
+                budget, invoiceLine.getCompanyExTaxTotal(), amountPerBudgetMap);
           }
         }
+      }
+
+      for (Map.Entry<Budget, BigDecimal> budgetEntry : amountPerBudgetMap.entrySet()) {
+        budgetExceedAlert +=
+            budgetDistributionService.getBudgetExceedAlert(
+                budgetEntry.getKey(), budgetEntry.getValue(), date);
       }
     }
     return budgetExceedAlert;
@@ -352,8 +340,10 @@ public class BudgetInvoiceServiceImpl extends InvoiceServiceProjectImpl
           BudgetDistribution budgetDistribution = new BudgetDistribution();
           budgetDistribution.setBudget(invoiceLine.getBudget());
           budgetDistribution.setAmount(invoiceLine.getCompanyExTaxTotal());
-          invoiceLine.addBudgetDistributionListItem(budgetDistribution);
+          budgetDistributionService.linkBudgetDistributionWithParent(
+              budgetDistribution, invoiceLine);
         }
+        invoiceLine.setBudgetDistributionSumAmount(invoiceLine.getCompanyExTaxTotal());
       }
     }
   }
