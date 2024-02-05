@@ -35,13 +35,14 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
   }
 
   @Override
-  public void processDeliveredSaleOrderLines(
-      Set<StockMoveLine> deliverySet, List<SaleOrderLine> saleOrderLineList) {
+  public Set<StockMoveLine> processDeliveredSaleOrderLines(List<SaleOrderLine> saleOrderLineList) {
+    Set<StockMoveLine> stockMoveLineSet = new HashSet<>();
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (shouldProcessSaleOrderLine(saleOrderLine)) {
-        addStockMoveLinesToDeliverySet(deliverySet, saleOrderLine);
+        addStockMoveLinesToStockMoveLineSet(stockMoveLineSet, saleOrderLine);
       }
     }
+    return stockMoveLineSet;
   }
 
   protected boolean shouldProcessSaleOrderLine(SaleOrderLine saleOrderLine) {
@@ -50,13 +51,13 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
         && saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED;
   }
 
-  protected void addStockMoveLinesToDeliverySet(
-      Set<StockMoveLine> deliverySet, SaleOrderLine saleOrderLine) {
+  protected void addStockMoveLinesToStockMoveLineSet(
+      Set<StockMoveLine> stockMoveLineSet, SaleOrderLine saleOrderLine) {
     List<StockMoveLine> stockMoveLineList = findRelevantStockMoveLines(saleOrderLine);
 
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       if (isStockMoveLineEligible(stockMoveLine)) {
-        deliverySet.add(stockMoveLine);
+        stockMoveLineSet.add(stockMoveLine);
       }
     }
   }
@@ -82,9 +83,9 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
 
   @Override
   public List<InvoiceLine> createStockMovesInvoiceLines(
-      Invoice invoice, Set<StockMoveLine> deliverySet) throws AxelorException {
+      Invoice invoice, Set<StockMoveLine> stockMoveLineSet) throws AxelorException {
 
-    Map<StockMove, List<StockMoveLine>> stockMoveMap = groupStockMoveLines(deliverySet);
+    Map<StockMove, List<StockMoveLine>> stockMoveMap = groupStockMoveLines(stockMoveLineSet);
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     for (Map.Entry<StockMove, List<StockMoveLine>> entry : stockMoveMap.entrySet()) {
@@ -94,18 +95,24 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
       Map<Long, BigDecimal> qtyToInvoiceMap = calculateQtyToInvoice(stockMoveLines);
 
       invoiceLineList.addAll(
-          createInvoiceLines(invoice, stockMove, stockMoveLines, qtyToInvoiceMap));
+          stockMoveInvoiceService.createInvoiceLines(
+              invoice, stockMove, stockMoveLines, qtyToInvoiceMap));
 
-      updateInvoiceStockMoves(invoice, stockMove);
+      Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
+      if (stockMoveSet == null) {
+        stockMoveSet = new HashSet<>();
+        invoice.setStockMoveSet(stockMoveSet);
+      }
+      stockMoveSet.add(stockMove);
     }
 
     return invoiceLineList;
   }
 
   protected Map<StockMove, List<StockMoveLine>> groupStockMoveLines(
-      Set<StockMoveLine> deliverySet) {
+      Set<StockMoveLine> stockMoveLineSet) {
     Map<StockMove, List<StockMoveLine>> stockMoveMap = new HashMap<>();
-    for (StockMoveLine stockMoveLine : deliverySet) {
+    for (StockMoveLine stockMoveLine : stockMoveLineSet) {
       StockMove stockMove = stockMoveLine.getStockMove();
       stockMoveMap.computeIfAbsent(stockMove, k -> new ArrayList<>()).add(stockMoveLine);
     }
@@ -119,24 +126,5 @@ public class InvoicingProjectStockMovesServiceImpl implements InvoicingProjectSt
       qtyToInvoiceMap.put(stockMoveLine.getId(), qtyToInvoice);
     }
     return qtyToInvoiceMap;
-  }
-
-  protected List<InvoiceLine> createInvoiceLines(
-      Invoice invoice,
-      StockMove stockMove,
-      List<StockMoveLine> stockMoveLines,
-      Map<Long, BigDecimal> qtyToInvoiceMap)
-      throws AxelorException {
-    return stockMoveInvoiceService.createInvoiceLines(
-        invoice, stockMove, stockMoveLines, qtyToInvoiceMap);
-  }
-
-  protected void updateInvoiceStockMoves(Invoice invoice, StockMove stockMove) {
-    Set<StockMove> stockMoveSet = invoice.getStockMoveSet();
-    if (stockMoveSet == null) {
-      stockMoveSet = new HashSet<>();
-      invoice.setStockMoveSet(stockMoveSet);
-    }
-    stockMoveSet.add(stockMove);
   }
 }

@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface InvoicingProjectStockMovesService {
-  void processDeliveredSaleOrderLines(
-      Set<StockMoveLine> deliverySet, List<SaleOrderLine> saleOrderLineList);
+  Set<StockMoveLine> processDeliveredSaleOrderLines(List<SaleOrderLine> saleOrderLineList);
 
-  List<InvoiceLine> createStockMovesInvoiceLines(Invoice invoice, Set<StockMoveLine> deliverySet)
-      throws AxelorException;
+  List<InvoiceLine> createStockMovesInvoiceLines(
+      Invoice invoice, Set<StockMoveLine> StockMoveLineSet) throws AxelorException;
 }

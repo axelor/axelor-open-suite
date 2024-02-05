@@ -128,7 +128,7 @@ public class InvoicingProjectService {
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()
-        && invoicingProject.getDeliverySet().isEmpty()) {
+        && invoicingProject.getStockMoveLineSet().isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -212,7 +212,7 @@ public class InvoicingProjectService {
     List<InvoiceLine> invoiceLineList = new ArrayList<InvoiceLine>();
     invoiceLineList.addAll(
         invoicingProjectStockMovesService.createStockMovesInvoiceLines(
-            invoice, folder.getDeliverySet()));
+            invoice, folder.getStockMoveLineSet()));
     invoiceLineList.addAll(
         this.createSaleOrderInvoiceLines(
             invoice, saleOrderLineList, folder.getSaleOrderLineSetPrioritySelect()));
@@ -474,10 +474,9 @@ public class InvoicingProjectService {
                 .bind(taskQueryMap)
                 .fetch());
 
-    Set<StockMoveLine> deliverySet = new HashSet<>();
-    invoicingProjectStockMovesService.processDeliveredSaleOrderLines(
-        deliverySet, saleOrderLineList);
-    invoicingProject.getDeliverySet().addAll(deliverySet);
+    Set<StockMoveLine> stockMoveLineSet =
+        invoicingProjectStockMovesService.processDeliveredSaleOrderLines(saleOrderLineList);
+    invoicingProject.getStockMoveLineSet().addAll(stockMoveLineSet);
   }
 
   public void clearLines(InvoicingProject invoicingProject) {
@@ -487,7 +486,7 @@ public class InvoicingProjectService {
     invoicingProject.setLogTimesSet(new HashSet<TimesheetLine>());
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
-    invoicingProject.setDeliverySet(new HashSet<StockMoveLine>());
+    invoicingProject.setStockMoveLineSet(new HashSet<StockMoveLine>());
   }
 
   public Company getRootCompany(Project project) {

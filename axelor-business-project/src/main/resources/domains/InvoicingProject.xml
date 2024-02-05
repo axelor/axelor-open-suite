@@ -19,7 +19,7 @@
       title="Expense Lines"/>
     <many-to-many name="projectTaskSet" ref="com.axelor.apps.project.db.ProjectTask"
       title="Tasks"/>
-    <many-to-many name="deliverySet" ref="com.axelor.apps.stock.db.StockMoveLine"
+    <many-to-many name="stockMoveLineSet" ref="com.axelor.apps.stock.db.StockMoveLine"
       title="Deliveries"/>
     <integer name="logTimesSetPrioritySelect" selection="invoicing.project.priority.select"
       title="Log Times Priority" default="3"/>
