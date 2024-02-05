@@ -20,7 +20,6 @@ package com.axelor.apps.quality.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntrySample;
-import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
 import com.axelor.apps.quality.service.ControlEntrySampleService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -33,10 +32,13 @@ public class ControlEntrySampleController {
 
   public void updateResult(ActionRequest request, ActionResponse response) throws AxelorException {
 
-    Optional.ofNullable(request.getContext().asType(ControlEntrySample.class))
-        .map(ces -> Beans.get(ControlEntrySampleRepository.class).find(ces.getId()))
-        .ifPresent(
-            controlEntrySample ->
-                Beans.get(ControlEntrySampleService.class).updateResult(controlEntrySample));
+    Optional<ControlEntrySample> optES =
+        Optional.ofNullable(request.getContext().asType(ControlEntrySample.class));
+
+    if (optES.isPresent()) {
+      ControlEntrySample controlEntrySample = optES.get();
+      Beans.get(ControlEntrySampleService.class).updateResult(controlEntrySample);
+      response.setValues(controlEntrySample);
+    }
   }
 }

@@ -19,8 +19,6 @@
 package com.axelor.apps.quality.module;
 
 import com.axelor.app.AxelorModule;
-import com.axelor.apps.quality.db.repo.ControlEntryPlanLineManagementRepository;
-import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertManagementRepository;
 import com.axelor.apps.quality.db.repo.QualityAlertRepository;
 import com.axelor.apps.quality.db.repo.QualityControlManagementRepository;
@@ -66,7 +64,6 @@ public class QualityModule extends AxelorModule {
     bind(ControlEntryPlanLineService.class).to(ControlEntryPlanLineServiceImpl.class);
     bind(ControlEntryService.class).to(ControlEntryServiceImpl.class);
     bind(ControlEntrySampleService.class).to(ControlEntrySampleServiceImpl.class);
-    bind(ControlEntryPlanLineRepository.class).to(ControlEntryPlanLineManagementRepository.class);
     bind(QIActionDistributionService.class).to(QIActionDistributionServiceImpl.class);
     bind(QIResolutionService.class).to(QIResolutionServiceImpl.class);
   }

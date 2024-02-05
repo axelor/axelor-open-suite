@@ -368,4 +368,12 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_VALIDATION_NEEDED_NOT_ENABLED = /*$$(*/
       "Validation needed configuration is not enabled." /*)*/;
+
+  public static final String TIMESHEET_ACTIVITY_NOT_ENABLED = /*$$(*/
+      "Activity on timesheet line is not enabled." /*)*/;
+
+  public static final String TIMESHEET_ACTIVITY_NOT_ALLOWED = /*$$(*/
+      "The activity is not allowed in the current project." /*)*/;
+  public static final String TIMESHEET_PRODUCT_NOT_ACTIVITY = /*$$(*/
+      "The given product is not an activity, please choose a correct activity." /*)*/;
 }

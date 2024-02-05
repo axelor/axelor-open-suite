@@ -82,7 +82,7 @@
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="acceptOrderBtn" title="Accept Order" hidden="true"
-          showIf="typeSelect == 'ticket'" hideIf="!invoicingType || isOrderAccepted"
+          showIf="typeSelect == 'ticket' &amp;&amp; invoicingType &amp;&amp; !isOrderAccepted"
           onClick="action-project-task-attrs-onclick-order-accepted,save" colSpan="12"/>
         <button name="assigningProviderBtn" colSpan="12" title="Assigning to the provider"
           hidden="true" onClick="action-project-task-attrs-assginment-provider,save"

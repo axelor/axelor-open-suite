@@ -15,7 +15,6 @@
   </input>
 
   <input file="base_birtTemplate.csv" separator=";"
-    call="com.axelor.csv.script.ImportBirtTemplate:importTemplate"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
@@ -27,5 +26,6 @@
     type="com.axelor.apps.base.db.BirtTemplateConfigLine" separator=";"
     search="self.importId = :importId">
     <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="appBase" search="self.id = '1'"/>
   </input>
 </csv-inputs>
