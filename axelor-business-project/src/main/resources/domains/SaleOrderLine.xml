@@ -17,8 +17,9 @@
       <![CDATA[
             public static final int INVOICING_MODE_DIRECTLY = 1;
             public static final int INVOICING_MODE_ON_DELIVERY = 2;
+            public static final int INVOICING_MODE_PROGRESS_BILLING = 3;
 
-          ]]>
+	  	]]>
     </extra-code>
   </entity>
 

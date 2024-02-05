@@ -424,7 +424,8 @@
           onChange="action-sale-order-line-record-set-default-invoicing-mode-select"/>
         <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project" showIf="toInvoice"/>
+          if-module="axelor-business-project" showIf="toInvoice"
+          onChange="action-sale-order-line-validate-check-coefficient-config"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
@@ -1047,6 +1048,16 @@
 
   <action-attrs name="action-sale-order-line-attrs-onnew-focus">
     <attribute for="product" name="focus" expr="true"/>
+  </action-attrs>
+
+  <action-validate name="action-sale-order-line-validate-check-coefficient-config">
+    <error message="Coefficient on invoice line must be enabled"
+      if="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled"
+      action="action-sale-order-line-attrs-reset-invoicing-mode"/>
+  </action-validate>
+
+  <action-attrs name="action-sale-order-line-attrs-reset-invoicing-mode">
+    <attribute for="invoicingModeSelect" name="value" expr="eval: null"/>
   </action-attrs>
 
   <action-record
