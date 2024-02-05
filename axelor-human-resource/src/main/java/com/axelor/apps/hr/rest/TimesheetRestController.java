@@ -8,7 +8,9 @@ import com.axelor.apps.hr.rest.dto.TimesheetPutRequest;
 import com.axelor.apps.hr.rest.dto.TimesheetResponse;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
+import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationService;
 import com.axelor.i18n.I18n;
@@ -23,6 +25,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.servers.Server;
 import java.io.IOException;
+import java.util.Map;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -131,5 +134,27 @@ public class TimesheetRestController {
         Response.Status.OK,
         I18n.get(ITranslation.CHECK_RESPONSE_RESPONSE),
         Beans.get(TimesheetCheckResponseService.class).createResponse(timesheet));
+  }
+
+  @Operation(
+      summary = "Convert timesheet period total",
+      tags = {"Timesheet"})
+  @Path("/convertPeriod/{timesheetId}")
+  @GET
+  @HttpExceptionHandler
+  public Response convertPeriodTotal(@PathParam("timesheetId") Long timesheetId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(Expense.class).check();
+    Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        "Timesheet converted period total.",
+        Map.of(
+            "periodTotalConvertTitle",
+            Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet),
+            "periodTotalConvert",
+            Beans.get(TimesheetLineService.class)
+                .computeHoursDuration(timesheet, timesheet.getPeriodTotal(), false)));
   }
 }
