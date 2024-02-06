@@ -214,6 +214,7 @@ public class AccountingReportController {
       accountingReport = Beans.get(AccountingReportRepository.class).find(accountingReport.getId());
       AccountingReportService accountingReportService = Beans.get(AccountingReportService.class);
 
+      accountingReportService.checkReportType(accountingReport);
       int typeSelect = accountingReport.getReportType().getTypeSelect();
 
       if (accountingReport.getExportTypeSelect() == null
