@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix report when invoice is linked to more than one stock move"
+type: fix
