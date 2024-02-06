@@ -49,7 +49,15 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
         new Context(Mapper.toMap(controlEntryPlanLine), ControlEntryPlanLine.class);
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    Object result = scriptHelper.eval(formula);
+    Object result;
+
+    try {
+      result = scriptHelper.eval(formula);
+    } catch (IllegalArgumentException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(QualityExceptionMessage.EVAL_FORMULA_NULL_FIELDS));
+    }
 
     if (!(result instanceof Boolean)) {
       throw new AxelorException(
