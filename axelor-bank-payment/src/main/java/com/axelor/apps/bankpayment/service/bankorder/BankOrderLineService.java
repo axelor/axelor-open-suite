@@ -47,7 +47,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -409,7 +408,7 @@ public class BankOrderLineService {
 
     Currency bankOrderCurrency = bankOrder.getBankOrderCurrency();
 
-    if (!Objects.equals(bankOrderCurrency, bankOrder.getCompanyCurrency())) {
+    if (BankOrderToolService.isMultiCurrency(bankOrder)) {
       bankOrderCurrency = bankOrderLine.getBankOrderCurrency();
     }
 

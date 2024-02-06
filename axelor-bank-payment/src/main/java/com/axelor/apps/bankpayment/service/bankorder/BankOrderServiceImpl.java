@@ -208,7 +208,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     if (bankOrderLines != null) {
       for (BankOrderLine bankOrderLine : bankOrderLines) {
         bankOrderLine.setCompanyCurrencyAmount(
-            !Objects.equals(bankOrder.getBankOrderCurrency(), bankOrder.getCompanyCurrency())
+            BankOrderToolService.isMultiCurrency(bankOrder)
                 ? currencyService
                     .getAmountCurrencyConvertedAtDate(
                         bankOrder.getBankOrderCurrency(),

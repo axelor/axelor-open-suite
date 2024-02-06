@@ -61,7 +61,6 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,8 +153,7 @@ public class BankOrderMoveServiceImpl implements BankOrderMoveService {
         paymentModeService.getPaymentModeAccount(paymentMode, senderCompany, senderBankDetails);
 
     isMultiDate = bankOrder.getIsMultiDate();
-    isMultiCurrency =
-        !Objects.equals(bankOrder.getBankOrderCurrency(), bankOrder.getCompanyCurrency());
+    isMultiCurrency = BankOrderToolService.isMultiCurrency(bankOrder);
 
     isDebit =
         orderTypeSelect == BankOrderRepository.ORDER_TYPE_INTERNATIONAL_CREDIT_TRANSFER
