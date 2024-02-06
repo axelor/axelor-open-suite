@@ -18,8 +18,6 @@
  */
 package com.axelor.apps.hr.service;
 
-import com.axelor.app.AppSettings;
-import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
@@ -60,10 +58,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -78,8 +72,6 @@ public class PayrollPreparationService {
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
   private static final DateTimeFormatter SILAE_EXPORT_DATE_FORMATTER =
       DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
-  private static final String DEFAULT_EXPORT_PATH = "{java.io.tmpdir}/axelor/exports";
 
   protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
   protected LeaveRequestRepository leaveRequestRepo;
@@ -539,19 +531,5 @@ public class PayrollPreparationService {
     item[3] = payroll.getPeriod().getFromDate().format(SILAE_EXPORT_DATE_FORMATTER);
     item[4] = payroll.getPeriod().getToDate().format(SILAE_EXPORT_DATE_FORMATTER);
     return item;
-  }
-
-  /**
-   * Copy the file from data.upload.dir to data.export.dir.
-   *
-   * @param uploadedFilePath
-   * @throws IOException
-   */
-  public void copyFileFromUploadDirToExportDir(String uploadedFilePath) throws IOException {
-    Path EXPORT_PATH =
-        Paths.get(AppSettings.get().get(AvailableAppSettings.DATA_EXPORT_DIR, DEFAULT_EXPORT_PATH));
-    Path sourcePath = Paths.get(uploadedFilePath);
-    Path targetPath = EXPORT_PATH.resolve(sourcePath.getFileName());
-    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
   }
 }
