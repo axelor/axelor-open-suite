@@ -1698,6 +1698,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         || stockMoveLineList.isEmpty()) {
       return;
     }
+    // Ne prend pas au compte le fait que ce soit déja splitté
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {
