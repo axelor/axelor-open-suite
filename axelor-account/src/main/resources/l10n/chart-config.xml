@@ -113,6 +113,8 @@
     call="com.axelor.csv.script.ImportJournal:importAccountType">
     <bind column="importId" to="importId" eval="_companyCode + '-' + importId"/>
     <bind to="importOrigin" eval="_dataFileName"/>
+    <bind search="self.importId = (:_companyCode || '-' || :sequence_importId)" to="sequence"
+      update="true" if="sequence_importId"/>
     <bind column="validAccountTypes" to="validAccountTypeSet"
       search="self.importId in :validAccountTypes" eval="validAccountTypes.split('\\|') as List"/>
     <bind column="validAccounts" to="validAccountSet"
