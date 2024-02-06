@@ -133,8 +133,6 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
     BigDecimal baseAvailableAmount = availableAmount;
     BigDecimal availableAmountUnchanged = availableAmount;
 
-    boolean isCompanyCurrency;
-
     if (invoicePayment != null) {
       invoicePayment.clearInvoiceTermPaymentList();
     }
@@ -145,13 +143,7 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
           this.getInvoiceTermToPay(
               invoicePayment, invoiceTermsToPay, availableAmount, i++, invoiceTermCount);
 
-      isCompanyCurrency =
-          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-
-      BigDecimal invoiceTermAmount =
-          isCompanyCurrency
-              ? invoiceTermToPay.getAmountRemaining()
-              : invoiceTermToPay.getCompanyAmountRemaining();
+      BigDecimal invoiceTermAmount = invoiceTermToPay.getAmountRemaining();
 
       if (invoiceTermAmount.compareTo(availableAmount) >= 0) {
         invoiceTermPayment =
@@ -274,24 +266,24 @@ public class InvoiceTermPaymentServiceImpl implements InvoiceTermPaymentService 
       manageInvoiceTermFinancialDiscount(
           invoiceTermPayment, invoiceTermToPay, applyFinancialDiscount);
 
-      boolean isCompanyCurrency =
-          invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
-      invoiceTermPayment.setPaidAmount(
-          isCompanyCurrency ? paidAmount : this.computePaidAmount(invoiceTermToPay, paidAmount));
-      invoiceTermPayment.setCompanyPaidAmount(
-          isCompanyCurrency
-              ? this.computeCompanyPaidAmount(invoiceTermToPay, invoicePayment, paidAmount)
-              : paidAmount);
-    } catch (AxelorException e) {
-      TraceBackService.trace(
-          new AxelorException(
-              e,
-              e.getCategory(),
-              I18n.get("Invoice") + " %s",
-              invoicePayment.getInvoice().getInvoiceId()),
-          ExceptionOriginRepository.INVOICE_ORIGIN);
-    }
+    boolean isCompanyCurrency =
+        invoiceTermToPay.getAmount().compareTo(invoiceTermToPay.getCompanyAmount()) == 0;
 
+    invoiceTermPayment.setPaidAmount(paidAmount);
+
+    invoiceTermPayment.setCompanyPaidAmount(
+        isCompanyCurrency
+            ? paidAmount
+            : this.computeCompanyPaidAmount(invoiceTermToPay, invoicePayment, paidAmount));
+    } catch (AxelorException e) {
+        TraceBackService.trace(
+                new AxelorException(
+                        e,
+                        e.getCategory(),
+                        I18n.get("Invoice") + " %s",
+                        invoicePayment.getInvoice().getInvoiceId()),
+                ExceptionOriginRepository.INVOICE_ORIGIN);
+    }
     return invoiceTermPayment;
   }
 
