@@ -1,0 +1,2 @@
+"id";"name";"description";"permissions"
+101;role.mobile.base;Access to all objects of the mobile base module.;perm.mobile.User.rw|perm.mobile.Language.r|perm.mobile.TraceBack.c|perm.mobile.Company.r|perm.mobile.MetaModule.r|perm.mobile.App.r|perm.mobile.AppBase.r|perm.mobile.AppMobileSettings.r|perm.mobile.MobileSettings.r|perm.mobile.MetaFile.r|perm.mobile.Mail.rwc|perm.mobile.DMSFile.r|perm.mobile.MetaJsonField.r|perm.mobile.MetaTranslation.r
