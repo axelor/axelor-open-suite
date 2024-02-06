@@ -32,11 +32,17 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
 
 public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplychainServiceImpl {
+
+  protected CurrencyService currencyService;
 
   @Inject
   public AnalyticMoveLineContractServiceImpl(
@@ -48,7 +54,8 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
       AccountRepository accountRepository,
       AppBaseService appBaseService,
       AccountingSituationService accountingSituationService,
-      CurrencyScaleServiceAccount currencyScaleServiceAccount) {
+      CurrencyScaleServiceAccount currencyScaleServiceAccount,
+      CurrencyService currencyService) {
     super(
         analyticMoveLineRepository,
         appAccountService,
@@ -59,6 +66,7 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
         appBaseService,
         accountingSituationService,
         currencyScaleServiceAccount);
+    this.currencyService = currencyService;
   }
 
   @Override
@@ -70,5 +78,19 @@ public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplyc
         super.computeAnalyticMoveLine(invoiceLine, invoice, company, analyticAccount);
     analyticMoveLine.setContractLine(invoiceLine.getContractLine());
     return analyticMoveLine;
+  }
+
+  public void setCompanyExTaxTotal(
+      AnalyticLineContractModel analyticLineContractModel, ContractLine contractLine)
+      throws AxelorException {
+    if (contractLine != null && analyticLineContractModel != null) {
+      BigDecimal companyAmount =
+          currencyService.getAmountCurrencyConvertedAtDate(
+              analyticLineContractModel.getContract().getCurrency(),
+              analyticLineContractModel.getCompany().getCurrency(),
+              contractLine.getExTaxTotal(),
+              appAccountService.getTodayDate(analyticLineContractModel.getCompany()));
+      analyticLineContractModel.setCompanyExTaxTotal(companyAmount);
+    }
   }
 }
