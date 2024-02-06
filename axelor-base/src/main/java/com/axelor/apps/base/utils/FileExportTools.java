@@ -103,6 +103,10 @@ public class FileExportTools {
    */
   public static void copyFileToExportDir(String filePath) throws IOException {
     Path exportPath = Paths.get(EXPORT_PATH);
+    // if the export directory does not exist, create it first.
+    if (!Files.isDirectory(exportPath)) {
+      Files.createDirectories(exportPath);
+    }
     Path sourcePath = Paths.get(filePath);
     Path targetPath = exportPath.resolve(sourcePath.getFileName());
     Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
