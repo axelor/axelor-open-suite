@@ -19,7 +19,7 @@
 package com.axelor.apps.businessproduction.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationTimesheetService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.inject.Beans;
@@ -30,12 +30,12 @@ public class TimesheetLineController {
 
   /**
    * Called from timesheet line form view, on save. <br>
-   * Call {@link OperationOrderTimesheetService#updateOperationOrders(Timesheet)}.
+   * Call {@link ManufacturingOperationTimesheetService#updateManufacturingOperations(Timesheet)}.
    *
    * @param request
    * @param response
    */
-  public void updateOperationOrder(ActionRequest request, ActionResponse response) {
+  public void updateManufacturingOperation(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
       Timesheet timesheet = timesheetLine.getTimesheet();
@@ -44,7 +44,8 @@ public class TimesheetLineController {
       }
 
       if (timesheet != null) {
-        Beans.get(OperationOrderTimesheetService.class).updateOperationOrders(timesheet);
+        Beans.get(ManufacturingOperationTimesheetService.class)
+            .updateManufacturingOperations(timesheet);
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

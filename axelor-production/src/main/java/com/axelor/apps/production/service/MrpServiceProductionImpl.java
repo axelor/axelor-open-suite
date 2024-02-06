@@ -31,7 +31,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
@@ -259,23 +259,24 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
     }
 
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        for (ProdProduct prodProduct : operationOrder.getToConsumeProdProductList()) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        for (ProdProduct prodProduct : manufacturingOperation.getToConsumeProdProductList()) {
 
           Product product = prodProduct.getProduct();
 
           if (this.isMrpProduct(product)) {
 
-            if (operationOrder.getPlannedEndDateT() != null) {
-              maturityDate = operationOrder.getPlannedEndDateT().toLocalDate();
-            } else if (operationOrder.getPlannedStartDateT() != null) {
-              maturityDate = operationOrder.getPlannedStartDateT().toLocalDate();
+            if (manufacturingOperation.getPlannedEndDateT() != null) {
+              maturityDate = manufacturingOperation.getPlannedEndDateT().toLocalDate();
+            } else if (manufacturingOperation.getPlannedStartDateT() != null) {
+              maturityDate = manufacturingOperation.getPlannedStartDateT().toLocalDate();
             }
 
             maturityDate = this.computeMaturityDate(maturityDate, manufOrderNeedMrpLineType);
 
             Unit unit = product.getUnit();
-            BigDecimal qty = computeQtyLeftToConsume(operationOrder, prodProduct);
+            BigDecimal qty = computeQtyLeftToConsume(manufacturingOperation, prodProduct);
             if (!unit.equals(prodProduct.getUnit())) {
               qty =
                   unitConversionService.convert(
@@ -291,7 +292,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
                     maturityDate,
                     BigDecimal.ZERO,
                     stockLocation,
-                    operationOrder);
+                    manufacturingOperation);
             if (mrpLine != null) {
               mrpLineRepository.save(mrpLine);
             }
@@ -346,8 +347,9 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
   }
 
   protected BigDecimal computeQtyLeftToConsume(
-      OperationOrder operationOrder, ProdProduct prodProduct) {
-    return computeQtyLeftToProcess(operationOrder.getConsumedStockMoveLineList(), prodProduct);
+      ManufacturingOperation manufacturingOperation, ProdProduct prodProduct) {
+    return computeQtyLeftToProcess(
+        manufacturingOperation.getConsumedStockMoveLineList(), prodProduct);
   }
 
   protected BigDecimal computeQtyLeftToProduce(ManufOrder manufOrder, ProdProduct prodProduct) {

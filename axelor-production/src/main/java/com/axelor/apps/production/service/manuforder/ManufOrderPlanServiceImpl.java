@@ -5,17 +5,17 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationPlanningService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -33,10 +33,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   protected ManufOrderRepository manufOrderRepo;
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
-  protected OperationOrderRepository operationOrderRepo;
-  protected OperationOrderWorkflowService operationOrderWorkflowService;
-  protected OperationOrderPlanningService operationOrderPlanningService;
-  protected OperationOrderService operationOrderService;
+  protected ManufacturingOperationRepository manufacturingOperationRepo;
+  protected ManufacturingOperationWorkflowService manufacturingOperationWorkflowService;
+  protected ManufacturingOperationPlanningService manufacturingOperationPlanningService;
+  protected ManufacturingOperationService manufacturingOperationService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ProductionOrderService productionOrderService;
   protected ProductionConfigService productionConfigService;
@@ -49,10 +49,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       ManufOrderRepository manufOrderRepo,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      OperationOrderRepository operationOrderRepo,
-      OperationOrderWorkflowService operationOrderWorkflowService,
-      OperationOrderPlanningService operationOrderPlanningService,
-      OperationOrderService operationOrderService,
+      ManufacturingOperationRepository manufacturingOperationRepo,
+      ManufacturingOperationWorkflowService manufacturingOperationWorkflowService,
+      ManufacturingOperationPlanningService manufacturingOperationPlanningService,
+      ManufacturingOperationService manufacturingOperationService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProductionOrderService productionOrderService,
       ProductionConfigService productionConfigService,
@@ -62,10 +62,10 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     this.manufOrderRepo = manufOrderRepo;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
-    this.operationOrderRepo = operationOrderRepo;
-    this.operationOrderWorkflowService = operationOrderWorkflowService;
-    this.operationOrderPlanningService = operationOrderPlanningService;
-    this.operationOrderService = operationOrderService;
+    this.manufacturingOperationRepo = manufacturingOperationRepo;
+    this.manufacturingOperationWorkflowService = manufacturingOperationWorkflowService;
+    this.manufacturingOperationPlanningService = manufacturingOperationPlanningService;
+    this.manufacturingOperationService = manufacturingOperationService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.productionOrderService = productionOrderService;
     this.productionConfigService = productionConfigService;
@@ -114,7 +114,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
     }
     manufOrderService.createBarcode(manufOrder);
-    if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
+    if (CollectionUtils.isEmpty(manufOrder.getManufacturingOperationList())) {
       manufOrderService.preFillOperations(manufOrder);
     } else {
       manufOrderService.updateOperationsName(manufOrder);
@@ -127,7 +127,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   }
 
   protected void planSchedulingDates(ManufOrder manufOrder) throws AxelorException {
-    planPlanningOperationOrders(manufOrder);
+    planPlanningManufacturingOperations(manufOrder);
     // Updating plannedStartDate since, it may be different now that operation orders are
     // planned
     manufOrder.setPlannedStartDateT(this.computePlannedStartDateT(manufOrder));
@@ -210,10 +210,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
   }
 
-  protected void planPlanningOperationOrders(ManufOrder manufOrder) throws AxelorException {
-    List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
-    if (CollectionUtils.isNotEmpty(operationOrders)) {
-      operationOrderPlanningService.plan(operationOrders);
+  protected void planPlanningManufacturingOperations(ManufOrder manufOrder) throws AxelorException {
+    List<ManufacturingOperation> manufacturingOperations =
+        manufOrder.getManufacturingOperationList();
+    if (CollectionUtils.isNotEmpty(manufacturingOperations)) {
+      manufacturingOperationPlanningService.plan(manufacturingOperations);
     }
   }
 
@@ -223,9 +224,9 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     } else if (manufOrder.getPlannedStartDateT() == null
         && manufOrder.getPlannedEndDateT() != null) {
       long duration = 0;
-      for (OperationOrder order : manufOrder.getOperationOrderList()) {
+      for (ManufacturingOperation order : manufOrder.getManufacturingOperationList()) {
         duration +=
-            operationOrderService.computeEntireCycleDuration(
+            manufacturingOperationService.computeEntireCycleDuration(
                 order, order.getManufOrder().getQty()); // in seconds
       }
       // This is a estimation only, it will be updated later
@@ -248,11 +249,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   @Override
   public LocalDateTime computePlannedStartDateT(ManufOrder manufOrder) {
 
-    OperationOrder firstOperationOrder = getFirstOperationOrder(manufOrder);
+    ManufacturingOperation firstManufacturingOperation = getFirstManufacturingOperation(manufOrder);
 
-    if (firstOperationOrder != null) {
+    if (firstManufacturingOperation != null) {
 
-      return firstOperationOrder.getPlannedStartDateT();
+      return firstManufacturingOperation.getPlannedStartDateT();
     }
 
     return manufOrder.getPlannedStartDateT();
@@ -261,11 +262,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
   @Override
   public LocalDateTime computePlannedEndDateT(ManufOrder manufOrder) {
 
-    OperationOrder lastOperationOrder = getLastOperationOrder(manufOrder);
+    ManufacturingOperation lastManufacturingOperation = getLastManufacturingOperation(manufOrder);
 
-    if (lastOperationOrder != null) {
+    if (lastManufacturingOperation != null) {
 
-      return lastOperationOrder.getPlannedEndDateT();
+      return lastManufacturingOperation.getPlannedEndDateT();
     }
 
     return manufOrder.getPlannedStartDateT();
@@ -277,8 +278,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
    * @param manufOrder A manufacturing order
    * @return First operation order of {@code manufOrder}
    */
-  protected OperationOrder getFirstOperationOrder(ManufOrder manufOrder) {
-    return operationOrderRepo
+  protected ManufacturingOperation getFirstManufacturingOperation(ManufOrder manufOrder) {
+    return manufacturingOperationRepo
         .all()
         .filter("self.manufOrder = ? AND self.plannedStartDateT IS NOT NULL", manufOrder)
         .order("plannedStartDateT")
@@ -291,8 +292,8 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
    * @param manufOrder A manufacturing order
    * @return Last operation order of {@code manufOrder}
    */
-  protected OperationOrder getLastOperationOrder(ManufOrder manufOrder) {
-    return operationOrderRepo
+  protected ManufacturingOperation getLastManufacturingOperation(ManufOrder manufOrder) {
+    return manufacturingOperationRepo
         .all()
         .filter("self.manufOrder = ? AND self.plannedEndDateT IS NOT NULL", manufOrder)
         .order("-plannedEndDateT")
@@ -311,10 +312,11 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
       throws AxelorException {
     manufOrder.setPlannedStartDateT(plannedStartDateT);
 
-    List<OperationOrder> operationOrders = manufOrder.getOperationOrderList();
-    if (operationOrders != null) {
-      operationOrderWorkflowService.resetPlannedDates(operationOrders);
-      operationOrderPlanningService.replan(operationOrders);
+    List<ManufacturingOperation> manufacturingOperations =
+        manufOrder.getManufacturingOperationList();
+    if (manufacturingOperations != null) {
+      manufacturingOperationWorkflowService.resetPlannedDates(manufacturingOperations);
+      manufacturingOperationPlanningService.replan(manufacturingOperations);
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));

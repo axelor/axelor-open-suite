@@ -109,7 +109,7 @@
 		public static final String IMPUTATION_ON_PROJECT = "project";
 		public static final String IMPUTATION_ON_PROJECT_TASK = "projectTask";
 		public static final String IMPUTATION_ON_MANUF_ORDER = "manufOrder";
-		public static final String IMPUTATION_ON_OPERATION_ORDER = "operationOrder";
+		public static final String IMPUTATION_ON_MANUFACTURING_OPERATION = "manufacturingOperation";
 		public static final String IMPUTATION_ON_ACTIVITY = "product";
 	  ]]>
     </extra-code>

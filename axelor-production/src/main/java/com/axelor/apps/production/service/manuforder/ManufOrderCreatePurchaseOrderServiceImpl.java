@@ -12,14 +12,14 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
-import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationOutsourceService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
@@ -44,7 +44,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
   protected PurchaseOrderService purchaseOrderService;
   protected StockConfigProductionService stockConfigProductionService;
   protected ManufOrderRepository manufOrderRepository;
-  protected OperationOrderOutsourceService operationOrderOutsourceService;
+  protected ManufacturingOperationOutsourceService manufacturingOperationOutsourceService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
   protected AppBaseService appBaseService;
   protected AppProductionService appProductionService;
@@ -54,14 +54,14 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
       PurchaseOrderService purchaseOrderService,
       StockConfigProductionService stockConfigProductionService,
       ManufOrderRepository manufOrderRepository,
-      OperationOrderOutsourceService operationOrderOutsourceService,
+      ManufacturingOperationOutsourceService manufacturingOperationOutsourceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
       AppBaseService appBaseService,
       AppProductionService appProductionService) {
     this.purchaseOrderService = purchaseOrderService;
     this.stockConfigProductionService = stockConfigProductionService;
     this.manufOrderRepository = manufOrderRepository;
-    this.operationOrderOutsourceService = operationOrderOutsourceService;
+    this.manufacturingOperationOutsourceService = manufacturingOperationOutsourceService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
     this.appBaseService = appBaseService;
     this.appProductionService = appProductionService;
@@ -107,21 +107,22 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     }
 
     for (PurchaseOrder purchaseOrder : generatedPurchaseOrders) {
-      List<OperationOrder> operationOrderGeneratePurchaseOrderList =
-          manufOrder.getOperationOrderList().stream()
+      List<ManufacturingOperation> manufacturingOperationGeneratePurchaseOrderList =
+          manufOrder.getManufacturingOperationList().stream()
               .filter(
                   oo ->
                       oo.getProdProcessLine().getUseLineInGeneratedPurchaseOrder()
                           && purchaseOrder
                               .getSupplierPartner()
                               .equals(
-                                  operationOrderOutsourceService
+                                  manufacturingOperationOutsourceService
                                       .getOutsourcePartner(oo)
                                       .orElse(null)))
               .collect(Collectors.toList());
 
-      for (OperationOrder operationOrder : operationOrderGeneratePurchaseOrderList) {
-        this.createPurchaseOrderLineProduction(operationOrder, purchaseOrder);
+      for (ManufacturingOperation manufacturingOperation :
+          manufacturingOperationGeneratePurchaseOrderList) {
+        this.createPurchaseOrderLineProduction(manufacturingOperation, purchaseOrder);
       }
       purchaseOrderService.computePurchaseOrder(purchaseOrder);
     }
@@ -186,7 +187,8 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
   }
 
   protected void createPurchaseOrderLineProduction(
-      OperationOrder operationOrder, PurchaseOrder purchaseOrder) throws AxelorException {
+      ManufacturingOperation manufacturingOperation, PurchaseOrder purchaseOrder)
+      throws AxelorException {
 
     UnitConversionService unitConversionService = Beans.get(UnitConversionService.class);
     PurchaseOrderLineService purchaseOrderLineService = Beans.get(PurchaseOrderLineService.class);
@@ -200,7 +202,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
           I18n.get(ProductionExceptionMessage.PURCHASE_ORDER_NO_HOURS_UNIT));
     }
 
-    Product product = getHrProduct(operationOrder);
+    Product product = getHrProduct(manufacturingOperation);
     if (product != null) {
       Unit purchaseUnit = product.getPurchasesUnit();
       Unit stockUnit = product.getUnit();
@@ -217,7 +219,7 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
           unitConversionService.convert(
               startUnit,
               endUnit,
-              new BigDecimal(operationOrder.getWorkCenter().getHrDurationPerCycle())
+              new BigDecimal(manufacturingOperation.getWorkCenter().getHrDurationPerCycle())
                   .divide(BigDecimal.valueOf(3600), COMPUTATION_SCALE, RoundingMode.HALF_UP),
               appBaseService.getNbDecimalDigitForQty(),
               product);
@@ -233,16 +235,16 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
     }
   }
 
-  protected Product getHrProduct(OperationOrder operationOrder) {
+  protected Product getHrProduct(ManufacturingOperation manufacturingOperation) {
     boolean isCostPerProcessLine = appProductionService.getIsCostPerProcessLine();
 
     if (isCostPerProcessLine) {
-      ProdProcessLine prodProcessLine = operationOrder.getProdProcessLine();
+      ProdProcessLine prodProcessLine = manufacturingOperation.getProdProcessLine();
       if (prodProcessLine != null && prodProcessLine.getHrProduct() != null) {
         return prodProcessLine.getHrProduct();
       }
     } else {
-      WorkCenter workCenter = operationOrder.getWorkCenter();
+      WorkCenter workCenter = manufacturingOperation.getWorkCenter();
       if (workCenter != null && workCenter.getHrProduct() != null) {
         return workCenter.getHrProduct();
       }
@@ -258,12 +260,12 @@ public class ManufOrderCreatePurchaseOrderServiceImpl
         && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
       return List.of(manufOrderOutsourceService.getOutsourcePartner(manufOrder).get());
     } else {
-      return manufOrder.getOperationOrderList().stream()
+      return manufOrder.getManufacturingOperationList().stream()
           .filter(
               oo ->
                   oo.getOutsourcing()
                       && oo.getProdProcessLine().getGeneratePurchaseOrderOnMoPlanning())
-          .map(oo -> operationOrderOutsourceService.getOutsourcePartner(oo))
+          .map(oo -> manufacturingOperationOutsourceService.getOutsourcePartner(oo))
           .map(optPartner -> optPartner.orElse(null))
           .filter(Objects::nonNull)
           .distinct()

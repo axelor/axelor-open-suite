@@ -31,15 +31,15 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.meta.MetaFiles;
@@ -55,12 +55,12 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  protected OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl;
+  protected ManufacturingOperationServiceBusinessImpl manufacturingOperationServiceBusinessImpl;
 
   @Inject
   public ManufOrderServiceBusinessImpl(
       SequenceService sequenceService,
-      OperationOrderService operationOrderService,
+      ManufacturingOperationService manufacturingOperationService,
       ManufOrderPlanService manufOrderPlanService,
       ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ProductVariantService productVariantService,
@@ -76,10 +76,10 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
       PartnerRepository partnerRepository,
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService,
-      OperationOrderServiceBusinessImpl operationOrderServiceBusinessImpl) {
+      ManufacturingOperationServiceBusinessImpl manufacturingOperationServiceBusinessImpl) {
     super(
         sequenceService,
-        operationOrderService,
+        manufacturingOperationService,
         manufOrderPlanService,
         manufOrderCreatePurchaseOrderService,
         productVariantService,
@@ -95,7 +95,7 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
         partnerRepository,
         billOfMaterialService,
         stockMoveService);
-    this.operationOrderServiceBusinessImpl = operationOrderServiceBusinessImpl;
+    this.manufacturingOperationServiceBusinessImpl = manufacturingOperationServiceBusinessImpl;
   }
 
   @Transactional
@@ -106,10 +106,11 @@ public class ManufOrderServiceBusinessImpl extends ManufOrderServiceImpl {
 
     boolean isToInvoice = manufOrder.getIsToInvoice();
 
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+    if (manufOrder.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
 
-        operationOrder.setIsToInvoice(isToInvoice);
+        manufacturingOperation.setIsToInvoice(isToInvoice);
       }
     }
 

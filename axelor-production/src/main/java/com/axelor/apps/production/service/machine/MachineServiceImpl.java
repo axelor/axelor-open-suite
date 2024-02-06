@@ -25,10 +25,10 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.Machine;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.WorkCenter;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import com.axelor.i18n.I18n;
@@ -42,16 +42,16 @@ import java.util.Optional;
 
 public class MachineServiceImpl implements MachineService {
 
-  protected OperationOrderRepository operationOrderRepository;
+  protected ManufacturingOperationRepository manufacturingOperationRepository;
   protected WeeklyPlanningService weeklyPlanningService;
   protected DayPlanningService dayPlanningService;
 
   @Inject
   public MachineServiceImpl(
-      OperationOrderRepository operationOrderRepository,
+      ManufacturingOperationRepository manufacturingOperationRepository,
       WeeklyPlanningService weeklyPlanningService,
       DayPlanningService dayPlanningService) {
-    this.operationOrderRepository = operationOrderRepository;
+    this.manufacturingOperationRepository = manufacturingOperationRepository;
     this.weeklyPlanningService = weeklyPlanningService;
     this.dayPlanningService = dayPlanningService;
   }
@@ -61,14 +61,14 @@ public class MachineServiceImpl implements MachineService {
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,
-      OperationOrder operationOrder)
+      ManufacturingOperation manufacturingOperation)
       throws AxelorException {
 
     return getClosestAvailableTimeSlotFrom(
         machine,
         startDateT,
         endDateT,
-        operationOrder,
+        manufacturingOperation,
         DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
@@ -77,7 +77,7 @@ public class MachineServiceImpl implements MachineService {
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,
-      OperationOrder operationOrder,
+      ManufacturingOperation manufacturingOperation,
       long initialDuration)
       throws AxelorException {
 
@@ -98,7 +98,7 @@ public class MachineServiceImpl implements MachineService {
           machine,
           nextDayDateT,
           nextDayDateT.plusSeconds(initialDuration),
-          operationOrder,
+          manufacturingOperation,
           initialDuration);
     }
 
@@ -113,8 +113,9 @@ public class MachineServiceImpl implements MachineService {
       if (allowedStartDateTPeriodAt.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ProductionExceptionMessage.OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES),
-            operationOrder.getName());
+            I18n.get(
+                ProductionExceptionMessage.MANUFACTURING_OPERATION_NO_PERIOD_FOUND_FOR_PLAN_DATES),
+            manufacturingOperation.getName());
       }
 
       plannedStartDateT = allowedStartDateTPeriodAt.get();
@@ -146,21 +147,21 @@ public class MachineServiceImpl implements MachineService {
     }
 
     long timeBeforeNextOperation =
-        Optional.ofNullable(operationOrder.getWorkCenter())
+        Optional.ofNullable(manufacturingOperation.getWorkCenter())
             .map(WorkCenter::getTimeBeforeNextOperation)
             .orElse(0l);
     // Must check if dates are occupied by other operation orders
     // The first one of the list will be the last to finish
 
-    List<OperationOrder> concurrentOperationOrders =
-        operationOrderRepository
+    List<ManufacturingOperation> concurrentManufacturingOperations =
+        manufacturingOperationRepository
             .all()
             .filter(
                 "self.machine = :machine"
                     + " AND ((self.plannedStartDateT <= :startDate AND self.plannedEndDateT > :startDateWithTime)"
                     + " OR (self.plannedStartDateT <= :endDate AND self.plannedEndDateT > :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
+                    + " AND self.id != :manufacturingOperationId")
             .bind("startDate", plannedStartDateT)
             .bind("endDate", plannedEndDateT)
             .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))
@@ -168,22 +169,22 @@ public class MachineServiceImpl implements MachineService {
             .bind("machine", machine)
             .bind("cancelled", ManufOrderRepository.STATUS_CANCELED)
             .bind("finished", ManufOrderRepository.STATUS_FINISHED)
-            .bind("operationOrderId", operationOrder.getId())
+            .bind("manufacturingOperationId", manufacturingOperation.getId())
             .order("-plannedEndDateT")
             .fetch();
 
-    if (concurrentOperationOrders.isEmpty()) {
+    if (concurrentManufacturingOperations.isEmpty()) {
       return new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
     } else {
-      OperationOrder lastOperationOrder = concurrentOperationOrders.get(0);
+      ManufacturingOperation lastManufacturingOperation = concurrentManufacturingOperations.get(0);
 
       return getClosestAvailableTimeSlotFrom(
           machine,
-          lastOperationOrder.getPlannedEndDateT().plusSeconds(timeBeforeNextOperation),
-          lastOperationOrder
+          lastManufacturingOperation.getPlannedEndDateT().plusSeconds(timeBeforeNextOperation),
+          lastManufacturingOperation
               .getPlannedEndDateT()
               .plusSeconds(timeBeforeNextOperation + initialDuration),
-          operationOrder,
+          manufacturingOperation,
           initialDuration);
     }
   }
@@ -193,14 +194,14 @@ public class MachineServiceImpl implements MachineService {
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,
-      OperationOrder operationOrder)
+      ManufacturingOperation manufacturingOperation)
       throws AxelorException {
 
     return getFurthestAvailableTimeSlotFrom(
         machine,
         startDateT,
         endDateT,
-        operationOrder,
+        manufacturingOperation,
         DurationHelper.getSecondsDuration(Duration.between(startDateT, endDateT)));
   }
 
@@ -209,7 +210,7 @@ public class MachineServiceImpl implements MachineService {
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,
-      OperationOrder operationOrder,
+      ManufacturingOperation manufacturingOperation,
       long initialDuration)
       throws AxelorException {
 
@@ -228,7 +229,7 @@ public class MachineServiceImpl implements MachineService {
           machine,
           previousDayDateT.minusSeconds(initialDuration),
           previousDayDateT,
-          operationOrder,
+          manufacturingOperation,
           initialDuration);
     }
 
@@ -246,8 +247,9 @@ public class MachineServiceImpl implements MachineService {
       if (allowedEndDateTPeriodAt.isEmpty()) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(ProductionExceptionMessage.OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES),
-            operationOrder.getName());
+            I18n.get(
+                ProductionExceptionMessage.MANUFACTURING_OPERATION_NO_PERIOD_FOUND_FOR_PLAN_DATES),
+            manufacturingOperation.getName());
       }
 
       plannedEndDateT = allowedEndDateTPeriodAt.get();
@@ -279,14 +281,14 @@ public class MachineServiceImpl implements MachineService {
     }
 
     long timeBeforeNextOperation =
-        Optional.ofNullable(operationOrder.getWorkCenter())
+        Optional.ofNullable(manufacturingOperation.getWorkCenter())
             .map(WorkCenter::getTimeBeforeNextOperation)
             .orElse(0l);
     // Must check if dates are occupied by other operation orders
     // The first one of the list will be the first to start
 
-    List<OperationOrder> concurrentOperationOrders =
-        operationOrderRepository
+    List<ManufacturingOperation> concurrentManufacturingOperations =
+        manufacturingOperationRepository
             .all()
             .filter(
                 "self.machine = :machine"
@@ -294,7 +296,7 @@ public class MachineServiceImpl implements MachineService {
                     + " OR (self.plannedStartDateT < :endDate AND self.plannedEndDateT > :endDateWithTime)"
                     + " OR (self.plannedStartDateT >= :startDate AND self.plannedEndDateT <= :endDateWithTime))"
                     + " AND (self.manufOrder.statusSelect != :cancelled AND self.manufOrder.statusSelect != :finished)"
-                    + " AND self.id != :operationOrderId")
+                    + " AND self.id != :manufacturingOperationId")
             .bind("startDate", plannedStartDateT)
             .bind("endDate", plannedEndDateT)
             .bind("startDateWithTime", plannedStartDateT.minusSeconds(timeBeforeNextOperation))
@@ -302,22 +304,22 @@ public class MachineServiceImpl implements MachineService {
             .bind("machine", machine)
             .bind("cancelled", ManufOrderRepository.STATUS_CANCELED)
             .bind("finished", ManufOrderRepository.STATUS_FINISHED)
-            .bind("operationOrderId", operationOrder.getId())
+            .bind("manufacturingOperationId", manufacturingOperation.getId())
             .order("plannedStartDateT")
             .fetch();
 
-    if (concurrentOperationOrders.isEmpty()) {
+    if (concurrentManufacturingOperations.isEmpty()) {
       return new MachineTimeSlot(plannedStartDateT, plannedEndDateT);
     } else {
-      OperationOrder firstOperationOrder = concurrentOperationOrders.get(0);
+      ManufacturingOperation firstManufacturingOperation = concurrentManufacturingOperations.get(0);
 
       return getFurthestAvailableTimeSlotFrom(
           machine,
-          firstOperationOrder
+          firstManufacturingOperation
               .getPlannedStartDateT()
               .minusSeconds(initialDuration + timeBeforeNextOperation),
-          firstOperationOrder.getPlannedStartDateT().minusSeconds(timeBeforeNextOperation),
-          operationOrder,
+          firstManufacturingOperation.getPlannedStartDateT().minusSeconds(timeBeforeNextOperation),
+          manufacturingOperation,
           initialDuration);
     }
   }

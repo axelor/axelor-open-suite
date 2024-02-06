@@ -56,7 +56,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {
-      Beans.get(OperationOrderTimesheetServiceImpl.class)
+      Beans.get(ManufacturingOperationTimesheetServiceImpl.class)
           .updateAllRealDuration(timesheet.getTimesheetLineList());
     }
   }
@@ -69,7 +69,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {
-      Beans.get(OperationOrderTimesheetServiceImpl.class)
+      Beans.get(ManufacturingOperationTimesheetServiceImpl.class)
           .updateAllRealDuration(timesheet.getTimesheetLineList());
     }
   }
@@ -82,7 +82,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {
-      Beans.get(OperationOrderTimesheetServiceImpl.class)
+      Beans.get(ManufacturingOperationTimesheetServiceImpl.class)
           .updateAllRealDuration(timesheet.getTimesheetLineList());
     }
   }
@@ -95,7 +95,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {
-      Beans.get(OperationOrderTimesheetServiceImpl.class)
+      Beans.get(ManufacturingOperationTimesheetServiceImpl.class)
           .updateAllRealDuration(timesheet.getTimesheetLineList());
     }
   }
@@ -108,7 +108,7 @@ public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWor
 
     if (appProductionService.isApp("production")
         && appProductionService.getAppProduction().getManageBusinessProduction()) {
-      Beans.get(OperationOrderTimesheetServiceImpl.class)
+      Beans.get(ManufacturingOperationTimesheetServiceImpl.class)
           .updateAllRealDuration(timesheet.getTimesheetLineList());
     }
   }

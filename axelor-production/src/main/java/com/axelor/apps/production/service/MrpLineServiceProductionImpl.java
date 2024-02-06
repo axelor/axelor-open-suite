@@ -25,11 +25,11 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
@@ -65,7 +65,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
   protected ManufOrderService manufOrderService;
   protected ManufOrderRepository manufOrderRepository;
-  protected OperationOrderRepository operationOrderRepository;
+  protected ManufacturingOperationRepository manufacturingOperationRepository;
   protected BillOfMaterialService billOfMaterialService;
   protected ProdProcessLineService prodProcessLineService;
   protected ProductionConfigService productionConfigService;
@@ -83,7 +83,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
       MrpForecastRepository mrpForecastRepo,
       ManufOrderService manufOrderService,
       ManufOrderRepository manufOrderRepository,
-      OperationOrderRepository operationOrderRepository,
+      ManufacturingOperationRepository manufacturingOperationRepository,
       MrpLineRepository mrpLineRepo,
       BillOfMaterialService billOfMaterialService,
       ProdProcessLineService prodProcessLineService,
@@ -101,7 +101,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
         mrpLineRepo);
     this.manufOrderService = manufOrderService;
     this.manufOrderRepository = manufOrderRepository;
-    this.operationOrderRepository = operationOrderRepository;
+    this.manufacturingOperationRepository = manufacturingOperationRepository;
     this.billOfMaterialService = billOfMaterialService;
     this.prodProcessLineService = prodProcessLineService;
     this.productionConfigService = productionConfigService;
@@ -189,10 +189,10 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
     }
     if (mrpLineOrigin
         .getRelatedToSelect()
-        .equals(MrpLineOriginRepository.RELATED_TO_OPERATION_ORDER)) {
-      OperationOrder operationOrder =
-          operationOrderRepository.find(mrpLineOrigin.getRelatedToSelectId());
-      return operationOrder.getName();
+        .equals(MrpLineOriginRepository.RELATED_TO_MANUFACTURING_OPERATION)) {
+      ManufacturingOperation manufacturingOperation =
+          manufacturingOperationRepository.find(mrpLineOrigin.getRelatedToSelectId());
+      return manufacturingOperation.getName();
     }
     return super.getMrpLineOriginStr(mrpLineOrigin);
   }
@@ -209,9 +209,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
       return ((ManufOrder) model).getManufOrderSeq();
 
-    } else if (model instanceof OperationOrder) {
+    } else if (model instanceof ManufacturingOperation) {
 
-      return ((OperationOrder) model).getName();
+      return ((ManufacturingOperation) model).getName();
 
     } else {
 
@@ -230,9 +230,9 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
 
       return ((ManufOrder) model).getClientPartner();
 
-    } else if (model instanceof OperationOrder) {
+    } else if (model instanceof ManufacturingOperation) {
 
-      return ((OperationOrder) model).getManufOrder().getClientPartner();
+      return ((ManufacturingOperation) model).getManufOrder().getClientPartner();
 
     } else {
 

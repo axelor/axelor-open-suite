@@ -4,7 +4,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import java.math.BigDecimal;
@@ -21,6 +21,6 @@ public interface TimesheetLineUpdateBusinessService {
       String comments,
       Boolean toInvoice,
       ManufOrder manufOrder,
-      OperationOrder operationOrder)
+      ManufacturingOperation manufacturingOperation)
       throws AxelorException;
 }

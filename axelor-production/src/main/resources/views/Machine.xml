@@ -29,8 +29,8 @@
       </panel>
       <panel name="actionPanel" colSpan="3">
         <button name="$operatingDurationBtn"
-          onClick="action-machine-view-open-finished-operation-orders" title="Operating duration"
-          colSpan="12" icon="fa-clock-o" widget="info-button"/>
+          onClick="action-machine-view-open-finished-manufacturing-operations"
+          title="Operating duration" colSpan="12" icon="fa-clock-o" widget="info-button"/>
       </panel>
     </panel>
     <panel name="machineInformationPanel" title="Machine Information" canCollapse="true">
@@ -79,16 +79,17 @@
       expr="eval: String.format('%d:%02d:%02d', (int)(operatingDuration / 3600), (int)((operatingDuration % 3600) / 60), (int)((operatingDuration % 60)))"/>
   </action-record>
 
-  <action-view name="action-machine-view-open-finished-operation-orders"
-    title="Operation order" model="com.axelor.apps.production.db.OperationOrder">
-    <view type="grid" name="operation-order-group-grid"/>
-    <view type="form" name="operation-order-form"/>
+  <action-view name="action-machine-view-open-finished-manufacturing-operations"
+    title="Operation order" model="com.axelor.apps.production.db.ManufacturingOperation">
+    <view type="grid" name="manufacturing-operation-group-grid"/>
+    <view type="form" name="manufacturing-operation-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="false"/>
     <view-param name="popup.maximized" value="true"/>
     <domain>self.statusSelect = :_statusSelect AND self.machine.id = :_machineId</domain>
     <context name="_machineId" expr="eval: id"/>
-    <context name="_statusSelect" expr="eval: __repo__(OperationOrder).STATUS_FINISHED"/>
+    <context name="_statusSelect"
+      expr="eval: __repo__(ManufacturingOperation).STATUS_FINISHED"/>
   </action-view>
 
 </object-views>

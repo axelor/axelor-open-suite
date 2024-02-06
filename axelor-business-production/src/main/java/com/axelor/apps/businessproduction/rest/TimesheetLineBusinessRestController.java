@@ -57,7 +57,7 @@ public class TimesheetLineBusinessRestController {
                 requestBody.getComments(),
                 requestBody.isToInvoice(),
                 requestBody.fetchManufOrder(),
-                requestBody.fetchOperationOrder());
+                requestBody.fetchManufacturingOperation());
     Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.buildCreateResponse(
@@ -90,7 +90,7 @@ public class TimesheetLineBusinessRestController {
             requestBody.getComments(),
             requestBody.isToInvoice(),
             requestBody.fetchManufOrder(),
-            requestBody.fetchOperationOrder());
+            requestBody.fetchManufacturingOperation());
     Beans.get(TimesheetPeriodComputationService.class)
         .setComputedPeriodTotal(timesheetLine.getTimesheet());
     return ResponseConstructor.build(

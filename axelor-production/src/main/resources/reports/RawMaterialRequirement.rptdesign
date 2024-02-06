@@ -352,17 +352,17 @@
     CASE ManufOrder.is_cons_pro_on_operation
       WHEN true THEN sum(StockMoveLine.qty)
       ELSE
-        (CASE count(OperationOrder.id)
+        (CASE count(ManufacturingOperation.id)
             WHEN 0 THEN sum(StockMoveLine.qty)
-            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+            ELSE sum(StockMoveLine.qty)/count(ManufacturingOperation.id)
         END)
     END as "neededQty",
     (CASE ManufOrder.is_cons_pro_on_operation
       WHEN true THEN sum(StockMoveLine.qty)
       ELSE
-        (CASE count(OperationOrder.id)
+        (CASE count(ManufacturingOperation.id)
             WHEN 0 THEN sum(StockMoveLine.qty)
-            ELSE sum(StockMoveLine.qty)/count(OperationOrder.id)
+            ELSE sum(StockMoveLine.qty)/count(ManufacturingOperation.id)
         END)
     END) - ProductionStockLocationLine.current_qty as "missingNegativeQty",
     StockLocation.name as "availableStockLocation",
@@ -386,13 +386,13 @@ LEFT JOIN
 	stock_stock_location_line ProductionStockLocationLine
 	on ProductionStockLocationLine.stock_location = ProductionStockLocation.id
 LEFT JOIN
-    production_operation_order OperationOrder on OperationOrder.manuf_order = ManufOrder.id
+    production_manufacturing_operation ManufacturingOperation on ManufacturingOperation.manuf_order = ManufOrder.id
 LEFT JOIN
     stock_stock_move StockMove on (
     (ManufOrder.is_cons_pro_on_operation = false OR ManufOrder.is_cons_pro_on_operation IS NULL)
             AND StockMove.in_manuf_order = ManufOrder.id)
         OR (ManufOrder.is_cons_pro_on_operation = true
-            AND StockMove.in_operation_order = OperationOrder.id)
+            AND StockMove.in_manufacturing_operation = ManufacturingOperation.id)
 LEFT JOIN
     stock_stock_move_line StockMoveLine on StockMoveLine.stock_move = StockMove.id
 LEFT JOIN

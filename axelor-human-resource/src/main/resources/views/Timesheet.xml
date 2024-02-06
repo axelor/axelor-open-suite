@@ -272,7 +272,7 @@
   <action-group name="action-timesheet-group-onsave">
     <action name="action-timesheet-validate-toDate"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
-    <action name="action-timesheet-method-update-operation-order"
+    <action name="action-timesheet-method-update-manufacturing-operation"
       if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
   </action-group>
 

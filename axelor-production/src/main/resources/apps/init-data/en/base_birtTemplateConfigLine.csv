@@ -1,6 +1,6 @@
 "importId";"metaModel";"birtTemplate.importId"
 51;"ManufOrder";9
-52;"OperationOrder";19
+52;"ManufacturingOperation";19
 53;"ProdProcess";61
 54;"BillOfMaterial";62
 55;"RawMaterialRequirement";63

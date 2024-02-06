@@ -29,7 +29,7 @@ public class StockMoveLineProductionRepository extends StockMoveLineSupplychainR
     if (!deep) {
       copy.setProducedManufOrder(null);
       copy.setConsumedManufOrder(null);
-      copy.setConsumedOperationOrder(null);
+      copy.setConsumedManufacturingOperation(null);
     }
     return copy;
   }

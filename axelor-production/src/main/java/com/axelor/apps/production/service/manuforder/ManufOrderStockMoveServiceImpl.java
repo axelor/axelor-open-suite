@@ -9,14 +9,14 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
-import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -601,9 +601,12 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   @Transactional(rollbackOn = {Exception.class})
   public void partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
-          Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            == ManufacturingOperationRepository.STATUS_IN_PROGRESS) {
+          Beans.get(ManufacturingOperationStockMoveService.class)
+              .partialFinish(manufacturingOperation);
         }
       }
     } else {

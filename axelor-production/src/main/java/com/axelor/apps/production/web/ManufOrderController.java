@@ -777,11 +777,12 @@ public class ManufOrderController {
     }
   }
 
-  public void setOperationOrdersOutsourcing(ActionRequest request, ActionResponse response) {
+  public void setManufacturingOperationsOutsourcing(
+      ActionRequest request, ActionResponse response) {
     ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
 
-    Beans.get(ManufOrderService.class).setOperationOrdersOutsourcing(manufOrder);
-    response.setValue("operationOrderList", manufOrder.getOperationOrderList());
+    Beans.get(ManufOrderService.class).setManufacturingOperationsOutsourcing(manufOrder);
+    response.setValue("manufacturingOperationList", manufOrder.getManufacturingOperationList());
   }
 
   public void outsourceDeclarationOnNew(ActionRequest request, ActionResponse response) {

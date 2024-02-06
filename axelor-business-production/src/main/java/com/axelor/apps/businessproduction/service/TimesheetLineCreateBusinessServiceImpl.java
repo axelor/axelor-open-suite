@@ -8,7 +8,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -42,12 +42,12 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
       String comments,
       boolean toInvoice,
       ManufOrder manufOrder,
-      OperationOrder operationOrder)
+      ManufacturingOperation manufacturingOperation)
       throws AxelorException {
     boolean timesheetEnabledOnManufOrder =
         appProductionService.getAppProduction().getEnableTimesheetOnManufOrder();
     if ((manufOrder != null && !timesheetEnabledOnManufOrder)
-        || (operationOrder != null && !timesheetEnabledOnManufOrder)) {
+        || (manufacturingOperation != null && !timesheetEnabledOnManufOrder)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BusinessProductionExceptionMessage.TIMESHEET_MANUF_ORDER_NOT_ENABLED));
@@ -58,7 +58,7 @@ public class TimesheetLineCreateBusinessServiceImpl implements TimesheetLineCrea
             project, projectTask, product, date, timesheet, duration, comments, toInvoice);
 
     timesheetLine.setManufOrder(manufOrder);
-    timesheetLine.setOperationOrder(operationOrder);
+    timesheetLine.setManufacturingOperation(manufacturingOperation);
     timesheetLine.setToInvoice(toInvoice);
     return timesheetLine;
   }

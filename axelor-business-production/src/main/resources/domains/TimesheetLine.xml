@@ -7,8 +7,8 @@
 
   <entity name="TimesheetLine">
 
-    <many-to-one name="operationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+    <many-to-one name="manufacturingOperation"
+      ref="com.axelor.apps.production.db.ManufacturingOperation" title="Operation order"/>
     <many-to-one name="manufOrder" ref="com.axelor.apps.production.db.ManufOrder"
       title="Manuf order"/>
 

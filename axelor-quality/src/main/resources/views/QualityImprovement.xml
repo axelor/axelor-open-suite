@@ -83,9 +83,9 @@
               <field name="writtenOn"/>
               <field name="manufOrder" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-group-manuf-order-on-change"/>
-              <field name="operationOrder" showIf="manufOrder != null"
+              <field name="manufacturingOperation" showIf="manufOrder != null"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-operation-order-domain"/>
+                onSelect="action-quality-improvement-attrs-set-manufacturing-operation-domain"/>
               <field name="toConsumeProdProduct" showIf="manufOrder != null"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"
                 onSelect="action-quality-improvement-attrs-set-to-consume-prod-product-domain"/>
@@ -409,12 +409,13 @@
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 
-  <action-attrs name="action-quality-improvement-attrs-set-operation-order-domain">
-    <attribute name="domain" for="operationOrder"
-      expr="eval: &quot; self.id IN (${manufOrder?.operationOrderList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.operationOrderList.isEmpty()"/>
-    <attribute name="domain" for="operationOrder"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.operationOrderList.isEmpty()"/>
+  <action-attrs
+    name="action-quality-improvement-attrs-set-manufacturing-operation-domain">
+    <attribute name="domain" for="manufacturingOperation"
+      expr="eval: &quot; self.id IN (${manufOrder?.manufacturingOperationList?.collect{it.id}.join(',')}) &quot;"
+      if="!manufOrder.manufacturingOperationList.isEmpty()"/>
+    <attribute name="domain" for="manufacturingOperation"
+      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.manufacturingOperationList.isEmpty()"/>
   </action-attrs>
 
   <action-attrs
@@ -630,7 +631,7 @@
   <action-validate name="action-quality-improvement-validate-manuf-order-on-change">
     <alert
       message="The following fields will be reset: operation order line, manuf Order product to consume, consummed manuf order product , continue ?"
-      if="operationOrder != null || toConsumeProdProduct != null || consummedProdProduct != null"
+      if="manufacturingOperation != null || toConsumeProdProduct != null || consummedProdProduct != null"
       action="action-quality-improvement-attrs-on-validate-set-field-values"/>
   </action-validate>
 
@@ -697,7 +698,7 @@
   <action-record
     name="action-quality-improvement-record-manuf-order-on-change-set-values"
     model="com.axelor.apps.quality.db.QIIdentification">
-    <field name="operationOrder" expr="eval: null"/>
+    <field name="manufacturingOperation" expr="eval: null"/>
     <field name="toConsumeProdProduct" expr="eval: null"/>
     <field name="consummedProdProduct" expr="eval: null"/>
   </action-record>

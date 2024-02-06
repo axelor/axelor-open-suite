@@ -63,8 +63,8 @@
           grid-view="project-grid"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
       </panel-related>
-      <panel-dashlet name="operationOrderDetailsPanel"
-        action="action-production-order-view-operation-order" title="Operation order"/>
+      <panel-dashlet name="manufacturingOperationDetailsPanel"
+        action="action-production-order-view-manufacturing-operation" title="Operation order"/>
     </panel-tabs>
   </form>
 
@@ -146,10 +146,10 @@
       for="saleOrder"/>
   </action-attrs>
 
-  <action-view name="action-production-order-view-operation-order"
-    title="Operation orders" model="com.axelor.apps.production.db.OperationOrder">
-    <view type="grid" name="operation-order-group-grid"/>
-    <view type="form" name="operation-order-form"/>
+  <action-view name="action-production-order-view-manufacturing-operation"
+    title="Operation orders" model="com.axelor.apps.production.db.ManufacturingOperation">
+    <view type="grid" name="manufacturing-operation-group-grid"/>
+    <view type="form" name="manufacturing-operation-form"/>
     <domain>:id member of self.manufOrder.productionOrderSet</domain>
   </action-view>
 

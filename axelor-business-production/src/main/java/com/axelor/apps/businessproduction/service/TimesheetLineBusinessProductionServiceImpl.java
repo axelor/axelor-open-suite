@@ -28,8 +28,8 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
-import com.axelor.apps.production.db.OperationOrder;
-import com.axelor.apps.production.db.OperationOrderDuration;
+import com.axelor.apps.production.db.ManufacturingOperation;
+import com.axelor.apps.production.db.ManufacturingOperationDuration;
 import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.google.inject.Inject;
@@ -59,10 +59,10 @@ public class TimesheetLineBusinessProductionServiceImpl
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public Optional<TimesheetLine> createTimesheetLine(OperationOrderDuration operationOrderDuration)
-      throws AxelorException {
+  public Optional<TimesheetLine> createTimesheetLine(
+      ManufacturingOperationDuration manufacturingOperationDuration) throws AxelorException {
 
-    User user = operationOrderDuration.getStartedBy();
+    User user = manufacturingOperationDuration.getStartedBy();
 
     if (user.getEmployee() == null) {
       return Optional.empty();
@@ -71,13 +71,13 @@ public class TimesheetLineBusinessProductionServiceImpl
     Employee employee = employeeService.getEmployee(user);
 
     if (employee.getTimesheetImputationSelect() == EmployeeRepository.TIMESHEET_MANUF_ORDER
-        && operationOrderDuration.getStartingDateTime() != null
-        && operationOrderDuration.getStoppingDateTime() != null) {
+        && manufacturingOperationDuration.getStartingDateTime() != null
+        && manufacturingOperationDuration.getStoppingDateTime() != null) {
 
       Timesheet timesheet =
           timesheetFetchService.getOrCreateOpenTimesheet(
-              employee, operationOrderDuration.getStartingDateTime().toLocalDate());
-      TimesheetLine tsl = createTimesheetLine(timesheet, operationOrderDuration);
+              employee, manufacturingOperationDuration.getStartingDateTime().toLocalDate());
+      TimesheetLine tsl = createTimesheetLine(timesheet, manufacturingOperationDuration);
 
       timesheet.addTimesheetLineListItem(tsl);
       timesheet = timesheetRepository.save(timesheet);
@@ -88,19 +88,20 @@ public class TimesheetLineBusinessProductionServiceImpl
   }
 
   protected TimesheetLine createTimesheetLine(
-      Timesheet timesheet, OperationOrderDuration operationOrderDuration) throws AxelorException {
+      Timesheet timesheet, ManufacturingOperationDuration manufacturingOperationDuration)
+      throws AxelorException {
 
     Objects.requireNonNull(timesheet);
-    Objects.requireNonNull(operationOrderDuration);
-    Objects.requireNonNull(operationOrderDuration.getStoppingDateTime());
-    Objects.requireNonNull(operationOrderDuration.getStartingDateTime());
+    Objects.requireNonNull(manufacturingOperationDuration);
+    Objects.requireNonNull(manufacturingOperationDuration.getStoppingDateTime());
+    Objects.requireNonNull(manufacturingOperationDuration.getStartingDateTime());
 
     TimesheetLine tsl = new TimesheetLine();
 
-    tsl.setOperationOrder(operationOrderDuration.getOperationOrder());
+    tsl.setManufacturingOperation(manufacturingOperationDuration.getManufacturingOperation());
     tsl.setManufOrder(
-        Optional.ofNullable(operationOrderDuration.getOperationOrder())
-            .map(OperationOrder::getManufOrder)
+        Optional.ofNullable(manufacturingOperationDuration.getManufacturingOperation())
+            .map(ManufacturingOperation::getManufOrder)
             .orElse(null));
 
     tsl.setDuration(
@@ -108,10 +109,10 @@ public class TimesheetLineBusinessProductionServiceImpl
             timesheet,
             DurationHelper.getSecondsDuration(
                 Duration.between(
-                    operationOrderDuration.getStartingDateTime(),
-                    operationOrderDuration.getStoppingDateTime()))));
+                    manufacturingOperationDuration.getStartingDateTime(),
+                    manufacturingOperationDuration.getStoppingDateTime()))));
 
-    tsl.setDate(operationOrderDuration.getStartingDateTime().toLocalDate());
+    tsl.setDate(manufacturingOperationDuration.getStartingDateTime().toLocalDate());
     tsl.setEmployee(timesheet.getEmployee());
 
     return tsl;

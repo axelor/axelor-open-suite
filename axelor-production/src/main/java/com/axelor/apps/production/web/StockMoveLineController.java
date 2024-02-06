@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.stock.db.StockMove;
@@ -89,12 +89,13 @@ public class StockMoveLineController {
         } else if (parentContext.getContextClass().equals(ManufOrder.class)) {
           ManufOrder manufOrder = parentContext.asType(ManufOrder.class);
           company = manufOrder.getCompany();
-        } else if (parentContext.getContextClass().equals(OperationOrder.class)) {
-          OperationOrder operationOrder = parentContext.asType(OperationOrder.class);
-          if (operationOrder.getManufOrder() == null) {
+        } else if (parentContext.getContextClass().equals(ManufacturingOperation.class)) {
+          ManufacturingOperation manufacturingOperation =
+              parentContext.asType(ManufacturingOperation.class);
+          if (manufacturingOperation.getManufOrder() == null) {
             return;
           }
-          company = operationOrder.getManufOrder().getCompany();
+          company = manufacturingOperation.getManufOrder().getCompany();
         } else {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,

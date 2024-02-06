@@ -96,8 +96,8 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
     if (oldStockMove.getManufOrder() != null) {
       newStockMove.setManufOrder(oldStockMove.getManufOrder());
-    } else if (oldStockMove.getOperationOrder() != null) {
-      newStockMove.setOperationOrder(oldStockMove.getOperationOrder());
+    } else if (oldStockMove.getManufacturingOperation() != null) {
+      newStockMove.setManufacturingOperation(oldStockMove.getManufacturingOperation());
     } else {
       super.setOrigin(oldStockMove, newStockMove);
     }

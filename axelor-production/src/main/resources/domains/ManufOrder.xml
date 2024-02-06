@@ -13,9 +13,9 @@
     <many-to-many name="productionOrderSet"
       ref="com.axelor.apps.production.db.ProductionOrder" title="Production orders"/>
 
-    <one-to-many name="operationOrderList"
-      ref="com.axelor.apps.production.db.OperationOrder" mappedBy="manufOrder"
-      title="Operation orders" orderBy="priority"/>
+    <one-to-many name="manufacturingOperationList"
+      ref="com.axelor.apps.production.db.ManufacturingOperation" mappedBy="manufOrder"
+      title="Manufacturing operations" orderBy="priority"/>
 
     <decimal name="qty" title="Qty" initParam="true" precision="20" scale="10"/>
 
@@ -117,7 +117,8 @@
 
     <!-- Added this field to identify unsaved manufacturing orders in multi-level planning -->
     <string name="manualMOSeq" transient="true"/>
-    <integer name="operationOrderMaxPriority" title="Operation orders maximum priority"/>
+    <integer name="manufacturingOperationMaxPriority"
+      title="Manufacturing operations maximum priority"/>
 
 
     <many-to-one name="saleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"

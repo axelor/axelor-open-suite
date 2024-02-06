@@ -2,7 +2,7 @@ package com.axelor.apps.businessproduction.rest.dto;
 
 import com.axelor.apps.hr.rest.dto.TimesheetLinePostRequest;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.utils.api.ObjectFinder;
 import javax.validation.constraints.Min;
 
@@ -12,7 +12,7 @@ public class TimesheetLineBusinessPostRequest extends TimesheetLinePostRequest {
   private Long manufOrderId;
 
   @Min(0)
-  private Long operationOrderId;
+  private Long manufacturingOperationId;
 
   public Long getManufOrderId() {
     return manufOrderId;
@@ -22,12 +22,12 @@ public class TimesheetLineBusinessPostRequest extends TimesheetLinePostRequest {
     this.manufOrderId = manufOrderId;
   }
 
-  public Long getOperationOrderId() {
-    return operationOrderId;
+  public Long getManufacturingOperationId() {
+    return manufacturingOperationId;
   }
 
-  public void setOperationOrderId(Long operationOrderId) {
-    this.operationOrderId = operationOrderId;
+  public void setManufacturingOperationId(Long manufacturingOperationId) {
+    this.manufacturingOperationId = manufacturingOperationId;
   }
 
   public ManufOrder fetchManufOrder() {
@@ -37,10 +37,11 @@ public class TimesheetLineBusinessPostRequest extends TimesheetLinePostRequest {
     return ObjectFinder.find(ManufOrder.class, manufOrderId, ObjectFinder.NO_VERSION);
   }
 
-  public OperationOrder fetchOperationOrder() {
-    if (operationOrderId == null || operationOrderId == 0L) {
+  public ManufacturingOperation fetchManufacturingOperation() {
+    if (manufacturingOperationId == null || manufacturingOperationId == 0L) {
       return null;
     }
-    return ObjectFinder.find(OperationOrder.class, operationOrderId, ObjectFinder.NO_VERSION);
+    return ObjectFinder.find(
+        ManufacturingOperation.class, manufacturingOperationId, ObjectFinder.NO_VERSION);
   }
 }

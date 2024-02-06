@@ -1,6 +1,6 @@
 "importId";"name";"templateLink";"modelName";"templateEngineSelect";"format";"attach"
 9;"ManufOrder";"ManufOrder.rptdesign";"com.axelor.apps.production.db.ManufOrder";2;"pdf";false
-19;"OperationOrder";"OperationOrder.rptdesign";"com.axelor.apps.production.db.OperationOrder";2;"pdf";false
+19;"ManufacturingOperation";"ManufacturingOperation.rptdesign";"com.axelor.apps.production.db.ManufacturingOperation";2;"pdf";false
 61;"ProdProcess";"ProdProcess.rptdesign";"com.axelor.apps.production.db.ProdProcess";2;"pdf";false
 62;"Bill of Material";"BillOfMaterial.rptdesign";"com.axelor.apps.production.db.BillOfMaterial";2;"pdf";false
 63;"Raw material requirement";"RawMaterialRequirement.rptdesign";"com.axelor.apps.production.db.RawMaterialRequirement";2;"pdf";false

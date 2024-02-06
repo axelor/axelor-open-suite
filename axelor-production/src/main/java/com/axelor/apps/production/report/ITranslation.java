@@ -20,43 +20,50 @@ package com.axelor.apps.production.report;
 
 public interface ITranslation {
 
-  public static final String OPERATION_ORDER_TITLE = /*$$(*/ "OperationOrder.title"; /*)*/
-  public static final String OPERATION_ORDER_OPERATION_NAME = /*$$(*/
-      "OperationOrder.operationName"; /*)*/
-  public static final String OPERATION_ORDER_RELATED_TO_PRODUCT = /*$$(*/
-      "OperationOrder.relatedToProduct"; /*)*/
-  public static final String OPERATION_ORDER_ASSOCIATED_BOM = /*$$(*/
-      "OperationOrder.associatedBOM"; /*)*/
-  public static final String OPERATION_ORDER_DATES = /*$$(*/ "OperationOrder.dates"; /*)*/
-  public static final String OPERATION_ORDER_PLANNED_START_DATE = /*$$(*/
-      "OperationOrder.plannedStartDate"; /*)*/
-  public static final String OPERATION_ORDER_PLANNED_END_DATE = /*$$(*/
-      "OperationOrder.plannedEndDate"; /*)*/
-  public static final String OPERATION_ORDER_REAL_START_DATE = /*$$(*/
-      "OperationOrder.realStartDate"; /*)*/
-  public static final String OPERATION_ORDER_REAL_END_DATE = /*$$(*/
-      "OperationOrder.realEndDate"; /*)*/
-  public static final String OPERATION_ORDER_OPERATION_REQUIREMENT = /*$$(*/
-      "OperationOrder.operationRequirement"; /*)*/
-  public static final String OPERATION_ORDER_MACHINE = /*$$(*/ "OperationOrder.machine"; /*)*/
-  public static final String OPERATION_ORDER_CYCLE_DURATION = /*$$(*/
-      "OperationOrder.cycleDuration"; /*)*/
-  public static final String OPERATION_ORDER_START_TIME = /*$$(*/ "OperationOrder.startTime"; /*)*/
-  public static final String OPERATION_ORDER_STOP_TIME = /*$$(*/ "OperationOrder.stopTime"; /*)*/
-  public static final String OPERATION_ORDER_DELAY_BTW_CYCLE = /*$$(*/
-      "OperationOrder.delayBtwCycle"; /*)*/
-  public static final String OPERATION_ORDER_OPERATION_DETAILS = /*$$(*/
-      "OperationOrder.operationDetails"; /*)*/
-  public static final String OPERATION_ORDER_PRODUCT_PREPARE = /*$$(*/
-      "OperationOrder.productToPrepare"; /*)*/
-  public static final String OPERATION_ORDER_PRODUCT_BARCODE = /*$$(*/
-      "OperationOrder.productBarcode"; /*)*/
-  public static final String OPERATION_ORDER_PRODUCT_NAME = /*$$(*/
-      "OperationOrder.productName"; /*)*/
-  public static final String OPERATION_ORDER_QTY = /*$$(*/ "OperationOrder.qty"; /*)*/
-  public static final String OPERATION_ORDER_TRACKING_NUMBER = /*$$(*/
-      "OperationOrder.trackingNumber"; /*)*/
-  public static final String OPERATION_ORDER_NUM = /*$$(*/ "OperationOrder.num"; /*)*/
+  public static final String MANUFACTURING_OPERATION_TITLE = /*$$(*/
+      "ManufacturingOperation.title"; /*)*/
+  public static final String MANUFACTURING_OPERATION_OPERATION_NAME = /*$$(*/
+      "ManufacturingOperation.operationName"; /*)*/
+  public static final String MANUFACTURING_OPERATION_RELATED_TO_PRODUCT = /*$$(*/
+      "ManufacturingOperation.relatedToProduct"; /*)*/
+  public static final String MANUFACTURING_OPERATION_ASSOCIATED_BOM = /*$$(*/
+      "ManufacturingOperation.associatedBOM"; /*)*/
+  public static final String MANUFACTURING_OPERATION_DATES = /*$$(*/
+      "ManufacturingOperation.dates"; /*)*/
+  public static final String MANUFACTURING_OPERATION_PLANNED_START_DATE = /*$$(*/
+      "ManufacturingOperation.plannedStartDate"; /*)*/
+  public static final String MANUFACTURING_OPERATION_PLANNED_END_DATE = /*$$(*/
+      "ManufacturingOperation.plannedEndDate"; /*)*/
+  public static final String MANUFACTURING_OPERATION_REAL_START_DATE = /*$$(*/
+      "ManufacturingOperation.realStartDate"; /*)*/
+  public static final String MANUFACTURING_OPERATION_REAL_END_DATE = /*$$(*/
+      "ManufacturingOperation.realEndDate"; /*)*/
+  public static final String MANUFACTURING_OPERATION_OPERATION_REQUIREMENT = /*$$(*/
+      "ManufacturingOperation.operationRequirement"; /*)*/
+  public static final String MANUFACTURING_OPERATION_MACHINE = /*$$(*/
+      "ManufacturingOperation.machine"; /*)*/
+  public static final String MANUFACTURING_OPERATION_CYCLE_DURATION = /*$$(*/
+      "ManufacturingOperation.cycleDuration"; /*)*/
+  public static final String MANUFACTURING_OPERATION_START_TIME = /*$$(*/
+      "ManufacturingOperation.startTime"; /*)*/
+  public static final String MANUFACTURING_OPERATION_STOP_TIME = /*$$(*/
+      "ManufacturingOperation.stopTime"; /*)*/
+  public static final String MANUFACTURING_OPERATION_DELAY_BTW_CYCLE = /*$$(*/
+      "ManufacturingOperation.delayBtwCycle"; /*)*/
+  public static final String MANUFACTURING_OPERATION_OPERATION_DETAILS = /*$$(*/
+      "ManufacturingOperation.operationDetails"; /*)*/
+  public static final String MANUFACTURING_OPERATION_PRODUCT_PREPARE = /*$$(*/
+      "ManufacturingOperation.productToPrepare"; /*)*/
+  public static final String MANUFACTURING_OPERATION_PRODUCT_BARCODE = /*$$(*/
+      "ManufacturingOperation.productBarcode"; /*)*/
+  public static final String MANUFACTURING_OPERATION_PRODUCT_NAME = /*$$(*/
+      "ManufacturingOperation.productName"; /*)*/
+  public static final String MANUFACTURING_OPERATION_QTY = /*$$(*/
+      "ManufacturingOperation.qty"; /*)*/
+  public static final String MANUFACTURING_OPERATION_TRACKING_NUMBER = /*$$(*/
+      "ManufacturingOperation.trackingNumber"; /*)*/
+  public static final String MANUFACTURING_OPERATION_NUM = /*$$(*/
+      "ManufacturingOperation.num"; /*)*/
 
   public static final String WORK_IN_PROGRESS_VALUATION_TITLE = /*$$(*/
       "WorkInProgressValuation.title"; /*)*/

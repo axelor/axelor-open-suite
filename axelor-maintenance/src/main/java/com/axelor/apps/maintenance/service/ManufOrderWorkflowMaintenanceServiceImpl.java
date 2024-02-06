@@ -23,21 +23,21 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationOutsourceService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationPlanningService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutsourceService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -48,37 +48,37 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
 
   @Inject
   public ManufOrderWorkflowMaintenanceServiceImpl(
-      OperationOrderWorkflowService operationOrderWorkflowService,
+      ManufacturingOperationWorkflowService manufacturingOperationWorkflowService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       AppBaseService appBaseService,
-      OperationOrderService operationOrderService,
+      ManufacturingOperationService manufacturingOperationService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService,
+      ManufacturingOperationPlanningService manufacturingOperationPlanningService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
+      ManufacturingOperationOutsourceService manufacturingOperationOutsourceService) {
     super(
-        operationOrderWorkflowService,
+        manufacturingOperationWorkflowService,
         manufOrderStockMoveService,
         manufOrderRepo,
         productCompanyService,
         productionConfigRepo,
         appBaseService,
-        operationOrderService,
+        manufacturingOperationService,
         appProductionService,
         productionConfigService,
-        operationOrderPlanningService,
+        manufacturingOperationPlanningService,
         manufOrderOutgoingStockMoveService,
         manufOrderService,
         sequenceService,
         manufOrderOutsourceService,
-        operationOrderOutsourceService);
+        manufacturingOperationOutsourceService);
   }
 
   @Override
@@ -92,14 +92,18 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
 
   @Transactional(rollbackOn = {Exception.class})
   protected boolean maintenanceFinishManufOrder(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
-          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS
-              && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
-            operationOrderWorkflowService.start(operationOrder);
+    if (manufOrder.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            != ManufacturingOperationRepository.STATUS_FINISHED) {
+          if (manufacturingOperation.getStatusSelect()
+                  != ManufacturingOperationRepository.STATUS_IN_PROGRESS
+              && manufacturingOperation.getStatusSelect()
+                  != ManufacturingOperationRepository.STATUS_STANDBY) {
+            manufacturingOperationWorkflowService.start(manufacturingOperation);
           }
-          operationOrderWorkflowService.finish(operationOrder);
+          manufacturingOperationWorkflowService.finish(manufacturingOperation);
         }
       }
     }

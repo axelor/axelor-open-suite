@@ -5,16 +5,16 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationPlanningService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -28,10 +28,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       ManufOrderRepository manufOrderRepo,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
-      OperationOrderRepository operationOrderRepo,
-      OperationOrderWorkflowService operationOrderWorkflowService,
-      OperationOrderPlanningService operationOrderPlanningService,
-      OperationOrderService operationOrderService,
+      ManufacturingOperationRepository manufacturingOperationRepo,
+      ManufacturingOperationWorkflowService manufacturingOperationWorkflowService,
+      ManufacturingOperationPlanningService manufacturingOperationPlanningService,
+      ManufacturingOperationService manufacturingOperationService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ProductionOrderService productionOrderService,
       ProductionConfigService productionConfigService,
@@ -42,10 +42,10 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
         manufOrderRepo,
         manufOrderService,
         sequenceService,
-        operationOrderRepo,
-        operationOrderWorkflowService,
-        operationOrderPlanningService,
-        operationOrderService,
+        manufacturingOperationRepo,
+        manufacturingOperationWorkflowService,
+        manufacturingOperationPlanningService,
+        manufacturingOperationService,
         manufOrderStockMoveService,
         productionOrderService,
         productionConfigService,
@@ -68,7 +68,7 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
       manufOrder.setManufOrderSeq(manufOrderService.getManufOrderSeq(manufOrder));
     }
 
-    if (CollectionUtils.isEmpty(manufOrder.getOperationOrderList())) {
+    if (CollectionUtils.isEmpty(manufOrder.getManufacturingOperationList())) {
       manufOrderService.preFillOperations(manufOrder);
     }
     if (!manufOrder.getIsConsProOnOperation()
@@ -85,7 +85,7 @@ public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceI
           Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     }
 
-    operationOrderPlanningService.plan(manufOrder.getOperationOrderList());
+    manufacturingOperationPlanningService.plan(manufOrder.getManufacturingOperationList());
 
     manufOrder.setPlannedEndDateT(this.computePlannedEndDateT(manufOrder));
 

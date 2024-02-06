@@ -30,7 +30,7 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -543,7 +543,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     this.computeConsumedProduct(manufOrder, bomLevel, parentCostSheetLine, previousCostSheetDate);
     BigDecimal producedQty = parentCostSheetLine.getConsumptionQty();
     this.computeRealProcess(
-        manufOrder.getOperationOrderList(),
+        manufOrder.getManufacturingOperationList(),
         manufOrder.getProduct().getUnit(),
         producedQty,
         bomLevel,
@@ -561,7 +561,7 @@ public class CostSheetServiceImpl implements CostSheetService {
     BigDecimal ratio = costSheet.getManufOrderProducedRatio();
 
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operation : manufOrder.getOperationOrderList()) {
+      for (ManufacturingOperation operation : manufOrder.getManufacturingOperationList()) {
 
         this.computeConsumedProduct(
             bomLevel,
@@ -730,16 +730,16 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected void computeRealProcess(
-      List<OperationOrder> operationOrders,
+      List<ManufacturingOperation> manufacturingOperations,
       Unit pieceUnit,
       BigDecimal producedQty,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       LocalDate previousCostSheetDate)
       throws AxelorException {
-    for (OperationOrder operationOrder : operationOrders) {
+    for (ManufacturingOperation manufacturingOperation : manufacturingOperations) {
 
-      WorkCenter workCenter = operationOrder.getWorkCenter();
+      WorkCenter workCenter = manufacturingOperation.getWorkCenter();
       if (workCenter == null) {
         continue;
       }
@@ -748,8 +748,8 @@ public class CostSheetServiceImpl implements CostSheetService {
           || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
         this.computeRealHumanResourceCost(
-            operationOrder,
-            operationOrder.getPriority(),
+            manufacturingOperation,
+            manufacturingOperation.getPriority(),
             bomLevel,
             parentCostSheetLine,
             previousCostSheetDate);
@@ -758,7 +758,7 @@ public class CostSheetServiceImpl implements CostSheetService {
           || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
 
         this.computeRealMachineCost(
-            operationOrder,
+            manufacturingOperation,
             workCenter,
             producedQty,
             pieceUnit,
@@ -770,7 +770,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected void computeRealHumanResourceCost(
-      OperationOrder operationOrder,
+      ManufacturingOperation manufacturingOperation,
       int priority,
       int bomLevel,
       CostSheetLine parentCostSheetLine,
@@ -790,7 +790,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       duration =
           period != null
               ? new BigDecimal(period.getDays() * 24)
-              : new BigDecimal(operationOrder.getRealDuration());
+              : new BigDecimal(manufacturingOperation.getRealDuration());
     } else if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
         == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
 
@@ -800,22 +800,22 @@ public class CostSheetServiceImpl implements CostSheetService {
           new BigDecimal(
                   DurationHelper.getSecondsDuration(
                       Duration.between(
-                          operationOrder.getPlannedStartDateT(),
-                          operationOrder.getPlannedEndDateT())))
+                          manufacturingOperation.getPlannedStartDateT(),
+                          manufacturingOperation.getPlannedEndDateT())))
               .multiply(ratio);
 
       Long totalPlannedDuration = 0L;
-      for (OperationOrder manufOperationOrder :
-          operationOrder.getManufOrder().getOperationOrderList()) {
-        if (manufOperationOrder.equals(operationOrder)) {
-          totalPlannedDuration += manufOperationOrder.getPlannedDuration();
+      for (ManufacturingOperation manufManufacturingOperation :
+          manufacturingOperation.getManufOrder().getManufacturingOperationList()) {
+        if (manufManufacturingOperation.equals(manufacturingOperation)) {
+          totalPlannedDuration += manufManufacturingOperation.getPlannedDuration();
         }
       }
       duration = (new BigDecimal(totalPlannedDuration).subtract(plannedDuration)).abs();
     }
     this.computeRealHumanResourceCost(
-        operationOrder.getProdProcessLine(),
-        operationOrder.getWorkCenter(),
+        manufacturingOperation.getProdProcessLine(),
+        manufacturingOperation.getWorkCenter(),
         priority,
         bomLevel,
         parentCostSheetLine,
@@ -848,7 +848,7 @@ public class CostSheetServiceImpl implements CostSheetService {
   }
 
   protected void computeRealMachineCost(
-      OperationOrder operationOrder,
+      ManufacturingOperation manufacturingOperation,
       WorkCenter workCenter,
       BigDecimal producedQty,
       Unit pieceUnit,
@@ -858,17 +858,17 @@ public class CostSheetServiceImpl implements CostSheetService {
       throws AxelorException {
     int costType =
         appProductionService.getIsCostPerProcessLine()
-            ? operationOrder.getProdProcessLine().getCostTypeSelect()
+            ? manufacturingOperation.getProdProcessLine().getCostTypeSelect()
             : workCenter.getCostTypeSelect();
     BigDecimal costAmount =
         appProductionService.getIsCostPerProcessLine()
-            ? operationOrder.getProdProcessLine().getCostAmount()
+            ? manufacturingOperation.getProdProcessLine().getCostAmount()
             : workCenter.getCostAmount();
 
     if (costType == WorkCenterRepository.COST_TYPE_PER_CYCLE) {
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
-          operationOrder.getPriority(),
+          manufacturingOperation.getPriority(),
           bomLevel,
           parentCostSheetLine,
           this.getNbCycle(producedQty, workCenter.getMaxCapacityPerCycle()),
@@ -880,14 +880,14 @@ public class CostSheetServiceImpl implements CostSheetService {
       if (workCenter.getIsRevaluationAtActualPrices()) {
 
         qty =
-            new BigDecimal(operationOrder.getRealDuration())
+            new BigDecimal(manufacturingOperation.getRealDuration())
                 .divide(
                     new BigDecimal(3600),
                     appProductionService.getNbDecimalDigitForUnitPrice(),
                     RoundingMode.HALF_UP);
       } else {
 
-        BigDecimal manufOrderQty = operationOrder.getManufOrder().getQty();
+        BigDecimal manufOrderQty = manufacturingOperation.getManufOrder().getQty();
         BigDecimal durationPerCycle =
             new BigDecimal(workCenter.getDurationPerCycle())
                 .divide(
@@ -919,7 +919,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       BigDecimal costPrice = costAmount.multiply(qty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
-          operationOrder.getPriority(),
+          manufacturingOperation.getPriority(),
           bomLevel,
           parentCostSheetLine,
           qty,
@@ -930,7 +930,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       BigDecimal costPrice = costAmount.multiply(producedQty);
       costSheetLineService.createWorkCenterMachineCostSheetLine(
           workCenter,
-          operationOrder.getPriority(),
+          manufacturingOperation.getPriority(),
           bomLevel,
           parentCostSheetLine,
           producedQty,

@@ -11,7 +11,7 @@
       <field type="datetime" name="fromDateTime" title="From Date"/>
       <field type="datetime" name="toDateTime" title="To Date"/>
     </search-fields>
-    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderChartController:chargeByMachineHours</dataset>
+    <dataset type="rpc">com.axelor.apps.production.web.ManufacturingOperationChartController:chargeByMachineHours</dataset>
     <category key="dateTime" type="text"/>
     <series key="charge" groupBy="machine" type="bar"/>
   </chart>
@@ -24,7 +24,7 @@
       <field type="datetime" name="fromDateTime" title="From Date"/>
       <field type="datetime" name="toDateTime" title="To Date"/>
     </search-fields>
-    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderChartController:chargeByMachineDays</dataset>
+    <dataset type="rpc">com.axelor.apps.production.web.ManufacturingOperationChartController:chargeByMachineDays</dataset>
     <category key="dateTime" type="text"/>
     <series key="charge" groupBy="machine" type="bar"/>
   </chart>
@@ -35,7 +35,7 @@
       <field type="datetime" name="fromDateTime" title="From Date"/>
       <field type="datetime" name="toDateTime" title="To Date"/>
     </search-fields>
-    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderChartController:calculateHourlyMachineCharge</dataset>
+    <dataset type="rpc">com.axelor.apps.production.web.ManufacturingOperationChartController:calculateHourlyMachineCharge</dataset>
     <category key="dateTime" type="text"/>
     <series key="charge" groupBy="company" type="line"/>
   </chart>
@@ -46,7 +46,7 @@
       <field type="datetime" name="fromDateTime" title="From Date"/>
       <field type="datetime" name="toDateTime" title="To Date"/>
     </search-fields>
-    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderChartController:chargePerMachineDays</dataset>
+    <dataset type="rpc">com.axelor.apps.production.web.ManufacturingOperationChartController:chargePerMachineDays</dataset>
     <category key="dateTime" type="text"/>
     <series key="charge" groupBy="machine" type="line"/>
   </chart>
@@ -58,7 +58,7 @@
       <field type="datetime" name="fromDateTime" title="From Date"/>
       <field type="datetime" name="toDateTime" title="To Date"/>
     </search-fields>
-    <dataset type="rpc">com.axelor.apps.production.web.OperationOrderChartController:chargePerDayForWorkCenterGroupMachines</dataset>
+    <dataset type="rpc">com.axelor.apps.production.web.ManufacturingOperationChartController:chargePerDayForWorkCenterGroupMachines</dataset>
     <category key="dateTime" type="text"/>
     <series key="charge" groupBy="machine" type="bar"/>
   </chart>
@@ -96,7 +96,7 @@
                     TO_CHAR(self.stoppingDateTime, 'YYYY-MM-DD') AS _date,
                     EXTRACT(EPOCH FROM SUM(self.stoppingDateTime - self.startingDateTime))/3600 AS _hours
                 FROM
-                    OperationOrderDuration self
+                    ManufacturingOperationDuration self
                 WHERE
                     self.startedBy.id = :userId
                     AND self.startingDateTime IS NOT NULL AND self.stoppingDateTime IS NOT NULL

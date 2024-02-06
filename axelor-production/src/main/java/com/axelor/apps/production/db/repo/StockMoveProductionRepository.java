@@ -29,12 +29,12 @@ public class StockMoveProductionRepository extends StockMoveSupplychainRepositor
     StockMove copy = super.copy(entity, deep);
     copy.setInManufOrder(null);
     copy.setOutManufOrder(null);
-    copy.setInOperationOrder(null);
+    copy.setInManufacturingOperation(null);
     if (copy.getStockMoveLineList() != null) {
       for (StockMoveLine stockMoveLine : copy.getStockMoveLineList()) {
         stockMoveLine.setProducedManufOrder(null);
         stockMoveLine.setConsumedManufOrder(null);
-        stockMoveLine.setConsumedOperationOrder(null);
+        stockMoveLine.setConsumedManufacturingOperation(null);
       }
     }
     return copy;

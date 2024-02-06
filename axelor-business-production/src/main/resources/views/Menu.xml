@@ -12,11 +12,11 @@
     action="manufacturing.root.calendars.employee.planned.operations" order="100"/>
 
   <action-view name="manufacturing.root.calendars.employee.planned.operations"
-    title="Employee planned operations" model="com.axelor.apps.production.db.OperationOrder">
-    <view type="calendar" name="operation-order-employee-planned-calendar"/>
-    <view type="grid" name="operation-order-grid"/>
-    <view type="form" name="operation-order-form"/>
-    <view-param name="search-filters" value="operation-order-filters"/>
+    title="Employee planned operations" model="com.axelor.apps.production.db.ManufacturingOperation">
+    <view type="calendar" name="manufacturing-operation-employee-planned-calendar"/>
+    <view type="grid" name="manufacturing-operation-grid"/>
+    <view type="form" name="manufacturing-operation-form"/>
+    <view-param name="search-filters" value="manufacturing-operation-filters"/>
     <domain>self.manufOrder.statusSelect IN (3,4,5,6)</domain>
   </action-view>
 
@@ -25,11 +25,11 @@
     action="manufacturing.root.calendars.employee.real.operations" order="200"/>
 
   <action-view name="manufacturing.root.calendars.employee.real.operations"
-    title="Employee real operations" model="com.axelor.apps.production.db.OperationOrder">
-    <view type="calendar" name="operation-order-employee-real-calendar"/>
-    <view type="grid" name="operation-order-grid"/>
-    <view type="form" name="operation-order-form"/>
-    <view-param name="search-filters" value="operation-order-filters"/>
+    title="Employee real operations" model="com.axelor.apps.production.db.ManufacturingOperation">
+    <view type="calendar" name="manufacturing-operation-employee-real-calendar"/>
+    <view type="grid" name="manufacturing-operation-grid"/>
+    <view type="form" name="manufacturing-operation-form"/>
+    <view-param name="search-filters" value="manufacturing-operation-filters"/>
     <domain>self.statusSelect = 6</domain>
   </action-view>
 

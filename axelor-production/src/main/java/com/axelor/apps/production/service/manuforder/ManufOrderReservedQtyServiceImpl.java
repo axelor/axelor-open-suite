@@ -20,7 +20,7 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
@@ -81,13 +81,14 @@ public class ManufOrderReservedQtyServiceImpl implements ManufOrderReservedQtySe
     Stream<StockMoveLine> consumedStockMoveLineStream;
 
     if (manufOrder.getIsConsProOnOperation()) {
-      List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-      if (operationOrderList == null) {
+      List<ManufacturingOperation> manufacturingOperationList =
+          manufOrder.getManufacturingOperationList();
+      if (manufacturingOperationList == null) {
         return new ArrayList<>();
       }
       consumedStockMoveLineStream =
-          operationOrderList.stream()
-              .map(OperationOrder::getConsumedStockMoveLineList)
+          manufacturingOperationList.stream()
+              .map(ManufacturingOperation::getConsumedStockMoveLineList)
               .filter(Objects::nonNull)
               .flatMap(Collection::stream);
     } else {

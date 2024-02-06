@@ -21,7 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.Machine;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
@@ -49,7 +49,9 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
 
   @Override
   public long computeEntireCycleDuration(
-      OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
+      ManufacturingOperation manufacturingOperation,
+      ProdProcessLine prodProcessLine,
+      BigDecimal qty)
       throws AxelorException {
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
 
@@ -75,9 +77,9 @@ public class ProdProcessLineServiceImpl implements ProdProcessLineService {
       plannedDuration = humanDuration;
     }
 
-    if (operationOrder != null) {
-      operationOrder.setPlannedMachineDuration(machineDuration);
-      operationOrder.setPlannedHumanDuration(humanDuration);
+    if (manufacturingOperation != null) {
+      manufacturingOperation.setPlannedMachineDuration(machineDuration);
+      manufacturingOperation.setPlannedHumanDuration(humanDuration);
     }
 
     return plannedDuration;

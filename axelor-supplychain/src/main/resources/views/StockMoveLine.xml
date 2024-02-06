@@ -54,7 +54,7 @@
     orderBy="stockMove.statusSelect,-stockMove.estimatedDate" canNew="false" canEdit="false"
     canDelete="false">
     <field name="consumedManufOrder"/>
-    <field name="consumedOperationOrder"/>
+    <field name="consumedManufacturingOperation"/>
     <field name="stockMove.stockMoveSeq"/>
     <field name="stockMove.realDate"/>
     <field name="realQty" aggregate="sum"

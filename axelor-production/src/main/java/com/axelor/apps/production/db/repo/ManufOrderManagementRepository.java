@@ -22,10 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -34,7 +34,7 @@ import javax.persistence.PersistenceException;
 
 public class ManufOrderManagementRepository extends ManufOrderRepository {
 
-  @Inject OperationOrderService operationOrderService;
+  @Inject ManufacturingOperationService manufacturingOperationService;
 
   @Override
   public ManufOrder copy(ManufOrder entity, boolean deep) {
@@ -56,7 +56,7 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       entity.clearToProduceProdProductList();
       entity.clearProducedStockMoveLineList();
       entity.clearWasteProdProductList();
-      entity.clearOperationOrderList();
+      entity.clearManufacturingOperationList();
       entity.clearCostSheetList();
       entity.clearPurchaseOrderSet();
     }
@@ -80,10 +80,10 @@ public class ManufOrderManagementRepository extends ManufOrderRepository {
       throw new PersistenceException(e.getMessage(), e);
     }
 
-    if (entity.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : entity.getOperationOrderList()) {
-        if (operationOrder.getBarCode() == null) {
-          operationOrderService.createBarcode(operationOrder);
+    if (entity.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation : entity.getManufacturingOperationList()) {
+        if (manufacturingOperation.getBarCode() == null) {
+          manufacturingOperationService.createBarcode(manufacturingOperation);
         }
       }
     }

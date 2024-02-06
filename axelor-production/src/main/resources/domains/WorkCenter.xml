@@ -31,8 +31,8 @@
     <decimal name="hrCostAmount" title="Cost (W.T.)"/>
     <long name="hrDurationPerCycle" title="HR Duration Per Cycle (hhh:mm:ss)"/>
 
-    <many-to-one name="operationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder" title="Operation order"/>
+    <many-to-one name="manufacturingOperation"
+      ref="com.axelor.apps.production.db.ManufacturingOperation" title="Manufacturing operation"/>
 
     <many-to-one name="costSheetGroup"
       ref="com.axelor.apps.production.db.CostSheetGroup" title="Cost sheet group"/>
@@ -71,7 +71,7 @@
       <field name="product"/>
       <field name="costTypeSelect"/>
       <field name="costAmount"/>
-      <field name="operationOrder"/>
+      <field name="manufacturingOperation"/>
       <field name="costSheetGroup"/>
     </track>
   </entity>

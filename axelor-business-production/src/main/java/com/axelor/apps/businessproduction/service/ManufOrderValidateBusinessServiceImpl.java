@@ -25,10 +25,10 @@ public class ManufOrderValidateBusinessServiceImpl implements ManufOrderValidate
 
   @Override
   public long checkTimesheet(ManufOrder manufOrder) {
-    OperationOrderValidateBusinessService operationOrderValidService =
-        Beans.get(OperationOrderValidateBusinessService.class);
-    return manufOrder.getOperationOrderList().stream()
-        .mapToLong(operationOrderValidService::checkTimesheet)
+    ManufacturingOperationValidateBusinessService manufacturingOperationValidService =
+        Beans.get(ManufacturingOperationValidateBusinessService.class);
+    return manufOrder.getManufacturingOperationList().stream()
+        .mapToLong(manufacturingOperationValidService::checkTimesheet)
         .sum();
   }
 }

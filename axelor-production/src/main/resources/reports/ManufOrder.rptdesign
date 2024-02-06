@@ -984,27 +984,27 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	ManufOrder.id as manuf_order_id, OperationOrderLine.id, OperationOrderLine.priority, ProdProcessLine.name as prod_process_line,
-	OperationOrderLine.planned_start_datet, OperationOrderLine.planned_end_datet, OperationOrderLine.real_start_datet,
-    OperationOrderLine.real_end_datet, 
+	ManufOrder.id as manuf_order_id, ManufacturingOperationLine.id, ManufacturingOperationLine.priority, ProdProcessLine.name as prod_process_line,
+	ManufacturingOperationLine.planned_start_datet, ManufacturingOperationLine.planned_end_datet, ManufacturingOperationLine.real_start_datet,
+    ManufacturingOperationLine.real_end_datet,
     (CASE WHEN TranslatedSelect.message_value = '' THEN TranslatedSelect.message_key ELSE TranslatedSelect.message_value END) as status_select,
     Machine.name as machine_name, (SELECT print_planned_date_on_manuf_order FROM studio_app_production) as print_planned_date_on_manuf_order
 FROM
-	production_operation_order as OperationOrderLine 
+	production_manufacturing_operation as ManufacturingOperationLine
 INNER JOIN 
-	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
+	production_manuf_order AS ManufOrder ON (ManufacturingOperationLine.manuf_order = ManufOrder.id)
 LEFT JOIN 
-	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrderLine.work_center)
+	production_work_center AS WorkCenter ON (WorkCenter.id = ManufacturingOperationLine.work_center)
 LEFT JOIN 
-	production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = OperationOrderLine.prod_process_line)
+	production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = ManufacturingOperationLine.prod_process_line)
 LEFT JOIN 
-	production_machine AS Machine ON (Machine.id = OperationOrderLine.machine)
+	production_machine AS Machine ON (Machine.id = ManufacturingOperationLine.machine)
 
 LEFT JOIN meta_select AS MetaSelect ON MetaSelect.name = 'production.manuf.order.status.select'
 LEFT JOIN meta_select_item MetaSelectItem ON MetaSelectItem.select_id = MetaSelect.id
 LEFT JOIN meta_translation TranslatedSelect ON (TranslatedSelect.message_key = MetaSelectItem.title AND TranslatedSelect.language = substring(?, '^[a-zA-Z]+') )
 
-WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOrderLine.status_select as varchar )]]></xml-property>
+WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( ManufacturingOperationLine.status_select as varchar )]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="OperationDetails" id="4361">
             <property name="nullsOrdering">nulls lowest</property>
@@ -1229,26 +1229,26 @@ WHERE ManufOrder.id IN (@INJECTID) AND MetaSelectItem.value = cast ( OperationOr
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
-	ManufOrder.id as manuf_order_id, OperationOrderLine.id, OperationOrderLine.priority, ProdProcessLine.id as prod_process_line,
-	OperationOrderLine.planned_start_datet, OperationOrderLine.planned_end_datet, OperationOrderLine.real_start_datet,
-	OperationOrderLine.real_end_datet, Machine.serial_number as machine_serial,
+	ManufOrder.id as manuf_order_id, ManufacturingOperationLine.id, ManufacturingOperationLine.priority, ProdProcessLine.id as prod_process_line,
+	ManufacturingOperationLine.planned_start_datet, ManufacturingOperationLine.planned_end_datet, ManufacturingOperationLine.real_start_datet,
+	ManufacturingOperationLine.real_end_datet, Machine.serial_number as machine_serial,
 	ObjectDescription.id as description_id,ObjectDescription.sequence as description_prio, MetaFile.file_path, ObjectDescription.description,
-	ManufOrder.is_cons_pro_on_operation, MetaFileBarcode.file_path as bar_code_path, OperationOrderLine.operation_name,
-	OperationOrderLine.bar_code as bar_code, WorkCenter.code as work_center_code, WorkCenter.name as work_center_name
+	ManufOrder.is_cons_pro_on_operation, MetaFileBarcode.file_path as bar_code_path, ManufacturingOperationLine.operation_name,
+	ManufacturingOperationLine.bar_code as bar_code, WorkCenter.code as work_center_code, WorkCenter.name as work_center_name
 	
 FROM production_object_description as ObjectDescription
 	LEFT JOIN meta_file AS MetaFile ON (MetaFile.id = ObjectDescription.image)
 	LEFT JOIN production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = ObjectDescription.prod_process_line)
-		RIGHT JOIN production_operation_order as OperationOrderLine ON (OperationOrderLine.prod_process_line = ProdProcessLine.id)
-			LEFT JOIN meta_file AS MetaFileBarcode ON (MetaFileBarcode.id = OperationOrderLine.bar_code)
+		RIGHT JOIN production_manufacturing_operation as ManufacturingOperationLine ON (ManufacturingOperationLine.prod_process_line = ProdProcessLine.id)
+			LEFT JOIN meta_file AS MetaFileBarcode ON (MetaFileBarcode.id = ManufacturingOperationLine.bar_code)
 INNER JOIN 
-	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
+	production_manuf_order AS ManufOrder ON (ManufacturingOperationLine.manuf_order = ManufOrder.id)
 LEFT JOIN 
-	production_work_center AS WorkCenter ON (WorkCenter.id = OperationOrderLine.work_center)
+	production_work_center AS WorkCenter ON (WorkCenter.id = ManufacturingOperationLine.work_center)
 	LEFT JOIN 
-		production_machine AS Machine ON (Machine.id = OperationOrderLine.machine)
+		production_machine AS Machine ON (Machine.id = ManufacturingOperationLine.machine)
 WHERE ManufOrder.id IN (@INJECTID)
-	ORDER BY OperationOrderLine.priority, ObjectDescription.sequence
+	ORDER BY ManufacturingOperationLine.priority, ObjectDescription.sequence
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="ConsumedProductDS" id="4186">
@@ -1631,7 +1631,7 @@ WHERE ManufOrder.id IN (@INJECTID) AND StockLocationLine.product = Product.id]]>
             </list-property>
             <xml-property name="queryText"><![CDATA[
 SELECT 
-	ManufOrder.id as manuf_order_id, OperationOrderLine.id, OperationOrderLine.priority, ProdProcessLine.id as prod_process_line,
+	ManufOrder.id as manuf_order_id, ManufacturingOperationLine.id, ManufacturingOperationLine.priority, ProdProcessLine.id as prod_process_line,
 	Product.name as product_name, Product.code as product_code, BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
 	Unit.label_to_printing as unit_code, ProdProduct.qty
 	
@@ -1640,12 +1640,12 @@ FROM production_prod_product as ProdProduct
 	LEFT JOIN meta_file as BarCodeFile on (BarCodeFile.id = Product.bar_code)
 	LEFT JOIN base_unit as Unit ON (Unit.id = ProdProduct.unit)
 	LEFT JOIN production_prod_process_line AS ProdProcessLine ON (ProdProcessLine.id = ProdProduct.to_consume_prod_process_line)
-		RIGHT JOIN production_operation_order as OperationOrderLine ON (OperationOrderLine.prod_process_line = ProdProcessLine.id)
+		RIGHT JOIN production_manufacturing_operation as ManufacturingOperationLine ON (ManufacturingOperationLine.prod_process_line = ProdProcessLine.id)
 INNER JOIN 
-	production_manuf_order AS ManufOrder ON (OperationOrderLine.manuf_order = ManufOrder.id)
+	production_manuf_order AS ManufOrder ON (ManufacturingOperationLine.manuf_order = ManufOrder.id)
 	
 		
-	ORDER BY OperationOrderLine.priority
+	ORDER BY ManufacturingOperationLine.priority
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -4351,7 +4351,7 @@ else dataSetRow["planned_end_datet"]</expression>
                                 </row>
                             </header>
                             <group id="4400">
-                                <property name="groupName">OperationOrderGroup</property>
+                                <property name="groupName">ManufacturingOperationGroup</property>
                                 <expression name="keyExpr" type="javascript">row["id"]</expression>
                                 <structure name="toc">
                                     <expression name="expressionValue" type="javascript">row["id"]</expression>

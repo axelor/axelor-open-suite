@@ -76,7 +76,7 @@
   <selection name="supplychain.mrp.line.related.to.select"
     id="production.supplychain.mrp.line.related.to.select">
     <option value="com.axelor.apps.production.db.ManufOrder">Manufacturing order</option>
-    <option value="com.axelor.apps.production.db.OperationOrder">Operation order</option>
+    <option value="com.axelor.apps.production.db.ManufacturingOperation">Operation order</option>
   </selection>
 
   <selection name="production.cost.sheet.line.type.select">

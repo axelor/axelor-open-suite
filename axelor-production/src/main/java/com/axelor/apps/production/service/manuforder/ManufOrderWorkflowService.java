@@ -45,7 +45,7 @@ public interface ManufOrderWorkflowService {
 
   List<Partner> getOutsourcePartners(ManufOrder manufOrder) throws AxelorException;
 
-  void setOperationOrderMaxPriority(ManufOrder manufOrder);
+  void setManufacturingOperationMaxPriority(ManufOrder manufOrder);
 
   boolean sendPartialFinishMail(ManufOrder manufOrder);
 

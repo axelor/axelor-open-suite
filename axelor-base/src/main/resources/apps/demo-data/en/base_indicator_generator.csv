@@ -16,7 +16,7 @@
 "Number of tasks",1,"SELECT COUNT(*) as result FROM Event WHERE typeSelect = 3",6
 "Number of tickets",1,"SELECT COUNT(*) as result FROM Event WHERE typeSelect = 6",0
 "Number of manufacturing orders",1,"SELECT COUNT(*) as result FROM ManufOrder",0
-"Number of operation orders",1,"SELECT COUNT(*) as result FROM OperationOrder",0
+"Number of operation orders",1,"SELECT COUNT(*) as result FROM ManufacturingOperation",0
 "Number of products",1,"SELECT COUNT(*) as result FROM Product WHERE isModel = false",48
 "Number of bills of materials",1,"SELECT COUNT(*) as result FROM BillOfMaterial",45
 "Number of sale orders",1,"SELECT COUNT(*) as result FROM SaleOrder",11

@@ -27,8 +27,8 @@ import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.MachineToolManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationManagementRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
@@ -45,8 +45,8 @@ import com.axelor.apps.production.rest.ManufOrderProductRestService;
 import com.axelor.apps.production.rest.ManufOrderProductRestServiceImpl;
 import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
-import com.axelor.apps.production.rest.OperationOrderRestService;
-import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.rest.ManufacturingOperationRestService;
+import com.axelor.apps.production.rest.ManufacturingOperationRestServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
@@ -108,6 +108,16 @@ import com.axelor.apps.production.service.costsheet.UnitCostCalculationService;
 import com.axelor.apps.production.service.costsheet.UnitCostCalculationServiceImpl;
 import com.axelor.apps.production.service.machine.MachineService;
 import com.axelor.apps.production.service.machine.MachineServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationChartService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationChartServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationOutsourceService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationOutsourceServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationPlanningService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationPlanningServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreatePurchaseOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderOutgoingStockMoveService;
@@ -124,16 +134,6 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderChartService;
-import com.axelor.apps.production.service.operationorder.OperationOrderChartServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
-import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
@@ -161,11 +161,12 @@ public class ProductionModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(ManufOrderRepository.class).to(ManufOrderManagementRepository.class);
-    bind(OperationOrderRepository.class).to(OperationOrderManagementRepository.class);
+    bind(ManufacturingOperationRepository.class)
+        .to(ManufacturingOperationManagementRepository.class);
     bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
     bind(BillOfMaterialService.class).to(BillOfMaterialServiceImpl.class);
     bind(ManufOrderService.class).to(ManufOrderServiceImpl.class);
-    bind(OperationOrderService.class).to(OperationOrderServiceImpl.class);
+    bind(ManufacturingOperationService.class).to(ManufacturingOperationServiceImpl.class);
     bind(ProductionOrderService.class).to(ProductionOrderServiceImpl.class);
     bind(ProductionOrderWizardService.class).to(ProductionOrderWizardServiceImpl.class);
     bind(ProductionOrderSaleOrderService.class).to(ProductionOrderSaleOrderServiceImpl.class);
@@ -212,25 +213,28 @@ public class ProductionModule extends AxelorModule {
     bind(ProductVariantServiceSupplyChainImpl.class).to(ProductVariantServiceProductionImpl.class);
     bind(ManufOrderProductRestService.class).to(ManufOrderProductRestServiceImpl.class);
     bind(ManufOrderRestService.class).to(ManufOrderRestServiceImpl.class);
-    bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
+    bind(ManufacturingOperationRestService.class).to(ManufacturingOperationRestServiceImpl.class);
     bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
     bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceProductionImpl.class);
     bind(MachineService.class).to(MachineServiceImpl.class);
-    bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
-    bind(OperationOrderPlanningService.class).to(OperationOrderPlanningServiceImpl.class);
+    bind(ManufacturingOperationWorkflowService.class)
+        .to(ManufacturingOperationWorkflowServiceImpl.class);
+    bind(ManufacturingOperationPlanningService.class)
+        .to(ManufacturingOperationPlanningServiceImpl.class);
     bind(BillOfMaterialLineService.class).to(BillOfMaterialLineServiceImpl.class);
     bind(BillOfMaterialImportService.class).to(BillOfMaterialImportServiceImpl.class);
     bind(BillOfMaterialImportRepository.class).to(BillOfMaterialImportManagementRepository.class);
     bind(BillOfMaterialImportLineService.class).to(BillOfMaterialImportLineServiceImpl.class);
     bind(StockMoveMergingServiceSupplychainImpl.class)
         .to(StockMoveMergingServiceProductionImpl.class);
-    bind(OperationOrderChartService.class).to(OperationOrderChartServiceImpl.class);
+    bind(ManufacturingOperationChartService.class).to(ManufacturingOperationChartServiceImpl.class);
     bind(BillOfMaterialComputeNameService.class).to(BillOfMaterialComputeNameServiceImpl.class);
     bind(ManufOrderOutgoingStockMoveService.class).to(ManufOrderOutgoingStockMoveServiceImpl.class);
     bind(ManufOrderStockMoveService.class).to(ManufOrderStockMoveServiceImpl.class);
     bind(ManufOrderOutsourceService.class).to(ManufOrderOutsourceServiceImpl.class);
     bind(ProdProcessLineOutsourceService.class).to(ProdProcessLineOutsourceServiceImpl.class);
-    bind(OperationOrderOutsourceService.class).to(OperationOrderOutsourceServiceImpl.class);
+    bind(ManufacturingOperationOutsourceService.class)
+        .to(ManufacturingOperationOutsourceServiceImpl.class);
     bind(ProdProcessOutsourceService.class).to(ProdProcessOutsourceServiceImpl.class);
     bind(ManufOrderCreatePurchaseOrderService.class)
         .to(ManufOrderCreatePurchaseOrderServiceImpl.class);

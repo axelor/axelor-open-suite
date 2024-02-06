@@ -165,7 +165,7 @@
           hideIf="prodProcess.prodProcessLinesOutsourcable
            || (!prodProcess.outsourcing &amp;&amp; !prodProcess.outsourcable)"
           readonlyIf="prodProcess.outsourcing"
-          onChange="action-manuf-order-method-set-operation-orders-outsourcing"/>
+          onChange="action-manuf-order-method-set-manufacturing-operations-outsourcing"/>
         <field name="outsourcingPartner" colSpan="3" showIf="outsourcing"
           domain="self.isSubcontractor = true"/>
         <field name="$producibleQty" title="Producible qty" type="decimal" colSpan="3"
@@ -195,7 +195,7 @@
         <field name="invoiced" showIf="isToInvoice" if-module="axelor-business-production"
           if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
         <button name="preFillOperationsBtn" colSpan="4" title="Pre-fill operations"
-          hideIf="statusSelect &gt; 1  &#124;&#124; operationOrderList.length &gt; 0"
+          hideIf="statusSelect &gt; 1  &#124;&#124; manufacturingOperationList.length &gt; 0"
           onClick="save,action-manuf-order-method-pre-fill-operations,action-manuf-order-method-update-lines-outsourced"/>
         <field name="product.isModel" hidden="true"/>
         <field name="typeSelect" hidden="true"/>
@@ -233,10 +233,10 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">
-      <panel-related name="operationOrderListPanel" field="operationOrderList"
-        readonlyIf="statusSelect == 6" colSpan="12" height="15" form-view="operation-order-form"
-        grid-view="operation-order-grid" canNew="false"
-        onChange="action-manuf-order-method-update-lines-outsourced"/>
+      <panel-related name="manufacturingOperationListPanel"
+        field="manufacturingOperationList" readonlyIf="statusSelect == 6" colSpan="12" height="15"
+        form-view="manufacturing-operation-form" grid-view="manufacturing-operation-grid"
+        canNew="false" onChange="action-manuf-order-method-update-lines-outsourced"/>
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
@@ -328,13 +328,15 @@
           title="Update planned quantities (Components and FP)" colSpan="12"
           showIf="statusSelect != 6 &amp;&amp; typeSelect != 2"
           onClick="save,action-manuf-order-update-planned-qty-popup-form-view" css="btn-custom"/>
-        <panel-dashlet name="operationOrderToConsumeProductPanel" readonly="true"
-          colSpan="12" action="action-manuf-order-view-operation-order-to-consume-product"/>
+        <panel-dashlet name="manufacturingOperationToConsumeProductPanel"
+          readonly="true" colSpan="12"
+          action="action-manuf-order-view-manufacturing-operation-to-consume-product"/>
         <button name="updateRealQtyBtn" title="Update real quantities (Components and FP)"
           colSpan="12" showIf="statusSelect != 6 &amp;&amp; typeSelect != 2"
           onClick="save,action-manuf-order-update-real-qty-popup-form-view" css="btn-custom"/>
-        <panel-dashlet name="operationOrderConsumedProductPanel" readonly="true"
-          colSpan="12" action="action-manuf-order-view-operation-order-consumed-product"/>
+        <panel-dashlet name="manufacturingOperationConsumedProductPanel"
+          readonly="true" colSpan="12"
+          action="action-manuf-order-view-manufacturing-operation-consumed-product"/>
         <panel name="allocationToolsPanel" colSpan="12"
           showIf="$contains([3,4,5], statusSelect)"
           if="__config__.app.getApp('supplychain')?.manageStockReservation">
@@ -347,8 +349,9 @@
           <button name="cancelReservationItem" colSpan="3" title="Cancel reservation"
             onClick="save,action-manuf-order-method-cancel-reservation"/>
         </panel>
-        <panel-dashlet name="operationOrderDiffConsumeProductPanel" readonly="true"
-          colSpan="12" action="action-manuf-order-view-operation-order-diff-consume-product"/>
+        <panel-dashlet name="manufacturingOperationDiffConsumeProductPanel"
+          readonly="true" colSpan="12"
+          action="action-manuf-order-view-manufacturing-operation-diff-consume-product"/>
       </panel>
       <panel name="finishedProductsPanel" title="Finished products"
         showIf="statusSelect &gt;= 3">
@@ -739,7 +742,7 @@
   </action-record>
 
   <action-group name="action-manuf-order-group-prod-process-onchange">
-    <action name="action-manuf-order-attrs-reset-operation-order-list"/>
+    <action name="action-manuf-order-attrs-reset-manufacturing-operation-list"/>
     <action name="action-manuf-order-attrs-isConsProOnOperation"/>
     <action name="action-manuf-order-record-isConsProOnOperation"/>
     <action name="action-manuf-order-record-update-qty-from-prod-process"/>
@@ -899,39 +902,40 @@
       method="cancelReservation"/>
   </action-method>
 
-  <action-view name="action-manuf-order-view-operation-order-to-consume-product"
+  <action-view name="action-manuf-order-view-manufacturing-operation-to-consume-product"
     title="To consume products" model="com.axelor.apps.production.db.ProdProduct">
     <view type="grid" name="prod-product-consume-manuf-order-grid"/>
     <view type="form" name="prod-product-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.toConsumeOperationOrder.manufOrder.id = :id</domain>
+    <domain>self.toConsumeManufacturingOperation.manufOrder.id = :id</domain>
     <context name="companyIdFromParent" expr="eval: company.id"/>
   </action-view>
 
-  <action-view name="action-manuf-order-view-operation-order-diff-consume-product"
-    title="Differences" model="com.axelor.apps.production.db.ProdProduct">
+  <action-view
+    name="action-manuf-order-view-manufacturing-operation-diff-consume-product" title="Differences"
+    model="com.axelor.apps.production.db.ProdProduct">
     <view type="grid" name="prod-product-diff-manuf-order-grid"/>
     <view type="form" name="prod-product-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.diffConsumeOperationOrder.manufOrder.id = :id</domain>
+    <domain>self.diffConsumeManufacturingOperation.manufOrder.id = :id</domain>
     <context name="companyIdFromParent" expr="eval: company.id"/>
   </action-view>
 
-  <action-view name="action-manuf-order-view-operation-order-consumed-product"
+  <action-view name="action-manuf-order-view-manufacturing-operation-consumed-product"
     title="Consumed products" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-consumed-production-grid"/>
     <view type="form" name="stock-move-line-production-form"/>
-    <domain>self.consumedOperationOrder.manufOrder.id = :id</domain>
+    <domain>self.consumedManufacturingOperation.manufOrder.id = :id</domain>
   </action-view>
 
   <action-attrs name="action-manuf-order-reset">
-    <attribute name="value" for="operationOrderList" expr="eval: null"/>
+    <attribute name="value" for="manufacturingOperationList" expr="eval: null"/>
     <attribute name="value" for="toConsumeProdProductList" expr="eval: null"/>
     <attribute name="value" for="toProduceProdProductList" expr="eval: null"/>
   </action-attrs>
 
-  <action-attrs name="action-manuf-order-attrs-reset-operation-order-list">
-    <attribute name="value" for="operationOrderList" expr="eval: null"/>
+  <action-attrs name="action-manuf-order-attrs-reset-manufacturing-operation-list">
+    <attribute name="value" for="manufacturingOperationList" expr="eval: null"/>
   </action-attrs>
 
   <action-attrs name="action-manuf-order-attrs-filter-prodProcess">
@@ -975,11 +979,11 @@
     <attribute name="scale" for="costPrice"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
     <attribute name="value" for="$totalPlannedDuration"
-      expr="eval: operationOrderList.collect{it->it.plannedDuration}.sum()"
-      if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+      expr="eval: manufacturingOperationList.collect{it->it.plannedDuration}.sum()"
+      if="manufacturingOperationList != null &amp;&amp; !manufacturingOperationList.isEmpty()"/>
     <attribute name="value" for="$totalRealDuration"
-      expr="eval: operationOrderList.collect{it->it.realDuration}.sum()"
-      if="operationOrderList != null &amp;&amp; !operationOrderList.isEmpty()"/>
+      expr="eval: manufacturingOperationList.collect{it->it.realDuration}.sum()"
+      if="manufacturingOperationList != null &amp;&amp; !manufacturingOperationList.isEmpty()"/>
   </action-attrs>
 
   <action-validate name="action-manuf-order-validate-planned-end-date"
@@ -998,10 +1002,11 @@
     <call class="com.axelor.apps.production.web.ManufOrderController" method="checkMergeValues"/>
   </action-method>
 
-  <action-method name="action-manuf-order-method-set-operation-orders-outsourcing"
+  <action-method
+    name="action-manuf-order-method-set-manufacturing-operations-outsourcing"
     model="com.axelor.apps.production.db.ManufOrder">
     <call class="com.axelor.apps.production.web.ManufOrderController"
-      method="setOperationOrdersOutsourcing"/>
+      method="setManufacturingOperationsOutsourcing"/>
   </action-method>
 
   <action-method name="action-manuf-order-method-generate-merge-manuf-order"

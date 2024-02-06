@@ -300,11 +300,11 @@ public final class ProductionExceptionMessage {
       /*$$(*/
       "The quantity of the bill of material %s is equal to zero." /*)*/;
 
-  public static final String OPERATION_ORDER_NO_PERIOD_FOUND_FOR_PLAN_DATES =
+  public static final String MANUFACTURING_OPERATION_NO_PERIOD_FOUND_FOR_PLAN_DATES =
       /*$$(*/
       "No period has been found in the weekly planning for the operation order %s" /*)*/;
 
-  public static final String OPERATION_ORDER_ALREADY_FINISHED =
+  public static final String MANUFACTURING_OPERATION_ALREADY_FINISHED =
       /*$$(*/
       "The operation order is already finished and cannot be moved." /*)*/;
 
@@ -335,7 +335,7 @@ public final class ProductionExceptionMessage {
       /*$$(*/ "Invalid scheduling and capacity configuration." /*)*/;
 
   public static final String
-      LAST_OPERATION_ORDER_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
+      LAST_MANUFACTURING_OPERATION_PLANNED_END_DATE_WILL_OVERFLOW_BEYOND_THE_MANUF_ORDER_PLANNED_END_DATE = /*$$(*/
           "The last operation order planned end date will overflow beyond the manuf order planned end date, do you wish to continue?" /*)*/;
 
   public static final String NO_APPLICABLE_BILL_OF_MATERIALS = /*$$(*/

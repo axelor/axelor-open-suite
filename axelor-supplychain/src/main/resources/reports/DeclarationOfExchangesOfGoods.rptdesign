@@ -1853,7 +1853,7 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
         <design:resultColumnDefinitions>
           <design:attributes>
             <design:identifier>
-              <design:name>consumed_operation_order</design:name>
+              <design:name>consumed_manufacturing_operation</design:name>
               <design:position>29</design:position>
             </design:identifier>
             <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
@@ -1861,11 +1861,11 @@ order by StockMove.real_date, StockMoveLine.id]]></xml-property>
             <design:scale>0</design:scale>
             <design:nullability>Nullable</design:nullability>
             <design:uiHints>
-              <design:displayName>consumed_operation_order</design:displayName>
+              <design:displayName>consumed_manufacturing_operation</design:displayName>
             </design:uiHints>
           </design:attributes>
           <design:usageHints>
-            <design:label>consumed_operation_order</design:label>
+            <design:label>consumed_manufacturing_operation</design:label>
             <design:formattingHints>
               <design:displaySize>20</design:displaySize>
             </design:formattingHints>

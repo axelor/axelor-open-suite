@@ -32,21 +32,21 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProductionConfig;
 import com.axelor.apps.production.db.repo.CostSheetRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
-import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.db.repo.ManufacturingOperationRepository;
 import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
-import com.axelor.apps.production.service.operationorder.OperationOrderOutsourceService;
-import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationOutsourceService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationPlanningService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.common.ObjectUtils;
@@ -66,54 +66,54 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService {
-  protected OperationOrderWorkflowService operationOrderWorkflowService;
+  protected ManufacturingOperationWorkflowService manufacturingOperationWorkflowService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
   protected ManufOrderRepository manufOrderRepo;
   protected ProductCompanyService productCompanyService;
   protected ProductionConfigRepository productionConfigRepo;
   protected AppBaseService appBaseService;
-  protected OperationOrderService operationOrderService;
+  protected ManufacturingOperationService manufacturingOperationService;
   protected AppProductionService appProductionService;
   protected ProductionConfigService productionConfigService;
-  protected OperationOrderPlanningService operationOrderPlanningService;
+  protected ManufacturingOperationPlanningService manufacturingOperationPlanningService;
   protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
   protected ManufOrderService manufOrderService;
   protected SequenceService sequenceService;
   protected ManufOrderOutsourceService manufOrderOutsourceService;
-  protected OperationOrderOutsourceService operationOrderOutsourceService;
+  protected ManufacturingOperationOutsourceService manufacturingOperationOutsourceService;
 
   @Inject
   public ManufOrderWorkflowServiceImpl(
-      OperationOrderWorkflowService operationOrderWorkflowService,
+      ManufacturingOperationWorkflowService manufacturingOperationWorkflowService,
       ManufOrderStockMoveService manufOrderStockMoveService,
       ManufOrderRepository manufOrderRepo,
       ProductCompanyService productCompanyService,
       ProductionConfigRepository productionConfigRepo,
       AppBaseService appBaseService,
-      OperationOrderService operationOrderService,
+      ManufacturingOperationService manufacturingOperationService,
       AppProductionService appProductionService,
       ProductionConfigService productionConfigService,
-      OperationOrderPlanningService operationOrderPlanningService,
+      ManufacturingOperationPlanningService manufacturingOperationPlanningService,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderService manufOrderService,
       SequenceService sequenceService,
       ManufOrderOutsourceService manufOrderOutsourceService,
-      OperationOrderOutsourceService operationOrderOutsourceService) {
-    this.operationOrderWorkflowService = operationOrderWorkflowService;
+      ManufacturingOperationOutsourceService manufacturingOperationOutsourceService) {
+    this.manufacturingOperationWorkflowService = manufacturingOperationWorkflowService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.manufOrderRepo = manufOrderRepo;
     this.productCompanyService = productCompanyService;
     this.productionConfigRepo = productionConfigRepo;
     this.appBaseService = appBaseService;
-    this.operationOrderService = operationOrderService;
+    this.manufacturingOperationService = manufacturingOperationService;
     this.appProductionService = appProductionService;
     this.productionConfigService = productionConfigService;
-    this.operationOrderPlanningService = operationOrderPlanningService;
+    this.manufacturingOperationPlanningService = manufacturingOperationPlanningService;
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderService = manufOrderService;
     this.sequenceService = sequenceService;
     this.manufOrderOutsourceService = manufOrderOutsourceService;
-    this.operationOrderOutsourceService = operationOrderOutsourceService;
+    this.manufacturingOperationOutsourceService = manufacturingOperationOutsourceService;
   }
 
   @Override
@@ -139,10 +139,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void pause(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
-          operationOrderWorkflowService.pause(operationOrder);
+    if (manufOrder.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            == ManufacturingOperationRepository.STATUS_IN_PROGRESS) {
+          manufacturingOperationWorkflowService.pause(manufacturingOperation);
         }
       }
     }
@@ -154,10 +156,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void resume(ManufOrder manufOrder) {
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_STANDBY) {
-          operationOrderWorkflowService.resume(operationOrder);
+    if (manufOrder.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            == ManufacturingOperationRepository.STATUS_STANDBY) {
+          manufacturingOperationWorkflowService.resume(manufacturingOperation);
         }
       }
     }
@@ -191,14 +195,18 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   /** CAUTION : Must be called in a different transaction from sending mail method. */
   @Transactional(rollbackOn = {Exception.class})
   public void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_FINISHED) {
-          if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_IN_PROGRESS
-              && operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_STANDBY) {
-            operationOrderWorkflowService.start(operationOrder);
+    if (manufOrder.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            != ManufacturingOperationRepository.STATUS_FINISHED) {
+          if (manufacturingOperation.getStatusSelect()
+                  != ManufacturingOperationRepository.STATUS_IN_PROGRESS
+              && manufacturingOperation.getStatusSelect()
+                  != ManufacturingOperationRepository.STATUS_STANDBY) {
+            manufacturingOperationWorkflowService.start(manufacturingOperation);
           }
-          operationOrderWorkflowService.finish(operationOrder);
+          manufacturingOperationWorkflowService.finish(manufacturingOperation);
         }
       }
     }
@@ -282,9 +290,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
   @Transactional(rollbackOn = {Exception.class})
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_PLANNED) {
-          operationOrderWorkflowService.start(operationOrder);
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            == ManufacturingOperationRepository.STATUS_PLANNED) {
+          manufacturingOperationWorkflowService.start(manufacturingOperation);
         }
       }
     }
@@ -319,10 +329,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(ProductionExceptionMessage.MANUF_ORDER_CANCEL_REASON_ERROR));
     }
-    if (manufOrder.getOperationOrderList() != null) {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
-          operationOrderWorkflowService.cancel(operationOrder);
+    if (manufOrder.getManufacturingOperationList() != null) {
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        if (manufacturingOperation.getStatusSelect()
+            != ManufacturingOperationRepository.STATUS_CANCELED) {
+          manufacturingOperationWorkflowService.cancel(manufacturingOperation);
         }
       }
     }
@@ -358,10 +370,11 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   @Override
   public void allOpFinished(ManufOrder manufOrder) throws AxelorException {
-    if (manufOrder.getOperationOrderList().stream()
+    if (manufOrder.getManufacturingOperationList().stream()
         .allMatch(
-            operationOrder ->
-                operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_FINISHED)) {
+            manufacturingOperation ->
+                manufacturingOperation.getStatusSelect()
+                    == ManufacturingOperationRepository.STATUS_FINISHED)) {
       this.finishManufOrder(manufOrder);
     }
   }
@@ -397,9 +410,9 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         && manufOrderOutsourceService.getOutsourcePartner(manufOrder).isPresent()) {
       return List.of(manufOrderOutsourceService.getOutsourcePartner(manufOrder).get());
     } else {
-      return manufOrder.getOperationOrderList().stream()
-          .filter(OperationOrder::getOutsourcing)
-          .map(oo -> operationOrderOutsourceService.getOutsourcePartner(oo))
+      return manufOrder.getManufacturingOperationList().stream()
+          .filter(ManufacturingOperation::getOutsourcing)
+          .map(oo -> manufacturingOperationOutsourceService.getOutsourcePartner(oo))
           .map(optPartner -> optPartner.orElse(null))
           .filter(Objects::nonNull)
           .distinct()
@@ -409,7 +422,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void setOperationOrderMaxPriority(ManufOrder manufOrder) {
+  public void setManufacturingOperationMaxPriority(ManufOrder manufOrder) {
 
     if (manufOrder == null
         || Boolean.FALSE.equals(manufOrder.getProdProcess().getOperationContinuity())) {
@@ -418,27 +431,28 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     manufOrder = manufOrderRepo.find(manufOrder.getId());
 
-    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
-    int optionalOperationOrderLargestPriority =
-        operationOrderList.stream()
-            .filter(order -> isValidOperationOrder(order, true))
-            .mapToInt(OperationOrder::getPriority)
+    List<ManufacturingOperation> manufacturingOperationList =
+        manufOrder.getManufacturingOperationList();
+    int optionalManufacturingOperationLargestPriority =
+        manufacturingOperationList.stream()
+            .filter(order -> isValidManufacturingOperation(order, true))
+            .mapToInt(ManufacturingOperation::getPriority)
             .max()
             .orElse(-1);
 
-    int operationOrderMaxPriority =
-        operationOrderList.stream()
-            .filter(order -> isValidOperationOrder(order, false))
-            .mapToInt(OperationOrder::getPriority)
+    int manufacturingOperationMaxPriority =
+        manufacturingOperationList.stream()
+            .filter(order -> isValidManufacturingOperation(order, false))
+            .mapToInt(ManufacturingOperation::getPriority)
             .findFirst()
-            .orElse(optionalOperationOrderLargestPriority + 1);
+            .orElse(optionalManufacturingOperationLargestPriority + 1);
 
-    manufOrder.setOperationOrderMaxPriority(operationOrderMaxPriority);
+    manufOrder.setManufacturingOperationMaxPriority(manufacturingOperationMaxPriority);
 
     manufOrderRepo.save(manufOrder);
   }
 
-  protected boolean isValidOperationOrder(OperationOrder order, boolean optional) {
+  protected boolean isValidManufacturingOperation(ManufacturingOperation order, boolean optional) {
     Integer statusSelect = order.getStatusSelect();
     ProdProcessLine prodProcessLine = order.getProdProcessLine();
     return !statusSelect.equals(ManufOrderRepository.STATUS_FINISHED)

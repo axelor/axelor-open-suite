@@ -11,7 +11,7 @@
 
 	        //RELATED TO SELECT TYPE PRODUCTION
 	  		public static final String RELATED_TO_MANUFACTURING_ORDER = "com.axelor.apps.production.db.ManufOrder";
-	  		public static final String RELATED_TO_OPERATION_ORDER = "com.axelor.apps.production.db.OperationOrder";
+	  		public static final String RELATED_TO_MANUFACTURING_OPERATION = "com.axelor.apps.production.db.ManufacturingOperation";
 
       	 ]]>
     </extra-code>

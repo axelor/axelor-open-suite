@@ -14,11 +14,11 @@
       initParam="true"/>
 
     <!-- Contreparties - Non affiché -->
-    <!-- Operation order -->
-    <many-to-one name="toConsumeOperationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder"/>
-    <many-to-one name="diffConsumeOperationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder"/>
+    <!-- Manufacturing operation -->
+    <many-to-one name="toConsumeManufacturingOperation"
+      ref="com.axelor.apps.production.db.ManufacturingOperation"/>
+    <many-to-one name="diffConsumeManufacturingOperation"
+      ref="com.axelor.apps.production.db.ManufacturingOperation"/>
 
     <!-- Manuf order -->
     <many-to-one name="toConsumeManufOrder"

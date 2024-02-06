@@ -37,7 +37,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.ManufOrder;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
@@ -53,8 +53,8 @@ import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
-import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationService;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationStockMoveService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
@@ -107,7 +107,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected SequenceService sequenceService;
-  protected OperationOrderService operationOrderService;
+  protected ManufacturingOperationService manufacturingOperationService;
   protected ManufOrderPlanService manufOrderPlanService;
   protected ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService;
   protected ProductVariantService productVariantService;
@@ -127,7 +127,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Inject
   public ManufOrderServiceImpl(
       SequenceService sequenceService,
-      OperationOrderService operationOrderService,
+      ManufacturingOperationService manufacturingOperationService,
       ManufOrderPlanService manufOrderPlanService,
       ManufOrderCreatePurchaseOrderService manufOrderCreatePurchaseOrderService,
       ProductVariantService productVariantService,
@@ -144,7 +144,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       BillOfMaterialService billOfMaterialService,
       StockMoveService stockMoveService) {
     this.sequenceService = sequenceService;
-    this.operationOrderService = operationOrderService;
+    this.manufacturingOperationService = manufacturingOperationService;
     this.manufOrderPlanService = manufOrderPlanService;
     this.manufOrderCreatePurchaseOrderService = manufOrderCreatePurchaseOrderService;
     this.productVariantService = productVariantService;
@@ -168,14 +168,15 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (manufOrder.getOutsourcing()) {
       return false;
     }
-    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+    return manufOrder.getManufacturingOperationList().stream()
+        .anyMatch(ManufacturingOperation::getOutsourcing);
   }
 
   @Override
-  public void setOperationOrdersOutsourcing(ManufOrder manufOrder) {
-    if (manufOrder != null && manufOrder.getOperationOrderList() != null) {
+  public void setManufacturingOperationsOutsourcing(ManufOrder manufOrder) {
+    if (manufOrder != null && manufOrder.getManufacturingOperationList() != null) {
       manufOrder
-          .getOperationOrderList()
+          .getManufacturingOperationList()
           .forEach(oo -> oo.setOutsourcing(manufOrder.getOutsourcing()));
     }
   }
@@ -388,8 +389,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       for (ProdProcessLine prodProcessLine :
           this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList())) {
 
-        manufOrder.addOperationOrderListItem(
-            operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
+        manufOrder.addManufacturingOperationListItem(
+            manufacturingOperationService.createManufacturingOperation(
+                manufOrder, prodProcessLine));
       }
     }
 
@@ -411,8 +413,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
       for (ProdProcessLine prodProcessLine :
           this._sortProdProcessLineByPriority(prodProcess.getProdProcessLineList())) {
-        manufOrder.addOperationOrderListItem(
-            operationOrderService.createOperationOrder(manufOrder, prodProcessLine));
+        manufOrder.addManufacturingOperationListItem(
+            manufacturingOperationService.createManufacturingOperation(
+                manufOrder, prodProcessLine));
       }
     }
 
@@ -422,10 +425,13 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   @Transactional
   public void updateOperationsName(ManufOrder manufOrder) {
-    for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-      operationOrder.setName(
-          operationOrderService.computeName(
-              manufOrder, operationOrder.getPriority(), operationOrder.getOperationName()));
+    for (ManufacturingOperation manufacturingOperation :
+        manufOrder.getManufacturingOperationList()) {
+      manufacturingOperation.setName(
+          manufacturingOperationService.computeName(
+              manufOrder,
+              manufacturingOperation.getPriority(),
+              manufacturingOperation.getOperationName()));
     }
   }
 
@@ -595,10 +601,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       manufOrderStockMoveService.createNewConsumedStockMoveLineList(manufOrder, qtyToUpdate);
       updateDiffProdProductList(manufOrder);
     } else {
-      for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
-        Beans.get(OperationOrderStockMoveService.class)
-            .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
-        operationOrderService.updateDiffProdProductList(operationOrder);
+      for (ManufacturingOperation manufacturingOperation :
+          manufOrder.getManufacturingOperationList()) {
+        Beans.get(ManufacturingOperationStockMoveService.class)
+            .createNewConsumedStockMoveLineList(manufacturingOperation, qtyToUpdate);
+        manufacturingOperationService.updateDiffProdProductList(manufacturingOperation);
       }
     }
 
@@ -873,7 +880,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
             + " AND ( (self.consumedManufOrder IS NOT NULL AND self.consumedManufOrder.statusSelect IN ("
             + statusListQuery
             + "))"
-            + " OR (self.consumedOperationOrder IS NOT NULL AND self.consumedOperationOrder.statusSelect IN ( "
+            + " OR (self.consumedManufacturingOperation IS NOT NULL AND self.consumedManufacturingOperation.statusSelect IN ( "
             + statusListQuery
             + ") ) ) ";
     if (companyId != 0L) {

@@ -20,7 +20,7 @@ package com.axelor.apps.production.service.machine;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.Machine;
-import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ManufacturingOperation;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import java.time.LocalDateTime;
 
@@ -33,7 +33,7 @@ public interface MachineService {
    *
    * @param machine
    * @param duration
-   * @param operationOrder
+   * @param manufacturingOperation
    * @return the closest available date
    * @throws AxelorException
    */
@@ -41,7 +41,7 @@ public interface MachineService {
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,
-      OperationOrder operationOrder)
+      ManufacturingOperation manufacturingOperation)
       throws AxelorException;
 
   /**
@@ -52,7 +52,7 @@ public interface MachineService {
    * @param machine
    * @param startDateT
    * @param endDateT
-   * @param operationOrder
+   * @param manufacturingOperation
    * @return the furthest available date
    * @throws AxelorException
    */
@@ -60,6 +60,6 @@ public interface MachineService {
       Machine machine,
       LocalDateTime startDateT,
       LocalDateTime endDateT,
-      OperationOrder operationOrder)
+      ManufacturingOperation manufacturingOperation)
       throws AxelorException;
 }

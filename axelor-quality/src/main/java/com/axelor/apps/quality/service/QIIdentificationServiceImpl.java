@@ -49,7 +49,7 @@ public class QIIdentificationServiceImpl implements QIIdentificationService {
         || qiIdentification.getStockMove() != null
         || qiIdentification.getStockMoveLine() != null
         || qiIdentification.getManufOrder() != null
-        || qiIdentification.getOperationOrder() != null
+        || qiIdentification.getManufacturingOperation() != null
         || qiIdentification.getToConsumeProdProduct() != null
         || qiIdentification.getConsumedProdProduct() != null
         || qiIdentification.getProduct() != null

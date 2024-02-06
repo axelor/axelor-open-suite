@@ -9,12 +9,12 @@
 
     <many-to-one name="inManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
     <many-to-one name="outManufOrder" ref="com.axelor.apps.production.db.ManufOrder"/>
-    <many-to-one name="inOperationOrder"
-      ref="com.axelor.apps.production.db.OperationOrder"/>
+    <many-to-one name="inManufacturingOperation"
+      ref="com.axelor.apps.production.db.ManufacturingOperation"/>
     <many-to-one name="manufOrder" title="Manufacturing order"
       ref="com.axelor.apps.production.db.ManufOrder" copy="false"/>
-    <many-to-one name="operationOrder" title="Operation order"
-      ref="com.axelor.apps.production.db.OperationOrder" copy="false"/>
+    <many-to-one name="manufacturingOperation" title="Manufacturing operation"
+      ref="com.axelor.apps.production.db.ManufacturingOperation" copy="false"/>
     <many-to-one name="outsourcingManufOrder"
       ref="com.axelor.apps.production.db.ManufOrder"/>
 

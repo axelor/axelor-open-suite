@@ -651,8 +651,8 @@
             <field name="purchaseOrder" hidden="true" showIf="purchaseOrder != null"/>
             <field name="manufOrder" hidden="true" showIf="manufOrder != null"
               if-module="axelor-production"/>
-            <field name="operationOrder" hidden="true" showIf="operationOrder != null"
-              if-module="axelor-production"/>
+            <field name="manufacturingOperation" hidden="true"
+              showIf="manufacturingOperation != null" if-module="axelor-production"/>
             <field name="stockCorrection" hidden="true" showIf="stockCorrection != null"/>
           </panel>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"

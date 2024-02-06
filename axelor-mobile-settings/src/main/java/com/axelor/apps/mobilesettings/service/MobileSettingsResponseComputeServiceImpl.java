@@ -161,7 +161,7 @@ public class MobileSettingsResponseComputeServiceImpl
                 AppMobileSettingsRepository.IMPUTATION_ON_PROJECT,
                 AppMobileSettingsRepository.IMPUTATION_ON_PROJECT_TASK,
                 AppMobileSettingsRepository.IMPUTATION_ON_MANUF_ORDER,
-                AppMobileSettingsRepository.IMPUTATION_ON_OPERATION_ORDER,
+                AppMobileSettingsRepository.IMPUTATION_ON_MANUFACTURING_OPERATION,
                 AppMobileSettingsRepository.IMPUTATION_ON_ACTIVITY));
   }
 }

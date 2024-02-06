@@ -30,8 +30,8 @@
     <string name="documentReference" title="Document reference"/>
     <many-to-one name="manufOrder" title="Manufacturing Order"
       ref="com.axelor.apps.production.db.ManufOrder"/>
-    <many-to-one name="operationOrder" title="Operation line"
-      ref="com.axelor.apps.production.db.OperationOrder"/>
+    <many-to-one name="manufacturingOperation" title="Operation line"
+      ref="com.axelor.apps.production.db.ManufacturingOperation"/>
     <many-to-one name="toConsumeProdProduct" title="Manuf Order product to consume"
       ref="com.axelor.apps.production.db.ProdProduct"/>
     <many-to-one name="consumedProdProduct" title="Manuf Order consummed product"

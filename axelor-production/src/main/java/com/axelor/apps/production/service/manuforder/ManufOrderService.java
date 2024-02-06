@@ -52,7 +52,7 @@ public interface ManufOrderService {
    */
   boolean areLinesOutsourced(ManufOrder manufOrder);
 
-  void setOperationOrdersOutsourcing(ManufOrder manufOrder);
+  void setManufacturingOperationsOutsourcing(ManufOrder manufOrder);
 
   public interface ManufOrderOriginType {}
 

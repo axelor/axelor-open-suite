@@ -25,14 +25,14 @@ import com.axelor.apps.businessproduction.service.InvoicingProjectServiceBusines
 import com.axelor.apps.businessproduction.service.ManufOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessService;
 import com.axelor.apps.businessproduction.service.ManufOrderValidateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckService;
-import com.axelor.apps.businessproduction.service.OperationOrderBusinessProductionCheckServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderServiceBusinessImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderTimesheetService;
-import com.axelor.apps.businessproduction.service.OperationOrderTimesheetServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessService;
-import com.axelor.apps.businessproduction.service.OperationOrderValidateBusinessServiceImpl;
-import com.axelor.apps.businessproduction.service.OperationOrderWorkflowBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationBusinessProductionCheckService;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationBusinessProductionCheckServiceImpl;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationServiceBusinessImpl;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationTimesheetService;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationTimesheetServiceImpl;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationValidateBusinessService;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationValidateBusinessServiceImpl;
+import com.axelor.apps.businessproduction.service.ManufacturingOperationWorkflowBusinessServiceImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderSaleOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderServiceBusinessImpl;
 import com.axelor.apps.businessproduction.service.ProductionOrderWizardServiceBusinessImpl;
@@ -52,9 +52,9 @@ import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.service.SaleOrderWorkflowServiceProductionImpl;
 import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationServiceImpl;
+import com.axelor.apps.production.service.manufacturingoperation.ManufacturingOperationWorkflowServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
-import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
@@ -66,31 +66,33 @@ public class BusinessProductionModule extends AxelorModule {
     bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
     bind(CostSheetServiceImpl.class).to(CostSheetServiceBusinessImpl.class);
     bind(ManufOrderServiceImpl.class).to(ManufOrderServiceBusinessImpl.class);
-    bind(OperationOrderServiceImpl.class).to(OperationOrderServiceBusinessImpl.class);
+    bind(ManufacturingOperationServiceImpl.class)
+        .to(ManufacturingOperationServiceBusinessImpl.class);
     bind(ProductionOrderServiceImpl.class).to(ProductionOrderServiceBusinessImpl.class);
     bind(ProductionOrderWizardServiceImpl.class).to(ProductionOrderWizardServiceBusinessImpl.class);
     bind(ProductionOrderSaleOrderServiceImpl.class)
         .to(ProductionOrderSaleOrderServiceBusinessImpl.class);
     bind(InvoicingProjectService.class).to(InvoicingProjectServiceBusinessProdImpl.class);
     bind(ManufOrderValidateBusinessService.class).to(ManufOrderValidateBusinessServiceImpl.class);
-    bind(OperationOrderValidateBusinessService.class)
-        .to(OperationOrderValidateBusinessServiceImpl.class);
+    bind(ManufacturingOperationValidateBusinessService.class)
+        .to(ManufacturingOperationValidateBusinessServiceImpl.class);
     bind(TimesheetWorkflowServiceImpl.class)
         .to(TimesheetBusinessProductionWorkflowServiceImpl.class);
-    bind(OperationOrderTimesheetService.class).to(OperationOrderTimesheetServiceImpl.class);
+    bind(ManufacturingOperationTimesheetService.class)
+        .to(ManufacturingOperationTimesheetServiceImpl.class);
     bind(ManufOrderManagementRepository.class)
         .to(ManufOrderBusinessProductionManagementRepository.class);
     bind(SaleOrderWorkflowServiceProductionImpl.class)
         .to(SaleOrderWorkflowServiceBusinessProductionImpl.class);
     bind(SaleOrderLineProjectServiceImpl.class)
         .to(SaleOrderLineBusinessProductionServiceImpl.class);
-    bind(OperationOrderWorkflowServiceImpl.class)
-        .to(OperationOrderWorkflowBusinessServiceImpl.class);
+    bind(ManufacturingOperationWorkflowServiceImpl.class)
+        .to(ManufacturingOperationWorkflowBusinessServiceImpl.class);
     bind(TimesheetLineBusinessProductionService.class)
         .to(TimesheetLineBusinessProductionServiceImpl.class);
 
-    bind(OperationOrderBusinessProductionCheckService.class)
-        .to(OperationOrderBusinessProductionCheckServiceImpl.class);
+    bind(ManufacturingOperationBusinessProductionCheckService.class)
+        .to(ManufacturingOperationBusinessProductionCheckServiceImpl.class);
     bind(TimesheetLineCreateBusinessService.class).to(TimesheetLineCreateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);

@@ -3,9 +3,9 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_6.1.xsd">
 
-  <action-method name="action-timesheet-method-update-operation-order">
+  <action-method name="action-timesheet-method-update-manufacturing-operation">
     <call class="com.axelor.apps.businessproduction.web.TimesheetController"
-      method="updateOperationOrders"/>
+      method="updateManufacturingOperations"/>
   </action-method>
 
 </object-views>
