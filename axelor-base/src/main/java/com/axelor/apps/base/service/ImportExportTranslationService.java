@@ -11,12 +11,4 @@ public interface ImportExportTranslationService {
 
   public Path importTranslations(ImportExportTranslation importExportTranslation)
       throws AxelorException;
-
-  /**
-   * Copy the file from data.upload.dir to data.export.dir.
-   *
-   * @param uploadedFilePath
-   * @throws IOException
-   */
-  public void copyFileFromUploadDirToExportDir(String uploadedFilePath) throws IOException;
 }

@@ -16,14 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.util;
+package com.axelor.apps.base.utils;
 
 import com.axelor.app.AppSettings;
 import com.axelor.common.FileUtils;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
@@ -90,5 +92,19 @@ public class FileExportTools {
 
   public static Path relativeToExport(Path path) {
     return Paths.get(EXPORT_PATH).relativize(path);
+  }
+
+  /**
+   * Copy the file from the file path to data.export.dir.
+   *
+   * @param filePath the absolute path of a file. For example:
+   *     /home/axelor/data/attachments/example.csv
+   * @throws IOException
+   */
+  public static void copyFileToExportDir(String filePath) throws IOException {
+    Path exportPath = Paths.get(EXPORT_PATH);
+    Path sourcePath = Paths.get(filePath);
+    Path targetPath = exportPath.resolve(sourcePath.getFileName());
+    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
   }
 }
