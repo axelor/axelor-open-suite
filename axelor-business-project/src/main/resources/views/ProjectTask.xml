@@ -149,7 +149,7 @@
             <field name="project.invoicingSequenceSelect" hidden="true"
               if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
             <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
-              form-view="invoice-line-form" grid-view="invoice-line-grid"/>
+              form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
           </panel>
           <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
             width="120" widget="Image"/>

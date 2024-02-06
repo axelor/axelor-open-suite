@@ -1051,8 +1051,8 @@
   </action-attrs>
 
   <action-validate name="action-sale-order-line-validate-check-coefficient-config">
-    <error message="Coefficient on invoice line must be enabled"
-      if="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled"
+    <error message="Coefficient on invoice line must be enabled for progress billing."
+      if="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled &amp;&amp; invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_PROGRESS_BILLING"
       action="action-sale-order-line-attrs-reset-invoicing-mode"/>
   </action-validate>
 
