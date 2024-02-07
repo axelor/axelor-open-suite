@@ -21,13 +21,16 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
 
   protected ControlEntryPlanLineRepository controlEntryPlanLineRepository;
   protected ControlEntrySampleRepository controlEntrySampleRepository;
+  protected ControlEntrySampleUpdateService controlEntrySampleUpdateService;
 
   @Inject
   public ControlEntryPlanLineServiceImpl(
       ControlEntryPlanLineRepository controlEntryPlanLineRepository,
-      ControlEntrySampleRepository controlEntrySampleRepository) {
+      ControlEntrySampleRepository controlEntrySampleRepository,
+      ControlEntrySampleUpdateService controlEntrySampleUpdateService) {
     this.controlEntryPlanLineRepository = controlEntryPlanLineRepository;
     this.controlEntrySampleRepository = controlEntrySampleRepository;
+    this.controlEntrySampleUpdateService = controlEntrySampleUpdateService;
   }
 
   @Override
@@ -49,7 +52,15 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
         new Context(Mapper.toMap(controlEntryPlanLine), ControlEntryPlanLine.class);
     ScriptHelper scriptHelper = new GroovyScriptHelper(scriptContext);
 
-    Object result = scriptHelper.eval(formula);
+    Object result;
+
+    try {
+      result = scriptHelper.eval(formula);
+    } catch (IllegalArgumentException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(QualityExceptionMessage.EVAL_FORMULA_NULL_FIELDS));
+    }
 
     if (!(result instanceof Boolean)) {
       throw new AxelorException(
@@ -100,5 +111,23 @@ public class ControlEntryPlanLineServiceImpl implements ControlEntryPlanLineServ
     res.setEntryAttrs(controlEntryPlanLine.getEntryAttrs());
 
     return res;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void conformityEvalWithUpdate(ControlEntryPlanLine controlEntryPlanLine)
+      throws AxelorException {
+
+    Objects.requireNonNull(controlEntryPlanLine);
+
+    this.conformityEval(controlEntryPlanLine);
+
+    if (ControlEntryPlanLineRepository.TYPE_ENTRY_SAMPLE_LINE
+        == controlEntryPlanLine.getTypeSelect()) {
+
+      if (controlEntryPlanLine.getControlEntrySample() != null) {
+        controlEntrySampleUpdateService.updateResult(controlEntryPlanLine.getControlEntrySample());
+      }
+    }
   }
 }

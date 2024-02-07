@@ -1698,6 +1698,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         || stockMoveLineList.isEmpty()) {
       return;
     }
+    // Does not manage the case where line is already splited
+    // Works when generating a tracking number
+    // But not when assigning one
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
       Product product = stockMoveLine.getProduct();
       if (product == null) {

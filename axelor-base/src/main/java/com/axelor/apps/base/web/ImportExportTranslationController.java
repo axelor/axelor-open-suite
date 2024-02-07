@@ -7,6 +7,7 @@ import com.axelor.apps.base.db.ImportExportTranslation;
 import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.apps.base.service.ImportExportTranslationService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.FileExportTools;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -32,6 +33,7 @@ public class ImportExportTranslationController {
                     Beans.get(ImportExportTranslationRepository.class)
                         .find(importExportTranslation.getId()));
             if (path != null) {
+              FileExportTools.copyFileToExportDir(path);
               String[] filePath = path.split("/");
               response.setExportFile(filePath[filePath.length - 1]);
               response.setInfo(I18n.get("File successfully exported."));

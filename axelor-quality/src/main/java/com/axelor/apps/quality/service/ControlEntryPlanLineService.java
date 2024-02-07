@@ -15,4 +15,6 @@ public interface ControlEntryPlanLineService {
   String getFormula(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException;
 
   ControlEntryPlanLine createEntryWithPlan(ControlEntryPlanLine controlEntryPlanLine);
+
+  void conformityEvalWithUpdate(ControlEntryPlanLine controlEntryPlanLine) throws AxelorException;
 }

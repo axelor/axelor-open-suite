@@ -34,6 +34,9 @@ public final class QualityExceptionMessage {
   public static final String EXPECTED_BOOLEAN_RESULT_FORMULA = /*$$(*/
       "Excepted result for formula is either true (compliant) or false (not compliant). Current result = %s" /*)*/;
 
+  public static final String EVAL_FORMULA_NULL_FIELDS = /*$$(*/
+      "Evaluation of the conformity formula failed, please make sure that every required fields for the evaluation are filled." /*)*/;
+
   public static final String CAN_NOT_FETCH_FORMULA = /*$$(*/
       "Conformity formula can not be fetched" /*)*/;
 
