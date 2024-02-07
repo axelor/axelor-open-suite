@@ -20,12 +20,7 @@
     </panel>
     <panel-related name="controlEntrySampleLinesPanel"
       field="controlEntryPlanLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
-      form-view="control-entry-sample-line-form"
-      onChange="action-quality-control-entry-sample-reload-view" canNew="false"/>
+      form-view="control-entry-sample-line-form" canNew="false"/>
   </form>
-
-  <action-method name="action-quality-control-entry-sample-reload-view">
-    <call class="com.axelor.apps.quality.web.ControlEntrySampleController" method="reloadView"/>
-  </action-method>
 
 </object-views>
