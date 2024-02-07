@@ -29,6 +29,8 @@ import com.axelor.apps.quality.service.ControlEntryPlanLineService;
 import com.axelor.apps.quality.service.ControlEntryPlanLineServiceImpl;
 import com.axelor.apps.quality.service.ControlEntrySampleService;
 import com.axelor.apps.quality.service.ControlEntrySampleServiceImpl;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateService;
+import com.axelor.apps.quality.service.ControlEntrySampleUpdateServiceImpl;
 import com.axelor.apps.quality.service.ControlEntryService;
 import com.axelor.apps.quality.service.ControlEntryServiceImpl;
 import com.axelor.apps.quality.service.QIAnalysisService;
@@ -66,5 +68,6 @@ public class QualityModule extends AxelorModule {
     bind(ControlEntrySampleService.class).to(ControlEntrySampleServiceImpl.class);
     bind(QIActionDistributionService.class).to(QIActionDistributionServiceImpl.class);
     bind(QIResolutionService.class).to(QIResolutionServiceImpl.class);
+    bind(ControlEntrySampleUpdateService.class).to(ControlEntrySampleUpdateServiceImpl.class);
   }
 }

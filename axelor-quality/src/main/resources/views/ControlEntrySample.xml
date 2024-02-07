@@ -21,11 +21,12 @@
     <panel-related name="controlEntrySampleLinesPanel"
       field="controlEntryPlanLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
       form-view="control-entry-sample-line-form"
-      onChange="save,action-method-quality-entry-sample-update-result"/>
+      onChange="action-quality-control-entry-sample-reload-view"
+      canNew="false"/>
   </form>
 
-  <action-method name="action-method-quality-entry-sample-update-result">
-    <call class="com.axelor.apps.quality.web.ControlEntrySampleController"
-      method="updateResult"/>
+  <action-method name="action-quality-control-entry-sample-reload-view">
+    <call class="com.axelor.apps.quality.web.ControlEntrySampleController" method="reloadView"/>
   </action-method>
+
 </object-views>

@@ -39,7 +39,7 @@ public class ControlEntryPlanLineController {
 
     if (controlEntryPlanLine.getId() != null) {
       Beans.get(ControlEntryPlanLineService.class)
-          .conformityEval(
+          .conformityEvalWithUpdate(
               Beans.get(ControlEntryPlanLineRepository.class).find(controlEntryPlanLine.getId()));
       response.setReload(true);
     }
