@@ -228,6 +228,7 @@
 "Please configure a sequence for decision distribution.",,,
 "Please configure information for quality for the company %s",,,
 "Please fill printing settings on quality control",,,
+"Please provide on the two fields, characteristicId or sampleId in request body.",,,
 "Please select at least a line to generate a distribution.",,,
 "Please select at least a line to send a distribution.",,,
 "Pre-fill control points",,,

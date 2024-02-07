@@ -228,6 +228,7 @@
 "Please configure a sequence for decision distribution.","Veuillez configurer une séquence pour la diffusion de décision.",,
 "Please configure information for quality for the company %s",,,
 "Please fill printing settings on quality control","Veuillez renseigner les paramètres d’impression pour le contrôle qualité",,
+"Please provide on the two fields, characteristicId or sampleId in request body.",,,
 "Please select at least a line to generate a distribution.","Veuillez au moins sélectionner une ligne afin de générer une diffusion.",,
 "Please select at least a line to send a distribution.","Veuillez au moins sélectionner une ligne afin d'envoyer une diffusion",,
 "Pre-fill control points","Pré-remplir les points de contrôle",,
