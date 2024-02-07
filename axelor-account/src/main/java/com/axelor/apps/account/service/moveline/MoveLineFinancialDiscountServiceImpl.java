@@ -448,7 +448,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               moveLine.getMove().getMoveLineList().stream()
                   .filter(
                       it ->
-                          it.getTaxLine().equals(moveLineIt.getTaxLine()) && !it.equals(moveLineIt))
+                          it.getTaxLine() != null
+                              && it.getTaxLine().equals(moveLineIt.getTaxLine())
+                              && !it.equals(moveLineIt))
                   .map(MoveLine::getCurrencyAmount)
                   .map(BigDecimal::abs)
                   .findFirst()
