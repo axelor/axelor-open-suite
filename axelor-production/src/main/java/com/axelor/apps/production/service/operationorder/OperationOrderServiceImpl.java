@@ -365,6 +365,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
           computePlannedEndTimeForNextOperationDate(operationOrder, nextOperationOrder);
 
       if (plannedEndDateT != null && plannedEndDateT.isBefore(manufOrderPlannedEndDateT)) {
+        if (operationOrder.getOutsourcing()) {
+          return plannedEndDateT;
+        }
         boolean isOnSameMachine =
             Objects.equals(nextOperationOrder.getMachine(), operationOrder.getMachine());
         return isOnSameMachine ? plannedStartDateT : plannedEndDateT;
@@ -405,6 +408,9 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     if (Objects.equals(lastOperationOrder.getPriority(), operationOrder.getPriority())) {
       LocalDateTime plannedStartDateT = lastOperationOrder.getPlannedStartDateT();
       if (plannedStartDateT != null && plannedStartDateT.isAfter(manufOrderPlannedStartDateT)) {
+        if (operationOrder.getOutsourcing()) {
+          return plannedStartDateT;
+        }
         boolean isOnSameMachine =
             Objects.equals(lastOperationOrder.getMachine(), operationOrder.getMachine());
         return isOnSameMachine ? plannedEndDateT : plannedStartDateT;

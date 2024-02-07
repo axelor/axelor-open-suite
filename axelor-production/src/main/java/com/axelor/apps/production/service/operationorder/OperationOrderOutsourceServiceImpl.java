@@ -200,4 +200,11 @@ public class OperationOrderOutsourceServiceImpl implements OperationOrderOutsour
 
     return BigDecimal.ONE;
   }
+
+  @Override
+  public long getOutsourcingDuration(OperationOrder operationOrder) {
+    return Optional.ofNullable(operationOrder.getProdProcessLine())
+        .map(ProdProcessLine::getOutsourcingDuration)
+        .orElse(0l);
+  }
 }
