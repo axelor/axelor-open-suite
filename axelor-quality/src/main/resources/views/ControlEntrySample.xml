@@ -21,8 +21,7 @@
     <panel-related name="controlEntrySampleLinesPanel"
       field="controlEntryPlanLinesList" colSpan="12" grid-view="control-entry-sample-line-grid"
       form-view="control-entry-sample-line-form"
-      onChange="action-quality-control-entry-sample-reload-view"
-      canNew="false"/>
+      onChange="action-quality-control-entry-sample-reload-view" canNew="false"/>
   </form>
 
   <action-method name="action-quality-control-entry-sample-reload-view">
