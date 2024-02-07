@@ -26,8 +26,14 @@
       <field name="dateFormat" title="Date Format" help="DD/MM/YYYY" colSpan="6"/>
       <field name="numbersFormat" title="Numbers Format" help="#,###.00" colSpan="6"/>
       <field name="country.alpha2Code" hidden="true"/>
+      <button name="test" title="test"
+        onClick="action-localization-method-compute-locale-pattern"/>
     </panel>
   </form>
+
+  <action-method name="action-localization-method-compute-locale-pattern">
+    <call class="com.axelor.apps.base.web.LocalizationController" method="computeLocalePattern"/>
+  </action-method>
 
   <action-record
     name="action-localization-record-generate-name-from-country-and-language"

@@ -17,4 +17,11 @@ public class LocalizationController {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
+
+  public void computeLocalePattern(ActionRequest request, ActionResponse response) {
+    Localization localization = request.getContext().asType(Localization.class);
+    String numberFormat =
+        Beans.get(LocalizationService.class).getNumberFormat(localization.getCode());
+    response.setValue("numbersFormat", numberFormat);
+  }
 }

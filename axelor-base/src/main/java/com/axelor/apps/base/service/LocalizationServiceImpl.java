@@ -6,6 +6,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import java.text.NumberFormat;
 import java.util.Locale;
 import org.apache.commons.lang3.LocaleUtils;
 
@@ -26,5 +27,14 @@ public class LocalizationServiceImpl implements LocalizationService {
           I18n.get(BaseExceptionMessage.COMPANY_INVALID_LOCALE),
           localeStr);
     }
+  }
+
+  @Override
+  public String getNumberFormat(String localizationCode) {
+    Locale locale = LocaleService.computeLocaleByLocaleCode(localizationCode);
+    // Create a number formatter with the specified locale
+    NumberFormat usNumberFormatter = NumberFormat.getNumberInstance(locale);
+    // Get the pattern string for the number format
+    return ((java.text.DecimalFormat) usNumberFormatter).toLocalizedPattern();
   }
 }

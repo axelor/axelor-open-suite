@@ -5,4 +5,6 @@ import com.axelor.apps.base.db.Localization;
 
 public interface LocalizationService {
   public void validateLocale(Localization localization) throws AxelorException;
+
+  public String getNumberFormat(String localizationCode);
 }
