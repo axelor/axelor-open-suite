@@ -46,4 +46,6 @@ public interface OperationOrderOutsourceService {
   List<PurchaseOrderLine> createPurchaseOrderLines(
       ManufOrder manufOrder, Set<Product> productSet, PurchaseOrder purchaseOrder)
       throws AxelorException;
+
+  long getOutsourcingDuration(OperationOrder operationOrder);
 }
