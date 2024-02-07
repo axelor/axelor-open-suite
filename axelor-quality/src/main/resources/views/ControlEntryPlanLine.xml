@@ -47,10 +47,10 @@
       <field name="controlPlanLine" colSpan="6" form-view="control-plan-line-form"
         grid-view="control-plan-line-grid"
         domain="self.typeSelect = 1 AND self.controlPlan = :controlPlanParent"
-        onChange="action-quality-control-entry-line-copy-record" required="true"/>
+        onChange="action-quality-control-entry-line-copy-record" required="true" readonly="true"/>
       <field name="controlPlanLine.characteristic" colSpan="6"/>
       <field name="controlType" readonly="true"/>
-      <field name="resultSelect" colSpan="6"/>
+      <field name="resultSelect" colSpan="6" readonly="true"/>
       <field name="controlEntrySample" colSpan="6" readonly="true"/>
       <field name="$controlPlanParent" type="many-to-one"
         target="com.axelor.apps.quality.db.ControlPlan" hidden="true"/>
