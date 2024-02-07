@@ -54,7 +54,7 @@ public class CurrencyScaleServiceSaleImpl extends CurrencyScaleServiceImpl
 
   @Override
   public int getScale(SaleOrder saleOrder) {
-    return this.getScale(saleOrder.getCurrency());
+    return saleOrder != null ? this.getScale(saleOrder.getCurrency()) : 2;
   }
 
   @Override

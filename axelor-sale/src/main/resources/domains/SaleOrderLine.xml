@@ -110,6 +110,19 @@
     <one-to-many name="saleOrderLineTreeList" title="Sale order line trees"
       ref="com.axelor.apps.sale.db.SaleOrderLineTree" mappedBy="saleOrderLine"/>
 
+    <!-- Sublines -->
+    <one-to-many name="saleOrderLineList" ref="com.axelor.apps.sale.db.SaleOrderLine"
+      mappedBy="parentSaleOrderLine"/>
+    <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <decimal name="qtyBeforeUpdate" title="Qty before update" default="1"/>
+    <decimal name="priceBeforeUpdate" title="Price before update"/>
+    <boolean name="isNotCountable" title="Not countable" default="false" nullable="false"/>
+    <string name="lineIndex" title="Index" readonly="true"/>
+    <boolean name="isProcessedLine" title="Processed line" default="false" nullable="false"/>
+    <boolean name="isDisabledFromCalculation" title="Processed line" default="false"
+      nullable="false"/>
+    <integer name="saleOrderLineListSize"/>
+
     <finder-method name="findAllBySaleOrder" using="saleOrder" all="true"/>
 
     <extra-code>
@@ -119,6 +132,7 @@
 			public static final int TYPE_TITLE = 1;
             public static final int TYPE_START_OF_PACK = 2;
             public static final int TYPE_END_OF_PACK = 3;
+            public static final int TYPE_PARENT_LINE = 4;
 
 	  	]]>
     </extra-code>

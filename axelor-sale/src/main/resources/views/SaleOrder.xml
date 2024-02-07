@@ -235,7 +235,7 @@
   <form id="sale-order-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
     onNew="action-group-sale-saleorder-onnew"
-    onSave="action-sale-order-line-tree-method-update-hasTree">
+    onSave="action-sale-order-line-tree-method-update-hasTree,save,action-sale-order-update-order-lines">
     <toolbar>
       <button name="reportsBtn" title="Reports" icon="fa-print"
         hideIf="clientPartner == null" readonlyIf="!id"
@@ -461,11 +461,11 @@
 
         <panel-related name="detailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null" colSpan="12" height="30" field="saleOrderLineList"
-          form-view="sale-order-line-form" grid-view="sale-order-line-grid" orderBy="sequence"
+          form-view="sale-order-line-form" grid-view="sale-order-line-grid"
           onChange="action-sale-order-method-on-line-change"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canMove="true"
+          orderBy="lineIndex"
           if="!__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
 
         <field name="saleOrderLineList" readonlyIf="clientPartner == null" colSpan="12"
@@ -475,20 +475,19 @@
           target="com.axelor.apps.sale.db.SaleOrderLine"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          title="Details Lines" orderBy="sequence"
-          onChange="action-sale-order-method-on-line-change" onClick="action-orderSaleLine-tree"
-          canMove="true"
+          title="Details Lines" onChange="action-sale-order-method-on-line-change"
+          onClick="action-orderSaleLine-tree" orderBy="lineIndex"
           if="__config__.app.getApp('sale')?.getActivateMultiLevelSaleOrderLines() &amp;&amp; !__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
 
         <panel-related name="editableDetailLinesPanel" title="Details Lines"
           readonlyIf="clientPartner == null || statusSelect != 1" colSpan="12" height="30"
           field="saleOrderLineList" form-view="sale-order-line-form"
-          grid-view="sale-order-line-editable-grid" orderBy="sequence"
+          grid-view="sale-order-line-editable-grid" orderBy="lineIndex"
           onChange="action-sale-order-method-on-line-change"
-          onNew="action-sale-order-line-group-editable-onnew"
+          onNew="action-sale-order-line-group-editable-onnew,action-sale-order-line-set-line-index"
           canNew="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
           canRemove="!(clientPartner == null || statusSelect == 2 || (statusSelect == 3 &amp;&amp; !orderBeingEdited) || statusSelect == 4)"
-          canMove="true" if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
+          if="__config__.app.getApp('sale')?.getIsEditableGridEnabled()"/>
         <panel name="descriptionPanel" title="Comment to display" colSpan="12">
           <field name="description" showTitle="false" colSpan="12" widget="Html" x-lite="true"/>
         </panel>
@@ -2360,4 +2359,7 @@
       expr="eval: !__config__.app.getApp('sale')?.getIsDiscountEnabledOnEditableGrid()"/>
   </action-attrs>
 
+  <action-method name="action-sale-order-update-order-lines">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="updateRelatedOrderLines"/>
+  </action-method>
 </object-views>

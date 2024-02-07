@@ -129,6 +129,9 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
       if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
         continue;
       }
+      if (saleOrderLine.getIsNotCountable()) {
+        continue;
+      }
       saleOrder.setExTaxTotal(saleOrder.getExTaxTotal().add(saleOrderLine.getExTaxTotal()));
 
       // In the company accounting currency
@@ -137,7 +140,6 @@ public class SaleOrderComputeServiceImpl implements SaleOrderComputeService {
     }
 
     for (SaleOrderLineTax saleOrderLineVat : saleOrder.getSaleOrderLineTaxList()) {
-
       // In the sale order currency
       saleOrder.setTaxTotal(saleOrder.getTaxTotal().add(saleOrderLineVat.getTaxTotal()));
     }

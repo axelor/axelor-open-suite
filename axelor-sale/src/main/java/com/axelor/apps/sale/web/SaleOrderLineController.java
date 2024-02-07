@@ -35,6 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.RelatedSaleOrderLineService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderLineService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
@@ -455,5 +456,55 @@ public class SaleOrderLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void calculateRelatedSOLinesValues(ActionRequest request, ActionResponse response) {
+    try {
+
+      RelatedSaleOrderLineService relatedSaleOrderLineService =
+          Beans.get(RelatedSaleOrderLineService.class);
+      Context context = request.getContext();
+      SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+      saleOrderLine = Beans.get(SaleOrderLineRepository.class).find(saleOrderLine.getId());
+      SaleOrder saleOrder = relatedSaleOrderLineService.getSaleOrderFromContext(context);
+      relatedSaleOrderLineService.updateRelatedSOLinesOnPriceChange(saleOrderLine, saleOrder);
+      relatedSaleOrderLineService.updateRelatedSOLinesOnQtyChange(saleOrderLine, saleOrder);
+      saleOrderLine.setIsProcessedLine(true);
+      response.setReload(true);
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void hideAti(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    SaleOrder saleOrder = Beans.get(SaleOrderLineService.class).getSaleOrder(context);
+    response.setAttr("exTaxTotal", "hidden", saleOrder.getInAti());
+    response.setAttr("inTaxTotal", "hidden", !saleOrder.getInAti());
+    response.setAttr("price", "hidden", saleOrder.getInAti());
+    response.setAttr("inTaxPrice", "hidden", !saleOrder.getInAti());
+  }
+
+  public void setLineIndex(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    SaleOrderLine saleOrderLine = context.asType(SaleOrderLine.class);
+    saleOrderLine =
+        Beans.get(RelatedSaleOrderLineService.class).setLineIndex(saleOrderLine, context);
+    response.setValues(saleOrderLine);
+  }
+
+  public void updateSaleOrderLineListSize(ActionRequest request, ActionResponse response) {
+    SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
+    saleOrderLine.setSaleOrderLineListSize(saleOrderLine.getSaleOrderLineList().size());
+    for (SaleOrderLine slo : saleOrderLine.getSaleOrderLineList()) {
+      if (slo.getIsProcessedLine() || slo.getIsDisabledFromCalculation()) {
+        saleOrderLine.setIsDisabledFromCalculation(true);
+        break;
+      }
+    }
+    response.setValues(saleOrderLine);
   }
 }

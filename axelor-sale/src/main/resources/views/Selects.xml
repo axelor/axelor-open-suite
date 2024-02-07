@@ -105,4 +105,9 @@
     <option value="2">Product</option>
   </selection>
 
+  <selection name="sale.sale.config.count.type.select">
+    <option value="1">Count only parents</option>
+    <option value="2">Count only children</option>
+  </selection>
+
 </object-views>
