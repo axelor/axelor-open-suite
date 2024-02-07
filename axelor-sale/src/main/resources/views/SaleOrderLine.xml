@@ -420,7 +420,11 @@
           grid-view="project-grid"/>
         <field name="toInvoice" colSpan="3"
           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project"/>
+          if-module="axelor-business-project"
+          onChange="action-sale-order-line-record-set-default-invoicing-mode-select"/>
+        <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
+          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
+          if-module="axelor-business-project" showIf="toInvoice"/>
         <panel-dashlet name="projectTaskListPanel" title="Related tasks"
           action="action-sale-order-line-view-project-tasks" colSpan="12"/>
       </panel>
@@ -1044,5 +1048,13 @@
   <action-attrs name="action-sale-order-line-attrs-onnew-focus">
     <attribute for="product" name="focus" expr="true"/>
   </action-attrs>
+
+  <action-record
+    name="action-sale-order-line-record-set-default-invoicing-mode-select"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="invoicingModeSelect"
+      expr="eval:__repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY" if="toInvoice"/>
+    <field name="invoicingModeSelect" expr="eval:null" if="!toInvoice"/>
+  </action-record>
 
 </object-views>

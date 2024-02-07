@@ -9,7 +9,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress" if="isShowProgress"/>
+    <field name="progress" widget="SelectProgress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
     <field name="taskDuration" if="isShowTimeSpent"/>
@@ -32,7 +32,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progressSelect" widget="SelectProgress"/>
+    <field name="progress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
@@ -234,7 +234,7 @@
       <field name="realMarkup" as="real"/>
       <field name="landingMarkup" as="landing"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
@@ -249,7 +249,7 @@
       <field name="name" as="name"/>
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
-      <field name="progressSelect" as="progress"/>
+      <field name="progress" as="progress"/>
       <button name="createSubtaskBtn" icon="fa-plus"
         onClick="save, action-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"

@@ -25,6 +25,8 @@
     <decimal name="companySubTotalOfFixedAssets" scale="3" precision="20"/>
     <integer name="vatSystemSelect" title="VAT System"
       selection="iaccount.vat.system.invoice.line.tax.select" default="0"/>
+    <decimal name="coefficient" title="Coefficient" scale="12" precision="20" default="1"
+      min="0" max="1" nullable="true"/>
   </entity>
 
 </domain-models>
