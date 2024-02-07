@@ -129,12 +129,19 @@ public abstract class AccountingReportValueAbstractService {
       groupNumber = groupAccountMap.get(parentTitle);
     }
 
+    int companyNumber =
+        companySet.size() == 1
+            ? companySet.iterator().next().getId().intValue()
+            : Integer.MAX_VALUE;
+    // 2147483647
+
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
             groupNumber,
             columnNumber,
             lineNumber + AccountingReportValueServiceImpl.getLineOffset(),
             AccountingReportValueServiceImpl.getPeriodNumber(),
+            companyNumber,
             analyticCounter,
             this.getStyleSelect(groupColumn, column, line),
             groupColumn == null

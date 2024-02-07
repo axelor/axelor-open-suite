@@ -133,8 +133,7 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
   protected void computeReportValues(AccountingReport accountingReport, Set<Company> companySet)
       throws AxelorException {
     Set<AnalyticAccount> configAnalyticAccountSet =
-        this.getConfigAnalyticAccountSet(
-            accountingReport.getAccountingReportAnalyticConfigLineList());
+        this.getConfigAnalyticAccountSet(accountingReport);
 
     if (CollectionUtils.isEmpty(configAnalyticAccountSet)) {
       this.computeReportValues(accountingReport, companySet, null, 0);
@@ -149,18 +148,19 @@ public class AccountingReportValueServiceImpl extends AccountingReportValueAbstr
     }
   }
 
-  protected Set<AnalyticAccount> getConfigAnalyticAccountSet(
-      List<AccountingReportAnalyticConfigLine> analyticConfigLineList) {
-    Set<AnalyticAccount> configAnalyticAccountSet = new HashSet<>();
+  protected Set<AnalyticAccount> getConfigAnalyticAccountSet(AccountingReport accountingReport) {
+    List<AccountingReportAnalyticConfigLine> analyticConfigLineList =
+        accountingReport.getAccountingReportAnalyticConfigLineList();
 
-    if (CollectionUtils.isEmpty(analyticConfigLineList)) {
+    if (CollectionUtils.isEmpty(analyticConfigLineList)
+        || accountingReport.getCompanySet().size() > 1) {
       return null;
     }
 
-    analyticConfigLineList.forEach(
-        it -> configAnalyticAccountSet.addAll(this.fetchConfigAnalyticAccountSet(it)));
-
-    return configAnalyticAccountSet;
+    return analyticConfigLineList.stream()
+        .map(this::fetchConfigAnalyticAccountSet)
+        .flatMap(Collection::stream)
+        .collect(Collectors.toSet());
   }
 
   protected Set<AnalyticAccount> fetchConfigAnalyticAccountSet(

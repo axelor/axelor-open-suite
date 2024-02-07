@@ -176,7 +176,7 @@
             field="accountingReportAnalyticConfigLineList" colSpan="12" height="15"
             x-row-height="29" form-view="accounting-report-analytic-config-line-form"
             grid-view="accounting-report-analytic-config-line-grid"
-            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports"/>
+            showIf="reportType.typeSelect == 3000 &amp;&amp; !reportType.useLegacyCustomReports &amp;&amp; companySet.length &lt;= 1"/>
         </panel>
       </panel>
       <panel name="printingInformationsPanel" title="Printing information" colSpan="12"
