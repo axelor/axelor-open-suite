@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.GlobalBudget;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.GlobalBudgetResetToolService;
 import com.axelor.inject.Beans;
 
@@ -28,8 +29,9 @@ public class GlobalBudgetManagementRepository extends GlobalBudgetRepository {
   public GlobalBudget copy(GlobalBudget entity, boolean deep) {
     GlobalBudget copy = super.copy(entity, deep);
 
-    Beans.get(GlobalBudgetResetToolService.class).resetGlobalBudget(copy);
-
+    if (Beans.get(AppBudgetService.class).isApp("budget")) {
+      Beans.get(GlobalBudgetResetToolService.class).resetGlobalBudget(copy);
+    }
     return copy;
   }
 }

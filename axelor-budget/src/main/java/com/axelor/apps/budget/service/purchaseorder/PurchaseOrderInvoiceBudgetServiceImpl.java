@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.PriceListService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -45,6 +46,7 @@ import java.util.List;
 public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceProjectServiceImpl {
 
   protected BudgetDistributionRepository budgetDistributionRepository;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public PurchaseOrderInvoiceBudgetServiceImpl(
@@ -61,7 +63,8 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       PurchaseOrderLineService purchaseOrderLineService,
       AppBusinessProjectService appBusinessProjectService,
       ProductCompanyService productCompanyService,
-      BudgetDistributionRepository budgetDistributionRepository) {
+      BudgetDistributionRepository budgetDistributionRepository,
+      AppBudgetService appBudgetService) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -77,6 +80,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         appBusinessProjectService,
         productCompanyService);
     this.budgetDistributionRepository = budgetDistributionRepository;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
@@ -85,7 +89,9 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       throws AxelorException {
     super.processPurchaseOrderLine(invoice, invoiceLineList, purchaseOrderLine);
 
-    invoiceLineList = copyBudgetDistribution(invoiceLineList, purchaseOrderLine);
+    if (appBudgetService.isApp("budget")) {
+      invoiceLineList = copyBudgetDistribution(invoiceLineList, purchaseOrderLine);
+    }
   }
 
   protected List<InvoiceLine> copyBudgetDistribution(

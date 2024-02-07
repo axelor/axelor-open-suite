@@ -37,6 +37,7 @@ import com.axelor.apps.bankpayment.service.moveline.MoveLineCheckBankPaymentServ
 import com.axelor.apps.bankpayment.service.moveline.MoveLineGroupBankPaymentServiceImpl;
 import com.axelor.apps.bankpayment.service.moveline.MoveLineRecordBankPaymentService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.google.inject.Inject;
 import java.util.HashMap;
@@ -45,6 +46,7 @@ import java.util.Map;
 public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServiceImpl {
 
   protected BudgetToolsService budgetToolsService;
+  protected AppBudgetService appBudgetService;
 
   @Inject
   public MoveLineGroupBudgetServiceImpl(
@@ -63,7 +65,8 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       MoveCutOffService moveCutOffService,
       MoveLineCheckBankPaymentService moveLineCheckBankPaymentService,
       MoveLineRecordBankPaymentService moveLineRecordBankPaymentService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -81,13 +84,14 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveLineCheckBankPaymentService,
         moveLineRecordBankPaymentService);
     this.budgetToolsService = budgetToolsService;
+    this.appBudgetService = appBudgetService;
   }
 
   @Override
   public Map<String, Map<String, Object>> getOnLoadMoveAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadMoveAttrsMap(moveLine, move);
-    if (move != null) {
+    if (move != null && appBudgetService.isApp("budget")) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
       this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
     }
@@ -99,7 +103,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
   public Map<String, Map<String, Object>> getOnLoadAttrsMap(MoveLine moveLine, Move move)
       throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = super.getOnLoadAttrsMap(moveLine, move);
-    if (move != null) {
+    if (move != null && appBudgetService.isApp("budget")) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
       this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
     }
@@ -113,7 +117,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
     Map<String, Map<String, Object>> attrsMap = super.getOnNewAttrsMap(moveLine, move);
 
-    if (move != null) {
+    if (move != null && appBudgetService.isApp("budget")) {
       boolean condition = budgetToolsService.checkBudgetKeyAndRoleForMove(move);
       this.addAttr("budgetDistributionList", "readonly", condition, attrsMap);
     }
