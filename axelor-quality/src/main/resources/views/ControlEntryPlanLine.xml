@@ -63,7 +63,7 @@
       <field name="entryAttrs"/>
 
       <button name="checkConformityBtn" title="Check conformity"
-        onClick="action-quality-control-entry-line-method-control-conformity"/>
+        onClick="save,action-quality-control-entry-line-method-control-conformity"/>
     </panel>
 
   </form>

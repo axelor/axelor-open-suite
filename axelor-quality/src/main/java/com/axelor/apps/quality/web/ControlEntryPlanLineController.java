@@ -20,6 +20,7 @@ package com.axelor.apps.quality.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.*;
+import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.service.ControlEntryPlanLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -35,7 +36,12 @@ public class ControlEntryPlanLineController {
 
     ControlEntryPlanLine controlEntryPlanLine =
         request.getContext().asType(ControlEntryPlanLine.class);
-    Beans.get(ControlEntryPlanLineService.class).conformityEval(controlEntryPlanLine);
-    response.setValue("resultSelect", controlEntryPlanLine.getResultSelect());
+
+    if (controlEntryPlanLine.getId() != null) {
+      Beans.get(ControlEntryPlanLineService.class)
+          .conformityEval(
+              Beans.get(ControlEntryPlanLineRepository.class).find(controlEntryPlanLine.getId()));
+      response.setReload(true);
+    }
   }
 }
