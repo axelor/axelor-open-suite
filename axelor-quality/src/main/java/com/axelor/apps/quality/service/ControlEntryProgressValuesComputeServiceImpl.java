@@ -5,25 +5,25 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.ControlEntryPlanLine;
 import com.axelor.apps.quality.db.ControlEntrySample;
-import com.axelor.apps.quality.db.ControlPlanLineCharacteristic;
+import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
-import com.axelor.apps.quality.db.repo.ControlPlanLineCharacteristicRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.quality.rest.dto.ControlEntryProgressValuesResponse;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
 
 public class ControlEntryProgressValuesComputeServiceImpl
     implements ControlEntryProgressValuesComputeService {
 
-  protected final ControlPlanLineCharacteristicRepository controlPlanLineCharacteristicRepository;
+  protected final ControlEntryPlanLineRepository controlEntryPlanLineRepository;
   protected final ControlEntrySampleRepository controlEntrySampleRepository;
 
   @Inject
   public ControlEntryProgressValuesComputeServiceImpl(
-      ControlPlanLineCharacteristicRepository controlPlanLineCharacteristicRepository,
+      ControlEntryPlanLineRepository controlEntryPlanLineRepository,
       ControlEntrySampleRepository controlEntrySampleRepository) {
-    this.controlPlanLineCharacteristicRepository = controlPlanLineCharacteristicRepository;
+    this.controlEntryPlanLineRepository = controlEntryPlanLineRepository;
     this.controlEntrySampleRepository = controlEntrySampleRepository;
   }
 
@@ -33,7 +33,7 @@ public class ControlEntryProgressValuesComputeServiceImpl
     if (characteristicId == null && sampleId == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
-          QualityExceptionMessage.API_NO_CHARACTERISTIC_OR_SAMPLE_ID);
+          I18n.get(QualityExceptionMessage.API_NO_CHARACTERISTIC_OR_SAMPLE_ID));
     }
     return new ControlEntryProgressValuesResponse(
         controlEntry,
@@ -43,7 +43,7 @@ public class ControlEntryProgressValuesComputeServiceImpl
         computeCharacteristicControlledOnSample(sampleId));
   }
 
-  protected Integer computeSampleCompletelyControlled(ControlEntry controlEntry) {
+  protected int computeSampleCompletelyControlled(ControlEntry controlEntry) {
     List<ControlEntrySample> controlEntrySamplesList = controlEntry.getControlEntrySamplesList();
     if (controlEntrySamplesList == null || controlEntrySamplesList.isEmpty()) {
       return 0;
@@ -58,7 +58,8 @@ public class ControlEntryProgressValuesComputeServiceImpl
             .count());
   }
 
-  protected Integer computeCharacteristicCompletelyControlled(ControlEntry controlEntry) {
+  protected int computeCharacteristicCompletelyControlled(ControlEntry controlEntry)
+      throws AxelorException {
     List<ControlEntryPlanLine> controlEntryPlanLineList =
         controlEntry.getControlPlan().getControlPlanLinesList();
     if (controlEntryPlanLineList == null || controlEntryPlanLineList.isEmpty()) {
@@ -69,21 +70,24 @@ public class ControlEntryProgressValuesComputeServiceImpl
       return 0;
     }
 
-    return controlEntryPlanLineList.stream()
-        .map(
-            controlEntryPlanLine ->
-                controlEntrySamplesList.stream()
-                    .map(
-                        controlEntrySample ->
-                            checkCharacteristicNotControlled(
-                                controlEntrySample, controlEntryPlanLine.getCharacteristic()))
-                    .reduce(true, Boolean::logicalAnd))
-        .map(e -> e ? 1 : 0)
-        .reduce(0, Integer::sum);
+    int counter = 0;
+    for (ControlEntryPlanLine controlEntryPlanLine : controlEntryPlanLineList) {
+      boolean checkNotControlled = true;
+      for (ControlEntrySample controlEntrySample : controlEntrySamplesList) {
+        checkNotControlled =
+            checkNotControlled
+                && checkCharacteristicNotControlled(controlEntrySample, controlEntryPlanLine);
+      }
+      if (checkNotControlled) {
+        counter++;
+      }
+    }
+
+    return counter;
   }
 
-  protected Integer computeSampleControlledOnCharacteristic(
-      ControlEntry controlEntry, Long characteristicId) {
+  protected int computeSampleControlledOnCharacteristic(
+      ControlEntry controlEntry, Long characteristicId) throws AxelorException {
     if (characteristicId == null || characteristicId == 0L) {
       return 0;
     }
@@ -91,34 +95,39 @@ public class ControlEntryProgressValuesComputeServiceImpl
     if (controlEntrySamplesList == null || controlEntrySamplesList.isEmpty()) {
       return 0;
     }
-    ControlPlanLineCharacteristic controlPlanLineCharacteristic =
-        controlPlanLineCharacteristicRepository.find(characteristicId);
+    ControlEntryPlanLine controlEntryPlanLine =
+        controlEntryPlanLineRepository.find(characteristicId);
 
-    return Math.toIntExact(
-        controlEntrySamplesList.stream()
-            .filter(
-                controlEntrySample ->
-                    checkCharacteristicNotControlled(
-                        controlEntrySample, controlPlanLineCharacteristic))
-            .count());
+    int counter = 0;
+    for (ControlEntrySample controlEntrySample : controlEntrySamplesList) {
+      if (checkCharacteristicNotControlled(controlEntrySample, controlEntryPlanLine)) {
+        counter++;
+      }
+    }
+
+    return counter;
   }
 
   protected boolean checkCharacteristicNotControlled(
-      ControlEntrySample controlEntrySample,
-      ControlPlanLineCharacteristic controlPlanLineCharacteristic) {
-    if (controlPlanLineCharacteristic == null) {
+      ControlEntrySample controlEntrySample, ControlEntryPlanLine controlEntryPlanLine)
+      throws AxelorException {
+    if (controlEntryPlanLine == null) {
       return false;
     }
 
     return controlEntrySample.getControlEntryPlanLinesList().stream()
-            .filter(planLine -> controlPlanLineCharacteristic.equals(planLine.getCharacteristic()))
+            .filter(planLine -> controlEntryPlanLine.equals(planLine.getControlPlanLine()))
             .findFirst()
-            .get()
+            .orElseThrow(
+                () ->
+                    new AxelorException(
+                        TraceBackRepository.CATEGORY_INCONSISTENCY,
+                        I18n.get(QualityExceptionMessage.API_CHARACTERISTIC_NOT_IN_CONTROL_ENTRY)))
             .getResultSelect()
         != ControlEntrySampleRepository.RESULT_NOT_CONTROLLED;
   }
 
-  protected Integer computeCharacteristicControlledOnSample(Long sampleId) {
+  protected int computeCharacteristicControlledOnSample(Long sampleId) {
     if (sampleId == null || sampleId == 0L) {
       return 0;
     }
