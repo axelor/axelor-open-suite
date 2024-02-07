@@ -17,9 +17,14 @@
     <decimal name="minCapacityPerCycle" title="Min. capacity / cycle"/>
     <decimal name="maxCapacityPerCycle" title="Max. capacity / cycle"/>
     <long name="durationPerCycle" title="Duration / cycle (hhh:mm:ss)"/>
+    <long name="setupDuration" title="Duration between two cycles (hhh:mm:ss)"/>
+    <long name="startingDuration" title="Starting duration (hhh:mm:ss)"/>
+    <long name="endingDuration" title="Ending duration (hhh:mm:ss)"/>
     <long name="humanDuration" title="Human Duration (hh:mm:ss)"/>
     <decimal name="durationPerCycleDecimal" title="Duration / cycle (in hours)"/>
     <decimal name="humanDurationDecimal" title="Human Duration (in hours)"/>
+    <long name="timeBeforeNextOperation" title="Time before next operation"
+      help="Time before the next operation of the same manufacturing order."/>
     <boolean name="outsourcing" title="Outsourced"/>
     <boolean name="outsourcable" title="Outsourcable"/>
     <many-to-one name="outsourcingPartner" ref="com.axelor.apps.base.db.Partner"
