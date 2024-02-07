@@ -133,7 +133,6 @@ public abstract class AccountingReportValueAbstractService {
         companySet.size() == 1
             ? companySet.iterator().next().getId().intValue()
             : Integer.MAX_VALUE;
-    // 2147483647
 
     AccountingReportValue accountingReportValue =
         new AccountingReportValue(
