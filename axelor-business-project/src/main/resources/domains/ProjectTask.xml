@@ -75,7 +75,6 @@
       <field name="invoicingType"/>
       <field name="customerReferral"/>
     </track>
-
   </entity>
 
 </domain-models>

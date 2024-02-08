@@ -21,16 +21,9 @@ package com.axelor.apps.businessproject.db.repo;
 import com.axelor.apps.businessproject.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
-import com.google.inject.Inject;
+import com.axelor.inject.Beans;
 
 public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepository {
-  ProjectTaskProgressUpdateService projectTaskProgressUpdateService;
-
-  @Inject
-  public ProjectTaskBusinessProjectRepository(
-      ProjectTaskProgressUpdateService projectTaskProgressUpdateService) {
-    this.projectTaskProgressUpdateService = projectTaskProgressUpdateService;
-  }
 
   @Override
   public ProjectTask copy(ProjectTask entity, boolean deep) {
@@ -43,6 +36,8 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
   @Override
   public ProjectTask save(ProjectTask projectTask) {
     projectTask = super.save(projectTask);
+    ProjectTaskProgressUpdateService projectTaskProgressUpdateService =
+        Beans.get(ProjectTaskProgressUpdateService.class);
     projectTask =
         projectTaskProgressUpdateService.updateChildrenProgress(
             projectTask, projectTask.getProgress());
